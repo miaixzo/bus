@@ -31,6 +31,7 @@ import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.Internal;
@@ -49,7 +50,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 /**
  * 实用方法工具
@@ -111,18 +111,7 @@ public class Builder {
 
     public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS =
             new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
-    /**
-     * Quick and dirty pattern to differentiate IP addresses from hostnames. This is an approximation
-     * of Android's private InetAddress#isNumeric API.
-     * <p>
-     * This matches IPv6 addresses as a hex string containing at least one colon, and possibly
-     * including dots after the first colon. It matches IPv4 addresses as strings containing only
-     * decimal digits and dots. This pattern matches strings like "a:.23" and "54" that are neither IP
-     * addresses nor hostnames; they will be verified as IP addresses (which is a more strict
-     * verification).
-     */
-    private static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile(
-            "([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+
     /**
      * Most websites serve cookies in the blessed format. Eagerly create the parser to ensure such
      * cookies are on the fast path.
@@ -455,7 +444,7 @@ public class Builder {
      * Returns true if {@code host} is not a host name and might be an IP address.
      */
     public static boolean verifyAsIpAddress(String host) {
-        return VERIFY_AS_IP_ADDRESS.matcher(host).matches();
+        return RegEx.IP_ADDRESS.matcher(host).matches();
     }
 
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {

@@ -629,6 +629,16 @@ public class ReflectKit {
     }
 
     /**
+     * 设置静态（static）字段值
+     *
+     * @param field 字段
+     * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
+     */
+    public static void setStaticFieldValue(final Field field, final Object value) {
+        setFieldValue(null, field, value);
+    }
+
+    /**
      * 查找指定对象中的所有方法(包括非public方法),也包括父对象和Object类的方法
      *
      * @param object     被查找的对象,如果为{@code null}返回{@code null}

@@ -23,19 +23,15 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.http.secure;
+package org.aoju.bus.core.net.tls;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.http.accord.platform.Platform;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 import java.security.*;
 import java.util.Arrays;
 
@@ -112,6 +108,52 @@ public class SSLContextBuilder implements Builder<SSLContext> {
                 .setProtocol(protocol)
                 .setKeyManagers(keyManagers)
                 .setTrustManagers(trustManagers).build();
+    }
+
+    /**
+     * 创建SSL证书
+     *
+     * @param x509TrustManager 证书信息
+     * @return SSLSocketFactory ssl socket工厂
+     */
+    public static SSLSocketFactory newSslSocketFactory(X509TrustManager x509TrustManager) {
+        try {
+            SSLContext sslContext = getSSLContext();
+            sslContext.init(null, new TrustManager[]{x509TrustManager}, new SecureRandom());
+            return sslContext.getSocketFactory();
+        } catch (GeneralSecurityException ignored) {
+            throw new AssertionError("No System TLS", ignored);
+        }
+    }
+
+    public static SSLContext getSSLContext() {
+        try {
+            return SSLContext.getInstance(Http.TLS_V_12);
+        } catch (NoSuchAlgorithmException e) {
+            // fallback to TLS
+        }
+
+        try {
+            return SSLContext.getInstance(Http.TLS);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("No TLS provider", e);
+        }
+    }
+
+    public static X509TrustManager newTrustManager() {
+        try {
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                    TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init((KeyStore) null);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                throw new IllegalStateException("Unexpected default trust managers:"
+                        + Arrays.toString(trustManagers));
+            }
+            return (javax.net.ssl.X509TrustManager) trustManagers[0];
+        } catch (GeneralSecurityException e) {
+            throw new AssertionError("No System TLS", e);
+        }
     }
 
     /**
@@ -200,38 +242,6 @@ public class SSLContextBuilder implements Builder<SSLContext> {
             return buildChecked();
         } catch (GeneralSecurityException e) {
             throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 创建SSL证书
-     *
-     * @param x509TrustManager 证书信息
-     * @return SSLSocketFactory ssl socket工厂
-     */
-    public static javax.net.ssl.SSLSocketFactory newSslSocketFactory(javax.net.ssl.X509TrustManager x509TrustManager) {
-        try {
-            SSLContext sslContext = Platform.get().getSSLContext();
-            sslContext.init(null, new TrustManager[]{x509TrustManager}, new SecureRandom());
-            return sslContext.getSocketFactory();
-        } catch (GeneralSecurityException ignored) {
-            throw new AssertionError("No System TLS", ignored);
-        }
-    }
-
-    public static javax.net.ssl.X509TrustManager newTrustManager() {
-        try {
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-                    TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init((KeyStore) null);
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-            if (trustManagers.length != 1 || !(trustManagers[0] instanceof javax.net.ssl.X509TrustManager)) {
-                throw new IllegalStateException("Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers));
-            }
-            return (javax.net.ssl.X509TrustManager) trustManagers[0];
-        } catch (GeneralSecurityException e) {
-            throw new AssertionError("No System TLS", e);
         }
     }
 

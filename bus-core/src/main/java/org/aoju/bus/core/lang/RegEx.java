@@ -117,6 +117,12 @@ public class RegEx {
     public static final Pattern GROUP_VAR = Pattern.compile(GROUP_VAR_PATTERN);
 
     /**
+     * 快速区分IP地址和主机名
+     */
+    public static final String IP_ADDRESS_PATTERN = "([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)";
+    public static final Pattern IP_ADDRESS = Pattern.compile(IP_ADDRESS_PATTERN);
+
+    /**
      * IP v4
      */
     public static final String IPV4_PATTERN = "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)$";

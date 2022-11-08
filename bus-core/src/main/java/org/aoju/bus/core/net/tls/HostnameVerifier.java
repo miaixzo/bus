@@ -23,10 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.http.secure;
+package org.aoju.bus.core.net.tls;
 
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.http.Builder;
 
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
@@ -100,7 +100,7 @@ public class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
     }
 
     public boolean verify(String host, X509Certificate certificate) {
-        return Builder.verifyAsIpAddress(host)
+        return RegEx.IP_ADDRESS.matcher(host).matches()
                 ? verifyIpAddress(host, certificate)
                 : verifyHostname(host, certificate);
     }

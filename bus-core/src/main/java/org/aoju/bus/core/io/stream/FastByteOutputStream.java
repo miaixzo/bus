@@ -27,17 +27,20 @@ package org.aoju.bus.core.io.stream;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.buffer.FastByteBuffer;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
- * 基于快速缓冲FastByteBuffer的OutputStream,自动扩充缓冲区
+ * 基于快速缓冲FastByteBuffer的OutputStream，随着数据的增长自动扩充缓冲区
+ * <p>
  * 可以通过{@link #toByteArray()}和 {@link #toString()}来获取数据
- * 避免重新分配内存块而是分配新增的缓冲区,缓冲区不会被GC,数据也不会被拷贝到其他缓冲区
+ * <p>
+ * {@link #close()}方法无任何效果，当流被关闭后不会抛出IOException
+ * <p>
+ * 这种设计避免重新分配内存块而是分配新增的缓冲区，缓冲区不会被GC，数据也不会被拷贝到其他缓冲区。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,8 +49,11 @@ public class FastByteOutputStream extends OutputStream {
 
     private final FastByteBuffer buffer;
 
+    /**
+     * 构造
+     */
     public FastByteOutputStream() {
-        this(Normal._1024);
+        this(1024);
     }
 
     /**
@@ -55,17 +61,17 @@ public class FastByteOutputStream extends OutputStream {
      *
      * @param size 预估大小
      */
-    public FastByteOutputStream(int size) {
+    public FastByteOutputStream(final int size) {
         buffer = new FastByteBuffer(size);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) {
+    public void write(final byte[] b, final int off, final int len) {
         buffer.append(b, off, len);
     }
 
     @Override
-    public void write(int b) {
+    public void write(final int b) {
         buffer.append((byte) b);
     }
 
@@ -74,10 +80,10 @@ public class FastByteOutputStream extends OutputStream {
     }
 
     /**
-     * 此方法无任何效果,当流被关闭后不会抛出IOException
+     * 此方法无任何效果，当流被关闭后不会抛出IOException
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
         // nop
     }
 
@@ -91,9 +97,10 @@ public class FastByteOutputStream extends OutputStream {
      * @param out 输出流
      * @throws InternalException IO异常
      */
-    public void writeTo(OutputStream out) throws InternalException {
+    public void writeTo(final OutputStream out) throws InternalException {
         final int index = buffer.index();
         if (index < 0) {
+            // 无数据写出
             return;
         }
         byte[] buf;
@@ -103,10 +110,11 @@ public class FastByteOutputStream extends OutputStream {
                 out.write(buf);
             }
             out.write(buffer.array(index), 0, buffer.offset());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
+
 
     /**
      * 转为Byte数组
@@ -119,27 +127,18 @@ public class FastByteOutputStream extends OutputStream {
 
     @Override
     public String toString() {
-        return toString(Charset.defaultCharset());
+        return toString(org.aoju.bus.core.lang.Charset.defaultCharset());
     }
 
     /**
      * 转为字符串
      *
-     * @param charsetName 编码
+     * @param charset 编码,null表示默认编码
      * @return 字符串
      */
-    public String toString(String charsetName) {
-        return toString(Charset.charset(charsetName));
-    }
-
-    /**
-     * 转为字符串
-     *
-     * @param charset 编码
-     * @return 字符串
-     */
-    public String toString(java.nio.charset.Charset charset) {
-        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
+    public String toString(final Charset charset) {
+        return new String(toByteArray(),
+                ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
     }
 
 }

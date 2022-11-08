@@ -32,6 +32,7 @@ import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.net.ssl.HostnameVerifier;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
@@ -40,7 +41,6 @@ import org.aoju.bus.http.metric.Interceptor;
 import org.aoju.bus.http.metric.Internal;
 import org.aoju.bus.http.metric.http.*;
 import org.aoju.bus.http.secure.CertificatePinner;
-import org.aoju.bus.http.secure.HostnameVerifier;
 import org.aoju.bus.http.socket.Handshake;
 import org.aoju.bus.http.socket.RealWebSocket;
 

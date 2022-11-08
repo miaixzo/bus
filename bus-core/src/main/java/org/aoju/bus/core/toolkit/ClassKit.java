@@ -36,6 +36,7 @@ import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.loader.JarLoaders;
@@ -363,7 +364,25 @@ public class ClassKit {
      * @return 获得Java ClassPath路径,不包括 jre
      */
     public static String[] getJavaClassPaths() {
-        return System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+        return System.get(System.CLASS_PATH).split(System.get(System.PATH_SEPARATOR));
+    }
+
+    /**
+     * 获取用户路径（绝对路径）
+     *
+     * @return 用户路径
+     */
+    public static String getUserHome() {
+        return System.get(System.USER_HOME);
+    }
+
+    /**
+     * 获取临时文件路径（绝对路径）
+     *
+     * @return 临时文件路径
+     */
+    public static String getTmpDir() {
+        return System.get(System.IO_TMPDIR);
     }
 
     /**
@@ -2060,12 +2079,12 @@ public class ClassKit {
         }
 
         final Object[] newArgs = new Object[methodParameterTypes.length];
-        System.arraycopy(args, 0, newArgs, 0, methodParameterTypes.length - 1);
+        java.lang.System.arraycopy(args, 0, newArgs, 0, methodParameterTypes.length - 1);
         final Class<?> varArgComponentType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
         final int varArgLength = args.length - methodParameterTypes.length + 1;
 
         Object varArgsArray = Array.newInstance(primitiveToWrapper(varArgComponentType), varArgLength);
-        System.arraycopy(args, methodParameterTypes.length - 1, varArgsArray, 0, varArgLength);
+        java.lang.System.arraycopy(args, methodParameterTypes.length - 1, varArgsArray, 0, varArgLength);
 
         if (varArgComponentType.isPrimitive()) {
             varArgsArray = ArrayKit.toPrimitive(varArgsArray);

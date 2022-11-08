@@ -26,7 +26,6 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.io.buffer.Buffer;
-import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicCertificateChainCleaner;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -34,7 +33,6 @@ import org.aoju.bus.http.secure.CertificateChainCleaner;
 import org.aoju.bus.http.secure.TrustRootIndex;
 import org.aoju.bus.logger.Logger;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
@@ -42,7 +40,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -285,14 +282,6 @@ public class Platform {
         }
 
         return buildCertificateChainCleaner(trustManager);
-    }
-
-    public SSLContext getSSLContext() {
-        try {
-            return SSLContext.getInstance(Http.TLS);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("No TLS provider", e);
-        }
     }
 
     public TrustRootIndex buildTrustRootIndex(X509TrustManager trustManager) {

@@ -26,6 +26,7 @@
 package org.aoju.bus.core.io.resource;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 
 /**
@@ -40,20 +41,30 @@ public class MultiFileResource extends MultiResource {
     /**
      * 构造
      *
-     * @param files 集合
+     * @param file 文件
      */
-    public MultiFileResource(Collection<File> files) {
+    public MultiFileResource(final File... file) {
+        add(file);
+    }
+
+    /**
+     * 构造
+     *
+     * @param files 文件资源列表
+     */
+    public MultiFileResource(final Path... files) {
         add(files);
     }
 
     /**
      * 构造
      *
-     * @param file 文件
+     * @param files 集合
      */
-    public MultiFileResource(File... file) {
-        add(file);
+    public MultiFileResource(final Collection<File> files) {
+        add(files);
     }
+
 
     /**
      * 增加文件资源
@@ -61,7 +72,7 @@ public class MultiFileResource extends MultiResource {
      * @param file 文件资源
      * @return this
      */
-    public MultiFileResource add(File... file) {
+    public MultiFileResource add(final File... file) {
         for (File f : file) {
             this.add(new FileResource(f));
         }
@@ -74,7 +85,20 @@ public class MultiFileResource extends MultiResource {
      * @param files 文件资源
      * @return this
      */
-    public MultiFileResource add(Collection<File> files) {
+    public MultiFileResource add(final Path... files) {
+        for (final Path file : files) {
+            this.add(new FileResource(file));
+        }
+        return this;
+    }
+
+    /**
+     * 增加文件资源
+     *
+     * @param files 文件资源
+     * @return this
+     */
+    public MultiFileResource add(final Collection<File> files) {
         for (File file : files) {
             this.add(new FileResource(file));
         }
@@ -82,7 +106,7 @@ public class MultiFileResource extends MultiResource {
     }
 
     @Override
-    public MultiFileResource add(Resource resource) {
+    public MultiFileResource add(final Resource resource) {
         return (MultiFileResource) super.add(resource);
     }
 

@@ -5127,60 +5127,6 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 转换为{@link DateTime}对象
-     *
-     * @return 当前时间
-     */
-    public static DateTime date() {
-        return new DateTime();
-    }
-
-    /**
-     * {@link Date}类型时间转为{@link DateTime}
-     *
-     * @param date Long类型Date(Unix时间戳)
-     * @return 时间对象
-     */
-    public static DateTime date(Date date) {
-        if (date instanceof DateTime) {
-            return (DateTime) date;
-        }
-        return new DateTime(date);
-    }
-
-    /**
-     * Long类型时间转为{@link DateTime}
-     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
-     *
-     * @param date Long类型Date(Unix时间戳)
-     * @return 时间对象
-     */
-    public static DateTime date(long date) {
-        return new DateTime(date);
-    }
-
-    /**
-     * {@link Calendar}类型时间转为{@link DateTime}
-     *
-     * @param calendar {@link Calendar}
-     * @return 时间对象
-     */
-    public static DateTime date(Calendar calendar) {
-        return new DateTime(calendar);
-    }
-
-    /**
-     * {@link TemporalAccessor}类型时间转为{@link DateTime}
-     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
-     *
-     * @param temporalAccessor {@link TemporalAccessor}
-     * @return 时间对象
-     */
-    public static DateTime date(TemporalAccessor temporalAccessor) {
-        return new DateTime(temporalAccessor);
-    }
-
-    /**
      * 修改日期为某个时间字段结束时间
      *
      * @param date {@link Date}
@@ -5570,6 +5516,60 @@ public class Almanac extends Converter {
      */
     public static int getLastDayOfMonth(final Date date) {
         return date(date).getLastDayOfMonth();
+    }
+
+    /**
+     * 转换为{@link DateTime}对象
+     *
+     * @return 当前时间
+     */
+    public static DateTime date() {
+        return new DateTime();
+    }
+
+    /**
+     * {@link Date}类型时间转为{@link DateTime}
+     *
+     * @param date Long类型Date(Unix时间戳)
+     * @return 时间对象
+     */
+    public static DateTime date(Date date) {
+        if (date instanceof DateTime) {
+            return (DateTime) date;
+        }
+        return new DateTime(date);
+    }
+
+    /**
+     * Long类型时间转为{@link DateTime}
+     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
+     *
+     * @param date Long类型Date(Unix时间戳)
+     * @return 时间对象
+     */
+    public static DateTime date(long date) {
+        return new DateTime(date);
+    }
+
+    /**
+     * {@link Calendar}类型时间转为{@link DateTime}
+     *
+     * @param calendar {@link Calendar}
+     * @return 时间对象
+     */
+    public static DateTime date(Calendar calendar) {
+        return new DateTime(calendar);
+    }
+
+    /**
+     * {@link TemporalAccessor}类型时间转为{@link DateTime}
+     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @return 时间对象
+     */
+    public static DateTime date(TemporalAccessor temporalAccessor) {
+        return new DateTime(temporalAccessor);
     }
 
     /**

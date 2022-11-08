@@ -23,74 +23,60 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.http.secure;
+package org.aoju.bus.core.io.stream;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * 在协商安全插槽时可以提供的TLS版本
- * 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}
+ * 此OutputStream写出数据到<b>/dev/null</b>,既忽略所有数据
+ * 来自 Apache Commons io
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum TlsVersion {
+public class EmptyOutputStream extends OutputStream {
 
     /**
-     * 2016年版本
+     * 单例
      */
-    TLS_1_3("TLSv1.3"),
-    /**
-     * 2008年版本
-     */
-    TLS_1_2("TLSv1.2"),
-    /**
-     * 2006年版本
-     */
-    TLS_1_1("TLSv1.1"),
-    /**
-     * 1999年版本
-     */
-    TLS_1_0("TLSv1"),
-    /**
-     * 1996年版本
-     */
-    SSL_3_0("SSLv3");
+    public static final EmptyOutputStream INSTANCE = new EmptyOutputStream();
 
-    public final String javaName;
+    private EmptyOutputStream() {
 
-    TlsVersion(String javaName) {
-        this.javaName = javaName;
     }
 
-    public static TlsVersion forJavaName(String javaName) {
-        switch (javaName) {
-            case "TLSv1.3":
-                return TLS_1_3;
-            case "TLSv1.2":
-                return TLS_1_2;
-            case "TLSv1.1":
-                return TLS_1_1;
-            case "TLSv1":
-                return TLS_1_0;
-            case "SSLv3":
-                return SSL_3_0;
-        }
-        throw new IllegalArgumentException("Unexpected TLS version: " + javaName);
+    /**
+     * 什么也不做，写出到{@code /dev/null}
+     *
+     * @param b   写出的数据
+     * @param off 开始位置
+     * @param len 长度
+     */
+    @Override
+    public void write(final byte[] b, final int off, final int len) {
+
     }
 
-    public static List<TlsVersion> forJavaNames(String... tlsVersions) {
-        List<TlsVersion> result = new ArrayList<>(tlsVersions.length);
-        for (String tlsVersion : tlsVersions) {
-            result.add(forJavaName(tlsVersion));
-        }
-        return Collections.unmodifiableList(result);
+    /**
+     * 什么也不做，写出到 {@code /dev/null}
+     *
+     * @param b 写出的数据
+     */
+    @Override
+    public void write(final int b) {
+
     }
 
-    public String javaName() {
-        return javaName;
+    /**
+     * 什么也不做，写出到 {@code /dev/null}
+     *
+     * @param b 写出的数据
+     * @throws IOException 不抛出
+     */
+    @Override
+    public void write(final byte[] b) throws IOException {
+
     }
 
 }

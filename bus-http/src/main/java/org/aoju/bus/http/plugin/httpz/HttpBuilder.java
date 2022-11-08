@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpz;
 
+import org.aoju.bus.core.net.ssl.SSLContextBuilder;
 import org.aoju.bus.http.DnsX;
 import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Httpz;
@@ -37,7 +38,6 @@ import org.aoju.bus.http.metric.Dispatcher;
 import org.aoju.bus.http.metric.Interceptor;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.CertificatePinner;
-import org.aoju.bus.http.secure.SSLContextBuilder;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;

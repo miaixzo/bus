@@ -30,6 +30,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.util.List;
+
 /**
  * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名
  * 从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码
@@ -57,7 +59,7 @@ public class PunyCode {
      * @return PunyCode字符串
      * @throws InternalException 计算异常
      */
-    public static String encode(CharSequence input) throws InternalException {
+    public static String encode(final CharSequence input) throws InternalException {
         return encode(input, false);
     }
 
@@ -69,17 +71,17 @@ public class PunyCode {
      * @return PunyCode字符串
      * @throws InternalException 计算异常
      */
-    public static String encode(CharSequence input, boolean withPrefix) throws InternalException {
+    public static String encode(final CharSequence input, final boolean withPrefix) throws InternalException {
         Assert.notNull(input, "input must not be null!");
         int n = INITIAL_N;
         int delta = 0;
         int bias = INITIAL_BIAS;
-        StringBuilder output = new StringBuilder();
-        // Copy all basic code points to the output
         final int length = input.length();
+        final StringBuilder output = new StringBuilder(length * 4);
+        // Copy all basic code points to the output
         int b = 0;
         for (int i = 0; i < length; i++) {
-            char c = input.charAt(i);
+            final char c = input.charAt(i);
             if (isBasic(c)) {
                 output.append(c);
                 b++;
@@ -109,7 +111,7 @@ public class PunyCode {
             delta = delta + (m - n) * (h + 1);
             n = m;
             for (int j = 0; j < length; j++) {
-                int c = input.charAt(j);
+                final int c = input.charAt(j);
                 if (c < n) {
                     delta++;
                     if (0 == delta) {
@@ -119,7 +121,7 @@ public class PunyCode {
                 if (c == n) {
                     int q = delta;
                     for (int k = BASE; ; k += BASE) {
-                        int t;
+                        final int t;
                         if (k <= bias) {
                             t = TMIN;
                         } else if (k >= bias + TMAX) {
@@ -163,7 +165,8 @@ public class PunyCode {
         int n = INITIAL_N;
         int i = 0;
         int bias = INITIAL_BIAS;
-        StringBuilder output = new StringBuilder();
+        final int length = input.length();
+        final StringBuilder output = new StringBuilder(length / 4 + 1);
         int d = input.lastIndexOf(Symbol.C_MINUS);
         if (d > 0) {
             for (int j = 0; j < d; j++) {
@@ -176,21 +179,20 @@ public class PunyCode {
         } else {
             d = 0;
         }
-        final int length = input.length();
         while (d < length) {
-            int oldi = i;
+            final int oldi = i;
             int w = 1;
             for (int k = BASE; ; k += BASE) {
                 if (d == length) {
                     throw new InternalException("BAD_INPUT");
                 }
-                int c = input.charAt(d++);
-                int digit = codepoint2digit(c);
+                final int c = input.charAt(d++);
+                final int digit = codepoint2digit(c);
                 if (digit > (Integer.MAX_VALUE - i) / w) {
                     throw new InternalException("OVERFLOW");
                 }
                 i = i + digit * w;
-                int t;
+                final int t;
                 if (k <= bias) {
                     t = TMIN;
                 } else if (k >= bias + TMAX) {
@@ -216,7 +218,49 @@ public class PunyCode {
         return output.toString();
     }
 
-    private static int adapt(int delta, int numpoints, boolean first) {
+    /**
+     * 将域名编码为PunyCode，会忽略"."的编码
+     *
+     * @param domain 域名
+     * @return 编码后的域名
+     * @throws InternalException 计算异常
+     */
+    public static String encodeDomain(final String domain) throws InternalException {
+        Assert.notNull(domain, "domain must not be null!");
+        final List<String> split = StringKit.split(domain, Symbol.C_DOT);
+        final StringBuilder result = new StringBuilder(domain.length() * 4);
+        for (final String str : split) {
+            if (result.length() != 0) {
+                result.append(Symbol.C_DOT);
+            }
+            result.append(encode(str, true));
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * 解码 PunyCode为域名
+     *
+     * @param domain 域名
+     * @return 解码后的域名
+     * @throws InternalException 计算异常
+     */
+    public static String decodeDomain(final String domain) throws InternalException {
+        Assert.notNull(domain, "domain must not be null!");
+        final List<String> split = StringKit.split(domain, Symbol.C_DOT);
+        final StringBuilder result = new StringBuilder(domain.length() / 4 + 1);
+        for (final String str : split) {
+            if (result.length() != 0) {
+                result.append(Symbol.C_DOT);
+            }
+            result.append(StringKit.startWithIgnoreEquals(str, PUNY_CODE_PREFIX) ? decode(str) : str);
+        }
+
+        return result.toString();
+    }
+
+    private static int adapt(int delta, final int numpoints, final boolean first) {
         if (first) {
             delta = delta / DAMP;
         } else {
@@ -231,7 +275,7 @@ public class PunyCode {
         return k + ((BASE - TMIN + 1) * delta) / (delta + SKEW);
     }
 
-    private static boolean isBasic(char c) {
+    private static boolean isBasic(final char c) {
         return c < 0x80;
     }
 
@@ -251,7 +295,7 @@ public class PunyCode {
      * @return 转换后的字符
      * @throws InternalException 无效字符
      */
-    private static int digit2codepoint(int d) throws InternalException {
+    private static int digit2codepoint(final int d) throws InternalException {
         Assert.checkBetween(d, 0, 35);
         if (d < 26) {
             // 0..25 : 'a'..'z'
@@ -280,7 +324,7 @@ public class PunyCode {
      * @return 转换后的字符
      * @throws InternalException 无效字符
      */
-    private static int codepoint2digit(int c) throws InternalException {
+    private static int codepoint2digit(final int c) throws InternalException {
         if (c - '0' < 10) {
             // '0'..'9' : 26..35
             return c - '0' + 26;

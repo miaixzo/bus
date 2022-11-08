@@ -28,7 +28,6 @@ package org.aoju.bus.http.accord.platform;
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
@@ -37,14 +36,16 @@ import org.aoju.bus.http.secure.CertificateChainCleaner;
 import org.aoju.bus.http.secure.TrustRootIndex;
 import org.aoju.bus.logger.Logger;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
@@ -251,21 +252,6 @@ class AndroidPlatform extends Platform {
             return new CustomTrustRootIndex(trustManager, method);
         } catch (NoSuchMethodException e) {
             return super.buildTrustRootIndex(trustManager);
-        }
-    }
-
-    @Override
-    public SSLContext getSSLContext() {
-        try {
-            return SSLContext.getInstance(Http.TLS_V_12);
-        } catch (NoSuchAlgorithmException e) {
-            // fallback to TLS
-        }
-
-        try {
-            return SSLContext.getInstance(Http.TLS);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("No TLS provider", e);
         }
     }
 

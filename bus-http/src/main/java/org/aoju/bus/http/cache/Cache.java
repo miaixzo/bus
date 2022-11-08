@@ -37,13 +37,13 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.net.tls.TlsVersion;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.http.StatusLine;
 import org.aoju.bus.http.secure.CipherSuite;
-import org.aoju.bus.http.secure.TlsVersion;
 import org.aoju.bus.http.socket.Handshake;
 
 import java.io.Closeable;

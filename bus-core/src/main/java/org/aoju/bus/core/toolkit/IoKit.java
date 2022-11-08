@@ -33,18 +33,15 @@ import org.aoju.bus.core.io.Progress;
 import org.aoju.bus.core.io.Segment;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.copier.ChannelCopier;
+import org.aoju.bus.core.io.copier.FileChannelCopier;
 import org.aoju.bus.core.io.copier.ReaderWriterCopier;
-import org.aoju.bus.core.io.copier.StreamCopier;
 import org.aoju.bus.core.io.sink.BufferSink;
 import org.aoju.bus.core.io.sink.RealSink;
 import org.aoju.bus.core.io.sink.Sink;
 import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.io.source.RealSource;
 import org.aoju.bus.core.io.source.Source;
-import org.aoju.bus.core.io.stream.BOMInputStream;
-import org.aoju.bus.core.io.stream.BOMReader;
-import org.aoju.bus.core.io.stream.FastByteOutputStream;
-import org.aoju.bus.core.io.stream.NullOutputStream;
+import org.aoju.bus.core.io.stream.*;
 import org.aoju.bus.core.io.timout.AsyncTimeout;
 import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Assert;
@@ -52,6 +49,7 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.function.XConsumer;
 
+import java.io.ObjectInputStream;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -151,95 +149,90 @@ public class IoKit {
     }
 
     /**
-     * 将Reader中的内容复制到Writer中 使用默认缓存大小
+     * 将Reader中的内容复制到Writer中 使用默认缓存大小，拷贝后不关闭Reader
      *
      * @param reader Reader
      * @param writer Writer
      * @return 拷贝的字节数
-     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer) throws InternalException {
+    public static long copy(final Reader reader, final Writer writer) {
         return copy(reader, writer, DEFAULT_BUFFER_SIZE);
     }
 
     /**
-     * 将Reader中的内容复制到Writer中
+     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
      *
      * @param reader     Reader
      * @param writer     Writer
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize) throws InternalException {
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize) {
         return copy(reader, writer, bufferSize, null);
     }
 
     /**
-     * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
+     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
      *
      * @param reader     Reader
      * @param writer     Writer
      * @param bufferSize 缓存大小
      * @param progress   进度处理器
      * @return 传输的byte数
-     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, Progress progress) throws InternalException {
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final Progress progress) {
         return copy(reader, writer, bufferSize, -1, progress);
     }
 
     /**
-     * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
+     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
      *
-     * @param reader     Reader
-     * @param writer     Writer
-     * @param bufferSize 缓存大小
-     * @param count      最大长度
-     * @param progress   进度处理器
+     * @param reader     Reader，非空
+     * @param writer     Writer，非空
+     * @param bufferSize 缓存大小，-1表示默认
+     * @param count      最大长度，-1表示无限制
+     * @param progress   进度处理器，{@code null}表示无
      * @return 传输的byte数
-     * @throws InternalException IO异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, long count, Progress progress) throws InternalException {
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final long count, final Progress progress) {
+        Assert.notNull(reader, "Reader is null !");
+        Assert.notNull(writer, "Writer is null !");
         return new ReaderWriterCopier(bufferSize, count, progress).copy(reader, writer);
     }
 
     /**
-     * 拷贝流,使用默认Buffer大小
+     * 拷贝流，使用默认Buffer大小，拷贝后不关闭流
      *
      * @param in  输入流
      * @param out 输出流
      * @return 传输的byte数
-     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out) throws InternalException {
+    public static long copy(final InputStream in, final OutputStream out) {
         return copy(in, out, DEFAULT_BUFFER_SIZE);
     }
 
     /**
-     * 拷贝流
+     * 拷贝流，拷贝后不关闭流
      *
      * @param in         输入流
      * @param out        输出流
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize) throws InternalException {
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize) {
         return copy(in, out, bufferSize, null);
     }
 
     /**
-     * 拷贝流
+     * 拷贝流，拷贝后不关闭流
      *
      * @param in         输入流
      * @param out        输出流
      * @param bufferSize 缓存大小
      * @param progress   进度条
      * @return 传输的byte数
-     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, Progress progress) throws InternalException {
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final Progress progress) {
         return copy(in, out, bufferSize, -1, progress);
     }
 
@@ -249,13 +242,16 @@ public class IoKit {
      * @param in         输入流
      * @param out        输出流
      * @param bufferSize 缓存大小
-     * @param count      总拷贝长度
+     * @param count      总拷贝长度，-1表示无限制
      * @param progress   进度条
      * @return 传输的byte数
-     * @throws InternalException IO异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, Progress progress) throws InternalException {
-        return new StreamCopier(bufferSize, count, progress).copy(in, out);
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final long count, final Progress progress) {
+        Assert.notNull(in, "InputStream is null !");
+        Assert.notNull(out, "OutputStream is null !");
+        final long copySize = copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, progress);
+        flush(out);
+        return copySize;
     }
 
     /**
@@ -309,21 +305,6 @@ public class IoKit {
             remaining -= writeBytes;
         }
         return totalBytes;
-    }
-
-    /**
-     * 拷贝流,本方法不会关闭流
-     *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param count      最大长度
-     * @param progress   进度条
-     * @return 传输的byte数
-     * @throws InternalException IO异常
-     */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, Progress progress) throws InternalException {
-        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, progress);
     }
 
     /**
@@ -381,6 +362,20 @@ public class IoKit {
     }
 
     /**
+     * 文件拷贝实现
+     *
+     * @param in  输入
+     * @param out 输出
+     * @return 拷贝的字节数
+     */
+    public static long copy(final FileInputStream in, final FileOutputStream out) {
+        Assert.notNull(in, "FileInputStream is null!");
+        Assert.notNull(out, "FileOutputStream is null!");
+
+        return new FileChannelCopier(-1).copy(in, out);
+    }
+
+    /**
      * 获得一个文件读取器
      *
      * @param in          输入流
@@ -403,7 +398,7 @@ public class IoKit {
             return null;
         }
 
-        InputStreamReader reader;
+        final InputStreamReader reader;
         if (null == charset) {
             reader = new InputStreamReader(in);
         } else {
@@ -500,7 +495,7 @@ public class IoKit {
      */
     public static String read(InputStream in, String charsetName) throws InternalException {
         FastByteOutputStream out = read(in);
-        return StringKit.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
+        return StringKit.isBlank(charsetName) ? out.toString() : out.toString(Charset.charset(charsetName));
     }
 
     /**
@@ -536,25 +531,7 @@ public class IoKit {
      * @throws InternalException IO异常
      */
     public static FastByteOutputStream read(InputStream in, boolean isClose) throws InternalException {
-        final FastByteOutputStream out;
-        if (in instanceof FileInputStream) {
-            // 文件流的长度是可预见的，此时直接读取效率更高
-            try {
-                out = new FastByteOutputStream(in.available());
-            } catch (IOException e) {
-                throw new InternalException(e);
-            }
-        } else {
-            out = new FastByteOutputStream();
-        }
-        try {
-            copy(in, out);
-        } finally {
-            if (isClose) {
-                close(in);
-            }
-        }
-        return out;
+        return StreamReader.of(in, isClose).read();
     }
 
     /**
@@ -793,7 +770,7 @@ public class IoKit {
      * @return 内容
      * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(InputStream in, T collection) throws InternalException {
         return readLines(in, Charset.UTF_8, collection);
     }
 
@@ -846,7 +823,7 @@ public class IoKit {
      * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readUtf8Lines(InputStream in, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(InputStream in, XConsumer<String> lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
@@ -1038,15 +1015,7 @@ public class IoKit {
      * @throws InternalException 异常
      */
     public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws InternalException {
-        try {
-            out.write(content);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            if (isCloseOut) {
-                close(out);
-            }
-        }
+        StreamWriter.of(out, isCloseOut).write(content);
     }
 
     /**
@@ -1058,7 +1027,7 @@ public class IoKit {
      * @throws InternalException 异常
      */
     public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InternalException {
-        write(out, Charset.UTF_8, isCloseOut, contents);
+        StreamWriter.of(out, isCloseOut).writeObject(contents);
     }
 
     /**
@@ -1071,7 +1040,7 @@ public class IoKit {
      * @throws InternalException 异常
      */
     public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InternalException {
-        write(out, Charset.charset(charsetName), isCloseOut, contents);
+        StreamWriter.of(out, isCloseOut).writeString(Charset.charset(charsetName), contents);
     }
 
     /**
@@ -1362,7 +1331,7 @@ public class IoKit {
         }
         try {
             in = new CheckedInputStream(in, checksum);
-            IoKit.copy(in, new NullOutputStream());
+            IoKit.copy(in, EmptyOutputStream.INSTANCE);
         } finally {
             IoKit.close(in);
         }

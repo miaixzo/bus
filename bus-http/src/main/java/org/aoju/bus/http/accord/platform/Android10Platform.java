@@ -38,6 +38,7 @@ import java.util.List;
  * @since Java 17+
  */
 class Android10Platform extends AndroidPlatform {
+
     Android10Platform(Class<?> sslParametersClass) {
         super(sslParametersClass, null, null, null, null, null);
     }

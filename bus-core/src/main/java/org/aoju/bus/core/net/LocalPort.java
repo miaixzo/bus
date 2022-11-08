@@ -23,40 +23,51 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.io.stream;
+package org.aoju.bus.core.net;
 
-import java.io.IOException;
-import java.io.Writer;
+import org.aoju.bus.core.toolkit.NetKit;
+
+import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 本地端口生成器Percent
+ * 用于生成本地可用（未被占用）的端口号Percent
+ * 注意：多线程甚至单线程访问时可能会返回同一端口（例如获取了端口但是没有使用）
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StringWriter extends Writer {
+public class LocalPort implements Serializable {
 
-    private final StringBuilder sb;
+    private static final long serialVersionUID = 1L;
 
-    public StringWriter(StringBuilder sb) {
-        this.sb = sb;
+    /**
+     * 备选的本地端口
+     */
+    private final AtomicInteger alternativePort;
+
+    /**
+     * 构造
+     *
+     * @param beginPort 起始端口号
+     */
+    public LocalPort(final int beginPort) {
+        alternativePort = new AtomicInteger(beginPort);
     }
 
-    @Override
-    public void close() throws IOException {
-    }
-
-    @Override
-    public void flush() throws IOException {
-    }
-
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
-        for (int i = off; i < (off + len); i++) {
-            sb.append(cbuf[i]);
+    /**
+     * 生成一个本地端口，用于远程端口映射
+     *
+     * @return 未被使用的本地端口
+     */
+    public int generate() {
+        int validPort = alternativePort.get();
+        // 获取可用端口
+        while (false == NetKit.isUsableLocalPort(validPort)) {
+            validPort = alternativePort.incrementAndGet();
         }
-    }
-
-    public StringBuilder getStringBuilder() {
-        return sb;
+        return validPort;
     }
 
 }

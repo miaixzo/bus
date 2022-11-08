@@ -123,10 +123,19 @@ public class StopWatch {
     /**
      * 创建计时任务（秒表）
      *
+     * @return this
+     */
+    public static StopWatch of() {
+        return new StopWatch();
+    }
+
+    /**
+     * 创建计时任务（秒表）
+     *
      * @param id 用于标识秒表的唯一ID
      * @return this
      */
-    public static StopWatch create(String id) {
+    public static StopWatch of(final String id) {
         return new StopWatch(id);
     }
 

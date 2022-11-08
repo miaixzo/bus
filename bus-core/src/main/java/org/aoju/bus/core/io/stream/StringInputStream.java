@@ -25,37 +25,38 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.stream;
 
-import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
+ * 基于字符串的InputStream
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringInputStream extends ByteArrayInputStream {
 
-    public StringInputStream(CharSequence s, java.nio.charset.Charset charset) {
-        super(toBytes(s, charset));
+    /**
+     * 构造
+     *
+     * @param text    字符串
+     * @param charset 编码
+     */
+    public StringInputStream(final CharSequence text, final Charset charset) {
+        super(StringKit.bytes(text, charset));
     }
 
-    public StringInputStream(CharSequence s) {
-        super(toBytes(s, Charset.UTF_8));
-    }
-
-    protected static byte[] toBytes(CharSequence text, java.nio.charset.Charset charset) {
-        if (null == text)
-            return new byte[0];
-        if (null == charset) {
-            charset = Charset.UTF_8;
-        }
-        try {
-            return text.toString().getBytes(charset.name());
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalException(e);
-        }
+    /**
+     * 创建StrInputStream
+     *
+     * @param text    字符串
+     * @param charset 编码
+     * @return StrInputStream
+     */
+    public static StringInputStream of(final CharSequence text, final Charset charset) {
+        return new StringInputStream(text, charset);
     }
 
 }

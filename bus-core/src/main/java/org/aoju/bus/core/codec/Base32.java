@@ -26,14 +26,18 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.codec.provider.Base32Provider;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.nio.charset.Charset;
+
 /**
- * Base32 - encodes and decodes RFC3548 Base32 (see http://www.faqs.org/rfcs/rfc3548.html )
- * base32就是用32(2的5次方)个特定ASCII码来表示256个ASCII码
- * 所以,5个ASCII字符经过base32编码后会变为8个字符(公约数为40),长度增加3/5.不足8n用“=”补足
- * see http://blog.csdn.net/earbao/article/details/44453937
+ * Base32 - encodes and decodes RFC4648 Base32 (see https://datatracker.ietf.org/doc/html/rfc4648#section-6)
+ * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码,所以5个ASCII字符经过base32编码后会变为8个字符（公约数为40）
+ * 长度增加3/5.不足8n用“=”补足,根据RFC4648 Base32规范，支持两种模式：
+ * <ul>
+ *     <li>Base 32 Alphabet                 (ABCDEFGHIJKLMNOPQRSTUVWXYZ234567)</li>
+ *     <li>"Extended Hex" Base 32 Alphabet  (0123456789ABCDEFGHIJKLMNOPQRSTUV)</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,8 +60,8 @@ public class Base32 {
      * @param source 被编码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String encode(String source) {
-        return encode(source, Charset.UTF_8);
+    public static String encode(final String source) {
+        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -67,7 +71,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, java.nio.charset.Charset charset) {
+    public static String encode(final String source, final Charset charset) {
         return encode(StringKit.bytes(source, charset));
     }
 
@@ -87,7 +91,7 @@ public class Base32 {
      * @param source 被编码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String encodeHex(String source) {
+    public static String encodeHex(final String source) {
         return encodeHex(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -98,7 +102,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encodeHex(String source, java.nio.charset.Charset charset) {
+    public static String encodeHex(final String source, final Charset charset) {
         return encodeHex(StringKit.bytes(source, charset));
     }
 
@@ -108,7 +112,7 @@ public class Base32 {
      * @param base32 base32编码
      * @return 数据
      */
-    public static byte[] decode(String base32) {
+    public static byte[] decode(final String base32) {
         return Base32Provider.INSTANCE.decode(base32);
     }
 
@@ -118,7 +122,7 @@ public class Base32 {
      * @param source 被解码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String decodeString(String source) {
+    public static String decodeString(final String source) {
         return decodeString(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -129,7 +133,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeString(String source, java.nio.charset.Charset charset) {
+    public static String decodeString(final String source, final Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 
@@ -139,7 +143,7 @@ public class Base32 {
      * @param base32 base32编码
      * @return 数据
      */
-    public static byte[] decodeHex(String base32) {
+    public static byte[] decodeHex(final String base32) {
         return Base32Provider.INSTANCE.decode(base32, true);
     }
 
@@ -149,8 +153,8 @@ public class Base32 {
      * @param source 被解码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String decodeStrHex(String source) {
-        return decodeStrHex(source, org.aoju.bus.core.lang.Charset.UTF_8);
+    public static String decodeStringHex(final String source) {
+        return decodeStringHex(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -160,7 +164,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStrHex(String source, java.nio.charset.Charset charset) {
+    public static String decodeStringHex(final String source, final Charset charset) {
         return StringKit.toString(decodeHex(source), charset);
     }
 

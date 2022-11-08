@@ -52,7 +52,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
     public static Base32Provider INSTANCE = new Base32Provider();
 
     @Override
-    public String encode(byte[] data) {
+    public String encode(final byte[] data) {
         return encode(data, false);
     }
 
@@ -63,13 +63,13 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * @param useHex 是否使用Hex Alphabet
      * @return 编码后的Base32字符串
      */
-    public String encode(byte[] data, boolean useHex) {
+    public String encode(final byte[] data, final boolean useHex) {
         final Base32Encoder encoder = useHex ? Base32Encoder.HEX_ENCODER : Base32Encoder.ENCODER;
         return encoder.encode(data);
     }
 
     @Override
-    public byte[] decode(CharSequence encoded) {
+    public byte[] decode(final CharSequence encoded) {
         return decode(encoded, false);
     }
 
@@ -80,7 +80,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
      * @param useHex  是否使用Hex Alphabet
      * @return 解码后的内容
      */
-    public byte[] decode(CharSequence encoded, boolean useHex) {
+    public byte[] decode(final CharSequence encoded, final boolean useHex) {
         final Base32Decoder decoder = useHex ? Base32Decoder.HEX_DECODER : Base32Decoder.DECODER;
         return decoder.decode(encoded);
     }
@@ -116,13 +116,13 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
          * @param alphabet 自定义编码字母表，见 {@link #DEFAULT_ALPHABET}和 {@link #HEX_ALPHABET}
          * @param pad      补位字符
          */
-        public Base32Encoder(String alphabet, Character pad) {
+        public Base32Encoder(final String alphabet, final Character pad) {
             this.alphabet = alphabet.toCharArray();
             this.pad = pad;
         }
 
         @Override
-        public String encode(byte[] data) {
+        public String encode(final byte[] data) {
             int i = 0;
             int index = 0;
             int digit;
@@ -134,7 +134,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
                 encodeLen = encodeLen + 1 + BASE32_FILL[(data.length * 8) % 5];
             }
 
-            StringBuilder base32 = new StringBuilder(encodeLen);
+            final StringBuilder base32 = new StringBuilder(encodeLen);
 
             while (i < data.length) {
                 // unsign
@@ -201,7 +201,7 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
          *
          * @param alphabet 编码字母表
          */
-        public Base32Decoder(String alphabet) {
+        public Base32Decoder(final String alphabet) {
             lookupTable = new byte[128];
             Arrays.fill(lookupTable, (byte) -1);
 
@@ -219,11 +219,11 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
         }
 
         @Override
-        public byte[] decode(CharSequence encoded) {
+        public byte[] decode(final CharSequence encoded) {
             int i, index, lookup, offset, digit;
             final String base32 = encoded.toString();
-            int len = base32.endsWith("=") ? base32.indexOf("=") * 5 / 8 : base32.length() * 5 / 8;
-            byte[] bytes = new byte[len];
+            final int len = base32.endsWith("=") ? base32.indexOf("=") * 5 / 8 : base32.length() * 5 / 8;
+            final byte[] bytes = new byte[len];
 
             for (i = 0, index = 0, offset = 0; i < base32.length(); i++) {
                 lookup = base32.charAt(i) - BASE_CHAR;
