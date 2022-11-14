@@ -76,6 +76,11 @@ public class FileType {
     public static final String TYPE_PPS = ".pps";
     public static final String TYPE_PPSX = ".ppsx";
     /**
+     * XML格式
+     */
+    public static final String TYPE_XML = ".xml";
+
+    /**
      * psd格式，Photoshop的专用格式Photoshop
      */
     public static final String TYPE_PSD = "psd";

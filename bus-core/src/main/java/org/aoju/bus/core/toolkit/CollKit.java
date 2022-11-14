@@ -1340,13 +1340,25 @@ public class CollKit {
     }
 
     /**
-     * 创建新的集合对象
+     * 创建新的集合对象，返回具体的泛型集合
      *
-     * @param <T>            对象
+     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumSet.class ...
      * @param collectionType 集合类型
      * @return 集合类型对应的实例
      */
-    public static <T> Collection<T> create(Class<?> collectionType) {
+    public static <T> Collection<T> create(final Class<?> collectionType) {
+        return create(collectionType, null);
+    }
+
+    /**
+     * 创建新的集合对象，返回具体的泛型集合
+     *
+     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumSet.class ...
+     * @param collectionType 集合类型
+     * @param elementType    集合元素类，只用于EnumSet创建，如果创建EnumSet，则此参数必须非空
+     * @return 集合类型对应的实例
+     */
+    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
         Collection<T> list;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
             // 抽象集合默认使用ArrayList
@@ -1366,7 +1378,7 @@ public class CollKit {
                 return ObjectKit.compare(o1.toString(), o2.toString());
             });
         } else if (collectionType.isAssignableFrom(EnumSet.class)) {
-            list = (Collection<T>) EnumSet.noneOf((Class<Enum>) ClassKit.getTypeArgument(collectionType));
+            list = (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
         }
 
         // List

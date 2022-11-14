@@ -33,16 +33,14 @@ import org.aoju.bus.core.io.watcher.SimpleWatcher;
 import org.aoju.bus.core.io.watcher.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -64,7 +62,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
     private Resource resource;
     private WatchMonitor watchMonitor;
     /**
-     * properties文件编码<br>
+     * properties文件编码
      * issue#1701，此属性不能被序列化，故忽略序列化
      */
     private transient java.nio.charset.Charset charset = Charset.ISO_8859_1;
@@ -187,6 +185,33 @@ public final class Properties extends java.util.Properties implements TypeGetter
     }
 
     /**
+     * 加载配置文件内容到{@link java.util.Properties}中
+     * 需要注意的是，如果资源文件的扩展名是.xml，会调用{@link java.util.Properties#loadFromXML(InputStream)} 读取。
+     *
+     * @param properties {@link java.util.Properties}文件
+     * @param resource   资源
+     * @param charset    编码，对XML无效
+     */
+    public static void load(final java.util.Properties properties, final Resource resource, final java.nio.charset.Charset charset) {
+        final String filename = resource.getName();
+        if (filename != null && filename.endsWith(FileType.TYPE_XML)) {
+            // XML
+            try (final InputStream in = resource.getStream()) {
+                properties.loadFromXML(in);
+            } catch (final IOException e) {
+                throw new InternalException(e);
+            }
+        } else {
+            // .properties
+            try (final BufferedReader reader = resource.getReader(charset)) {
+                properties.load(reader);
+            } catch (final IOException e) {
+                throw new InternalException(e);
+            }
+        }
+    }
+
+    /**
      * 初始化配置文件
      *
      * @param resource {@link Resource}
@@ -194,12 +219,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
     public void load(final Resource resource) {
         Assert.notNull(resource, "Props resource must be not null!");
         this.resource = resource;
-
-        try (final BufferedReader reader = resource.getReader(charset)) {
-            super.load(reader);
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
+        load(this, resource, this.charset);
     }
 
     /**

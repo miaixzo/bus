@@ -932,60 +932,15 @@ public class IoKit {
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-    /**
-     * 转换为{@link BufferedInputStream}
-     *
-     * @param in {@link InputStream}
-     * @return {@link BufferedInputStream}
-     */
-    public static BufferedInputStream toBuffered(InputStream in) {
-        Assert.notNull(in, "InputStream must be not null!");
-        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
-    }
-
-    /**
-     * 转换为{@link BufferedInputStream}
-     *
-     * @param in         {@link InputStream}
-     * @param bufferSize buffer size
-     * @return {@link BufferedInputStream}
-     */
-    public static BufferedInputStream toBuffered(InputStream in, int bufferSize) {
-        Assert.notNull(in, "InputStream must be not null!");
-        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in, bufferSize);
-    }
-
-    /**
-     * 转换为{@link BufferedOutputStream}
-     *
-     * @param out {@link OutputStream}
-     * @return {@link BufferedOutputStream}
-     */
-    public static BufferedOutputStream toBuffered(OutputStream out) {
-        Assert.notNull(out, "OutputStream must be not null!");
-        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
-    }
-
-    /**
-     * 转换为{@link BufferedOutputStream}
-     *
-     * @param out        {@link OutputStream}
-     * @param bufferSize buffer size
-     * @return {@link BufferedOutputStream}
-     */
-    public static BufferedOutputStream toBuffered(OutputStream out, int bufferSize) {
-        Assert.notNull(out, "OutputStream must be not null!");
-        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out, bufferSize);
-    }
 
     /**
      * 将{@link InputStream}转换为支持mark标记的流
-     * 若原流支持mark标记,则返回原流,否则使用{@link BufferedInputStream} 包装之
+     * 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
      *
      * @param in 流
      * @return {@link InputStream}
      */
-    public static InputStream toMarkSupportStream(InputStream in) {
+    public static InputStream toMarkSupportStream(final InputStream in) {
         if (null == in) {
             return null;
         }
@@ -997,14 +952,154 @@ public class IoKit {
 
     /**
      * 转换为{@link PushbackInputStream}
-     * 如果传入的输入流已经是{@link PushbackInputStream},强转返回,否则新建一个
+     * 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
      *
      * @param in           {@link InputStream}
      * @param pushBackSize 推后的byte数
      * @return {@link PushbackInputStream}
      */
-    public static PushbackInputStream toPushbackStream(InputStream in, int pushBackSize) {
+    public static PushbackInputStream toPushbackStream(final InputStream in, final int pushBackSize) {
         return (in instanceof PushbackInputStream) ? (PushbackInputStream) in : new PushbackInputStream(in, pushBackSize);
+    }
+
+    /**
+     * 将指定{@link InputStream} 转换为{@link InputStream#available()}方法可用的流。
+     * 在Socket通信流中，服务端未返回数据情况下{@link InputStream#available()}方法始终为{@code 0}
+     * 因此，在读取前需要调用{@link InputStream#read()}读取一个字节（未返回会阻塞），一旦读取到了，{@link InputStream#available()}方法就正常了。
+     * 需要注意的是，在网络流中，是按照块来传输的，所以 {@link InputStream#available()} 读取到的并非最终长度，而是此次块的长度。
+     * 此方法返回对象的规则为：
+     *
+     * <ul>
+     *     <li>FileInputStream 返回原对象，因为文件流的available方法本身可用</li>
+     *     <li>其它InputStream 返回PushbackInputStream</li>
+     * </ul>
+     *
+     * @param in 被转换的流
+     * @return 转换后的流，可能为{@link PushbackInputStream}
+     */
+    public static InputStream toAvailableStream(final InputStream in) {
+        if (in instanceof FileInputStream) {
+            // FileInputStream本身支持available方法。
+            return in;
+        }
+
+        final PushbackInputStream pushbackInputStream = toPushbackStream(in, 1);
+        try {
+            final int available = pushbackInputStream.available();
+            if (available <= 0) {
+                //此操作会阻塞，直到有数据被读到
+                final int b = pushbackInputStream.read();
+                pushbackInputStream.unread(b);
+            }
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+
+        return pushbackInputStream;
+    }
+
+    /**
+     * 转换为{@link BufferedInputStream}
+     *
+     * @param in {@link InputStream}
+     * @return {@link BufferedInputStream}
+     */
+    public static BufferedInputStream toBuffered(final InputStream in) {
+        Assert.notNull(in, "InputStream must be not null!");
+        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
+    }
+
+    /**
+     * 转换为{@link BufferedInputStream}
+     *
+     * @param in         {@link InputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedInputStream}
+     */
+    public static BufferedInputStream toBuffered(final InputStream in, final int bufferSize) {
+        Assert.notNull(in, "InputStream must be not null!");
+        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in, bufferSize);
+    }
+
+    /**
+     * 转换为{@link BufferedOutputStream}
+     *
+     * @param out {@link OutputStream}
+     * @return {@link BufferedOutputStream}
+     */
+    public static BufferedOutputStream toBuffered(final OutputStream out) {
+        Assert.notNull(out, "OutputStream must be not null!");
+        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
+    }
+
+    /**
+     * 转换为{@link BufferedOutputStream}
+     *
+     * @param out        {@link OutputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedOutputStream}
+     */
+    public static BufferedOutputStream toBuffered(final OutputStream out, final int bufferSize) {
+        Assert.notNull(out, "OutputStream must be not null!");
+        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out, bufferSize);
+    }
+
+    /**
+     * 转换为{@link BufferedReader}
+     *
+     * @param reader {@link Reader}
+     * @return {@link BufferedReader}
+     */
+    public static BufferedReader toBuffered(final Reader reader) {
+        Assert.notNull(reader, "Reader must be not null!");
+        return (reader instanceof BufferedReader) ? (BufferedReader) reader : new BufferedReader(reader);
+    }
+
+    /**
+     * 转换为{@link BufferedReader}
+     *
+     * @param reader     {@link Reader}
+     * @param bufferSize buffer size
+     * @return {@link BufferedReader}
+     */
+    public static BufferedReader toBuffered(final Reader reader, final int bufferSize) {
+        Assert.notNull(reader, "Reader must be not null!");
+        return (reader instanceof BufferedReader) ? (BufferedReader) reader : new BufferedReader(reader, bufferSize);
+    }
+
+    /**
+     * 转换为{@link BufferedWriter}
+     *
+     * @param writer {@link Writer}
+     * @return {@link BufferedWriter}
+     */
+    public static BufferedWriter toBuffered(final Writer writer) {
+        Assert.notNull(writer, "Writer must be not null!");
+        return (writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer);
+    }
+
+    /**
+     * 转换为{@link BufferedWriter}
+     *
+     * @param writer     {@link Writer}
+     * @param bufferSize buffer size
+     * @return {@link BufferedWriter}
+     */
+    public static BufferedWriter toBuffered(final Writer writer, final int bufferSize) {
+        Assert.notNull(writer, "Writer must be not null!");
+        return (writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer, bufferSize);
+    }
+
+    /**
+     * 获得{@link PushbackReader}
+     * 如果是{@link PushbackReader}强转返回，否则新建
+     *
+     * @param reader       普通Reader
+     * @param pushBackSize 推后的byte数
+     * @return {@link PushbackReader}
+     */
+    public static PushbackReader toPushBackReader(final Reader reader, final int pushBackSize) {
+        return (reader instanceof PushbackReader) ? (PushbackReader) reader : new PushbackReader(reader, pushBackSize);
     }
 
     /**

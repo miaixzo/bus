@@ -38,9 +38,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.lang.mutable.MutableObject;
-import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.loader.JarLoaders;
-import org.aoju.bus.core.map.WeakMap;
 
 import javax.tools.*;
 import java.beans.IntrospectionException;
@@ -61,7 +59,8 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
- * Class工具类
+ * Class工具类 {@link ClassLoader}
+ * 此工具类加载的类，不提供缓存，缓存应由实现的ClassLoader完成
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -92,10 +91,6 @@ public class ClassKit {
             Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE,
             Long.TYPE, Float.TYPE, Double.TYPE
     };
-    /**
-     * 类缓存信息
-     */
-    private static final WeakMap<Pair<String, ClassLoader>, Class<?>> CLASS_CACHE = new WeakMap<>();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(Normal._32);
@@ -773,7 +768,7 @@ public class ClassKit {
      * @return 方法
      */
     public static Method setAccessible(Method method) {
-        if (null != method && false == method.isAccessible()) {
+        if (null != method && false == method.canAccess(method)) {
             method.setAccessible(true);
         }
         return method;
@@ -1082,7 +1077,7 @@ public class ClassKit {
      * @throws InternalException 没有类名对应的类时抛出此异常
      */
     public static <T> Class<T> loadClass(String name, boolean isInitialized) throws InternalException {
-        return (Class<T>) loadClass(name, null, isInitialized);
+        return (Class<T>) loadClass(name, isInitialized, null);
     }
 
     /**
@@ -1098,12 +1093,12 @@ public class ClassKit {
      * </pre>
      *
      * @param name          类名
-     * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
+     * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
      * @return 类名对应的类
      * @throws InternalException 没有类名对应的类时抛出此异常
      */
-    public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws InternalException {
+    public static Class<?> loadClass(String name, boolean isInitialized, ClassLoader classLoader) throws InternalException {
         Assert.notNull(name, "Name must not be null");
 
         // 自动将包名中的"/"替换为"."
@@ -1112,12 +1107,9 @@ public class ClassKit {
             classLoader = getClassLoader();
         }
 
-        // 加载原始类型和缓存中的类
         Class<?> clazz = loadPrimitiveClass(name);
         if (clazz == null) {
-            final String finalName = name;
-            final ClassLoader finalClassLoader = classLoader;
-            clazz = CLASS_CACHE.computeIfAbsent(Pair.of(name, classLoader), (key) -> doLoadClass(finalName, finalClassLoader, isInitialized));
+            clazz = doLoadClass(name, isInitialized, classLoader);
         }
         return clazz;
     }
@@ -1166,7 +1158,7 @@ public class ClassKit {
 
     /**
      * 指定类是否被提供,使用默认ClassLoader
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类,如果加载失败返回false
+     * 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类,如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className 类名
@@ -1178,7 +1170,7 @@ public class ClassKit {
 
     /**
      * 指定类是否被提供
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类,如果加载失败返回false
+     * 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类,如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className   类名
@@ -1187,7 +1179,7 @@ public class ClassKit {
      */
     public static boolean isPresent(String className, ClassLoader classLoader) {
         try {
-            loadClass(className, classLoader, false);
+            loadClass(className, false, classLoader);
             return true;
         } catch (Throwable ex) {
             return false;
@@ -1273,6 +1265,24 @@ public class ClassKit {
                 }
             }
             throw ex;
+        }
+    }
+
+
+    /**
+     * 加载指定名称的类
+     *
+     * @param name       类名
+     * @param initialize 是否初始化
+     * @param loader     {@link ClassLoader}
+     * @return 指定名称对应的类，如果不存在类，返回{@code null}
+     */
+    private static Class<?> forName(final String name, final boolean initialize, final ClassLoader loader) {
+        try {
+            return Class.forName(name, initialize, loader);
+        } catch (final ClassNotFoundException ex2) {
+            // 尝试获取内部类失败时，忽略之。
+            return null;
         }
     }
 
@@ -1871,7 +1881,7 @@ public class ClassKit {
             messagePrefix = "No such method: ";
             method = getMatchingMethod(object.getClass(),
                     methodName, parameterTypes);
-            if (null != method && !method.isAccessible()) {
+            if (null != method && !method.canAccess(method)) {
                 method.setAccessible(true);
             }
         } else {
@@ -3619,37 +3629,35 @@ public class ClassKit {
      * 加载非原始类类，无缓存
      *
      * @param name          类名
-     * @param classLoader   {@link ClassLoader}
      * @param isInitialized 是否初始化
+     * @param classLoader   {@link ClassLoader}，必须非空
      * @return 类
      */
-    private static Class<?> doLoadClass(String name, ClassLoader classLoader, boolean isInitialized) {
+    private static Class<?> doLoadClass(String name, boolean isInitialized, ClassLoader classLoader) {
+        // 去除尾部多余的"."
+        name = StringKit.trim(name, 1, (c) -> Symbol.C_DOT == c);
         Class<?> clazz;
         if (name.endsWith(Symbol.BRACKET)) {
             // 对象数组"java.lang.String[]"风格
             final String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
-            final Class<?> elementClass = loadClass(elementClassName, classLoader, isInitialized);
+            final Class<?> elementClass = loadClass(elementClassName, isInitialized, classLoader);
             clazz = Array.newInstance(elementClass, 0).getClass();
         } else if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
             // "[Ljava.lang.String;" 风格
             final String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
-            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
+            final Class<?> elementClass = loadClass(elementName, isInitialized, classLoader);
             clazz = Array.newInstance(elementClass, 0).getClass();
         } else if (name.startsWith(Symbol.BRACKET_LEFT)) {
             // "[[I" 或 "[[Ljava.lang.String;" 风格
             final String elementName = name.substring(Symbol.BRACKET_LEFT.length());
-            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
+            final Class<?> elementClass = loadClass(elementName, isInitialized, classLoader);
             clazz = Array.newInstance(elementClass, 0).getClass();
         } else {
-            // 加载普通类
-            if (null == classLoader) {
-                classLoader = getClassLoader();
-            }
             try {
                 clazz = Class.forName(name, isInitialized, classLoader);
             } catch (ClassNotFoundException ex) {
                 // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
-                clazz = tryLoadInnerClass(name, classLoader, isInitialized);
+                clazz = tryLoadInnerClass(name, isInitialized, classLoader);
                 if (null == clazz) {
                     throw new InternalException(ex);
                 }
@@ -3662,22 +3670,28 @@ public class ClassKit {
      * 尝试转换并加载内部类，例如java.lang.Thread.State - java.lang.Thread$State
      *
      * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
      * @return 类名对应的类
      */
-    private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
-        // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
-        final int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
-        if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
-            final String innerClassName = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
-            try {
-                return Class.forName(innerClassName, isInitialized, classLoader);
-            } catch (ClassNotFoundException ex2) {
-                // 尝试获取内部类失败时，忽略之。
+    private static Class<?> tryLoadInnerClass(String name, boolean isInitialized, ClassLoader classLoader) {
+        // 尝试获取内部类，例如java.lang.Thread.State =》java.lang.Thread$State
+        int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
+        Class<?> clazz = null;
+        while (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
+            if (false == Character.isUpperCase(name.charAt(lastDotIndex + 1))) {
+                // 类名必须大写，非大写的类名跳过
+                break;
             }
+            name = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
+            clazz = forName(name, isInitialized, classLoader);
+            if (null != clazz) {
+                break;
+            }
+
+            lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
         }
-        return null;
+        return clazz;
     }
 
     /**

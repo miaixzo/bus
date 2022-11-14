@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting;
 
+import org.aoju.bus.core.io.reader.LineReader;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
@@ -148,11 +149,11 @@ public class Readers {
      * @return 加载成功与否
      * @throws IOException IO异常
      */
-    public boolean load(InputStream inputStream) throws IOException {
+    public boolean load(final InputStream inputStream) throws IOException {
         this.groupMap.clear();
-        BufferedReader reader = null;
+        LineReader reader = null;
         try {
-            reader = IoKit.getReader(inputStream, this.charset);
+            reader = new LineReader(inputStream, this.charset);
             // 分组
             String group = null;
 

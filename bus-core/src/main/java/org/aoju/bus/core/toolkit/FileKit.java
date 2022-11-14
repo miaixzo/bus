@@ -3623,6 +3623,21 @@ public class FileKit {
     }
 
     /**
+     * 获取指定文件的父路径
+     *
+     * <pre>
+     * getParent(file("d:/aaa/bbb/cc/ddd")) -》 "d:/aaa/bbb/cc"
+     * </pre>
+     *
+     * @param file 目录或文件
+     * @return 路径File，如果不存在返回null
+     * @since 6.0.0
+     */
+    public static File getParent(final File file) {
+        return getParent(file, 1);
+    }
+
+    /**
      * 获取指定层级的父路径
      *
      * <pre>
@@ -3992,7 +4007,7 @@ public class FileKit {
     }
 
     /**
-     * 获得资源的URL<br>
+     * 获得资源的URL
      * 路径用/分隔，例如:
      *
      * <pre>
@@ -4020,7 +4035,7 @@ public class FileKit {
     }
 
     /**
-     * 获取指定路径下的资源列表<br>
+     * 获取指定路径下的资源列表
      * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
@@ -4036,7 +4051,7 @@ public class FileKit {
     }
 
     /**
-     * 获取指定路径下的资源列表<br>
+     * 获取指定路径下的资源列表
      * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>

@@ -76,11 +76,26 @@ public class ClassScaner {
      * 编码
      */
     private final java.nio.charset.Charset charset;
-    private final Set<Class<?>> classes = new HashSet<>();
     /**
      * 是否初始化类
      */
     private boolean initialize;
+    /**
+     * 扫描结果集
+     */
+    private final Set<Class<?>> classes = new HashSet<>();
+    /**
+     * 获取加载错误的类名列表
+     */
+    private final Set<String> classesOfLoadError = new HashSet<>();
+    /**
+     * 忽略loadClass时的错误
+     */
+    private boolean ignoreLoadError = false;
+    /**
+     * 类加载器
+     */
+    private ClassLoader classLoader;
 
     /**
      * 构造,默认UTF-8编码
@@ -125,7 +140,6 @@ public class ClassScaner {
         this.charset = charset;
     }
 
-
     /**
      * 扫描该包路径下所有class文件，包括其他加载的jar或者类
      *
@@ -140,16 +154,16 @@ public class ClassScaner {
      * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
      * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
-     * @param packageName 包路径 com |  com.xxx
+     * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @param classFilter class过滤器，过滤掉不需要的class
      * @return 类集合
      */
-    public static Set<Class<?>> scanAllPackage(String packageName, Predicate<Class<?>> classFilter) {
+    public static Set<Class<?>> scanAllPackage(final String packageName, final Predicate<Class<?>> classFilter) {
         return new ClassScaner(packageName, classFilter).scan(true);
     }
 
     /**
-     * 扫描该包路径下所有class文件
+     * 扫描classpath下所有class文件，如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
      * @return 类集合
      */
@@ -160,24 +174,24 @@ public class ClassScaner {
     /**
      * 扫描该包路径下所有class文件
      *
-     * @param packageName 包路径 com | com.xxx
+     * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackage(String packageName) {
+    public static Set<Class<?>> scanPackage(final String packageName) {
         return scanPackage(packageName, null);
     }
 
     /**
-     * 扫面包路径下满足class过滤器条件的所有class文件,
-     * 如果包路径为 com.xxx + A.class 但是输入 abs会产生classNotFoundException
-     * 因为className 应该为 com.xxx.A 现在却成为xxx.A,此工具类对该异常进行忽略处理
+     * 扫描包路径下满足class过滤器条件的所有class文件，
+     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
+     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
-     * @param packageName 包路径 com | com.xxx
-     * @param predicate   class过滤器,过滤掉不需要的class
+     * @param packageName 包路径 com | com. | com.abs | com.abs.
+     * @param classFilter class过滤器，过滤掉不需要的class
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackage(String packageName, Predicate<Class<?>> predicate) {
-        return new ClassScaner(packageName, predicate).scan();
+    public static Set<Class<?>> scanPackage(final String packageName, final Predicate<Class<?>> classFilter) {
+        return new ClassScaner(packageName, classFilter).scan();
     }
 
     /**
@@ -187,18 +201,19 @@ public class ClassScaner {
      * @param annotationClass 注解类
      * @return 类集合
      */
-    public static Set<Class<?>> scanAllPackageByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+    public static Set<Class<?>> scanAllPackageByAnnotation(final String packageName, final Class<? extends Annotation> annotationClass) {
         return scanAllPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
     }
 
     /**
      * 扫描指定包路径下所有包含指定注解的类
+     * 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
      * @param packageName     包路径
      * @param annotationClass 注解类
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackageByAnnotation(String packageName, final Class<? extends Annotation> annotationClass) {
+    public static Set<Class<?>> scanPackageByAnnotation(final String packageName, final Class<? extends Annotation> annotationClass) {
         return scanPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
     }
 
@@ -209,18 +224,19 @@ public class ClassScaner {
      * @param superClass  父类或接口（不包括）
      * @return 类集合
      */
-    public static Set<Class<?>> scanAllPackageBySuper(String packageName, Class<?> superClass) {
+    public static Set<Class<?>> scanAllPackageBySuper(final String packageName, final Class<?> superClass) {
         return scanAllPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类
+     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身
+     * 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
      * @param packageName 包路径
-     * @param superClass  父类或接口
+     * @param superClass  父类或接口（不包括）
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackageBySuper(String packageName, final Class<?> superClass) {
+    public static Set<Class<?>> scanPackageBySuper(final String packageName, final Class<?> superClass) {
         return scanPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
     }
 
@@ -240,11 +256,15 @@ public class ClassScaner {
      * @param forceScanJavaClassPaths 是否强制扫描其他位于classpath关联jar中的类
      * @return 类集合
      */
-    public Set<Class<?>> scan(boolean forceScanJavaClassPaths) {
-        for (URL url : FileKit.getUrls(this.packagePath)) {
+    public Set<Class<?>> scan(final boolean forceScanJavaClassPaths) {
+        // 多次扫描时,清理上次扫描历史
+        this.classes.clear();
+        this.classesOfLoadError.clear();
+
+        for (final URL url : FileKit.getUrls(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
-                    scanFile(new File(UriKit.decode(url.getFile(), this.charset.name())), null);
+                    scanFile(new File(UriKit.decode(url.getFile(), this.charset)), null);
                     break;
                 case "jar":
                     scanJar(UriKit.getJarFile(url));
@@ -252,6 +272,7 @@ public class ClassScaner {
             }
         }
 
+        // classpath下未找到，则扫描其他jar包下的类
         if (forceScanJavaClassPaths || CollKit.isEmpty(this.classes)) {
             scanJavaClassPaths();
         }
@@ -260,9 +281,43 @@ public class ClassScaner {
     }
 
     /**
-     * 扫描Java指定的ClassPath路径
+     * 忽略加载错误扫描后，可以获得之前扫描时加载错误的类名字集合
      *
-     * @return 扫描到的类
+     * @return 加载错误的类名字集合
+     */
+    public Set<String> getClassesOfLoadError() {
+        return Collections.unmodifiableSet(this.classesOfLoadError);
+    }
+
+    /**
+     * 设置是否忽略所有错误
+     *
+     * @param ignoreLoadError 是否忽略错误
+     */
+    public void setIgnoreLoadError(final boolean ignoreLoadError) {
+        this.ignoreLoadError = ignoreLoadError;
+    }
+
+    /**
+     * 设置是否在扫描到类时初始化类
+     *
+     * @param initialize 是否初始化类
+     */
+    public void setInitialize(final boolean initialize) {
+        this.initialize = initialize;
+    }
+
+    /**
+     * 设置自定义的类加载器
+     *
+     * @param classLoader 类加载器
+     */
+    public void setClassLoader(final ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    /**
+     * 扫描Java指定的ClassPath路径
      */
     private void scanJavaClassPaths() {
         final String[] javaClassPaths = ClassKit.getJavaClassPaths();
@@ -280,7 +335,7 @@ public class ClassScaner {
      * @param file    文件或目录
      * @param rootDir 包名对应classpath绝对路径
      */
-    private void scanFile(File file, String rootDir) {
+    private void scanFile(final File file, final String rootDir) {
         if (file.isFile()) {
             final String fileName = file.getAbsolutePath();
             if (fileName.endsWith(FileType.CLASS)) {
@@ -300,7 +355,7 @@ public class ClassScaner {
         } else if (file.isDirectory()) {
             final File[] files = file.listFiles();
             if (null != files) {
-                for (File subFile : files) {
+                for (final File subFile : files) {
                     scanFile(subFile, (null == rootDir) ? subPathBeforePackage(file) : rootDir);
                 }
             }
@@ -312,13 +367,13 @@ public class ClassScaner {
      *
      * @param jar jar包
      */
-    private void scanJar(JarFile jar) {
+    private void scanJar(final JarFile jar) {
         String name;
-        for (JarEntry entry : new EnumerationIterator<>(jar.entries())) {
+        for (final JarEntry entry : new EnumerationIterator<>(jar.entries())) {
             name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
             if (StringKit.isEmpty(packagePath) || name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {
-                    final String className = name
+                    final String className = name//
                             .substring(0, name.length() - 6)
                             .replace(Symbol.C_SLASH, Symbol.C_DOT);
                     addIfAccept(loadClass(className));
@@ -328,54 +383,56 @@ public class ClassScaner {
     }
 
     /**
-     * 设置是否在扫描到类时初始化类
-     *
-     * @param initialize 是否初始化类
-     */
-    public void setInitialize(boolean initialize) {
-        this.initialize = initialize;
-    }
-
-    /**
      * 加载类
      *
      * @param className 类名
      * @return 加载的类
      */
-    private Class<?> loadClass(String className) {
+    protected Class<?> loadClass(final String className) {
+        ClassLoader loader = this.classLoader;
+        if (null == loader) {
+            loader = ClassKit.getClassLoader();
+            this.classLoader = loader;
+        }
+
         Class<?> clazz = null;
         try {
-            clazz = Class.forName(className, this.initialize, ClassKit.getClassLoader());
-        } catch (NoClassDefFoundError e) {
-            // 由于依赖库导致的类无法加载,直接跳过此类
-        } catch (UnsupportedClassVersionError | ClassNotFoundException ee) {
-            // 版本导致的不兼容的类,跳过
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            clazz = Class.forName(className, this.initialize, loader);
+        } catch (final NoClassDefFoundError | ClassNotFoundException e) {
+            // 由于依赖库导致的类无法加载，直接跳过此类
+        } catch (final UnsupportedClassVersionError e) {
+            // 版本导致的不兼容的类，跳过
+        } catch (final Exception e) {
+            classesOfLoadError.add(className);
+        } catch (final Throwable e) {
+            if (false == this.ignoreLoadError) {
+                throw new RuntimeException(e);
+            } else {
+                classesOfLoadError.add(className);
+            }
         }
         return clazz;
     }
 
     /**
-     * 通过过滤器,是否满足接受此类的条件
+     * 通过过滤器，是否满足接受此类的条件
      *
-     * @param className 类
-     * @return 是否接受
+     * @param className 类名
      */
-    private void addIfAccept(String className) {
+    private void addIfAccept(final String className) {
         if (StringKit.isBlank(className)) {
             return;
         }
-        int classLen = className.length();
-        int packageLen = this.packageName.length();
+        final int classLen = className.length();
+        final int packageLen = this.packageName.length();
         if (classLen == packageLen) {
             //类名和包名长度一致,用户可能传入的包名是类名
             if (className.equals(this.packageName)) {
                 addIfAccept(loadClass(className));
             }
         } else if (classLen > packageLen) {
-            //检查类名是否以指定包名为前缀,包名后加.
-            if (className.startsWith(this.packageNameWithDot)) {
+            //检查类名是否以指定包名为前缀，包名后加.（org.aoju.c和org.aoju.b这类类名引起的歧义）
+            if (Symbol.DOT.equals(this.packageNameWithDot) || className.startsWith(this.packageNameWithDot)) {
                 addIfAccept(loadClass(className));
             }
         }
@@ -385,9 +442,8 @@ public class ClassScaner {
      * 通过过滤器,是否满足接受此类的条件
      *
      * @param clazz 类
-     * @return 是否接受
      */
-    private void addIfAccept(Class<?> clazz) {
+    private void addIfAccept(final Class<?> clazz) {
         if (null != clazz) {
             Predicate<Class<?>> classFilter = this.predicate;
             if (null == classFilter || classFilter.test(clazz)) {
@@ -402,7 +458,7 @@ public class ClassScaner {
      * @param file 文件
      * @return 包名之前的部分
      */
-    private String subPathBeforePackage(File file) {
+    private String subPathBeforePackage(final File file) {
         String filePath = file.getAbsolutePath();
         if (StringKit.isNotEmpty(this.packageDirName)) {
             filePath = StringKit.subBefore(filePath, this.packageDirName, true);

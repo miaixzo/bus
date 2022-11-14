@@ -4928,7 +4928,7 @@ public class Lunar {
      * @return 物候
      */
     public String getWuHou() {
-        SolarTerm jieQi = getPrevJieQi();
+        SolarTerm jieQi = getPrevJieQi(true);
         String name = jieQi.getName();
         int offset = 0;
         for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i++) {
@@ -4937,13 +4937,13 @@ public class Lunar {
                 break;
             }
         }
-        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
-
         Solar startSolar = jieQi.getSolar();
-        Calendar start = Kalendar.calendar(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay());
-
-        int days = Solar.getDays(start, current);
-        return WU_HOU[offset * 3 + days / 5 % WU_HOU.length];
+        int days = Solar.getDays(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay(), solar.getYear(), solar.getMonth(), solar.getDay());
+        int index = days / 5;
+        if (index > 2) {
+            index = 2;
+        }
+        return WU_HOU[(offset * 3 + index) % WU_HOU.length];
     }
 
     /**

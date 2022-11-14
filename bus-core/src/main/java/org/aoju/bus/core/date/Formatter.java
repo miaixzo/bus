@@ -775,26 +775,6 @@ public class Formatter {
     }
 
     /**
-     * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集
-     *
-     * <ol>
-     *      <li>x &gt; b || a &gt; y 无交集</li>
-     *      <li>则有交集的逻辑为 !(x &gt; b || a &gt; y) 根据德摩根公式，可化简为 x &lt;= b &amp;&amp; a &lt;= y</li>
-     * </ol>
-     *
-     * @param realStartTime 第一个时间段的开始时间
-     * @param realEndTime   第一个时间段的结束时间
-     * @param startTime     第二个时间段的开始时间
-     * @param endTime       第二个时间段的结束时间
-     * @return true 表示时间有重合
-     */
-    public static boolean isOverlap(Date realStartTime, Date realEndTime,
-                                    Date startTime, Date endTime) {
-        return startTime.before(realEndTime) && endTime.after(realStartTime);
-    }
-
-    /**
      * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期
      * 将以下字符替换为"-"
      * <pre>

@@ -25,9 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.stream;
 
+import org.aoju.bus.core.exception.InternalException;
+import org.aoju.bus.core.io.reader.ReaderWrapper;
 import org.aoju.bus.core.lang.Assert;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 读取带BOM头的流内容的Reader，如果非bom的流或无法识别的编码，则默认UTF-8
@@ -49,9 +53,7 @@ import java.io.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BOMReader extends Reader {
-
-    private InputStreamReader reader;
+public class BOMReader extends ReaderWrapper {
 
     /**
      * 构造
@@ -59,22 +61,23 @@ public class BOMReader extends Reader {
      * @param in 流
      */
     public BOMReader(final InputStream in) {
+        super(initReader(in));
+    }
+
+    /**
+     * 初始化为{@link InputStreamReader}，将给定流转换为{@link BOMInputStream}
+     *
+     * @param in {@link InputStream}
+     * @return {@link InputStreamReader}
+     */
+    private static InputStreamReader initReader(final InputStream in) {
         Assert.notNull(in, "InputStream must be not null!");
         final BOMInputStream bin = (in instanceof BOMInputStream) ? (BOMInputStream) in : new BOMInputStream(in);
         try {
-            this.reader = new InputStreamReader(bin, bin.getCharset());
-        } catch (final UnsupportedEncodingException ignore) {
+            return new InputStreamReader(bin, bin.getCharset());
+        } catch (final UnsupportedEncodingException e) {
+            throw new InternalException(e);
         }
-    }
-
-    @Override
-    public int read(final char[] buffer, final int off, final int len) throws IOException {
-        return reader.read(buffer, off, len);
-    }
-
-    @Override
-    public void close() throws IOException {
-        reader.close();
     }
 
 }
