@@ -29,7 +29,6 @@ import org.aoju.bus.core.io.Segment;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.sink.Sink;
 import org.aoju.bus.core.io.source.Source;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -44,47 +43,57 @@ import java.util.concurrent.TimeUnit;
  * @since Java 17+
  */
 public class AsyncTimeout extends Timeout {
+
     /**
-     * 一次不要写超过64 KiB的数据，否则，慢速连接可能会遭受超时
+     * Don't write more than 64 KiB of data at a time, give or take a segment. Otherwise slow
+     * connections may suffer timeouts even when they're making (slow) progress. Without this, writing
+     * a single 1 MiB buffer may never succeed on a sufficiently slow connection.
      */
-    private static final int TIMEOUT_WRITE_SIZE = Normal._64 * Normal._1024;
+    private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
+
     /**
-     * 任务线程在关闭之前的空闲时间
+     * Duration for the watchdog thread to be idle before it shuts itself down.
      */
     private static final long IDLE_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(60);
     private static final long IDLE_TIMEOUT_NANOS = TimeUnit.MILLISECONDS.toNanos(IDLE_TIMEOUT_MILLIS);
+
     /**
-     * 线程处理一个挂起超时的链表，按要触发的顺序排序。该类在AsyncTimeout.class上同步。这个锁保护队列
+     * The watchdog thread processes a linked list of pending timeouts, sorted in the order to be
+     * triggered. This class synchronizes on AsyncTimeout.class. This lock guards the queue.
+     *
+     * <p>Head's 'next' points to the first element of the linked list. The first element is the next
+     * node to time out, or null if the queue is empty. The head is null until the watchdog thread is
+     * started and also after being idle for {@link #IDLE_TIMEOUT_MILLIS}.
      */
     static AsyncTimeout head;
+
     /**
-     * 如果此节点当前在队列中，则为True
+     * True if this node is currently in the queue.
      */
     private boolean inQueue;
+
     /**
-     * 链表中的下一个节点
+     * The next node in the linked list.
      */
     private AsyncTimeout next;
 
     /**
-     * 这就是任务超时时间
+     * If scheduled, this is the time that the watchdog should time this out.
      */
     private long timeoutAt;
 
     private static synchronized void scheduleTimeout(
-            AsyncTimeout node,
-            long timeoutNanos,
-            boolean hasDeadline) {
-        // 启动任务线程，并在安排第一次超时时创建head节点
-        if (null == head) {
+            AsyncTimeout node, long timeoutNanos, boolean hasDeadline) {
+        // Start the watchdog thread and create the head node when the first timeout is scheduled.
+        if (head == null) {
             head = new AsyncTimeout();
             new Watchdog().start();
         }
 
         long now = System.nanoTime();
         if (timeoutNanos != 0 && hasDeadline) {
-            // 计算最早的事件;要么超时，要么截止。因为nanoTime可以封装，
-            // 所以Math.min()对于绝对值没有定义，但是对于相对值有意义
+            // Compute the earliest event; either timeout or deadline. Because nanoTime can wrap around,
+            // Math.min() is undefined for absolute values, but meaningful for relative ones.
             node.timeoutAt = now + Math.min(timeoutNanos, node.deadlineNanoTime() - now);
         } else if (timeoutNanos != 0) {
             node.timeoutAt = now + timeoutNanos;
@@ -93,15 +102,15 @@ public class AsyncTimeout extends Timeout {
         } else {
             throw new AssertionError();
         }
-        // 按排序顺序插入节点
+
+        // Insert the node in sorted order.
         long remainingNanos = node.remainingNanos(now);
         for (AsyncTimeout prev = head; true; prev = prev.next) {
-            if (null == prev.next || remainingNanos < prev.next.remainingNanos(now)) {
+            if (prev.next == null || remainingNanos < prev.next.remainingNanos(now)) {
                 node.next = prev.next;
                 prev.next = node;
                 if (prev == head) {
-                    // 在前面插入时，唤醒任务
-                    AsyncTimeout.class.notify();
+                    AsyncTimeout.class.notify(); // Wake up the watchdog when inserting at the front.
                 }
                 break;
             }
@@ -109,81 +118,73 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 如果超时发生，则返回true
-     *
-     * @param node 节点信息
-     * @return the true/false
+     * Returns true if the timeout occurred.
      */
     private static synchronized boolean cancelScheduledTimeout(AsyncTimeout node) {
-        // 从链表中删除节点
-        for (AsyncTimeout prev = head; null != prev; prev = prev.next) {
+        // Remove the node from the linked list.
+        for (AsyncTimeout prev = head; prev != null; prev = prev.next) {
             if (prev.next == node) {
                 prev.next = node.next;
                 node.next = null;
                 return false;
             }
         }
-        // 在链表中没有找到节点:它一定超时了!
+
+        // The node wasn't found in the linked list: it must have timed out!
         return true;
     }
 
     /**
-     * 删除并返回列表顶部的节点，如有必要，等待它超时。
-     * 如果在开始时列表的头部没有节点，并且在等待{@code IDLE_TIMEOUT_NANOS}之后仍然没有节点，
-     * 则返回{@link #head}。如果在等待时插入了新节点，则返回null。否则，它将返回被等待的已被删除的节点
-     *
-     * @return 超时信息 {@link AsyncTimeout}
-     * @throws InterruptedException 异常
+     * Removes and returns the node at the head of the list, waiting for it to time out if necessary.
+     * This returns {@link #head} if there was no node at the head of the list when starting, and
+     * there continues to be no node after waiting {@code IDLE_TIMEOUT_NANOS}. It returns null if a
+     * new node was inserted while waiting. Otherwise this returns the node being waited on that has
+     * been removed.
      */
     static AsyncTimeout awaitTimeout() throws InterruptedException {
-        // 获取下一个符合条件的节点
+        // Get the next eligible node.
         AsyncTimeout node = head.next;
-        // 队列为空。等待，直到某物进入队列或空闲超时过期
-        if (null == node) {
+
+        // The queue is empty. Wait until either something is enqueued or the idle timeout elapses.
+        if (node == null) {
             long startNanos = System.nanoTime();
             AsyncTimeout.class.wait(IDLE_TIMEOUT_MILLIS);
-            return null == head.next && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
-                    ? head  // 空闲超时过期
-                    : null; // 情况发生了变化
+            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
+                    ? head  // The idle timeout elapsed.
+                    : null; // The situation has changed.
         }
 
         long waitNanos = node.remainingNanos(System.nanoTime());
 
-        // 队伍的头还没有超时。等待
+        // The head of the queue hasn't timed out yet. Await that.
         if (waitNanos > 0) {
-            // 由于我们的工作时间是十亿分之一秒，所以等待变得很复杂，但是API需要两个参数(millis, nanos)
+            // Waiting is made complicated by the fact that we work in nanoseconds,
+            // but the API wants (millis, nanos) in two arguments.
             long waitMillis = waitNanos / 1000000L;
             waitNanos -= (waitMillis * 1000000L);
             AsyncTimeout.class.wait(waitMillis, (int) waitNanos);
             return null;
         }
-        // 队列的头已经超时了，删除它
+
+        // The head of the queue has timed out. Remove it.
         head.next = node.next;
         node.next = null;
         return node;
     }
 
-    /**
-     * 调用者应该在执行超时工作之前调用{@link #enter}，然后调用{@link #exit}
-     * {@link #exit}的返回值指示是否触发超时。注意，对{@link #timedOut}的调用是异步的，
-     * 可以在{@link #exit}之后调用
-     */
     public final void enter() {
         if (inQueue) throw new IllegalStateException("Unbalanced enter/exit");
         long timeoutNanos = timeoutNanos();
         boolean hasDeadline = hasDeadline();
         if (timeoutNanos == 0 && !hasDeadline) {
-            // 没有暂停和截止日期?别去排队
-            return;
+            return; // No timeout and no deadline? Don't bother with the queue.
         }
         inQueue = true;
         scheduleTimeout(this, timeoutNanos, hasDeadline);
     }
 
     /**
-     * 如果超时发生，则返回true
-     *
-     * @return the true/false
+     * Returns true if the timeout occurred.
      */
     public final boolean exit() {
         if (!inQueue) return false;
@@ -192,36 +193,32 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 返回在超时之前剩余的时间量
-     * 如果超时已经过去，并且应该立即发生超时，则该值为负
-     *
-     * @param now 当前时间
-     * @return
+     * Returns the amount of time left until the time out. This will be negative if the timeout has
+     * elapsed and the timeout should occur immediately.
      */
     private long remainingNanos(long now) {
         return timeoutAt - now;
     }
 
     /**
-     * 当对{@link #enter()}和{@link #exit()}的调用之间的时间超过超时时，watchdog线程将调用它
+     * Invoked by the watchdog thread when the time between calls to {@link #enter()} and {@link
+     * #exit()} has exceeded the timeout.
      */
     protected void timedOut() {
     }
 
     /**
-     * 返回一个委托给{@code sink}的新缓冲接收器，使用它来实现超时。
-     * 如果{@link #timedOut}被覆盖以中断{@code sink}的当前操作，那么这是最有效的
-     *
-     * @param sink 缓冲接收器
-     * @return 新缓冲接收器
+     * Returns a new sink that delegates to {@code sink}, using this to implement timeouts. This works
+     * best if {@link #timedOut} is overridden to interrupt {@code sink}'s current operation.
      */
     public final Sink sink(final Sink sink) {
         return new Sink() {
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 IoKit.checkOffsetAndCount(source.size, 0, byteCount);
+
                 while (byteCount > 0L) {
-                    // 计算要写入的字节数。这个循环保证我们在一个段边界上分割
+                    // Count how many bytes to write. This loop guarantees we split on a segment boundary.
                     long toWrite = 0L;
                     for (Segment s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
                         int segmentSize = s.limit - s.pos;
@@ -231,7 +228,8 @@ public class AsyncTimeout extends Timeout {
                             break;
                         }
                     }
-                    // 发出一个写。只有这个部分会超时
+
+                    // Emit one write. Only this section is subject to the timeout.
                     boolean throwOnTimeout = false;
                     enter();
                     try {
@@ -281,17 +279,14 @@ public class AsyncTimeout extends Timeout {
 
             @Override
             public String toString() {
-                return "Awaits.sink(" + sink + ")";
+                return "AsyncTimeout.sink(" + sink + ")";
             }
         };
     }
 
     /**
-     * 返回一个委托给{@code source}的新源，使用它来实现超时。
-     * 如果{@link #timedOut}被覆盖以中断{@code sink}的当前操作，那么这是最有效的
-     *
-     * @param source 源
-     * @return 新源
+     * Returns a new source that delegates to {@code source}, using this to implement timeouts. This
+     * works best if {@link #timedOut} is overridden to interrupt {@code sink}'s current operation.
      */
     public final Source source(final Source source) {
         return new Source() {
@@ -331,17 +326,14 @@ public class AsyncTimeout extends Timeout {
 
             @Override
             public String toString() {
-                return "Awaits.source(" + source + ")";
+                return "AsyncTimeout.source(" + source + ")";
             }
         };
     }
 
     /**
-     * 如果{@code throwOnTimeout}为{@code true}且发生超时，则抛出IOException。
-     * 有关抛出的异常类型，请参见{@link #newTimeoutException(java.io.IOException)}
-     *
-     * @param throwOnTimeout 超时时间
-     * @throws IOException 异常
+     * Throws an IOException if {@code throwOnTimeout} is {@code true} and a timeout occurred. See
+     * {@link #newTimeoutException(java.io.IOException)} for the type of exception thrown.
      */
     final void exit(boolean throwOnTimeout) throws IOException {
         boolean timedOut = exit();
@@ -349,27 +341,23 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 如果超时，则返回{@code cause}或{@code cause}引起的IOException。
-     * 有关返回的异常类型，请参见{@link #newTimeoutException(java.io.IOException)}
-     *
-     * @param cause 异常
-     * @return 异常信息
+     * Returns either {@code cause} or an IOException that's caused by {@code cause} if a timeout
+     * occurred. See {@link #newTimeoutException(java.io.IOException)} for the type of exception
+     * returned.
      */
-    final IOException exit(IOException cause) {
+    final IOException exit(IOException cause) throws IOException {
         if (!exit()) return cause;
         return newTimeoutException(cause);
     }
 
     /**
-     * 返回{@link IOException}表示超时。默认情况下，该方法返回{@link java.io.InterruptedIOException}。
-     * 如果{@code cause}非空，则将其设置为返回异常的原因
-     *
-     * @param cause 异常
-     * @return 异常信息
+     * Returns an {@link IOException} to represent a timeout. By default this method returns {@link
+     * java.io.InterruptedIOException}. If {@code cause} is non-null it is set as the cause of the
+     * returned exception.
      */
     protected IOException newTimeoutException(IOException cause) {
         InterruptedIOException e = new InterruptedIOException("timeout");
-        if (null != cause) {
+        if (cause != null) {
             e.initCause(cause);
         }
         return e;
@@ -377,7 +365,7 @@ public class AsyncTimeout extends Timeout {
 
     private static final class Watchdog extends Thread {
         Watchdog() {
-            super("IoKit.Watchdog");
+            super("Okio Watchdog");
             setDaemon(true);
         }
 
@@ -388,16 +376,18 @@ public class AsyncTimeout extends Timeout {
                     synchronized (AsyncTimeout.class) {
                         timedOut = awaitTimeout();
 
-                        if (null == timedOut) {
-                            continue;
-                        }
+                        // Didn't find a node to interrupt. Try again.
+                        if (timedOut == null) continue;
 
+                        // The queue is completely empty. Let this thread exit and let another watchdog thread
+                        // get created on the next call to scheduleTimeout().
                         if (timedOut == head) {
                             head = null;
                             return;
                         }
                     }
 
+                    // Close the timed out node.
                     timedOut.timedOut();
                 } catch (InterruptedException ignored) {
                 }

@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.sink.BufferSink;
@@ -248,7 +247,7 @@ public class Http2Connection implements Closeable {
                     shutdown(ErrorCode.REFUSED_STREAM);
                 }
                 if (shutdown) {
-                    throw new RevisedException();
+                    throw new IOException();
                 }
                 streamId = nextStreamId;
                 nextStreamId += 2;
@@ -506,7 +505,7 @@ public class Http2Connection implements Closeable {
         synchronized (writer) {
             synchronized (this) {
                 if (shutdown) {
-                    throw new RevisedException();
+                    throw new IOException();
                 }
                 settings.merge(settings);
             }
@@ -527,15 +526,12 @@ public class Http2Connection implements Closeable {
      * HTTP/2 can have both stream timeouts (due to a problem with a single stream) and connection
      * timeouts (due to a problem with the transport). When a stream times out we don't know whether
      * the problem impacts just one stream or the entire connection.
-     * <p>
      * To differentiate the two cases we ping the server when a stream times out. If the overall
      * connection is fine the ping will receive a pong; otherwise it won't.
-     * <p>
      * The deadline to respond to this ping attempts to limit the cost of being wrong. If it is too
      * long, streams created while we await the pong will reuse broken connections and inevitably
      * fail. If it is too short, slow connections will be marked as failed and extra TCP and TLS
      * handshakes will be required.
-     * <p>
      * The deadline is currently hardcoded. We may make this configurable in the future!
      */
     void sendDegradedPingLater() {
@@ -740,7 +736,6 @@ public class Http2Connection implements Closeable {
         /**
          * Notification that the connection's peer's settings may have changed. Implementations should
          * take appropriate action to handle the updated settings.
-         * <p>
          * It is the implementation's responsibility to handle concurrent calls to this method. A
          * remote peer that sends multiple settings frames will trigger multiple calls to this method,
          * and those calls are not necessarily serialized.
@@ -750,6 +745,7 @@ public class Http2Connection implements Closeable {
     }
 
     class PingRunnable extends NamedRunnable {
+
         final boolean reply;
         final int payload1;
         final int payload2;
@@ -768,6 +764,7 @@ public class Http2Connection implements Closeable {
     }
 
     class IntervalPingRunnable extends NamedRunnable {
+
         IntervalPingRunnable() {
             super("Http %s ping", connectionName);
         }
@@ -796,6 +793,7 @@ public class Http2Connection implements Closeable {
      * async task to do so.
      */
     class ReaderRunnable extends NamedRunnable implements Http2Reader.Handler {
+
         final Http2Reader reader;
 
         ReaderRunnable(Http2Reader reader) {

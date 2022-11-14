@@ -119,24 +119,22 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     public static SSLSocketFactory newSslSocketFactory(X509TrustManager x509TrustManager) {
         try {
             SSLContext sslContext = getSSLContext();
-            sslContext.init(null, new TrustManager[]{x509TrustManager}, new SecureRandom());
+            sslContext.init(null, new TrustManager[]{x509TrustManager}, null);
             return sslContext.getSocketFactory();
-        } catch (GeneralSecurityException ignored) {
-            throw new AssertionError("No System TLS", ignored);
+        } catch (GeneralSecurityException e) {
+            throw new AssertionError("No System TLS", e); // The system has no TLS. Just give up.
         }
     }
 
     public static SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance(Http.TLS_V_12);
+            return SSLContext.getInstance(Http.TLS_V_13);
         } catch (NoSuchAlgorithmException e) {
-            // fallback to TLS
-        }
-
-        try {
-            return SSLContext.getInstance(Http.TLS);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("No TLS provider", e);
+            try {
+                return SSLContext.getInstance(Http.TLS);
+            } catch (NoSuchAlgorithmException e2) {
+                throw new IllegalStateException("No TLS provider", e);
+            }
         }
     }
 
@@ -150,9 +148,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
                 throw new IllegalStateException("Unexpected default trust managers:"
                         + Arrays.toString(trustManagers));
             }
-            return (javax.net.ssl.X509TrustManager) trustManagers[0];
+            return (X509TrustManager) trustManagers[0];
         } catch (GeneralSecurityException e) {
-            throw new AssertionError("No System TLS", e);
+            throw new AssertionError("No System TLS", e); // The system has no TLS. Just give up.
         }
     }
 

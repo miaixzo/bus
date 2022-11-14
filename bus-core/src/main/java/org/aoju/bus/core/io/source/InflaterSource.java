@@ -29,7 +29,6 @@ import org.aoju.bus.core.io.LifeCycle;
 import org.aoju.bus.core.io.Segment;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.timout.Timeout;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.EOFException;
@@ -38,30 +37,34 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * 解压从另一个源读取的数据
- *
- * @author Kimi Liu
- * @since Java 17+
+ * A source that uses <a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a>
+ * to decompress data read from another source.
  */
-public class ExtractSource implements Source {
+public final class InflaterSource implements Source {
 
     private final BufferSource source;
     private final Inflater inflater;
 
+    /**
+     * When we call Inflater.setInput(), the inflater keeps our byte array until
+     * it needs input again. This tracks how many bytes the inflater is currently
+     * holding on to.
+     */
     private int bufferBytesHeldByInflater;
     private boolean closed;
 
-    public ExtractSource(Source source, Inflater inflater) {
+    public InflaterSource(Source source, Inflater inflater) {
         this(IoKit.buffer(source), inflater);
     }
 
-    ExtractSource(BufferSource source, Inflater inflater) {
-        if (null == source) {
-            throw new IllegalArgumentException("source == null");
-        }
-        if (null == inflater) {
-            throw new IllegalArgumentException("inflater == null");
-        }
+    /**
+     * This package-private constructor shares a buffer with its trusted caller.
+     * In general we can't share a BufferedSource because the inflater holds input
+     * bytes until they are inflated.
+     */
+    InflaterSource(BufferSource source, Inflater inflater) {
+        if (source == null) throw new IllegalArgumentException("source == null");
+        if (inflater == null) throw new IllegalArgumentException("inflater == null");
         this.source = source;
         this.inflater = inflater;
     }
@@ -76,6 +79,7 @@ public class ExtractSource implements Source {
         while (true) {
             boolean sourceExhausted = refill();
 
+            // Decompress the inflater's compressed data into the sink.
             try {
                 Segment tail = sink.writableSegment(1);
                 int toRead = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
@@ -88,6 +92,7 @@ public class ExtractSource implements Source {
                 if (inflater.finished() || inflater.needsDictionary()) {
                     releaseInflatedBytes();
                     if (tail.pos == tail.limit) {
+                        // We allocated a tail segment, but didn't end up needing it. Recycle!
                         sink.head = tail.pop();
                         LifeCycle.recycle(tail);
                     }
@@ -100,22 +105,30 @@ public class ExtractSource implements Source {
         }
     }
 
-    public final boolean refill() throws IOException {
+    /**
+     * Refills the inflater with compressed data if it needs input. (And only if
+     * it needs input). Returns true if the inflater required input but the source
+     * was exhausted.
+     */
+    public boolean refill() throws IOException {
         if (!inflater.needsInput()) return false;
 
         releaseInflatedBytes();
-        if (inflater.getRemaining() != 0) throw new IllegalStateException(Symbol.QUESTION_MARK);
+        if (inflater.getRemaining() != 0) throw new IllegalStateException("?");
 
-        if (source.exhausted()) {
-            return true;
-        }
+        // If there are compressed bytes in the source, assign them to the inflater.
+        if (source.exhausted()) return true;
 
-        Segment head = source.buffer().head;
+        // Assign buffer bytes to the inflater.
+        Segment head = source.getBuffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);
         return false;
     }
 
+    /**
+     * When the inflater has processed compressed data, remove it from the buffer.
+     */
     private void releaseInflatedBytes() throws IOException {
         if (bufferBytesHeldByInflater == 0) return;
         int toRelease = bufferBytesHeldByInflater - inflater.getRemaining();

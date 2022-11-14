@@ -26,6 +26,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.sink.BufferSink;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
@@ -145,8 +146,8 @@ public class CallServerInterceptor implements Interceptor {
                     .build();
         }
 
-        if ("close".equalsIgnoreCase(response.request().header(org.aoju.bus.core.lang.Header.CONNECTION))
-                || "close".equalsIgnoreCase(response.header(org.aoju.bus.core.lang.Header.CONNECTION))) {
+        if ("close".equalsIgnoreCase(response.request().header(Header.CONNECTION))
+                || "close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
             exchange.noNewExchangesOnConnection();
         }
 

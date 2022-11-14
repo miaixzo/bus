@@ -46,6 +46,7 @@ import org.aoju.bus.core.io.timout.AsyncTimeout;
 import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.function.XConsumer;
 
@@ -1390,7 +1391,7 @@ public class IoKit {
         return new Sink() {
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
-                IoKit.checkOffsetAndCount(source.size, 0, byteCount);
+                checkOffsetAndCount(source.size, 0, byteCount);
                 while (byteCount > 0) {
                     timeout.throwIfReached();
                     Segment head = source.head;
@@ -1486,7 +1487,14 @@ public class IoKit {
                     Segment tail = sink.writableSegment(1);
                     int maxToCopy = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
                     int bytesRead = in.read(tail.data, tail.limit, maxToCopy);
-                    if (bytesRead == -1) return -1;
+                    if (bytesRead == -1) {
+                        if (tail.pos == tail.limit) {
+                            // We allocated a tail segment, but didn't end up needing it. Recycle!
+                            sink.head = tail.pop();
+                            LifeCycle.recycle(tail);
+                        }
+                        return -1;
+                    }
                     tail.limit += bytesRead;
                     sink.size += bytesRead;
                     return bytesRead;
@@ -1648,10 +1656,10 @@ public class IoKit {
                 try {
                     socket.close();
                 } catch (Exception e) {
-                    throw new InternalException(e);
+                    Console.log("Failed to close timed out socket " + socket, e);
                 } catch (AssertionError e) {
                     if (isAndroidGetsocknameError(e)) {
-                        throw new InternalException(e);
+                        Console.log("Failed to close timed out socket " + socket, e);
                     } else {
                         throw e;
                     }
@@ -1660,6 +1668,10 @@ public class IoKit {
         };
     }
 
+    /**
+     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
+     * https://code.google.com/p/android/issues/detail?id=54072
+     */
     static boolean isAndroidGetsocknameError(AssertionError e) {
         return null != e.getCause() && null != e.getMessage()
                 && e.getMessage().contains("getsockname failed");

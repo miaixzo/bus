@@ -61,8 +61,7 @@ public class CertificatePinner {
 
     /**
      * Returns the SHA-256 of {@code certificate}'s public key.
-     * <p>
-     * In Http 3.1.2 and earlier, this returned a SHA-1 hash of the public key. Both types are
+     * In Http and earlier, this returned a SHA-1 hash of the public key. Both types are
      * supported, but SHA-256 is preferred.
      */
     public static String pin(Certificate certificate) {

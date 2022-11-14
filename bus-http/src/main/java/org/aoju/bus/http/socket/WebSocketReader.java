@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-class WebSocketReader {
+public class WebSocketReader {
 
     final boolean isClient;
     final BufferSource source;

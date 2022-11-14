@@ -43,7 +43,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-class Http2Writer implements Closeable {
+public class Http2Writer implements Closeable {
 
     final Hpack.Writer hpackWriter;
     private final BufferSink sink;

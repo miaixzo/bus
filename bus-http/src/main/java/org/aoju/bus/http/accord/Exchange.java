@@ -1,28 +1,18 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ * Copyright (C) 2019 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.core.io.buffer.Buffer;
@@ -47,35 +37,32 @@ import java.net.ProtocolException;
 import java.net.SocketException;
 
 /**
- * 传输单个 HTTP 请求和响应对。这在处理实际 I/O 的 {@link HttpCodec} 上分层连接管理和事件
- *
- * @author Kimi Liu
- * @since Java 17+
+ * Transmits a single HTTP request and a response pair. This layers connection management and events
+ * on {@link HttpCodec}, which handles the actual I/O.
  */
-public class Exchange {
-
+public final class Exchange {
     final Transmitter transmitter;
     final NewCall call;
     final EventListener eventListener;
     final ExchangeFinder finder;
-    final HttpCodec httpCodec;
+    final HttpCodec codec;
     private boolean duplex;
 
     public Exchange(Transmitter transmitter, NewCall call, EventListener eventListener,
-                    ExchangeFinder finder, HttpCodec httpCodec) {
+                    ExchangeFinder finder, HttpCodec codec) {
         this.transmitter = transmitter;
         this.call = call;
         this.eventListener = eventListener;
         this.finder = finder;
-        this.httpCodec = httpCodec;
+        this.codec = codec;
     }
 
     public RealConnection connection() {
-        return httpCodec.connection();
+        return codec.connection();
     }
 
     /**
-     * 如果请求正文不需要在响应正文开始之前完成，则返回 true
+     * Returns true if the request body need not complete before the response body starts.
      */
     public boolean isDuplex() {
         return duplex;
@@ -84,7 +71,7 @@ public class Exchange {
     public void writeRequestHeaders(Request request) throws IOException {
         try {
             eventListener.requestHeadersStart(call);
-            httpCodec.writeRequestHeaders(request);
+            codec.writeRequestHeaders(request);
             eventListener.requestHeadersEnd(call, request);
         } catch (IOException e) {
             eventListener.requestFailed(call, e);
@@ -95,15 +82,15 @@ public class Exchange {
 
     public Sink createRequestBody(Request request, boolean duplex) throws IOException {
         this.duplex = duplex;
-        long length = request.body().length();
+        long contentLength = request.body().length();
         eventListener.requestBodyStart(call);
-        Sink rawRequestBody = httpCodec.createRequestBody(request, length);
-        return new RequestBodySink(rawRequestBody, length);
+        Sink rawRequestBody = codec.createRequestBody(request, contentLength);
+        return new RequestBodySink(rawRequestBody, contentLength);
     }
 
     public void flushRequest() throws IOException {
         try {
-            httpCodec.flushRequest();
+            codec.flushRequest();
         } catch (IOException e) {
             eventListener.requestFailed(call, e);
             trackFailure(e);
@@ -113,7 +100,7 @@ public class Exchange {
 
     public void finishRequest() throws IOException {
         try {
-            httpCodec.finishRequest();
+            codec.finishRequest();
         } catch (IOException e) {
             eventListener.requestFailed(call, e);
             trackFailure(e);
@@ -127,7 +114,7 @@ public class Exchange {
 
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         try {
-            Response.Builder result = httpCodec.readResponseHeaders(expectContinue);
+            Response.Builder result = codec.readResponseHeaders(expectContinue);
             if (result != null) {
                 Internal.instance.initExchange(result, this);
             }
@@ -146,11 +133,11 @@ public class Exchange {
     public ResponseBody openResponseBody(Response response) throws IOException {
         try {
             eventListener.responseBodyStart(call);
-            String mediaType = response.header("Content-Type");
-            long length = httpCodec.reportedContentLength(response);
-            Source rawSource = httpCodec.openResponseBodySource(response);
-            ResponseBodySource source = new ResponseBodySource(rawSource, length);
-            return new RealResponseBody(mediaType, length, IoKit.buffer(source));
+            String contentType = response.header("Content-Type");
+            long contentLength = codec.reportedContentLength(response);
+            Source rawSource = codec.openResponseBodySource(response);
+            ResponseBodySource source = new ResponseBodySource(rawSource, contentLength);
+            return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
         } catch (IOException e) {
             eventListener.responseFailed(call, e);
             trackFailure(e);
@@ -159,7 +146,7 @@ public class Exchange {
     }
 
     public Headers trailers() throws IOException {
-        return httpCodec.trailers();
+        return codec.trailers();
     }
 
     public void timeoutEarlyExit() {
@@ -168,7 +155,7 @@ public class Exchange {
 
     public RealWebSocket.Streams newWebSocketStreams() throws SocketException {
         transmitter.timeoutEarlyExit();
-        return httpCodec.connection().newWebSocketStreams(this);
+        return codec.connection().newWebSocketStreams(this);
     }
 
     public void webSocketUpgradeFailed() {
@@ -176,24 +163,25 @@ public class Exchange {
     }
 
     public void noNewExchangesOnConnection() {
-        httpCodec.connection().noNewExchanges();
+        codec.connection().noNewExchanges();
     }
 
     public void cancel() {
-        httpCodec.cancel();
+        codec.cancel();
     }
 
     /**
-     * 撤销此交换对流的访问。当需要后续请求但之前的交换尚未完成时，这是必要的
+     * Revoke this exchange's access to streams. This is necessary when a follow-up request is
+     * required but the preceding exchange hasn't completed yet.
      */
     public void detachWithViolence() {
-        httpCodec.cancel();
+        codec.cancel();
         transmitter.exchangeMessageDone(this, true, true, null);
     }
 
     void trackFailure(IOException e) {
         finder.trackFailure();
-        httpCodec.connection().trackFailure(e);
+        codec.connection().trackFailure(e);
     }
 
     IOException bodyComplete(
@@ -223,12 +211,12 @@ public class Exchange {
     }
 
     /**
-     * 完成时触发事件的请求正文
+     * A request body that fires events when it completes.
      */
-    private class RequestBodySink extends AssignSink {
+    private final class RequestBodySink extends AssignSink {
         private boolean completed;
         /**
-         * 要写入的确切字节数，如果未知，则为 -1L
+         * The exact number of bytes to be written, or -1L if that is unknown.
          */
         private long contentLength;
         private long bytesReceived;
@@ -286,9 +274,9 @@ public class Exchange {
     }
 
     /**
-     * 完成时触发事件的响应主体
+     * A response body that fires events when it completes.
      */
-    class ResponseBodySource extends AssignSource {
+    final class ResponseBodySource extends AssignSource {
         private final long contentLength;
         private long bytesReceived;
         private boolean completed;
@@ -348,5 +336,4 @@ public class Exchange {
             return bodyComplete(bytesReceived, true, false, e);
         }
     }
-
 }

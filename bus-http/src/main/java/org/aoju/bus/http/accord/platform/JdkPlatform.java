@@ -42,24 +42,24 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Jdk9Platform extends Platform {
+public class JdkPlatform extends Platform {
 
     final Method setProtocolMethod;
     final Method getProtocolMethod;
 
-    Jdk9Platform(Method setProtocolMethod, Method getProtocolMethod) {
+    JdkPlatform(Method setProtocolMethod, Method getProtocolMethod) {
         this.setProtocolMethod = setProtocolMethod;
         this.getProtocolMethod = getProtocolMethod;
     }
 
-    public static Jdk9Platform buildIfSupported() {
+    public static JdkPlatform buildIfSupported() {
         // Find JDK 9 new methods
         try {
             Method setProtocolMethod =
                     SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
             Method getProtocolMethod = SSLSocket.class.getMethod("getApplicationProtocol");
 
-            return new Jdk9Platform(setProtocolMethod, getProtocolMethod);
+            return new JdkPlatform(setProtocolMethod, getProtocolMethod);
         } catch (NoSuchMethodException ignored) {
             // pre JDK 9
         }

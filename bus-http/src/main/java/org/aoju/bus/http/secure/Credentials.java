@@ -38,6 +38,7 @@ import org.aoju.bus.core.lang.Symbol;
 public class Credentials {
 
     private Credentials() {
+
     }
 
     /**

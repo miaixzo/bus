@@ -30,7 +30,6 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.http.metric.suffix.SuffixDatabase;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -840,24 +839,6 @@ public class UnoUrl {
         return url;
     }
 
-    /**
-     * 通常，这个方法不应该用来测试一个域是否有效或可路由。相反，DNS是推荐的信息来源
-     *
-     * <ul>
-     * <li>{@code http://google.com}{@code "google.com"}</li>
-     * <li>{@code http://adwords.google.co.uk}{@code "google.co.uk"}</li>
-     * <li>{@code http://co.uk}null</li>
-     * <li>{@code http://localhost}null</li>
-     * <li>{@code http://127.0.0.1}null</li>
-     * </ul>
-     *
-     * @return the string
-     */
-    public String topPrivateDomain() {
-        if (org.aoju.bus.http.Builder.verifyAsIpAddress(host)) return null;
-        return SuffixDatabase.get().getEffectiveTldPlusOne(host);
-    }
-
     private List<String> percentDecode(List<String> list, boolean plusIsSpace) {
         int size = list.size();
         List<String> result = new ArrayList<>(size);
@@ -869,6 +850,7 @@ public class UnoUrl {
     }
 
     public static class Builder {
+
         static final String INVALID_HOST = "Invalid URL host";
         final List<String> encodedPathSegments = new ArrayList<>();
         String scheme;

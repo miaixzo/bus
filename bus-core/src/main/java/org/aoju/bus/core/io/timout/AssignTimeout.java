@@ -45,6 +45,9 @@ public class AssignTimeout extends Timeout {
         this.delegate = delegate;
     }
 
+    /**
+     * {@link Timeout} instance to which this instance is currently delegating.
+     */
     public final Timeout delegate() {
         return delegate;
     }

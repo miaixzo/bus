@@ -69,7 +69,7 @@ public abstract class AssignSource implements Source {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + Symbol.PARENTHESE_LEFT + delegate.toString() + Symbol.PARENTHESE_RIGHT;
+        return getClass().getSimpleName() + Symbol.PARENTHESE_LEFT + delegate + Symbol.PARENTHESE_RIGHT;
     }
 
 }

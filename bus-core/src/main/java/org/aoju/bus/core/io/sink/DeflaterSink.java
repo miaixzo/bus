@@ -51,13 +51,14 @@ public class DeflaterSink implements Sink {
         this(IoKit.buffer(sink), deflater);
     }
 
+    /**
+     * This package-private constructor shares a buffer with its trusted caller.
+     * In general we can't share a BufferedSource because the deflater holds input
+     * bytes until they are inflated.
+     */
     DeflaterSink(BufferSink sink, Deflater deflater) {
-        if (null == sink) {
-            throw new IllegalArgumentException("source == null");
-        }
-        if (null == deflater) {
-            throw new IllegalArgumentException("inflater == null");
-        }
+        if (sink == null) throw new IllegalArgumentException("source == null");
+        if (deflater == null) throw new IllegalArgumentException("inflater == null");
         this.sink = sink;
         this.deflater = deflater;
     }
@@ -66,12 +67,15 @@ public class DeflaterSink implements Sink {
     public void write(Buffer source, long byteCount) throws IOException {
         IoKit.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
+            // Share bytes from the head segment of 'source' with the deflater.
             Segment head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
             deflater.setInput(head.data, head.pos, toDeflate);
 
+            // Deflate those bytes into sink.
             deflate(false);
 
+            // Mark those bytes as read.
             source.size -= toDeflate;
             head.pos += toDeflate;
             if (head.pos == head.limit) {
@@ -88,6 +92,10 @@ public class DeflaterSink implements Sink {
         while (true) {
             Segment s = buffer.writableSegment(1);
 
+            // The 4-parameter overload of deflate() doesn't exist in the RI until
+            // Java 1.7, and is public (although with @hide) on Android since 2.3.
+            // The @hide tag means that this code won't compile against the Android
+            // 2.3 SDK, but it will run fine there.
             int deflated = syncFlush
                     ? deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit, Deflater.SYNC_FLUSH)
                     : deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit);
@@ -98,6 +106,7 @@ public class DeflaterSink implements Sink {
                 sink.emitCompleteSegments();
             } else if (deflater.needsInput()) {
                 if (s.pos == s.limit) {
+                    // We allocated a tail segment, but didn't end up needing it. Recycle!
                     buffer.head = s.pop();
                     LifeCycle.recycle(s);
                 }
@@ -118,9 +127,11 @@ public class DeflaterSink implements Sink {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         if (closed) return;
 
+        // Emit deflated data to the underlying sink. If this fails, we still need
+        // to close the deflater and the sink; otherwise we risk leaking resources.
         Throwable thrown = null;
         try {
             finishDeflate();
@@ -131,21 +142,17 @@ public class DeflaterSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (null == thrown) {
-                thrown = e;
-            }
+            if (thrown == null) thrown = e;
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (null == thrown) {
-                thrown = e;
-            }
+            if (thrown == null) thrown = e;
         }
         closed = true;
 
-        if (null != thrown) IoKit.sneakyRethrow(thrown);
+        if (thrown != null) IoKit.sneakyRethrow(thrown);
     }
 
     @Override

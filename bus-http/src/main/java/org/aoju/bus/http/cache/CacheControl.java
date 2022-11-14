@@ -308,6 +308,7 @@ public class CacheControl {
      * 构建一个{@code Cache-Control}请求头
      */
     public static class Builder {
+
         boolean noCache;
         boolean noStore;
         int maxAgeSeconds = -1;

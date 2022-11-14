@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -96,7 +95,7 @@ public class RetryAndFollowUp implements Interceptor {
                 continue;
             } catch (IOException e) {
                 // An attempt to communicate with a server failed. The request may have been sent.
-                boolean requestSendStarted = !(e instanceof RevisedException);
+                boolean requestSendStarted = !(e instanceof IOException);
                 if (!recover(e, transmitter, requestSendStarted, request)) throw e;
                 continue;
             } finally {

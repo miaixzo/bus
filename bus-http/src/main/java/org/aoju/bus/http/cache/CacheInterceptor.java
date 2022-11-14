@@ -143,7 +143,7 @@ public class CacheInterceptor implements Interceptor {
         }
 
         if (null != cacheCandidate && null == cacheResponse) {
-            // 缓存候选不适用。关闭它
+            // 缓存候选不适用关闭它
             IoKit.close(cacheCandidate.body());
         }
 

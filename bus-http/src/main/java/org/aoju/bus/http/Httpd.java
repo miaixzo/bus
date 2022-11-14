@@ -27,8 +27,8 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.sink.Sink;
 import org.aoju.bus.core.io.source.Source;
-import org.aoju.bus.core.net.ssl.HostnameVerifier;
-import org.aoju.bus.core.net.ssl.SSLContextBuilder;
+import org.aoju.bus.core.net.tls.HostnameVerifier;
+import org.aoju.bus.core.net.tls.SSLContextBuilder;
 import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.accord.ConnectionSuite;
 import org.aoju.bus.http.accord.Exchange;
@@ -379,6 +379,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     }
 
     public static class Builder {
+
         final List<Interceptor> interceptors = new ArrayList<>();
         final List<Interceptor> networkInterceptors = new ArrayList<>();
         Dispatcher dispatcher;

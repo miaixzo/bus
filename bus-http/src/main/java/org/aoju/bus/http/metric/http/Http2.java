@@ -133,15 +133,11 @@ public class Http2 {
 
     /**
      * Returns human-readable representation of HTTP/2 frame headers.
-     * <p>
      * The format is:
-     *
      * <pre>
      *   direction streamID length type flags
      * </pre>
-     * <p>
      * Where direction is {@code <<} for inbound and {@code >>} for outbound.
-     * <p>
      * For example, the following would indicate a HEAD request sent from the client.
      * <pre>
      * {@code

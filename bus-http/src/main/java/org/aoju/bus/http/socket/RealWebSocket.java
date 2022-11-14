@@ -228,7 +228,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
                 // Process all web socket messages.
                 try {
-                    String name = "Httpd WebSocket " + request.url().redact();
+                    String name = "WebSocket " + request.url().redact();
                     initReaderAndWriter(name, streams);
                     listener.onOpen(RealWebSocket.this, response);
                     loopReader();
@@ -306,7 +306,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      * For testing: receive a single frame and return true if there are more frames to read. Invoked
      * only by the reader thread.
      */
-    boolean processNextFrame() throws IOException {
+    boolean processNextFrame() {
         try {
             reader.processNextFrame();
             return receivedCloseCode == -1;

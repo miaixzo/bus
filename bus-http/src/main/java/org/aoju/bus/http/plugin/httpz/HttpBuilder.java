@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpz;
 
-import org.aoju.bus.core.net.ssl.SSLContextBuilder;
+import org.aoju.bus.core.net.tls.SSLContextBuilder;
 import org.aoju.bus.http.DnsX;
 import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Httpz;

@@ -32,7 +32,7 @@ import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.net.ssl.HostnameVerifier;
+import org.aoju.bus.core.net.tls.HostnameVerifier;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
@@ -356,7 +356,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                     throw new SSLPeerUnverifiedException(
                             "Hostname " + address.url().host() + " not verified:"
                                     + "\n    certificate: " + CertificatePinner.pin(cert)
-                                    + "\n    DN: " + cert.getSubjectDN().getName()
+                                    + "\n    DN: " + cert.getSubjectX500Principal().getName()
                                     + "\n    subjectAltNames: " + HostnameVerifier.allSubjectAltNames(cert));
                 } else {
                     throw new SSLPeerUnverifiedException(
@@ -408,15 +408,15 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         // 在每个SSL +代理连接的第一个消息对上创建SSL隧道
         String requestLine = "CONNECT " + Builder.hostHeader(url, true) + " HTTP/1.1";
         while (true) {
-            Http1Codec tunnelConnection = new Http1Codec(null, null, source, sink);
+            Http1Codec tunnelCodec = new Http1Codec(null, null, source, sink);
             source.timeout().timeout(readTimeout, TimeUnit.MILLISECONDS);
             sink.timeout().timeout(writeTimeout, TimeUnit.MILLISECONDS);
-            tunnelConnection.writeRequest(tunnelRequest.headers(), requestLine);
-            tunnelConnection.finishRequest();
-            Response response = tunnelConnection.readResponseHeaders(false)
+            tunnelCodec.writeRequest(tunnelRequest.headers(), requestLine);
+            tunnelCodec.finishRequest();
+            Response response = tunnelCodec.readResponseHeaders(false)
                     .request(tunnelRequest)
                     .build();
-            tunnelConnection.skipConnectBody(response);
+            tunnelCodec.skipConnectBody(response);
 
             switch (response.code()) {
                 case Http.HTTP_OK:
@@ -700,7 +700,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
     @Override
     public String toString() {
-        return "Connection{"
+        return "RealConnection{"
                 + route.address().url().host() + Symbol.COLON + route.address().url().port()
                 + ", proxy="
                 + route.proxy()

@@ -36,13 +36,23 @@ import org.aoju.bus.core.lang.Normal;
  */
 public final class LifeCycle {
 
-    static final long MAX_SIZE = Normal._64 * Normal._1024;
+    /**
+     * The maximum number of bytes to pool
+     * 64 KiB
+     */
+    public static final long MAX_SIZE = Normal._64 * Normal._1024;
 
-    static Segment next;
+    /**
+     * Singly-linked list of segments
+     */
+    public static Segment next;
 
-    static long byteCount;
+    /**
+     * Total bytes in this pool
+     */
+    public static long byteCount;
 
-    private LifeCycle() {
+    public LifeCycle() {
 
     }
 
@@ -56,14 +66,14 @@ public final class LifeCycle {
                 return result;
             }
         }
-        return new Segment();
+        return new Segment(); // Pool is empty. Don't zero-fill while holding a lock.
     }
 
     public static void recycle(Segment segment) {
-        if (null != segment.next || null != segment.prev) throw new IllegalArgumentException();
-        if (segment.shared) return;
+        if (segment.next != null || segment.prev != null) throw new IllegalArgumentException();
+        if (segment.shared) return; // This segment cannot be recycled.
         synchronized (LifeCycle.class) {
-            if (byteCount + Segment.SIZE > MAX_SIZE) return;
+            if (byteCount + Segment.SIZE > MAX_SIZE) return; // Pool is full.
             byteCount += Segment.SIZE;
             segment.next = next;
             segment.pos = segment.limit = 0;

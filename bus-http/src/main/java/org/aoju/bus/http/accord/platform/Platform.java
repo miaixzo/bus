@@ -88,57 +88,17 @@ public class Platform {
      * @return 平台信息
      */
     private static Platform findPlatform() {
-        if (isAndroid()) {
-            return findAndroidPlatform();
-        } else {
-            return findJvmPlatform();
+        Platform jdk = JdkPlatform.buildIfSupported();
+        if (jdk != null) {
+            return jdk;
         }
-    }
-
-    public static boolean isAndroid() {
-        // This explicit check avoids activating in Android Studio with Android specific classes
-        // available when running plugins inside the IDE.
-        return "Dalvik".equals(System.getProperty("java.vm.name"));
-    }
-
-    private static Platform findJvmPlatform() {
-        Platform jdk9 = Jdk9Platform.buildIfSupported();
-
-        if (jdk9 != null) {
-            return jdk9;
-        }
-
-        Platform jdkWithJettyBoot = Jdk8WithJettyBootPlatform.buildIfSupported();
-
-        if (jdkWithJettyBoot != null) {
-            return jdkWithJettyBoot;
-        }
-
-        // 可能是像OpenJDK和Oracle JDK
+        // Probably an Oracle JDK like OpenJDK.
         return new Platform();
     }
 
-    private static Platform findAndroidPlatform() {
-        Platform android10 = Android10Platform.buildIfSupported();
-
-        if (android10 != null) {
-            return android10;
-        }
-
-        Platform android = AndroidPlatform.buildIfSupported();
-
-        if (android == null) {
-            throw new NullPointerException("No platform found on Android");
-        }
-
-        return android;
-    }
-
     /**
-     * 返回以8位长度为前缀的协议名的连接
-     *
-     * @param protocols 协议信息
-     * @return 8位长度为前缀的协议名的连接
+     * Returns the concatenation of 8-bit, length prefixed protocol names.
+     * http://tools.ietf.org/html/draft-agl-tls-nextprotoneg-04#page-4
      */
     static byte[] concatLengthPrefixed(List<Protocol> protocols) {
         Buffer result = new Buffer();

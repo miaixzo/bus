@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.cache;
 
+import org.aoju.bus.core.io.FileSystem;
 import org.aoju.bus.core.io.sink.BufferSink;
 import org.aoju.bus.core.io.sink.FaultHideSink;
 import org.aoju.bus.core.io.sink.Sink;
@@ -66,6 +67,7 @@ public class DiskLruCache implements Closeable, Flushable {
     private static final String DIRTY = "DIRTY";
     private static final String REMOVE = "REMOVE";
     private static final String READ = "READ";
+    final FileSystem fileSystem;
     /**
      * 缓存存储其数据的目录
      */
@@ -101,8 +103,9 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private long nextSequenceNumber = 0;
 
-    DiskLruCache(File directory, int appVersion, int valueCount, long maxSize,
+    DiskLruCache(FileSystem fileSystem, File directory, int appVersion, int valueCount, long maxSize,
                  Executor executor) {
+        this.fileSystem = fileSystem;
         this.directory = directory;
         this.appVersion = appVersion;
         this.journalFile = new File(directory, JOURNAL_FILE);
@@ -116,16 +119,15 @@ public class DiskLruCache implements Closeable, Flushable {
     /**
      * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.
      *
+     * @param fileSystem 文件系统
      * @param directory  一个可写目录
      * @param appVersion 版本信息
      * @param valueCount 每个缓存条目的值数目.
      * @param maxSize    此缓存应用于存储的最大字节数
      * @return the disk cache
      */
-    public static DiskLruCache create(File directory,
-                                      int appVersion,
-                                      int valueCount,
-                                      long maxSize) {
+    public static DiskLruCache create(FileSystem fileSystem, File directory, int appVersion,
+                                      int valueCount, long maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
         }
@@ -136,7 +138,7 @@ public class DiskLruCache implements Closeable, Flushable {
         Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
 
-        return new DiskLruCache(directory, appVersion, valueCount, maxSize, executor);
+        return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
     }
 
     public synchronized void initialize() throws IOException {
@@ -147,17 +149,16 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         // 如果存在bkp文件，就使用它
-        if (journalFileBackup.exists()) {
+        if (fileSystem.exists(journalFileBackup)) {
             // 如果日志文件也存在，删除备份文件
-            if (journalFile.exists()) {
-                journalFileBackup.delete();
+            if (fileSystem.exists(journalFile)) {
+                fileSystem.delete(journalFileBackup);
             } else {
-                journalFile.delete();
-                journalFileBackup.renameTo(journalFile);
+                fileSystem.rename(journalFileBackup, journalFile);
             }
         }
 
-        if (journalFile.exists()) {
+        if (fileSystem.exists(journalFile)) {
             try {
                 readJournal();
                 processJournal();
@@ -183,7 +184,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private void readJournal() throws IOException {
-        try (BufferSource source = IoKit.buffer(IoKit.source(journalFile))) {
+        try (BufferSource source = IoKit.buffer(fileSystem.source(journalFile))) {
             String magic = source.readUtf8LineStrict();
             String version = source.readUtf8LineStrict();
             String appVersionString = source.readUtf8LineStrict();
@@ -258,7 +259,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private BufferSink newJournalWriter() throws FileNotFoundException {
-        Sink fileSink = IoKit.appendingSink(journalFile);
+        Sink fileSink = fileSystem.appendingSink(journalFile);
         Sink faultHidingSink = new FaultHideSink(fileSink) {
             @Override
             protected void onException(IOException e) {
@@ -275,18 +276,18 @@ public class DiskLruCache implements Closeable, Flushable {
      * @throws IOException 异常
      */
     private void processJournal() throws IOException {
-        journalFileTmp.delete();
+        fileSystem.delete(journalFileTmp);
         for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
             Entry entry = i.next();
-            if (null == entry.currentEditor) {
+            if (entry.currentEditor == null) {
                 for (int t = 0; t < valueCount; t++) {
                     size += entry.lengths[t];
                 }
             } else {
                 entry.currentEditor = null;
                 for (int t = 0; t < valueCount; t++) {
-                    entry.cleanFiles[t].delete();
-                    entry.dirtyFiles[t].delete();
+                    fileSystem.delete(entry.cleanFiles[t]);
+                    fileSystem.delete(entry.dirtyFiles[t]);
                 }
                 i.remove();
             }
@@ -324,251 +325,16 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
 
-        if (journalFile.exists()) {
-            journalFileBackup.delete();
-            if (!journalFile.renameTo(journalFileBackup)) {
-                throw new IOException("failed to rename " + journalFile + " to " + journalFileBackup);
-            }
+        if (fileSystem.exists(journalFile)) {
+            fileSystem.rename(journalFile, journalFileBackup);
         }
-
-        journalFile.delete();
-        if (!journalFileTmp.renameTo(journalFile)) {
-            throw new IOException("failed to rename " + journalFileTmp + " to " + journalFile);
-        }
-
-        journalFileBackup.delete();
+        fileSystem.rename(journalFileTmp, journalFile);
+        fileSystem.delete(journalFileBackup);
 
         journalWriter = newJournalWriter();
         hasJournalErrors = false;
         mostRecentRebuildFailed = false;
     }
-
-    /**
-     * 返回缓存当前项的迭代器。这个迭代器不会抛出{@code ConcurrentModificationException}，
-     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照
-     * 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
-     *
-     * @return 返回迭代器
-     * @throws IOException 异常
-     */
-    public synchronized Iterator<Snapshot> snapshots() throws IOException {
-        initialize();
-        return new Iterator<>() {
-            /**
-             * 迭代条目的副本以防止并发修改错误
-             */
-            final Iterator<Entry> delegate = new ArrayList<>(lruEntries.values()).iterator();
-
-            /**
-             * 要从{@link #next}返回的快照。如果还没有计算出来，就是Null
-             */
-            Snapshot nextSnapshot;
-
-            /**
-             * 要使用{@link #remove}删除的快照。如果删除是非法的，则为Null
-             */
-            Snapshot removeSnapshot;
-
-            @Override
-            public boolean hasNext() {
-                if (null != nextSnapshot) {
-                    return true;
-                }
-
-                synchronized (DiskLruCache.this) {
-                    // 如果缓存关闭，则截断迭代器。
-                    if (closed) return false;
-                    while (delegate.hasNext()) {
-                        Entry entry = delegate.next();
-                        if (!entry.readable) continue;
-                        Snapshot snapshot = entry.snapshot();
-                        if (null == snapshot) {
-                            continue;
-                        }
-                        nextSnapshot = snapshot;
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            @Override
-            public Snapshot next() {
-                if (!hasNext()) throw new NoSuchElementException();
-                removeSnapshot = nextSnapshot;
-                nextSnapshot = null;
-                return removeSnapshot;
-            }
-
-            @Override
-            public void remove() {
-                if (null == removeSnapshot) {
-                    throw new IllegalStateException("remove() before next()");
-                }
-                try {
-                    DiskLruCache.this.remove(removeSnapshot.key);
-                } catch (IOException ignored) {
-                    // 这里没什么用。未能从缓存中删除。这很可能是因为无法更新日志，但是缓存的条目仍然没有了
-                    Logger.error(ignored);
-                } finally {
-                    removeSnapshot = null;
-                }
-            }
-        };
-    }
-
-    /**
-     * 快照信息
-     */
-    public class Snapshot implements Closeable {
-        private final String key;
-        private final long sequenceNumber;
-        private final Source[] sources;
-        private final long[] lengths;
-
-        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
-            this.key = key;
-            this.sequenceNumber = sequenceNumber;
-            this.sources = sources;
-            this.lengths = lengths;
-        }
-
-        public String key() {
-            return key;
-        }
-
-        public Editor edit() throws IOException {
-            return DiskLruCache.this.edit(key, sequenceNumber);
-        }
-
-        public Source getSource(int index) {
-            return sources[index];
-        }
-
-        public long getLength(int index) {
-            return lengths[index];
-        }
-
-        public void close() {
-            for (Source in : sources) {
-                IoKit.close(in);
-            }
-        }
-    }
-
-    synchronized void completeEdit(Editor editor, boolean success) throws IOException {
-        Entry entry = editor.entry;
-        if (entry.currentEditor != editor) {
-            throw new IllegalStateException();
-        }
-
-        // 如果这个编辑是第一次创建条目，那么每个索引必须有一个值
-        if (success && !entry.readable) {
-            for (int i = 0; i < valueCount; i++) {
-                if (!editor.written[i]) {
-                    editor.abort();
-                    throw new IllegalStateException("Newly created entry didn't create value for index " + i);
-                }
-                if (!entry.dirtyFiles[i].exists()) {
-                    editor.abort();
-                    return;
-                }
-            }
-        }
-
-        for (int i = 0; i < valueCount; i++) {
-            File dirty = entry.dirtyFiles[i];
-            if (success) {
-                if (dirty.exists()) {
-                    File clean = entry.cleanFiles[i];
-                    if (journalFile.exists()) {
-                        clean.delete();
-                        if (!dirty.renameTo(clean)) {
-                            throw new IOException("failed to rename " + dirty + " to " + clean);
-                        }
-                    }
-                    long oldLength = entry.lengths[i];
-                    long newLength = clean.length();
-                    entry.lengths[i] = newLength;
-                    size = size - oldLength + newLength;
-                }
-            } else {
-                dirty.delete();
-            }
-        }
-
-        redundantOpCount++;
-        entry.currentEditor = null;
-        if (entry.readable | success) {
-            entry.readable = true;
-            journalWriter.writeUtf8(CLEAN).writeByte(Symbol.C_SPACE);
-            journalWriter.writeUtf8(entry.key);
-            entry.writeLengths(journalWriter);
-            journalWriter.writeByte(Symbol.C_LF);
-            if (success) {
-                entry.sequenceNumber = nextSequenceNumber++;
-            }
-        } else {
-            lruEntries.remove(entry.key);
-            journalWriter.writeUtf8(REMOVE).writeByte(Symbol.C_SPACE);
-            journalWriter.writeUtf8(entry.key);
-            journalWriter.writeByte(Symbol.C_LF);
-        }
-        journalWriter.flush();
-
-        if (size > maxSize || journalRebuildRequired()) {
-            executor.execute(cleanupRunnable);
-        }
-    }
-
-    boolean removeEntry(Entry entry) throws IOException {
-        if (null != entry.currentEditor) {
-            entry.currentEditor.detach();
-        }
-
-        for (int i = 0; i < valueCount; i++) {
-            entry.cleanFiles[i].delete();
-            size -= entry.lengths[i];
-            entry.lengths[i] = 0;
-        }
-
-        redundantOpCount++;
-        journalWriter.writeUtf8(REMOVE).writeByte(Symbol.C_SPACE).writeUtf8(entry.key).writeByte(Symbol.C_LF);
-        lruEntries.remove(entry.key);
-
-        if (journalRebuildRequired()) {
-            executor.execute(cleanupRunnable);
-        }
-
-        return true;
-    }
-
-    private final Runnable cleanupRunnable = new Runnable() {
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
-                    return;
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
-            }
-        }
-    };
 
     /**
      * 返回名为{@code key}的条目的快照，如果条目不存在，则返回null，
@@ -636,10 +402,10 @@ public class DiskLruCache implements Closeable, Flushable {
         journalWriter.flush();
 
         if (hasJournalErrors) {
-            return null;
+            return null; // Don't edit; the journal can't be written.
         }
 
-        if (null == entry) {
+        if (entry == null) {
             entry = new Entry(key);
             lruEntries.put(key, entry);
         }
@@ -648,18 +414,23 @@ public class DiskLruCache implements Closeable, Flushable {
         return editor;
     }
 
+    /**
+     * Returns the directory where this cache stores its data.
+     */
     public File getDirectory() {
         return directory;
     }
 
+    /**
+     * Returns the maximum number of bytes that this cache should use to store its data.
+     */
     public synchronized long getMaxSize() {
         return maxSize;
     }
 
     /**
-     * 更改缓存可以存储的最大字节数，并在必要时对作业进行排队，以修剪现有存储
-     *
-     * @param maxSize 最大值
+     * Changes the maximum number of bytes the cache can store and queues a job to trim the existing
+     * store, if necessary.
      */
     public synchronized void setMaxSize(long maxSize) {
         this.maxSize = maxSize;
@@ -668,25 +439,78 @@ public class DiskLruCache implements Closeable, Flushable {
         }
     }
 
+    /**
+     * Returns the number of bytes currently being used to store the values in this cache. This may be
+     * greater than the max size if a background deletion is pending.
+     */
     public synchronized long size() throws IOException {
         initialize();
         return size;
     }
 
-    /**
-     * 关闭缓存并删除其所有存储值。这将删除缓存目录中的所有文件，包括没有由缓存创建的文件
-     *
-     * @throws IOException 异常
-     */
-    public void delete() throws IOException {
-        close();
-        this.deleteContents(directory);
+    synchronized void completeEdit(Editor editor, boolean success) throws IOException {
+        Entry entry = editor.entry;
+        if (entry.currentEditor != editor) {
+            throw new IllegalStateException();
+        }
+
+        // If this edit is creating the entry for the first time, every index must have a value.
+        if (success && !entry.readable) {
+            for (int i = 0; i < valueCount; i++) {
+                if (!editor.written[i]) {
+                    editor.abort();
+                    throw new IllegalStateException("Newly created entry didn't create value for index " + i);
+                }
+                if (!fileSystem.exists(entry.dirtyFiles[i])) {
+                    editor.abort();
+                    return;
+                }
+            }
+        }
+
+        for (int i = 0; i < valueCount; i++) {
+            File dirty = entry.dirtyFiles[i];
+            if (success) {
+                if (fileSystem.exists(dirty)) {
+                    File clean = entry.cleanFiles[i];
+                    fileSystem.rename(dirty, clean);
+                    long oldLength = entry.lengths[i];
+                    long newLength = fileSystem.size(clean);
+                    entry.lengths[i] = newLength;
+                    size = size - oldLength + newLength;
+                }
+            } else {
+                fileSystem.delete(dirty);
+            }
+        }
+
+        redundantOpCount++;
+        entry.currentEditor = null;
+        if (entry.readable | success) {
+            entry.readable = true;
+            journalWriter.writeUtf8(CLEAN).writeByte(' ');
+            journalWriter.writeUtf8(entry.key);
+            entry.writeLengths(journalWriter);
+            journalWriter.writeByte('\n');
+            if (success) {
+                entry.sequenceNumber = nextSequenceNumber++;
+            }
+        } else {
+            lruEntries.remove(entry.key);
+            journalWriter.writeUtf8(REMOVE).writeByte(' ');
+            journalWriter.writeUtf8(entry.key);
+            journalWriter.writeByte('\n');
+        }
+        journalWriter.flush();
+
+        if (size > maxSize || journalRebuildRequired()) {
+            executor.execute(cleanupRunnable);
+        }
     }
 
     /**
-     * 只有当日志的大小减半并至少减少2000个ops时，我们才会重建日志
-     *
-     * @return the true/false
+     * We only rebuild the journal when it will halve the size of the journal and eliminate at least
+     * 2000 ops.
      */
     boolean journalRebuildRequired() {
         final int redundantOpCompactThreshold = 2000;
@@ -695,12 +519,10 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * 如果{@code key}存在并且可以删除，则删除它。如果当前正在编辑
-     * {@code key}的条目，那么编辑将正常完成，但是它的值不会被存储
+     * Drops the entry for {@code key} if it exists and can be removed. If the entry for {@code key}
+     * is currently being edited, that edit will complete normally but its value will not be stored.
      *
-     * @param key 缓存key
-     * @return 如果一个条目被删除，则为真
-     * @throws IOException 异常
+     * @return true if an entry was removed.
      */
     public synchronized boolean remove(String key) throws IOException {
         initialize();
@@ -708,29 +530,37 @@ public class DiskLruCache implements Closeable, Flushable {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
-        if (null == entry) {
-            return false;
-        }
+        if (entry == null) return false;
         boolean removed = removeEntry(entry);
         if (removed && size <= maxSize) mostRecentTrimFailed = false;
         return removed;
     }
 
-    public void deleteContents(File directory) throws IOException {
-        File[] files = directory.listFiles();
-        if (null == files) {
-            throw new IOException("not a readable directory: " + directory);
+    boolean removeEntry(Entry entry) throws IOException {
+        if (entry.currentEditor != null) {
+            entry.currentEditor.detach(); // Prevent the edit from completing normally.
         }
-        for (File file : files) {
-            if (file.isDirectory()) {
-                deleteContents(file);
-            }
-            if (!file.delete()) {
-                throw new IOException("failed to delete " + file);
-            }
+
+        for (int i = 0; i < valueCount; i++) {
+            fileSystem.delete(entry.cleanFiles[i]);
+            size -= entry.lengths[i];
+            entry.lengths[i] = 0;
         }
+
+        redundantOpCount++;
+        journalWriter.writeUtf8(REMOVE).writeByte(' ').writeUtf8(entry.key).writeByte('\n');
+        lruEntries.remove(entry.key);
+
+        if (journalRebuildRequired()) {
+            executor.execute(cleanupRunnable);
+        }
+
+        return true;
     }
 
+    /**
+     * Returns true if this cache has been closed.
+     */
     public synchronized boolean isClosed() {
         return closed;
     }
@@ -741,6 +571,9 @@ public class DiskLruCache implements Closeable, Flushable {
         }
     }
 
+    /**
+     * Force buffered operations to the filesystem.
+     */
     @Override
     public synchronized void flush() throws IOException {
         if (!initialized) return;
@@ -750,14 +583,18 @@ public class DiskLruCache implements Closeable, Flushable {
         journalWriter.flush();
     }
 
+    /**
+     * Closes this cache. Stored values will remain on the filesystem.
+     */
     @Override
     public synchronized void close() throws IOException {
         if (!initialized || closed) {
             closed = true;
             return;
         }
+        // Copying for safe iteration.
         for (Entry entry : lruEntries.values().toArray(new Entry[lruEntries.size()])) {
-            if (null != entry.currentEditor) {
+            if (entry.currentEditor != null) {
                 entry.currentEditor.abort();
             }
         }
@@ -775,7 +612,160 @@ public class DiskLruCache implements Closeable, Flushable {
         mostRecentTrimFailed = false;
     }
 
-    public class Editor {
+    /**
+     * Closes the cache and deletes all of its stored values. This will delete all files in the cache
+     * directory including files that weren't created by the cache.
+     */
+    public void delete() throws IOException {
+        close();
+        fileSystem.deleteContents(directory);
+    }
+
+    /**
+     * Deletes all stored values from the cache. In-flight edits will complete normally but their
+     * values will not be stored.
+     */
+    public synchronized void evictAll() throws IOException {
+        initialize();
+        // Copying for safe iteration.
+        for (Entry entry : lruEntries.values().toArray(new Entry[lruEntries.size()])) {
+            removeEntry(entry);
+        }
+        mostRecentTrimFailed = false;
+    }
+
+    private void validateKey(String key) {
+        Matcher matcher = LEGAL_KEY_PATTERN.matcher(key);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(
+                    "keys must match regex [a-z0-9_-]{1,120}: \"" + key + "\"");
+        }
+    }
+
+    /**
+     * 返回缓存当前项的迭代器。这个迭代器不会抛出{@code ConcurrentModificationException}，
+     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照
+     * 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
+     *
+     * @return 返回迭代器
+     * @throws IOException 异常
+     */
+    public synchronized Iterator<Snapshot> snapshots() throws IOException {
+        initialize();
+        return new Iterator<>() {
+            /**
+             * 迭代条目的副本以防止并发修改错误
+             */
+            final Iterator<Entry> delegate = new ArrayList<>(lruEntries.values()).iterator();
+
+            /**
+             * 要从{@link #next}返回的快照。如果还没有计算出来，就是Null
+             */
+            Snapshot nextSnapshot;
+
+            /**
+             * 要使用{@link #remove}删除的快照。如果删除是非法的，则为Null
+             */
+            Snapshot removeSnapshot;
+
+            @Override
+            public boolean hasNext() {
+                if (nextSnapshot != null) return true;
+
+                synchronized (DiskLruCache.this) {
+                    // 如果缓存关闭，则截断迭代器
+                    if (closed) return false;
+
+                    while (delegate.hasNext()) {
+                        Entry entry = delegate.next();
+                        if (!entry.readable) continue; // Entry during edit.
+                        Snapshot snapshot = entry.snapshot();
+                        if (snapshot == null) continue; // Evicted since we copied the entries.
+                        nextSnapshot = snapshot;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public Snapshot next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                removeSnapshot = nextSnapshot;
+                nextSnapshot = null;
+                return removeSnapshot;
+            }
+
+            @Override
+            public void remove() {
+                if (removeSnapshot == null) throw new IllegalStateException("remove() before next()");
+                try {
+                    DiskLruCache.this.remove(removeSnapshot.key);
+                } catch (IOException ignored) {
+                    // 这里没什么用。未能从缓存中删除。这很可能是因为无法更新日志，但是缓存的条目仍然没有了
+                } finally {
+                    removeSnapshot = null;
+                }
+            }
+        };
+    }
+
+    /**
+     * 快照信息
+     */
+    public final class Snapshot implements Closeable {
+
+        private final String key;
+        private final long sequenceNumber;
+        private final Source[] sources;
+        private final long[] lengths;
+
+        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
+            this.key = key;
+            this.sequenceNumber = sequenceNumber;
+            this.sources = sources;
+            this.lengths = lengths;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        /**
+         * Returns an editor for this snapshot's entry, or null if either the entry has changed since
+         * this snapshot was created or if another edit is in progress.
+         */
+        public Editor edit() throws IOException {
+            return DiskLruCache.this.edit(key, sequenceNumber);
+        }
+
+        /**
+         * Returns the unbuffered stream with the value for {@code index}.
+         */
+        public Source getSource(int index) {
+            return sources[index];
+        }
+
+        /**
+         * Returns the byte length of the value for {@code index}.
+         */
+        public long getLength(int index) {
+            return lengths[index];
+        }
+
+        public void close() {
+            for (Source in : sources) {
+                IoKit.close(in);
+            }
+        }
+    }
+
+    /**
+     * Edits the values for an entry.
+     */
+    public final class Editor {
+
         final Entry entry;
         final boolean[] written;
         private boolean done;
@@ -785,15 +775,29 @@ public class DiskLruCache implements Closeable, Flushable {
             this.written = (entry.readable) ? null : new boolean[valueCount];
         }
 
+        /**
+         * Prevents this editor from completing normally. This is necessary either when the edit causes
+         * an I/O error, or if the target entry is evicted while this editor is active. In either case
+         * we delete the editor's created files and prevent new files from being created. Note that once
+         * an editor has been detached it is possible for another editor to edit the entry.
+         */
         void detach() {
             if (entry.currentEditor == this) {
                 for (int i = 0; i < valueCount; i++) {
-                    entry.dirtyFiles[i].delete();
+                    try {
+                        fileSystem.delete(entry.dirtyFiles[i]);
+                    } catch (IOException e) {
+                        // This file is potentially leaked. Not much we can do about that.
+                    }
                 }
                 entry.currentEditor = null;
             }
         }
 
+        /**
+         * Returns an unbuffered input stream to read the last committed value, or null if no value has
+         * been committed.
+         */
         public Source newSource(int index) {
             synchronized (DiskLruCache.this) {
                 if (done) {
@@ -803,13 +807,18 @@ public class DiskLruCache implements Closeable, Flushable {
                     return null;
                 }
                 try {
-                    return IoKit.source(entry.cleanFiles[index]);
+                    return fileSystem.source(entry.cleanFiles[index]);
                 } catch (FileNotFoundException e) {
                     return null;
                 }
             }
         }
 
+        /**
+         * Returns a new unbuffered output stream to write the value at {@code index}. If the underlying
+         * output stream encounters errors when writing to the filesystem, this edit will be aborted
+         * when {@link #commit} is called. The returned output stream does not throw IOExceptions.
+         */
         public Sink newSink(int index) {
             synchronized (DiskLruCache.this) {
                 if (done) {
@@ -824,7 +833,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 File dirtyFile = entry.dirtyFiles[index];
                 Sink sink;
                 try {
-                    sink = IoKit.sink(dirtyFile);
+                    sink = fileSystem.sink(dirtyFile);
                 } catch (FileNotFoundException e) {
                     return IoKit.blackhole();
                 }
@@ -839,6 +848,10 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Commits this edit so it is visible to readers.  This releases the edit lock so another edit
+         * may be started on the same key.
+         */
         public void commit() throws IOException {
             synchronized (DiskLruCache.this) {
                 if (done) {
@@ -881,6 +894,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private class Entry {
+
         final String key;
 
         /**
@@ -890,10 +904,19 @@ public class DiskLruCache implements Closeable, Flushable {
         final File[] cleanFiles;
         final File[] dirtyFiles;
 
+        /**
+         * True if this entry has ever been published.
+         */
         boolean readable;
 
+        /**
+         * The ongoing edit or null if this entry is not being edited.
+         */
         Editor currentEditor;
 
+        /**
+         * The sequence number of the most recently committed edit to this entry.
+         */
         long sequenceNumber;
 
         Entry(String key) {
@@ -914,6 +937,9 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Set lengths using decimal numbers like "10123".
+         */
         void setLengths(String[] strings) throws IOException {
             if (strings.length != valueCount) {
                 throw invalidLengths(strings);
@@ -928,6 +954,9 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Append space-prefixed lengths to {@code writer}.
+         */
         void writeLengths(BufferSink writer) throws IOException {
             for (long length : lengths) {
                 writer.writeByte(Symbol.C_SPACE).writeDecimalLong(length);
@@ -938,6 +967,11 @@ public class DiskLruCache implements Closeable, Flushable {
             throw new IOException("unexpected journal line: " + Arrays.toString(strings));
         }
 
+        /**
+         * Returns a snapshot of this entry. This opens all streams eagerly to guarantee that we see a
+         * single published snapshot. If we opened streams lazily then the streams could come from
+         * different edits.
+         */
         Snapshot snapshot() {
             if (!Thread.holdsLock(DiskLruCache.this)) throw new AssertionError();
 
@@ -945,7 +979,7 @@ public class DiskLruCache implements Closeable, Flushable {
             long[] lengths = this.lengths.clone();
             try {
                 for (int i = 0; i < valueCount; i++) {
-                    sources[i] = IoKit.source(cleanFiles[i]);
+                    sources[i] = fileSystem.source(cleanFiles[i]);
                 }
                 return new Snapshot(key, sequenceNumber, sources, lengths);
             } catch (FileNotFoundException e) {
@@ -965,26 +999,31 @@ public class DiskLruCache implements Closeable, Flushable {
         }
     }
 
-    /**
-     * 从缓存中删除所有存储值,飞行中的编辑将正常完成，但不会存储它们的值
-     *
-     * @throws IOException 异常
-     */
-    public synchronized void evictAll() throws IOException {
-        initialize();
-        // 为了安全迭代而复制
-        for (Entry entry : lruEntries.values().toArray(new Entry[lruEntries.size()])) {
-            removeEntry(entry);
-        }
-        mostRecentTrimFailed = false;
-    }
+    private final Runnable cleanupRunnable = new Runnable() {
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized | closed) {
+                    return;
+                }
 
-    private void validateKey(String key) {
-        Matcher matcher = LEGAL_KEY_PATTERN.matcher(key);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                    "keys must match regex [a-z0-9_-]{1,120}: \"" + key + Symbol.DOUBLE_QUOTES);
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
         }
-    }
+    };
+
 
 }
