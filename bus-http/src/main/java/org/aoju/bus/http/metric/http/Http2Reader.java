@@ -30,7 +30,6 @@ import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.io.timout.Timeout;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
@@ -88,7 +87,7 @@ public class Http2Reader implements Closeable {
         } else {
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
             if (Logger.isDebug()) {
-                Logger.warn(StringKit.format("<< CONNECTION %s", connectionPreface.hex()));
+                Logger.debug(String.format("<< CONNECTION %s" + connectionPreface.hex()));
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
                 throw Http2.ioException("Expected a connection header but was %s", connectionPreface.utf8());

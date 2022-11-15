@@ -63,11 +63,9 @@ public class Builder {
      * 最后一个四位数的年份:"Fri, 31 Dec 9999 23:59:59 GMT"
      */
     public static final long MAX_DATE = 253402300799999L;
-    public static final String X_509 = "X.509";
-    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     public static final Headers EMPTY_HEADERS = Headers.of();
-    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, EMPTY_BYTE_ARRAY);
+    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY);
     /**
      * GMT and UTC are equivalent for our purposes
      */

@@ -32,7 +32,6 @@ import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.http.metric.NamedRunnable;
@@ -161,7 +160,7 @@ public class Http2Connection implements Closeable {
         connectionName = builder.connectionName;
 
         writerExecutor = new ScheduledThreadPoolExecutor(1,
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Writer", connectionName), false));
+                org.aoju.bus.http.Builder.threadFactory(String.format("Http %s Writer", connectionName), false));
         if (builder.pingIntervalMillis != 0) {
             writerExecutor.scheduleAtFixedRate(new IntervalPingRunnable(),
                     builder.pingIntervalMillis, builder.pingIntervalMillis, TimeUnit.MILLISECONDS);
@@ -169,7 +168,7 @@ public class Http2Connection implements Closeable {
 
         // Like newSingleThreadExecutor, except lazy creates the thread.
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Push Observer", connectionName), true));
+                org.aoju.bus.http.Builder.threadFactory(String.format("Http %s Push Observer", connectionName), true));
         peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
@@ -416,7 +415,7 @@ public class Http2Connection implements Closeable {
                 shutdown = true;
                 lastGoodStreamId = this.lastGoodStreamId;
             }
-            writer.goAway(lastGoodStreamId, statusCode, org.aoju.bus.http.Builder.EMPTY_BYTE_ARRAY);
+            writer.goAway(lastGoodStreamId, statusCode, Normal.EMPTY_BYTE_ARRAY);
         }
     }
 
