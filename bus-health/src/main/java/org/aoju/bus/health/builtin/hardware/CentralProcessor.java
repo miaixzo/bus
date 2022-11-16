@@ -93,10 +93,11 @@ public interface CentralProcessor {
     long[] getCurrentFreq();
 
     /**
-     * Returns an {@code UnmodifiableList} of the CPU's logical processors. The list
-     * will be sorted in order of increasing NUMA node number, and then processor
-     * number. This order is consistent with other methods providing per-processor
-     * results.
+     * Returns an {@code UnmodifiableList} of the CPU's logical processors. The list will be sorted in order of
+     * increasing NUMA node number, and then processor number. This order is (usually) consistent with other methods
+     * providing per-processor results.
+     * On some operating systems with variable numbers of logical processors, the size of this array could change and
+     * may not align with other per-processor methods.
      *
      * @return An {@code UnmodifiabeList} of logical processors.
      */

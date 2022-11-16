@@ -517,7 +517,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public OSProcess getProcess(int pid) {
-        OSProcess proc = new LinuxOSProcess(pid);
+        OSProcess proc = new LinuxOSProcess(pid, this);
         if (!proc.getState().equals(OSProcess.State.INVALID)) {
             return proc;
         }

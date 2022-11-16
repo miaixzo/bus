@@ -29,6 +29,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.Resource;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -101,9 +102,11 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private long contextSwitches;
     private String commandLineBackup;
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final OpenBsdOperatingSystem os;
 
-    public OpenBsdOSProcess(int pid, Map<OpenBsdOperatingSystem.PsKeywords, String> psMap) {
+    public OpenBsdOSProcess(int pid, Map<OpenBsdOperatingSystem.PsKeywords, String> psMap, OpenBsdOperatingSystem os) {
         super(pid);
+        this.os = os;
         // OpenBSD does not maintain a compatibility layer.
         // Process bitness is OS bitness
         this.bitness = Native.LONG_SIZE * 8;
@@ -298,6 +301,28 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     @Override
     public long getOpenFiles() {
         return FstatKit.getOpenFiles(getProcessID());
+    }
+
+    @Override
+    public long getSoftOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            OpenBsdLibc.INSTANCE.getrlimit(OpenBsdLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_cur;
+        } else {
+            return -1L; // not supported
+        }
+    }
+
+    @Override
+    public long getHardOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            OpenBsdLibc.INSTANCE.getrlimit(OpenBsdLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_max;
+        } else {
+            return -1L; // not supported
+        }
     }
 
     @Override

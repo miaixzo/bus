@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.Resource;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -92,10 +93,13 @@ public class AixOSProcess extends AbstractOSProcess {
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
+    private final AixOperatingSystem os;
 
-    public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu) {
+    public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu,
+                        AixOperatingSystem os) {
         super(pid);
         this.procCpu = procCpu;
+        this.os = os;
         updateAttributes(userSysCpuTime);
     }
 
@@ -275,6 +279,28 @@ public class AixOSProcess extends AbstractOSProcess {
             return fd.count();
         } catch (IOException e) {
             return 0L;
+        }
+    }
+
+    @Override
+    public long getSoftOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            AixLibc.INSTANCE.getrlimit(AixLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_cur;
+        } else {
+            return -1L; // not supported
+        }
+    }
+
+    @Override
+    public long getHardOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            AixLibc.INSTANCE.getrlimit(AixLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_max;
+        } else {
+            return -1L; // not supported
         }
     }
 

@@ -196,4 +196,15 @@ public class AixFileSystem extends AbstractFileSystem {
         return Builder.parseLongOrDefault(Executor.getFirstAnswer("ulimit -n"), 0L);
     }
 
+    @Override
+    public long getMaxFileDescriptorsPerProcess() {
+        final List<String> lines = Builder.readFile("/etc/security/limits");
+        for (final String line : lines) {
+            if (line.trim().startsWith("nofiles")) {
+                return Builder.parseLastLong(line, Long.MAX_VALUE);
+            }
+        }
+        return Long.MAX_VALUE;
+    }
+
 }

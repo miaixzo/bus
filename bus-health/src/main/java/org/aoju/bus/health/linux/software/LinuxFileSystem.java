@@ -272,4 +272,13 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return getFileDescriptors(2);
     }
 
+    private static long getFileDescriptorsPerProcess() {
+        return Builder.getLongFromFile(ProcPath.SYS_FS_FILE_MAX);
+    }
+
+    @Override
+    public long getMaxFileDescriptorsPerProcess() {
+        return getFileDescriptorsPerProcess();
+    }
+
 }

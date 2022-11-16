@@ -344,13 +344,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if (version.startsWith("Windows ")) {
             version = version.substring(8);
         }
-
-        String sp = null;
         int suiteMask = 0;
-        String buildNumber = null;
+        String buildNumber = Normal.EMPTY;
         WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
         if (versionInfo.getResultCount() > 0) {
-            sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
+            String sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
             if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
                 version = version + " " + sp.replace("Service Pack ", "SP");
             }
@@ -358,6 +356,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
         }
         String codeName = parseCodeName(suiteMask);
+        // Older JDKs don't recognize Win11 and Server2022
+        if ("10".equals(version) && buildNumber.compareTo("22000") >= 0) {
+            version = "11";
+        } else if ("Server 2019".equals(version) && buildNumber.compareTo("20347") > 0) {
+            version = "Server 2022";
+        }
         return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
     }
 

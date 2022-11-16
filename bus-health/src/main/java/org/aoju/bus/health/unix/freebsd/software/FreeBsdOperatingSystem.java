@@ -69,7 +69,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(proc -> Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
                 .map(psMap -> new FreeBsdOSProcess(
-                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap))
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this))
                 .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 

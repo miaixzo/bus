@@ -109,7 +109,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         // Iterate files
         for (File pidFile : numericFiles) {
             int pidNum = Builder.parseIntOrDefault(pidFile.getName(), 0);
-            OSProcess proc = new SolarisOSProcess(pidNum);
+            OSProcess proc = new SolarisOSProcess(pidNum, this);
             if (proc.getState() != OSProcess.State.INVALID) {
                 procs.add(proc);
             }

@@ -25,12 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.software;
 
+import com.sun.jna.platform.unix.Resource;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.*;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
+import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 import org.aoju.bus.logger.Logger;
@@ -44,10 +46,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -99,8 +98,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private long majorFaults;
     private long contextSwitches;
 
-    public LinuxOSProcess(int pid) {
+    private final LinuxOperatingSystem os;
+
+    public LinuxOSProcess(int pid, LinuxOperatingSystem os) {
         super(pid);
+        this.os = os;
         updateAttributes();
     }
 
@@ -293,6 +295,28 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public long getSoftOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_cur;
+        } else {
+            return getProcessOpenFileLimit(getProcessID(), 1);
+        }
+    }
+
+    @Override
+    public long getHardOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            LinuxLibc.INSTANCE.getrlimit(LinuxLibc.RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_max;
+        } else {
+            return getProcessOpenFileLimit(getProcessID(), 2);
+        }
+    }
+
+    @Override
     public int getBitness() {
         return this.bitness.get();
     }
@@ -425,6 +449,23 @@ public class LinuxOSProcess extends AbstractOSProcess {
         public int getOrder() {
             return this.order;
         }
+    }
+
+    private long getProcessOpenFileLimit(long processId, int index) {
+        final String limitsPath = String.format("/proc/%d/limits", processId);
+        if (!Files.exists(Paths.get(limitsPath))) {
+            return -1; // not supported
+        }
+        final List<String> lines = Builder.readFile(limitsPath);
+        final Optional<String> maxOpenFilesLine = lines.stream().filter(line -> line.startsWith("Max open files"))
+                .findFirst();
+        if (!maxOpenFilesLine.isPresent()) {
+            return -1;
+        }
+
+        // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
+        final String[] split = maxOpenFilesLine.get().split("\\D+");
+        return Long.parseLong(split[index]);
     }
 
 }

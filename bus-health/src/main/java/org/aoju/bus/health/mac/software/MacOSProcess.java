@@ -31,6 +31,7 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Group;
 import com.sun.jna.platform.mac.SystemB.Passwd;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.Resource;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -74,6 +75,7 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SIDL = 4; // intermediate state in process creation
     private static final int SZOMB = 5; // intermediate state in process termination
     private static final int SSTOP = 6; // process being traced
+    private static final int MAC_RLIMIT_NOFILE = 8;
 
     private int majorVersion;
     private int minorVersion;
@@ -103,11 +105,13 @@ public class MacOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
+    private final MacOperatingSystem os;
 
-    public MacOSProcess(int pid, int major, int minor) {
+    public MacOSProcess(int pid, int major, int minor, MacOperatingSystem os) {
         super(pid);
         this.majorVersion = major;
         this.minorVersion = minor;
+        this.os = os;
         updateAttributes();
     }
 
@@ -308,6 +312,28 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public long getOpenFiles() {
         return this.openFiles;
+    }
+
+    @Override
+    public long getSoftOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            SystemB.INSTANCE.getrlimit(MAC_RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_cur;
+        } else {
+            return -1L; // not supported
+        }
+    }
+
+    @Override
+    public long getHardOpenFileLimit() {
+        if (getProcessID() == this.os.getProcessId()) {
+            final Resource.Rlimit rlimit = new Resource.Rlimit();
+            SystemB.INSTANCE.getrlimit(MAC_RLIMIT_NOFILE, rlimit);
+            return rlimit.rlim_max;
+        } else {
+            return -1L; // not supported
+        }
     }
 
     @Override
