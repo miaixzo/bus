@@ -31,6 +31,8 @@ import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 /**
  * 无重复键的Map
@@ -41,6 +43,8 @@ import java.util.*;
  * @since Java 17+
  */
 public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final List<K> keys;
     private final List<V> values;
@@ -57,7 +61,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      *
      * @param size 初始容量
      */
-    public TableMap(int size) {
+    public TableMap(final int size) {
         this.keys = new ArrayList<>(size);
         this.values = new ArrayList<>(size);
     }
@@ -68,7 +72,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @param keys   键列表
      * @param values 值列表
      */
-    public TableMap(K[] keys, V[] values) {
+    public TableMap(final K[] keys, final V[] values) {
         this.keys = CollKit.toList(keys);
         this.values = CollKit.toList(values);
     }
@@ -84,19 +88,19 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return keys.contains(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return values.contains(value);
     }
 
     @Override
-    public V get(Object key) {
+    public V get(final Object key) {
         final int index = keys.indexOf(key);
-        if (index > -1 && index < values.size()) {
+        if (index > -1) {
             return values.get(index);
         }
         return null;
@@ -108,9 +112,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @param value 值
      * @return 键
      */
-    public K getKey(V value) {
+    public K getKey(final V value) {
         final int index = values.indexOf(value);
-        if (index > -1 && index < keys.size()) {
+        if (index > -1) {
             return keys.get(index);
         }
         return null;
@@ -122,7 +126,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @param key 键
      * @return 值列表
      */
-    public List<V> getValues(K key) {
+    public List<V> getValues(final K key) {
         return CollKit.getAny(
                 this.values,
                 CollKit.indexOfAll(this.keys, (ele) -> ObjectKit.equals(ele, key))
@@ -135,7 +139,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @param value 值
      * @return 值列表
      */
-    public List<K> getKeys(V value) {
+    public List<K> getKeys(final V value) {
         return CollKit.getAny(
                 this.keys,
                 CollKit.indexOfAll(this.values, (ele) -> ObjectKit.equals(ele, value))
@@ -143,27 +147,42 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         keys.add(key);
         values.add(value);
         return null;
     }
 
+    /**
+     * 移除指定的所有键和对应的所有值
+     *
+     * @param key 键
+     * @return 最后一个移除的值
+     */
     @Override
-    public V remove(Object key) {
-        int index = keys.indexOf(key);
-        if (index > -1) {
-            keys.remove(index);
-            if (index < values.size()) {
-                values.remove(index);
-            }
+    public V remove(final Object key) {
+        V lastValue = null;
+        int index;
+        while ((index = keys.indexOf(key)) > -1) {
+            lastValue = removeByIndex(index);
         }
-        return null;
+        return lastValue;
+    }
+
+    /**
+     * 移除指定位置的键值对
+     *
+     * @param index 位置，不能越界
+     * @return 移除的值
+     */
+    public V removeByIndex(final int index) {
+        keys.remove(index);
+        return values.remove(index);
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+    public void putAll(final Map<? extends K, ? extends V> m) {
+        for (final Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -194,8 +213,8 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public Set<Map.Entry<K, V>> entrySet() {
-        final Set<Map.Entry<K, V>> hashSet = new LinkedHashSet<>();
+    public Set<Entry<K, V>> entrySet() {
+        final Set<Entry<K, V>> hashSet = new LinkedHashSet<>();
         for (int i = 0; i < size(); i++) {
             hashSet.add(MapKit.entry(keys.get(i), values.get(i)));
         }
@@ -203,7 +222,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public Iterator<Map.Entry<K, V>> iterator() {
+    public Iterator<Entry<K, V>> iterator() {
         return new Iterator<>() {
             private final Iterator<K> keysIter = keys.iterator();
             private final Iterator<V> valuesIter = values.iterator();
@@ -214,7 +233,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
             }
 
             @Override
-            public Map.Entry<K, V> next() {
+            public Entry<K, V> next() {
                 return MapKit.entry(keysIter.next(), valuesIter.next());
             }
 
@@ -228,7 +247,90 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public String toString() {
-        return "TableMap{" + "keys=" + keys + ", values=" + values + '}';
+        return "TableMap{" +
+                "keys=" + keys +
+                ", values=" + values +
+                '}';
+    }
+
+    @Override
+    public void forEach(final BiConsumer<? super K, ? super V> action) {
+        for (int i = 0; i < size(); i++) {
+            action.accept(keys.get(i), values.get(i));
+        }
+    }
+
+    @Override
+    public boolean remove(final Object key, final Object value) {
+        boolean removed = false;
+        for (int i = 0; i < size(); i++) {
+            if (ObjectKit.equals(key, keys.get(i)) && ObjectKit.equals(value, values.get(i))) {
+                removeByIndex(i);
+                removed = true;
+                // 移除当前元素，下个元素前移
+                i--;
+            }
+        }
+        return removed;
+    }
+
+    @Override
+    public void replaceAll(final BiFunction<? super K, ? super V, ? extends V> function) {
+        for (int i = 0; i < size(); i++) {
+            final V newValue = function.apply(keys.get(i), values.get(i));
+            values.set(i, newValue);
+        }
+    }
+
+    @Override
+    public boolean replace(final K key, final V oldValue, final V newValue) {
+        for (int i = 0; i < size(); i++) {
+            if (ObjectKit.equals(key, keys.get(i)) && ObjectKit.equals(oldValue, values.get(i))) {
+                values.set(i, newValue);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 替换指定key的所有值为指定值
+     *
+     * @param key   指定的key
+     * @param value 替换的值
+     * @return 最后替换的值
+     */
+    @Override
+    public V replace(final K key, final V value) {
+        V lastValue = null;
+        for (int i = 0; i < size(); i++) {
+            if (ObjectKit.equals(key, keys.get(i))) {
+                lastValue = values.set(i, value);
+            }
+        }
+        return lastValue;
+    }
+
+    @Override
+    public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        if (null == remappingFunction) {
+            return null;
+        }
+
+        V lastValue = null;
+        for (int i = 0; i < size(); i++) {
+            if (ObjectKit.equals(key, keys.get(i))) {
+                final V newValue = remappingFunction.apply(key, values.get(i));
+                if (null != newValue) {
+                    lastValue = values.set(i, newValue);
+                } else {
+                    removeByIndex(i);
+                    // 移除当前元素，下个元素前移
+                    i--;
+                }
+            }
+        }
+        return lastValue;
     }
 
 }

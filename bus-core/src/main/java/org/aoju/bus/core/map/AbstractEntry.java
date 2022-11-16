@@ -42,12 +42,12 @@ import java.util.Map;
 public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
 
     @Override
-    public V setValue(V value) {
+    public V setValue(final V value) {
         throw new UnsupportedOperationException("Entry is read only.");
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (object instanceof Map.Entry) {
             final Map.Entry<?, ?> that = (Map.Entry<?, ?>) object;
             return ObjectKit.equals(this.getKey(), that.getKey())

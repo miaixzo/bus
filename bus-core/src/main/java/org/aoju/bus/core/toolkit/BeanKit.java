@@ -93,16 +93,16 @@ public class BeanKit {
      * 判断Bean是否为空对象，空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
      *
      * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
+     * @param ignoreFieldNames 忽略检查的字段名
      * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
      */
-    public static boolean isEmpty(Object bean, String... ignoreFiledNames) {
+    public static boolean isEmpty(Object bean, String... ignoreFieldNames) {
         if (null != bean) {
             for (Field field : ReflectKit.getFields(bean.getClass())) {
                 if (isStatic(field)) {
                     continue;
                 }
-                if ((false == ArrayKit.contains(ignoreFiledNames, field.getName()))
+                if ((false == ArrayKit.contains(ignoreFieldNames, field.getName()))
                         && null != ReflectKit.getFieldValue(bean, field)) {
                     return false;
                 }
@@ -115,11 +115,11 @@ public class BeanKit {
      * 判断Bean是否为非空对象，非空对象表示本身不为<code>null</code>或者含有非<code>null</code>属性的对象
      *
      * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
+     * @param ignoreFieldNames 忽略检查的字段名
      * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
      */
-    public static boolean isNotEmpty(Object bean, String... ignoreFiledNames) {
-        return false == isEmpty(bean, ignoreFiledNames);
+    public static boolean isNotEmpty(Object bean, String... ignoreFieldNames) {
+        return false == isEmpty(bean, ignoreFieldNames);
     }
 
     /**
@@ -227,10 +227,10 @@ public class BeanKit {
      * 对象本身为<code>null</code>也返回true
      *
      * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
+     * @param ignoreFieldNames 忽略检查的字段名
      * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
      */
-    public static boolean hasNullField(Object bean, String... ignoreFiledNames) {
+    public static boolean hasNullField(Object bean, String... ignoreFieldNames) {
         if (null == bean) {
             return true;
         }
@@ -238,7 +238,7 @@ public class BeanKit {
             if (isStatic(field)) {
                 continue;
             }
-            if ((false == ArrayKit.contains(ignoreFiledNames, field.getName()))
+            if ((false == ArrayKit.contains(ignoreFieldNames, field.getName()))
                     && null == ReflectKit.getFieldValue(bean, field)) {
                 return true;
             }
@@ -461,10 +461,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static <T> T getProperty(Object bean, String expression) {
-        return (T) PathExpression.create(expression).get(bean);
+        return (T) BeanPath.of(expression).get(bean);
     }
 
     /**
@@ -473,10 +473,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @param value      值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static void setProperty(Object bean, String expression, Object value) {
-        PathExpression.create(expression).set(bean, value);
+        BeanPath.of(expression).set(bean, value);
     }
 
     /**

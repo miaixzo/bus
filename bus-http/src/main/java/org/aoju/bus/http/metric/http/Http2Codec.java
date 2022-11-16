@@ -29,6 +29,7 @@ import org.aoju.bus.core.io.sink.Sink;
 import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RealConnection;
 import org.aoju.bus.http.metric.Interceptor;
@@ -38,7 +39,6 @@ import java.io.IOException;
 import java.net.ProtocolException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -105,9 +105,9 @@ public class Http2Codec implements HttpCodec {
 
         for (int i = 0, size = headers.size(); i < size; i++) {
             // header names must be lowercase.
-            String name = headers.name(i).toLowerCase(Locale.US);
-            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name)
-                    || name.equals(Header.TE) && headers.value(i).equals("trailers")) {
+            String name = StringKit.upperFirst(headers.name(i));
+            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(Header.TE)
+                    && "trailers".equals(headers.value(i))) {
                 result.add(new Headers.Header(name, headers.value(i)));
             }
         }

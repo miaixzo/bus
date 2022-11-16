@@ -41,7 +41,7 @@ import java.util.Random;
  * @author Kimi Liu
  * @since Java 17+
  */
-class WebSocketWriter {
+public class WebSocketWriter {
 
     final boolean isClient;
     final Random random;

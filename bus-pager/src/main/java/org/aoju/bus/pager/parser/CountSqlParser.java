@@ -29,7 +29,7 @@ import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.Parenthesis;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.parser.Token;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
@@ -142,6 +142,16 @@ public class CountSqlParser {
     // </editor-fold>
     private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<>());
 
+    private final JSqlParser jSqlParser;
+
+    public CountSqlParser() {
+        this.jSqlParser = JSqlParser.DEFAULT;
+    }
+
+    public CountSqlParser(JSqlParser jSqlParser) {
+        this.jSqlParser = jSqlParser;
+    }
+
     /**
      * 添加到聚合函数,可以是逗号隔开的多个函数前缀
      *
@@ -181,7 +191,7 @@ public class CountSqlParser {
             return getSimpleCountSql(sql, column);
         }
         try {
-            stmt = CCJSqlParserUtil.parse(sql);
+            stmt = jSqlParser.parse(sql);
         } catch (Throwable e) {
             // 无法解析的用一般方法返回count语句
             return getSimpleCountSql(sql, column);
@@ -199,7 +209,18 @@ public class CountSqlParser {
         processWithItemsList(select.getWithItemsList());
         // 处理为count查询
         sqlToCount(select, column);
-        return select.toString();
+        String result = select.toString();
+        if (selectBody instanceof PlainSelect) {
+            Token token = ((PlainSelect) selectBody).getASTNode().jjtGetFirstToken().specialToken;
+            if (token != null) {
+                String hints = token.toString().trim();
+                // 这里判断是否存在hint, 且result是不包含hint的
+                if (hints.startsWith("/*") && hints.endsWith("*/") && !result.startsWith("/*")) {
+                    result = hints + result;
+                }
+            }
+        }
+        return result;
     }
 
     /**

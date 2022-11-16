@@ -107,7 +107,7 @@ public class CharSequenceResource implements Resource {
 
     @Override
     public byte[] readBytes() throws InternalException {
-        return this.data.toString().getBytes(this.charset);
+        return StringKit.bytes(this.data, this.charset);
     }
 
 }

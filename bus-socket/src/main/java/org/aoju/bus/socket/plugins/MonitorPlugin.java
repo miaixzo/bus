@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.AioSession;
 import org.aoju.bus.socket.QuickTimer;
@@ -40,7 +39,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
+public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
 
     /**
      * 当前周期内流入字节数
@@ -91,12 +90,19 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
      */
     private long onlineCount;
 
+    private boolean udp;
+
     public MonitorPlugin() {
         this(60);
     }
 
     public MonitorPlugin(int seconds) {
+        this(seconds, false);
+    }
+
+    public MonitorPlugin(int seconds, boolean udp) {
         this.seconds = seconds;
+        this.udp = udp;
         long mills = TimeUnit.SECONDS.toMillis(seconds);
         QuickTimer.scheduleAtFixedRate(this, mills, mills);
     }
@@ -138,18 +144,18 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
         onlineCount += connectCount - disConnectCount;
         totalProcessMsgNum += curProcessMsgNum;
         totalConnect += connectCount;
-        Logger.info("\r\n-----" + seconds + "seconds ----\r\ninflow:\t\t" + curInFlow * 1.0 / (Normal._1024 * Normal._1024) + "(MB)"
-                + "\r\noutflow:\t" + curOutFlow * 1.0 / (Normal._1024 * Normal._1024) + "(MB)"
+        Logger.info("\r\n-----" + seconds + "seconds ----\r\ninflow:\t\t" + curInFlow * 1.0 / (1024 * 1024) + "(MB)"
+                + "\r\noutflow:\t" + curOutFlow * 1.0 / (1024 * 1024) + "(MB)"
                 + "\r\nprocess fail:\t" + curDiscardNum
                 + "\r\nprocess count:\t" + curProcessMsgNum
                 + "\r\nprocess total:\t" + totalProcessMsgNum
                 + "\r\nread count:\t" + curReadCount + "\twrite count:\t" + curWriteCount
-                + "\r\nconnect count:\t" + connectCount
+                + (udp ? "" : "\r\nconnect count:\t" + connectCount
                 + "\r\ndisconnect count:\t" + disConnectCount
                 + "\r\nonline count:\t" + onlineCount
-                + "\r\nconnected total:\t" + totalConnect
+                + "\r\nconnected total:\t" + totalConnect)
                 + "\r\nRequests/sec:\t" + curProcessMsgNum * 1.0 / seconds
-                + "\r\nTransfer/sec:\t" + (curInFlow * 1.0 / (Normal._1024 * Normal._1024) / seconds) + "(MB)");
+                + "\r\nTransfer/sec:\t" + (curInFlow * 1.0 / (1024 * 1024) / seconds) + "(MB)");
     }
 
     private long getAndReset(LongAdder longAdder) {

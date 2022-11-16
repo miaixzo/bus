@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.socket.convert;
 
-import org.aoju.bus.socket.SocketDecoder;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +37,11 @@ import java.util.List;
  */
 public class DelimiterFrameDecoder implements SocketDecoder {
 
+    private final int reposition;
     /**
      * 存储已解析的数据
      */
     private final List<ByteBuffer> bufferList;
-    /**
-     * 位置信息
-     */
-    private final int reposition;
     /**
      * 消息结束标志
      */
@@ -65,6 +60,12 @@ public class DelimiterFrameDecoder implements SocketDecoder {
     private int position;
 
     public DelimiterFrameDecoder(byte[] endFLag, int unitBufferSize) {
+        if (endFLag == null || endFLag.length == 0) {
+            throw new IllegalArgumentException("endFLag cannot be empty");
+        }
+        if (unitBufferSize < 1) {
+            throw new IllegalArgumentException("unitBufferSize Must be greater than 1");
+        }
         this.endFLag = endFLag;
         int p = 0;
         for (int i = 1; i < endFLag.length; i++) {

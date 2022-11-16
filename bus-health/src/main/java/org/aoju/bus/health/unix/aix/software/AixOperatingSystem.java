@@ -161,7 +161,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
 
         // Keys of this map are pids
         for (Entry<Integer, Pair<Long, Long>> entry : cpuMap.entrySet()) {
-            OSProcess proc = new AixOSProcess(entry.getKey(), entry.getValue(), procCpu);
+            OSProcess proc = new AixOSProcess(entry.getKey(), entry.getValue(), procCpu, this);
             if (proc.getState() != OSProcess.State.INVALID) {
                 procs.add(proc);
             }

@@ -37,13 +37,13 @@ import org.aoju.bus.core.lang.Normal;
 public class Caesar {
 
     /**
-     * 传入明文,加密得到密文
+     * 传入明文，加密得到密文
      *
      * @param message 加密的消息
      * @param offset  偏移量
      * @return 加密后的内容
      */
-    public static String encode(String message, int offset) {
+    public static String encode(final String message, final int offset) {
         Assert.notNull(message, "message must be not null!");
         final int len = message.length();
         final char[] plain = message.toCharArray();
@@ -61,17 +61,17 @@ public class Caesar {
     /**
      * 传入明文解密到密文
      *
-     * @param cipher 密文
-     * @param offset 偏移量
+     * @param cipherText 密文
+     * @param offset     偏移量
      * @return 解密后的内容
      */
-    public static String decode(String cipher, int offset) {
-        Assert.notNull(cipher, "cipherText must be not null!");
-        final int len = cipher.length();
-        final char[] plain = cipher.toCharArray();
+    public static String decode(final String cipherText, final int offset) {
+        Assert.notNull(cipherText, "cipherText must be not null!");
+        final int len = cipherText.length();
+        final char[] plain = cipherText.toCharArray();
         char c;
         for (int i = 0; i < len; i++) {
-            c = cipher.charAt(i);
+            c = cipherText.charAt(i);
             if (false == Character.isLetter(c)) {
                 continue;
             }
@@ -87,8 +87,8 @@ public class Caesar {
      * @param offset 偏移量
      * @return 加密后的字符
      */
-    private static char encodeChar(char c, int offset) {
-        int position = (Normal.UPPER_LOWER.indexOf(c) + offset) % 52;
+    private static char encodeChar(final char c, final int offset) {
+        final int position = (Normal.UPPER_LOWER.indexOf(c) + offset) % 52;
         return Normal.UPPER_LOWER.charAt(position);
 
     }
@@ -100,7 +100,7 @@ public class Caesar {
      * @param offset 偏移量
      * @return 解密后的字符
      */
-    private static char decodeChar(char c, int offset) {
+    private static char decodeChar(final char c, final int offset) {
         int position = (Normal.UPPER_LOWER.indexOf(c) - offset) % 52;
         if (position < 0) {
             position += 52;

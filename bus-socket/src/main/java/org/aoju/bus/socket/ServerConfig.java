@@ -26,6 +26,7 @@
 package org.aoju.bus.socket;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.socket.buffers.BufferFactory;
 import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.net.SocketOption;
@@ -64,12 +65,10 @@ public class ServerConfig {
      * 服务器端口号
      */
     private int port = 8888;
-
     /**
      * 服务端backlog
      */
     private int backlog = 1000;
-
     /**
      * 消息处理器
      */
@@ -78,12 +77,10 @@ public class ServerConfig {
      * 协议编解码
      */
     private Protocol protocol;
-
     /**
      * Socket 配置
      */
     private Map<SocketOption<Object>, Object> socketOptions;
-
     /**
      * 线程数
      */
@@ -98,6 +95,11 @@ public class ServerConfig {
      * 启用 aio 增强
      */
     private boolean aioEnhance = true;
+
+    /**
+     * 低内存模式
+     */
+    private boolean lowMemory = false;
 
     /**
      * 获取默认内存块大小
@@ -231,6 +233,14 @@ public class ServerConfig {
 
     public void setAioEnhance(boolean aioEnhance) {
         this.aioEnhance = aioEnhance;
+    }
+
+    public boolean isLowMemory() {
+        return lowMemory;
+    }
+
+    public void setLowMemory(boolean lowMemory) {
+        this.lowMemory = lowMemory;
     }
 
     @Override

@@ -232,7 +232,7 @@ public class CitizenIdKit {
      * @return 是否有效的18位身份证
      */
     public static boolean isValidCard18(String idcard, boolean ignoreCase) {
-        if (CHINA_ID_MAX_LENGTH != idcard.length()) {
+        if (StringKit.isBlank(idcard) || CHINA_ID_MAX_LENGTH != idcard.length()) {
             return false;
         }
 
@@ -265,7 +265,7 @@ public class CitizenIdKit {
      * @return 是否合法
      */
     public static boolean isValidCard15(String idcard) {
-        if (CHINA_ID_MIN_LENGTH != idcard.length()) {
+        if (StringKit.isBlank(idcard) || CHINA_ID_MIN_LENGTH != idcard.length()) {
             return false;
         }
         if (PatternKit.isMatch(RegEx.NUMBERS, idcard)) {
@@ -369,6 +369,9 @@ public class CitizenIdKit {
      * @return 验证码是否符合
      */
     public static boolean isValidHKCard(String idcard) {
+        if (StringKit.isBlank(idcard)) {
+            return false;
+        }
         String card = idcard.replaceAll("[()]", Normal.EMPTY);
         int sum;
         if (card.length() == 9) {

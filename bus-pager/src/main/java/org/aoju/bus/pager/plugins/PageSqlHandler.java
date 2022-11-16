@@ -28,6 +28,7 @@ package org.aoju.bus.pager.plugins;
 import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Dialect;
+import org.aoju.bus.pager.Property;
 import org.aoju.bus.pager.cache.Cache;
 import org.aoju.bus.pager.cache.CacheFactory;
 import org.aoju.bus.pager.proxy.CountExecutor;
@@ -59,9 +60,10 @@ import java.util.Properties;
 )
 public class PageSqlHandler implements Interceptor {
 
-    protected Cache<String, MappedStatement> msCountMap = null;
+    protected Cache<String, MappedStatement> ms_count_cache;
+    protected CountMsId count_ms_id = CountMsId.DEFAULT;
     private volatile Dialect dialect;
-    private String countSuffix = "_COUNT";
+    private String count_suffix = "_COUNT";
     private String default_dialect_class = "org.aoju.bus.pager.PageContext";
 
     @Override
@@ -125,7 +127,7 @@ public class PageSqlHandler implements Interceptor {
     @Override
     public void setProperties(Properties properties) {
         // 缓存 count ms
-        msCountMap = CacheFactory.createCache(properties.getProperty("msCountCache"), "ms", properties);
+        this.ms_count_cache = CacheFactory.createCache(properties.getProperty("ms_count_cache"), "ms", properties);
         String dialectClass = properties.getProperty("dialect");
         if (StringKit.isEmpty(dialectClass)) {
             dialectClass = default_dialect_class;
@@ -138,9 +140,23 @@ public class PageSqlHandler implements Interceptor {
         }
         dialect.setProperties(properties);
 
-        String countSuffix = properties.getProperty("countSuffix");
+        String countSuffix = properties.getProperty("count_suffix");
         if (StringKit.isNotEmpty(countSuffix)) {
-            this.countSuffix = countSuffix;
+            this.count_suffix = countSuffix;
+        }
+
+        // 通过 countMsId 配置自定义类
+        String countMsIdGenClass = properties.getProperty("count_ms_id");
+        if (StringKit.isNotEmpty(countMsIdGenClass)) {
+            try {
+                Class<?> aClass = Class.forName(countMsIdGenClass);
+                this.count_ms_id = (CountMsId) aClass.getConstructor().newInstance();
+                if (count_ms_id instanceof Property) {
+                    ((Property) count_ms_id).setProperties(properties);
+                }
+            } catch (Exception e) {
+                throw new PageException(e);
+            }
         }
     }
 
@@ -161,22 +177,22 @@ public class PageSqlHandler implements Interceptor {
     private Long count(Executor executor, MappedStatement ms, Object parameter,
                        RowBounds rowBounds, ResultHandler resultHandler,
                        BoundSql boundSql) throws SQLException {
-        String countMsId = ms.getId() + countSuffix;
+        String countMsId = this.count_ms_id.genCountMsId(ms, parameter, boundSql, count_suffix);
         Long count;
         // 先判断是否存在手写的 count 查询
         MappedStatement countMs = CountExecutor.getExistedMappedStatement(ms.getConfiguration(), countMsId);
         if (countMs != null) {
             count = CountExecutor.executeManualCount(executor, countMs, parameter, boundSql, resultHandler);
         } else {
-            if (msCountMap != null) {
-                countMs = msCountMap.get(countMsId);
+            if (this.ms_count_cache != null) {
+                countMs = this.ms_count_cache.get(countMsId);
             }
             // 自动创建
             if (countMs == null) {
                 // 根据当前的 ms 创建一个返回值为 Long 类型的 ms
                 countMs = CountMappedStatement.newCountMappedStatement(ms, countMsId);
-                if (msCountMap != null) {
-                    msCountMap.put(countMsId, countMs);
+                if (this.ms_count_cache != null) {
+                    this.ms_count_cache.put(countMsId, countMs);
                 }
             }
             count = CountExecutor.executeAutoCount(this.dialect, executor, countMs, parameter, boundSql, rowBounds, resultHandler);

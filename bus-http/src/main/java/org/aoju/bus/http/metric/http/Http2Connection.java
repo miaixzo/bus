@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.sink.BufferSink;
@@ -33,7 +32,6 @@ import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.http.metric.NamedRunnable;
@@ -162,7 +160,7 @@ public class Http2Connection implements Closeable {
         connectionName = builder.connectionName;
 
         writerExecutor = new ScheduledThreadPoolExecutor(1,
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Writer", connectionName), false));
+                org.aoju.bus.http.Builder.threadFactory(String.format("Http %s Writer", connectionName), false));
         if (builder.pingIntervalMillis != 0) {
             writerExecutor.scheduleAtFixedRate(new IntervalPingRunnable(),
                     builder.pingIntervalMillis, builder.pingIntervalMillis, TimeUnit.MILLISECONDS);
@@ -170,7 +168,7 @@ public class Http2Connection implements Closeable {
 
         // Like newSingleThreadExecutor, except lazy creates the thread.
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Push Observer", connectionName), true));
+                org.aoju.bus.http.Builder.threadFactory(String.format("Http %s Push Observer", connectionName), true));
         peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
@@ -248,7 +246,7 @@ public class Http2Connection implements Closeable {
                     shutdown(ErrorCode.REFUSED_STREAM);
                 }
                 if (shutdown) {
-                    throw new RevisedException();
+                    throw new IOException();
                 }
                 streamId = nextStreamId;
                 nextStreamId += 2;
@@ -417,7 +415,7 @@ public class Http2Connection implements Closeable {
                 shutdown = true;
                 lastGoodStreamId = this.lastGoodStreamId;
             }
-            writer.goAway(lastGoodStreamId, statusCode, org.aoju.bus.http.Builder.EMPTY_BYTE_ARRAY);
+            writer.goAway(lastGoodStreamId, statusCode, Normal.EMPTY_BYTE_ARRAY);
         }
     }
 
@@ -506,7 +504,7 @@ public class Http2Connection implements Closeable {
         synchronized (writer) {
             synchronized (this) {
                 if (shutdown) {
-                    throw new RevisedException();
+                    throw new IOException();
                 }
                 settings.merge(settings);
             }
@@ -527,15 +525,12 @@ public class Http2Connection implements Closeable {
      * HTTP/2 can have both stream timeouts (due to a problem with a single stream) and connection
      * timeouts (due to a problem with the transport). When a stream times out we don't know whether
      * the problem impacts just one stream or the entire connection.
-     * <p>
      * To differentiate the two cases we ping the server when a stream times out. If the overall
      * connection is fine the ping will receive a pong; otherwise it won't.
-     * <p>
      * The deadline to respond to this ping attempts to limit the cost of being wrong. If it is too
      * long, streams created while we await the pong will reuse broken connections and inevitably
      * fail. If it is too short, slow connections will be marked as failed and extra TCP and TLS
      * handshakes will be required.
-     * <p>
      * The deadline is currently hardcoded. We may make this configurable in the future!
      */
     void sendDegradedPingLater() {
@@ -740,7 +735,6 @@ public class Http2Connection implements Closeable {
         /**
          * Notification that the connection's peer's settings may have changed. Implementations should
          * take appropriate action to handle the updated settings.
-         * <p>
          * It is the implementation's responsibility to handle concurrent calls to this method. A
          * remote peer that sends multiple settings frames will trigger multiple calls to this method,
          * and those calls are not necessarily serialized.
@@ -750,6 +744,7 @@ public class Http2Connection implements Closeable {
     }
 
     class PingRunnable extends NamedRunnable {
+
         final boolean reply;
         final int payload1;
         final int payload2;
@@ -768,6 +763,7 @@ public class Http2Connection implements Closeable {
     }
 
     class IntervalPingRunnable extends NamedRunnable {
+
         IntervalPingRunnable() {
             super("Http %s ping", connectionName);
         }
@@ -796,6 +792,7 @@ public class Http2Connection implements Closeable {
      * async task to do so.
      */
     class ReaderRunnable extends NamedRunnable implements Http2Reader.Handler {
+
         final Http2Reader reader;
 
         ReaderRunnable(Http2Reader reader) {

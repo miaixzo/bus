@@ -30,7 +30,6 @@ import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.metric.CookieJar;
 import org.aoju.bus.http.secure.Challenge;
 
@@ -125,7 +124,7 @@ public class Headers {
         for (int i = 0, length = name.length(); i < length; i++) {
             char c = name.charAt(i);
             if (c <= '\u0020' || c >= '\u007f') {
-                throw new IllegalArgumentException(StringKit.format(
+                throw new IllegalArgumentException(String.format(
                         "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
             }
         }
@@ -136,7 +135,7 @@ public class Headers {
         for (int i = 0, length = value.length(); i < length; i++) {
             char c = value.charAt(i);
             if ((c <= '\u001f' && c != Symbol.C_HT) || c >= '\u007f') {
-                throw new IllegalArgumentException(StringKit.format(
+                throw new IllegalArgumentException(String.format(
                         "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
             }
         }
@@ -847,7 +846,7 @@ public class Headers {
 
         @Override
         public String toString() {
-            return StringKit.format("%s: %s", name.utf8(), value.utf8());
+            return String.format("%s: %s", name.utf8(), value.utf8());
         }
     }
 

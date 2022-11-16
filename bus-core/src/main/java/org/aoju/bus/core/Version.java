@@ -60,7 +60,7 @@ public class Version {
      * @return 项目的版本号
      */
     public static String get() {
-        return "6.5.9.RELEASE";
+        return "6.6.0.RELEASE";
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Java8的stream相关封装
+ * InputStream和OutputStream相关方法和类封装
  *
  * @author Kimi Liu
  * @since Java 17+

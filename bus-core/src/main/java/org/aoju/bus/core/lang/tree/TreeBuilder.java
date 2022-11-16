@@ -32,7 +32,6 @@ import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +57,10 @@ public class TreeBuilder<E> implements Builder<Tree<E>> {
      * @param rootId 根节点ID
      * @param config 配置
      */
-    public TreeBuilder(E rootId, NodeConfig config) {
+    public TreeBuilder(final E rootId, final NodeConfig config) {
         root = new Tree<>(config);
         root.setId(rootId);
-        this.idTreeMap = new HashMap<>();
+        this.idTreeMap = new LinkedHashMap<>();
     }
 
     /**

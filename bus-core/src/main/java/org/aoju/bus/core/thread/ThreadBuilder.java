@@ -67,7 +67,7 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      *
      * @return {@link ThreadBuilder}
      */
-    public static ThreadBuilder create() {
+    public static ThreadBuilder of() {
         return new ThreadBuilder();
     }
 

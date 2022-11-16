@@ -42,14 +42,26 @@ import java.util.zip.Deflater;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class GzipSink implements Sink {
+public class GzipSink implements Sink {
 
+    /**
+     * Sink into which the GZIP format is written.
+     */
     private final BufferSink sink;
 
+    /**
+     * The deflater used to compress the body.
+     */
     private final Deflater deflater;
 
+    /**
+     * The deflater sink takes care of moving data between decompressed source and
+     * compressed sink buffers.
+     */
     private final DeflaterSink deflaterSink;
-
+    /**
+     * Checksum calculated for the compressed body.
+     */
     private final CRC32 crc = new CRC32();
     private boolean closed;
 
@@ -84,8 +96,13 @@ public final class GzipSink implements Sink {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         if (closed) return;
+
+        // This method delegates to the DeflaterSink for finishing the deflate process
+        // but keeps responsibility for releasing the deflater's resources. This is
+        // necessary because writeFooter needs to query the processed byte count which
+        // only works when the deflater is still open.
 
         Throwable thrown = null;
         try {
@@ -98,42 +115,48 @@ public final class GzipSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (null == thrown) {
-                thrown = e;
-            }
+            if (thrown == null) thrown = e;
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (null == thrown) {
-                thrown = e;
-            }
+            if (thrown == null) thrown = e;
         }
         closed = true;
 
-        if (null != thrown) IoKit.sneakyRethrow(thrown);
+        if (thrown != null) {
+            IoKit.sneakyRethrow(thrown);
+        }
     }
 
+    /**
+     * Returns the {@link Deflater}.
+     * Use it to access stats, dictionary, compression level, etc.
+     */
     public final Deflater deflater() {
         return deflater;
     }
 
     private void writeHeader() {
+        // Write the Gzip header directly into the buffer for the sink to avoid handling IOException.
         Buffer buffer = this.sink.buffer();
-        buffer.writeShort(0x1f8b);
-        buffer.writeByte(0x08);
-        buffer.writeByte(0x00);
-        buffer.writeInt(0x00);
-        buffer.writeByte(0x00);
-        buffer.writeByte(0x00);
+        buffer.writeShort(0x1f8b); // Two-byte Gzip ID.
+        buffer.writeByte(0x08); // 8 == Deflate compression method.
+        buffer.writeByte(0x00); // No flags.
+        buffer.writeInt(0x00); // No modification time.
+        buffer.writeByte(0x00); // No extra flags.
+        buffer.writeByte(0x00); // No OS.
     }
 
     private void writeFooter() throws IOException {
-        sink.writeIntLe((int) crc.getValue());
-        sink.writeIntLe((int) deflater.getBytesRead());
+        sink.writeIntLe((int) crc.getValue()); // CRC of original data.
+        sink.writeIntLe((int) deflater.getBytesRead()); // Length of original data.
     }
 
+    /**
+     * Updates the CRC with the given bytes.
+     */
     private void updateCrc(Buffer buffer, long byteCount) {
         for (Segment head = buffer.head; byteCount > 0; head = head.next) {
             int segmentLength = (int) Math.min(byteCount, head.limit - head.pos);

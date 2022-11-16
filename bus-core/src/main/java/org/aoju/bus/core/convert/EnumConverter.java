@@ -46,7 +46,6 @@ public class EnumConverter extends AbstractConverter {
     private static final long serialVersionUID = 1L;
 
     public static final EnumConverter INSTANCE = new EnumConverter();
-
     private static final WeakMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakMap<>();
 
     /**
@@ -95,13 +94,13 @@ public class EnumConverter extends AbstractConverter {
             //ignore
         }
 
-        //oriInt 应该滞后使用 以 GB/T 2261.1-2003 性别编码为例，对应整数并非连续数字会导致数字转枚举时失败
-        //0 - 未知的性别
-        //1 - 男性
-        //2 - 女性
-        //5 - 女性改(变)为男性
-        //6 - 男性改(变)为女性
-        //9 - 未说明的性别
+        // oriInt 应该滞后使用 以 GB/T 2261.1-2003 性别编码为例，对应整数并非连续数字会导致数字转枚举时失败
+        // 0 - 未知的性别
+        // 1 - 男性
+        // 2 - 女性
+        // 5 - 女性改(变)为男性
+        // 6 - 男性改(变)为女性
+        // 9 - 未说明的性别
         Enum enumResult = null;
         if (value instanceof Integer) {
             enumResult = EnumKit.getEnumAt(enumClass, (Integer) value);
@@ -142,7 +141,6 @@ public class EnumConverter extends AbstractConverter {
         if (null != enumValue) {
             return enumValue;
         }
-
         throw new ConvertException("Can not convert {} to {}", value, targetClass);
     }
 

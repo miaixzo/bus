@@ -780,7 +780,7 @@ public class ToStringBuilder implements Builder<String> {
      * value.</p>
      *
      * @param fieldName  the field name
-     * @param object        the value to add to the <code>toString</code>
+     * @param object     the value to add to the <code>toString</code>
      * @param fullDetail <code>true</code> for detail,
      *                   <code>false</code> for summary info
      * @return this

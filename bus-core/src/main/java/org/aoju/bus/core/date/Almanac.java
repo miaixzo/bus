@@ -60,7 +60,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getYear(Date date) {
-        return Converter.toLocalDateTime(date).getYear();
+        return toLocalDateTime(date).getYear();
     }
 
     /**
@@ -70,7 +70,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getYear(Instant instant) {
-        return Converter.toLocalDateTime(instant).getYear();
+        return toLocalDateTime(instant).getYear();
     }
 
     /**
@@ -302,7 +302,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMonth(Date date) {
-        return Converter.toLocalDateTime(date).getMonthValue();
+        return toLocalDateTime(date).getMonthValue();
     }
 
     /**
@@ -312,7 +312,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMonth(Instant instant) {
-        return Converter.toLocalDateTime(instant).getMonthValue();
+        return toLocalDateTime(instant).getMonthValue();
     }
 
     /**
@@ -819,7 +819,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfMonth(Date date) {
-        return Converter.toLocalDateTime(date).getDayOfMonth();
+        return toLocalDateTime(date).getDayOfMonth();
     }
 
     /**
@@ -829,7 +829,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfMonth(Instant instant) {
-        return Converter.toLocalDateTime(instant).getDayOfMonth();
+        return toLocalDateTime(instant).getDayOfMonth();
     }
 
     /**
@@ -861,7 +861,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfYear(Date date) {
-        return Converter.toLocalDateTime(date).getDayOfYear();
+        return toLocalDateTime(date).getDayOfYear();
     }
 
     /**
@@ -871,7 +871,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfYear(Instant instant) {
-        return Converter.toLocalDateTime(instant).getDayOfYear();
+        return toLocalDateTime(instant).getDayOfYear();
     }
 
     /**
@@ -922,7 +922,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getHour(Date date) {
-        return Converter.toLocalDateTime(date).getHour();
+        return toLocalDateTime(date).getHour();
     }
 
     /**
@@ -932,7 +932,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getHour(Instant instant) {
-        return Converter.toLocalDateTime(instant).getHour();
+        return toLocalDateTime(instant).getHour();
     }
 
     /**
@@ -964,7 +964,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMinute(Date date) {
-        return Converter.toLocalDateTime(date).getMinute();
+        return toLocalDateTime(date).getMinute();
     }
 
     /**
@@ -974,7 +974,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMinute(Instant instant) {
-        return Converter.toLocalDateTime(instant).getMinute();
+        return toLocalDateTime(instant).getMinute();
     }
 
     /**
@@ -1006,7 +1006,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getSecond(Date date) {
-        return Converter.toLocalDateTime(date).getSecond();
+        return toLocalDateTime(date).getSecond();
     }
 
     /**
@@ -1016,7 +1016,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getSecond(Instant instant) {
-        return Converter.toLocalDateTime(instant).getSecond();
+        return toLocalDateTime(instant).getSecond();
     }
 
     /**
@@ -1048,7 +1048,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMillisecond(Date date) {
-        return Converter.toLocalDateTime(date).getNano() / 1_000_000;
+        return toLocalDateTime(date).getNano() / 1_000_000;
     }
 
     /**
@@ -1058,7 +1058,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getMillisecond(Instant instant) {
-        return Converter.toLocalDateTime(instant).getNano() / 1_000_000;
+        return toLocalDateTime(instant).getNano() / 1_000_000;
     }
 
     /**
@@ -1115,7 +1115,7 @@ public class Almanac extends Converter {
      * @return String 格式： yyyy-MM-dd HH:mm:ss
      */
     public static String getEpochMilliFormat() {
-        return Formatter.format(new Date());
+        return format(new Date());
     }
 
     /**
@@ -1124,7 +1124,7 @@ public class Almanac extends Converter {
      * @return String 格式： yyyy-MM-dd HH:mm:ss.SSS
      */
     public static String getEpochMilliFormatFull() {
-        return Formatter.format(new Date(), Fields.NORM_DATETIME_MS_PATTERN);
+        return format(new Date(), Fields.NORM_DATETIME_MS_PATTERN);
     }
 
     /**
@@ -1133,7 +1133,7 @@ public class Almanac extends Converter {
      * @return String 格式： yyyy-MM-ddTHH:mm:ssZ
      */
     public static String getEpochMilliIsoNotFormatNoColon() {
-        return Formatter.format(new Date(), Fields.MSEC_PATTERN);
+        return format(new Date(), Fields.MSEC_PATTERN);
     }
 
     /**
@@ -1142,7 +1142,7 @@ public class Almanac extends Converter {
      * @return String 格式： yyyy-MM-dd'T'HH:mm:ss.SSSZ
      */
     public static String getEpochMilliIsoFormatFullNoColon() {
-        return Formatter.format(new Date(), Fields.MSEC_PATTERN);
+        return format(new Date(), Fields.MSEC_PATTERN);
     }
 
     /**
@@ -1154,7 +1154,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date getDate(int year, int month, int dayOfMonth) {
-        return Converter.toDate(LocalDate.of(year, month, dayOfMonth));
+        return toDate(LocalDate.of(year, month, dayOfMonth));
     }
 
     /**
@@ -1169,7 +1169,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date getDate(int year, int month, int dayOfMonth, int hour, int minute, int second) {
-        return Converter.toDate(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second));
+        return toDate(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second));
     }
 
     /**
@@ -1185,7 +1185,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date getDate(int year, int month, int dayOfMonth, int hour, int minute, int second, int milliOfSecond) {
-        return Converter.toDate(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, milliOfSecond * 1000_000));
+        return toDate(LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, milliOfSecond * 1000_000));
     }
 
     /**
@@ -1196,7 +1196,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date getDateStartOfMonth(int year, int month) {
-        return Converter.toDateStartOfMonth(YearMonth.of(year, month));
+        return toDateStartOfMonth(YearMonth.of(year, month));
     }
 
     /**
@@ -1207,7 +1207,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date getDateEndOfMonth(int year, int month) {
-        return Converter.toDateEndOfMonth(YearMonth.of(year, month));
+        return toDateEndOfMonth(YearMonth.of(year, month));
     }
 
     /**
@@ -1232,7 +1232,7 @@ public class Almanac extends Converter {
      * @return int 年龄
      */
     public static int getAge(Date birthDay) {
-        return getAge(Converter.toLocalDate(birthDay));
+        return getAge(toLocalDate(birthDay));
     }
 
     /**
@@ -1242,7 +1242,7 @@ public class Almanac extends Converter {
      * @return int 年龄
      */
     public static int getAge(LocalDateTime birthDay) {
-        return getAge(Converter.toLocalDate(birthDay));
+        return getAge(toLocalDate(birthDay));
     }
 
     /**
@@ -1342,7 +1342,7 @@ public class Almanac extends Converter {
         Calendar birthday = new GregorianCalendar(Integer.valueOf(data[0]),
                 Integer.valueOf(data[1]), Integer.valueOf(data[2]));
         Calendar now = Calendar.getInstance();
-        now.setTime(Converter.parse(dateToCompare));
+        now.setTime(parse(dateToCompare));
 
         // 1.日相减
         int day = now.get(Calendar.DAY_OF_MONTH) - birthday.get(Calendar.DAY_OF_MONTH);
@@ -2030,8 +2030,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenYears(LocalDateTime startInclusive, LocalDateTime endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getYears();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getYears();
     }
 
     /**
@@ -2043,8 +2043,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenYears(Date startInclusive, Date endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getYears();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getYears();
     }
 
     /**
@@ -2068,8 +2068,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenMonths(LocalDateTime startInclusive, LocalDateTime endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getMonths();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getMonths();
     }
 
     /**
@@ -2081,8 +2081,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenMonths(Date startInclusive, Date endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getMonths();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getMonths();
     }
 
     /**
@@ -2106,8 +2106,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenDays(LocalDateTime startInclusive, LocalDateTime endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getDays();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getDays();
     }
 
     /**
@@ -2119,8 +2119,8 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenDays(Date startInclusive, Date endExclusive) {
-        return Period.between(Converter.toLocalDate(startInclusive),
-                Converter.toLocalDate(endExclusive)).getDays();
+        return Period.between(toLocalDate(startInclusive),
+                toLocalDate(endExclusive)).getDays();
     }
 
     /**
@@ -2154,7 +2154,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalDays(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).toDays();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).toDays();
     }
 
     /**
@@ -2187,7 +2187,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalHours(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).toHours();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).toHours();
     }
 
     /**
@@ -2220,7 +2220,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalMinutes(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).toMinutes();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).toMinutes();
     }
 
     /**
@@ -2253,7 +2253,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalSeconds(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).getSeconds();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).getSeconds();
     }
 
     /**
@@ -2286,7 +2286,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalMillis(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).toMillis();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).toMillis();
     }
 
     /**
@@ -2319,7 +2319,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenTotalNanos(Date startInclusive, Date endExclusive) {
-        return durationBetween(Converter.toLocalDateTime(startInclusive), Converter.toLocalDateTime(endExclusive)).toNanos();
+        return durationBetween(toLocalDateTime(startInclusive), toLocalDateTime(endExclusive)).toNanos();
     }
 
     /**
@@ -2329,7 +2329,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfWeek(Date date) {
-        return Converter.toLocalDateTime(date).getDayOfWeek().getValue();
+        return toLocalDateTime(date).getDayOfWeek().getValue();
     }
 
     /**
@@ -2359,7 +2359,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int getDayOfWeek(Instant instant) {
-        return Converter.toLocalDateTime(instant).getDayOfWeek().getValue();
+        return toLocalDateTime(instant).getDayOfWeek().getValue();
     }
 
     /**
@@ -2589,7 +2589,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date firstDayOfMonth(Date date) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(TemporalAdjusters.firstDayOfMonth()));
+        return toDate(toLocalDateTime(date).with(TemporalAdjusters.firstDayOfMonth()));
     }
 
     /**
@@ -2619,7 +2619,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date lastDayOfMonth(Date date) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(TemporalAdjusters.lastDayOfMonth()));
+        return toDate(toLocalDateTime(date).with(TemporalAdjusters.lastDayOfMonth()));
     }
 
 
@@ -2999,7 +2999,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isLeapYear(Date date) {
-        return Converter.toLocalDateTime(date).toLocalDate().isLeapYear();
+        return toLocalDateTime(date).toLocalDate().isLeapYear();
     }
 
     /**
@@ -3055,7 +3055,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date nextLeapYear(Date date) {
-        return Converter.toDate(nextLeapYear(Converter.toLocalDateTime(date)));
+        return toDate(nextLeapYear(toLocalDateTime(date)));
     }
 
     /**
@@ -3148,7 +3148,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int lengthOfMonth(Date date) {
-        return Converter.toLocalDateTime(date).toLocalDate().lengthOfMonth();
+        return toLocalDateTime(date).toLocalDate().lengthOfMonth();
     }
 
     /**
@@ -3178,7 +3178,7 @@ public class Almanac extends Converter {
      * @return int
      */
     public static int lengthOfYear(Date date) {
-        return Converter.toLocalDateTime(date).toLocalDate().lengthOfYear();
+        return toLocalDateTime(date).toLocalDate().lengthOfYear();
     }
 
     /**
@@ -3211,7 +3211,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date next(Date date, DayOfWeek dayOfWeek) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(TemporalAdjusters.next(dayOfWeek)));
+        return toDate(toLocalDateTime(date).with(TemporalAdjusters.next(dayOfWeek)));
     }
 
 
@@ -3245,7 +3245,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date previous(Date date, DayOfWeek dayOfWeek) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(TemporalAdjusters.previous(dayOfWeek)));
+        return toDate(toLocalDateTime(date).with(TemporalAdjusters.previous(dayOfWeek)));
     }
 
     /**
@@ -3275,7 +3275,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date nextWorkDay(Date date) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(nextWorkDay()));
+        return toDate(toLocalDateTime(date).with(nextWorkDay()));
     }
 
     /**
@@ -3363,7 +3363,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date with(Date date, TemporalField field, long newValue) {
-        return Converter.toDate(Converter.toLocalDateTime(date).with(field, newValue));
+        return toDate(toLocalDateTime(date).with(field, newValue));
     }
 
     /**
@@ -3454,7 +3454,7 @@ public class Almanac extends Converter {
      * @return 日期 yyyy-MM-dd HH:mm:ss
      */
     public static String transform(Date date, java.time.ZoneId zone) {
-        return Formatter.format(date, zone.toString());
+        return format(date, zone.toString());
     }
 
     /**
@@ -3465,7 +3465,7 @@ public class Almanac extends Converter {
      * @return int date1 大于 date2 返回1， date1 小于 date2 返回-1，date1 等于date2 返回0
      */
     public static int compare(Date date1, Date date2) {
-        return compare(Converter.toLocalDateTime(date1), Converter.toLocalDateTime(date2));
+        return compare(toLocalDateTime(date1), toLocalDateTime(date2));
     }
 
     /**
@@ -3562,7 +3562,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfYesterday() {
-        return Converter.toDate(LocalDate.now().minusDays(1).atTime(startTimeOfDay()));
+        return toDate(LocalDate.now().minusDays(1).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3571,7 +3571,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfYesterday() {
-        return Converter.toDate(LocalDate.now().minusDays(1).atTime(endTimeOfDay()));
+        return toDate(LocalDate.now().minusDays(1).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3580,7 +3580,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfTomorrow() {
-        return Converter.toDate(LocalDate.now().plusDays(1).atTime(startTimeOfDay()));
+        return toDate(LocalDate.now().plusDays(1).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3589,7 +3589,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfTomorrow() {
-        return Converter.toDate(LocalDate.now().plusDays(1).atTime(endTimeOfDay()));
+        return toDate(LocalDate.now().plusDays(1).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3598,7 +3598,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfToday() {
-        return Converter.toDate(LocalDate.now().atTime(startTimeOfDay()));
+        return toDate(LocalDate.now().atTime(startTimeOfDay()));
     }
 
     /**
@@ -3607,7 +3607,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfToday() {
-        return Converter.toDate(LocalDate.now().atTime(endTimeOfDay()));
+        return toDate(LocalDate.now().atTime(endTimeOfDay()));
     }
 
     /**
@@ -3616,7 +3616,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfLastMonth() {
-        return Converter.toDate(firstDayOfMonth(LocalDate.now().minusMonths(1)).atTime(startTimeOfDay()));
+        return toDate(firstDayOfMonth(LocalDate.now().minusMonths(1)).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3625,7 +3625,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfLastMonth() {
-        return Converter.toDate(lastDayOfMonth(LocalDate.now().minusMonths(1)).atTime(endTimeOfDay()));
+        return toDate(lastDayOfMonth(LocalDate.now().minusMonths(1)).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3634,7 +3634,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfMonth() {
-        return Converter.toDate(firstDayOfMonth(LocalDate.now()).atTime(startTimeOfDay()));
+        return toDate(firstDayOfMonth(LocalDate.now()).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3643,7 +3643,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfMonth() {
-        return Converter.toDate(lastDayOfMonth(LocalDate.now()).atTime(endTimeOfDay()));
+        return toDate(lastDayOfMonth(LocalDate.now()).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3653,7 +3653,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfDate(Date date) {
-        return Converter.toDate(Converter.toLocalDate(date).atTime(startTimeOfDay()));
+        return toDate(toLocalDate(date).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3663,7 +3663,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfDate(Date date) {
-        return Converter.toDate(Converter.toLocalDate(date).atTime(endTimeOfDay()));
+        return toDate(toLocalDate(date).atTime(endTimeOfDay()));
     }
 
 
@@ -3674,7 +3674,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endAccuracyTimeOfDate(Date date) {
-        return Converter.toDate(Converter.toLocalDate(date).atTime(endAccuracyTimeOfDay()));
+        return toDate(toLocalDate(date).atTime(endAccuracyTimeOfDay()));
     }
 
     /**
@@ -3706,7 +3706,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfSpecialMonth(int year, int month) {
-        return Converter.toDate(LocalDate.of(year, month, 1).atTime(startTimeOfDay()));
+        return toDate(LocalDate.of(year, month, 1).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3717,7 +3717,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfSpecialMonth(int year, int month) {
-        return Converter.toDate(lastDayOfMonth(LocalDate.of(year, month, 1)).atTime(endTimeOfDay()));
+        return toDate(lastDayOfMonth(LocalDate.of(year, month, 1)).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3729,7 +3729,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date startTimeOfDate(int year, int month, int dayOfMonth) {
-        return Converter.toDate(LocalDate.of(year, month, dayOfMonth).atTime(startTimeOfDay()));
+        return toDate(LocalDate.of(year, month, dayOfMonth).atTime(startTimeOfDay()));
     }
 
     /**
@@ -3741,7 +3741,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date endTimeOfDate(int year, int month, int dayOfMonth) {
-        return Converter.toDate(LocalDate.of(year, month, dayOfMonth).atTime(endTimeOfDay()));
+        return toDate(LocalDate.of(year, month, dayOfMonth).atTime(endTimeOfDay()));
     }
 
     /**
@@ -3945,7 +3945,7 @@ public class Almanac extends Converter {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return isSameDay(Converter.toCalendar(date1), Converter.toCalendar(date2));
+        return isSameDay(toCalendar(date1), toCalendar(date2));
     }
 
     /**
@@ -4013,7 +4013,7 @@ public class Almanac extends Converter {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return isSameWeek(Converter.toCalendar(date1), Converter.toCalendar(date2), isMon);
+        return isSameWeek(toCalendar(date1), toCalendar(date2), isMon);
     }
 
     /**
@@ -4027,7 +4027,7 @@ public class Almanac extends Converter {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return isSameMonth(Converter.toCalendar(date1), Converter.toCalendar(date2));
+        return isSameMonth(toCalendar(date1), toCalendar(date2));
     }
 
     /**
@@ -4086,7 +4086,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isSameMonthDay(Date date, String monthDayStr) {
-        return isSameMonthDay(Converter.toLocalDate(date), monthDayStr);
+        return isSameMonthDay(toLocalDate(date), monthDayStr);
     }
 
     /**
@@ -4097,7 +4097,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isSameMonthDay(Date date1, Date date2) {
-        return isSameMonthDay(Converter.toLocalDate(date1), Converter.toLocalDate(date2));
+        return isSameMonthDay(toLocalDate(date1), toLocalDate(date2));
     }
 
     /**
@@ -4162,7 +4162,7 @@ public class Almanac extends Converter {
      */
     public static long betweenNextSameMonthDay(Date date, String monthDayStr) {
         MonthDay monthDay2 = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr);
-        return betweenNextSameMonthDay(Converter.toLocalDate(date), monthDay2.getMonthValue(),
+        return betweenNextSameMonthDay(toLocalDate(date), monthDay2.getMonthValue(),
                 monthDay2.getDayOfMonth());
     }
 
@@ -4197,7 +4197,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date nextSameMonthDay(Date date, String monthDayStr) {
-        return Converter.toDate(nextSameMonthDay(Converter.toLocalDate(date), monthDayStr));
+        return toDate(nextSameMonthDay(toLocalDate(date), monthDayStr));
     }
 
     /**
@@ -4227,7 +4227,7 @@ public class Almanac extends Converter {
      * @return String
      */
     public static String getZodiacCnName(Date date) {
-        return Fields.Zodiac.getCnNameByMonthDay(Formatter.format(date));
+        return Fields.Zodiac.getCnNameByMonthDay(format(date));
     }
 
     /**
@@ -4247,7 +4247,7 @@ public class Almanac extends Converter {
      * @return String
      */
     public static String getZodiacEnName(Date date) {
-        return Fields.Zodiac.getEnNameByMonthDay(Formatter.format(date));
+        return Fields.Zodiac.getEnNameByMonthDay(format(date));
     }
 
     /**
@@ -4257,7 +4257,7 @@ public class Almanac extends Converter {
      * @return 星座名
      */
     public static String getZodiac(Date date) {
-        return getZodiac(Converter.toCalendar(date));
+        return getZodiac(toCalendar(date));
     }
 
     /**
@@ -4311,8 +4311,8 @@ public class Almanac extends Converter {
      * @return 时间列表
      */
     public static List<LocalDate> getLocalDateList(LocalDate startInclusive, LocalDate endInclusive) {
-        return getLocalDateTimeList(Converter.toLocalDateTime(startInclusive),
-                Converter.toLocalDateTime(endInclusive)).stream()
+        return getLocalDateTimeList(toLocalDateTime(startInclusive),
+                toLocalDateTime(endInclusive)).stream()
                 .map(localDateTime -> localDateTime.toLocalDate()).collect(Collectors.toList());
     }
 
@@ -4325,7 +4325,7 @@ public class Almanac extends Converter {
     public static List<LocalDate> getLocalDateList(YearMonth yearMonth) {
         List<LocalDate> localDateList = new ArrayList<>();
         long days = yearMonth.lengthOfMonth();
-        LocalDate localDate = Converter.toLocalDateStartOfMonth(yearMonth);
+        LocalDate localDate = toLocalDateStartOfMonth(yearMonth);
         for (long i = 0; i < days; i++) {
             localDateList.add(localDate.plusDays(i));
         }
@@ -4363,7 +4363,7 @@ public class Almanac extends Converter {
      */
     public static List<LocalDateTime> getLocalDateTimeList(YearMonth yearMonth) {
         return getLocalDateList(yearMonth).stream()
-                .map(localDate -> Converter.toLocalDateTime(localDate)).collect(Collectors.toList());
+                .map(localDate -> toLocalDateTime(localDate)).collect(Collectors.toList());
     }
 
     /**
@@ -4374,7 +4374,7 @@ public class Almanac extends Converter {
      */
     public static List<LocalDateTime> getLocalDateTimeList(String yearMonthStr) {
         return getLocalDateList(yearMonthStr).stream()
-                .map(localDate -> Converter.toLocalDateTime(localDate)).collect(Collectors.toList());
+                .map(localDate -> toLocalDateTime(localDate)).collect(Collectors.toList());
     }
 
     /**
@@ -4386,7 +4386,7 @@ public class Almanac extends Converter {
      */
     public static List<LocalDateTime> getLocalDateTimeList(int year, int month) {
         return getLocalDateList(YearMonth.of(year, month)).stream()
-                .map(localDate -> Converter.toLocalDateTime(localDate)).collect(Collectors.toList());
+                .map(localDate -> toLocalDateTime(localDate)).collect(Collectors.toList());
     }
 
     /**
@@ -4396,7 +4396,7 @@ public class Almanac extends Converter {
      * @return 时间列表
      */
     public static List<Date> getDateList(String yearMonthStr) {
-        return getLocalDateList(yearMonthStr).stream().map(localDate -> Converter.toDate(localDate))
+        return getLocalDateList(yearMonthStr).stream().map(localDate -> toDate(localDate))
                 .collect(Collectors.toList());
     }
 
@@ -4408,7 +4408,7 @@ public class Almanac extends Converter {
      * @return 时间列表
      */
     public static List<Date> getDateList(int year, int month) {
-        return getLocalDateList(YearMonth.of(year, month)).stream().map(localDate -> Converter.toDate(localDate))
+        return getLocalDateList(YearMonth.of(year, month)).stream().map(localDate -> toDate(localDate))
                 .collect(Collectors.toList());
     }
 
@@ -4420,9 +4420,9 @@ public class Almanac extends Converter {
      * @return 时间列表
      */
     public static List<Date> getDateList(Date startInclusive, Date endInclusive) {
-        return getLocalDateTimeList(Converter.toLocalDateTime(startInclusive),
-                Converter.toLocalDateTime(endInclusive)).stream()
-                .map(localDateTime -> Converter.toDate(localDateTime)).collect(Collectors.toList());
+        return getLocalDateTimeList(toLocalDateTime(startInclusive),
+                toLocalDateTime(endInclusive)).stream()
+                .map(localDateTime -> toDate(localDateTime)).collect(Collectors.toList());
     }
 
     /**
@@ -4477,7 +4477,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isBirthDay(Date date) {
-        return isBirthDay(Converter.toLocalDate(date));
+        return isBirthDay(toLocalDate(date));
     }
 
     /**
@@ -4497,7 +4497,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isBirthDay(LocalDateTime localDateTime) {
-        return isBirthDay(Converter.toLocalDate(localDateTime));
+        return isBirthDay(toLocalDate(localDateTime));
     }
 
     /**
@@ -4554,7 +4554,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date reduceAccuracyToSecond(Date date) {
-        return Converter.toDate(reduceAccuracyToSecond(Converter.toLocalDateTime(date)));
+        return toDate(reduceAccuracyToSecond(toLocalDateTime(date)));
     }
 
     /**
@@ -4576,7 +4576,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date reduceAccuracyToMinute(Date date) {
-        return Converter.toDate(reduceAccuracyToMinute(Converter.toLocalDateTime(date)));
+        return toDate(reduceAccuracyToMinute(toLocalDateTime(date)));
     }
 
     /**
@@ -4597,7 +4597,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date reduceAccuracyToHour(Date date) {
-        return Converter.toDate(reduceAccuracyToHour(Converter.toLocalDateTime(date)));
+        return toDate(reduceAccuracyToHour(toLocalDateTime(date)));
     }
 
     /**
@@ -4618,7 +4618,7 @@ public class Almanac extends Converter {
      * @return Date
      */
     public static Date reduceAccuracyToDay(Date date) {
-        return Converter.toDate(reduceAccuracyToDay(Converter.toLocalDateTime(date)));
+        return toDate(reduceAccuracyToDay(toLocalDateTime(date)));
     }
 
     /**
@@ -4650,7 +4650,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfMonth(LocalDateTime localDateTime) {
-        return weekOfMonth(Converter.toLocalDate(localDateTime), null);
+        return weekOfMonth(toLocalDate(localDateTime), null);
     }
 
     /**
@@ -4660,7 +4660,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfMonth(Date date) {
-        return weekOfMonth(Converter.toLocalDate(date), null);
+        return weekOfMonth(toLocalDate(date), null);
     }
 
     /**
@@ -4701,7 +4701,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfYear(LocalDateTime localDateTime) {
-        return weekOfYear(Converter.toLocalDate(localDateTime), null);
+        return weekOfYear(toLocalDate(localDateTime), null);
     }
 
     /**
@@ -4711,7 +4711,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfYear(Date date) {
-        return weekOfYear(Converter.toLocalDate(date), null);
+        return weekOfYear(toLocalDate(date), null);
     }
 
     /**
@@ -4740,7 +4740,7 @@ public class Almanac extends Converter {
      * @return 是 true 否 false
      */
     public static boolean isMonday(Date date) {
-        return isMonday(Converter.toLocalDate(date));
+        return isMonday(toLocalDate(date));
     }
 
     /**
@@ -4760,7 +4760,7 @@ public class Almanac extends Converter {
      * @return 是 true 否 false
      */
     public static boolean isFriday(Date date) {
-        return isFriday(Converter.toLocalDate(date));
+        return isFriday(toLocalDate(date));
     }
 
     /**
@@ -4774,7 +4774,7 @@ public class Almanac extends Converter {
         if (null == dptDate || dptDate.isEmpty()) {
             return false;
         }
-        String formatDate = Formatter.format(dptDate, pattern, pattern);
+        String formatDate = format(dptDate, pattern, pattern);
         return formatDate.equals(dptDate);
     }
 
@@ -4800,8 +4800,8 @@ public class Almanac extends Converter {
         if (null == go || null == back || go.isEmpty() || back.isEmpty())
             return false;
 
-        Date goDate = offsetDay(Formatter.parse(go, pattern), -1);
-        Date backDate = Formatter.parse(back, pattern);
+        Date goDate = offsetDay(parse(go, pattern), -1);
+        Date backDate = parse(back, pattern);
         if (null != goDate && null != backDate) {
             return goDate.before(backDate);
         }
@@ -4846,22 +4846,27 @@ public class Almanac extends Converter {
 
     /**
      * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集
-     *
-     * <ol>
-     *      <li>x &gt; b || a &gt; y 无交集</li>
-     *      <li>则有交集的逻辑为 !(x &gt; b || a &gt; y) 根据德摩根公式，可化简为 x &lt;= b &amp;&amp; a &lt;= y</li>
-     * </ol>
+     * 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
+     * <ul>
+     *     <li>此方法未纠正开始时间小于结束时间</li>
+     *     <li>当realStartTime和realEndTime或startTime和endTime相等时,退化为判断区间是否包含点</li>
+     *     <li>当realStartTime和realEndTime和startTime和endTime相等时,退化为判断点与点是否相等</li>
+     * </ul>
+     * See <a href="https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html">准确的区间关系参考:艾伦区间代数</a>
      *
      * @param realStartTime 第一个时间段的开始时间
      * @param realEndTime   第一个时间段的结束时间
      * @param startTime     第二个时间段的开始时间
      * @param endTime       第二个时间段的结束时间
-     * @return true 表示时间有重合
+     * @return true 表示时间有重合或包含或相等
      */
-    public static boolean isOverlap(ChronoLocalDateTime<?> realStartTime, ChronoLocalDateTime<?> realEndTime,
-                                    ChronoLocalDateTime<?> startTime, ChronoLocalDateTime<?> endTime) {
-        return startTime.isBefore(realEndTime) && endTime.isAfter(realStartTime);
+    public static boolean isOverlap(final Date realStartTime, final Date realEndTime,
+                                    final Date startTime, final Date endTime) {
+
+        // x>b||a>y 无交集
+        // 则有交集的逻辑为 !(x>b||a>y)
+        // 根据德摩根公式，可化简为 x<=b && a<=y 即 realStartTime<=endTime && startTime<=realEndTime
+        return realStartTime.compareTo(endTime) <= 0 && startTime.compareTo(realEndTime) <= 0;
     }
 
     /**
@@ -5041,7 +5046,7 @@ public class Almanac extends Converter {
      * @return 十二时辰名称
      */
     public static String getChrono(LocalDateTime localDateTime) {
-        return Fields.Chrono.getName(Converter.toLocalTime(localDateTime));
+        return Fields.Chrono.getName(toLocalTime(localDateTime));
     }
 
     /**
@@ -5070,7 +5075,7 @@ public class Almanac extends Converter {
      * @return 星座名
      */
     public static String getAnimal(Date date) {
-        return getAnimal(Converter.toCalendar(date));
+        return getAnimal(toCalendar(date));
     }
 
     /**
@@ -5124,60 +5129,6 @@ public class Almanac extends Converter {
             return (calendar.getFirstDayOfWeek() + 6) % 7;
         }
         return calendar.getActualMaximum(dateField);
-    }
-
-    /**
-     * 转换为{@link DateTime}对象
-     *
-     * @return 当前时间
-     */
-    public static DateTime date() {
-        return new DateTime();
-    }
-
-    /**
-     * {@link Date}类型时间转为{@link DateTime}
-     *
-     * @param date Long类型Date(Unix时间戳)
-     * @return 时间对象
-     */
-    public static DateTime date(Date date) {
-        if (date instanceof DateTime) {
-            return (DateTime) date;
-        }
-        return new DateTime(date);
-    }
-
-    /**
-     * Long类型时间转为{@link DateTime}
-     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
-     *
-     * @param date Long类型Date(Unix时间戳)
-     * @return 时间对象
-     */
-    public static DateTime date(long date) {
-        return new DateTime(date);
-    }
-
-    /**
-     * {@link Calendar}类型时间转为{@link DateTime}
-     *
-     * @param calendar {@link Calendar}
-     * @return 时间对象
-     */
-    public static DateTime date(Calendar calendar) {
-        return new DateTime(calendar);
-    }
-
-    /**
-     * {@link TemporalAccessor}类型时间转为{@link DateTime}
-     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
-     *
-     * @param temporalAccessor {@link TemporalAccessor}
-     * @return 时间对象
-     */
-    public static DateTime date(TemporalAccessor temporalAccessor) {
-        return new DateTime(temporalAccessor);
     }
 
     /**
@@ -5573,12 +5524,66 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 转换为{@link DateTime}对象
+     *
+     * @return 当前时间
+     */
+    public static DateTime date() {
+        return new DateTime();
+    }
+
+    /**
+     * {@link Date}类型时间转为{@link DateTime}
+     *
+     * @param date Long类型Date(Unix时间戳)
+     * @return 时间对象
+     */
+    public static DateTime date(Date date) {
+        if (date instanceof DateTime) {
+            return (DateTime) date;
+        }
+        return new DateTime(date);
+    }
+
+    /**
+     * Long类型时间转为{@link DateTime}
+     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
+     *
+     * @param date Long类型Date(Unix时间戳)
+     * @return 时间对象
+     */
+    public static DateTime date(long date) {
+        return new DateTime(date);
+    }
+
+    /**
+     * {@link Calendar}类型时间转为{@link DateTime}
+     *
+     * @param calendar {@link Calendar}
+     * @return 时间对象
+     */
+    public static DateTime date(Calendar calendar) {
+        return new DateTime(calendar);
+    }
+
+    /**
+     * {@link TemporalAccessor}类型时间转为{@link DateTime}
+     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @return 时间对象
+     */
+    public static DateTime date(TemporalAccessor temporalAccessor) {
+        return new DateTime(temporalAccessor);
+    }
+
+    /**
      * 当前时间,格式 yyyy-MM-dd HH:mm:ss
      *
      * @return 当前时间的标准形式字符串
      */
     public static String now() {
-        return Formatter.format(date());
+        return format(date());
     }
 
     /**

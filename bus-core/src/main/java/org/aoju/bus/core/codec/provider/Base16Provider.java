@@ -28,6 +28,7 @@ package org.aoju.bus.core.codec.provider;
 import org.aoju.bus.core.codec.Decoder;
 import org.aoju.bus.core.codec.Encoder;
 import org.aoju.bus.core.exception.InternalException;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -41,8 +42,14 @@ import org.aoju.bus.core.toolkit.StringKit;
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]> {
 
     /**
-     * 字符信息
+     * 编码解码器：小写
      */
+    public static final Base16Provider CODEC_LOWER = new Base16Provider(true);
+    /**
+     * 编码解码器：大写
+     */
+    public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
+
     private final char[] alphabets;
 
     /**
@@ -50,8 +57,8 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      *
      * @param lowerCase 是否小写
      */
-    public Base16Provider(boolean lowerCase) {
-        this.alphabets = (lowerCase ? "0123456789abcdef" : "0123456789ABCDEF").toCharArray();
+    public Base16Provider(final boolean lowerCase) {
+        this.alphabets = lowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER;
     }
 
     /**
@@ -62,8 +69,8 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @return 一个整数
      * @throws InternalException 当ch不是一个合法的十六进制字符时，抛出运行时异常
      */
-    private static int toDigit(char ch, int index) {
-        int digit = Character.digit(ch, 16);
+    private static int toDigit(final char ch, final int index) {
+        final int digit = Character.digit(ch, 16);
         if (digit < 0) {
             throw new InternalException("Illegal hexadecimal character {} at index {}", ch, index);
         }
@@ -71,13 +78,13 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     }
 
     @Override
-    public char[] encode(byte[] data) {
+    public char[] encode(final byte[] data) {
         final int len = data.length;
         final char[] out = new char[len << 1];// len*2
         // two characters from the hex value.
         for (int i = 0, j = 0; i < len; i++) {
-            out[j++] = alphabets[(0xF0 & data[i]) >>> 4];// 高位
-            out[j++] = alphabets[0x0F & data[i]];// 低位
+            out[j++] = hexDigit(data[i] >> 4);// 高位
+            out[j++] = hexDigit(data[i]);// 低位
         }
         return out;
     }
@@ -122,12 +129,12 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param ch char值
      * @return Unicode表现形式
      */
-    public String toUnicodeHex(char ch) {
+    public String toUnicodeHex(final char ch) {
         return "\\u" +
-                alphabets[(ch >> 12) & 15] +
-                alphabets[(ch >> 8) & 15] +
-                alphabets[(ch >> 4) & 15] +
-                alphabets[(ch) & 15];
+                hexDigit(ch >> 12) +
+                hexDigit(ch >> 8) +
+                hexDigit(ch >> 4) +
+                hexDigit(ch);
     }
 
     /**
@@ -136,11 +143,21 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param builder {@link StringBuilder}
      * @param b       byte
      */
-    public void appendHex(StringBuilder builder, byte b) {
-        int high = (b & 0xf0) >>> 4;// 高位
-        int low = b & 0x0f;// 低位
-        builder.append(alphabets[high]);
-        builder.append(alphabets[low]);
+    public void appendHex(final StringBuilder builder, final byte b) {
+        // 高位
+        builder.append(hexDigit(b >> 4));
+        // 低位
+        builder.append(hexDigit(b));
+    }
+
+    /**
+     * 将byte值转为16进制
+     *
+     * @param b byte
+     * @return the char
+     */
+    public char hexDigit(final int b) {
+        return alphabets[b & 0x0f];
     }
 
 }

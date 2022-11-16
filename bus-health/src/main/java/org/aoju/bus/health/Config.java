@@ -51,6 +51,7 @@ public final class Config {
     public static final String PSEUDO_FILESYSTEM_TYPES = "bus.health.pseudo.filesystem.types";
     public static final String NETWORK_FILESYSTEM_TYPES = "bus.health.network.filesystem.types";
     public static final String OS_LINUX_PROCFS_LOGWARNING = "bus.os.linux.procfs.logwarning";
+    public static final String OS_MAC_SYSCTL_LOGWARNING = "bus.os.mac.sysctl.logwarning";
     public static final String OS_WINDOWS_EVENTLOG = "bus.health.os.windows.eventlog";
     public static final String OS_WINDOWS_PROCSTATE_SUSPENDED = "bus.health.os.windows.procstate.suspended";
     public static final String OS_WINDOWS_COMMANDLINE_BATCH = "bus.health.os.windows.commandline.batch";

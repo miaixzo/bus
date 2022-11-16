@@ -84,7 +84,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      *
      * @return {@link ExecutorBuilder}
      */
-    public static ExecutorBuilder create() {
+    public static ExecutorBuilder of() {
         return new ExecutorBuilder();
     }
 

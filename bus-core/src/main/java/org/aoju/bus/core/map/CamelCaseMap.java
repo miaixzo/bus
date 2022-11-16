@@ -43,6 +43,8 @@ import java.util.function.Function;
  */
 public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 构造
      */
@@ -55,17 +57,17 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      *
      * @param initialCapacity 初始大小
      */
-    public CamelCaseMap(int initialCapacity) {
+    public CamelCaseMap(final int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
     /**
      * 构造
      *
-     * @param map Map
+     * @param m Map
      */
-    public CamelCaseMap(Map<? extends K, ? extends V> map) {
-        this(DEFAULT_LOAD_FACTOR, map);
+    public CamelCaseMap(final Map<? extends K, ? extends V> m) {
+        this(DEFAULT_LOAD_FACTOR, m);
     }
 
     /**
@@ -74,7 +76,7 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      * @param loadFactor 加载因子
      * @param map        初始Map，数据会被默认拷贝到一个新的HashMap中
      */
-    public CamelCaseMap(float loadFactor, Map<? extends K, ? extends V> map) {
+    public CamelCaseMap(final float loadFactor, final Map<? extends K, ? extends V> map) {
         this(map.size(), loadFactor);
         this.putAll(map);
     }
@@ -85,8 +87,8 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      * @param initialCapacity 初始大小
      * @param loadFactor      加载因子
      */
-    public CamelCaseMap(int initialCapacity, float loadFactor) {
-        this(MapBuilder.create(new HashMap<>(initialCapacity, loadFactor)));
+    public CamelCaseMap(final int initialCapacity, final float loadFactor) {
+        this(MapBuilder.of(new HashMap<>(initialCapacity, loadFactor)));
     }
 
     /**

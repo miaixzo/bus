@@ -54,10 +54,13 @@ public abstract class RequestBody {
      */
     public static RequestBody create(MediaType mediaType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (null != mediaType) {
-            charset = null != mediaType.charset() ? mediaType.charset() : Charset.UTF_8;
+        if (mediaType != null) {
+            charset = mediaType.charset();
+            if (charset == null) {
+                charset = Charset.UTF_8;
+                mediaType = MediaType.valueOf(mediaType + "; charset=utf-8");
+            }
         }
-
         byte[] bytes = content.getBytes(charset);
         return create(mediaType, bytes);
     }
@@ -192,27 +195,19 @@ public abstract class RequestBody {
     /**
      * A duplex request body is special in how it is <strong>transmitted</strong> on the network and
      * in the <strong>API contract</strong> between Http and the application.
-     * <p>
      * This method returns false unless it is overridden by a subclass.
-     * <p>
      * Duplex Transmission
-     * <p>
      * With regular HTTP calls the request always completes sending before the response may begin
      * receiving. With duplex the request and response may be interleaved! That is, request body bytes
      * may be sent after response headers or body bytes have been received.
-     * <p>
      * Though any call may be initiated as a duplex call, only web servers that are specially
      * designed for this nonstandard interaction will use it. As of 2019-01, the only widely-used
      * implementation of this pattern is <a
      * href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md">gRPC</a>.
-     * <p>
      * Because the encoding of interleaved data is not well-defined for HTTP/1, duplex request
      * bodies may only be used with HTTP/2. Calls to HTTP/1 servers will fail before the HTTP request
      * is transmitted. If you cannot ensure that your client and server both support HTTP/2, do not
      * use this feature.
-     * <p>
-     * Duplex APIs
-     * <p>
      * With regular request bodies it is not legal to write bytes to the sink passed to {@link
      * RequestBody#writeTo} after that method returns. For duplex requests bodies that condition is
      * lifted. Such writes occur on an application-provided thread and may occur concurrently with
@@ -228,9 +223,7 @@ public abstract class RequestBody {
      * Returns true if this body expects at most one call to {@link #writeTo} and can be transmitted
      * at most once. This is typically used when writing the request body is destructive and it is not
      * possible to recreate the request body after it has been sent.
-     * <p>
      * This method returns false unless it is overridden by a subclass.
-     * <p>
      * By default Http will attempt to retransmit request bodies when the original request fails
      * due to a stale connection, a client timeout (HTTP 408), a satisfied authorization challenge
      * (HTTP 401 and 407), or a retryable server failure (HTTP 503 with a {@code Retry-After: 0}

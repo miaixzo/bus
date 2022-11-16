@@ -43,14 +43,28 @@ import java.io.IOException;
  */
 public interface Sink extends Closeable, Flushable {
 
+    /**
+     * Removes {@code byteCount} bytes from {@code source} and appends them to this.
+     */
+    void write(Buffer source, long byteCount) throws IOException;
+
+    /**
+     * Pushes all buffered bytes to their final destination.
+     */
     @Override
     void flush() throws IOException;
 
-    @Override
-    void close() throws IOException;
-
+    /**
+     * Returns the timeout for this sink.
+     */
     Timeout timeout();
 
-    void write(Buffer source, long byteCount) throws IOException;
+    /**
+     * Pushes all buffered bytes to their final destination and releases the
+     * resources held by this sink. It is an error to write a closed sink. It is
+     * safe to close a sink more than once.
+     */
+    @Override
+    void close() throws IOException;
 
 }

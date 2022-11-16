@@ -67,7 +67,7 @@ public class EntityBuilder {
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
         if (entityTable == null) {
-            throw new InternalException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
+            throw new InternalException("无法获取实体类" + entityClass.getName() + "对应的表名!");
         }
         return entityTable;
     }

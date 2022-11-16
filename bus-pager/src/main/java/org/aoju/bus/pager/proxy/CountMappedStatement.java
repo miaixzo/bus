@@ -41,7 +41,6 @@ import java.util.List;
  */
 public class CountMappedStatement {
 
-    public static final String COUNT = "_COUNT";
     private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
 
     /**
@@ -78,16 +77,6 @@ public class CountMappedStatement {
         builder.useCache(ms.isUseCache());
 
         return builder.build();
-    }
-
-    /**
-     * 新建count查询的MappedStatement
-     *
-     * @param ms MappedStatement
-     * @return mappedStatement
-     */
-    public static MappedStatement newCountMappedStatement(MappedStatement ms) {
-        return newCountMappedStatement(ms, ms.getId() + COUNT);
     }
 
 }

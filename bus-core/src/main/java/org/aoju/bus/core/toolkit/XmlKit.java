@@ -223,6 +223,9 @@ public class XmlKit {
 
             // 3.得到解读器
             reader = parse.getXMLReader();
+            // 防止XEE攻击，见：https://www.jianshu.com/p/1a857905b22c
+            reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             reader.setContentHandler(contentHandler);
             reader.parse(source);
         } catch (IOException | ParserConfigurationException | SAXException e) {
@@ -1144,12 +1147,12 @@ public class XmlKit {
         int lastIdx = 0;
 
         for (Matcher matchr = pattern.matcher(xml); matchr.find(); lastIdx = matchr.end()) {
-            String str = matchr.group();
+            String text = matchr.group();
             res.append(xml, lastIdx, matchr.start());
             if (type) {
-                res.append(str.toLowerCase());
+                res.append(text.toLowerCase());
             } else {
-                res.append(str.toUpperCase());
+                res.append(text.toUpperCase());
             }
         }
 

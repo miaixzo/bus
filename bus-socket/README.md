@@ -143,27 +143,27 @@ public class AioClient {
         aioQuickClient.shutdownNow();
     }
 
-    static class ClientProcessor implements MessageProcessor<String> {
+  static class ClientProcessor implements MessageProcessor<String> {
 
-        @Override
-        public void process(AioSession session, String msg) {
-            System.out.println("Receive data from server：" + msg);
-        }
-
-        @Override
-        public void stateEvent(AioSession session, StateMachineEnum stateMachineEnum, Throwable throwable) {
-            System.out.println("State:" + stateMachineEnum);
-            if (stateMachineEnum == StateMachineEnum.OUTPUT_EXCEPTION) {
-                throwable.printStackTrace();
-            }
-        }
+    @Override
+    public void process(AioSession session, String msg) {
+      System.out.println("Receive data from server：" + msg);
     }
 
-    static class ClientProtocol implements Protocol<String> {
+    @Override
+    public void stateEvent(AioSession session, StateMachineEnum socketStatus, Throwable throwable) {
+      System.out.println("State:" + socketStatus);
+      if (socketStatus == StateMachineEnum.OUTPUT_EXCEPTION) {
+        throwable.printStackTrace();
+      }
+    }
+  }
 
-        @Override
-        public String decode(ByteBuffer data, AioSession session) {
-            int remaining = data.remaining();
+  static class ClientProtocol implements Protocol<String> {
+
+    @Override
+    public String decode(ByteBuffer data, AioSession session) {
+      int remaining = data.remaining();
             if (remaining < 4) {
                 return null;
             }

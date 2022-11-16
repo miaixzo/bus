@@ -26,6 +26,7 @@
 package org.aoju.bus.pager.dialect.rowbounds;
 
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.pager.Property;
 import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.aoju.bus.pager.dialect.ReplaceSql;
 import org.aoju.bus.pager.dialect.replace.RegexWithNolock;
@@ -82,9 +83,12 @@ public class SqlServerRowBounds extends AbstractRowBounds {
         } else {
             try {
                 this.replaceSql = (ReplaceSql) Class.forName(replaceSql).getConstructor().newInstance();
+                if (this.replaceSql instanceof Property) {
+                    ((Property) this.replaceSql).setProperties(properties);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
-                        + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);
+                        + ReplaceSql.class.getName() + " 接口的全限定类名", e);
             }
         }
     }

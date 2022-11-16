@@ -54,7 +54,6 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 
     /**
      * Returns a cleaned chain for {@code chain}.
-     * <p>
      * This method throws if the complete chain to a trusted CA certificate cannot be constructed.
      * This is unexpected unless the trust root index in this class has a different trust manager than
      * what was used to establish {@code chain}.

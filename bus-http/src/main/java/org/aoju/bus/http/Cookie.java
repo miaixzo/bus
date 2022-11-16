@@ -27,7 +27,6 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.http.metric.suffix.SuffixDatabase;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -240,8 +239,7 @@ public class Cookie {
         }
 
         // 如果域名是url主机的后缀，则它不能是公共后缀
-        if (urlHost.length() != domain.length()
-                && null == SuffixDatabase.get().getEffectiveTldPlusOne(domain)) {
+        if (urlHost.length() != domain.length()) {
             return null;
         }
 
@@ -521,6 +519,7 @@ public class Cookie {
      * 和{@linkplain #domain() domain}.
      */
     public static class Builder {
+
         String name;
         String value;
         long expiresAt = org.aoju.bus.http.Builder.MAX_DATE;

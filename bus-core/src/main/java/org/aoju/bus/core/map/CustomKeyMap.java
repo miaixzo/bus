@@ -37,18 +37,20 @@ import java.util.Map;
  */
 public abstract class CustomKeyMap<K, V> extends TransitionMap<K, V> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 构造
      * 通过传入一个Map从而确定Map的类型,子类需创建一个空的Map,而非传入一个已有Map,否则值可能会被修改
      *
      * @param map 被包装的Map,必须为空Map，否则自定义key会无效
      */
-    public CustomKeyMap(Map<K, V> map) {
+    public CustomKeyMap(final Map<K, V> map) {
         super(map);
     }
 
     @Override
-    protected V customValue(Object value) {
+    protected V customValue(final Object value) {
         return (V) value;
     }
 

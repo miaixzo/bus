@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
  * 使用方法如下：
  * <pre>
  *     ClassLoader classLoader = JavaSourceCompiler.create(null)
- *         .addSource(FileUtil.file("test-compile/b/B.java"))
- *         .addSource("c.C", FileUtil.readUtf8String("test-compile/c/C.java"))
+ *         .addSource(FileKit.file("test-compile/b/B.java"))
+ *         .addSource("c.C", FileKit.readUtf8String("test-compile/c/C.java"))
  *         // 增加编译依赖的类库
  *         .addLibrary(libFile)
  *         .compile();

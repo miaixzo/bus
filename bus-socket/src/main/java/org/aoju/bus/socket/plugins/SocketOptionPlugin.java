@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
 
-    private final Map<SocketOption<Object>, Object> optionMap = new HashMap<>();
+    private Map<SocketOption<Object>, Object> optionMap = new HashMap<>();
 
     @Override
     public final AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {

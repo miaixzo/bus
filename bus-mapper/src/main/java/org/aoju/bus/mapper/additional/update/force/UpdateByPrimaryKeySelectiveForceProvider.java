@@ -83,23 +83,29 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
             if (!column.isId() && column.isUpdatable()) {
                 if (column == versionColumn) {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
-                    String versionClass = version.nextVersion().getCanonicalName();
+                    String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn())
                             .append(" = ${@org.aoju.bus.mapper.version.DefaultNextVersion@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ")
-                            .append(column.getProperty()).append(")},");
+                            .append("@").append(versionClass).append("@class, ");
+                    // 虽然从函数调用上来看entityName必为"record"，但还是判断一下
+                    if (StringKit.isNotEmpty(entityName)) {
+                        sql.append(entityName).append('.');
+                    }
+                    sql.append(column.getProperty()).append(")},");
                 } else if (notNull) {
                     sql.append(this.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
-                    sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
+                    sql.append(column.getColumnEqualsHolder(entityName)).append(Symbol.COMMA);
                 }
+            } else if (column.isId() && column.isUpdatable()) {
+                sql.append(column.getColumn()).append(" = ").append(column.getColumn()).append(Symbol.COMMA);
             }
         }
         sql.append("</set>");

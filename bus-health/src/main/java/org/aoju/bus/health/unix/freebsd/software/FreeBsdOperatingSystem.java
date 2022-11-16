@@ -59,7 +59,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             .collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> getProcessListFromPS(int pid) {
+    private List<OSProcess> getProcessListFromPS(int pid) {
         String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
         if (pid >= 0) {
             psCommand += " -p " + pid;
@@ -69,7 +69,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(proc -> Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
                 .map(psMap -> new FreeBsdOSProcess(
-                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap))
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this))
                 .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 

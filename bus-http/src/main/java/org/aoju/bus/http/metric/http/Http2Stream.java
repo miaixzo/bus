@@ -118,12 +118,10 @@ public class Http2Stream {
 
     /**
      * Returns true if this stream is open. A stream is open until either:
-     *
      * <ul>
      *     <li>A {@code SYN_RESET} frame abnormally terminates the stream.
      *     <li>Both input and output streams have transmitted all data and headers.
      * </ul>
-     * <p>
      * Note that the input stream may continue to yield data even after a stream reports itself as
      * not open. This is because input data is buffered.
      */
@@ -587,6 +585,7 @@ public class Http2Stream {
      * A sink that writes outgoing data frames of a stream. This class is not thread safe.
      */
     class FramingSink implements Sink {
+
         private static final long EMIT_BUFFER_SIZE = 16384;
 
         /**

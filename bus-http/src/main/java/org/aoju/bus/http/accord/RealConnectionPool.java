@@ -163,7 +163,6 @@ public class RealConnectionPool {
     /**
      * Performs maintenance on this pool, evicting the connection that has been idle the longest if
      * either it has exceeded the keep alive limit or the idle connections limit.
-     * <p>
      * Returns the duration in nanos to sleep until the next scheduled call to this method. Returns
      * -1 if no further cleanups are required.
      */
@@ -266,4 +265,5 @@ public class RealConnectionPool {
 
         routeDatabase.failed(failedRoute);
     }
+
 }

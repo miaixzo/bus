@@ -1,28 +1,18 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ * Copyright (C) 2015 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.core.toolkit.IoKit;
@@ -36,23 +26,27 @@ import java.net.Socket;
 import java.util.List;
 
 /**
- * 尝试找到一系列交换的连接。使用以下策略
+ * Attempts to find the connections for a sequence of exchanges. This uses the following strategies:
  *
  * <ol>
- *   <li>如果当前调用已经有一个可以满足使用它的请求的连接。对初始交换及其后续使用相同的连接可能会改善局部性</li>
- *   <li>如果池中有可以满足请求的连接，则使用它。请注意，共享交换可以向不同的主机名发出请求！有关详细信息，请参阅 {@link RealConnection#isEligible}</li>
- *   <li>如果没有现有连接，请列出路由（可能需要阻止 DNS 查找）并尝试建立新连接。当发生故障时，重试迭代可用路由列表</li>
- * </ol>
- * <p>
- * 如果在 DNS、TCP 或 TLS 工作正在进行时池获得了合格的连接，则此查找器将首选池连接
- * <p>
- * 可以取消查找过程
+ *   <li>If the current call already has a connection that can satisfy the request it is used.
+ *       Using the same connection for an initial exchange and its follow-ups may improve locality.
  *
- * @author Kimi Liu
- * @since Java 17+
+ *   <li>If there is a connection in the pool that can satisfy the request it is used. Note that
+ *       it is possible for shared exchanges to make requests to different host names! See {@link
+ *       RealConnection#isEligible} for details.
+ *
+ *   <li>If there's no existing connection, make a list of routes (which may require blocking DNS
+ *       lookups) and attempt a new connection them. When failures occur, retries iterate the list
+ *       of available routes.
+ * </ol>
+ *
+ * <p>If the pool gains an eligible connection while DNS, TCP, or TLS work is in flight, this finder
+ * will prefer pooled connections. Only pooled HTTP/2 connections are used for such de-duplication.
+ *
+ * <p>It is possible to cancel the finding process.
  */
-class ExchangeFinder {
-
+final class ExchangeFinder {
     private final Transmitter transmitter;
     private final Address address;
     private final RealConnectionPool connectionPool;
@@ -258,12 +252,12 @@ class ExchangeFinder {
     void trackFailure() {
         assert (!Thread.holdsLock(connectionPool));
         synchronized (connectionPool) {
-            hasStreamFailure = true; // 允许重试
+            hasStreamFailure = true; // Permit retries.
         }
     }
 
     /**
-     * 如果重试可能会修复失败，则返回 true
+     * Returns true if there is a failure that retrying might fix.
      */
     boolean hasStreamFailure() {
         synchronized (connectionPool) {
@@ -272,9 +266,7 @@ class ExchangeFinder {
     }
 
     /**
-     * 如果当前路线仍然很好，或者如果有我们还没有尝试过的路线，则返回 true
-     *
-     * @return the boolean
+     * Returns true if a current route is still good or if there are routes we haven't tried yet.
      */
     boolean hasRouteToTry() {
         synchronized (connectionPool) {
@@ -282,7 +274,7 @@ class ExchangeFinder {
                 return true;
             }
             if (retryCurrentRoute()) {
-                // 锁定路线，因为 retryCurrentRoute() 是活泼的，我们不想调用它两次
+                // Lock in the route because retryCurrentRoute() is racy and we don't want to call it twice.
                 nextRouteToTry = transmitter.connection.route();
                 return true;
             }
@@ -292,13 +284,13 @@ class ExchangeFinder {
     }
 
     /**
-     * 如果应该重试用于当前连接的路由，则返回 true，即使连接本身不健康
-     * 这里最大的问题是我们不应该重用来自合并连接的路由
+     * Return true if the route used for the current connection should be retried, even if the
+     * connection itself is unhealthy. The biggest gotcha here is that we shouldn't reuse routes from
+     * coalesced connections.
      */
     private boolean retryCurrentRoute() {
         return transmitter.connection != null
                 && transmitter.connection.routeFailureCount == 0
                 && Builder.sameConnection(transmitter.connection.route().address().url(), address.url());
     }
-
 }

@@ -54,29 +54,34 @@ public class PeekSource implements Source {
 
     public PeekSource(BufferSource upstream) {
         this.upstream = upstream;
-        this.buffer = upstream.buffer();
+        this.buffer = upstream.getBuffer();
         this.expectedSegment = buffer.head;
-        this.expectedPos = null != expectedSegment ? expectedSegment.pos : -1;
+        this.expectedPos = expectedSegment != null ? expectedSegment.pos : -1;
     }
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
+        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed) throw new IllegalStateException("closed");
 
-        if (null != expectedSegment
+        // Source becomes invalid if there is an expected Segment and it and the expected position
+        // do not match the current head and head position of the upstream buffer
+        if (expectedSegment != null
                 && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
         }
+        if (byteCount == 0L) return 0L;
+        if (!upstream.request(pos + 1)) return -1L;
 
-        upstream.request(pos + byteCount);
-        if (null == expectedSegment && null != buffer.head) {
+        if (expectedSegment == null && buffer.head != null) {
+            // Only once the buffer actually holds data should an expected Segment and position be
+            // recorded. This allows reads from the peek source to repeatedly return -1 and for data to be
+            // added later. Unit tests depend on this behavior.
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }
 
         long toCopy = Math.min(byteCount, buffer.size - pos);
-        if (toCopy <= 0L) return -1L;
-
         buffer.copyTo(sink, pos, toCopy);
         pos += toCopy;
         return toCopy;
@@ -88,7 +93,7 @@ public class PeekSource implements Source {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         closed = true;
     }
 

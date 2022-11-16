@@ -62,7 +62,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * 构造
      *
      * @param bufferSize 缓存大小
-     * @param count      拷贝总数
+     * @param count      拷贝总数，-1表示无限制
      */
     public StreamCopier(int bufferSize, long count) {
         this(bufferSize, count, null);
@@ -72,7 +72,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * 构造
      *
      * @param bufferSize 缓存大小
-     * @param count      拷贝总数
+     * @param count      拷贝总数，-1表示无限制
      * @param progress   进度条
      */
     public StreamCopier(int bufferSize, long count, Progress progress) {

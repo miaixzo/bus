@@ -173,4 +173,10 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
         return BsdSysctlKit.sysctl("kern.maxfiles", 0);
     }
 
+    @Override
+    public long getMaxFileDescriptorsPerProcess() {
+        // On FreeBsd there is no process specific system-wide limit, so the general limit is returned
+        return getMaxFileDescriptors();
+    }
+
 }

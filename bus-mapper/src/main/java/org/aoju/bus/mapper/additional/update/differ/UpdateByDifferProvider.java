@@ -102,7 +102,7 @@ public class UpdateByDifferProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
                 result = " AND " + column.getColumnEqualsHolder(NEWER);
@@ -128,18 +128,18 @@ public class UpdateByDifferProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
             if (!column.isId() && column.isUpdatable()) {
                 if (column == versionColumn) {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
-                    String versionClass = version.nextVersion().getCanonicalName();
+                    String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn())
                             .append(" = ${@org.aoju.bus.mapper.version.DefaultNextVersion@nextVersion(")
                             .append("@").append(versionClass).append("@class, ")
-                            .append(column.getProperty()).append(")},");
+                            .append(NEWER).append('.').append(column.getProperty()).append(")},");
                 } else {
                     sql.append(getIfNotEqual(column, column.getColumnEqualsHolder(NEWER) + Symbol.COMMA));
                 }

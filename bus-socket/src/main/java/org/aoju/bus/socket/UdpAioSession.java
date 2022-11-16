@@ -25,12 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.buffer.WriteBuffer;
+import org.aoju.bus.socket.buffers.BufferPage;
+import org.aoju.bus.socket.buffers.VirtualBuffer;
+import org.aoju.bus.socket.buffers.WriteBuffer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.util.function.Consumer;
 
 /**
  * @author Kimi Liu
@@ -44,10 +47,16 @@ public class UdpAioSession extends AioSession {
 
     private final WriteBuffer writeBuffer;
 
-    UdpAioSession(final UdpChannel udpChannel, final SocketAddress remote, WriteBuffer writeBuffer) {
+    UdpAioSession(final UdpChannel udpChannel, final SocketAddress remote, BufferPage bufferPage) {
         this.udpChannel = udpChannel;
         this.remote = remote;
-        this.writeBuffer = writeBuffer;
+        Consumer<WriteBuffer> consumer = var -> {
+            VirtualBuffer writeBuffer = var.poll();
+            if (writeBuffer != null) {
+                udpChannel.write(writeBuffer, UdpAioSession.this);
+            }
+        };
+        this.writeBuffer = new WriteBuffer(bufferPage, consumer, udpChannel.config.getWriteBufferSize(), 1);
         udpChannel.config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
     }
 
@@ -71,11 +80,14 @@ public class UdpAioSession extends AioSession {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * 为确保消息尽可能发送，UDP不支持立即close
+     *
+     * @param immediate true:立即关闭,false:响应消息发送完后关闭
+     */
     @Override
     public void close(boolean immediate) {
-        writeBuffer.close();
-        udpChannel.config.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
-        udpChannel.removeSession(remote);
+        writeBuffer.flush();
     }
 
     @Override

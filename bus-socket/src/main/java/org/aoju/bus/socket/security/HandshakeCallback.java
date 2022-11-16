@@ -29,7 +29,7 @@ package org.aoju.bus.socket.security;
  * @author Kimi Liu
  * @since Java 17+
  */
-interface HandshakeCallback {
+public interface HandshakeCallback {
 
     /**
      * 握手回调

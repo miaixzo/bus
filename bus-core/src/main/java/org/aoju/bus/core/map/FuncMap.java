@@ -52,7 +52,7 @@ public class FuncMap<K, V> extends TransitionMap<K, V> {
      * @param keyFunc    自定义KEY的函数
      * @param valueFunc  自定义value函数
      */
-    public FuncMap(Supplier<Map<K, V>> mapFactory, Function<Object, K> keyFunc, Function<Object, V> valueFunc) {
+    public FuncMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
         this(mapFactory.get(), keyFunc, valueFunc);
     }
 
@@ -64,7 +64,7 @@ public class FuncMap<K, V> extends TransitionMap<K, V> {
      * @param keyFunc   自定义KEY的函数
      * @param valueFunc 自定义value函数
      */
-    public FuncMap(Map<K, V> emptyMap, Function<Object, K> keyFunc, Function<Object, V> valueFunc) {
+    public FuncMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
         super(emptyMap);
         this.keyFunc = keyFunc;
         this.valueFunc = valueFunc;
@@ -77,7 +77,7 @@ public class FuncMap<K, V> extends TransitionMap<K, V> {
      * @return 驼峰Key
      */
     @Override
-    protected K customKey(Object key) {
+    protected K customKey(final Object key) {
         if (null != this.keyFunc) {
             return keyFunc.apply(key);
         }
@@ -85,7 +85,7 @@ public class FuncMap<K, V> extends TransitionMap<K, V> {
     }
 
     @Override
-    protected V customValue(Object value) {
+    protected V customValue(final Object value) {
         if (null != this.valueFunc) {
             return valueFunc.apply(value);
         }

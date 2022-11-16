@@ -26,7 +26,6 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.codec.provider.Base58Provider;
-import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.lang.Algorithm;
 
@@ -48,24 +47,34 @@ public class Base58 {
 
     /**
      * Base58编码
+     *
+     * @param data 被编码的数据，不带校验和
+     * @return 编码后的字符串
+     */
+    public static String encode(final byte[] data) {
+        return Base58Provider.INSTANCE.encode(data);
+    }
+
+    /**
+     * Base58编码
      * 包含版本位和校验位
      *
      * @param version 编码版本，{@code null}表示不包含版本位
      * @param data    被编码的数组，添加校验和。
      * @return 编码后的字符串
      */
-    public static String encodeChecked(Integer version, byte[] data) {
+    public static String encodeChecked(final Integer version, final byte[] data) {
         return encode(addChecksum(version, data));
     }
 
     /**
-     * Base58编码
+     * Base58解码
      *
-     * @param data 被编码的数据，不带校验和。
-     * @return 编码后的字符串
+     * @param encoded 被编码的base58字符串
+     * @return 解码后的bytes
      */
-    public static String encode(byte[] data) {
-        return Base58Provider.INSTANCE.encode(data);
+    public static byte[] decode(final CharSequence encoded) {
+        return Base58Provider.INSTANCE.decode(encoded);
     }
 
     /**
@@ -76,10 +85,10 @@ public class Base58 {
      * @return 解码后的bytes
      * @throws ValidateException 标志位验证错误抛出此异常
      */
-    public static byte[] decodeChecked(CharSequence encoded) throws ValidateException {
+    public static byte[] decodeChecked(final CharSequence encoded) throws ValidateException {
         try {
             return decodeChecked(encoded, true);
-        } catch (ValidateException ignore) {
+        } catch (final ValidateException ignore) {
             return decodeChecked(encoded, false);
         }
     }
@@ -93,19 +102,9 @@ public class Base58 {
      * @return 解码后的bytes
      * @throws ValidateException 标志位验证错误抛出此异常
      */
-    public static byte[] decodeChecked(CharSequence encoded, boolean withVersion) throws ValidateException {
-        byte[] valueWithChecksum = decode(encoded);
+    public static byte[] decodeChecked(final CharSequence encoded, final boolean withVersion) throws ValidateException {
+        final byte[] valueWithChecksum = decode(encoded);
         return verifyAndRemoveChecksum(valueWithChecksum, withVersion);
-    }
-
-    /**
-     * Base58解码
-     *
-     * @param encoded 被编码的base58字符串
-     * @return 解码后的bytes
-     */
-    public static byte[] decode(CharSequence encoded) {
-        return Base58Provider.INSTANCE.decode(encoded);
     }
 
     /**
@@ -115,7 +114,7 @@ public class Base58 {
      * @param withVersion 是否包含版本位
      * @return 载荷数据
      */
-    private static byte[] verifyAndRemoveChecksum(byte[] data, boolean withVersion) {
+    private static byte[] verifyAndRemoveChecksum(final byte[] data, final boolean withVersion) {
         final byte[] payload = Arrays.copyOfRange(data, withVersion ? 1 : 0, data.length - CHECKSUM_SIZE);
         final byte[] checksum = Arrays.copyOfRange(data, data.length - CHECKSUM_SIZE, data.length);
         final byte[] expectedChecksum = checksum(payload);
@@ -132,7 +131,7 @@ public class Base58 {
      * @param payload Base58数据（不含校验码）
      * @return Base58数据
      */
-    private static byte[] addChecksum(Integer version, byte[] payload) {
+    private static byte[] addChecksum(final Integer version, final byte[] payload) {
         final byte[] addressBytes;
         if (null != version) {
             addressBytes = new byte[1 + payload.length + CHECKSUM_SIZE];
@@ -154,8 +153,8 @@ public class Base58 {
      * @param data 数据
      * @return 校验码
      */
-    private static byte[] checksum(byte[] data) {
-        byte[] hash = hash256(hash256(data));
+    private static byte[] checksum(final byte[] data) {
+        final byte[] hash = hash256(hash256(data));
         return Arrays.copyOfRange(hash, 0, CHECKSUM_SIZE);
     }
 
@@ -165,11 +164,11 @@ public class Base58 {
      * @param data 数据
      * @return sha-256值
      */
-    private static byte[] hash256(byte[] data) {
+    private static byte[] hash256(final byte[] data) {
         try {
             return MessageDigest.getInstance(Algorithm.SHA256.getValue()).digest(data);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InternalException(e);
+        } catch (final NoSuchAlgorithmException e) {
+            throw new ValidateException(e);
         }
     }
 

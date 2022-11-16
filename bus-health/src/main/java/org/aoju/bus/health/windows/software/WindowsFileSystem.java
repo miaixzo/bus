@@ -57,6 +57,8 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class WindowsFileSystem extends AbstractFileSystem {
 
+    public static final long MAX_WINDOWS_HANDLES;
+
     private static final int BUFSIZE = 255;
 
     private static final int SEM_FAILCRITICALERRORS = 0x0001;
@@ -80,7 +82,6 @@ public class WindowsFileSystem extends AbstractFileSystem {
     private static final int FILE_VOLUME_QUOTAS = 0x00000020;
 
     private static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
-    private static final long MAX_WINDOWS_HANDLES;
 
     static {
         OPTIONS_MAP.put(FILE_CASE_PRESERVED_NAMES, "casepn");
@@ -304,6 +305,11 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
     @Override
     public long getMaxFileDescriptors() {
+        return MAX_WINDOWS_HANDLES;
+    }
+
+    @Override
+    public long getMaxFileDescriptorsPerProcess() {
         return MAX_WINDOWS_HANDLES;
     }
 

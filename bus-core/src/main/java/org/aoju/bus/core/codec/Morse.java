@@ -41,11 +41,17 @@ import java.util.Map;
  */
 public class Morse {
 
+    /**
+     * code point -> morse
+     */
     private static final Map<Integer, String> ALPHABETS = new HashMap<>();
+    /**
+     * morse -> code point
+     */
     private static final Map<String, Integer> DICTIONARIES = new HashMap<>();
 
     static {
-        // Letters
+        // 字母
         registerMorse('A', "01");
         registerMorse('B', "1000");
         registerMorse('C', "1010");
@@ -72,7 +78,7 @@ public class Morse {
         registerMorse('X', "1001");
         registerMorse('Y', "1011");
         registerMorse('Z', "1100");
-        // Numbers
+        // 数字
         registerMorse(Symbol.C_ZERO, "11111");
         registerMorse(Symbol.C_ONE, "01111");
         registerMorse(Symbol.C_TWO, "00111");
@@ -83,7 +89,7 @@ public class Morse {
         registerMorse(Symbol.C_SEVEN, "11000");
         registerMorse(Symbol.C_EIGHT, "11100");
         registerMorse(Symbol.C_NINE, "11110");
-        // Punctuation
+        // 符号
         registerMorse(Symbol.C_DOT, "010101");
         registerMorse(Symbol.C_COMMA, "110011");
         registerMorse(Symbol.C_QUESTION_MARK, "001100");
@@ -104,8 +110,17 @@ public class Morse {
         registerMorse(Symbol.C_AT, "011010");
     }
 
+    /**
+     * 短标记或小点
+     */
     private final char dit;
+    /**
+     * 较长的标记或破折号
+     */
     private final char dah;
+    /**
+     * 分割符号
+     */
     private final char split;
 
     /**
@@ -122,7 +137,7 @@ public class Morse {
      * @param dah   横线表示的字符
      * @param split 分隔符
      */
-    public Morse(char dit, char dah, char split) {
+    public Morse(final char dit, final char dah, final char split) {
         this.dit = dit;
         this.dah = dah;
         this.split = split;
@@ -152,7 +167,7 @@ public class Morse {
         final StringBuilder morseBuilder = new StringBuilder();
         final int len = text.codePointCount(0, text.length());
         for (int i = 0; i < len; i++) {
-            int codePoint = text.codePointAt(i);
+            final int codePoint = text.codePointAt(i);
             String word = ALPHABETS.get(codePoint);
             if (null == word) {
                 word = Integer.toBinaryString(codePoint);
@@ -168,7 +183,7 @@ public class Morse {
      * @param morse 莫尔斯电码
      * @return 明文
      */
-    public String decode(String morse) {
+    public String decode(final String morse) {
         Assert.notNull(morse, "Morse should not be null.");
 
         final char dit = this.dit;

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.http.socket;
 
+import org.aoju.bus.core.net.tls.TlsVersion;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.accord.ConnectionSuite;
 import org.aoju.bus.http.secure.CipherSuite;
-import org.aoju.bus.http.secure.TlsVersion;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;

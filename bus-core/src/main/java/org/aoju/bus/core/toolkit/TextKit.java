@@ -83,7 +83,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      *
      * @return {@link TextKit}
      */
-    public static TextKit create() {
+    public static TextKit of() {
         return new TextKit();
     }
 

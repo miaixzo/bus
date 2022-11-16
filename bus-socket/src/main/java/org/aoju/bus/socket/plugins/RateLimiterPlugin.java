@@ -123,7 +123,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             int limit = dst.limit();
             // 限制limit,防止流控溢出
             dst.limit(dst.position() + availReadSize);
-            super.read(dst, timeout, unit, attachment, new CompletionHandler<Integer, A>() {
+            super.read(dst, timeout, unit, attachment, new CompletionHandler<>() {
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {
@@ -170,7 +170,7 @@ public class RateLimiterPlugin<T> extends AbstractPlugin<T> {
             int limit = src.limit();
             // 限制limit,防止流控溢出
             src.limit(src.position() + availWriteSize);
-            super.write(src, timeout, unit, attachment, new CompletionHandler<Integer, A>() {
+            super.write(src, timeout, unit, attachment, new CompletionHandler<>() {
                 @Override
                 public void completed(Integer result, A attachment) {
                     if (result > 0) {

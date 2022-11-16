@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.net.tls.SSLContextBuilder;
 import org.aoju.bus.http.plugin.httpz.GetBuilder;
 import org.aoju.bus.http.plugin.httpz.HttpBuilder;
 import org.aoju.bus.http.plugin.httpz.PostBuilder;
 import org.aoju.bus.http.plugin.httpz.PutBuilder;
-import org.aoju.bus.http.secure.SSLContextBuilder;
 
 import javax.net.ssl.X509TrustManager;
 

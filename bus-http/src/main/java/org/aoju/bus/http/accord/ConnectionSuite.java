@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
+import org.aoju.bus.core.net.tls.TlsVersion;
 import org.aoju.bus.http.secure.CipherSuite;
-import org.aoju.bus.http.secure.TlsVersion;
 
 import javax.net.ssl.SSLSocket;
 import java.util.Arrays;

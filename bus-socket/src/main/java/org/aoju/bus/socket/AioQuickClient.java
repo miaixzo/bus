@@ -25,10 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.buffer.ByteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.socket.handler.CompletionReadHandler;
-import org.aoju.bus.socket.handler.CompletionWriteHandler;
+import org.aoju.bus.socket.buffers.BufferFactory;
+import org.aoju.bus.socket.buffers.BufferPool;
+import org.aoju.bus.socket.buffers.VirtualFactory;
+import org.aoju.bus.socket.handler.ReadCompletionHandler;
+import org.aoju.bus.socket.handler.WriteCompletionHandler;
 import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.io.IOException;
@@ -46,9 +48,9 @@ import java.util.concurrent.TimeUnit;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version V1.0.0
+ * @since Java 17+
  */
-public class AioQuickClient {
+public final class AioQuickClient {
 
     /**
      * 客户端服务配置。
@@ -57,19 +59,17 @@ public class AioQuickClient {
     private final ServerConfig config = new ServerConfig();
     /**
      * 网络连接的会话对象
-     *
-     * @see TcpAioSession
      */
     private TcpAioSession session;
     /**
      * 内存池
      */
-    private ByteBuffer bufferPool = null;
+    private BufferPool bufferPool = null;
 
-    private ByteBuffer innerBufferPool = null;
+    private BufferPool innerBufferPool = null;
     /**
-     * IO事件处理线程组
-     * 作为客户端，该AsynchronousChannelGroup只需保证2个长度的线程池大小即可满足通信读写所需
+     * IO事件处理线程组。
+     * 作为客户端，该AsynchronousChannelGroup只需保证2个长度的线程池大小即可满足通信读写所需。
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
 
@@ -83,12 +83,11 @@ public class AioQuickClient {
      */
     private int connectTimeout;
 
-    private BufferFactory.VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(config.getReadBufferSize());
+    private VirtualFactory readBufferFactory = bufferPage -> bufferPage.allocate(config.getReadBufferSize());
 
     /**
      * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
      *
-     * @param <T>              对象
      * @param host             远程服务器地址
      * @param port             远程服务器端口号
      * @param protocol         协议编解码
@@ -107,7 +106,7 @@ public class AioQuickClient {
      * @param attachment 可传入回调方法中的附件对象
      * @param handler    异步回调
      * @param <A>        附件对象类型
-     * @throws IOException 异常
+     * @throws IOException
      */
     public <A> void start(A attachment,
                           CompletionHandler<AioSession, ? super A> handler) throws IOException {
@@ -122,7 +121,7 @@ public class AioQuickClient {
      * @param attachment               可传入回调方法中的附件对象
      * @param handler                  异步回调
      * @param <A>                      附件对象类型
-     * @throws IOException 异常
+     * @throws IOException
      */
     public <A> void start(AsynchronousChannelGroup asynchronousChannelGroup, A attachment,
                           CompletionHandler<AioSession, ? super A> handler) throws IOException {
@@ -153,8 +152,7 @@ public class AioQuickClient {
                         throw new RuntimeException("NetMonitor refuse channel");
                     }
                     //连接成功则构造AIOSession对象
-                    session = new TcpAioSession(connectedChannel, config, new CompletionReadHandler(), new CompletionWriteHandler(), bufferPool.allocatePageBuffer());
-                    session.initSession(readBufferFactory.newBuffer(bufferPool.allocatePageBuffer()));
+                    session = new TcpAioSession(connectedChannel, config, new ReadCompletionHandler(), new WriteCompletionHandler(), bufferPool.allocateBufferPage(), () -> readBufferFactory.newBuffer(bufferPool.allocateBufferPage()));
                     handler.completed(session, attachment);
                 } catch (Exception e) {
                     failed(e, socketChannel);
@@ -178,9 +176,9 @@ public class AioQuickClient {
     }
 
     /**
-     * 启动客户端
-     * 在与服务端建立连接期间，该方法处于阻塞状态。直至连接建立成功，或者发生异常
-     * 该start方法支持外部指定AsynchronousChannelGroup，实现多个客户端共享一组线程池资源，有效提升资源利用率
+     * 启动客户端。
+     * 在与服务端建立连接期间，该方法处于阻塞状态。直至连接建立成功，或者发生异常。
+     * 该start方法支持外部指定AsynchronousChannelGroup，实现多个客户端共享一组线程池资源，有效提升资源利用率。
      *
      * @param asynchronousChannelGroup IO事件处理线程组
      * @return 建立连接后的会话对象
@@ -222,8 +220,8 @@ public class AioQuickClient {
     }
 
     /**
-     * 启动客户端
-     * 本方法会构建线程数为2的{@code asynchronousChannelGroup}，并通过调用{@link AioQuickClient#start(AsynchronousChannelGroup)}启动服务
+     * 启动客户端。
+     * 本方法会构建线程数为2的{@code asynchronousChannelGroup}，并通过调用{@link AioQuickClient#start(AsynchronousChannelGroup)}启动服务。
      *
      * @return 建立连接后的会话对象
      * @throws IOException IOException
@@ -235,8 +233,8 @@ public class AioQuickClient {
     }
 
     /**
-     * 停止客户端服务
-     * 调用该方法会触发AioSession的close方法，并且如果当前客户端若是通过执行{@link AioQuickClient#start()}方法构建的，同时会触发asynchronousChannelGroup的shutdown动作
+     * 停止客户端服务.
+     * 调用该方法会触发AioSession的close方法，并且如果当前客户端若是通过执行{@link AioQuickClient#start()}方法构建的，同时会触发asynchronousChannelGroup的shutdown动作。
      */
     public final void shutdown() {
         shutdown0(false);
@@ -259,12 +257,15 @@ public class AioQuickClient {
             session.close(flag);
             session = null;
         }
-        // 仅Client内部创建的ChannelGroup需要shutdown
+        //仅Client内部创建的ChannelGroup需要shutdown
         if (asynchronousChannelGroup != null) {
             asynchronousChannelGroup.shutdown();
+            asynchronousChannelGroup = null;
         }
         if (innerBufferPool != null) {
             innerBufferPool.release();
+            innerBufferPool = null;
+            bufferPool = null;
         }
     }
 
@@ -281,14 +282,12 @@ public class AioQuickClient {
 
     /**
      * 设置Socket的TCP参数配置
-     * <p>
      * AIO客户端的有效可选范围为：
      * 1. StandardSocketOptions.SO_SNDBUF
      * 2. StandardSocketOptions.SO_RCVBUF
      * 3. StandardSocketOptions.SO_KEEPALIVE
      * 4. StandardSocketOptions.SO_REUSEADDR
      * 5. StandardSocketOptions.TCP_NODELAY
-     * </p>
      *
      * @param socketOption 配置项
      * @param value        配置值
@@ -321,7 +320,7 @@ public class AioQuickClient {
      * @param bufferPool 内存池对象
      * @return 当前客户端实例
      */
-    public final AioQuickClient setBufferPagePool(ByteBuffer bufferPool) {
+    public final AioQuickClient setBufferPagePool(BufferPool bufferPool) {
         this.bufferPool = bufferPool;
         this.config.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
         return this;
@@ -366,9 +365,8 @@ public class AioQuickClient {
         return this;
     }
 
-    public final AioQuickClient setReadBufferFactory(BufferFactory.VirtualBufferFactory readBufferFactory) {
+    public final AioQuickClient setReadBufferFactory(VirtualFactory readBufferFactory) {
         this.readBufferFactory = readBufferFactory;
         return this;
     }
-
 }

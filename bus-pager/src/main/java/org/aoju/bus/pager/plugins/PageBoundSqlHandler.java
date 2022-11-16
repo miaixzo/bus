@@ -26,6 +26,7 @@
 package org.aoju.bus.pager.plugins;
 
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.pager.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,11 @@ public class PageBoundSqlHandler {
             List<BoundSqlHandler> list = new ArrayList<>();
             for (int i = 0; i < boundSqlInterceptors.length; i++) {
                 try {
-                    list.add((BoundSqlHandler) Class.forName(boundSqlInterceptors[i]).getConstructor().newInstance());
+                    BoundSqlHandler boundSqlInterceptor = (BoundSqlHandler) Class.forName(boundSqlInterceptors[i]).getConstructor().newInstance();
+                    if (boundSqlInterceptor instanceof Property) {
+                        ((Property) boundSqlInterceptor).setProperties(properties);
+                    }
+                    list.add(boundSqlInterceptor);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

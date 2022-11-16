@@ -172,7 +172,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.major, this.minor);
+        OSProcess proc = new MacOSProcess(pid, this.major, this.minor, this);
         return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 

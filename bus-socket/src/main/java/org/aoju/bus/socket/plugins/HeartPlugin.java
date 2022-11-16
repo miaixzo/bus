@@ -45,16 +45,16 @@ import java.util.concurrent.TimeUnit;
 public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
 
     private static final TimeoutCallback DEFAULT_TIMEOUT_CALLBACK = (session, lastTime) -> session.close(true);
-    private final Map<AioSession, Long> sessionMap = new HashMap<>();
+    private Map<AioSession, Long> sessionMap = new HashMap<>();
     /**
      * 心跳频率
      */
-    private final long heartRate;
+    private long heartRate;
     /**
      * 在超时时间内未收到消息,关闭连接。
      */
-    private final long timeout;
-    private final TimeoutCallback timeoutCallback;
+    private long timeout;
+    private TimeoutCallback timeoutCallback;
 
     /**
      * 心跳插件
@@ -84,10 +84,8 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
      * 心跳插件
      * 心跳插件在断网场景可能会触发TCP Retransmission,导致无法感知到网络实际状态,可通过设置timeout关闭连接
      *
-     * @param heartRate       心跳触发频率
-     * @param timeout         消息超时时间
-     * @param timeUnit        时间单位
-     * @param timeoutCallback 超时回调
+     * @param heartRate 心跳触发频率
+     * @param timeout   消息超时时间
      */
     public HeartPlugin(int heartRate, int timeout, TimeUnit timeUnit, TimeoutCallback timeoutCallback) {
         if (timeout > 0 && heartRate >= timeout) {
@@ -102,8 +100,11 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     public final boolean preProcess(AioSession session, T t) {
         sessionMap.put(session, System.currentTimeMillis());
         // 是否心跳响应消息
-        // 延长心跳监测时间
-        return !isHeartMessage(session, t);
+        if (isHeartMessage(session, t)) {
+            // 延长心跳监测时间
+            return false;
+        }
+        return true;
     }
 
     @Override

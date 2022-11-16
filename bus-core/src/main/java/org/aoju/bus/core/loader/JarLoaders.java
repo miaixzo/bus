@@ -110,7 +110,6 @@ public class JarLoaders extends URLClassLoader {
         try {
             final Method method = ClassKit.getDeclaredMethod(URLClassLoader.class, "addURL", URL.class);
             if (null != method) {
-                method.setAccessible(true);
                 final List<File> jars = loopJar(jarFile);
                 for (File jar : jars) {
                     ReflectKit.invoke(loader, method, jar.toURI().toURL());

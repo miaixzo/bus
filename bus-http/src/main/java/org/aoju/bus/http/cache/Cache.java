@@ -26,6 +26,7 @@
 package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.FileSystem;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.sink.AssignSink;
 import org.aoju.bus.core.io.sink.BufferSink;
@@ -37,13 +38,13 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.net.tls.TlsVersion;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.http.StatusLine;
 import org.aoju.bus.http.secure.CipherSuite;
-import org.aoju.bus.http.secure.TlsVersion;
 import org.aoju.bus.http.socket.Handshake;
 
 import java.io.Closeable;
@@ -115,7 +116,11 @@ public class Cache implements Closeable, Flushable {
      * @param maxSize   缓存的最大大小(以字节为单位)
      */
     public Cache(File directory, long maxSize) {
-        this.cache = DiskLruCache.create(directory, VERSION, ENTRY_COUNT, maxSize);
+        this(directory, maxSize, FileSystem.SYSTEM);
+    }
+
+    public Cache(File directory, long maxSize, FileSystem fileSystem) {
+        this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
     public static String key(UnoUrl url) {
@@ -127,7 +132,7 @@ public class Cache implements Closeable, Flushable {
             long result = source.readDecimalLong();
             String line = source.readUtf8LineStrict();
             if (result < 0 || result > Integer.MAX_VALUE || !line.isEmpty()) {
-                throw new IOException("expected an int but was \"" + result + line + Symbol.DOUBLE_QUOTES);
+                throw new IOException("expected an int but was \"" + result + line + "\"");
             }
             return (int) result;
         } catch (NumberFormatException e) {
@@ -557,7 +562,7 @@ public class Cache implements Closeable, Flushable {
             if (length == -1) return Collections.emptyList();
 
             try {
-                CertificateFactory certificateFactory = CertificateFactory.getInstance(Builder.X_509);
+                CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
                 List<Certificate> result = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
                     String line = source.readUtf8LineStrict();
@@ -616,6 +621,7 @@ public class Cache implements Closeable, Flushable {
     }
 
     private static class CacheResponseBody extends ResponseBody {
+
         final DiskLruCache.Snapshot snapshot;
         private final BufferSource bodySource;
         private final String mediaType;
@@ -658,6 +664,7 @@ public class Cache implements Closeable, Flushable {
     }
 
     private class CacheRequestImpl implements CacheRequest {
+
         private final DiskLruCache.Editor editor;
         boolean done;
         private Sink cacheOut;

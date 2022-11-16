@@ -28,7 +28,6 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.IOException;
 
@@ -87,7 +86,7 @@ public class Http2 {
 
     static {
         for (int i = 0; i < BINARY.length; i++) {
-            BINARY[i] = StringKit.format("%8s", Integer.toBinaryString(i)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
+            BINARY[i] = String.format("%8s", Integer.toBinaryString(i)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
         }
 
         FLAGS[FLAG_NONE] = Normal.EMPTY;
@@ -124,24 +123,20 @@ public class Http2 {
     }
 
     static IllegalArgumentException illegalArgument(String message, Object... args) {
-        throw new IllegalArgumentException(StringKit.format(message, args));
+        throw new IllegalArgumentException(String.format(message, args));
     }
 
     static IOException ioException(String message, Object... args) throws IOException {
-        throw new IOException(StringKit.format(message, args));
+        throw new IOException(String.format(message, args));
     }
 
     /**
      * Returns human-readable representation of HTTP/2 frame headers.
-     * <p>
      * The format is:
-     *
      * <pre>
      *   direction streamID length type flags
      * </pre>
-     * <p>
      * Where direction is {@code <<} for inbound and {@code >>} for outbound.
-     * <p>
      * For example, the following would indicate a HEAD request sent from the client.
      * <pre>
      * {@code
@@ -150,9 +145,9 @@ public class Http2 {
      * </pre>
      */
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
-        String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : StringKit.format("0x%02x", type);
+        String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : String.format("0x%02x", type);
         String formattedFlags = formatFlags(type, flags);
-        return StringKit.format("%s 0x%08x %5d %-13s %s", inbound ? "<<" : ">>", streamId, length,
+        return String.format("%s 0x%08x %5d %-13s %s", inbound ? "<<" : ">>", streamId, length,
                 formattedType, formattedFlags);
     }
 

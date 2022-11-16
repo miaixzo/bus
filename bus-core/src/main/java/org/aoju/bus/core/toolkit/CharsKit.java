@@ -293,10 +293,10 @@ public class CharsKit {
      * </ol>
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isBlank(null)     // true}</li>
-     *     <li>{@code StringKit.isBlank("")       // true}</li>
-     *     <li>{@code StringKit.isBlank(" \t\n")  // true}</li>
-     *     <li>{@code StringKit.isBlank("abc")    // false}</li>
+     *     <li>{@code isBlank(null)     // true}</li>
+     *     <li>{@code isBlank("")       // true}</li>
+     *     <li>{@code isBlank(" \t\n")  // true}</li>
+     *     <li>{@code isBlank("abc")    // false}</li>
      * </ul>
      * 注意：该方法与 {@link #isEmpty(CharSequence)} 的区别是：
      * 该方法会校验空白字符，且性能相对于 {@link #isEmpty(CharSequence)} 略慢
@@ -336,10 +336,10 @@ public class CharsKit {
      * </ol>
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isNotBlank(null)     // false}</li>
-     *     <li>{@code StringKit.isNotBlank("")       // false}</li>
-     *     <li>{@code StringKit.isNotBlank(" \t\n")  // false}</li>
-     *     <li>{@code StringKit.isNotBlank("abc")    // true}</li>
+     *     <li>{@code isNotBlank(null)     // false}</li>
+     *     <li>{@code isNotBlank("")       // false}</li>
+     *     <li>{@code isNotBlank(" \t\n")  // false}</li>
+     *     <li>{@code isNotBlank("abc")    // true}</li>
      * </ul>
      * 注意：该方法与 {@link #isNotEmpty(CharSequence)} 的区别是：
      * 该方法会校验空白字符，且性能相对于 {@link #isNotEmpty(CharSequence)} 略慢
@@ -357,16 +357,16 @@ public class CharsKit {
      * 检查是否没有字符序列为空("")、空字符或仅为空格
      *
      * <pre>
-     * StringKit.isNoneBlank(null)             = false
-     * StringKit.isNoneBlank(null, "foo")      = false
-     * StringKit.isNoneBlank(null, null)       = false
-     * StringKit.isNoneBlank("", "bar")        = false
-     * StringKit.isNoneBlank("bob", "")        = false
-     * StringKit.isNoneBlank("  bob  ", null)  = false
-     * StringKit.isNoneBlank(" ", "bar")       = false
-     * StringKit.isNoneBlank(new String[] {})  = true
-     * StringKit.isNoneBlank(new String[]{""}) = false
-     * StringKit.isNoneBlank("foo", "bar")     = true
+     * isNoneBlank(null)             = false
+     * isNoneBlank(null, "foo")      = false
+     * isNoneBlank(null, null)       = false
+     * isNoneBlank("", "bar")        = false
+     * isNoneBlank("bob", "")        = false
+     * isNoneBlank("  bob  ", null)  = false
+     * isNoneBlank(" ", "bar")       = false
+     * isNoneBlank(new String[] {})  = true
+     * isNoneBlank(new String[]{""}) = false
+     * isNoneBlank("foo", "bar")     = true
      * </pre>
      *
      * @param args 要检查的字符串可以为null或空
@@ -380,17 +380,17 @@ public class CharsKit {
      * 检查任何一个字符序列是否为空("")，或为空，或仅为空白
      *
      * <pre>
-     * StringKit.isAnyBlank((String) null)    = true
-     * StringKit.isAnyBlank((String[]) null)  = false
-     * StringKit.isAnyBlank(null, "foo")      = true
-     * StringKit.isAnyBlank(null, null)       = true
-     * StringKit.isAnyBlank("", "bar")        = true
-     * StringKit.isAnyBlank("bob", "")        = true
-     * StringKit.isAnyBlank("  bob  ", null)  = true
-     * StringKit.isAnyBlank(" ", "bar")       = true
-     * StringKit.isAnyBlank(new String[] {})  = false
-     * StringKit.isAnyBlank(new String[]{""}) = true
-     * StringKit.isAnyBlank("foo", "bar")     = false
+     * isAnyBlank((String) null)    = true
+     * isAnyBlank((String[]) null)  = false
+     * isAnyBlank(null, "foo")      = true
+     * isAnyBlank(null, null)       = true
+     * isAnyBlank("", "bar")        = true
+     * isAnyBlank("bob", "")        = true
+     * isAnyBlank("  bob  ", null)  = true
+     * isAnyBlank(" ", "bar")       = true
+     * isAnyBlank(new String[] {})  = false
+     * isAnyBlank(new String[]{""}) = true
+     * isAnyBlank("foo", "bar")     = false
      * </pre>
      *
      * @param args 要检查的字符序列可以为空或空
@@ -413,10 +413,10 @@ public class CharsKit {
      * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isAllBlank()                  // true}</li>
-     *     <li>{@code StringKit.isAllBlank("", null, " ")     // true}</li>
-     *     <li>{@code StringKit.isAllBlank("123", " ")        // false}</li>
-     *     <li>{@code StringKit.isAllBlank("123", "abc")      // false}</li>
+     *     <li>{@code isAllBlank()                  // true}</li>
+     *     <li>{@code isAllBlank("", null, " ")     // true}</li>
+     *     <li>{@code isAllBlank("123", " ")        // false}</li>
+     *     <li>{@code isAllBlank("123", "abc")      // false}</li>
      * </ul>
      * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：
      * <ul>
@@ -448,10 +448,10 @@ public class CharsKit {
      * </ol>
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isEmpty(null)     // true}</li>
-     *     <li>{@code StringKit.isEmpty("")       // true}</li>
-     *     <li>{@code StringKit.isEmpty(" \t\n")  // false}</li>
-     *     <li>{@code StringKit.isEmpty("abc")    // false}</li>
+     *     <li>{@code isEmpty(null)     // true}</li>
+     *     <li>{@code isEmpty("")       // true}</li>
+     *     <li>{@code isEmpty(" \t\n")  // false}</li>
+     *     <li>{@code isEmpty("abc")    // false}</li>
      * </ul>
      * 注意：该方法与 {@link #isBlank(CharSequence)} 的区别是：该方法不校验空白字符
      * 建议：
@@ -476,10 +476,10 @@ public class CharsKit {
      * </ol>
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isNotEmpty(null)     // false}</li>
-     *     <li>{@code StringKit.isNotEmpty("")       // false}</li>
-     *     <li>{@code StringKit.isNotEmpty(" \t\n")  // true}</li>
-     *     <li>{@code StringKit.isNotEmpty("abc")    // true}</li>
+     *     <li>{@code isNotEmpty(null)     // false}</li>
+     *     <li>{@code isNotEmpty("")       // false}</li>
+     *     <li>{@code isNotEmpty(" \t\n")  // true}</li>
+     *     <li>{@code isNotEmpty("abc")    // true}</li>
      * </ul>
      * 注意：该方法与 {@link #isNotBlank(CharSequence)} 的区别是：该方法不校验空白字符
      * 建议：该方法建议用于工具类或任何可以预期的方法参数的校验中
@@ -497,11 +497,11 @@ public class CharsKit {
      * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isAllEmpty()                  // true}</li>
-     *     <li>{@code StringKit.isAllEmpty("", null)          // true}</li>
-     *     <li>{@code StringKit.isAllEmpty("123", "")         // false}</li>
-     *     <li>{@code StringKit.isAllEmpty("123", "abc")      // false}</li>
-     *     <li>{@code StringKit.isAllEmpty(" ", "\t", "\n")   // false}</li>
+     *     <li>{@code isAllEmpty()                  // true}</li>
+     *     <li>{@code isAllEmpty("", null)          // true}</li>
+     *     <li>{@code isAllEmpty("123", "")         // false}</li>
+     *     <li>{@code isAllEmpty("123", "abc")      // false}</li>
+     *     <li>{@code isAllEmpty(" ", "\t", "\n")   // false}</li>
      * </ul>
      * 注意：该方法与 {@link #hasEmpty(CharSequence...)} 的区别在于：
      * <ul>
@@ -530,11 +530,11 @@ public class CharsKit {
      * 如果指定的字符串数组的长度不为 0，或者所有元素都不是空字符串，则返回 true
      * 例：
      * <ul>
-     *     <li>{@code StringKit.isAllNotEmpty()                  // false}</li>
-     *     <li>{@code StringKit.isAllNotEmpty("", null)          // false}</li>
-     *     <li>{@code StringKit.isAllNotEmpty("123", "")         // false}</li>
-     *     <li>{@code StringKit.isAllNotEmpty("123", "abc")      // true}</li>
-     *     <li>{@code StringKit.isAllNotEmpty(" ", "\t", "\n")   // true}</li>
+     *     <li>{@code isAllNotEmpty()                  // false}</li>
+     *     <li>{@code isAllNotEmpty("", null)          // false}</li>
+     *     <li>{@code isAllNotEmpty("123", "")         // false}</li>
+     *     <li>{@code isAllNotEmpty("123", "abc")      // true}</li>
+     *     <li>{@code isAllNotEmpty(" ", "\t", "\n")   // true}</li>
      * </ul>
      * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
      * <ul>
@@ -625,10 +625,10 @@ public class CharsKit {
      * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true
      * 例：
      * <ul>
-     *     <li>{@code StringKit.hasBlank()                  // true}</li>
-     *     <li>{@code StringKit.hasBlank("", null, " ")     // true}</li>
-     *     <li>{@code StringKit.hasBlank("123", " ")        // true}</li>
-     *     <li>{@code StringKit.hasBlank("123", "abc")      // false}</li>
+     *     <li>{@code hasBlank()                  // true}</li>
+     *     <li>{@code hasBlank("", null, " ")     // true}</li>
+     *     <li>{@code hasBlank("123", " ")        // true}</li>
+     *     <li>{@code hasBlank("123", "abc")      // false}</li>
      * </ul>
      * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：
      * <ul>
@@ -698,11 +698,11 @@ public class CharsKit {
      * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true
      * 例：
      * <ul>
-     *     <li>{@code StringKit.hasEmpty()                  // true}</li>
-     *     <li>{@code StringKit.hasEmpty("", null)          // true}</li>
-     *     <li>{@code StringKit.hasEmpty("123", "")         // true}</li>
-     *     <li>{@code StringKit.hasEmpty("123", "abc")      // false}</li>
-     *     <li>{@code StringKit.hasEmpty(" ", "\t", "\n")   // false}</li>
+     *     <li>{@code hasEmpty()                  // true}</li>
+     *     <li>{@code hasEmpty("", null)          // true}</li>
+     *     <li>{@code hasEmpty("123", "")         // true}</li>
+     *     <li>{@code hasEmpty("123", "abc")      // false}</li>
+     *     <li>{@code hasEmpty(" ", "\t", "\n")   // false}</li>
      * </ul>
      * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
      * <ul>
@@ -1076,11 +1076,11 @@ public class CharsKit {
      * 删除字符串两端的空白字符(char &lt;= 32)，如果字符串在修剪后为空("")
      * 或者如果字符串为{@code null}，则返回{@code null}
      * <pre>
-     * StringKit.trimToNull(null)           = null
-     * StringKit.trimToNull("")             = null
-     * StringKit.trimToNull("     ")        = null
-     * StringKit.trimToNull("abc")          = "abc"
-     * StringKit.trimToEmpty("    abc    ") = "abc"
+     * trimToNull(null)           = null
+     * trimToNull("")             = null
+     * trimToNull("     ")        = null
+     * trimToNull("abc")          = "abc"
+     * trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
      * @param text 字符串
@@ -1575,14 +1575,14 @@ public class CharsKit {
      * 如果分隔字符串为空串"",则返回空串,如果分隔字符串未找到,返回原字符串,举例如下：
      *
      * <pre>
-     * StringKit.subBefore(null, *)      = null
-     * StringKit.subBefore("", *)        = ""
-     * StringKit.subBefore("abc", "a")   = ""
-     * StringKit.subBefore("abcba", "b") = "a"
-     * StringKit.subBefore("abc", "c")   = "ab"
-     * StringKit.subBefore("abc", "d")   = "abc"
-     * StringKit.subBefore("abc", "")    = ""
-     * StringKit.subBefore("abc", null)  = "abc"
+     * subBefore(null, *)      = null
+     * subBefore("", *)        = ""
+     * subBefore("abc", "a")   = ""
+     * subBefore("abcba", "b") = "a"
+     * subBefore("abc", "c")   = "ab"
+     * subBefore("abc", "d")   = "abc"
+     * subBefore("abc", "")    = ""
+     * subBefore("abc", null)  = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -1616,12 +1616,12 @@ public class CharsKit {
      * 如果分隔字符串未找到,返回原字符串,举例如下：
      *
      * <pre>
-     * StringKit.subBefore(null, *)      = null
-     * StringKit.subBefore("", *)        = ""
-     * StringKit.subBefore("abc", 'a')   = ""
-     * StringKit.subBefore("abcba", 'b') = "a"
-     * StringKit.subBefore("abc", 'c')   = "ab"
-     * StringKit.subBefore("abc", 'd')   = "abc"
+     * subBefore(null, *)      = null
+     * subBefore("", *)        = ""
+     * subBefore("abc", 'a')   = ""
+     * subBefore("abcba", 'b') = "a"
+     * subBefore("abc", 'c')   = "ab"
+     * subBefore("abc", 'd')   = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -1651,14 +1651,14 @@ public class CharsKit {
      * 如果分隔字符串为空串(null或""),则返回空串,如果分隔字符串未找到,返回空串,举例如下：
      *
      * <pre>
-     * StringKit.subAfter(null, *)      = null
-     * StringKit.subAfter("", *)        = ""
-     * StringKit.subAfter(*, null)      = ""
-     * StringKit.subAfter("abc", "a")   = "bc"
-     * StringKit.subAfter("abcba", "b") = "cba"
-     * StringKit.subAfter("abc", "c")   = ""
-     * StringKit.subAfter("abc", "d")   = ""
-     * StringKit.subAfter("abc", "")    = "abc"
+     * subAfter(null, *)      = null
+     * subAfter("", *)        = ""
+     * subAfter(*, null)      = ""
+     * subAfter("abc", "a")   = "bc"
+     * subAfter("abcba", "b") = "cba"
+     * subAfter("abc", "c")   = ""
+     * subAfter("abc", "d")   = ""
+     * subAfter("abc", "")    = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -1688,12 +1688,12 @@ public class CharsKit {
      * 如果分隔字符串为空串(null或""),则返回空串,如果分隔字符串未找到,返回空串,举例如下：
      *
      * <pre>
-     * StringKit.subAfter(null, *)      = null
-     * StringKit.subAfter("", *)        = ""
-     * StringKit.subAfter("abc", 'a')   = "bc"
-     * StringKit.subAfter("abcba", 'b') = "cba"
-     * StringKit.subAfter("abc", 'c')   = ""
-     * StringKit.subAfter("abc", 'd')   = ""
+     * subAfter(null, *)      = null
+     * subAfter("", *)        = ""
+     * subAfter("abc", 'a')   = "bc"
+     * subAfter("abcba", 'b') = "cba"
+     * subAfter("abc", 'c')   = ""
+     * subAfter("abc", 'd')   = ""
      * </pre>
      *
      * @param string          被查找的字符串
@@ -1729,16 +1729,16 @@ public class CharsKit {
      * 截取指定字符串中间部分,不包括标识字符串
      *
      * <pre>
-     * StringKit.subBetween("wx[b]yz", "[", "]")     = "b"
-     * StringKit.subBetween(null, *, *)              = null
-     * StringKit.subBetween(*, null, *)              = null
-     * StringKit.subBetween(*, *, null)              = null
-     * StringKit.subBetween("", "", "")              = ""
-     * StringKit.subBetween("", "", "]")             = null
-     * StringKit.subBetween("", "[", "]")            = null
-     * StringKit.subBetween("yabcz", "", "")         = ""
-     * StringKit.subBetween("yabcz", "y", "z")       = "abc"
-     * StringKit.subBetween("yabczyabcz", "y", "z")  = "abc"
+     * subBetween("wx[b]yz", "[", "]")     = "b"
+     * subBetween(null, *, *)              = null
+     * subBetween(*, null, *)              = null
+     * subBetween(*, *, null)              = null
+     * subBetween("", "", "")              = ""
+     * subBetween("", "", "]")             = null
+     * subBetween("", "[", "]")            = null
+     * subBetween("yabcz", "", "")         = ""
+     * subBetween("yabcz", "y", "z")       = "abc"
+     * subBetween("yabczyabcz", "y", "z")  = "abc"
      * </pre>
      *
      * @param text   被切割的字符串
@@ -1763,12 +1763,12 @@ public class CharsKit {
     /**
      * 截取指定字符串中间部分,不包括标识字符串
      * <pre>
-     * StringKit.subBetween(null, *)            = null
-     * StringKit.subBetween("", "")             = ""
-     * StringKit.subBetween("", "tag")          = null
-     * StringKit.subBetween("tagabctag", null)  = null
-     * StringKit.subBetween("tagabctag", "")    = ""
-     * StringKit.subBetween("tagabctag", "tag") = "abc"
+     * subBetween(null, *)            = null
+     * subBetween("", "")             = ""
+     * subBetween("", "tag")          = null
+     * subBetween("tagabctag", null)  = null
+     * subBetween("tagabctag", "")    = ""
+     * subBetween("tagabctag", "tag") = "abc"
      * </pre>
      *
      * @param text           被切割的字符串
@@ -1782,17 +1782,17 @@ public class CharsKit {
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
      * <pre>
-     * StringKit.subBetweenAll("wx[b]y[z]", "[", "]") 		    = ["b","z"]
-     * StringKit.subBetweenAll(null, *, *)          			= []
-     * StringKit.subBetweenAll(*, null, *)          			= []
-     * StringKit.subBetweenAll(*, *, null)          			= []
-     * StringKit.subBetweenAll("", "", "")          			= []
-     * StringKit.subBetweenAll("", "", "]")         			= []
-     * StringKit.subBetweenAll("", "[", "]")        			= []
-     * StringKit.subBetweenAll("yabcz", "", "")     			= []
-     * StringKit.subBetweenAll("yabcz", "y", "z")   			= ["abc"]
-     * StringKit.subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
-     * StringKit.subBetweenAll("[yabc[zy]abcz]", "[", "]");     = ["zy"]
+     * subBetweenAll("wx[b]y[z]", "[", "]") 		    = ["b","z"]
+     * subBetweenAll(null, *, *)          			= []
+     * subBetweenAll(*, null, *)          			= []
+     * subBetweenAll(*, *, null)          			= []
+     * subBetweenAll("", "", "")          			= []
+     * subBetweenAll("", "", "]")         			= []
+     * subBetweenAll("", "[", "]")        			= []
+     * subBetweenAll("yabcz", "", "")     			= []
+     * subBetweenAll("yabcz", "y", "z")   			= ["abc"]
+     * subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
+     * subBetweenAll("[yabc[zy]abcz]", "[", "]");     = ["zy"]
      * </pre>
      *
      * @param text   被切割的字符串
@@ -1835,22 +1835,22 @@ public class CharsKit {
      * 栗子：
      *
      * <pre>
-     * StringKit.subBetweenAll(null, *)          			= []
-     * StringKit.subBetweenAll(*, null)          			= []
-     * StringKit.subBetweenAll(*, *)          			    = []
-     * StringKit.subBetweenAll("", "")          			= []
-     * StringKit.subBetweenAll("", "#")         			= []
-     * StringKit.subBetweenAll("hello", "")     		    = []
-     * StringKit.subBetweenAll("#hello#", "#")   		    = ["hello"]
-     * StringKit.subBetweenAll("#hello# #world#!", "#")     = ["hello", "world"]
-     * StringKit.subBetweenAll("#hello# world#!", "#");     = ["hello"]
+     * subBetweenAll(null, *)          			= []
+     * subBetweenAll(*, null)          			= []
+     * subBetweenAll(*, *)          			    = []
+     * subBetweenAll("", "")          			= []
+     * subBetweenAll("", "#")         			= []
+     * subBetweenAll("hello", "")     		    = []
+     * subBetweenAll("#hello#", "#")   		    = ["hello"]
+     * subBetweenAll("#hello# #world#!", "#")     = ["hello", "world"]
+     * subBetweenAll("#hello# world#!", "#");     = ["hello"]
      * </pre>
      *
      * @param text            被切割的字符串
      * @param prefixAndSuffix 截取开始和结束的字符串标识
      * @return 截取后的字符串
      */
-    public static String[] subBetweenAll(CharSequence text, CharSequence prefixAndSuffix) {
+    public static String[] subBetweenAll(final CharSequence text, final CharSequence prefixAndSuffix) {
         return subBetweenAll(text, prefixAndSuffix, prefixAndSuffix);
     }
 
@@ -1858,20 +1858,20 @@ public class CharsKit {
      * 切割指定长度的后部分的字符串
      *
      * <pre>
-     * StringKit.subSufByLength("abcde", 3)      =    "cde"
-     * StringKit.subSufByLength("abcde", 0)      =    ""
-     * StringKit.subSufByLength("abcde", -5)     =    ""
-     * StringKit.subSufByLength("abcde", -1)     =    ""
-     * StringKit.subSufByLength("abcde", 5)      =    "abcde"
-     * StringKit.subSufByLength("abcde", 10)     =    "abcde"
-     * StringKit.subSufByLength(null, 3)         =     null
+     * subSufByLength("abcde", 3)      =    "cde"
+     * subSufByLength("abcde", 0)      =    ""
+     * subSufByLength("abcde", -5)     =    ""
+     * subSufByLength("abcde", -1)     =    ""
+     * subSufByLength("abcde", 5)      =    "abcde"
+     * subSufByLength("abcde", 10)     =    "abcde"
+     * subSufByLength(null, 3)         =     null
      * </pre>
      *
      * @param text   字符串
      * @param length 切割长度
      * @return 切割后后剩余的后半部分字符串
      */
-    public static String subByLength(CharSequence text, int length) {
+    public static String subSufByLength(final CharSequence text, int length) {
         if (isEmpty(text)) {
             return null;
         }
@@ -1879,6 +1879,31 @@ public class CharsKit {
             return Normal.EMPTY;
         }
         return sub(text, -length, text.length());
+    }
+
+    /**
+     * 截取字符串,从指定位置开始,截取指定长度的字符串
+     *
+     * @param input     原始字符串
+     * @param fromIndex 开始的index,包括
+     * @param length    要截取的长度
+     * @return 截取后的字符串
+     */
+    public static String subByLength(final CharSequence input, final int fromIndex, final int length) {
+        if (isEmpty(input)) {
+            return null;
+        }
+        if (length <= 0) {
+            return Normal.EMPTY;
+        }
+
+        final int toIndex;
+        if (fromIndex < 0) {
+            toIndex = fromIndex - length;
+        } else {
+            toIndex = fromIndex + length;
+        }
+        return sub(input, fromIndex, toIndex);
     }
 
     /**
@@ -2042,17 +2067,17 @@ public class CharsKit {
      * 指定范围内查找字符串,忽略大小写
      *
      * <pre>
-     * StringKit.indexOfIgnoreCase(null, *, *)          = -1
-     * StringKit.indexOfIgnoreCase(*, null, *)          = -1
-     * StringKit.indexOfIgnoreCase("", "", 0)           = 0
-     * StringKit.indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
-     * StringKit.indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", -1) = 2
-     * StringKit.indexOfIgnoreCase("aabaabaa", "", 2)   = 2
-     * StringKit.indexOfIgnoreCase("abc", "", 9)        = -1
+     * indexOfIgnoreCase(null, *, *)          = -1
+     * indexOfIgnoreCase(*, null, *)          = -1
+     * indexOfIgnoreCase("", "", 0)           = 0
+     * indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
+     * indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
+     * indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
+     * indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
+     * indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
+     * indexOfIgnoreCase("aabaabaa", "B", -1) = 2
+     * indexOfIgnoreCase("aabaabaa", "", 2)   = 2
+     * indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
      * @param text 字符串
@@ -2067,17 +2092,17 @@ public class CharsKit {
      * 指定范围内查找字符串
      *
      * <pre>
-     * StringKit.indexOfIgnoreCase(null, *, *)          = -1
-     * StringKit.indexOfIgnoreCase(*, null, *)          = -1
-     * StringKit.indexOfIgnoreCase("", "", 0)           = 0
-     * StringKit.indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
-     * StringKit.indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
-     * StringKit.indexOfIgnoreCase("aabaabaa", "B", -1) = 2
-     * StringKit.indexOfIgnoreCase("aabaabaa", "", 2)   = 2
-     * StringKit.indexOfIgnoreCase("abc", "", 9)        = -1
+     * indexOfIgnoreCase(null, *, *)          = -1
+     * indexOfIgnoreCase(*, null, *)          = -1
+     * indexOfIgnoreCase("", "", 0)           = 0
+     * indexOfIgnoreCase("aabaabaa", "A", 0)  = 0
+     * indexOfIgnoreCase("aabaabaa", "B", 0)  = 2
+     * indexOfIgnoreCase("aabaabaa", "AB", 0) = 1
+     * indexOfIgnoreCase("aabaabaa", "B", 3)  = 5
+     * indexOfIgnoreCase("aabaabaa", "B", 9)  = -1
+     * indexOfIgnoreCase("aabaabaa", "B", -1) = 2
+     * indexOfIgnoreCase("aabaabaa", "", 2)   = 2
+     * indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
      * @param text 字符串
@@ -2618,9 +2643,9 @@ public class CharsKit {
      * 重复某个字符串并通过分界符连接
      *
      * <pre>
-     * StringKit.repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
-     * StringKit.repeatAndJoin("?", 0, ",")   = ""
-     * StringKit.repeatAndJoin("?", 5, null)  = "?????"
+     * repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
+     * repeatAndJoin("?", 0, ",")   = ""
+     * repeatAndJoin("?", 5, null)  = "?????"
      * </pre>
      *
      * @param text      被重复的字符串
@@ -2948,33 +2973,33 @@ public class CharsKit {
     /**
      * 替换字符串中第一个指定字符串
      *
-     * @param str         字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
+     * @param text         字符串
+     * @param searchText   被查找的字符串
+     * @param replacedText 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr) {
-        return replaceFirst(str, searchStr, replacedStr, false);
+    public static String replaceFirst(CharSequence text, CharSequence searchText, CharSequence replacedText) {
+        return replaceFirst(text, searchText, replacedText, false);
     }
 
     /**
      * 替换字符串中第一个指定字符串
      *
-     * @param str         字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
+     * @param text         字符串
+     * @param searchText   被查找的字符串
+     * @param replacedText 被替换的字符串
+     * @param ignoreCase   是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr, boolean ignoreCase) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String replaceFirst(CharSequence text, CharSequence searchText, CharSequence replacedText, boolean ignoreCase) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
-        int startInclude = indexOf(str, searchStr, 0, ignoreCase);
+        int startInclude = indexOf(text, searchText, 0, ignoreCase);
         if (-1 == startInclude) {
-            return toString(str);
+            return toString(text);
         }
-        return replace(str, startInclude, startInclude + searchStr.length(), replacedStr);
+        return replace(text, startInclude, startInclude + searchText.length(), replacedText);
     }
 
     /**
@@ -3994,25 +4019,25 @@ public class CharsKit {
      * 如果字符串还没有以任何后缀结尾，则将后缀追加到字符串的末尾
      *
      * <pre>
-     * StringKit.appendIfMissing(null, null) = null
-     * StringKit.appendIfMissing("abc", null) = "abc"
-     * StringKit.appendIfMissing("", "xyz") = "xyz"
-     * StringKit.appendIfMissing("abc", "xyz") = "abcxyz"
-     * StringKit.appendIfMissing("abcxyz", "xyz") = "abcxyz"
-     * StringKit.appendIfMissing("abcXYZ", "xyz") = "abcXYZxyz"
+     * appendIfMissing(null, null) = null
+     * appendIfMissing("abc", null) = "abc"
+     * appendIfMissing("", "xyz") = "xyz"
+     * appendIfMissing("abc", "xyz") = "abcxyz"
+     * appendIfMissing("abcxyz", "xyz") = "abcxyz"
+     * appendIfMissing("abcXYZ", "xyz") = "abcXYZxyz"
      * </pre>
      * <p>With additional suffixes,</p>
      * <pre>
-     * StringKit.appendIfMissing(null, null, null) = null
-     * StringKit.appendIfMissing("abc", null, null) = "abc"
-     * StringKit.appendIfMissing("", "xyz", null) = "xyz"
-     * StringKit.appendIfMissing("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
-     * StringKit.appendIfMissing("abc", "xyz", "") = "abc"
-     * StringKit.appendIfMissing("abc", "xyz", "mno") = "abcxyz"
-     * StringKit.appendIfMissing("abcxyz", "xyz", "mno") = "abcxyz"
-     * StringKit.appendIfMissing("abcmno", "xyz", "mno") = "abcmno"
-     * StringKit.appendIfMissing("abcXYZ", "xyz", "mno") = "abcXYZxyz"
-     * StringKit.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
+     * appendIfMissing(null, null, null) = null
+     * appendIfMissing("abc", null, null) = "abc"
+     * appendIfMissing("", "xyz", null) = "xyz"
+     * appendIfMissing("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * appendIfMissing("abc", "xyz", "") = "abc"
+     * appendIfMissing("abc", "xyz", "mno") = "abcxyz"
+     * appendIfMissing("abcxyz", "xyz", "mno") = "abcxyz"
+     * appendIfMissing("abcmno", "xyz", "mno") = "abcmno"
+     * appendIfMissing("abcXYZ", "xyz", "mno") = "abcXYZxyz"
+     * appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
      * @param text   字符串
@@ -4030,25 +4055,25 @@ public class CharsKit {
      * 如果字符串还没有结束，则使用任何后缀将后缀追加到字符串的末尾，不区分大小写.
      *
      * <pre>
-     * StringKit.appendIfMissingIgnoreCase(null, null) = null
-     * StringKit.appendIfMissingIgnoreCase("abc", null) = "abc"
-     * StringKit.appendIfMissingIgnoreCase("", "xyz") = "xyz"
-     * StringKit.appendIfMissingIgnoreCase("abc", "xyz") = "abcxyz"
-     * StringKit.appendIfMissingIgnoreCase("abcxyz", "xyz") = "abcxyz"
-     * StringKit.appendIfMissingIgnoreCase("abcXYZ", "xyz") = "abcXYZ"
+     * appendIfMissingIgnoreCase(null, null) = null
+     * appendIfMissingIgnoreCase("abc", null) = "abc"
+     * appendIfMissingIgnoreCase("", "xyz") = "xyz"
+     * appendIfMissingIgnoreCase("abc", "xyz") = "abcxyz"
+     * appendIfMissingIgnoreCase("abcxyz", "xyz") = "abcxyz"
+     * appendIfMissingIgnoreCase("abcXYZ", "xyz") = "abcXYZ"
      * </pre>
      * <p>With additional suffixes,</p>
      * <pre>
-     * StringKit.appendIfMissingIgnoreCase(null, null, null) = null
-     * StringKit.appendIfMissingIgnoreCase("abc", null, null) = "abc"
-     * StringKit.appendIfMissingIgnoreCase("", "xyz", null) = "xyz"
-     * StringKit.appendIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
-     * StringKit.appendIfMissingIgnoreCase("abc", "xyz", "") = "abc"
-     * StringKit.appendIfMissingIgnoreCase("abc", "xyz", "mno") = "axyz"
-     * StringKit.appendIfMissingIgnoreCase("abcxyz", "xyz", "mno") = "abcxyz"
-     * StringKit.appendIfMissingIgnoreCase("abcmno", "xyz", "mno") = "abcmno"
-     * StringKit.appendIfMissingIgnoreCase("abcXYZ", "xyz", "mno") = "abcXYZ"
-     * StringKit.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
+     * appendIfMissingIgnoreCase(null, null, null) = null
+     * appendIfMissingIgnoreCase("abc", null, null) = "abc"
+     * appendIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * appendIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * appendIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * appendIfMissingIgnoreCase("abc", "xyz", "mno") = "axyz"
+     * appendIfMissingIgnoreCase("abcxyz", "xyz", "mno") = "abcxyz"
+     * appendIfMissingIgnoreCase("abcmno", "xyz", "mno") = "abcmno"
+     * appendIfMissingIgnoreCase("abcXYZ", "xyz", "mno") = "abcXYZ"
+     * appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
      * @param text   字符串
@@ -4092,25 +4117,25 @@ public class CharsKit {
      * 如果字符串还没有以任何前缀开始，则将前缀添加到字符串的开头
      *
      * <pre>
-     * StringKit.prependIfMissing(null, null) = null
-     * StringKit.prependIfMissing("abc", null) = "abc"
-     * StringKit.prependIfMissing("", "xyz") = "xyz"
-     * StringKit.prependIfMissing("abc", "xyz") = "xyzabc"
-     * StringKit.prependIfMissing("xyzabc", "xyz") = "xyzabc"
-     * StringKit.prependIfMissing("XYZabc", "xyz") = "xyzXYZabc"
+     * prependIfMissing(null, null) = null
+     * prependIfMissing("abc", null) = "abc"
+     * prependIfMissing("", "xyz") = "xyz"
+     * prependIfMissing("abc", "xyz") = "xyzabc"
+     * prependIfMissing("xyzabc", "xyz") = "xyzabc"
+     * prependIfMissing("XYZabc", "xyz") = "xyzXYZabc"
      * </pre>
      * <p>With additional prefixes,</p>
      * <pre>
-     * StringKit.prependIfMissing(null, null, null) = null
-     * StringKit.prependIfMissing("abc", null, null) = "abc"
-     * StringKit.prependIfMissing("", "xyz", null) = "xyz"
-     * StringKit.prependIfMissing("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
-     * StringKit.prependIfMissing("abc", "xyz", "") = "abc"
-     * StringKit.prependIfMissing("abc", "xyz", "mno") = "xyzabc"
-     * StringKit.prependIfMissing("xyzabc", "xyz", "mno") = "xyzabc"
-     * StringKit.prependIfMissing("mnoabc", "xyz", "mno") = "mnoabc"
-     * StringKit.prependIfMissing("XYZabc", "xyz", "mno") = "xyzXYZabc"
-     * StringKit.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
+     * prependIfMissing(null, null, null) = null
+     * prependIfMissing("abc", null, null) = "abc"
+     * prependIfMissing("", "xyz", null) = "xyz"
+     * prependIfMissing("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * prependIfMissing("abc", "xyz", "") = "abc"
+     * prependIfMissing("abc", "xyz", "mno") = "xyzabc"
+     * prependIfMissing("xyzabc", "xyz", "mno") = "xyzabc"
+     * prependIfMissing("mnoabc", "xyz", "mno") = "mnoabc"
+     * prependIfMissing("XYZabc", "xyz", "mno") = "xyzXYZabc"
+     * prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
      * </pre>
      *
      * @param text   T字符串
@@ -4128,25 +4153,25 @@ public class CharsKit {
      * 如果字符串尚未开始，则将前缀添加到字符串的开头，不区分大小写，并使用任何前缀
      *
      * <pre>
-     * StringKit.prependIfMissingIgnoreCase(null, null) = null
-     * StringKit.prependIfMissingIgnoreCase("abc", null) = "abc"
-     * StringKit.prependIfMissingIgnoreCase("", "xyz") = "xyz"
-     * StringKit.prependIfMissingIgnoreCase("abc", "xyz") = "xyzabc"
-     * StringKit.prependIfMissingIgnoreCase("xyzabc", "xyz") = "xyzabc"
-     * StringKit.prependIfMissingIgnoreCase("XYZabc", "xyz") = "XYZabc"
+     * prependIfMissingIgnoreCase(null, null) = null
+     * prependIfMissingIgnoreCase("abc", null) = "abc"
+     * prependIfMissingIgnoreCase("", "xyz") = "xyz"
+     * prependIfMissingIgnoreCase("abc", "xyz") = "xyzabc"
+     * prependIfMissingIgnoreCase("xyzabc", "xyz") = "xyzabc"
+     * prependIfMissingIgnoreCase("XYZabc", "xyz") = "XYZabc"
      * </pre>
      * <p>With additional prefixes,</p>
      * <pre>
-     * StringKit.prependIfMissingIgnoreCase(null, null, null) = null
-     * StringKit.prependIfMissingIgnoreCase("abc", null, null) = "abc"
-     * StringKit.prependIfMissingIgnoreCase("", "xyz", null) = "xyz"
-     * StringKit.prependIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
-     * StringKit.prependIfMissingIgnoreCase("abc", "xyz", "") = "abc"
-     * StringKit.prependIfMissingIgnoreCase("abc", "xyz", "mno") = "xyzabc"
-     * StringKit.prependIfMissingIgnoreCase("xyzabc", "xyz", "mno") = "xyzabc"
-     * StringKit.prependIfMissingIgnoreCase("mnoabc", "xyz", "mno") = "mnoabc"
-     * StringKit.prependIfMissingIgnoreCase("XYZabc", "xyz", "mno") = "XYZabc"
-     * StringKit.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
+     * prependIfMissingIgnoreCase(null, null, null) = null
+     * prependIfMissingIgnoreCase("abc", null, null) = "abc"
+     * prependIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * prependIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * prependIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * prependIfMissingIgnoreCase("abc", "xyz", "mno") = "xyzabc"
+     * prependIfMissingIgnoreCase("xyzabc", "xyz", "mno") = "xyzabc"
+     * prependIfMissingIgnoreCase("mnoabc", "xyz", "mno") = "mnoabc"
+     * prependIfMissingIgnoreCase("XYZabc", "xyz", "mno") = "XYZabc"
+     * prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
      * </pre>
      *
      * @param text   字符串
@@ -4182,12 +4207,12 @@ public class CharsKit {
      * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
      *
      * <pre>
-     * StringKit.center(null, *)   = null
-     * StringKit.center("", 4)     = "    "
-     * StringKit.center("ab", -1)  = "ab"
-     * StringKit.center("ab", 4)   = " ab "
-     * StringKit.center("abcd", 2) = "abcd"
-     * StringKit.center("a", 4)    = " a  "
+     * center(null, *)   = null
+     * center("", 4)     = "    "
+     * center("ab", -1)  = "ab"
+     * center("ab", 4)   = " ab "
+     * center("abcd", 2) = "abcd"
+     * center("a", 4)    = " a  "
      * </pre>
      *
      * @param text 字符串
@@ -4202,14 +4227,14 @@ public class CharsKit {
      * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
      *
      * <pre>
-     * StringKit.center(null, *, *)     = null
-     * StringKit.center("", 4, ' ')     = "    "
-     * StringKit.center("ab", -1, ' ')  = "ab"
-     * StringKit.center("ab", 4, ' ')   = " ab "
-     * StringKit.center("abcd", 2, ' ') = "abcd"
-     * StringKit.center("a", 4, ' ')    = " a  "
-     * StringKit.center("a", 4, 'y')   = "yayy"
-     * StringKit.center("abc", 7, ' ')   = "  abc  "
+     * center(null, *, *)     = null
+     * center("", 4, ' ')     = "    "
+     * center("ab", -1, ' ')  = "ab"
+     * center("ab", 4, ' ')   = " ab "
+     * center("abcd", 2, ' ') = "abcd"
+     * center("a", 4, ' ')    = " a  "
+     * center("a", 4, 'y')   = "yayy"
+     * center("abc", 7, ' ')   = "  abc  "
      * </pre>
      *
      * @param text    字符串
@@ -4235,15 +4260,15 @@ public class CharsKit {
      * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
      *
      * <pre>
-     * StringKit.center(null, *, *)     = null
-     * StringKit.center("", 4, " ")     = "    "
-     * StringKit.center("ab", -1, " ")  = "ab"
-     * StringKit.center("ab", 4, " ")   = " ab "
-     * StringKit.center("abcd", 2, " ") = "abcd"
-     * StringKit.center("a", 4, " ")    = " a  "
-     * StringKit.center("a", 4, "yz")   = "yayz"
-     * StringKit.center("abc", 7, null) = "  abc  "
-     * StringKit.center("abc", 7, "")   = "  abc  "
+     * center(null, *, *)     = null
+     * center("", 4, " ")     = "    "
+     * center("ab", -1, " ")  = "ab"
+     * center("ab", 4, " ")   = " ab "
+     * center("abcd", 2, " ") = "abcd"
+     * center("a", 4, " ")    = " a  "
+     * center("a", 4, "yz")   = "yayz"
+     * center("abc", 7, null) = "  abc  "
+     * center("abc", 7, "")   = "  abc  "
      * </pre>
      *
      * @param text    字符串
@@ -4272,9 +4297,9 @@ public class CharsKit {
      * 补充字符串以满足最小长度
      *
      * <pre>
-     * StringKit.padPre(null, *, *);//null
-     * StringKit.padPre("1", 3, "ABC");//"AB1"
-     * StringKit.padPre("123", 2, "ABC");//"12"
+     * padPre(null, *, *);//null
+     * padPre("1", 3, "ABC");//"AB1"
+     * padPre("123", 2, "ABC");//"12"
      * </pre>
      *
      * @param text      字符串
@@ -4300,9 +4325,9 @@ public class CharsKit {
      * 补充字符串以满足最小长度
      *
      * <pre>
-     * StringKit.padPre(null, *, *);//null
-     * StringKit.padPre("1", 3, '0');//"001"
-     * StringKit.padPre("123", 2, '0');//"12"
+     * padPre(null, *, *);//null
+     * padPre("1", 3, '0');//"001"
+     * padPre("123", 2, '0');//"12"
      * </pre>
      *
      * @param text      字符串
@@ -4328,9 +4353,9 @@ public class CharsKit {
      * 补充字符串以满足最小长度
      *
      * <pre>
-     * StringKit.padAfter(null, *, *);//null
-     * StringKit.padAfter("1", 3, '0');//"100"
-     * StringKit.padAfter("123", 2, '0');//"23"
+     * padAfter(null, *, *);//null
+     * padAfter("1", 3, '0');//"100"
+     * padAfter("123", 2, '0');//"23"
      * </pre>
      *
      * @param text      字符串，如果为<code>null</code>，直接返回null
@@ -4356,9 +4381,9 @@ public class CharsKit {
      * 补充字符串以满足最小长度
      *
      * <pre>
-     * StringKit.padAfter(null, *, *);//null
-     * StringKit.padAfter("1", 3, "ABC");//"1AB"
-     * StringKit.padAfter("123", 2, "ABC");//"23"
+     * padAfter(null, *, *);//null
+     * padAfter("1", 3, "ABC");//"1AB"
+     * padAfter("123", 2, "ABC");//"23"
      * </pre>
      *
      * @param text      字符串，如果为<code>null</code>，直接返回null
@@ -4374,7 +4399,8 @@ public class CharsKit {
         if (strLen == minLength) {
             return text.toString();
         } else if (strLen > minLength) {
-            return subByLength(text, minLength);
+            // 如果提供的字符串大于指定长度，截断之
+            return subSufByLength(text, minLength);
         }
 
         return text.toString().concat(repeatByLength(padText, minLength - strLen));
@@ -4425,6 +4451,25 @@ public class CharsKit {
     /**
      * 创建StringBuilder对象
      *
+     * @return StringBuilder对象
+     */
+    public static StringBuilder builder() {
+        return new StringBuilder();
+    }
+
+    /**
+     * 创建StringBuilder对象
+     *
+     * @param capacity 初始大小
+     * @return StringBuilder对象
+     */
+    public static StringBuilder builder(final int capacity) {
+        return new StringBuilder(capacity);
+    }
+
+    /**
+     * 创建StringBuilder对象
+     *
      * @param args 初始字符串列表
      * @return StringBuilder对象
      */
@@ -4451,17 +4496,17 @@ public class CharsKit {
      * 如果 text=null 或 word=null 或 ordinal小于等于0 则返回-1
      *
      * <pre>
-     * StringKit.ordinalIndexOf(null, *, *)          = -1
-     * StringKit.ordinalIndexOf(*, null, *)          = -1
-     * StringKit.ordinalIndexOf("", "", *)           = 0
-     * StringKit.ordinalIndexOf("aabaabaa", "a", 1)  = 0
-     * StringKit.ordinalIndexOf("aabaabaa", "a", 2)  = 1
-     * StringKit.ordinalIndexOf("aabaabaa", "b", 1)  = 2
-     * StringKit.ordinalIndexOf("aabaabaa", "b", 2)  = 5
-     * StringKit.ordinalIndexOf("aabaabaa", "ab", 1) = 1
-     * StringKit.ordinalIndexOf("aabaabaa", "ab", 2) = 4
-     * StringKit.ordinalIndexOf("aabaabaa", "", 1)   = 0
-     * StringKit.ordinalIndexOf("aabaabaa", "", 2)   = 0
+     * ordinalIndexOf(null, *, *)          = -1
+     * ordinalIndexOf(*, null, *)          = -1
+     * ordinalIndexOf("", "", *)           = 0
+     * ordinalIndexOf("aabaabaa", "a", 1)  = 0
+     * ordinalIndexOf("aabaabaa", "a", 2)  = 1
+     * ordinalIndexOf("aabaabaa", "b", 1)  = 2
+     * ordinalIndexOf("aabaabaa", "b", 2)  = 5
+     * ordinalIndexOf("aabaabaa", "ab", 1) = 1
+     * ordinalIndexOf("aabaabaa", "ab", 2) = 4
+     * ordinalIndexOf("aabaabaa", "", 1)   = 0
+     * ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
      * @param text    被检查的字符串,可以为null
@@ -4513,14 +4558,14 @@ public class CharsKit {
      * 检查CharSequence是否以提供的大小写敏感的后缀结尾.
      *
      * <pre>
-     * StringKit.endsWithAny(null, null)      = false
-     * StringKit.endsWithAny(null, new String[] {"abc"})  = false
-     * StringKit.endsWithAny("abcxyz", null)     = false
-     * StringKit.endsWithAny("abcxyz", new String[] {""}) = true
-     * StringKit.endsWithAny("abcxyz", new String[] {"xyz"}) = true
-     * StringKit.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
-     * StringKit.endsWithAny("abcXYZ", "def", "XYZ") = true
-     * StringKit.endsWithAny("abcXYZ", "def", "xyz") = false
+     * endsWithAny(null, null)      = false
+     * endsWithAny(null, new String[] {"abc"})  = false
+     * endsWithAny("abcxyz", null)     = false
+     * endsWithAny("abcxyz", new String[] {""}) = true
+     * endsWithAny("abcxyz", new String[] {"xyz"}) = true
+     * endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * endsWithAny("abcXYZ", "def", "XYZ") = true
+     * endsWithAny("abcXYZ", "def", "xyz") = false
      * </pre>
      *
      * @param text 要检查的CharSequence可能为空

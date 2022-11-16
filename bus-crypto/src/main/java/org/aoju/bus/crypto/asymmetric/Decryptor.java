@@ -25,9 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.exception.CryptoException;
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
@@ -41,7 +39,6 @@ import java.nio.charset.Charset;
  *     <li>从bytes解密</li>
  *     <li>从Hex(16进制)解密</li>
  *     <li>从Base64解密</li>
- *     <li>从BCD解密</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -104,51 +101,4 @@ public interface Decryptor {
         return decryptString(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
-    /**
-     * 解密BCD
-     *
-     * @param data    数据
-     * @param keyType 密钥类型
-     * @return 解密后的密文
-     */
-    default byte[] decryptFromBcd(String data, KeyType keyType) {
-        return decryptFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * 分组解密
-     *
-     * @param data    数据
-     * @param keyType 密钥类型
-     * @param charset 加密前编码
-     * @return 解密后的密文
-     */
-    default byte[] decryptFromBcd(String data, KeyType keyType, Charset charset) {
-        Assert.notNull(data, "Bcd string must be not null!");
-        final byte[] dataBytes = BCD.ascToBcd(StringKit.bytes(data, charset));
-        return decrypt(dataBytes, keyType);
-    }
-
-    /**
-     * 解密为字符串，密文需为BCD格式
-     *
-     * @param data    数据，BCD格式
-     * @param keyType 密钥类型
-     * @param charset 加密前编码
-     * @return 解密后的密文
-     */
-    default String decryptStrFromBcd(String data, KeyType keyType, Charset charset) {
-        return StringKit.toString(decryptFromBcd(data, keyType, charset), charset);
-    }
-
-    /**
-     * 解密为字符串，密文需为BCD格式，编码为UTF-8格式
-     *
-     * @param data    数据，BCD格式
-     * @param keyType 密钥类型
-     * @return 解密后的密文
-     */
-    default String decryptStrFromBcd(String data, KeyType keyType) {
-        return decryptStrFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
 }

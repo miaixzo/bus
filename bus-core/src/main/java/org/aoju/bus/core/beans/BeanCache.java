@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.map.WeakMap;
 
 /**
- * Bean属性缓存
+ * Bean缓存
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu

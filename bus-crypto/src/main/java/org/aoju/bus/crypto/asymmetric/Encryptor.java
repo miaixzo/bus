@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
@@ -41,7 +40,6 @@ import java.nio.charset.Charset;
  *     <li>加密为bytes</li>
  *     <li>加密为Hex(16进制)</li>
  *     <li>加密为Base64</li>
- *     <li>加密为BCD</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -193,29 +191,6 @@ public interface Encryptor {
      */
     default String encryptBase64(InputStream data, KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
-    }
-
-    /**
-     * 分组加密
-     *
-     * @param data    数据
-     * @param keyType 密钥类型
-     * @return 加密后的密文
-     */
-    default String encryptBcd(String data, KeyType keyType) {
-        return encryptBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * 分组加密
-     *
-     * @param data    数据
-     * @param keyType 密钥类型
-     * @param charset 加密前编码
-     * @return 加密后的密文
-     */
-    default String encryptBcd(String data, KeyType keyType, Charset charset) {
-        return BCD.bcdToString(encrypt(data, charset, keyType));
     }
 
 }

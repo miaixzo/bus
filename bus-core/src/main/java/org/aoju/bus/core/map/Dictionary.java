@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.beans.PathExpression;
+import org.aoju.bus.core.beans.BeanPath;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.getter.TypeGetter;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -47,9 +48,9 @@ import java.util.*;
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
-    private static final long serialVersionUID = 1L;
-    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-    private static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
+    private static final long serialVersionUID = 6135423866861206530L;
 
     /**
      * 是否大小写不敏感
@@ -150,11 +151,11 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      */
     @SafeVarargs
     public static Dictionary ofEntries(final Map.Entry<String, Object>... pairs) {
-        final Dictionary dict = of();
+        final Dictionary dictionary = of();
         for (final Map.Entry<String, Object> pair : pairs) {
-            dict.put(pair.getKey(), pair.getValue());
+            dictionary.put(pair.getKey(), pair.getValue());
         }
-        return dict;
+        return dictionary;
     }
 
     /**
@@ -174,18 +175,18 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return this
      */
     public static Dictionary ofKvs(final Object... keysAndValues) {
-        final Dictionary dict = of();
+        final Dictionary dictionary = of();
 
         String key = null;
         for (int i = 0; i < keysAndValues.length; i++) {
-            if (i % 2 == 0) {
+            if ((i & 1) == 0) {
                 key = Convert.toString(keysAndValues[i]);
             } else {
-                dict.put(key, keysAndValues[i]);
+                dictionary.put(key, keysAndValues[i]);
             }
         }
 
-        return dict;
+        return dictionary;
     }
 
 
@@ -268,7 +269,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return this
      */
     public <T> Dictionary parseBean(final T bean) {
-        Assert.notNull(bean, "Bean class must be not null");
+        Assert.notNull(bean, "Bean must not be null");
         this.putAll(BeanKit.beanToMap(bean));
         return this;
     }
@@ -284,14 +285,14 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return this
      */
     public <T> Dictionary parseBean(final T bean, final boolean isToUnderlineCase, final boolean ignoreNullValue) {
-        Assert.notNull(bean, "Bean class must be not null");
+        Assert.notNull(bean, "Bean must not be null");
         this.putAll(BeanKit.beanToMap(bean, isToUnderlineCase, ignoreNullValue));
         return this;
     }
 
     /**
      * 与给定实体对比并去除相同的部分
-     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
+     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段
      *
      * @param <T>          字典对象类型
      * @param dict         字典对象
@@ -360,12 +361,24 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
+     * 根据lambda的方法引用，获取
+     *
+     * @param func 方法引用
+     * @param <P>  参数类型
+     * @param <T>  返回值类型
+     * @return 获取表达式对应属性和返回的对象
+     */
+    public <P, T> T get(final XFunction<P, T> func) {
+        final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
+        return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
+    }
+
+    /**
      * 获得特定类型值
      *
      * @param <T>  值类型
      * @param attr 字段名
      * @return 字段值
-
      */
     public <T> T getBean(final String attr) {
         return (T) get(attr);
@@ -390,10 +403,9 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param <T>        目标类型
      * @param expression 表达式
      * @return the object
-
      */
     public <T> T getByPath(final String expression) {
-        return (T) PathExpression.create(expression).get(this);
+        return (T) BeanPath.of(expression).get(this);
     }
 
     /**
@@ -418,7 +430,6 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param expression 表达式
      * @param resultType 返回值类型
      * @return the object
-
      */
     public <T> T getByPath(final String expression, final Type resultType) {
         return Convert.convert(resultType, getByPath(expression));
@@ -446,7 +457,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
      * <pre>
      *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     *     Dictionary.create().setFields(user::getNickname, user::getUsername);
+     *     Dictionary.of().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空

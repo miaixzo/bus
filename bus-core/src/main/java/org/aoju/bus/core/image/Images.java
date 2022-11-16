@@ -572,6 +572,26 @@ public class Images implements Serializable {
     }
 
     /**
+     * 圆角
+     *
+     * @param srcImage 图片流
+     * @param width    宽度
+     * @param height   高度
+     * @param radius   半径
+     * @return 图片流
+     */
+    public static BufferedImage makeRoundCorner(BufferedImage srcImage, int width, int height, int radius) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.fillRoundRect(0, 0, width, height, radius, radius);
+        g.setComposite(AlphaComposite.SrcIn);
+        g.drawImage(srcImage, 0, 0, width, height, null);
+        g.dispose();
+        return image;
+    }
+
+    /**
      * 将图片绘制在背景上
      *
      * @param backgroundImg 背景图片
@@ -1148,26 +1168,6 @@ public class Images implements Serializable {
         this.targetImage = image;
 
         return this;
-    }
-
-    /**
-     * 圆角
-     *
-     * @param srcImage 图片流
-     * @param width    宽度
-     * @param height   高度
-     * @param radius   半径
-     * @return 图片流
-     */
-    public static BufferedImage makeRoundCorner(BufferedImage srcImage, int width, int height, int radius) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.fillRoundRect(0, 0, width, height, radius, radius);
-        g.setComposite(AlphaComposite.SrcIn);
-        g.drawImage(srcImage, 0, 0, width, height, null);
-        g.dispose();
-        return image;
     }
 
     /**

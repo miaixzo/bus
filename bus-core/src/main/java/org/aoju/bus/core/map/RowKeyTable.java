@@ -65,7 +65,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      *
      * @param isLinked 是否有序，有序则使用{@link java.util.LinkedHashMap}作为原始Map
      */
-    public RowKeyTable(boolean isLinked) {
+    public RowKeyTable(final boolean isLinked) {
         this(MapKit.newHashMap(isLinked), () -> MapKit.newHashMap(isLinked));
     }
 
@@ -74,7 +74,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      *
      * @param raw 原始Map
      */
-    public RowKeyTable(Map<R, Map<C, V>> raw) {
+    public RowKeyTable(final Map<R, Map<C, V>> raw) {
         this(raw, HashMap::new);
     }
 
@@ -84,7 +84,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      * @param raw              原始Map
      * @param columnMapBuilder 列的map创建器
      */
-    public RowKeyTable(Map<R, Map<C, V>> raw, Builder<? extends Map<C, V>> columnMapBuilder) {
+    public RowKeyTable(final Map<R, Map<C, V>> raw, final Builder<? extends Map<C, V>> columnMapBuilder) {
         this.raw = raw;
         this.columnBuilder = null == columnMapBuilder ? HashMap::new : columnMapBuilder;
     }
@@ -95,12 +95,12 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     @Override
-    public V put(R rowKey, C columnKey, V value) {
+    public V put(final R rowKey, final C columnKey, final V value) {
         return raw.computeIfAbsent(rowKey, (key) -> columnBuilder.build()).put(columnKey, value);
     }
 
     @Override
-    public V remove(R rowKey, C columnKey) {
+    public V remove(final R rowKey, final C columnKey) {
         final Map<C, V> map = getRow(rowKey);
         if (null == map) {
             return null;
@@ -123,11 +123,11 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     @Override
-    public boolean containsColumn(C columnKey) {
+    public boolean containsColumn(final C columnKey) {
         if (columnKey == null) {
             return false;
         }
-        for (Map<C, V> map : raw.values()) {
+        for (final Map<C, V> map : raw.values()) {
             if (null != map && map.containsKey(columnKey)) {
                 return true;
             }
@@ -135,16 +135,15 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         return false;
     }
 
-    //region columnMap
     @Override
     public Map<C, Map<R, V>> columnMap() {
-        Map<C, Map<R, V>> result = columnMap;
+        final Map<C, Map<R, V>> result = columnMap;
         return (result == null) ? columnMap = new ColumnMap() : result;
     }
 
     @Override
     public Set<C> columnKeySet() {
-        Set<C> result = columnKeySet;
+        final Set<C> result = columnKeySet;
         return (result == null) ? columnKeySet = new ColumnKeySet() : result;
     }
 
@@ -152,7 +151,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     public List<C> columnKeys() {
         final Collection<Map<C, V>> values = this.raw.values();
         final List<C> result = new ArrayList<>(values.size() * 16);
-        for (Map<C, V> map : values) {
+        for (final Map<C, V> map : values) {
             map.forEach((key, value) -> {
                 result.add(key);
             });
@@ -161,7 +160,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     @Override
-    public Map<R, V> getColumn(C columnKey) {
+    public Map<R, V> getColumn(final C columnKey) {
         return new Column(columnKey);
     }
 
@@ -209,7 +208,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         protected C computeNext() {
             while (true) {
                 if (entryIterator.hasNext()) {
-                    Map.Entry<C, V> entry = entryIterator.next();
+                    final Map.Entry<C, V> entry = entryIterator.next();
                     if (false == seen.containsKey(entry.getKey())) {
                         seen.put(entry.getKey(), entry.getValue());
                         return entry.getKey();
@@ -226,7 +225,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class Column extends AbstractMap<R, V> {
         final C columnKey;
 
-        Column(C columnKey) {
+        Column(final C columnKey) {
             this.columnKey = columnKey;
         }
 
@@ -235,17 +234,17 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             return new EntrySet();
         }
 
-        private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
+        private class EntrySet extends AbstractSet<Entry<R, V>> {
 
             @Override
-            public Iterator<Map.Entry<R, V>> iterator() {
+            public Iterator<Entry<R, V>> iterator() {
                 return new EntrySetIterator();
             }
 
             @Override
             public int size() {
                 int size = 0;
-                for (Map<C, V> map : raw.values()) {
+                for (final Map<C, V> map : raw.values()) {
                     if (map.containsKey(columnKey)) {
                         size++;
                     }
@@ -262,7 +261,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                 while (iterator.hasNext()) {
                     final Entry<R, Map<C, V>> entry = iterator.next();
                     if (entry.getValue().containsKey(columnKey)) {
-                        return new AbstractEntry<R, V>() {
+                        return new AbstractEntry<>() {
                             @Override
                             public R getKey() {
                                 return entry.getKey();
@@ -274,7 +273,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                             }
 
                             @Override
-                            public V setValue(V value) {
+                            public V setValue(final V value) {
                                 return entry.getValue().put(columnKey, value);
                             }
                         };

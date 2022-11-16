@@ -99,15 +99,27 @@ public class Segment {
         this.owner = owner;
     }
 
+    /**
+     * Returns a new segment that shares the underlying byte array with this. Adjusting pos and limit
+     * are safe but writes are forbidden. This also marks the current segment as shared, which
+     * prevents it from being pooled.
+     */
     public final Segment sharedCopy() {
         shared = true;
         return new Segment(data, pos, limit, true, false);
     }
 
+    /**
+     * Returns a new segment that its own private copy of the underlying byte array.
+     */
     public final Segment unsharedCopy() {
         return new Segment(data.clone(), pos, limit, false, true);
     }
 
+    /**
+     * Removes this segment of a circularly-linked list and returns its successor.
+     * Returns null if the list is now empty.
+     */
     public final Segment pop() {
         Segment result = next != this ? next : null;
         prev.next = next;
@@ -117,7 +129,11 @@ public class Segment {
         return result;
     }
 
-    public Segment push(Segment segment) {
+    /**
+     * Appends {@code segment} after this segment in the circularly-linked list.
+     * Returns the pushed segment.
+     */
+    public final Segment push(Segment segment) {
         segment.prev = this;
         segment.next = next;
         next.prev = segment;
@@ -125,10 +141,23 @@ public class Segment {
         return segment;
     }
 
-    public Segment split(int byteCount) {
+    /**
+     * Splits this head of a circularly-linked list into two segments. The first
+     * segment contains the data in {@code [pos..pos+byteCount)}. The second
+     * segment contains the data in {@code [pos+byteCount..limit)}. This can be
+     * useful when moving partial segments from one buffer to another.
+     *
+     * <p>Returns the new head of the circularly-linked list.
+     */
+    public final Segment split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos) throw new IllegalArgumentException();
         Segment prefix;
 
+        // We have two competing performance goals:
+        //  - Avoid copying data. We accomplish this by sharing segments.
+        //  - Avoid short shared segments. These are bad for performance because they are readonly and
+        //    may lead to long chains of short segments.
+        // To balance these goals we only share segments when the copy will be large.
         if (byteCount >= SHARE_MINIMUM) {
             prefix = sharedCopy();
         } else {
@@ -159,9 +188,13 @@ public class Segment {
         LifeCycle.recycle(this);
     }
 
-    public void writeTo(Segment sink, int byteCount) {
+    /**
+     * Moves {@code byteCount} bytes from this segment to {@code sink}.
+     */
+    public final void writeTo(Segment sink, int byteCount) {
         if (!sink.owner) throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {
+            // We can't fit byteCount bytes at the sink's current position. Shift sink first.
             if (sink.shared) throw new IllegalArgumentException();
             if (sink.limit + byteCount - sink.pos > SIZE) throw new IllegalArgumentException();
             System.arraycopy(sink.data, sink.pos, sink.data, 0, sink.limit - sink.pos);

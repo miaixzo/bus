@@ -55,7 +55,7 @@ public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
      *
      * @param map 初始Map
      */
-    public CaseInsensitiveTreeMap(Map<? extends K, ? extends V> map) {
+    public CaseInsensitiveTreeMap(final Map<? extends K, ? extends V> map) {
         this();
         this.putAll(map);
     }
@@ -65,7 +65,7 @@ public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
      *
      * @param map 初始Map，键值对会被复制到新的TreeMap中
      */
-    public CaseInsensitiveTreeMap(SortedMap<? extends K, ? extends V> map) {
+    public CaseInsensitiveTreeMap(final SortedMap<? extends K, ? extends V> map) {
         super(new TreeMap<K, V>(map));
     }
 
@@ -74,7 +74,7 @@ public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
      *
      * @param comparator 比较器，{@code null}表示使用默认比较器
      */
-    public CaseInsensitiveTreeMap(Comparator<? super K> comparator) {
+    public CaseInsensitiveTreeMap(final Comparator<? super K> comparator) {
         super(new TreeMap<>(comparator));
     }
 

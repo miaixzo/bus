@@ -27,6 +27,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.net.tls.SSLContextBuilder;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -37,7 +38,6 @@ import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.metric.Dispatcher;
 import org.aoju.bus.http.plugin.httpx.HttpProxy;
-import org.aoju.bus.http.secure.SSLContextBuilder;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.HostnameVerifier;

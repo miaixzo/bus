@@ -58,7 +58,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
      *
      * @param map 被代理的Map
      */
-    public MapProxy(Map<?, ?> map) {
+    public MapProxy(final Map<?, ?> map) {
         this.map = map;
     }
 
@@ -69,11 +69,12 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
      * @param map 被代理的Map
      * @return {@link MapProxy}
      */
-    public static MapProxy create(Map<?, ?> map) {
+    public static MapProxy of(final Map<?, ?> map) {
         return (map instanceof MapProxy) ? (MapProxy) map : new MapProxy(map);
     }
 
-    public Object getObject(Object key, Object defaultValue) {
+    @Override
+    public Object getObject(final Object key, final Object defaultValue) {
         return map.getOrDefault(key, defaultValue);
     }
 
@@ -88,32 +89,32 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return map.containsValue(value);
     }
 
     @Override
-    public Object get(Object key) {
+    public Object get(final Object key) {
         return map.get(key);
     }
 
     @Override
-    public Object put(Object key, Object value) {
+    public Object put(final Object key, final Object value) {
         return map.put(key, value);
     }
 
     @Override
-    public Object remove(Object key) {
+    public Object remove(final Object key) {
         return map.remove(key);
     }
 
     @Override
-    public void putAll(Map<?, ?> m) {
+    public void putAll(final Map<?, ?> m) {
         map.putAll(m);
     }
 
@@ -138,18 +139,18 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) {
         final Class<?>[] parameterTypes = method.getParameterTypes();
         if (ArrayKit.isEmpty(parameterTypes)) {
             final Class<?> returnType = method.getReturnType();
-            if (null != returnType && void.class != returnType) {
+            if (void.class != returnType) {
                 // 匹配Getter
                 final String methodName = method.getName();
                 String fieldName = null;
                 if (methodName.startsWith(Normal.GET)) {
                     // 匹配getXXX
                     fieldName = StringKit.removePreAndLowerFirst(methodName, 3);
-                } else if (BooleanKit.isBoolean(returnType) && methodName.startsWith(Normal.IS)) {
+                } else if (BooleanKit.isBoolean(returnType) && methodName.startsWith("is")) {
                     // 匹配isXXX
                     fieldName = StringKit.removePreAndLowerFirst(methodName, 2);
                 } else if (Normal.HASHCODE.equals(methodName)) {
@@ -194,7 +195,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
      * @param interfaceClass 接口
      * @return 代理对象
      */
-    public <T> T toProxyBean(Class<T> interfaceClass) {
+    public <T> T toProxyBean(final Class<T> interfaceClass) {
         return (T) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class<?>[]{interfaceClass}, this);
     }
 

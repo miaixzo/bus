@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.AutoDialect;
 import org.aoju.bus.pager.Dialect;
+import org.aoju.bus.pager.Property;
 import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.aoju.bus.pager.dialect.auto.Defalut;
 import org.aoju.bus.pager.dialect.auto.Druid;
@@ -172,7 +173,7 @@ public class PageAutoDialect {
             if (AbstractPaging.class.isAssignableFrom(sqlDialectClass)) {
                 dialect = (AbstractPaging) sqlDialectClass.getConstructor().newInstance();
             } else {
-                throw new PageException("使用 PageContext 时，方言必须是实现 " + AbstractPaging.class.getCanonicalName() + " 接口的实现类!");
+                throw new PageException("使用 PageContext 时，方言必须是实现 " + AbstractPaging.class.getName() + " 接口的实现类!");
             }
         } catch (Exception e) {
             throw new PageException("初始化 [" + dialectClass + "]时出错:" + e.getMessage(), e);
@@ -268,6 +269,9 @@ public class PageAutoDialect {
                     autoDialectClass = (Class<AutoDialect>) Class.forName(autoDialectClassStr);
                 }
                 this.autoDialectDelegate = autoDialectClass.getConstructor().newInstance();
+                if (this.autoDialectDelegate instanceof Property) {
+                    ((Property) this.autoDialectDelegate).setProperties(properties);
+                }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("请确保 autoDialectClass 配置的 AutoDialect 实现类(" + autoDialectClassStr + ")存在!", e);
             } catch (Exception e) {

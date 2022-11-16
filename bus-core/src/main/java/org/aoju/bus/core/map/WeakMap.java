@@ -28,7 +28,6 @@ package org.aoju.bus.core.map;
 import org.aoju.bus.core.lang.References;
 
 import java.lang.ref.Reference;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -42,11 +41,13 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class WeakMap<K, V> extends ReferenceMap<K, V> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 构造
      */
     public WeakMap() {
-        this(new ConcurrentHashMap<>());
+        this(new SafeHashMap<>());
     }
 
     /**
@@ -54,7 +55,7 @@ public class WeakMap<K, V> extends ReferenceMap<K, V> {
      *
      * @param raw {@link ConcurrentMap}实现
      */
-    public WeakMap(ConcurrentMap<Reference<K>, V> raw) {
+    public WeakMap(final ConcurrentMap<Reference<K>, V> raw) {
         super(raw, References.Type.WEAK);
     }
 

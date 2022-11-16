@@ -159,7 +159,7 @@ public abstract class AbstractHttpDelegate {
             File file = FileKit.newFile(filePath);
             return HttpRequest.post(url)
                     .setSSLSocketFactory(SSLSocketFactoryBuilder
-                            .create()
+                            .of()
                             .setProtocol(protocol)
                             .setKeyManagers(getKeyManager(certPass, certPath, null))
                             .setSecureRandom(new SecureRandom())
@@ -205,7 +205,7 @@ public abstract class AbstractHttpDelegate {
      /*   try {
             return HttpRequest.post(url)
                     .setSSLSocketFactory(SSLSocketFactoryBuilder
-                            .create()
+                            .of()
                             .setProtocol(protocol)
                             .setKeyManagers(getKeyManager(certPass, certPath, null))
                             .setSecureRandom(new SecureRandom())
@@ -249,7 +249,7 @@ public abstract class AbstractHttpDelegate {
      /*   try {
             return HttpRequest.post(url)
                     .setSSLSocketFactory(SSLSocketFactoryBuilder
-                            .create()
+                            .of()
                             .setProtocol(protocol)
                             .setKeyManagers(getKeyManager(certPass, null, certFile))
                             .setSecureRandom(new SecureRandom())

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <jackson.version>2.12.4</jackson.version>
         <jersey.version>2.36</jersey.version>
         <servlet.version>4.0.4</servlet.version>
     </properties>

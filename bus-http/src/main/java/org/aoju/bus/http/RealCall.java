@@ -240,7 +240,7 @@ public class RealCall implements NewCall {
             } finally {
                 if (!success) {
                     // 这个回调不再运行
-                    client.dispatcher().finished(this.get());
+                    client.dispatcher().finished(RealCall.this);
                 }
             }
         }
@@ -269,7 +269,7 @@ public class RealCall implements NewCall {
                 }
                 throw t;
             } finally {
-                client.dispatcher().finished(this);
+                client.dispatcher().finished(RealCall.this);
             }
         }
     }

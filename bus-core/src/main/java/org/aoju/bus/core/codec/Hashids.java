@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -44,7 +46,7 @@ import java.util.stream.LongStream;
  * </ul>
  *
  * <p>
- * 来自：<a href="https://github.com/davidafsilva/java-hashids">https://github.com/davidafsilva/java-hashids</a>
+ * 来自：https://github.com/davidafsilva/java-hashids
  * </p>
  *
  * <p>
@@ -57,37 +59,38 @@ import java.util.stream.LongStream;
  */
 public class Hashids implements Encoder<long[], String>, Decoder<String, long[]> {
 
-    // 默认编解码字符串
-    public static final char[] DEFAULT_ALPHABET = {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-    };
     private static final int LOTTERY_MOD = 100;
     private static final double GUARD_THRESHOLD = 12;
     private static final double SEPARATOR_THRESHOLD = 3.5;
-    // 最小编解码字符串
+    /**
+     * 最小编解码字符串
+     */
     private static final int MIN_ALPHABET_LENGTH = 16;
     private static final Pattern HEX_VALUES_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
-    // 默认分隔符
+    /**
+     * 默认分隔符
+     */
     private static final char[] DEFAULT_SEPARATORS = {
             'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T', 'U'
     };
-
-    // algorithm properties
+    /**
+     * 算法属性
+     */
     private final char[] alphabet;
-    // 多个数字编解码的分界符
+    /**
+     * 多个数字编解码的分界符
+     */
     private final char[] separators;
     private final Set<Character> separatorsSet;
     private final char[] salt;
-    // 补齐至 minLength 长度添加的字符列表
+    /**
+     * 补齐至 minLength 长度添加的字符列表
+     */
     private final char[] guards;
-    // 编码后最小的字符长度
+    /**
+     * 编码后最小的字符长度
+     */
     private final int minLength;
-
-    // region create
 
     /**
      * 构造
@@ -145,26 +148,25 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表，不限制最小长度
+     * 根据参数值，创建{@code Hashids}，使用默认{@link Normal#LOWER_UPPER_NUMBER}作为字母表，不限制最小长度
      *
      * @param salt 加盐值
      * @return {@code Hashids}
      */
-    public static Hashids create(final char[] salt) {
-        return create(salt, DEFAULT_ALPHABET, -1);
+    public static Hashids of(final char[] salt) {
+        return of(salt, Normal.LOWER_UPPER_NUMBER.toCharArray(), -1);
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表
+     * 根据参数值，创建{@code Hashids}，使用默认{@link Normal#LOWER_UPPER_NUMBER}作为字母表
      *
      * @param salt      加盐值
      * @param minLength 限制最小长度，-1表示不限制
      * @return {@code Hashids}
      */
-    public static Hashids create(final char[] salt, final int minLength) {
-        return create(salt, DEFAULT_ALPHABET, minLength);
+    public static Hashids of(final char[] salt, final int minLength) {
+        return of(salt, Normal.LOWER_UPPER_NUMBER.toCharArray(), minLength);
     }
-    // endregion
 
     /**
      * 根据参数值，创建{@code Hashids}
@@ -174,7 +176,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
      * @param minLength 限制最小长度，-1表示不限制
      * @return {@code Hashids}
      */
-    public static Hashids create(final char[] salt, final char[] alphabet, final int minLength) {
+    public static Hashids of(final char[] salt, final char[] alphabet, final int minLength) {
         return new Hashids(salt, alphabet, minLength);
     }
 
@@ -250,7 +252,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
 
                     // append the separator, if more numbers are pending encoding
                     if (idx + 1 < numbers.length) {
-                        long n = numbers[idx] % (global.charAt(initialLength) + 1);
+                        final long n = numbers[idx] % (global.charAt(initialLength) + 1);
                         global.append(separators[(int) (n % separators.length)]);
                     }
                 });
@@ -274,7 +276,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
             final int initialSize = global.length();
             if (paddingLeft > currentAlphabet.length) {
                 // entire alphabet with the current encoding in the middle of it
-                int offset = alphabetHalfSize + (currentAlphabet.length % 2 == 0 ? 0 : 1);
+                final int offset = alphabetHalfSize + (currentAlphabet.length % 2 == 0 ? 0 : 1);
 
                 global.insert(0, currentAlphabet, alphabetHalfSize, offset);
                 global.insert(offset + initialSize, currentAlphabet, 0, alphabetHalfSize);
@@ -296,10 +298,6 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
 
         return global.toString();
     }
-
-    //-------------------------
-    // Decode
-    //-------------------------
 
     /**
      * 解码Hash值为16进制数字
@@ -450,7 +448,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         int offset = 1;
         // 2. salt
         if (salt.length > 0 && spaceLeft > 0) {
-            int length = Math.min(salt.length, spaceLeft);
+            final int length = Math.min(salt.length, spaceLeft);
             System.arraycopy(salt, 0, newSalt, offset, length);
             spaceLeft -= length;
             offset += length;
@@ -492,7 +490,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         // create a new alphabet without the duplicates
         final char[] uniqueAlphabet = new char[seen.size()];
         int idx = 0;
-        for (char c : seen) {
+        for (final char c : seen) {
             uniqueAlphabet[idx++] = c;
         }
         return uniqueAlphabet;
@@ -523,4 +521,5 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         }
         return alphabet;
     }
+
 }

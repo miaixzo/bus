@@ -56,11 +56,11 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private Set<Cell<R, C, V>> cellSet;
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this) {
+    public boolean equals(final Object obj) {
+        if (obj == this) {
             return true;
-        } else if (object instanceof Table) {
-            final Table<?, ?, ?> that = (Table<?, ?, ?>) object;
+        } else if (obj instanceof Table) {
+            final Table<?, ?, ?> that = (Table<?, ?, ?>) obj;
             return this.cellSet().equals(that.cellSet());
         } else {
             return false;
@@ -79,13 +79,13 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     @Override
     public Collection<V> values() {
-        Collection<V> result = values;
+        final Collection<V> result = values;
         return (result == null) ? values = new Values() : result;
     }
 
     @Override
     public Set<Cell<R, C, V>> cellSet() {
-        Set<Cell<R, C, V>> result = cellSet;
+        final Set<Cell<R, C, V>> result = cellSet;
         return (result == null) ? cellSet = new CellSet() : result;
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         private final C columnKey;
         private final V value;
 
-        SimpleCell(R rowKey, C columnKey, V value) {
+        SimpleCell(final R rowKey, final C columnKey, final V value) {
             this.rowKey = rowKey;
             this.columnKey = columnKey;
             this.value = value;
@@ -131,7 +131,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         @Override
-        public boolean equals(Object object) {
+        public boolean equals(final Object object) {
             if (object == this) {
                 return true;
             }
@@ -163,7 +163,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         @Override
-        public boolean contains(Object o) {
+        public boolean contains(final Object o) {
             return containsValue((V) o);
         }
 
@@ -180,10 +180,10 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     private class CellSet extends AbstractSet<Cell<R, C, V>> {
         @Override
-        public boolean contains(Object o) {
+        public boolean contains(final Object o) {
             if (o instanceof Cell) {
                 final Cell<R, C, V> cell = (Cell<R, C, V>) o;
-                Map<C, V> row = getRow(cell.getRowKey());
+                final Map<C, V> row = getRow(cell.getRowKey());
                 if (null != row) {
                     return ObjectKit.equals(row.get(cell.getColumnKey()), cell.getValue());
                 }
@@ -192,7 +192,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         @Override
-        public boolean remove(Object o) {
+        public boolean remove(final Object o) {
             if (contains(o)) {
                 final Cell<R, C, V> cell = (Cell<R, C, V>) o;
                 AbstractTable.this.remove(cell.getRowKey(), cell.getColumnKey());
@@ -206,7 +206,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         @Override
-        public Iterator<Cell<R, C, V>> iterator() {
+        public Iterator<Table.Cell<R, C, V>> iterator() {
             return new CellIterator();
         }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.buffer.WriteBuffer;
+import org.aoju.bus.socket.buffers.WriteBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +52,7 @@ public abstract class AioSession {
      */
     protected static final byte SESSION_STATUS_ENABLED = 3;
 
+
     /**
      * 会话当前状态
      *
@@ -74,25 +75,16 @@ public abstract class AioSession {
 
     /**
      * 获取读缓冲区对象
-     *
-     * @return the object
      */
     public abstract ByteBuffer readBuffer();
 
     /**
-     * 强制关闭当前AIOSession
-     * 若此时还存留待输出的数据，则会导致该部分数据丢失
+     * 强制关闭当前AIOSession。
+     * <p>若此时还存留待输出的数据，则会导致该部分数据丢失</p>
      */
     public final void close() {
         close(true);
     }
-
-    /**
-     * 是否立即关闭会话
-     *
-     * @param immediate true:立即关闭,false:响应消息发送完后关闭
-     */
-    public abstract void close(boolean immediate);
 
     public abstract void awaitRead();
 
@@ -100,6 +92,13 @@ public abstract class AioSession {
      * 继续触发读行为，该方法仅可在异步处理模式下可使用，否则会触发不可预知的异常
      */
     public abstract void signalRead();
+
+    /**
+     * 是否立即关闭会话
+     *
+     * @param immediate true:立即关闭,false:响应消息发送完后关闭
+     */
+    public abstract void close(boolean immediate);
 
     /**
      * 获取当前Session的唯一标识
@@ -159,12 +158,12 @@ public abstract class AioSession {
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象
+     * 获得数据输入流对象。
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常
+     * faster模式下调用该方法会触发UnsupportedOperationException异常。
      * </p>
      * <p>
-     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常
+     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常。
      * </p>
      *
      * @return 输入流

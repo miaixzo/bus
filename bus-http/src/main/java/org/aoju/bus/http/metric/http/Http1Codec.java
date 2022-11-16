@@ -125,10 +125,8 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Prepares the HTTP headers and sends them to the server.
-     * <p>
      * For streaming requests with a body, headers must be prepared <strong>before</strong> the
      * output stream has been written to. Otherwise the body would need to be buffered!
-     * <p>
      * For non-streaming requests with a body, headers must be prepared <strong>after</strong> the
      * output stream has been written to and closed. This ensures that the {@code Content-Length}
      * header field receives the proper value.

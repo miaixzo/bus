@@ -188,6 +188,10 @@ public class Http {
      */
     public static final String TLS_V_12 = "TLSv1.2";
     /**
+     * Supports RFC 5246: TLS version 1.3 ; may support other versions
+     */
+    public static final String TLS_V_13 = "TLSv1.3";
+    /**
      * Supports SSL version 2 or later; may support other versions
      */
     public static final String SSL_V_20 = "SSLv2";
