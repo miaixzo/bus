@@ -52,7 +52,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             .collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> getProcessListFromPS(int pid) {
+    private List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
         // https://man.openbsd.org/ps#KEYWORDS
         // missing are threadCount and kernelTime which is included in cputime

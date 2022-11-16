@@ -82,11 +82,11 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         HAS_KSTAT2 = lib != null;
     }
 
-    private static List<OSProcess> queryAllProcessesFromPrStat() {
+    private List<OSProcess> queryAllProcessesFromPrStat() {
         return getProcessListFromProcfs(-1);
     }
 
-    private static List<OSProcess> getProcessListFromProcfs(int pid) {
+    private List<OSProcess> getProcessListFromProcfs(int pid) {
         List<OSProcess> procs = new ArrayList<>();
 
         File[] numericFiles = null;
