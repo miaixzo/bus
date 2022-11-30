@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.cache.metric;
 
+import jakarta.annotation.PreDestroy;
 import org.aoju.bus.cache.CacheX;
 import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.serialize.BaseSerializer;
 import org.aoju.bus.cache.serialize.Hessian2Serializer;
 import redis.clients.jedis.JedisCluster;
 
-import javax.annotation.PreDestroy;
 import java.util.*;
 
 /**

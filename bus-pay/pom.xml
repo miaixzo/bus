@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>6.6.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -45,11 +45,11 @@
         <alipay.sdk.version>4.22.113.ALL</alipay.sdk.version>
         <lombok.version>1.18.24</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
-        <servlet.version>4.0.4</servlet.version>
+        <servlet.version>6.0.0</servlet.version>
         <httpmime.version>4.5.13</httpmime.version>
         <zxing.version>3.5.0</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
-        <spring.boot.version>2.7.5</spring.boot.version>
+        <spring.boot.version>3.0.0</spring.boot.version>
         <binarywang.version>4.3.9.B</binarywang.version>
         <alipay.version>4.33.1.ALL</alipay.version>
         <paypal.version>2.0.0</paypal.version>

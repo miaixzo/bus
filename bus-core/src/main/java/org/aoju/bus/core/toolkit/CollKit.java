@@ -1885,7 +1885,7 @@ public class CollKit {
      * @param ignoreNull 是否忽略空值，这里的空值包括函数处理前和处理后的null值
      * @return 抽取后的新列表
      */
-    public static <T, R> List<R> map(Iterable<T> collection, Function<? super T, ? extends R> func, boolean ignoreNull) {
+    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> func, final boolean ignoreNull) {
         final List<R> fieldValueList = new ArrayList<>();
         if (null == collection) {
             return fieldValueList;

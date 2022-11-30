@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.servlet;
 
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.Tracer;
-
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 /**
  * Warning: This boot assumes that the HttpSessionListener is executed on the same thread as the request handling.

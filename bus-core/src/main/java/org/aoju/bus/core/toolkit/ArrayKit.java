@@ -7658,11 +7658,19 @@ public class ArrayKit {
      * @param index 下标,支持负数
      * @return 值
      */
-    public static <T> T get(Object array, int index) {
+    public static <T> T get(final Object array, int index) {
+        if (null == array) {
+            return null;
+        }
+
         if (index < 0) {
             index += Array.getLength(array);
         }
-        return (T) Array.get(array, index);
+        try {
+            return (T) Array.get(array, index);
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**

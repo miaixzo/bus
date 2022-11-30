@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.metric;
 
+import jakarta.annotation.PreDestroy;
 import org.aoju.bus.cache.CacheX;
 import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.serialize.BaseSerializer;
@@ -33,7 +34,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 
-import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;

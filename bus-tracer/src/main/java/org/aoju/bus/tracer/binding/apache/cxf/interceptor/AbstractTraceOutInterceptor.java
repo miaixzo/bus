@@ -30,15 +30,11 @@ import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
-import org.aoju.bus.tracer.transport.jaxb.TpicMap;
 import org.apache.cxf.binding.soap.SoapMessage;
-import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
-import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 
-import javax.xml.bind.JAXBException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +81,6 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                 } else {
                     try {
                         final SoapMessage soapMessage = (SoapMessage) message;
-                        addSoapHeader(filteredParams, soapMessage);
                     } catch (NoClassDefFoundError e) {
                         Logger.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to add Builder-Headers: {}", e.getMessage(), e);
                     }
@@ -94,16 +89,6 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
         }
     }
 
-    private void addSoapHeader(Map<String, String> filteredParams, SoapMessage soapMessage) {
-        try {
-            final Header tpicHeader = new Header(Builder.SOAP_HEADER_QNAME, TpicMap.wrap(filteredParams),
-                    new JAXBDataBinding(TpicMap.class));
-            soapMessage.getHeaders().add(tpicHeader);
-        } catch (JAXBException e) {
-            Logger.warn("Error occured during Builder soap header creation: {}", e.getMessage());
-            Logger.debug("Detailed exception", e);
-        }
-    }
 
     protected abstract boolean shouldHandleMessage(Message message);
 

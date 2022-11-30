@@ -27,12 +27,12 @@ package org.aoju.bus.gitlab.hooks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
 import org.aoju.bus.gitlab.support.HttpRequest;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -108,7 +108,6 @@ public class SystemHookManager implements HookManager {
      * @throws GitLabApiException if the parsed event is not supported
      */
     public SystemHookEvent handleRequest(HttpServletRequest request) throws GitLabApiException {
-
         String eventName = request.getHeader("X-Gitlab-Event");
         if (eventName == null || eventName.trim().isEmpty()) {
             String message = "X-Gitlab-Event header is missing!";

@@ -25,14 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.transport;
 
+import jakarta.xml.bind.*;
+import jakarta.xml.soap.SOAPHeader;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.transport.jaxb.TpicMap;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.bind.*;
-import javax.xml.soap.SOAPHeader;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import java.util.HashMap;

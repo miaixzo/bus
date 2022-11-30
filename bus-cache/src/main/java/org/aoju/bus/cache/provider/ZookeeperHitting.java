@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
+import jakarta.annotation.PreDestroy;
 import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Symbol;
@@ -36,7 +37,6 @@ import org.apache.curator.framework.recipes.atomic.DistributedAtomicLong;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.KeeperException;
 
-import javax.annotation.PreDestroy;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

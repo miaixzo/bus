@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-tracer</artifactId>
-    <version>6.6.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,10 +42,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.7.5</spring.boot.version>
+        <spring.boot.version>3.0.0</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
         <dubbo.version>3.0.10</dubbo.version>
-        <servlet.version>4.0.4</servlet.version>
+        <servlet.version>6.0.0</servlet.version>
         <cxf.version>2.7.18</cxf.version>
         <httpclient.version>4.5.13</httpclient.version>
         <httpclient5.version>5.0</httpclient5.version>

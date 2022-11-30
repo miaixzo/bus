@@ -281,7 +281,8 @@ public class CharsKit {
                 || args == '\u202a'
                 || args == '\u0000'
                 || args == '\u3164'
-                || args == '\u2800';
+                || args == '\u2800'
+                || args == '\u180e';
     }
 
     /**

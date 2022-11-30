@@ -36,7 +36,7 @@ import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
