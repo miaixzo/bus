@@ -179,9 +179,9 @@ public enum Locale {
     UK("uk", " 乌克兰文"),
     UK_UA("uk_UA", " 乌克兰文 (乌克兰)"),
     ZH("zh", " 中文"),
-    ZH_CN("zh_CN", " 中文 (中国)"),
-    ZH_HK("zh_HK", " 中文 (香港)"),
-    ZH_TW("zh_TW", " 中文 (台湾)");
+    ZH_CN("zh_CN", " 中文 (中国大陆)"),
+    ZH_HK("zh_HK", " 中文 (中国香港)"),
+    ZH_TW("zh_TW", " 中文 (中国台湾)");
 
     /**
      * 语言类型

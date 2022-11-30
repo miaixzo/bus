@@ -58,7 +58,7 @@ public class CitizenIdKit {
      */
     private static final Map<String, String> AREA_CODE = new HashMap<>();
     /**
-     * 台湾身份证首字母对应数字
+     * 中国台湾身份证首字母对应数字
      */
     private static final Map<Character, Integer> AREA_TW_CODE = new HashMap<>();
 

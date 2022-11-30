@@ -648,17 +648,17 @@ public class Validator {
 
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码（中国大陆）
      *
      * @param value 值
-     * @return 是否为手机号码（中国）
+     * @return 是否为手机号码（中国大陆）
      */
     public static boolean isMobile(CharSequence value) {
         return isMatchRegex(RegEx.MOBILE, value);
     }
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码（中国大陆）
      *
      * @param <T>      字符串类型
      * @param value    值

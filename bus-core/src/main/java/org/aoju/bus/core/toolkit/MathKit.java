@@ -1083,7 +1083,7 @@ public class MathKit {
                 // leading 0, but not hex, must be octal
                 int i = start + 1;
                 for (; i < chars.length; i++) {
-                    if (chars[i] <  Symbol.C_ZERO || chars[i] >  Symbol.C_SEVEN) {
+                    if (chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_SEVEN) {
                         return false;
                     }
                 }
@@ -1161,19 +1161,23 @@ public class MathKit {
     }
 
     /**
-     * 判断String是否是整数
-     * 支持8、10、16进制
+     * 判断字符串是否是整数
+     * <ol>
+     * 		<li>10进制, 不能包含前导零</li>
+     * 		<li>8进制(以0开头)</li>
+     * 		<li>16进制(以0x或者0X开头)</li>
+     * </ol>
      *
-     * @param s String
-     * @return 是否为整数
+     * @param text 校验的字符串, 只能含有 正负号、数字字符 和 {@literal X/x}
+     * @return 是否为 {@link Integer}类型
      */
-    public static boolean isInteger(String s) {
-        if (StringKit.isBlank(s)) {
+    public static boolean isInteger(String text) {
+        if (false == isNumber(text)) {
             return false;
         }
         try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
+            Integer.decode(text);
+        } catch (final NumberFormatException e) {
             return false;
         }
         return true;
@@ -1181,15 +1185,26 @@ public class MathKit {
 
     /**
      * 判断字符串是否是Long类型
-     * 支持8、10、16进制
+     * <ol>
+     * 		<li>10进制, 不能包含前导零</li>
+     * 		<li>8进制(以0开头)</li>
+     * 		<li>16进制(以0x或者0X开头)</li>
+     * </ol>
      *
-     * @param s String
-     * @return 是否为{@link Long}类型
+     * @param text 校验的字符串, 只能含有 正负号、数字字符、{@literal X/x} 和 后缀{@literal L/l}
+     * @return 是否为 {@link Long}类型
      */
-    public static boolean isLong(String s) {
+    public static boolean isLong(String text) {
+        if (false == isNumber(text)) {
+            return false;
+        }
+        final char lastChar = text.charAt(text.length() - 1);
+        if (lastChar == 'l' || lastChar == 'L') {
+            return true;
+        }
         try {
-            Long.parseLong(s);
-        } catch (NumberFormatException e) {
+            Long.decode(text);
+        } catch (final NumberFormatException e) {
             return false;
         }
         return true;
@@ -1198,19 +1213,19 @@ public class MathKit {
     /**
      * 判断字符串是否是浮点数
      *
-     * @param s String
-     * @return 是否为{@link Double}类型
+     * @param text String
+     * @return 是否为 {@link Double}类型
      */
-    public static boolean isDouble(String s) {
-        if (StringKit.isBlank(s)) {
+    public static boolean isDouble(String text) {
+        if (StringKit.isBlank(text)) {
             return false;
         }
         try {
-            Double.parseDouble(s);
+            Double.parseDouble(text);
         } catch (NumberFormatException e) {
             return false;
         }
-        return s.contains(Symbol.DOT);
+        return text.contains(Symbol.DOT);
     }
 
     /**

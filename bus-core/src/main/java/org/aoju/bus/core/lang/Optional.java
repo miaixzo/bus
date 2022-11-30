@@ -62,7 +62,7 @@ public class Optional<T> {
      * @param <T>      包裹的元素类型
      * @return 一个包裹里元素可能为空的 {@code Optional}
      */
-    public static <T> Optional<T> of(java.util.Optional<T> optional) {
+    public static <T> Optional<T> of(final java.util.Optional<T> optional) {
         return ofNullable(optional.orElse(null));
     }
 

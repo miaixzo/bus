@@ -2730,6 +2730,18 @@ public class CollKit {
     }
 
     /**
+     * 针对List自然排序，排序会修改原List
+     *
+     * @param <T>  元素类型
+     * @param list 被排序的List
+     * @return 原list
+     * @see Collections#sort(List, Comparator)
+     */
+    public static <T> List<T> sort(final List<T> list) {
+        return sort(list, null);
+    }
+
+    /**
      * 对2个对象按照指定属性名称进行排序
      *
      * @param name 属性名称
@@ -2781,13 +2793,16 @@ public class CollKit {
      *
      * @param <T>  元素类型
      * @param list 被排序的List
-     * @param c    {@link Comparator}
+     * @param c    {@link Comparator}，null表示自然排序（null安全的）
      * @return 原list
      * @see Collections#sort(List, Comparator)
      */
     public static <T> List<T> sort(List<T> list, Comparator<? super T> c) {
         if (isEmpty(list)) {
             return list;
+        }
+        if (null == c) {
+            c = Comparator.nullsFirst((Comparator<? super T>) Comparator.naturalOrder());
         }
         list.sort(c);
         return list;
