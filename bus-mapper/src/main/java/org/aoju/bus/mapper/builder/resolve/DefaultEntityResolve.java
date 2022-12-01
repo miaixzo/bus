@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder.resolve;
 
+import jakarta.persistence.*;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.KeySql;
 import org.aoju.bus.mapper.annotation.NameStyle;
@@ -39,12 +41,9 @@ import org.aoju.bus.mapper.entity.EntityField;
 import org.aoju.bus.mapper.entity.EntityTable;
 import org.aoju.bus.mapper.genid.GenId;
 import org.aoju.bus.mapper.gensql.GenSql;
-import org.apache.ibatis.logging.Log;
-import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
-import javax.persistence.*;
 import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -54,7 +53,6 @@ import java.util.List;
  * @since Java 17+
  */
 public class DefaultEntityResolve implements EntityResolve {
-    private final Log log = LogFactory.getLog(DefaultEntityResolve.class);
 
     /**
      * 根据指定的样式进行转换
@@ -194,7 +192,7 @@ public class DefaultEntityResolve implements EntityResolve {
         entityColumn.setColumn(columnName);
         entityColumn.setJavaType(field.getJavaType());
         if (field.getJavaType().isPrimitive()) {
-            log.warn("通用 Mapper 警告信息: <[" + entityColumn + "]> 使用了基本类型，基本类型在动态 SQL 中由于存在默认值，因此任何时候都不等于 null，建议修改基本类型为对应的包装类型!");
+            Logger.warn("通用 Mapper 警告信息: <[" + entityColumn + "]> 使用了基本类型，基本类型在动态 SQL 中由于存在默认值，因此任何时候都不等于 null，建议修改基本类型为对应的包装类型!");
         }
         // OrderBy
         processOrderBy(entityTable, field, entityColumn);
@@ -220,7 +218,7 @@ public class DefaultEntityResolve implements EntityResolve {
             if ("".equals(orderBy)) {
                 orderBy = "ASC";
             }
-            log.warn(OrderBy.class + " is outdated, use " + org.aoju.bus.mapper.annotation.Order.class + " instead!");
+            Logger.warn(OrderBy.class + " is outdated, use " + org.aoju.bus.mapper.annotation.Order.class + " instead!");
         }
         if (field.isAnnotationPresent(org.aoju.bus.mapper.annotation.Order.class)) {
             org.aoju.bus.mapper.annotation.Order order = field.getAnnotation(org.aoju.bus.mapper.annotation.Order.class);
@@ -324,7 +322,7 @@ public class DefaultEntityResolve implements EntityResolve {
                 GenSql genSql = keySql.genSql().getConstructor().newInstance();
                 entityColumn.setGenerator(genSql.genSql(entityTable, entityColumn));
             } catch (Exception e) {
-                log.error("实例化 GenSql 失败: " + e, e);
+                Logger.error("实例化 GenSql 失败: " + e, e);
                 throw new InternalException("实例化 GenSql 失败: " + e, e);
             }
         } else if (keySql.genId() != GenId.NULL.class) {

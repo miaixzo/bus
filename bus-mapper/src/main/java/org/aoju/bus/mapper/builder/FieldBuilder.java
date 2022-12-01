@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import jakarta.persistence.Entity;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.mapper.entity.EntityField;
 
-import javax.persistence.Entity;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;

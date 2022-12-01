@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
+import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.base.consts.Consts;
@@ -32,7 +33,6 @@ import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.*;
 
-import javax.persistence.Transient;
 import java.util.List;
 import java.util.Objects;
 

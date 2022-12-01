@@ -44,7 +44,7 @@
         <project.compiler.version>17</project.compiler.version>
         <spring.boot.version>3.0.0</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
-        <persistence.version>2.2</persistence.version>
+        <persistence.version>3.1.0</persistence.version>
     </properties>
 
     <dependencies>
@@ -65,8 +65,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
             <version>${persistence.version}</version>
             <optional>true</optional>
         </dependency>
