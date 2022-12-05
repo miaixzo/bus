@@ -1470,6 +1470,26 @@ public class Solar {
         }
 
         /**
+         * 获取本月的阳历周列表
+         *
+         * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
+         * @return 周列表
+         */
+        public List<Week> getWeeks(int start) {
+            List<Week> l = new ArrayList<>();
+            Week week = new Week(year, month, 1, start);
+            while (true) {
+                l.add(week);
+                week = week.next(1, false);
+                Solar firstDay = week.getFirstDay();
+                if (firstDay.getYear() > year || firstDay.getMonth() > month) {
+                    break;
+                }
+            }
+            return l;
+        }
+
+        /**
          * 获取往后推几个月的阳历月，如果要往前推，则月数用负数
          *
          * @param months 月数
