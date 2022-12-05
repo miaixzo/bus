@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.freebsd.software;
 
+import com.sun.jna.ptr.NativeLongByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -167,6 +168,23 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             return procList.size() - 1;
         }
         return 0;
+    }
+
+    @Override
+    public int getThreadId() {
+        NativeLongByReference pTid = new NativeLongByReference();
+        if (FreeBsdLibc.INSTANCE.thr_self(pTid) < 0) {
+            return 0;
+        }
+        return pTid.getValue().intValue();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        OSProcess proc = getCurrentProcess();
+        final int tid = getThreadId();
+        return proc.getThreadDetails().stream().filter(t -> t.getThreadId() == tid).findFirst()
+                .orElse(new FreeBsdOSThread(proc.getProcessID(), tid));
     }
 
     @Override

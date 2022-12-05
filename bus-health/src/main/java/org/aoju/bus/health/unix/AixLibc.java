@@ -45,6 +45,13 @@ public interface AixLibc extends CLibrary {
     int PRFNSZ = 16;
     int PRARGSZ = 80;
 
+    /**
+     * Returns the caller's kernel thread ID.
+     *
+     * @return the caller's kernel thread ID.
+     */
+    int thread_self();
+
     class AixPsInfo {
         public int pr_flag; // process flags from proc struct p_flag
         public int pr_flag2; // process flags from proc struct p_flag2

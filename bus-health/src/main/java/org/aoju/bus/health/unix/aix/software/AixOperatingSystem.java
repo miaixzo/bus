@@ -180,6 +180,20 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        return AixLibc.INSTANCE.thread_self();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        OSProcess proc = getCurrentProcess();
+        final int tid = getThreadId();
+        return proc.getThreadDetails().stream().filter(t -> t.getThreadId() == tid).findFirst()
+                .orElse(new AixOSThread(proc.getProcessID(), tid));
+    }
+
+
+    @Override
     public int getThreadCount() {
         long tc = 0L;
         for (perfstat_process_t proc : procCpu.get()) {

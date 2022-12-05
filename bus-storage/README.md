@@ -147,7 +147,7 @@ provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 ##### 用法②
 
 ```java
-@Autowired
+@Resource
 StorageProviderService service;
         service.get(Registry.ALIYUN);
         provider.upload("test",null,new File("/Users/leaves/logo.gif"));

@@ -54,6 +54,14 @@ public interface LinuxLibc extends LibC, CLibrary {
     LinuxUtmpx getutxent();
 
     /**
+     * Returns the caller's thread ID (TID). In a single-threaded process, the thread ID is equal to the process ID. In
+     * a multithreaded process, all threads have the same PID, but each one has a unique TID.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int gettid();
+
+    /**
      * Return type for getutxent()
      */
     @FieldOrder({"ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",

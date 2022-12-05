@@ -228,6 +228,16 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        return SolarisLibc.INSTANCE.thr_self();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        return new SolarisOSThread(getProcessId(), getThreadId());
+    }
+
+    @Override
     public int getThreadCount() {
         List<String> threadList = Executor.runNative("ps -eLo pid");
         if (!threadList.isEmpty()) {

@@ -56,6 +56,12 @@ public class OpenBsdOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
+    public OpenBsdOSThread(int processId, int threadId) {
+        super(processId);
+        this.threadId = threadId;
+        updateAttributes();
+    }
+
     public OpenBsdOSThread(int processId, Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         super(processId);
         updateAttributes(threadMap);

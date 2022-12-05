@@ -46,6 +46,8 @@ import org.aoju.bus.logger.Logger;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +63,7 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
     private static final int M1_CPUFAMILY = 0x1b588bb3;
     private static final int M2_CPUFAMILY = 0xda33d83d;
     private static final long DEFAULT_FREQUENCY = 2_400_000_000L;
+    private static final Pattern CPU_N = Pattern.compile("^cpu(\\d+)");
 
     private final Supplier<String> vendor = Memoize.memoize(MacCentralProcessor::platformExpert);
     private final boolean isArmCpu = isArmCpu();
@@ -94,8 +97,9 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
         if (iter != null) {
             IORegistryEntry cpu = iter.next();
             while (cpu != null) {
-                if (cpu.getName().toLowerCase().startsWith("cpu")) {
-                    int procId = Builder.getFirstIntValue(cpu.getName());
+                Matcher m = CPU_N.matcher(cpu.getName().toLowerCase());
+                if (m.matches()) {
+                    int procId = Builder.parseIntOrDefault(m.group(1), 0);
                     // Compatible key is null-delimited C string array in byte array
                     byte[] data = cpu.getByteArrayProperty("compatible");
                     if (data != null) {

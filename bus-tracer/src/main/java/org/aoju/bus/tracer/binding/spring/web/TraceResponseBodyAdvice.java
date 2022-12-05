@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.spring.web;
 
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -49,7 +49,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
-    @Autowired
+    @Resource
     private TraceInterceptor interceptor;
 
     public TraceResponseBodyAdvice() {

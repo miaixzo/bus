@@ -46,6 +46,10 @@ public class MacOSThread extends AbstractOSThread {
     private final long upTime;
     private final int priority;
 
+    public MacOSThread(int processId) {
+        this(processId, 0, OSProcess.State.INVALID, 0L, 0L, 0L, 0L, 0);
+    }
+
     public MacOSThread(int pid, int threadId, OSProcess.State state, long kernelTime, long userTime, long startTime, long upTime,
                        int priority) {
         super(pid);

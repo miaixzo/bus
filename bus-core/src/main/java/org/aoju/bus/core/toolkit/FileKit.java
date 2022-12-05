@@ -3757,12 +3757,23 @@ public class FileKit {
      * @param file 文件
      * @return the string {@link MediaType}
      */
-    public static String getMediaType(Path file) {
+    public static String getMediaType(final Path file) {
         try {
             return Files.probeContentType(file);
         } catch (IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * 根据文件扩展名获得MimeType
+     *
+     * @param filePath     文件路径或文件名
+     * @param defaultValue 当获取MimeType为null时的默认值
+     * @return MimeType
+     */
+    public static String getMediaType(final String filePath, final String defaultValue) {
+        return ObjectKit.defaultIfNull(getMediaType(filePath), defaultValue);
     }
 
     /**

@@ -492,6 +492,19 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        return Kernel32.INSTANCE.GetCurrentThreadId();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        OSProcess proc = getCurrentProcess();
+        final int tid = getThreadId();
+        return proc.getThreadDetails().stream().filter(t -> t.getThreadId() == tid).findFirst()
+                .orElse(new WindowsOSThread(proc.getProcessID(), tid, null, null));
+    }
+
+    @Override
     public int getThreadCount() {
         try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {

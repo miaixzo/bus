@@ -201,6 +201,22 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        OSThread thread = getCurrentThread();
+        if (thread == null) {
+            return 0;
+        }
+        return thread.getThreadId();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        // Get oldest thread
+        return getCurrentProcess().getThreadDetails().stream().sorted(Comparator.comparingLong(OSThread::getStartTime))
+                .findFirst().orElse(new MacOSThread(getProcessId()));
+    }
+
+    @Override
     public int getThreadCount() {
         // Get current pids, then slightly pad in case new process starts while
         // allocating array space
