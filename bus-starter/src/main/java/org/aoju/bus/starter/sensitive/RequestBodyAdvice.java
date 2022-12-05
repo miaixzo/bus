@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.sensitive;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
@@ -35,7 +36,6 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -55,7 +55,7 @@ import java.lang.reflect.Type;
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
-    @Autowired
+    @Resource
     SensitiveProperties properties;
 
     /**

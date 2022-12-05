@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.sensitive;
 
+import jakarta.annotation.Resource;
 import lombok.Data;
 import org.aoju.bus.spring.BusXConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -40,9 +40,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @ConfigurationProperties(prefix = BusXConfig.SENSITIVE)
 public class SensitiveProperties {
 
-    @Autowired
+    @Resource
     private Encrypt encrypt;
-    @Autowired
+    @Resource
     private Decrypt decrypt;
 
     /**

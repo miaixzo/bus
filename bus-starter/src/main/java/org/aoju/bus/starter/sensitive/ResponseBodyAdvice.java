@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.sensitive;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.Result;
@@ -38,7 +39,6 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -62,7 +62,7 @@ import java.util.Map;
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
-    @Autowired
+    @Resource
     SensitiveProperties properties;
 
     /**

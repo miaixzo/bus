@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.bridge;
 
 import io.vertx.core.Vertx;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Import;
 @Import({BridgePropertyLoader.class})
 public class BridgeConfiguration {
 
-    @Autowired
+    @Resource
     BridgeProperties properties;
 
     @Bean

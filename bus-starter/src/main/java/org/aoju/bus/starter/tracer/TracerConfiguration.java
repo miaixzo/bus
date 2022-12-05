@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.tracer;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.Tracer;
@@ -36,7 +37,6 @@ import org.aoju.bus.tracer.binding.spring.web.TraceResponseBodyAdvice;
 import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -64,10 +64,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 public class TracerConfiguration {
 
-    @Autowired
+    @Resource
     TracerProperties properties;
 
-    @Autowired
+    @Resource
     Backend backend;
 
     @Bean

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.cors;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ import java.util.Arrays;
 @EnableConfigurationProperties(value = {CorsProperties.class})
 public class CorsConfiguration {
 
-    @Autowired
+    @Resource
     CorsProperties properties;
 
     /**

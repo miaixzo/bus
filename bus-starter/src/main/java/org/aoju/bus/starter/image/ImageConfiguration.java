@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.Args;
@@ -33,7 +34,6 @@ import org.aoju.bus.image.Efforts;
 import org.aoju.bus.image.Node;
 import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.aoju.bus.image.plugin.StoreSCP;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -44,10 +44,10 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = {ImageProperties.class})
 public class ImageConfiguration {
 
-    @Autowired
+    @Resource
     ImageProperties properties;
 
-    @Autowired
+    @Resource
     Efforts efforts;
 
     @Bean(initMethod = "start", destroyMethod = "stop")

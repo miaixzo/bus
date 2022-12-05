@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.i18n;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -41,7 +41,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @EnableConfigurationProperties(value = {I18nProperties.class})
 public class I18nConfiguration {
 
-    @Autowired
+    @Resource
     I18nProperties properties;
 
     @Bean
