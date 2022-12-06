@@ -46,7 +46,7 @@
         <compress.version>1.21</compress.version>
         <freemarker.version>2.3.31</freemarker.version>
         <lombok.version>1.18.24</lombok.version>
-        <hikari.version>5.0.1</hikari.version>
+        <hikaricp.version>5.0.1</hikaricp.version>
         <mysql.version>8.0.30</mysql.version>
     </properties>
 
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>${hikari.version}</version>
+            <version>${hikaricp.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

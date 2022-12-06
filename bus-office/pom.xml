@@ -42,9 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <poi.version>5.2.2</poi.version>
-        <xerces.version>2.12.2</xerces.version>
-        <openoffice.version>4.1.2</openoffice.version>
+        <poi.version>5.2.3</poi.version>
     </properties>
 
     <dependencies>

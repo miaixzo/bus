@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <lombok.version>1.18.24</lombok.version>
-        <mail.version>2.0.1</mail.version>
+        <mail.version>2.1.0</mail.version>
         <fastjson.version>1.2.83</fastjson.version>
     </properties>
 
@@ -70,8 +70,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>jakarta.mail</artifactId>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
             <version>${mail.version}</version>
             <optional>true</optional>
         </dependency>

@@ -45,8 +45,8 @@
         <mybatis.version>3.5.11</mybatis.version>
         <guava.version>31.1-jre</guava.version>
         <jsqlparser.version>4.5</jsqlparser.version>
-        <hikari.version>5.0.1</hikari.version>
-        <druid.version>1.2.8</druid.version>
+        <hikaricp.version>5.0.1</hikaricp.version>
+        <druid.version>1.2.15</druid.version>
     </properties>
 
     <dependencies>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>${hikari.version}</version>
+            <version>${hikaricp.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
