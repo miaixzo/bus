@@ -29,7 +29,10 @@ import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.core.toolkit.AnnoKit;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.beans.Transient;
 import java.lang.reflect.Field;
@@ -67,8 +70,8 @@ public class PropertyDesc {
      */
     public PropertyDesc(Field field, Method getter, Method setter) {
         this.field = field;
-        this.getter = ClassKit.setAccessible(getter);
-        this.setter = ClassKit.setAccessible(setter);
+        this.getter = ReflectKit.setAccessible(getter);
+        this.setter = ReflectKit.setAccessible(setter);
     }
 
     /**
