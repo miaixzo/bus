@@ -194,7 +194,7 @@ public class BeanKit {
     public static boolean hasPublicField(Class<?> clazz) {
         if (ClassKit.isNormalClass(clazz)) {
             for (Field field : clazz.getFields()) {
-                if (BeanKit.isPublic(field) && false == BeanKit.isStatic(field)) {
+                if (isPublic(field) && false == isStatic(field)) {
                     //非static的public字段
                     return true;
                 }
@@ -1069,6 +1069,16 @@ public class BeanKit {
      */
     public static boolean isPublic(final Class<?> clazz) {
         return hasModifier(clazz, ModifierType.PUBLIC);
+    }
+
+    /**
+     * 是否是Protected成员，可检测包括构造、字段和方法
+     *
+     * @param member 构造、字段或方法
+     * @return 是否是Protected
+     */
+    public static boolean isProtected(final Member member) {
+        return hasModifier(member, ModifierType.PROTECTED);
     }
 
     /**

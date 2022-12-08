@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
+public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
 
     /**
      * 目标的类型（用于泛型类注入）
@@ -56,7 +56,7 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public ValueProviderToBeanCopier(ValueProvider<String> source, T target, Type targetType, CopyOptions copyOptions) {
+    public ValueToBeanCopier(ValueProvider<String> source, T target, Type targetType, CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }

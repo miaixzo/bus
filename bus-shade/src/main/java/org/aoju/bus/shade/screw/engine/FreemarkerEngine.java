@@ -73,7 +73,7 @@ public class FreemarkerEngine extends AbstractEngine {
             //编码
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
             //国际化
-            configuration.setLocale(Locale.of(Builder.DEFAULT_LOCALE));
+            configuration.setLocale(new Locale(Builder.DEFAULT_LOCALE));
         } catch (Exception e) {
             throw new InternalException(e);
         }

@@ -94,9 +94,9 @@ public class BeanPath implements Serializable {
             return null;
         }
 
-        if (StringKit.contains(expression, ':')) {
+        if (StringKit.contains(expression, Symbol.C_COLON)) {
             // [start:end:step] 模式
-            final List<String> parts = StringKit.splitTrim(expression, ':');
+            final List<String> parts = StringKit.splitTrim(expression, Symbol.C_COLON);
             final int start = Integer.parseInt(parts.get(0));
             final int end = Integer.parseInt(parts.get(1));
             int step = 1;
@@ -108,9 +108,9 @@ public class BeanPath implements Serializable {
             } else if (ArrayKit.isArray(bean)) {
                 return ArrayKit.sub(bean, start, end, step);
             }
-        } else if (StringKit.contains(expression, ',')) {
+        } else if (StringKit.contains(expression, Symbol.C_COMMA)) {
             // [num0,num1,num2...]模式或者['key0','key1']模式
-            final List<String> keys = StringKit.splitTrim(expression, ',');
+            final List<String> keys = StringKit.splitTrim(expression, Symbol.C_COMMA);
             if (bean instanceof Collection) {
                 return CollKit.getAny((Collection<?>) bean, Convert.convert(int[].class, keys));
             } else if (ArrayKit.isArray(bean)) {
@@ -118,7 +118,7 @@ public class BeanPath implements Serializable {
             } else {
                 final String[] unWrappedKeys = new String[keys.size()];
                 for (int i = 0; i < unWrappedKeys.length; i++) {
-                    unWrappedKeys[i] = StringKit.unWrap(keys.get(i), '\'');
+                    unWrappedKeys[i] = StringKit.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
                 }
                 if (bean instanceof Map) {
                     // 只支持String为key的Map

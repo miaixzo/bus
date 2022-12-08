@@ -146,27 +146,6 @@ public class PropertyDesc {
     }
 
     /**
-     * 检查属性是否可读（即是否可以通过{@link #getValue(Object)}获取到值）
-     *
-     * @param checkTransient 是否检查Transient关键字或注解
-     * @return 是否可读
-     */
-    public boolean isReadable(boolean checkTransient) {
-        // 检查是否有getter方法或是否为public修饰
-        if (null == this.getter && false == BeanKit.isPublic(this.field)) {
-            return false;
-        }
-
-        // 检查transient关键字和@Transient注解
-        if (checkTransient && isTransientForGet()) {
-            return false;
-        }
-
-        // 检查@PropIgnore注解
-        return false == isIgnoreGet();
-    }
-
-    /**
      * 获取属性值
      * 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
      * 此方法不检查任何注解，使用前需调用 {@link #isReadable(boolean)} 检查是否可读
@@ -177,7 +156,7 @@ public class PropertyDesc {
     public Object getValue(Object bean) {
         if (null != this.getter) {
             return ReflectKit.invoke(bean, this.getter);
-        } else if (BeanKit.isPublic(this.field)) {
+        } else if (BeanKit.isPublic(this.field) || BeanKit.isProtected(this.field)) {
             return ReflectKit.getFieldValue(bean, this.field);
         }
         return null;
@@ -217,18 +196,40 @@ public class PropertyDesc {
      * @param checkTransient 是否检查Transient关键字或注解
      * @return 是否可读
      */
-    public boolean isWritable(boolean checkTransient) {
+    public boolean isReadable(boolean checkTransient) {
         // 检查是否有getter方法或是否为public修饰
-        if (null == this.setter && false == BeanKit.isPublic(this.field)) {
+        if (null == this.getter && false == BeanKit.isPublic(this.field)
+                && false == BeanKit.isProtected(this.field)) {
             return false;
         }
 
+        // 检查transient关键字和@Transient注解
+        if (checkTransient && isTransientForGet()) {
+            return false;
+        }
+        // 检查@Ignore注解
+        return false == isIgnoreGet();
+    }
+
+    /**
+     * 检查属性是否可读（即是否可以通过{@link #getValue(Object)}获取到值）
+     *
+     * @param checkTransient 是否检查Transient关键字或注解
+     * @return 是否可读
+     */
+    public boolean isWritable(boolean checkTransient) {
+        // 检查是否有getter方法或是否为public修饰
+        if (null == this.getter && false == BeanKit.isPublic(this.field)
+                && false == BeanKit.isProtected(this.field)) {
+            System.out.println("name :" + this.field.getName());
+            return false;
+        }
         // 检查transient关键字和@Transient注解
         if (checkTransient && isTransientForSet()) {
             return false;
         }
 
-        // 检查@PropIgnore注解
+        // 检查@Ignore注解
         return false == isIgnoreSet();
     }
 
@@ -244,7 +245,7 @@ public class PropertyDesc {
     public PropertyDesc setValue(Object bean, Object value) {
         if (null != this.setter) {
             ReflectKit.invoke(bean, this.setter, value);
-        } else if (BeanKit.isPublic(this.field)) {
+        } else if (BeanKit.isPublic(this.field) || BeanKit.isProtected(this.field)) {
             ReflectKit.setFieldValue(bean, this.field, value);
         }
         return this;
