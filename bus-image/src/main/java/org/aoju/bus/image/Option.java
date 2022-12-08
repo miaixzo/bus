@@ -26,6 +26,7 @@
 package org.aoju.bus.image;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 
@@ -40,20 +41,9 @@ import java.util.EnumSet;
 @Data
 public class Option {
 
-    // 密码套件
-    public static final String[] TLS =
-            {"SSL_RSA_WITH_NULL_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
-    public static final String[] TLS_NULL = {"SSL_RSA_WITH_NULL_SHA"};
-    public static final String[] TLS_3DES = {"SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
-    public static final String[] TLS_AES = {"TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
-    // TLS协议
-    public static final String[] defaultProtocols = {"TLSv1", "SSLv3"};
-    public static final String[] tls1 = {"TLSv1"};
-    public static final String[] tls11 = {"TLSv1.1"};
-    public static final String[] tls12 = {"TLSv1.2"};
-    public static final String[] ssl3 = {"SSLv3"};
-    public static final String[] ssl2Hello = {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"};
-    /* 此AE可以异步执行的最大操作数，无限制为0，而非异步为1 */
+    /**
+     * 此AE可以异步执行的最大操作数，无限制为0，而非异步为1
+     */
     private int maxOpsInvoked = Connection.SYNCHRONOUS_MODE;
     private int maxOpsPerformed = Connection.SYNCHRONOUS_MODE;
     private int maxPdulenRcv = Connection.DEF_MAX_PDU_LENGTH;
@@ -88,17 +78,17 @@ public class Option {
 
     }
 
-    public Option(boolean tlsNeedClientAuth,
-                  String keystoreURL,
-                  String keystoreType,
-                  String keystorePass,
-                  String keyPass,
-                  String truststoreURL,
-                  String truststoreType,
-                  String truststorePass) {
+    public Option(boolean tlsNeedClientAuth, String keystoreURL, String keystoreType, String keystorePass, String keyPass, String truststoreURL, String truststoreType, String truststorePass) {
         this(
-                TLS,
-                defaultProtocols,
+                new String[]{
+                        "SSL_RSA_WITH_NULL_SHA",
+                        "TLS_RSA_WITH_AES_128_CBC_SHA",
+                        "SSL_RSA_WITH_3DES_EDE_CBC_SHA"
+                },
+                new String[]{
+                        Http.TLS_V_10,
+                        Http.SSL_V_30
+                },
                 tlsNeedClientAuth,
                 keystoreURL,
                 keystoreType,
@@ -110,16 +100,7 @@ public class Option {
         );
     }
 
-    public Option(String[] cipherSuites,
-                  String[] tlsProtocols,
-                  boolean tlsNeedClientAuth,
-                  String keystoreURL,
-                  String keystoreType,
-                  String keystorePass,
-                  String keyPass,
-                  String truststoreURL,
-                  String truststoreType,
-                  String truststorePass) {
+    public Option(String[] cipherSuites, String[] tlsProtocols, boolean tlsNeedClientAuth, String keystoreURL, String keystoreType, String keystorePass, String keyPass, String truststoreURL, String truststoreType, String truststorePass) {
         if (null == cipherSuites) {
             throw new IllegalArgumentException("cipherSuites cannot be null");
         }
@@ -143,9 +124,7 @@ public class Option {
         TIMEZONE;
 
         public static byte[] toExtendedNegotiationInformation(EnumSet<Type> opts) {
-            byte[] info = new byte[opts.contains(TIMEZONE) ? 4
-                    : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3
-                    : 1];
+            byte[] info = new byte[opts.contains(TIMEZONE) ? 4 : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3 : 1];
             for (Type query : opts)
                 info[query.ordinal()] = 1;
             return info;
@@ -162,11 +141,8 @@ public class Option {
             return opts;
         }
 
-        private static void toOption(ExtendedNegotiate extNeg,
-                                     Type opt,
-                                     EnumSet<Type> opts) {
-            if (extNeg.getField(opt.ordinal(), (byte) 0) == 1)
-                opts.add(opt);
+        private static void toOption(ExtendedNegotiate extNeg, Type opt, EnumSet<Type> opts) {
+            if (extNeg.getField(opt.ordinal(), (byte) 0) == 1) opts.add(opt);
         }
 
     }

@@ -53,7 +53,6 @@ public class JdkPlatform extends Platform {
     }
 
     public static JdkPlatform buildIfSupported() {
-        // Find JDK 9 new methods
         try {
             Method setProtocolMethod =
                     SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
@@ -61,7 +60,7 @@ public class JdkPlatform extends Platform {
 
             return new JdkPlatform(setProtocolMethod, getProtocolMethod);
         } catch (NoSuchMethodException ignored) {
-            // pre JDK 9
+
         }
 
         return null;
