@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.elastic;
 
 import jakarta.annotation.Resource;
-import org.aoju.bus.base.consts.Consts;
+import org.aoju.bus.base.normal.Consts;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;

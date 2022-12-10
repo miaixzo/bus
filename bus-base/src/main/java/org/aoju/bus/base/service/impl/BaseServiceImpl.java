@@ -25,17 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.base.service.impl;
 
-import jakarta.annotation.Resource;
-import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.base.entity.BaseEntity;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.mapper.BaseMapper;
+import org.aoju.bus.base.normal.Consts;
 import org.aoju.bus.base.service.BaseService;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.entity.Condition;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ import java.util.List;
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
         implements BaseService<T> {
 
-    @Resource
+    @Autowired
     protected Mapper mapper;
 
     @Override

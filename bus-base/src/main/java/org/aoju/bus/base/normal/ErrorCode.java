@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.base.consts;
+package org.aoju.bus.base.normal;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;

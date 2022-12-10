@@ -4,4 +4,4 @@
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.aoju.bus.base.consts;
+package org.aoju.bus.base.normal;

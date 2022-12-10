@@ -26,7 +26,7 @@
 package org.aoju.bus.goalie.metric;
 
 import lombok.Data;
-import org.aoju.bus.base.consts.Consts;
+import org.aoju.bus.base.normal.Consts;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.OAuth2;
 
