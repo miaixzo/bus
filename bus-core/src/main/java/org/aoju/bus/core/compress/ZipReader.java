@@ -26,6 +26,7 @@
 package org.aoju.bus.core.compress;
 
 import org.aoju.bus.core.exception.InternalException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -222,7 +223,7 @@ public class ZipReader implements Closeable {
     private void readFromZipFile(Consumer<ZipEntry> consumer) {
         final Enumeration<? extends ZipEntry> em = zipFile.entries();
         while (em.hasMoreElements()) {
-            consumer.accept(em.nextElement());
+            consumer.accept(checkZipBomb(em.nextElement()));
         }
     }
 
@@ -235,12 +236,33 @@ public class ZipReader implements Closeable {
     private void readFromStream(Consumer<ZipEntry> consumer) throws InternalException {
         try {
             ZipEntry zipEntry;
-            while (null != (zipEntry = in.getNextEntry())) {
+            while (null != (zipEntry = checkZipBomb(in.getNextEntry()))) {
                 consumer.accept(zipEntry);
             }
         } catch (IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * 检查Zip bomb漏洞
+     *
+     * @param entry {@link ZipEntry}
+     * @return 检查后的{@link ZipEntry}
+     */
+    private static ZipEntry checkZipBomb(final ZipEntry entry) {
+        if (null == entry) {
+            return null;
+        }
+        final long compressedSize = entry.getCompressedSize();
+        final long uncompressedSize = entry.getSize();
+        if (compressedSize < 0 || uncompressedSize < 0 ||
+                // 默认压缩比例是100倍，一旦发现压缩率超过这个阈值，被认为是Zip bomb
+                compressedSize * 100 < uncompressedSize) {
+            throw new ValidateException("Zip bomb attack detected, invalid sizes: compressed {}, uncompressed {}, name {}",
+                    compressedSize, uncompressedSize, entry.getName());
+        }
+        return entry;
     }
 
 }

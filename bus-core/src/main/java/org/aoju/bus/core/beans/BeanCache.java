@@ -51,7 +51,7 @@ public enum BeanCache {
      *
      * @param beanClass Bean的类
      * @param supplier  对象不存在时创建对象的函数
-     * @return 属性名和{@link BeanDesc}映射
+     * @return 属性名和 {@link BeanDesc} 映射
      */
     public BeanDesc getBeanDesc(Class<?> beanClass, XSupplier<BeanDesc> supplier) {
         return bdCache.computeIfAbsent(beanClass, (key) -> supplier.get());

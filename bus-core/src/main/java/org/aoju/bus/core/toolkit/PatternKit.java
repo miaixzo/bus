@@ -781,6 +781,8 @@ public class PatternKit {
             return StringKit.toString(content);
         }
 
+        Assert.notNull(replacementTemplate, "ReplacementTemplate must be not null !");
+
         final Matcher matcher = pattern.matcher(content);
         boolean result = matcher.find();
         if (result) {
