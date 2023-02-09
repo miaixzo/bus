@@ -34,6 +34,7 @@ import org.aoju.bus.core.map.RowKeyTable;
 import org.aoju.bus.core.map.Table;
 import org.aoju.bus.core.map.TableMap;
 import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.office.excel.cell.CellEditor;
 import org.aoju.bus.office.excel.cell.CellLocation;
 import org.apache.poi.common.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.*;
@@ -84,6 +85,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 标题项对应列号缓存，每次写标题更新此缓存
      */
     private Map<String, Integer> headLocationCache;
+    /**
+     * 单元格值处理接口
+     */
+    private CellEditor cellEditor;
 
     /**
      * 构造,默认生成xls格式的Excel文件
@@ -178,6 +183,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter(Sheet sheet) {
         super(sheet);
         this.styleSet = new StyleSet(workbook);
+    }
+
+    /**
+     * 设置单元格值处理逻辑<br>
+     * 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     *
+     * @param cellEditor 单元格值处理接口
+     * @return this
+     */
+    public ExcelWriter setCellEditor(final CellEditor cellEditor) {
+        this.cellEditor = cellEditor;
+        return this;
     }
 
     @Override
@@ -586,7 +603,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         // 设置内容
         if (null != content) {
             final Cell cell = getOrCreateCell(firstColumn, firstRow);
-            CellKit.setCellValue(cell, content, cellStyle);
+            CellKit.setCellValue(cell, content, cellStyle, this.cellEditor);
         }
         return this;
     }
@@ -786,7 +803,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Cell cell;
         for (Object value : rowData) {
             cell = row.createCell(i);
-            CellKit.setCellValue(cell, value, this.styleSet, true);
+            CellKit.setCellValue(cell, value, this.styleSet, true, this.cellEditor);
             this.headLocationCache.put(StringKit.toString(value), i);
             i++;
         }
@@ -875,7 +892,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                     location = this.headLocationCache.get(StringKit.toString(cell.getColumnKey()));
                 }
                 if (null != location) {
-                    CellKit.setCellValue(CellKit.getOrCreateCell(row, location), cell.getValue(), this.styleSet, false);
+                    CellKit.setCellValue(CellKit.getOrCreateCell(row, location), cell.getValue(), this.styleSet, false, this.cellEditor);
                 }
             }
         } else {
@@ -895,9 +912,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeRow(Iterable<?> rowData) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
-        RowKit.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false);
+        RowKit.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false, this.cellEditor);
         return this;
     }
+
 
     /**
      * 写出复杂标题的第二行标题数据
@@ -919,7 +937,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 }
                 if (iterator.hasNext()) {
                     cell = row.createCell(i);
-                    CellKit.setCellValue(cell, iterator.next(), this.styleSet, true);
+                    CellKit.setCellValue(cell, iterator.next(), this.styleSet, true, this.cellEditor);
                 } else {
                     break;
                 }
@@ -940,7 +958,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeCellValue(int x, int y, Object value) {
         final Cell cell = getOrCreateCell(x, y);
-        CellKit.setCellValue(cell, value, this.styleSet, false);
+        CellKit.setCellValue(cell, value, this.styleSet, false, this.cellEditor);
         return this;
     }
 

@@ -635,22 +635,24 @@ public class ByteKit {
      * @return 拆分后的数组
      */
     public static byte[][] split(byte[] data, int len) {
-        int x = data.length / len;
-        int y = data.length % len;
-        int z = 0;
-        if (y != 0) {
-            z = 1;
-        }
-        byte[][] arrays = new byte[x + z][];
+        int amount = data.length / len;
+        final int remainder = data.length % len;
+        // 兼容切片长度大于原数组长度的情况
+        final boolean hasRemainder = remainder > 0;
+        final byte[][] arrays = new byte[hasRemainder ? (amount + 1) : amount][];
         byte[] arr;
-        for (int i = 0; i < x + z; i++) {
+        int start = 0;
+        for (int i = 0; i < amount; i++) {
             arr = new byte[len];
-            if (i == x + z - 1 && y != 0) {
-                System.arraycopy(data, i * len, arr, 0, y);
-            } else {
-                System.arraycopy(data, i * len, arr, 0, len);
-            }
+            System.arraycopy(data, start, arr, 0, len);
             arrays[i] = arr;
+            start += len;
+        }
+        if (hasRemainder) {
+            // 有剩余，按照实际长度创建
+            arr = new byte[remainder];
+            System.arraycopy(data, start, arr, 0, remainder);
+            arrays[amount] = arr;
         }
         return arrays;
     }

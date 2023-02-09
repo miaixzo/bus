@@ -215,7 +215,7 @@ public enum Algorithm {
      */
     DES("DES"),
     /**
-     * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
+     * 3DES算法，默认实现为：DESede/ECB/PKCS5Padding
      */
     DESEDE("DESede"),
     /**

@@ -26,11 +26,12 @@
 package org.aoju.bus.core.text.finder;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Matcher;
+
+import java.util.function.Predicate;
 
 /**
  * 字符匹配查找器
- * 查找满足指定{@link Matcher} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等
+ * 查找满足指定{@link Predicate} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,30 +40,30 @@ public class MatcherFinder extends TextFinder {
 
     private static final long serialVersionUID = 1L;
 
-    private final Matcher<Character> matcher;
+    private final Predicate<Character> matcher;
 
     /**
      * 构造
      *
      * @param matcher 被查找的字符匹配器
      */
-    public MatcherFinder(Matcher<Character> matcher) {
+    public MatcherFinder(Predicate<Character> matcher) {
         this.matcher = matcher;
     }
 
     @Override
-    public int start(int from) {
+    public int start(final int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
         final int limit = getValidEndIndex();
         if (negative) {
             for (int i = from; i > limit; i--) {
-                if (matcher.match(text.charAt(i))) {
+                if (null == matcher || matcher.test(text.charAt(i))) {
                     return i;
                 }
             }
         } else {
             for (int i = from; i < limit; i++) {
-                if (matcher.match(text.charAt(i))) {
+                if (null == matcher || matcher.test(text.charAt(i))) {
                     return i;
                 }
             }
@@ -71,7 +72,7 @@ public class MatcherFinder extends TextFinder {
     }
 
     @Override
-    public int end(int start) {
+    public int end(final int start) {
         if (start < 0) {
             return -1;
         }

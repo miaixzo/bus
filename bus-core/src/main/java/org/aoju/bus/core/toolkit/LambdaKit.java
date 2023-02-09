@@ -30,12 +30,15 @@ import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.function.LambdaFactory;
 import org.aoju.bus.core.map.WeakMap;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.*;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Lambda相关工具类
@@ -158,6 +161,70 @@ public class LambdaKit {
             return (SerializedLambda) serLambda;
         }
         throw new InternalException("writeReplace result value is not java.lang.invoke.SerializedLambda");
+    }
+
+    /**
+     * 等效于 Obj::getXxx
+     *
+     * @param getMethod getter方法
+     * @param <T>       调用getter方法对象类型
+     * @param <R>       getter方法返回值类型
+     * @return Obj::getXxx
+     */
+    public static <T, R> Function<T, R> buildGetter(Method getMethod) {
+        return LambdaFactory.build(Function.class, getMethod);
+    }
+
+    /**
+     * 等效于 Obj::getXxx
+     *
+     * @param clazz     调用getter方法对象类
+     * @param fieldName 字段名称
+     * @param <T>       调用getter方法对象类型
+     * @param <R>       getter方法返回值类型
+     * @return Obj::getXxx
+     */
+    public static <T, R> Function<T, R> buildGetter(Class<T> clazz, String fieldName) {
+        return LambdaFactory.build(Function.class, BeanKit.getBeanDesc(clazz).getGetter(fieldName));
+    }
+
+    /**
+     * 等效于 Obj::setXxx
+     *
+     * @param setMethod setter方法
+     * @param <T>       调用setter方法对象类型
+     * @param <P>       setter方法返回的值类型
+     * @return Obj::setXxx
+     */
+    public static <T, P> BiConsumer<T, P> buildSetter(Method setMethod) {
+        return LambdaFactory.build(BiConsumer.class, setMethod);
+    }
+
+    /**
+     * Obj::setXxx
+     *
+     * @param clazz     调用setter方法对象类
+     * @param fieldName 字段名称
+     * @param <T>       调用setter方法对象类型
+     * @param <P>       setter方法返回的值类型
+     * @return Obj::setXxx
+     */
+    public static <T, P> BiConsumer<T, P> buildSetter(Class<T> clazz, String fieldName) {
+        return LambdaFactory.build(BiConsumer.class, BeanKit.getBeanDesc(clazz).getSetter(fieldName));
+    }
+
+    /**
+     * 等效于 Obj::method
+     *
+     * @param lambdaType  接受lambda的函数式接口类型
+     * @param clazz       调用类
+     * @param methodName  方法名
+     * @param paramsTypes 方法参数类型数组
+     * @param <F>         函数式接口类型
+     * @return Obj::method
+     */
+    public static <F> F lambda(Class<F> lambdaType, Class<?> clazz, String methodName, Class... paramsTypes) {
+        return LambdaFactory.build(lambdaType, clazz, methodName, paramsTypes);
     }
 
     @Getter

@@ -884,8 +884,8 @@ public class BeanKit {
 
     /**
      * 给定的Bean的类名是否匹配指定类名字符串
-     * 如果isSimple为{@code false},则只匹配类名而忽略包名
-     * 如果isSimple为{@code true},则匹配包括包名的全类名
+     * 如果isSimple为{@code true},则只匹配类名而忽略包名
+     * 如果isSimple为{@code false},则匹配包括包名的全类名
      *
      * @param bean          Bean
      * @param beanClassName Bean的类名

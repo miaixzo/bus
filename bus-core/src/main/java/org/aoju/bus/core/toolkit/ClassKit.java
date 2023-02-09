@@ -1020,8 +1020,8 @@ public class ClassKit {
      * @return ClassPath
      */
     public static String getClassPath(boolean isEncoded) {
-        final URL classPathURL = FileKit.getUrl(Normal.EMPTY);
-        String url = isEncoded ? classPathURL.getPath() : UriKit.getDecodedPath(classPathURL);
+        final URL classPathUrl = FileKit.getUrl(Normal.EMPTY);
+        String url = isEncoded ? classPathUrl.getPath() : UriKit.getDecodedPath(classPathUrl);
         return FileKit.normalize(url);
     }
 

@@ -47,14 +47,14 @@ public class DES extends Crypto {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 构造，默认DES/CBC/PKCS5Padding，使用随机密钥
+     * 构造，默认DES/ECB/PKCS5Padding，使用随机密钥
      */
     public DES() {
         super(Algorithm.DES);
     }
 
     /**
-     * 构造，使用默认的DES/CBC/PKCS5Padding
+     * 构造，使用默认的DES/ECB/PKCS5Padding
      *
      * @param key 密钥
      */

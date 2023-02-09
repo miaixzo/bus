@@ -942,11 +942,11 @@ public class PatternKit {
     /**
      * 从字符串中获得第一个整数
      *
-     * @param StringWithNumber 带数字的字符串
+     * @param stringWithNumber 带数字的字符串
      * @return 整数
      */
-    public static Integer getFirstNumber(CharSequence StringWithNumber) {
-        return Convert.toInt(get(RegEx.NUMBERS, StringWithNumber, 0), null);
+    public static Integer getFirstNumber(final CharSequence stringWithNumber) {
+        return Convert.toInt(get(RegEx.NUMBERS, stringWithNumber, 0), null);
     }
 
     /**

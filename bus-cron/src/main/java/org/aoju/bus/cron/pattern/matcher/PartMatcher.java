@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.lang.Matcher;
+import java.util.function.Predicate;
 
 /**
  * 表达式中的某个位置部分匹配器
@@ -34,7 +34,7 @@ import org.aoju.bus.core.lang.Matcher;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface PartMatcher extends Matcher<Integer> {
+public interface PartMatcher extends Predicate<Integer> {
 
     /**
      * 获取指定值之后的匹配值，也可以是指定值本身

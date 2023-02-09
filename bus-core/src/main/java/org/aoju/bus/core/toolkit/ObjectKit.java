@@ -345,7 +345,7 @@ public class ObjectKit {
      * @return 长度
      */
     public static int length(Object object) {
-        if (null == object) {
+        if (object == null) {
             return 0;
         }
         if (object instanceof CharSequence) {
@@ -358,27 +358,25 @@ public class ObjectKit {
             return ((Map<?, ?>) object).size();
         }
 
-        int count;
-        if (object instanceof Iterator) {
-            Iterator<?> iter = (Iterator<?>) object;
-            count = 0;
+        int count = 0;
+        if (object instanceof Iterator || object instanceof Iterable) {
+            final Iterator<?> iter = (object instanceof Iterator) ? (Iterator<?>) object : ((Iterable<?>) object).iterator();
             while (iter.hasNext()) {
                 count++;
                 iter.next();
             }
             return count;
         }
+        if (object.getClass().isArray()) {
+            return Array.getLength(object);
+        }
         if (object instanceof Enumeration) {
-            Enumeration<?> enumeration = (Enumeration<?>) object;
-            count = 0;
+            final Enumeration<?> enumeration = (Enumeration<?>) object;
             while (enumeration.hasMoreElements()) {
                 count++;
                 enumeration.nextElement();
             }
             return count;
-        }
-        if (object.getClass().isArray() == true) {
-            return Array.getLength(object);
         }
         return -1;
     }

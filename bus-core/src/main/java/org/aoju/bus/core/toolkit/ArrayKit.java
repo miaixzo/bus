@@ -636,7 +636,7 @@ public class ArrayKit {
      * @param array   数组
      * @return 匹配元素，如果不存在匹配元素或数组为空，返回{@code null}
      */
-    public static <T> T firstNonNull(Matcher<T> matcher, T... array) {
+    public static <T> T firstNonNull(final Predicate<T> matcher, T... array) {
         final int index = firstNonAll(matcher, array);
         if (index < 0) {
             return null;
@@ -653,7 +653,7 @@ public class ArrayKit {
      * @param array   数组
      * @return 匹配到元素的位置，-1表示未匹配到
      */
-    public static <T> int firstNonAll(Matcher<T> matcher, T... array) {
+    public static <T> int firstNonAll(final Predicate<T> matcher, final T... array) {
         return firstNonAll(matcher, 0, array);
     }
 
@@ -666,10 +666,13 @@ public class ArrayKit {
      * @param array             数组
      * @return 匹配到元素的位置，-1表示未匹配到
      */
-    public static <T> int firstNonAll(Matcher<T> matcher, int beginIndexInclude, T... array) {
+    public static <T> int firstNonAll(final Predicate<T> matcher, final int beginIndexInclude, final T... array) {
         if (isNotEmpty(array)) {
+            if (null == matcher && beginIndexInclude < array.length) {
+                return beginIndexInclude;
+            }
             for (int i = beginIndexInclude; i < array.length; i++) {
-                if (matcher.match(array[i])) {
+                if (matcher.test(array[i])) {
                     return i;
                 }
             }

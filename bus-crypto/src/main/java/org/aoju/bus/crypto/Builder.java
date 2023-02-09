@@ -1929,7 +1929,10 @@ public class Builder {
      * @param domainParameters ECDomainParameters
      * @return ECPrivateKeyParameters
      */
-    public static ECPrivateKeyParameters toPrivateParams(byte[] d, ECDomainParameters domainParameters) {
+    public static ECPrivateKeyParameters toPrivateParams(final byte[] d, final ECDomainParameters domainParameters) {
+        if (null == d) {
+            return null;
+        }
         return toPrivateParams(BigIntegers.fromUnsignedByteArray(d), domainParameters);
     }
 
@@ -1940,7 +1943,7 @@ public class Builder {
      * @param domainParameters ECDomainParameters
      * @return ECPrivateKeyParameters
      */
-    public static ECPrivateKeyParameters toPrivateParams(BigInteger d, ECDomainParameters domainParameters) {
+    public static ECPrivateKeyParameters toPrivateParams(final BigInteger d, final ECDomainParameters domainParameters) {
         if (null == d) {
             return null;
         }
@@ -2705,15 +2708,29 @@ public class Builder {
      * @param password 密码，null表示无密码
      * @return {@link KeyStore}
      */
-    public static KeyStore readKeyStore(String type, InputStream in, char[] password) {
-        KeyStore keyStore;
+    public static KeyStore readKeyStore(final String type, final InputStream in, final char[] password) {
+        final KeyStore keyStore = getKeyStore(type);
         try {
-            keyStore = KeyStore.getInstance(type);
             keyStore.load(in, password);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CryptoException(e);
         }
         return keyStore;
+    }
+
+    /**
+     * 获取{@link KeyStore}对象
+     *
+     * @param type 类型
+     * @return {@link KeyStore}
+     */
+    public static KeyStore getKeyStore(final String type) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();;
+        try {
+            return null == provider ? KeyStore.getInstance(type) : KeyStore.getInstance(type, provider);
+        } catch (final KeyStoreException e) {
+            throw new CryptoException(e);
+        }
     }
 
     /**
