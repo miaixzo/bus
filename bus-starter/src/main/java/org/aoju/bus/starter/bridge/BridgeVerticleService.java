@@ -28,13 +28,13 @@ package org.aoju.bus.starter.bridge;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
+import jakarta.annotation.Resource;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.logger.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 服务端-配置中心
@@ -44,11 +44,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BridgeVerticleService extends AbstractVerticle {
 
+    @Resource
+    Resolvable resolvable;
+    @Resource
+    Vertx vertx;
+
     private final BridgeProperties properties;
-    @Autowired
-    private Resolvable resolvable;
-    @Autowired
-    private Vertx vertx;
 
     public BridgeVerticleService(BridgeProperties properties) {
         this.properties = properties;

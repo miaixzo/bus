@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -32,7 +33,6 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.annotation.TerminalVersion;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

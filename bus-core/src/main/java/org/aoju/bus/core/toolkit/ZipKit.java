@@ -503,12 +503,13 @@ public class ZipKit {
             throw new IllegalArgumentException(
                     StringKit.format("Target path [{}] exist!", outFile.getAbsolutePath()));
         }
-
+        
         if (limit > 0) {
             final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             long zipFileSize = 0L;
+            ZipEntry zipEntry;
             while (zipEntries.hasMoreElements()) {
-                ZipEntry zipEntry = zipEntries.nextElement();
+                zipEntry = zipEntries.nextElement();
                 zipFileSize += zipEntry.getSize();
                 if (zipFileSize > limit) {
                     throw new IllegalArgumentException("The file size exceeds the limit");

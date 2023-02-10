@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.base.spring;
 
-import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.base.normal.ErrorCode;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.toolkit.StringKit;
 

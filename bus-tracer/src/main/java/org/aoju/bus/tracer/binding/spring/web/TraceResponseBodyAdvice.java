@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.spring.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -38,9 +40,6 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -50,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
-    @Autowired
+    @Resource
     private TraceInterceptor interceptor;
 
     public TraceResponseBodyAdvice() {
@@ -73,7 +72,11 @@ public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             final HttpServletRequest request = ((ServletServerHttpRequest) springHttpRequest).getServletRequest();
             final HttpServletResponse response = ((ServletServerHttpResponse) springHttpResponse).getServletResponse();
 
-            interceptor.afterCompletion(request, response, null, null);
+            try {
+                interceptor.afterCompletion(request, response, null, null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return body;
     }

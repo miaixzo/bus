@@ -69,7 +69,7 @@ public abstract class OGNL {
     }
 
     /**
-     * 检查 paremeter 对象中指定的 fields 是否全是 null，如果是则抛出异常
+     * 检查 parameter 对象中指定的 fields 是否全是 null，如果是则抛出异常
      *
      * @param parameter 参数
      * @param fields    字段信息
@@ -110,7 +110,7 @@ public abstract class OGNL {
     }
 
     /**
-     * 检查 paremeter 对象中指定的 fields 是否全是 null，如果是则抛出异常
+     * 检查 parameter 对象中指定的 fields 是否全是 null，如果是则抛出异常
      *
      * @param parameter 参数
      * @return true支持，false不支持

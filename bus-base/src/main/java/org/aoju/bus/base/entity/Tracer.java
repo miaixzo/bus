@@ -25,10 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
+import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.persistence.Transient;
 
 /**
  * 访问链路跟踪

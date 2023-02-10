@@ -37,7 +37,7 @@ import java.lang.reflect.Type;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DynamicBeanValueProvider implements ValueProvider<String> {
+public class DynamicProvider implements ValueProvider<String> {
 
     private final DynamicBean dynaBean;
     private final boolean ignoreError;
@@ -48,7 +48,7 @@ public class DynamicBeanValueProvider implements ValueProvider<String> {
      * @param dynaBean    DynaBean
      * @param ignoreError 是否忽略错误
      */
-    public DynamicBeanValueProvider(DynamicBean dynaBean, boolean ignoreError) {
+    public DynamicProvider(DynamicBean dynaBean, boolean ignoreError) {
         this.dynaBean = dynaBean;
         this.ignoreError = ignoreError;
     }

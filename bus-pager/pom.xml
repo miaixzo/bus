@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>6.6.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,11 +42,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <mybatis.version>3.5.10</mybatis.version>
+        <mybatis.version>3.5.11</mybatis.version>
         <guava.version>31.1-jre</guava.version>
         <jsqlparser.version>4.5</jsqlparser.version>
-        <hikari.version>5.0.1</hikari.version>
-        <druid.version>1.2.8</druid.version>
+        <hikaricp.version>5.0.1</hikaricp.version>
+        <druid.version>1.2.15</druid.version>
     </properties>
 
     <dependencies>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>${hikari.version}</version>
+            <version>${hikaricp.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

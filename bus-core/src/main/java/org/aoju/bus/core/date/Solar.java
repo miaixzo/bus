@@ -183,10 +183,6 @@ public class Solar {
      * 秒
      */
     private final int second;
-    /**
-     * 日历
-     */
-    private final Calendar calendar;
 
     /**
      * 默认使用当前日期初始化
@@ -201,13 +197,15 @@ public class Solar {
      * @param date 日期
      */
     public Solar(Date date) {
-        this.calendar = Kalendar.calendar(date);
-        this.year = calendar.get(Calendar.YEAR);
-        this.month = calendar.get(Calendar.MONTH) + 1;
-        this.day = calendar.get(Calendar.DATE);
-        this.hour = calendar.get(Calendar.HOUR_OF_DAY);
-        this.minute = calendar.get(Calendar.MINUTE);
-        this.second = calendar.get(Calendar.SECOND);
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        c.setTime(date);
+        c.set(Calendar.MILLISECOND, 0);
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH) + 1;
+        day = c.get(Calendar.DATE);
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        minute = c.get(Calendar.MINUTE);
+        second = c.get(Calendar.SECOND);
     }
 
     /**
@@ -217,13 +215,12 @@ public class Solar {
      */
     public Solar(Calendar calendar) {
         calendar.set(Calendar.MILLISECOND, 0);
-        this.calendar = calendar;
-        this.year = calendar.get(Calendar.YEAR);
-        this.month = calendar.get(Calendar.MONTH) + 1;
-        this.day = calendar.get(Calendar.DATE);
-        this.hour = calendar.get(Calendar.HOUR_OF_DAY);
-        this.minute = calendar.get(Calendar.MINUTE);
-        this.second = calendar.get(Calendar.SECOND);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) + 1;
+        day = calendar.get(Calendar.DATE);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+        second = calendar.get(Calendar.SECOND);
     }
 
     /**
@@ -272,8 +269,6 @@ public class Solar {
             hour++;
         }
 
-        this.calendar = Kalendar.calendar(year, month, day, hour, minute, second);
-
         this.year = year;
         this.month = month;
         this.day = day;
@@ -293,9 +288,20 @@ public class Solar {
      * @param second 秒钟，0到59
      */
     public Solar(int year, int month, int day, int hour, int minute, int second) {
-        this.calendar = Calendar.getInstance();
-        this.calendar.set(year, month - 1, day, hour, minute, second);
-        calendar.set(Calendar.MILLISECOND, 0);
+        if (1582 == year && 10 == month) {
+            if (day > 4 && day < 15) {
+                throw new IllegalArgumentException(String.format("wrong solar year %d month %d day %d", year, month, day));
+            }
+        }
+        if (hour < 0 || hour > 23) {
+            throw new IllegalArgumentException(String.format("wrong hour %d", hour));
+        }
+        if (minute < 0 || minute > 59) {
+            throw new IllegalArgumentException(String.format("wrong minute %d", minute));
+        }
+        if (second < 0 || second > 59) {
+            throw new IllegalArgumentException(String.format("wrong second %d", second));
+        }
         this.year = year;
         this.month = month;
         this.day = day;
@@ -412,13 +418,23 @@ public class Solar {
      */
     public static List<Solar> fromBaZi(String yearGanZhi, String monthGanZhi, String dayGanZhi, String timeGanZhi, int sect, int baseYear) {
         sect = (1 == sect) ? 1 : 2;
-        Solar today = new Solar();
-        Lunar lunar = today.getLunar();
-        int offsetYear = Lunar.getJiaZiIndex(lunar.getYearInGanZhiExact()) - Lunar.getJiaZiIndex(yearGanZhi);
+        List<Solar> list = new ArrayList<>();
+        List<Integer> years = new ArrayList<>();
+        Solar today = from(new Date());
+        int offsetYear = Lunar.getJiaZiIndex(today.getLunar().getYearInGanZhiExact()) - Lunar.getJiaZiIndex(yearGanZhi);
         if (offsetYear < 0) {
-            offsetYear = offsetYear + 60;
+            offsetYear += 60;
         }
-        int startYear = lunar.getYear() - offsetYear;
+        int startYear = today.getYear() - offsetYear - 1;
+        while (true) {
+            years.add(startYear);
+            startYear -= 60;
+            if (startYear < baseYear) {
+                years.add(baseYear);
+                break;
+            }
+        }
+
         int hour = 0;
         String timeZhi = timeGanZhi.substring(1);
         for (int i = 0, j = Fields.CN_ZHI.length; i < j; i++) {
@@ -426,55 +442,21 @@ public class Solar {
                 hour = (i - 1) * 2;
             }
         }
-        List<Solar> list = new ArrayList<>();
-        while (startYear >= baseYear) {
-            int year = startYear - 1;
-            int counter = 0;
-            int month = 12;
-            int day;
-            boolean found = false;
-            while (counter < 15) {
-                if (year >= baseYear) {
-                    day = 1;
-                    Solar solar = new Solar(year, month, day, hour, 0, 0);
-                    lunar = solar.getLunar();
-                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi)
-                            && lunar.getMonthInGanZhiExact().equals(monthGanZhi)) {
-                        found = true;
-                        break;
-                    }
-                }
-                month++;
-                if (month > 12) {
-                    month = 1;
-                    year++;
-                }
-                counter++;
-            }
-            if (found) {
-                counter = 0;
-                month--;
-                if (month < 1) {
-                    month = 12;
-                    year--;
-                }
-                day = 1;
-                Solar solar = new Solar(year, month, day, hour, 0, 0);
-                while (counter < 61) {
-                    lunar = solar.getLunar();
+        for (Integer y : years) {
+            inner:
+            for (int x = 0; x < 3; x++) {
+                int year = y + x;
+                Solar solar = from(year, 1, 1, hour, 0, 0);
+                while (solar.getYear() == year) {
+                    Lunar lunar = solar.getLunar();
                     String dgz = (2 == sect) ? lunar.getDayInGanZhiExact2() : lunar.getDayInGanZhiExact();
-                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi)
-                            && lunar.getMonthInGanZhiExact().equals(monthGanZhi)
-                            && dgz.equals(dayGanZhi)
-                            && lunar.getTimeInGanZhi().equals(timeGanZhi)) {
+                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi) && lunar.getMonthInGanZhiExact().equals(monthGanZhi) && dgz.equals(dayGanZhi) && lunar.getTimeInGanZhi().equals(timeGanZhi)) {
                         list.add(solar);
-                        break;
+                        break inner;
                     }
                     solar = solar.next(1);
-                    counter++;
                 }
             }
-            startYear -= 60;
         }
         return list;
     }
@@ -496,6 +478,9 @@ public class Solar {
      * @return 天数
      */
     public static int getDaysOfYear(int year) {
+        if (1582 == year) {
+            return 355;
+        }
         return isLeapYear(year) ? 366 : 365;
     }
 
@@ -532,10 +517,15 @@ public class Solar {
         for (int i = 1; i < month; i++) {
             days += getDaysOfMonth(year, i);
         }
-        days += day;
-        if (1582 == year && 10 == month && day >= 15) {
-            days -= 10;
+        int d = day;
+        if (1582 == year && 10 == month) {
+            if (day >= 15) {
+                d -= 10;
+            } else if (day > 4) {
+                throw new IllegalArgumentException(String.format("wrong solar year %d month %d day %d", year, month, day));
+            }
         }
+        days += d;
         return days;
     }
 
@@ -548,9 +538,7 @@ public class Solar {
      * @return 周数
      */
     public static int getWeeksOfMonth(int year, int month, int start) {
-        int days = getDaysOfMonth(year, month);
-        int week = Kalendar.calendar(year, month, 1).get(Calendar.DAY_OF_WEEK) - 1;
-        return (int) Math.ceil((days + week - start) * 1D / 7);
+        return (int) Math.ceil((getDaysOfMonth(year, month) + Solar.from(year, month, 1).getWeek() - start) * 1D / Fields.CN_WEEK.length);
     }
 
     /**
@@ -619,7 +607,26 @@ public class Solar {
      * @return 1234567
      */
     public int getWeek() {
-        return calendar.get(Calendar.DAY_OF_WEEK);
+        Solar start = from(1582, 10, 15);
+        int y = year;
+        int m = month;
+        int d = day;
+        Solar current = from(y, m, d);
+        // 蔡勒公式
+        if (m < 3) {
+            m += 12;
+            y--;
+        }
+        int c = y / 100;
+        y = y - c * 100;
+        int x = y + y / 4 + c / 4 - 2 * c;
+        int w;
+        if (current.isBefore(start)) {
+            w = (x + 13 * (m + 1) / 5 + d + 2) % 7;
+        } else {
+            w = (x + 26 * (m + 1) / 10 + d - 1) % 7;
+        }
+        return (w + 7) % 7;
     }
 
     /**
@@ -737,7 +744,40 @@ public class Solar {
      * @return {@link Solar}
      */
     public Solar next(int days) {
-        return next(days, false);
+        int y = year;
+        int m = month;
+        int d = day;
+        if (days > 0) {
+            d = day + days;
+            int daysInMonth = getDaysOfMonth(y, m);
+            while (d > daysInMonth) {
+                d -= daysInMonth;
+                m++;
+                if (m > 12) {
+                    m -= 12;
+                    y++;
+                }
+                daysInMonth = getDaysOfMonth(y, m);
+            }
+        } else if (days < 0) {
+            int rest = -days;
+            while (d <= rest) {
+                rest -= d;
+                m--;
+                if (m < 1) {
+                    m = 12;
+                    y--;
+                }
+                d = getDaysOfMonth(y, m);
+            }
+            d -= rest;
+        }
+        if (1582 == y && 10 == m) {
+            if (d > 4 && d < 15) {
+                d += 10;
+            }
+        }
+        return from(y, m, d, hour, minute, second);
     }
 
     /**
@@ -748,36 +788,51 @@ public class Solar {
      * @return {@link Solar}
      */
     public Solar next(int days, boolean onlyWorkday) {
-        Calendar calendar = Kalendar.calendar(year, month, day, hour, minute, second);
-        if (0 != days) {
-            if (!onlyWorkday) {
-                calendar.add(Calendar.DATE, days);
-            } else {
-                int rest = Math.abs(days);
-                int add = days < 1 ? -1 : 1;
-                while (rest > 0) {
-                    calendar.add(Calendar.DATE, add);
-                    boolean work = true;
-                    Holiday holiday = Holiday.getHoliday(
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH) + 1,
-                            calendar.get(Calendar.DAY_OF_MONTH)
-                    );
-                    if (null == holiday) {
-                        int week = calendar.get(Calendar.DAY_OF_WEEK);
-                        if (1 == week || 7 == week) {
-                            work = false;
-                        }
-                    } else {
-                        work = holiday.isWork();
+        if (!onlyWorkday) {
+            return next(days);
+        }
+        Solar solar = from(year, month, day, hour, minute, second);
+        if (days != 0) {
+            int rest = Math.abs(days);
+            int add = days < 1 ? -1 : 1;
+            while (rest > 0) {
+                solar = solar.next(add);
+                boolean work = true;
+                Holiday holiday = Holiday.getHoliday(solar.getYear(), solar.getMonth(), solar.getDay());
+                if (null == holiday) {
+                    int week = solar.getWeek();
+                    if (0 == week || 6 == week) {
+                        work = false;
                     }
-                    if (work) {
-                        rest--;
-                    }
+                } else {
+                    work = holiday.isWork();
+                }
+                if (work) {
+                    rest -= 1;
                 }
             }
         }
-        return new Solar(calendar);
+        return solar;
+    }
+
+    /**
+     * 小时推移
+     *
+     * @param hours 小时数
+     * @return 阳历
+     */
+    public Solar nextHour(int hours) {
+        int h = hour + hours;
+        int n = h < 0 ? -1 : 1;
+        int hour = Math.abs(h);
+        int days = hour / 24 * n;
+        hour = (hour % 24) * n;
+        if (hour < 0) {
+            hour += 24;
+            days--;
+        }
+        Solar solar = next(days);
+        return from(solar.getYear(), solar.getMonth(), solar.getDay(), hour, solar.getMinute(), solar.getSecond());
     }
 
     /**
@@ -786,7 +841,7 @@ public class Solar {
      * @return 农历
      */
     public Lunar getLunar() {
-        return new Lunar(calendar.getTime());
+        return new Lunar(this);
     }
 
     /**
@@ -843,17 +898,163 @@ public class Solar {
         return second;
     }
 
-    /**
-     * 获取日历
-     *
-     * @return 日历
-     */
-    public Calendar getCalendar() {
-        return calendar;
-    }
-
     public String toYmd() {
         return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
+    /**
+     * 阳历日期相减，获得相差天数
+     *
+     * @param solar 阳历
+     * @return 天数
+     */
+    public int subtract(Solar solar) {
+        return getDays(solar.getYear(), solar.getMonth(), solar.getDay(), year, month, day);
+    }
+
+    /**
+     * 阳历日期相减，获得相差分钟数
+     *
+     * @param solar 阳历
+     * @return 分钟数
+     */
+    public int subtractMinute(Solar solar) {
+        int days = subtract(solar);
+        int cm = hour * 60 + minute;
+        int sm = solar.getHour() * 60 + solar.getMinute();
+        int m = cm - sm;
+        if (m < 0) {
+            m += 1440;
+            days--;
+        }
+        m += days * 1440;
+        return m;
+    }
+
+    /**
+     * 是否在指定日期之后
+     *
+     * @param solar 阳历
+     * @return true/false
+     */
+    public boolean isAfter(Solar solar) {
+        if (year > solar.getYear()) {
+            return true;
+        } else if (year < solar.getYear()) {
+            return false;
+        }
+        if (month > solar.getMonth()) {
+            return true;
+        } else if (month < solar.getMonth()) {
+            return false;
+        }
+        if (day > solar.getDay()) {
+            return true;
+        } else if (day < solar.getDay()) {
+            return false;
+        }
+        if (hour > solar.getHour()) {
+            return true;
+        } else if (hour < solar.getHour()) {
+            return false;
+        }
+        if (minute > solar.getMinute()) {
+            return true;
+        } else if (minute < solar.getMinute()) {
+            return false;
+        }
+        return second > solar.second;
+    }
+
+    /**
+     * 是否在指定日期之前
+     *
+     * @param solar 阳历
+     * @return true/false
+     */
+    public boolean isBefore(Solar solar) {
+        if (year > solar.getYear()) {
+            return false;
+        } else if (year < solar.getYear()) {
+            return true;
+        }
+        if (month > solar.getMonth()) {
+            return false;
+        } else if (month < solar.getMonth()) {
+            return true;
+        }
+        if (day > solar.getDay()) {
+            return false;
+        } else if (day < solar.getDay()) {
+            return true;
+        }
+        if (hour > solar.getHour()) {
+            return false;
+        } else if (hour < solar.getHour()) {
+            return true;
+        }
+        if (minute > solar.getMinute()) {
+            return false;
+        } else if (minute < solar.getMinute()) {
+            return true;
+        }
+        return second < solar.second;
+    }
+
+    /**
+     * 年推移
+     *
+     * @param years 年数
+     * @return 阳历
+     */
+    public Solar nextYear(int years) {
+        int y = year + years;
+        int m = month;
+        int d = day;
+        // 2月处理
+        if (2 == m) {
+            if (d > 28) {
+                if (!isLeapYear(y)) {
+                    d -= 28;
+                    m++;
+                }
+            }
+        }
+        if (1582 == y && 10 == m) {
+            if (d > 4 && d < 15) {
+                d += 10;
+            }
+        }
+        return from(y, m, d, hour, minute, second);
+    }
+
+    /**
+     * 月推移
+     *
+     * @param months 月数
+     * @return 阳历
+     */
+    public Solar nextMonth(int months) {
+        Month month = Month.from(year, this.month);
+        month = month.next(months);
+        int y = month.getYear();
+        int m = month.getMonth();
+        int d = day;
+        // 2月处理
+        if (2 == m) {
+            if (d > 28) {
+                if (!isLeapYear(y)) {
+                    d -= 28;
+                    m++;
+                }
+            }
+        }
+        if (1582 == y && 10 == m) {
+            if (d > 4 && d < 15) {
+                d += 10;
+            }
+        }
+        return from(y, m, d, hour, minute, second);
     }
 
     /**
@@ -930,17 +1131,7 @@ public class Solar {
          * @param date 日期
          */
         public Year(Date date) {
-            Calendar calendar = Kalendar.calendar(date);
-            this.year = calendar.get(Calendar.YEAR);
-        }
-
-        /**
-         * 通过日历初始化
-         *
-         * @param calendar 日历
-         */
-        public Year(Calendar calendar) {
-            this.year = calendar.get(Calendar.YEAR);
+            year = Solar.from(date).getYear();
         }
 
         /**
@@ -960,16 +1151,6 @@ public class Solar {
          */
         public static Year from(Date date) {
             return new Year(date);
-        }
-
-        /**
-         * 通过指定日历获取阳历年
-         *
-         * @param calendar 日历
-         * @return 阳历年
-         */
-        public static Year from(Calendar calendar) {
-            return new Year(calendar);
         }
 
         /**
@@ -1013,9 +1194,7 @@ public class Solar {
          * @return 阳历年
          */
         public Year next(int years) {
-            Calendar calendar = Kalendar.calendar(year, 1, 1);
-            calendar.add(Calendar.YEAR, years);
-            return new Year(calendar);
+            return new Year(year + years);
         }
 
         /**
@@ -1064,19 +1243,9 @@ public class Solar {
          * @param date 日期
          */
         public Semester(Date date) {
-            Calendar calendar = Kalendar.calendar(date);
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
-        }
-
-        /**
-         * 通过日历初始化
-         *
-         * @param calendar 日历
-         */
-        public Semester(Calendar calendar) {
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
+            Solar solar = Solar.from(date);
+            this.year = solar.getYear();
+            this.month = solar.getMonth();
         }
 
         /**
@@ -1098,16 +1267,6 @@ public class Solar {
          */
         public static Semester from(Date date) {
             return new Semester(date);
-        }
-
-        /**
-         * 通过指定日历获取阳历半年
-         *
-         * @param calendar 日历
-         * @return 阳历半年
-         */
-        public static Semester from(Calendar calendar) {
-            return new Semester(calendar);
         }
 
         /**
@@ -1155,12 +1314,8 @@ public class Solar {
          * @return 推移后的半年
          */
         public Semester next(int halfYears) {
-            if (0 == halfYears) {
-                return new Semester(this.year, this.month);
-            }
-            Calendar calendar = Kalendar.calendar(year, month, 1);
-            calendar.add(Calendar.MONTH, MONTH_COUNT * halfYears);
-            return new Semester(calendar);
+            Month m = Month.from(year, month).next(MONTH_COUNT * halfYears);
+            return new Semester(m.getYear(), m.getMonth());
         }
 
         /**
@@ -1223,19 +1378,9 @@ public class Solar {
          * @param date 日期
          */
         public Quarter(Date date) {
-            Calendar calendar = Kalendar.calendar(date);
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
-        }
-
-        /**
-         * 通过日历初始化
-         *
-         * @param calendar 日历
-         */
-        public Quarter(Calendar calendar) {
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
+            Solar solar = Solar.from(date);
+            this.year = solar.getYear();
+            this.month = solar.getMonth();
         }
 
         /**
@@ -1257,16 +1402,6 @@ public class Solar {
          */
         public static Quarter from(Date date) {
             return new Quarter(date);
-        }
-
-        /**
-         * 通过指定日历获取阳历季度
-         *
-         * @param calendar 日历
-         * @return 阳历季度
-         */
-        public static Quarter from(Calendar calendar) {
-            return new Quarter(calendar);
         }
 
         /**
@@ -1314,12 +1449,8 @@ public class Solar {
          * @return 推移后的季度
          */
         public Quarter next(int seasons) {
-            if (0 == seasons) {
-                return new Quarter(this.year, this.month);
-            }
-            Calendar calendar = Kalendar.calendar(year, month, 1);
-            calendar.add(Calendar.MONTH, MONTH_COUNT * seasons);
-            return new Quarter(calendar);
+            Month m = Month.from(year, month).next(MONTH_COUNT * seasons);
+            return new Quarter(m.getYear(), m.getMonth());
         }
 
         /**
@@ -1378,19 +1509,9 @@ public class Solar {
          * @param date 日期
          */
         public Month(Date date) {
-            Calendar calendar = Kalendar.calendar(date);
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
-        }
-
-        /**
-         * 通过日历初始化
-         *
-         * @param calendar 日历
-         */
-        public Month(Calendar calendar) {
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
+            Solar solar = Solar.from(date);
+            this.year = solar.getYear();
+            this.month = solar.getMonth();
         }
 
         /**
@@ -1412,16 +1533,6 @@ public class Solar {
          */
         public static Month from(Date date) {
             return new Month(date);
-        }
-
-        /**
-         * 通过指定日历获取阳历月
-         *
-         * @param calendar 日历
-         * @return 阳历月
-         */
-        public static Month from(Calendar calendar) {
-            return new Month(calendar);
         }
 
         /**
@@ -1470,15 +1581,44 @@ public class Solar {
         }
 
         /**
+         * 获取本月的阳历周列表
+         *
+         * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
+         * @return 周列表
+         */
+        public List<Week> getWeeks(int start) {
+            List<Week> l = new ArrayList<>();
+            Week week = new Week(year, month, 1, start);
+            while (true) {
+                l.add(week);
+                week = week.next(1, false);
+                Solar firstDay = week.getFirstDay();
+                if (firstDay.getYear() > year || firstDay.getMonth() > month) {
+                    break;
+                }
+            }
+            return l;
+        }
+
+        /**
          * 获取往后推几个月的阳历月，如果要往前推，则月数用负数
          *
          * @param months 月数
          * @return 阳历月
          */
         public Month next(int months) {
-            Calendar calendar = Kalendar.calendar(year, month, 1);
-            calendar.add(Calendar.MONTH, months);
-            return new Month(calendar);
+            int n = months < 0 ? -1 : 1;
+            int m = Math.abs(months);
+            int y = year + m / 12 * n;
+            m = month + m % 12 * n;
+            if (m > 12) {
+                m -= 12;
+                y++;
+            } else if (m < 1) {
+                m += 12;
+                y--;
+            }
+            return new Month(y, m);
         }
 
         /**
@@ -1534,23 +1674,10 @@ public class Solar {
          * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
          */
         public Week(Date date, int start) {
-            Calendar calendar = Kalendar.calendar(date);
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
-            this.day = calendar.get(Calendar.DATE);
-            this.start = start;
-        }
-
-        /**
-         * 通过日历初始化
-         *
-         * @param calendar 日历
-         * @param start    星期几作为一周的开始，1234560分别代表星期一至星期天
-         */
-        public Week(Calendar calendar, int start) {
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH) + 1;
-            this.day = calendar.get(Calendar.DATE);
+            Solar solar = Solar.from(date);
+            this.year = solar.getYear();
+            this.month = solar.getMonth();
+            this.day = solar.getDay();
             this.start = start;
         }
 
@@ -1578,17 +1705,6 @@ public class Solar {
          */
         public static Week from(Date date, int start) {
             return new Week(date, start);
-        }
-
-        /**
-         * 通过指定日历获取阳历周
-         *
-         * @param calendar 日历
-         * @param start    星期几作为一周的开始，1234560分别代表星期一至星期天
-         * @return 阳历周
-         */
-        public static Week from(Calendar calendar, int start) {
-            return new Week(calendar, start);
         }
 
         /**
@@ -1646,9 +1762,7 @@ public class Solar {
          * @return 周序号，从1开始
          */
         public int getIndex() {
-            Calendar calendar = Kalendar.calendar(year, month, 1);
-            int firstDayWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-            int offset = firstDayWeek - start;
+            int offset = Solar.from(year, month, 1).getWeek() - start;
             if (offset < 0) {
                 offset += 7;
             }
@@ -1661,9 +1775,7 @@ public class Solar {
          * @return 周序号，从1开始
          */
         public int getIndexInYear() {
-            Calendar c = Kalendar.calendar(year, 1, 1);
-            int firstDayWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
-            int offset = firstDayWeek - start;
+            int offset = Solar.from(year, 1, 1).getWeek() - start;
             if (offset < 0) {
                 offset += 7;
             }
@@ -1681,15 +1793,15 @@ public class Solar {
             if (0 == weeks) {
                 return new Week(year, month, day, start);
             }
+            Solar solar = Solar.from(year, month, day);
             if (separateMonth) {
                 int n = weeks;
-                Calendar c = Kalendar.calendar(year, month, day);
-                Week week = new Week(c, start);
+                Week week = new Week(solar.getYear(), solar.getMonth(), solar.getDay(), start);
                 int month = this.month;
                 boolean plus = n > 0;
                 while (0 != n) {
-                    c.add(Calendar.DATE, plus ? 7 : -7);
-                    week = new Week(c, start);
+                    solar = solar.next(plus ? 7 : -7);
+                    week = new Week(solar.getYear(), solar.getMonth(), solar.getDay(), start);
                     int weekMonth = week.getMonth();
                     if (month != weekMonth) {
                         int index = week.getIndex();
@@ -1699,19 +1811,19 @@ public class Solar {
                                 week = new Week(firstDay.getYear(), firstDay.getMonth(), firstDay.getDay(), start);
                                 weekMonth = week.getMonth();
                             } else {
-                                c = Kalendar.calendar(week.getYear(), week.getMonth(), 1);
-                                week = new Week(c, start);
+                                solar = Solar.from(week.getYear(), week.getMonth(), 1);
+                                week = new Week(solar.getYear(), solar.getMonth(), solar.getDay(), start);
                             }
                         } else {
-                            int size = getWeeksOfMonth(week.getYear(), week.getMonth(), start);
+                            int size = Solar.getWeeksOfMonth(week.getYear(), week.getMonth(), start);
                             if (size == index) {
                                 Solar firstDay = week.getFirstDay();
                                 Solar lastDay = firstDay.next(6);
                                 week = new Week(lastDay.getYear(), lastDay.getMonth(), lastDay.getDay(), start);
                                 weekMonth = week.getMonth();
                             } else {
-                                c = Kalendar.calendar(week.getYear(), week.getMonth(), getDaysOfMonth(week.getYear(), week.getMonth()));
-                                week = new Week(c, start);
+                                solar = Solar.from(week.getYear(), week.getMonth(), Solar.getDaysOfMonth(week.getYear(), week.getMonth()));
+                                week = new Week(solar.getYear(), solar.getMonth(), solar.getDay(), start);
                             }
                         }
                         month = weekMonth;
@@ -1720,9 +1832,8 @@ public class Solar {
                 }
                 return week;
             } else {
-                Calendar c = Kalendar.calendar(year, month, day);
-                c.add(Calendar.DATE, weeks * 7);
-                return new Week(c, start);
+                solar = solar.next(weeks * 7);
+                return new Week(solar.getYear(), solar.getMonth(), solar.getDay(), start);
             }
         }
 
@@ -1732,14 +1843,12 @@ public class Solar {
          * @return 本周第一天的阳历日期
          */
         public Solar getFirstDay() {
-            Calendar calendar = Kalendar.calendar(year, month, day);
-            int week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-            int prev = week - this.start;
+            Solar solar = Solar.from(year, month, day);
+            int prev = solar.getWeek() - start;
             if (prev < 0) {
                 prev += 7;
             }
-            calendar.add(Calendar.DATE, -prev);
-            return new Solar(calendar);
+            return solar.next(-prev);
         }
 
         /**

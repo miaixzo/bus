@@ -6,7 +6,6 @@ import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.AbstractAdvisingBeanPostProcessor;
 import org.springframework.aop.framework.ReflectiveMethodInvocation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.AnnotationAsyncExecutionInterceptor;
 import org.springframework.scheduling.annotation.AsyncAnnotationAdvisor;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.Executor;
 
 public class PostTpicAsyncBeanPostProcessor extends AbstractAdvisingBeanPostProcessor {
 
-    @Autowired
     public PostTpicAsyncBeanPostProcessor(Executor executor, Backend backend) {
         advisor = new TpicPostAdvisor(executor, backend);
     }

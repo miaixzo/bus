@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.base.advice;
 
-import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.base.normal.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.exception.BusinessException;
 import org.aoju.bus.core.exception.CrontabException;

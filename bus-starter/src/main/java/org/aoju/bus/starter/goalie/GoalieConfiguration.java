@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.goalie.Athlete;
 import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.filter.*;
@@ -36,7 +37,6 @@ import org.aoju.bus.goalie.registry.AssetsRegistry;
 import org.aoju.bus.goalie.registry.DefaultAssetsRegistry;
 import org.aoju.bus.goalie.registry.DefaultLimiterRegistry;
 import org.aoju.bus.goalie.registry.LimiterRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
@@ -68,13 +68,13 @@ import java.util.List;
 @EnableConfigurationProperties(value = {GoalieProperties.class})
 public class GoalieConfiguration {
 
-    @Autowired
+    @Resource
     GoalieProperties goalieProperties;
 
-    @Autowired(required = false)
+    @Resource
     List<WebExceptionHandler> webExceptionHandlers;
 
-    @Autowired(required = false)
+    @Resource
     List<WebFilter> webFilters;
 
     @ConditionalOnMissingBean

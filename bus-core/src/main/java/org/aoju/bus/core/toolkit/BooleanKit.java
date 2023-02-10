@@ -105,9 +105,9 @@ public class BooleanKit {
         if (StringKit.isNotBlank(text)) {
             text = text.trim().toLowerCase();
             if (ArrayKit.contains(Normal.TRUE_ARRAY, text)) {
-                return true;
+                return Boolean.TRUE;
             } else if (ArrayKit.contains(Normal.FALSE_ARRAY, text)) {
-                return false;
+                return Boolean.FALSE;
             }
         }
         return null;
@@ -313,6 +313,28 @@ public class BooleanKit {
      */
     public static String toString(boolean value, String trueString, String falseString) {
         return value ? trueString : falseString;
+    }
+
+    /**
+     * 将boolean转换为字符串
+     *
+     * <pre>
+     *   BooleanKit.toString(true, "true", "false", null) = "true"
+     *   BooleanKit.toString(false, "true", "false", null) = "false"
+     *   BooleanKit.toString(null, "true", "false", null) = null
+     * </pre>
+     *
+     * @param bool        Boolean值
+     * @param trueString  当值为 {@code true}时返回此字符串, 可能为 {@code null}
+     * @param falseString 当值为 {@code false}时返回此字符串, 可能为 {@code null}
+     * @param nullString  当值为 {@code null}时返回此字符串, 可能为 {@code null}
+     * @return 结果值
+     */
+    public static String toString(final Boolean bool, final String trueString, final String falseString, final String nullString) {
+        if (bool == null) {
+            return nullString;
+        }
+        return bool ? trueString : falseString;
     }
 
     /**

@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.starter.cache;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.cache.Context;
 import org.aoju.bus.cache.provider.*;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = {CacheProperties.class})
 public class CacheConfiguration {
 
-    @Autowired
+    @Resource
     CacheProperties properties;
 
     @Bean

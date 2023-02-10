@@ -33,7 +33,7 @@ public class Optional<T> {
      */
     private final T value;
 
-    private Exception exception;
+    private Throwable throwable;
 
     /**
      * {@code Optional}的构造函数
@@ -62,7 +62,7 @@ public class Optional<T> {
      * @param <T>      包裹的元素类型
      * @return 一个包裹里元素可能为空的 {@code Optional}
      */
-    public static <T> Optional<T> of(java.util.Optional<T> optional) {
+    public static <T> Optional<T> of(final java.util.Optional<T> optional) {
         return ofNullable(optional.orElse(null));
     }
 
@@ -121,9 +121,9 @@ public class Optional<T> {
     public static <T> Optional<T> ofTry(final XSupplier<T> supplier) {
         try {
             return Optional.ofNullable(supplier.getting());
-        } catch (final Exception e) {
+        } catch (final Throwable throwable) {
             final Optional<T> empty = new Optional<>(null);
-            empty.exception = e;
+            empty.throwable = throwable;
             return empty;
         }
     }
@@ -158,8 +158,8 @@ public class Optional<T> {
      *
      * @return 异常
      */
-    public Exception getException() {
-        return this.exception;
+    public Throwable getException() {
+        return this.throwable;
     }
 
     /**
@@ -169,7 +169,7 @@ public class Optional<T> {
      * @return 是否失败
      */
     public boolean isFail() {
-        return null != this.exception;
+        return null != this.throwable;
     }
 
     /**
@@ -290,7 +290,6 @@ public class Optional<T> {
     public Optional<T> peek(final Consumer<T> action) throws NullPointerException {
         return ifPresent(action);
     }
-
 
     /**
      * 如果包裹里元素的值存在，就执行对应的操作集，并返回本身

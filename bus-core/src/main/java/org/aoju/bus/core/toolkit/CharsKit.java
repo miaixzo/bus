@@ -281,7 +281,8 @@ public class CharsKit {
                 || args == '\u202a'
                 || args == '\u0000'
                 || args == '\u3164'
-                || args == '\u2800';
+                || args == '\u2800'
+                || args == '\u180e';
     }
 
     /**
@@ -659,13 +660,13 @@ public class CharsKit {
      * @param matcher 匹配器
      * @return 是否全部匹配
      */
-    public static boolean isAllCharMatch(CharSequence value, org.aoju.bus.core.lang.Matcher<Character> matcher) {
+    public static boolean isAllCharMatch(final CharSequence value, final Predicate<Character> matcher) {
         if (isBlank(value)) {
             return false;
         }
         int len = value.length();
         for (int i = 0; i < len; i++) {
-            if (false == matcher.match(value.charAt(i))) {
+            if (false == matcher.test(value.charAt(i))) {
                 return false;
             }
         }

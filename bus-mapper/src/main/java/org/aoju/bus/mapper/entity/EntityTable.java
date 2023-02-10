@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
+import jakarta.persistence.Table;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -35,7 +36,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 
-import javax.persistence.Table;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.regex.Matcher;

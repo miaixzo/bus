@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.elastic;
 
-import org.aoju.bus.base.consts.Consts;
+import jakarta.annotation.Resource;
+import org.aoju.bus.base.normal.Consts;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -35,7 +36,6 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +51,7 @@ import java.util.List;
 @EnableConfigurationProperties(ElasticProperties.class)
 public class ElasticConfiguration {
 
-    @Autowired
+    @Resource
     private ElasticProperties elasticProperties;
 
     @Bean

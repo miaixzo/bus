@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.6.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,20 +42,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.7.5</spring.boot.version>
-        <lombok.version>1.18.24</lombok.version>
+        <spring.boot.version>3.0.2</spring.boot.version>
+        <lombok.version>1.18.26</lombok.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <persistence.version>2.2</persistence.version>
+        <persistence.version>3.1.0</persistence.version>
         <guava.version>31.1-jre</guava.version>
-        <vertx.version>4.3.1</vertx.version>
+        <vertx.version>4.3.7</vertx.version>
         <guice.version>5.1.0</guice.version>
-        <mybatis.version>3.5.10</mybatis.version>
-        <mybatis.spring.version>2.0.7</mybatis.spring.version>
+        <mybatis.version>3.5.11</mybatis.version>
+        <mybatis.spring.version>3.0.1</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
-        <jsqlparser.version>4.2</jsqlparser.version>
-        <mysql.version>8.0.30</mysql.version>
-        <dubbo.version>3.0.10</dubbo.version>
-        <servlet.version>4.0.4</servlet.version>
+        <jsqlparser.version>4.5</jsqlparser.version>
+        <mysql.version>8.0.32</mysql.version>
+        <dubbo.version>3.1.6</dubbo.version>
+        <servlet.version>6.0.0</servlet.version>
         <elasticsearch.version>7.17.4</elasticsearch.version>
     </properties>
 
@@ -187,8 +187,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
             <version>${persistence.version}</version>
             <optional>true</optional>
         </dependency>
@@ -223,8 +223,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
             <optional>true</optional>
         </dependency>

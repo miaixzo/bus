@@ -36,7 +36,7 @@ public enum ZoneId {
     /**
      * "Worldwide","世界标准时间"
      */
-    UTC("Worldwide", "世界标准时间"),
+    UTC("World Standard Time", "世界标准时间"),
     /**
      * "Universal Time","世界时"
      */
@@ -82,9 +82,9 @@ public enum ZoneId {
      */
     CST("America/Chicago", "美洲/芝加哥"),
     /**
-     * "Asia/Shanghai","亚洲/上海"
+     * "+08:00","Asia/Shanghai", "亚洲/上海"
      */
-    CTT("Asia/Shanghai", "亚洲/上海"),
+    CTT("+08:00", "Asia/Shanghai", "亚洲/上海"),
     /**
      * "Africa/Addis_Ababa","非洲/亚的斯亚贝巴"
      */
@@ -138,32 +138,52 @@ public enum ZoneId {
      */
     SST("Pacific/Guadalcanal", "太平洋/瓜达尔卡纳尔岛"),
     /**
-     * "Asia/Ho_Chi_Minh","亚洲/胡志明市"
+     * "+08:00", "Asia/Ho_Chi_Minh", "亚洲/胡志明市"
      */
-    VST("Asia/Ho_Chi_Minh", "亚洲/胡志明市"),
+    VST("+08:00", "Asia/Ho_Chi_Minh", "亚洲/胡志明市"),
     /**
-     * "-05:00","东部标准时间"
+     * "-05:00", "EST", "北美东部标准时间"
      */
-    EST("-05:00", "东部标准时间"),
+    EST("-05:00", "EST", "北美东部标准时间"),
     /**
-     * "-07:00","山地标准时间"
+     * "-07:00", "MDT","北美山地标准时间"
      */
-    MST("-07:00", "山地标准时间"),
+    MST("-07:00", "MST", "北美山地标准时间"),
     /**
-     * "-10:00","夏威夷-阿留申标准时区"
+     * "-10:00", "HST", "夏威夷-阿留申标准时区"
      */
-    HST("-10:00", "夏威夷-阿留申标准时区");
+    HST("-10:00", "HST", "夏威夷-阿留申标准时区");
 
     /**
-     * 系统默认时区
+     * 系统时区
      */
-    public static String zoneId = java.time.ZoneId.systemDefault().getId();
-    private final String enName;
-    private final String cnName;
+    private String zoneId;
+    /**
+     * 英文名称
+     */
+    private String enName;
+    /**
+     * 中文名称
+     */
+    private String cnName;
+
+    ZoneId(String zoneId) {
+        this.zoneId = zoneId;
+    }
 
     ZoneId(String enName, String cnName) {
         this.enName = enName;
         this.cnName = cnName;
+    }
+
+    ZoneId(String zoneId, String enName, String cnName) {
+        this.zoneId = zoneId;
+        this.enName = enName;
+        this.cnName = cnName;
+    }
+
+    public String getZoneId() {
+        return zoneId;
     }
 
     public String getEnName() {

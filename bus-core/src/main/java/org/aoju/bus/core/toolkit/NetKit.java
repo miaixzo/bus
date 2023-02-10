@@ -657,8 +657,8 @@ public class NetKit {
      */
     public static String getMultistageReverseProxyIp(String ip) {
         // 多级反向代理检测
-        if (ip != null && ip.indexOf(Symbol.COMMA) > 0) {
-            final String[] ips = ip.trim().split(Symbol.COMMA);
+        if (ip != null && StringKit.indexOf(ip, Symbol.C_COMMA) > 0) {
+            final List<String> ips = StringKit.splitTrim(ip, Symbol.C_COMMA);
             for (final String subIp : ips) {
                 if (false == isUnknown(subIp)) {
                     ip = subIp;

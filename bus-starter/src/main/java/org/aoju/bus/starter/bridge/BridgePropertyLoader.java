@@ -1,17 +1,16 @@
 package org.aoju.bus.starter.bridge;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.Builder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.PropertySource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +23,7 @@ import java.util.*;
  */
 public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
 
-    @Autowired
+    @Resource
     private BridgeProperties properties;
     private String profiles = null;
 
@@ -34,7 +33,7 @@ public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
     }
 
     @Override
-    public List<PropertySource<?>> load(String name, Resource resource) throws IOException {
+    public List<PropertySource<?>> load(String name, org.springframework.core.io.Resource resource) throws IOException {
         Properties property = new Properties();
         if (name.contains("properties")) {
             property.load(resource.getInputStream());

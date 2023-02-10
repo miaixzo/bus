@@ -25,6 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.extra.servlet;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.collection.ArrayIterator;
@@ -33,11 +38,6 @@ import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.toolkit.*;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -513,7 +513,9 @@ public class ServletKit {
      */
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
         final String charset = ObjectKit.defaultIfNull(response.getCharacterEncoding(), Charset.DEFAULT_UTF_8);
-        response.setHeader("Content-Disposition", StringKit.format("attachment;filename\"{}\"", UriKit.encode(fileName, charset)));
+        final String encodeText = UriKit.encodeAll(fileName, Charset.charset(charset));
+        response.setHeader("Content-Disposition",
+                StringKit.format("attachment;filename=\"{}\";filename*={}''{}", encodeText, charset, encodeText));
         response.setContentType(contentType);
         write(response, in);
     }

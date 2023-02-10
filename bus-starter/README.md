@@ -53,7 +53,7 @@
       ```
     + 第二步: 在业务 Service 实现类中注入 RestHighLevelClient
       ```java
-          @Autowired
+          @Resource
           private RestHighLevelClient restHighLevelClient;
       ```
     + 第三步: 在程序主入口 Application 加入注解:

@@ -61,8 +61,6 @@ import java.util.List;
  */
 public class Platform {
 
-    public static final int INFO = 4;
-    public static final int WARN = 5;
     private static final Platform PLATFORM = findPlatform();
 
     public static Platform get() {

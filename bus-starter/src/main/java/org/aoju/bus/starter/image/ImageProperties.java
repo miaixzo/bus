@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import jakarta.annotation.Resource;
 import lombok.Data;
 import org.aoju.bus.spring.BusXConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -42,7 +42,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @ConfigurationProperties(prefix = BusXConfig.IMAGE)
 public class ImageProperties {
 
-    @Autowired
+    @Resource
     private Node node;
 
     /**

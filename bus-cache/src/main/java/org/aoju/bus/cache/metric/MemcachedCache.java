@@ -33,7 +33,7 @@ import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.serialize.BaseSerializer;
 import org.aoju.bus.cache.serialize.Hessian2Serializer;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;

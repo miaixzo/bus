@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.filter;
 
+import jakarta.annotation.PostConstruct;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
@@ -48,7 +49,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
 import java.nio.CharBuffer;
 
 /**

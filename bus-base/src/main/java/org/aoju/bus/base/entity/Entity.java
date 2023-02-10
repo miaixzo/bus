@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
+import jakarta.persistence.Id;
 import lombok.Data;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**

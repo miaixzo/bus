@@ -31,14 +31,15 @@ import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.RegistryConverter;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Editor;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
-import java.lang.System;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1236,14 +1237,14 @@ public class CollKit {
      *
      * @param <T>        元素类型
      * @param collection 集合
-     * @param matcher    匹配器，为空则全部匹配
+     * @param predicate  匹配器，为空则全部匹配
      * @return 第一个位置
      */
-    public static <T> int indexOf(Collection<T> collection, Matcher<T> matcher) {
+    public static <T> int indexOf(final Collection<T> collection, final Predicate<T> predicate) {
         if (isNotEmpty(collection)) {
             int index = 0;
             for (T t : collection) {
-                if (null == matcher || matcher.match(t)) {
+                if (null == predicate || predicate.test(t)) {
                     return index;
                 }
                 index++;
@@ -1256,17 +1257,17 @@ public class CollKit {
      * 获取匹配规则定义中匹配到元素的最后位置
      * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
      *
-     * @param <T>     元素类型
-     * @param list    List集合
-     * @param matcher 匹配器，为空则全部匹配
+     * @param <T>       元素类型
+     * @param list      List集合
+     * @param predicate 匹配器，为空则全部匹配
      * @return 最后一个位置
      */
-    public static <T> int lastIndexOf(List<T> list, Matcher<T> matcher) {
+    public static <T> int lastIndexOf(final List<T> list, final Predicate<? super T> predicate) {
         if (null != list) {
             final int size = list.size();
             if (size > 0) {
                 for (int i = size - 1; i >= 0; i--) {
-                    if (null == matcher || matcher.match(list.get(i))) {
+                    if (null == predicate || predicate.test(list.get(i))) {
                         return i;
                     }
                 }
@@ -1281,19 +1282,19 @@ public class CollKit {
      *
      * @param <T>        元素类型
      * @param collection 集合
-     * @param matcher    匹配器，为空则全部匹配
+     * @param predicate  匹配器，为空则全部匹配
      * @return 最后一个位置
      */
-    public static <T> int lastIndexOf(Collection<T> collection, Matcher<T> matcher) {
+    public static <T> int lastIndexOf(final Collection<T> collection, final Predicate<? super T> predicate) {
         if (collection instanceof List) {
             // List的查找最后一个有优化算法
-            return lastIndexOf((List<T>) collection, matcher);
+            return lastIndexOf((List<T>) collection, predicate);
         }
         int matchIndex = -1;
         if (isNotEmpty(collection)) {
             int index = 0;
             for (T t : collection) {
-                if (null == matcher || matcher.match(t)) {
+                if (null == predicate || predicate.test(t)) {
                     matchIndex = index;
                 }
                 index++;
@@ -1308,15 +1309,15 @@ public class CollKit {
      *
      * @param <T>        元素类型
      * @param collection 集合
-     * @param matcher    匹配器，为空则全部匹配
+     * @param predicate    匹配器，为空则全部匹配
      * @return 位置数组
      */
-    public static <T> int[] indexOfAll(Collection<T> collection, Matcher<T> matcher) {
+    public static <T> int[] indexOfAll(final Collection<T> collection, final Predicate<? super T> predicate) {
         final List<Integer> indexList = new ArrayList<>();
         if (null != collection) {
             int index = 0;
             for (T t : collection) {
-                if (null == matcher || matcher.match(t)) {
+                if (null == predicate || predicate.test(t)) {
                     indexList.add(index);
                 }
                 index++;
@@ -1885,7 +1886,7 @@ public class CollKit {
      * @param ignoreNull 是否忽略空值，这里的空值包括函数处理前和处理后的null值
      * @return 抽取后的新列表
      */
-    public static <T, R> List<R> map(Iterable<T> collection, Function<? super T, ? extends R> func, boolean ignoreNull) {
+    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> func, final boolean ignoreNull) {
         final List<R> fieldValueList = new ArrayList<>();
         if (null == collection) {
             return fieldValueList;
@@ -1973,14 +1974,14 @@ public class CollKit {
      *
      * @param <T>      集合元素类型
      * @param iterable {@link Iterable}
-     * @param matcher  匹配器,为空则全部匹配
+     * @param predicate  匹配器,为空则全部匹配
      * @return 匹配数量
      */
-    public static <T> int count(Iterable<T> iterable, Matcher<T> matcher) {
+    public static <T> int count(final Iterable<T> iterable, final Predicate<T> predicate) {
         int count = 0;
         if (null != iterable) {
             for (T t : iterable) {
-                if (null == matcher || matcher.match(t)) {
+                if (null == predicate || predicate.test(t)) {
                     count++;
                 }
             }
@@ -2730,6 +2731,18 @@ public class CollKit {
     }
 
     /**
+     * 针对List自然排序，排序会修改原List
+     *
+     * @param <T>  元素类型
+     * @param list 被排序的List
+     * @return 原list
+     * @see Collections#sort(List, Comparator)
+     */
+    public static <T> List<T> sort(final List<T> list) {
+        return sort(list, null);
+    }
+
+    /**
      * 对2个对象按照指定属性名称进行排序
      *
      * @param name 属性名称
@@ -2781,13 +2794,16 @@ public class CollKit {
      *
      * @param <T>  元素类型
      * @param list 被排序的List
-     * @param c    {@link Comparator}
+     * @param c    {@link Comparator}，null表示自然排序（null安全的）
      * @return 原list
      * @see Collections#sort(List, Comparator)
      */
     public static <T> List<T> sort(List<T> list, Comparator<? super T> c) {
         if (isEmpty(list)) {
             return list;
+        }
+        if (null == c) {
+            c = Comparator.nullsFirst((Comparator<? super T>) Comparator.naturalOrder());
         }
         list.sort(c);
         return list;

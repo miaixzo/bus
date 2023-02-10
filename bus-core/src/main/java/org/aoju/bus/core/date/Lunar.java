@@ -2337,18 +2337,20 @@ public class Lunar {
      * @param date 阳历日期
      */
     public Lunar(Date date) {
-        this.solar = new Solar(date);
-        Calendar c = Kalendar.calendar(this.solar.getYear(), this.solar.getMonth(), this.solar.getDay());
-        long solarTime = c.getTimeInMillis();
-        int y = this.solar.getYear();
-        Year year = Year.from(y);
+        this(Solar.from(date));
+    }
+
+    /**
+     * 通过阳历日期初始化
+     *
+     * @param solar 阳历日期
+     */
+    public Lunar(Solar solar) {
+        Year year = Year.from(solar.getYear());
         for (Month m : year.getMonths()) {
-            Calendar firstDay = Solar.from(m.getFirstJulianDay()).getCalendar();
-            firstDay.set(Calendar.HOUR_OF_DAY, 0);
-            firstDay.set(Calendar.MINUTE, 0);
-            firstDay.set(Calendar.SECOND, 0);
-            firstDay.set(Calendar.MILLISECOND, 0);
-            int days = (int) ((solarTime - firstDay.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+            // 初一
+            Solar firstDay = Solar.from(m.getFirstJulianDay());
+            int days = solar.subtract(firstDay);
             if (days < m.getDayCount()) {
                 this.year = m.getYear();
                 this.month = m.getMonth();
@@ -2359,6 +2361,7 @@ public class Lunar {
         this.hour = solar.getHour();
         this.minute = solar.getMinute();
         this.second = solar.getSecond();
+        this.solar = solar;
         this.initialize(year);
     }
 
@@ -4087,13 +4090,16 @@ public class Lunar {
     }
 
     protected NineStar getYearNineStar(String yearInGanZhi) {
-        int index = getJiaZiIndex(yearInGanZhi) + 1;
-        int yearOffset = 0;
-        if (index != getJiaZiIndex(this.getYearInGanZhi()) + 1) {
-            yearOffset = -1;
+        int indexExact = getJiaZiIndex(yearInGanZhi) + 1;
+        int index = getJiaZiIndex(this.getYearInGanZhi()) + 1;
+        int yearOffset = indexExact - index;
+        if (yearOffset > 1) {
+            yearOffset -= 60;
+        } else if (yearOffset < -1) {
+            yearOffset += 60;
         }
         int yuan = ((this.year + yearOffset + 2696) / 60) % 3;
-        int offset = (62 + yuan * 3 - index) % 9;
+        int offset = (62 + yuan * 3 - indexExact) % 9;
         if (0 == offset) {
             offset = 9;
         }
@@ -4211,13 +4217,13 @@ public class Lunar {
         String solarNiZiYmd = solarNiZi.build(false);
         int offset = 0;
         if (solarYmd.compareTo(solarShunBaiYmd) >= 0 && solarYmd.compareTo(solarNiZiYmd) < 0) {
-            offset = Solar.getDays(solarShunBai.getCalendar(), this.getSolar().getCalendar()) % 9;
+            offset = solar.subtract(solarShunBai) % 9;
         } else if (solarYmd.compareTo(solarNiZiYmd) >= 0 && solarYmd.compareTo(solarShunBaiYmd2) < 0) {
-            offset = 8 - (Solar.getDays(solarNiZi.getCalendar(), this.getSolar().getCalendar()) % 9);
+            offset = 8 - (solar.subtract(solarNiZi) % 9);
         } else if (solarYmd.compareTo(solarShunBaiYmd2) >= 0) {
-            offset = Solar.getDays(solarShunBai2.getCalendar(), this.getSolar().getCalendar()) % 9;
+            offset = solar.subtract(solarShunBai2) % 9;
         } else if (solarYmd.compareTo(solarShunBaiYmd) < 0) {
-            offset = (8 + Solar.getDays(this.getSolar().getCalendar(), solarShunBai.getCalendar())) % 9;
+            offset = (8 + solarShunBai.subtract(solar)) % 9;
         }
         return new NineStar(offset);
     }
@@ -4830,23 +4836,23 @@ public class Lunar {
      * @return 数九，如果不是数九天，返回null
      */
     public NinePeriod getShuJiu() {
-        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
+        Solar current = Solar.from(solar.getYear(), solar.getMonth(), solar.getDay());
         Solar start = solarTerm.get("DONG_ZHI");
-        Calendar startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
+        start = Solar.from(start.getYear(), start.getMonth(), start.getDay());
 
-        if (current.compareTo(startCalendar) < 0) {
+        if (current.isBefore(start)) {
             start = solarTerm.get("冬至");
-            startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
+            start = Solar.from(start.getYear(), start.getMonth(), start.getDay());
         }
 
-        Calendar endCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
-        endCalendar.add(Calendar.DATE, 81);
+        Solar end = Solar.from(start.getYear(), start.getMonth(), start.getDay());
+        end = end.next(81);
 
-        if (current.compareTo(startCalendar) < 0 || current.compareTo(endCalendar) >= 0) {
+        if (current.isBefore(start) || !current.isBefore(end)) {
             return null;
         }
 
-        int days = (int) ((current.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        int days = current.subtract(start);
         return new NinePeriod(Fields.CN_NUMBER[days / 9 + 1] + "九", days % 9 + 1);
     }
 
@@ -4929,17 +4935,14 @@ public class Lunar {
      */
     public String getWuHou() {
         SolarTerm jieQi = getPrevJieQi(true);
-        String name = jieQi.getName();
         int offset = 0;
         for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i++) {
-            if (name.equals(Fields.CN_SOLARTERM[i])) {
+            if (jieQi.getName().equals(Fields.CN_SOLARTERM[i])) {
                 offset = i;
                 break;
             }
         }
-        Solar startSolar = jieQi.getSolar();
-        int days = Solar.getDays(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay(), solar.getYear(), solar.getMonth(), solar.getDay());
-        int index = days / 5;
+        int index = solar.subtract(jieQi.getSolar()) / 5;
         if (index > 2) {
             index = 2;
         }
@@ -4953,12 +4956,12 @@ public class Lunar {
      */
     public String getHou() {
         SolarTerm jieQi = getPrevJieQi(true);
-        String name = jieQi.getName();
-        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
-        Solar startSolar = jieQi.getSolar();
-        Calendar start = Kalendar.calendar(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay());
-        int days = Solar.getDays(start, current);
-        return String.format("%s %s", name, HOU[(days / 5) % HOU.length]);
+        int max = Lunar.HOU.length - 1;
+        int offset = solar.subtract(jieQi.getSolar()) / 5;
+        if (offset > max) {
+            offset = max;
+        }
+        return String.format("%s %s", jieQi.getName(), Lunar.HOU[offset]);
     }
 
     /**

@@ -37,50 +37,50 @@ import org.aoju.bus.core.lang.Validator;
 public class PhoneKit {
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码（中国大陆）
      *
      * @param value 值
-     * @return 是否为手机号码（中国）
+     * @return 是否为手机号码（中国大陆）
      */
     public static boolean isMobile(CharSequence value) {
         return Validator.isMatchRegex(RegEx.MOBILE, value);
     }
 
     /**
-     * 验证是否为手机号码（香港）
+     * 验证是否为手机号码（中国香港）
      *
      * @param value 手机号码
-     * @return 是否为香港手机号码
+     * @return 是否为中国香港手机号码
      */
     public static boolean isMobileHk(CharSequence value) {
         return Validator.isMatchRegex(RegEx.MOBILE_HK, value);
     }
 
     /**
-     * 验证是否为手机号码（台湾）
+     * 验证是否为手机号码（中国台湾）
      *
      * @param value 手机号码
-     * @return 是否为台湾手机号码
+     * @return 是否为中国台湾手机号码
      */
     public static boolean isMobileTw(CharSequence value) {
         return Validator.isMatchRegex(RegEx.MOBILE_TW, value);
     }
 
     /**
-     * 验证是否为手机号码（澳门）
+     * 验证是否为手机号码（中国澳门）
      *
      * @param value 手机号码
-     * @return 是否为澳门手机号码
+     * @return 是否为中国澳门手机号码
      */
     public static boolean isMobileMo(CharSequence value) {
         return Validator.isMatchRegex(RegEx.MOBILE_MO, value);
     }
 
     /**
-     * 验证是否为座机号码（中国）
+     * 验证是否为座机号码（中国大陆）
      *
      * @param value 值
-     * @return 是否为座机号码（中国）
+     * @return 是否为座机号码（中国大陆）
      */
     public static boolean isPhone(CharSequence value) {
         return Validator.isMatchRegex(RegEx.PHONE, value);
@@ -90,7 +90,7 @@ public class PhoneKit {
      * 验证是否为座机号码（中国）+ 400 + 800
      *
      * @param value 值
-     * @return 是否为座机号码（中国）
+     * @return 是否为座机号码（中国大陆）
      */
     public static boolean isPhone400800(CharSequence value) {
         return Validator.isMatchRegex(RegEx.PHONE_400_800, value);
@@ -100,7 +100,7 @@ public class PhoneKit {
      * 验证是否为座机号码+手机号码（CharKit中国）+ 400 + 800电话 + 手机号号码（香港）
      *
      * @param value 值
-     * @return 是否为座机号码+手机号码（中国）+手机号码（香港）+手机号码（台湾）+手机号码（澳门）
+     * @return 是否为座机号码+手机号码（中国大陆）+手机号码（香港）+手机号码（中国台湾）+手机号码（澳门）
      */
     public static boolean isPhoneAll(CharSequence value) {
         return isMobile(value) || isPhone400800(value) || isMobileHk(value) || isMobileTw(value) || isMobileMo(value);

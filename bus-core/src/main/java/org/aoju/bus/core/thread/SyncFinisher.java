@@ -28,6 +28,8 @@ package org.aoju.bus.core.thread;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ThreadKit;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -42,16 +44,17 @@ import java.util.concurrent.ExecutorService;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SyncFinisher {
+public class SyncFinisher implements Closeable {
 
     private final Set<Worker> workers;
     private final int threadSize;
+    private ExecutorService executorService;
+
+    private boolean isBeginAtSameTime;
     /**
      * 启动同步器，用于保证所有worker线程同时开始
      */
     private final CountDownLatch beginLatch;
-    private ExecutorService executorService;
-    private boolean isBeginAtSameTime;
     /**
      * 结束同步器，用于等待所有worker线程同时结束
      */
@@ -62,10 +65,9 @@ public class SyncFinisher {
      *
      * @param threadSize 线程数
      */
-    public SyncFinisher(int threadSize) {
+    public SyncFinisher(final int threadSize) {
         this.beginLatch = new CountDownLatch(1);
         this.threadSize = threadSize;
-        this.executorService = ThreadKit.newExecutor(threadSize);
         this.workers = new LinkedHashSet<>();
     }
 
@@ -75,7 +77,7 @@ public class SyncFinisher {
      * @param isBeginAtSameTime 是否所有worker线程同时开始
      * @return this
      */
-    public SyncFinisher setBeginAtSameTime(boolean isBeginAtSameTime) {
+    public SyncFinisher setBeginAtSameTime(final boolean isBeginAtSameTime) {
         this.isBeginAtSameTime = isBeginAtSameTime;
         return this;
     }
@@ -119,7 +121,7 @@ public class SyncFinisher {
      * @param worker 工作线程
      * @return this
      */
-    synchronized public SyncFinisher addWorker(Worker worker) {
+    synchronized public SyncFinisher addWorker(final Worker worker) {
         workers.add(worker);
         return this;
     }
@@ -136,12 +138,12 @@ public class SyncFinisher {
      *
      * @param sync 是否阻塞等待
      */
-    public void start(boolean sync) {
+    public void start(final boolean sync) {
         endLatch = new CountDownLatch(workers.size());
         if (null == this.executorService || this.executorService.isShutdown()) {
             this.executorService = ThreadKit.newExecutor(threadSize);
         }
-        for (Worker worker : workers) {
+        for (final Worker worker : workers) {
             executorService.submit(worker);
         }
         // 保证所有worker同时开始
@@ -150,7 +152,7 @@ public class SyncFinisher {
         if (sync) {
             try {
                 this.endLatch.await();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 throw new InternalException(e);
             }
         }
@@ -164,10 +166,27 @@ public class SyncFinisher {
      * </ol>
      */
     public void stop() {
+        stop(false);
+    }
+
+    /**
+     * 结束线程池。此方法执行两种情况：
+     * <ol>
+     *     <li>执行start(true)后，调用此方法结束线程池回收资源</li>
+     *     <li>执行start(false)后，用户自行判断结束点执行此方法</li>
+     * </ol>
+     *
+     * @param isStopNow 是否立即结束所有线程（包括正在执行的）
+     */
+    public void stop(final boolean isStopNow) {
         if (null != this.executorService) {
-            this.executorService.shutdown();
+            if (isStopNow) {
+                this.executorService.shutdownNow();
+            } else {
+                this.executorService.shutdown();
+            }
+            this.executorService = null;
         }
-        this.executorService = null;
         clearWorker();
     }
 
@@ -187,7 +206,8 @@ public class SyncFinisher {
         return endLatch.getCount();
     }
 
-    public void close() {
+    @Override
+    public void close() throws IOException {
         stop();
     }
 
@@ -201,7 +221,7 @@ public class SyncFinisher {
             if (isBeginAtSameTime) {
                 try {
                     beginLatch.await();
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     throw new InternalException(e);
                 }
             }
@@ -212,6 +232,9 @@ public class SyncFinisher {
             }
         }
 
+        /**
+         * 任务内容
+         */
         public abstract void work();
     }
 

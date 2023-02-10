@@ -167,6 +167,19 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        return OpenBsdLibc.INSTANCE.getthrid();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        OSProcess proc = getCurrentProcess();
+        final int tid = getThreadId();
+        return proc.getThreadDetails().stream().filter(t -> t.getThreadId() == tid).findFirst()
+                .orElse(new OpenBsdOSThread(proc.getProcessID(), tid));
+    }
+
+    @Override
     public int getThreadCount() {
         // -H "Also display information about kernel visible threads"
         // -k "Also display information about kernel threads"

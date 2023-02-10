@@ -842,6 +842,16 @@ public class FileKit {
     /**
      * 创建所给文件或目录的父目录
      *
+     * @param path 文件或目录
+     * @return 父目录
+     */
+    public static Path mkParentDirs(final Path path) {
+        return mkdir(path.getParent());
+    }
+
+    /**
+     * 创建所给文件或目录的父目录
+     *
      * @param file 文件或目录
      * @return 父目录
      */
@@ -1236,13 +1246,19 @@ public class FileKit {
     public static Path move(Path src, Path target, boolean isOverride) {
         Assert.notNull(src, "Src path must be not null !");
         Assert.notNull(target, "Target path must be not null !");
+
+        if (equals(src, target)) {
+            // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险
+            return target;
+        }
+
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
 
         // 自动创建目标的父目录
-        mkdir(target.getParent());
+        mkParentDirs(target);
         try {
             return Files.move(src, target, options);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             if (e instanceof FileAlreadyExistsException) {
                 // 目标文件已存在，直接抛出异常
                 throw new InternalException(e);
@@ -1250,9 +1266,9 @@ public class FileKit {
             // 移动失败，可能是跨分区移动导致的，采用递归移动方式
             try {
                 Files.walkFileTree(src, new MoveVisitor(src, target, options));
-                // 移动后空目录没有删除，
+                // 移动后空目录没有删除
                 delete(src);
-            } catch (IOException e2) {
+            } catch (final IOException e2) {
                 throw new InternalException(e2);
             }
             return target;
@@ -1357,6 +1373,24 @@ public class FileKit {
         return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch("^[a-zA-Z]:[/\\\\].*", path);
     }
 
+
+    /**
+     * 检查两个文件是否是同一个文件
+     * 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     *
+     * @param file1 文件1
+     * @param file2 文件2
+     * @return 是否相同
+     * @throws InternalException IO异常
+     * @see Files#isSameFile(Path, Path)
+     */
+    public static boolean equals(final Path file1, final Path file2) throws InternalException {
+        try {
+            return Files.isSameFile(file1, file2);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
 
     /**
      * 检查两个文件是否是同一个文件
@@ -3757,12 +3791,23 @@ public class FileKit {
      * @param file 文件
      * @return the string {@link MediaType}
      */
-    public static String getMediaType(Path file) {
+    public static String getMediaType(final Path file) {
         try {
             return Files.probeContentType(file);
         } catch (IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * 根据文件扩展名获得MimeType
+     *
+     * @param filePath     文件路径或文件名
+     * @param defaultValue 当获取MimeType为null时的默认值
+     * @return MimeType
+     */
+    public static String getMediaType(final String filePath, final String defaultValue) {
+        return ObjectKit.defaultIfNull(getMediaType(filePath), defaultValue);
     }
 
     /**

@@ -564,6 +564,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public int getThreadId() {
+        return LinuxLibc.INSTANCE.gettid();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        return new LinuxOSThread(getProcessId(), getThreadId());
+    }
+
+    @Override
     public int getThreadCount() {
         try (Struct.CloseableSysinfo info = new Struct.CloseableSysinfo()) {
             if (0 != LibC.INSTANCE.sysinfo(info)) {

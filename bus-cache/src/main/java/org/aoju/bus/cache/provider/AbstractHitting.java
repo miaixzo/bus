@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
+import jakarta.annotation.PreDestroy;
 import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.setting.Builder;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import javax.annotation.PreDestroy;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.*;

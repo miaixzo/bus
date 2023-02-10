@@ -1057,16 +1057,16 @@ public class MathKit {
         if (StringKit.isBlank(text)) {
             return false;
         }
-        char[] chars = text.toString().toCharArray();
+        final char[] chars = text.toString().toCharArray();
         int sz = chars.length;
         boolean hasExp = false;
         boolean hasDecPoint = false;
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] == Symbol.C_MINUS) ? 1 : 0;
-        if (sz > start + 1) {
-            if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
+        final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
+        if (sz > start + 1 && chars[start] == Symbol.C_ZERO && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is a decimal number
+            if (chars[start + 1] == 'x' || chars[start + 1] == 'X') { // leading 0x/0X
                 int i = start + 2;
                 if (i == sz) {
                     return false; // text == "0x"
@@ -1074,6 +1074,16 @@ public class MathKit {
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
                     if ((chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_NINE) && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            if (Character.isDigit(chars[start + 1])) {
+                // leading 0, but not hex, must be octal
+                int i = start + 1;
+                for (; i < chars.length; i++) {
+                    if (chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_SEVEN) {
                         return false;
                     }
                 }
@@ -1102,7 +1112,7 @@ public class MathKit {
                     // two E's
                     return false;
                 }
-                if (!foundDigit) {
+                if (false == foundDigit) {
                     return false;
                 }
                 hasExp = true;
@@ -1139,29 +1149,35 @@ public class MathKit {
                 return foundDigit;
             }
             if (chars[i] == 'l' || chars[i] == 'L') {
-                // not allowing L with an exponent
-                return foundDigit && !hasExp;
+                // not allowing L with an exponent or decimal point
+                return foundDigit && !hasExp && !hasDecPoint;
             }
             // last character is illegal
             return false;
         }
-        return !allowSigns && foundDigit;
+        // allowSigns is true iff the val ends in 'E'
+        // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
+        return false == allowSigns && foundDigit;
     }
 
     /**
-     * 判断String是否是整数
-     * 支持8、10、16进制
+     * 判断字符串是否是整数
+     * <ol>
+     * 		<li>10进制, 不能包含前导零</li>
+     * 		<li>8进制(以0开头)</li>
+     * 		<li>16进制(以0x或者0X开头)</li>
+     * </ol>
      *
-     * @param s String
-     * @return 是否为整数
+     * @param text 校验的字符串, 只能含有 正负号、数字字符 和 {@literal X/x}
+     * @return 是否为 {@link Integer}类型
      */
-    public static boolean isInteger(String s) {
-        if (StringKit.isBlank(s)) {
+    public static boolean isInteger(String text) {
+        if (false == isNumber(text)) {
             return false;
         }
         try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
+            Integer.decode(text);
+        } catch (final NumberFormatException e) {
             return false;
         }
         return true;
@@ -1169,15 +1185,26 @@ public class MathKit {
 
     /**
      * 判断字符串是否是Long类型
-     * 支持8、10、16进制
+     * <ol>
+     * 		<li>10进制, 不能包含前导零</li>
+     * 		<li>8进制(以0开头)</li>
+     * 		<li>16进制(以0x或者0X开头)</li>
+     * </ol>
      *
-     * @param s String
-     * @return 是否为{@link Long}类型
+     * @param text 校验的字符串, 只能含有 正负号、数字字符、{@literal X/x} 和 后缀{@literal L/l}
+     * @return 是否为 {@link Long}类型
      */
-    public static boolean isLong(String s) {
+    public static boolean isLong(String text) {
+        if (false == isNumber(text)) {
+            return false;
+        }
+        final char lastChar = text.charAt(text.length() - 1);
+        if (lastChar == 'l' || lastChar == 'L') {
+            return true;
+        }
         try {
-            Long.parseLong(s);
-        } catch (NumberFormatException e) {
+            Long.decode(text);
+        } catch (final NumberFormatException e) {
             return false;
         }
         return true;
@@ -1186,19 +1213,19 @@ public class MathKit {
     /**
      * 判断字符串是否是浮点数
      *
-     * @param s String
-     * @return 是否为{@link Double}类型
+     * @param text String
+     * @return 是否为 {@link Double}类型
      */
-    public static boolean isDouble(String s) {
-        if (StringKit.isBlank(s)) {
+    public static boolean isDouble(String text) {
+        if (StringKit.isBlank(text)) {
             return false;
         }
         try {
-            Double.parseDouble(s);
+            Double.parseDouble(text);
         } catch (NumberFormatException e) {
             return false;
         }
-        return s.contains(Symbol.DOT);
+        return text.contains(Symbol.DOT);
     }
 
     /**
@@ -1210,7 +1237,14 @@ public class MathKit {
      */
     public static boolean isPrimes(int n) {
         Assert.isTrue(n > 1, "The number must be > 1");
-        for (int i = 2; i <= Math.sqrt(n); i++) {
+        if (n <= 3) {
+            return true;
+        } else if ((n & 1) == 0) {
+            // 快速排除偶数
+            return false;
+        }
+        final int end = (int) Math.sqrt(n);
+        for (int i = 3; i <= end; i += 2) {
             if (n % i == 0) {
                 return false;
             }

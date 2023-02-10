@@ -31,7 +31,6 @@ import org.aoju.bus.core.collection.FilterIterator;
 import org.aoju.bus.core.collection.NodeListIterator;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.text.TextJoiner;
 import org.w3c.dom.Node;
@@ -698,24 +697,24 @@ public class IterKit {
      * @param iterator {@link Iterator}
      * @return 第一个非空元素，null表示未找到
      */
-    public static <T> T getFirstNoneNull(Iterator<T> iterator) {
-        return getFirstNoneNull(iterator, Objects::nonNull);
+    public static <T> T getFirstNoneNull(final Iterator<T> iterator) {
+        return getFirst(iterator, Objects::nonNull);
     }
 
     /**
      * 返回{@link Iterator}中第一个匹配规则的值
      *
-     * @param <T>      数组元素类型
-     * @param iterator {@link Iterator}
-     * @param matcher  匹配接口，实现此接口自定义匹配规则
+     * @param <T>       数组元素类型
+     * @param iterator  {@link Iterator}
+     * @param predicate 匹配接口，实现此接口自定义匹配规则
      * @return 匹配元素，如果不存在匹配元素或{@link Iterator}为空，返回 {@code null}
      */
-    public static <T> T getFirstNoneNull(Iterator<T> iterator, Matcher<T> matcher) {
-        Assert.notNull(matcher, "Matcher must be not null !");
+    public static <T> T getFirst(final Iterator<T> iterator, final Predicate<T> predicate) {
+        Assert.notNull(predicate, "Matcher must be not null !");
         if (null != iterator) {
             while (iterator.hasNext()) {
                 final T next = iterator.next();
-                if (matcher.match(next)) {
+                if (predicate.test(next)) {
                     return next;
                 }
             }

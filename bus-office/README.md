@@ -47,7 +47,7 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
 > 具体使用如下：
 
 ```java
-    @Autowired
+    @Resource
     OfficeProviderService officeProviderService;
 
 @ApiOperation(value = "将传入的文档转换为指定的格式", notes = "文档转换")

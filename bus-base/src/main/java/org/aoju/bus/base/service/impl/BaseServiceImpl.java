@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.base.service.impl;
 
-import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.base.entity.BaseEntity;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.mapper.BaseMapper;
+import org.aoju.bus.base.normal.Consts;
 import org.aoju.bus.base.service.BaseService;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;

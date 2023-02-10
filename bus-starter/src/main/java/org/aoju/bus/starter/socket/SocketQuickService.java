@@ -1,9 +1,9 @@
 package org.aoju.bus.starter.socket;
 
+import jakarta.annotation.Resource;
 import org.aoju.bus.socket.AioQuickServer;
 import org.aoju.bus.socket.Protocol;
 import org.aoju.bus.socket.process.MessageProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
@@ -14,9 +14,9 @@ import java.io.IOException;
 public class SocketQuickService {
 
     private final SocketProperties properties;
-    @Autowired
+    @Resource
     private MessageProcessor messageProcessor;
-    @Autowired
+    @Resource
     private Protocol protocol;
     private AioQuickServer aioQuickServer;
 

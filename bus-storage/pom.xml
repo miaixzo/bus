@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>6.6.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,14 +42,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <lombok.version>1.18.24</lombok.version>
-        <aliyun.oss.version>3.15.0</aliyun.oss.version>
-        <baidu.bos.version>0.10.212</baidu.bos.version>
-        <huawei.oss.version>3.22.3</huawei.oss.version>
-        <aws.oss.version>1.12.269</aws.oss.version>
-        <minio.oss.version>8.4.1</minio.oss.version>
-        <qiniu.oss.version>7.10.2</qiniu.oss.version>
-        <qcloud.oss.version>5.6.80</qcloud.oss.version>
+        <lombok.version>1.18.26</lombok.version>
+        <aliyun.oss.version>3.16.0</aliyun.oss.version>
+        <baidu.bos.version>0.10.243</baidu.bos.version>
+        <huawei.oss.version>3.22.12</huawei.oss.version>
+        <aws.oss.version>1.12.403</aws.oss.version>
+        <minio.oss.version>8.5.1</minio.oss.version>
+        <qiniu.oss.version>7.12.1</qiniu.oss.version>
+        <qcloud.oss.version>5.6.133</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
     </properties>
 

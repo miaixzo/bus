@@ -67,6 +67,13 @@ public interface SolarisLibc extends CLibrary {
     SolarisUtmpx getutxent();
 
     /**
+     * Returns the thread ID of the calling thread.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int thr_self();
+
+    /**
      * Connection info
      */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.transport.jaxb;
 
+import jakarta.xml.bind.annotation.*;
 import org.aoju.bus.tracer.Builder;
 
-import javax.xml.bind.annotation.*;
 import java.util.*;
 
 /**

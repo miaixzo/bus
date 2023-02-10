@@ -25,20 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.spring;
 
-import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.spring.banner.BusBanner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.ansi.AnsiOutput;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.stream.StreamSupport;
 
 /**
@@ -70,29 +68,6 @@ public class GenieBuilder implements
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
                 .filter(source -> !(source instanceof PropertySource.StubPropertySource))
                 .forEach(source -> bootstrapEnvironment.getPropertySources().addLast(source));
-
-        List<Class> sources = new ArrayList<>();
-        for (Object s : application.getAllSources()) {
-            if (s instanceof Class) {
-                sources.add((Class) s);
-            } else if (s instanceof String) {
-                sources.add(ClassKit.resolveClassName((String) s, null));
-            }
-        }
-
-        SpringApplication bootstrapApplication = new SpringApplicationBuilder()
-                .profiles(environment.getActiveProfiles())
-                .environment(bootstrapEnvironment).sources(sources.toArray(new Class[]{}))
-                .registerShutdownHook(false).logStartupInfo(false).web(WebApplicationType.NONE)
-                .listeners().initializers().build(event.getArgs());
-
-        ApplicationEnvironmentPreparedEvent bootstrapEvent = new ApplicationEnvironmentPreparedEvent(
-                event.getBootstrapContext(), bootstrapApplication, event.getArgs(), bootstrapEnvironment);
-
-        application.getListeners().stream()
-                .filter(listener -> listener instanceof ConfigFileApplicationListener)
-                .forEach(listener -> ((ConfigFileApplicationListener) listener)
-                        .onApplicationEvent(bootstrapEvent));
 
         application.setBanner(new BusBanner());
 

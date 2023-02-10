@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.jdbc;
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.annotation.Resource;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
@@ -33,7 +34,6 @@ import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -76,7 +76,8 @@ public class JdbcConfiguration {
     }
 
     private final Map<Object, Object> sourceMap = new HashMap<>();
-    @Autowired
+
+    @Resource
     JdbcProperties properties;
 
     /**

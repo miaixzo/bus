@@ -41,7 +41,6 @@ import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
-import org.aoju.bus.health.windows.WinNT.TOKEN_ELEVATION;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.EnumWindows;
 import org.aoju.bus.health.windows.drivers.registry.*;
@@ -378,24 +377,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public boolean isElevated() {
-        try (ByRef.CloseableHANDLEByReference hToken = new ByRef.CloseableHANDLEByReference();
-             ByRef.CloseableIntByReference returnLength = new ByRef.CloseableIntByReference()) {
-            boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
-                    WinNT.TOKEN_QUERY, hToken);
-            if (!success) {
-                Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
-                return false;
-            }
-            try (TOKEN_ELEVATION elevation = new TOKEN_ELEVATION()) {
-                if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation,
-                        elevation.size(), returnLength)) {
-                    return elevation.TokenIsElevated > 0;
-                }
-            } finally {
-                Kernel32.INSTANCE.CloseHandle(hToken.getValue());
-            }
-        }
-        return false;
+        return Advapi32Util.isCurrentProcessElevated();
     }
 
     @Override
@@ -489,6 +471,19 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             }
             return perfInfo.ProcessCount.intValue();
         }
+    }
+
+    @Override
+    public int getThreadId() {
+        return Kernel32.INSTANCE.GetCurrentThreadId();
+    }
+
+    @Override
+    public OSThread getCurrentThread() {
+        OSProcess proc = getCurrentProcess();
+        final int tid = getThreadId();
+        return proc.getThreadDetails().stream().filter(t -> t.getThreadId() == tid).findFirst()
+                .orElse(new WindowsOSThread(proc.getProcessID(), tid, null, null));
     }
 
     @Override

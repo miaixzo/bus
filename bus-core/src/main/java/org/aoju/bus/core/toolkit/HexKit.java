@@ -51,10 +51,23 @@ public class HexKit {
      * @return 是否为16进制
      */
     public static boolean isHexNumber(String value) {
-        int index = (value.startsWith(Symbol.MINUS) ? 1 : 0);
-        return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith(Symbol.SHAPE, index));
+        if (StringKit.startWith(value, '-')) {
+            return false;
+        }
+        int index = 0;
+        if (value.startsWith("0x", index) || value.startsWith("0X", index)) {
+            index += 2;
+        } else if (value.startsWith("#", index)) {
+            index++;
+        }
+        try {
+            new BigInteger(value.substring(index), 16);
+        } catch (final NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
-
+    
     /**
      * 将字节数组转换为十六进制字符数组
      *

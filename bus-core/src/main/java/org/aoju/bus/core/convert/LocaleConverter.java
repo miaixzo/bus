@@ -51,12 +51,12 @@ public class LocaleConverter extends AbstractConverter {
 
             final String[] items = text.split(Symbol.UNDERLINE);
             if (items.length == 1) {
-                return Locale.of(items[0]);
+                return new Locale(items[0]);
             }
             if (items.length == 2) {
-                return Locale.of(items[0], items[1]);
+                return new Locale(items[0], items[1]);
             }
-            return Locale.of(items[0], items[1], items[2]);
+            return new Locale(items[0], items[1], items[2]);
         } catch (final Exception e) {
             // Ignore Exception
         }
