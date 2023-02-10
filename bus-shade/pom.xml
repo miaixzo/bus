@@ -42,12 +42,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>3.0.0</spring.boot.version>
+        <spring.boot.version>3.0.2</spring.boot.version>
         <compress.version>1.21</compress.version>
         <freemarker.version>2.3.31</freemarker.version>
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.26</lombok.version>
         <hikaricp.version>5.0.1</hikaricp.version>
-        <mysql.version>8.0.30</mysql.version>
+        <mysql.version>8.0.32</mysql.version>
     </properties>
 
     <dependencies>
@@ -87,8 +87,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
             <optional>true</optional>
         </dependency>

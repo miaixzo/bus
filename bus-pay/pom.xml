@@ -42,14 +42,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <lombok.version>1.18.24</lombok.version>
+        <lombok.version>1.18.26</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
         <servlet.version>6.0.0</servlet.version>
         <zxing.version>3.5.1</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
-        <spring.boot.version>3.0.0</spring.boot.version>
+        <spring.boot.version>3.0.2</spring.boot.version>
         <weixin.pay.version>4.4.5.B</weixin.pay.version>
-        <alipay.version>4.34.86.ALL</alipay.version>
+        <alipay.version>4.35.45.ALL</alipay.version>
         <paypal.version>2.0.0</paypal.version>
     </properties>
 

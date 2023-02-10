@@ -447,6 +447,13 @@ public class Fields {
     };
 
     /**
+     * 中文星期
+     */
+    public static final String[] CN_WEEK = {
+            "日", "一", "二", "三", "四", "五", "六"
+    };
+    
+    /**
      * 农历月份名
      */
     public static final String[] CN_MONTH = {
