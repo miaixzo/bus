@@ -63,7 +63,7 @@ public class BoolArrayMatcher implements PartMatcher {
     }
 
     @Override
-    public boolean match(Integer value) {
+    public boolean test(Integer value) {
         if (null == value || value >= bValues.length) {
             return false;
         }

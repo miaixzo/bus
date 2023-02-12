@@ -44,7 +44,7 @@ public class YearValueMatcher implements PartMatcher {
     }
 
     @Override
-    public boolean match(Integer t) {
+    public boolean test(Integer t) {
         return list.contains(t);
     }
 

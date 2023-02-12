@@ -38,7 +38,7 @@ public class AlwaysTrueMatcher implements PartMatcher {
     public static AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
 
     @Override
-    public boolean match(Integer t) {
+    public boolean test(Integer t) {
         return true;
     }
 

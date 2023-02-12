@@ -47,7 +47,7 @@
         <guice.version>5.1.0</guice.version>
         <jedis.version>4.2.3</jedis.version>
         <xmemcached.version>2.4.7</xmemcached.version>
-        <ehcache.version>3.10.8</ehcache.version>
+        <ehcache.version>3.9.9</ehcache.version>
         <curator.version>5.4.0</curator.version>
         <guava.version>31.1-jre</guava.version>
         <hession.version>4.0.66</hession.version>
