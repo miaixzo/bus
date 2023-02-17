@@ -30,6 +30,8 @@ import org.aoju.bus.core.image.element.AbstractElement;
 import java.awt.*;
 
 /**
+ * 图像绘制
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

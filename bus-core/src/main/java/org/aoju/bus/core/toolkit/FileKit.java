@@ -1247,7 +1247,7 @@ public class FileKit {
         Assert.notNull(src, "Src path must be not null !");
         Assert.notNull(target, "Target path must be not null !");
 
-        if (equals(src, target)) {
+        if(Files.exists(target) && equals(src, target)){
             // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险
             return target;
         }

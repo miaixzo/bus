@@ -65,10 +65,10 @@ public class Point3 {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof Point3)) return false;
-        Point3 it = (Point3) object;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Point3)) return false;
+        Point3 it = (Point3) obj;
         return x == it.x && y == it.y && z == it.z;
     }
 

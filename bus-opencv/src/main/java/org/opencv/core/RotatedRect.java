@@ -99,10 +99,10 @@ public class RotatedRect {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof RotatedRect)) return false;
-        RotatedRect it = (RotatedRect) object;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof RotatedRect)) return false;
+        RotatedRect it = (RotatedRect) obj;
         return center.equals(it.center) && size.equals(it.size) && angle == it.angle;
     }
 

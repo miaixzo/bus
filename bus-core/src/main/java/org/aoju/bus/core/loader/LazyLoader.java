@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 /**
  * 持有一个计算延迟的值
  *
+ * @param <T> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 /**
  * 通用Builder
  *
+ * @param <T> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

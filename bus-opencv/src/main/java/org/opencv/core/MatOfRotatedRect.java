@@ -3,6 +3,8 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+import org.opencv.core.RotatedRect;
+
 
 
 public class MatOfRotatedRect extends Mat {

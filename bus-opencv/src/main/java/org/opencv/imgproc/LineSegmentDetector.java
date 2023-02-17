@@ -10,7 +10,7 @@ import org.opencv.core.Size;
 // C++: class LineSegmentDetector
 /**
  * Line segment detector class
- * <p>
+ *
  * following the algorithm described at CITE: Rafael12 .
  *
  * <b>Note:</b> Implementation has been removed from OpenCV version 3.4.6 to 3.4.15 and version 4.1.0 to 4.5.3 due original code license conflict.
@@ -221,7 +221,7 @@ public class LineSegmentDetector extends Algorithm {
     private static native int compareSegments_0(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj, long image_nativeObj);
     private static native int compareSegments_1(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

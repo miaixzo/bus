@@ -15,16 +15,16 @@
 		<img src="https://img.shields.io/badge/Java-17+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.7.0-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-3.0.2-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.0.5-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-3.1.6-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-4.1.2-blue.svg">
+		<img src="https://img.shields.io/badge/poi-5.2.3-blue.svg">
 	</a>
 	<a target="_blank" href="https://opensource.org/licenses/MIT">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
@@ -97,7 +97,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.0.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
@@ -150,7 +150,7 @@ welcome.
 
 ### Issue:
 
-- [版本情况]：jdk-openjdk_8_201 bus-xxx-6.x.x（请确保最新版本尝试是否还存在问题）
+- [版本情况]：jdk-openjdk_17 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
 - [问题描述]：（包括截图）
 - [复现代码]：
 - [堆栈信息]：

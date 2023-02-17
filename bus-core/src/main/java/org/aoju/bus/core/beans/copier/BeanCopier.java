@@ -91,8 +91,8 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param copyOptions 拷贝属性选项
      * @return BeanCopier
      */
-    public static <T> BeanCopier<T> create(Object source, T target, CopyOptions copyOptions) {
-        return create(source, target, target.getClass(), copyOptions);
+    public static <T> BeanCopier<T> of(Object source, T target, CopyOptions copyOptions) {
+        return of(source, target, target.getClass(), copyOptions);
     }
 
     /**
@@ -105,7 +105,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param copyOptions 拷贝属性选项
      * @return BeanCopier
      */
-    public static <T> BeanCopier<T> create(Object source, T target, Type destType, CopyOptions copyOptions) {
+    public static <T> BeanCopier<T> of(Object source, T target, Type destType, CopyOptions copyOptions) {
         return new BeanCopier<>(source, target, destType, copyOptions);
     }
 

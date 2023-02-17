@@ -42,6 +42,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
+ * 原始缓冲流
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

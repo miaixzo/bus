@@ -130,6 +130,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readInt());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     * @return the int
      */
     int readInt() throws IOException;
 
@@ -153,6 +154,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readIntLe());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     * @return the int
      */
     int readIntLe() throws IOException;
 
@@ -184,6 +186,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readLong());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     * @return the long
      */
     long readLong() throws IOException;
 
@@ -215,6 +218,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readLongLe());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     * @return the long
      */
     long readLongLe() throws IOException;
 
@@ -231,7 +235,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(' ', buffer.readByte());
      *   assertEquals(1L, buffer.readDecimalLong());
      * }</pre>
-     *
+     * @return the long
      * @throws NumberFormatException if the found digits do not fit into a {@code long} or a decimal
      *                               number was not present.
      */
@@ -250,7 +254,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(' ', buffer.readByte());
      *   assertEquals(0x10L, buffer.readHexadecimalUnsignedLong());
      * }</pre>
-     *
+     * @return the long
      * @throws NumberFormatException if the found hexadecimal does not fit into a {@code long} or
      *                               hexadecimal was not found.
      */
@@ -265,11 +269,15 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * Removes all bytes bytes from this and returns them as a byte string.
+     *
+     * @return the {@link ByteString}
      */
     ByteString readByteString() throws IOException;
 
     /**
      * Removes {@code byteCount} bytes from this and returns them as a byte string.
+     *
+     * @return the {@link ByteString}
      */
     ByteString readByteString(long byteCount) throws IOException;
 
@@ -297,16 +305,19 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *   assertEquals(480, buffer.readDecimalLong());
      *   assertEquals('\n', buffer.readByte());
      * }</pre>
+     * @return the int
      */
     int select(Blending blending) throws IOException;
 
     /**
      * Removes all bytes from this and returns them as a byte array.
+     * @return the byte
      */
     byte[] readByteArray() throws IOException;
 
     /**
      * Removes {@code byteCount} bytes from this and returns them as a byte array.
+     * @return the byte
      */
     byte[] readByteArray(long byteCount) throws IOException;
 

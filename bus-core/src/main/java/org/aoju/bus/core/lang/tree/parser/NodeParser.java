@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.tree.Tree;
  * 树节点解析器 可以参考{@link DefaultNodeParser}
  *
  * @param <T> 转换的实体 为数据源里的对象类型
+ * @param <E> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -1256,7 +1256,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 计算相对于dateToCompare的年龄，长用于计算指定生日在某年的年龄
+     * 计算相对于dateToCompare的年龄,长用于计算指定生日在某年的年龄
      *
      * @param birthday      生日
      * @param dateToCompare 需要对比的日期
@@ -1270,7 +1270,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 计算相对于dateToCompare的年龄，长用于计算指定生日在某年的年龄
+     * 计算相对于dateToCompare的年龄,长用于计算指定生日在某年的年龄
      *
      * @param birthday      生日
      * @param dateToCompare 需要对比的日期
@@ -1302,13 +1302,18 @@ public class Almanac extends Converter {
 
         cal.setTimeInMillis(birthDay);
         int age = year - cal.get(Calendar.YEAR);
+        // 当前日期，则为0岁
+        if (age == 0) {
+            return 0;
+        }
 
         final int monthBirth = cal.get(Calendar.MONTH);
         if (month == monthBirth) {
 
             final int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
             final boolean isLastDayOfMonthBirth = dayOfMonthBirth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            if ((!isLastDayOfMonth || !isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
+            // 法定生日当天不算年龄，从第二天开始计算
+            if ((false == isLastDayOfMonth || false == isLastDayOfMonthBirth) && dayOfMonth <= dayOfMonthBirth) {
                 // 如果生日在当月，但是未达到生日当天的日期，年龄减一
                 age--;
             }
@@ -5539,6 +5544,9 @@ public class Almanac extends Converter {
      * @return 时间对象
      */
     public static DateTime date(Date date) {
+        if (date == null) {
+            return null;
+        }
         if (date instanceof DateTime) {
             return (DateTime) date;
         }
@@ -5559,10 +5567,13 @@ public class Almanac extends Converter {
     /**
      * {@link Calendar}类型时间转为{@link DateTime}
      *
-     * @param calendar {@link Calendar}
+     * @param calendar {@link Calendar}，如果传入{@code null}，返回{@code null}
      * @return 时间对象
      */
     public static DateTime date(Calendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
         return new DateTime(calendar);
     }
 
@@ -5570,10 +5581,13 @@ public class Almanac extends Converter {
      * {@link TemporalAccessor}类型时间转为{@link DateTime}
      * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
      *
-     * @param temporalAccessor {@link TemporalAccessor}
+     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、 LocalDate，如果传入{@code null}，返回{@code null}
      * @return 时间对象
      */
     public static DateTime date(TemporalAccessor temporalAccessor) {
+        if (temporalAccessor == null) {
+            return null;
+        }
         return new DateTime(temporalAccessor);
     }
 

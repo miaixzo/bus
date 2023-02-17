@@ -3,6 +3,8 @@ package org.opencv.core;
 import java.util.Arrays;
 import java.util.List;
 
+import org.opencv.core.DMatch;
+
 public class MatOfDMatch extends Mat {
     // 32FC4
     private static final int _depth = CvType.CV_32F;

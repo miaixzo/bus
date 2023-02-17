@@ -31,6 +31,8 @@ import org.aoju.bus.core.image.element.RectangleElement;
 import org.aoju.bus.core.image.element.TextElement;
 
 /**
+ * 绘制工厂
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

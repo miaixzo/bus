@@ -3,7 +3,12 @@
 //
 package org.opencv.img_hash;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
+import org.opencv.img_hash.BlockMeanHash;
+import org.opencv.utils.Converters;
 
 // C++: class BlockMeanHash
 /**
@@ -70,7 +75,7 @@ public class BlockMeanHash extends ImgHashBase {
     private static native long create_0(int mode);
     private static native long create_1();
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

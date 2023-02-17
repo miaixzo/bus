@@ -3,6 +3,8 @@
 //
 package org.opencv.imgproc;
 
+import org.opencv.imgproc.GeneralizedHough;
+
 // C++: class GeneralizedHoughBallard
 /**
  * finds arbitrary template in the grayscale image using Generalized Hough Transform
@@ -71,7 +73,7 @@ public class GeneralizedHoughBallard extends GeneralizedHough {
     // C++:  int cv::GeneralizedHoughBallard::getVotesThreshold()
     private static native int getVotesThreshold_0(long nativeObj);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

@@ -35,6 +35,7 @@ import java.util.function.UnaryOperator;
  * 表示对单个操作数的操作，该操作产生与其操作数相同类型的结果
  * 对于操作数和结果类型相同的情况，这是 Function 的一种特殊化
  *
+ * @param <T> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

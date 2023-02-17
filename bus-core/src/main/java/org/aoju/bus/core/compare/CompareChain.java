@@ -35,6 +35,7 @@ import java.util.*;
  * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回
  * 此类copy from Apache-commons-collections
  *
+ * @param <E> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

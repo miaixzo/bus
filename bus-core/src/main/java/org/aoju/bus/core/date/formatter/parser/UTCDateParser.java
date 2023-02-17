@@ -51,6 +51,9 @@ public class UTCDateParser extends NormalMotd implements DateParser {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 单例对象
+     */
     public static UTCDateParser INSTANCE = new UTCDateParser();
 
     @Override
@@ -83,6 +86,7 @@ public class UTCDateParser extends NormalMotd implements DateParser {
 
             if (StringKit.contains(source, Symbol.DOT)) {
                 // 带毫秒，格式类似：2018-09-13T03:10:11.999+08:00
+                source = normalizeMillSeconds(source, ".", "-");
                 return new DateTime(source, Fields.MS_WITH_XXX_OFFSET_FORMAT);
             } else {
                 // 格式类似：2018-09-13T05:10:20+08:00
@@ -92,7 +96,7 @@ public class UTCDateParser extends NormalMotd implements DateParser {
             // 类似 去除类似2022-09-14T23:59:00-08:00 或者 2022-09-16T23:59:00-0800
 
             // 去除类似2022-06-01T19:45:43 -08:00加号前的空格
-            source = source.replace(" -", "-");
+            source = source.replace(" " + Symbol.MINUS, Symbol.MINUS);
             if (':' != source.charAt(source.length() - 3)) {
                 source = source.substring(0, source.length() - 2) + ":00";
             }
@@ -113,11 +117,32 @@ public class UTCDateParser extends NormalMotd implements DateParser {
                 return new DateTime(source + ":00", Fields.SIMPLE_FORMAT);
             } else if (StringKit.contains(source, Symbol.DOT)) {
                 // 可能为：  去除类似2022-05-17T08:19:32.99
+                source = normalizeMillSeconds(source, Symbol.DOT, null);
                 return new DateTime(source, Fields.SIMPLE_MS_FORMAT);
             }
         }
         // 没有更多匹配的时间格式
         throw new InternalException("No UTC format fit for date String [{}] !", source);
+    }
+
+    /**
+     * 如果日期中的毫秒部分超出3位，会导致秒数增加，因此只保留前三位<br>
+     * issue#2887
+     *
+     * @param dateStr 日期字符串
+     * @param before  毫秒部分的前一个字符
+     * @param after   毫秒部分的后一个字符
+     * @return 规范之后的毫秒部分
+     */
+    private static String normalizeMillSeconds(final String dateStr, final CharSequence before, final CharSequence after) {
+        if (StringKit.isBlank(after)) {
+            final String millOrNaco = StringKit.subPre(StringKit.subAfter(dateStr, before, true), 3);
+            return StringKit.subBefore(dateStr, before, true) + before + millOrNaco;
+        }
+        final String millOrNaco = StringKit.subPre(StringKit.subBetween(dateStr, before, after), 3);
+        return StringKit.subBefore(dateStr, before, true)
+                + before
+                + millOrNaco + after + StringKit.subAfter(dateStr, after, true);
     }
 
 }
