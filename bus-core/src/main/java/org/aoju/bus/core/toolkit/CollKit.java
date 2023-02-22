@@ -3114,6 +3114,9 @@ public class CollKit {
      * @return 反转后的List
      */
     public static <T> List<T> reverse(List<T> list) {
+        if (isEmpty(list)) {
+            return list;
+        }
         Collections.reverse(list);
         return list;
     }

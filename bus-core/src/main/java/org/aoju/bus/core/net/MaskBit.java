@@ -107,7 +107,7 @@ public class MaskBit {
      */
     public static long getMaskIpLong(final int maskBit) {
         Assert.isTrue(MASK_BIT_MAP.containsKey(maskBit), "非法的掩码位数：{}", maskBit);
-        return -1L << (32 - maskBit);
+        return (0xffffffffL << (32 - maskBit)) & 0xffffffffL;
     }
 
 }

@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.function.XConsumer;
 import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,7 +147,11 @@ public class Tailer implements Serializable {
      * 结束，此方法需在异步模式或
      */
     public void stop() {
-        this.executorService.shutdown();
+        try {
+            this.executorService.shutdown();
+        } finally {
+            IoKit.close(this.randomAccessFile);
+        }
     }
 
     /**
