@@ -141,18 +141,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
         // 转驼峰尝试查找
         key = StringKit.toCamelCase(key);
         propDesc = map.get(key);
-        if (null != propDesc) {
-            return propDesc;
-        }
-
-        // boolean类型参数名转换尝试查找
-        if (key.startsWith("is")) {
-            key = StringKit.removePreAndLowerFirst(key, 2);
-            propDesc = map.get(key);
-            return propDesc;
-        }
-
-        return null;
+        return propDesc;
     }
 
 }

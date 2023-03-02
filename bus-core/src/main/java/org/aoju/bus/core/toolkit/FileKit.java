@@ -38,6 +38,7 @@ import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.stream.BOMInputStream;
+import org.aoju.bus.core.io.stream.EmptyOutputStream;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.function.XConsumer;
 
@@ -55,6 +56,7 @@ import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
 /**
@@ -2275,7 +2277,7 @@ public class FileKit {
      */
     public static BOMInputStream getBOMInputStream(File file) throws InternalException {
         try {
-            return new BOMInputStream(new FileInputStream(file));
+            return new BOMInputStream(Files.newInputStream(file.toPath()));
         } catch (IOException e) {
             throw new InternalException(e);
         }
@@ -2892,7 +2894,7 @@ public class FileKit {
      */
     public static BufferedOutputStream getOutputStream(File file) throws InternalException {
         try {
-            return new BufferedOutputStream(new FileOutputStream(touch(file)));
+            return new BufferedOutputStream(Files.newOutputStream(touch(file).toPath()));
         } catch (Exception e) {
             throw new InternalException(e);
         }
@@ -3623,6 +3625,17 @@ public class FileKit {
     }
 
     /**
+     * 计算流CRC32校验码,计算后关闭流
+     *
+     * @param in 文件,不能为目录
+     * @return CRC32值
+     * @throws InternalException 异常
+     */
+    public static long checksumCRC32(InputStream in) throws InternalException {
+        return checksum(in, new CRC32()).getValue();
+    }
+
+    /**
      * 计算文件校验码
      *
      * @param file     文件,不能为目录
@@ -3636,10 +3649,34 @@ public class FileKit {
             throw new IllegalArgumentException("Checksums can't be computed on directories");
         }
         try {
-            return IoKit.checksum(new FileInputStream(file), checksum);
+            return checksum(Files.newInputStream(file.toPath()), checksum);
         } catch (FileNotFoundException e) {
             throw new InternalException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 计算流的校验码,计算后关闭流
+     *
+     * @param in       流
+     * @param checksum {@link Checksum}
+     * @return Checksum
+     * @throws InternalException 异常
+     */
+    public static Checksum checksum(InputStream in, Checksum checksum) throws InternalException {
+        Assert.notNull(in, "InputStream is null !");
+        if (null == checksum) {
+            checksum = new CRC32();
+        }
+        try {
+            in = new CheckedInputStream(in, checksum);
+            IoKit.copy(in, EmptyOutputStream.INSTANCE);
+        } finally {
+            IoKit.close(in);
+        }
+        return checksum;
     }
 
     /**
