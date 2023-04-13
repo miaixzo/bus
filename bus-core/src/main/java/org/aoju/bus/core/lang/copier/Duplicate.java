@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.copier;
 
-import java.io.Serializable;
 import java.util.function.Predicate;
 
 /**
@@ -37,9 +36,7 @@ import java.util.function.Predicate;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<T>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<T> {
 
     /**
      * 源
@@ -48,11 +45,11 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
     /**
      * 目标
      */
-    protected T target;
+    protected T dest;
     /**
-     * 拷贝过滤器，可以过滤掉不需要拷贝的源
+     * 拷贝过滤器,可以过滤掉不需要拷贝的源
      */
-    protected Predicate<T> copyPredicate;
+    protected Predicate<T> predicate;
 
     /**
      * 获取源
@@ -69,7 +66,7 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
      * @param src 源
      * @return this
      */
-    public C setSrc(final T src) {
+    public C setSrc(T src) {
         this.src = src;
         return (C) this;
     }
@@ -79,18 +76,18 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
      *
      * @return 目标
      */
-    public T getTarget() {
-        return target;
+    public T getDest() {
+        return dest;
     }
 
     /**
      * 设置目标
      *
-     * @param target 目标
+     * @param dest 目标
      * @return this
      */
-    public C setTarget(final T target) {
-        this.target = target;
+    public C setDest(T dest) {
+        this.dest = dest;
         return (C) this;
     }
 
@@ -99,18 +96,18 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
      *
      * @return 过滤器
      */
-    public Predicate<T> getCopyPredicate() {
-        return copyPredicate;
+    public Predicate<T> getPredicate() {
+        return predicate;
     }
 
     /**
      * 设置过滤器
      *
-     * @param copyPredicate 过滤器
+     * @param predicate 过滤器
      * @return this
      */
-    public C setCopyPredicate(final Predicate<T> copyPredicate) {
-        this.copyPredicate = copyPredicate;
+    public C setPredicate(Predicate<T> predicate) {
+        this.predicate = predicate;
         return (C) this;
     }
 

@@ -890,27 +890,15 @@ public class IoKit {
     }
 
     /**
-     * 文件转为{@link InputStream}
+     * 文件转为流
      *
      * @param file 文件
-     * @return {@link InputStream}
+     * @return {@link FileInputStream}
      */
-    public static InputStream toStream(File file) {
-        Assert.notNull(file);
-        return toStream(file.toPath());
-    }
-
-    /**
-     * 文件转为{@link InputStream}
-     *
-     * @param path {@link Path}，非空
-     * @return {@link InputStream}
-     */
-    public static InputStream toStream(final Path path) {
-        Assert.notNull(path);
+    public static FileInputStream toStream(File file) {
         try {
-            return Files.newInputStream(path);
-        } catch (final IOException e) {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
             throw new InternalException(e);
         }
     }

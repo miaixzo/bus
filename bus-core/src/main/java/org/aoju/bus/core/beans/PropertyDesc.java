@@ -29,7 +29,10 @@ import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.core.toolkit.AnnoKit;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.beans.Transient;
 import java.lang.reflect.Field;
@@ -152,7 +155,7 @@ public class PropertyDesc {
      */
     public Object getValue(Object bean) {
         if (null != this.getter) {
-            return LambdaKit.buildGetter(this.getter).apply(bean);
+            return ReflectKit.invoke(bean, this.getter);
         } else if (BeanKit.isPublic(this.field) || BeanKit.isProtected(this.field)) {
             return ReflectKit.getFieldValue(bean, this.field);
         }
@@ -241,7 +244,7 @@ public class PropertyDesc {
      */
     public PropertyDesc setValue(Object bean, Object value) {
         if (null != this.setter) {
-            LambdaKit.buildSetter(this.setter).accept(bean, value);
+            ReflectKit.invoke(bean, this.setter, value);
         } else if (BeanKit.isPublic(this.field) || BeanKit.isProtected(this.field)) {
             ReflectKit.setFieldValue(bean, this.field, value);
         }

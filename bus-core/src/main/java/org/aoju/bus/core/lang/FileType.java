@@ -951,7 +951,7 @@ public class FileType {
      * @throws InternalException 读取文件引起的异常
      */
     public static String getType(File file) throws InternalException {
-        InputStream in = null;
+        FileInputStream in = null;
         try {
             in = IoKit.toStream(file);
             return getType(in);
