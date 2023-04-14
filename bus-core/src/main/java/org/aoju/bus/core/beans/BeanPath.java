@@ -192,7 +192,7 @@ public class BeanPath implements Serializable {
                     subBean = MathKit.isInteger(patternParts.get(i + 1)) ? new ArrayList<>() : new HashMap<>();
                     BeanKit.setFieldValue(previousBean, patternPart, subBean);
                     // 上面setFieldValue中有可能发生对象转换, 因此此处重新获取子对象
-                    // 欲知详情请自行阅读FieldUtil.setFieldValue(Object, Field, Object)
+                    // 欲知详情请自行阅读FieldKit.setFieldValue(Object, Field, Object)
                     subBean = BeanKit.getFieldValue(previousBean, patternPart);
                 }
             }

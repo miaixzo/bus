@@ -449,7 +449,6 @@ public class NumberFormatter {
          */
         private static String thousandToChinese(int amountPart, boolean isUseTraditional) {
             if (amountPart == 0) {
-                // issue#I4R92H@Gitee
                 return String.valueOf(CHINESE_DIGITS_VALUE[0]);
             }
 
@@ -527,7 +526,7 @@ public class NumberFormatter {
                         // 非节单位，和单位前的单数字组合为值
                         int unitNumber = number;
                         if (0 == number && 0 == i) {
-                            // issue#1726，对于单位开头的数组，默认赋予1
+                            // 对于单位开头的数组，默认赋予1
                             // 十二 -> 一十二
                             // 百二 -> 一百二
                             unitNumber = 1;

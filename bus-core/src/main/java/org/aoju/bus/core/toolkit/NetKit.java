@@ -841,28 +841,17 @@ public class NetKit {
             return new ArrayList<>(0);
         }
 
-        if (maskBit == Normal._32) {
-            final List<String> list = new ArrayList<>(isAll ? 1 : 0);
-            if (isAll) {
-                list.add(ip);
-            }
-            return list;
-        }
-
-        String startIp = getBeginIpStr(ip, maskBit);
-        String endIp = getEndIpStr(ip, maskBit);
+        final long startIp = getBeginIpLong(ip, maskBit);
+        final long endIp = getEndIpLong(ip, maskBit);
         if (isAll) {
             return list(startIp, endIp);
         }
 
-        // 可用地址，排除开始和结束的地址
-        int lastDotIndex = startIp.lastIndexOf(Symbol.C_DOT) + 1;
-        startIp = StringKit.subPre(startIp, lastDotIndex) +
-                (Integer.parseInt(Objects.requireNonNull(StringKit.subSuf(startIp, lastDotIndex))) + 1);
-        lastDotIndex = endIp.lastIndexOf(Symbol.C_DOT) + 1;
-        endIp = StringKit.subPre(endIp, lastDotIndex) +
-                (Integer.parseInt(Objects.requireNonNull(StringKit.subSuf(endIp, lastDotIndex))) - 1);
-        return list(startIp, endIp);
+        // 可用地址: 排除开始和结束的地址
+        if (startIp + 1 > endIp - 1) {
+            return new ArrayList<>(0);
+        }
+        return list(startIp + 1, endIp - 1);
     }
 
     /**
@@ -888,41 +877,14 @@ public class NetKit {
         final int count = countByIpRange(ipFrom, ipTo);
 
         final List<String> ips = new ArrayList<>(count);
-        // 是否是循环的第一个值
-        boolean aIsStart = true, bIsStart = true, cIsStart = true;
-        // 是否是循环的最后一个值
-        boolean aIsEnd, bIsEnd, cIsEnd;
-        // 循环的结束值
-        final int aEnd = getPartOfIpLong(ipTo, 1);
-        int bEnd;
-        int cEnd;
-        int dEnd;
         final StringBuilder sb = StringKit.builder(15);
-        for (int a = getPartOfIpLong(ipFrom, 1); a <= aEnd; a++) {
-            aIsEnd = (a == aEnd);
-            // 本次循环的结束结束值
-            bEnd = aIsEnd ? getPartOfIpLong(ipTo, 2) : 255;
-            for (int b = (aIsStart ? getPartOfIpLong(ipFrom, 2) : 0); b <= bEnd; b++) {
-                // 在上一个循环是最后值的基础上进行判断
-                bIsEnd = aIsEnd && (b == bEnd);
-                cEnd = bIsEnd ? getPartOfIpLong(ipTo, 3) : 255;
-                for (int c = (bIsStart ? getPartOfIpLong(ipFrom, 3) : 0); c <= cEnd; c++) {
-                    // 在之前循环是最后值的基础上进行判断
-                    cIsEnd = bIsEnd && (c == cEnd);
-                    dEnd = cIsEnd ? getPartOfIpLong(ipTo, 4) : 255;
-                    for (int d = (cIsStart ? getPartOfIpLong(ipFrom, 4) : 0); d <= dEnd; d++) {
-                        sb.setLength(0);
-                        ips.add(sb.append(a).append(Symbol.C_DOT)
-                                .append(b).append(Symbol.C_DOT)
-                                .append(c).append(Symbol.C_DOT)
-                                .append(d)
-                                .toString());
-                    }
-                    cIsStart = false;
-                }
-                bIsStart = false;
-            }
-            aIsStart = false;
+        for (long ip = ipFrom, end = ipTo + 1; ip < end; ip++) {
+            sb.setLength(0);
+            ips.add(sb.append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT)
+                    .append((int) (ip >> 16) & 0xFF).append(Symbol.C_DOT)
+                    .append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT)
+                    .append((int) ip & 0xFF)
+                    .toString());
         }
         return ips;
     }
@@ -930,15 +892,15 @@ public class NetKit {
     /**
      * 根据 ip的long值 获取 ip字符串，即：xxx.xxx.xxx.xxx
      *
-     * @param longIp IP的long表示形式
+     * @param ip IP的long表示形式
      * @return 点分十进制ip地址
      */
-    public static String longToIpv4(final long longIp) {
+    public static String longToIpv4(final long ip) {
         return StringKit.builder(15)
-                .append(getPartOfIpLong(longIp, 1)).append(Symbol.C_DOT)
-                .append(getPartOfIpLong(longIp, 2)).append(Symbol.C_DOT)
-                .append(getPartOfIpLong(longIp, 3)).append(Symbol.C_DOT)
-                .append(getPartOfIpLong(longIp, 4))
+                .append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT)
+                .append((int) (ip >> 16) & 0xFF).append(Symbol.C_DOT)
+                .append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT)
+                .append((int) ip & 0xFF)
                 .toString();
     }
 
@@ -974,7 +936,7 @@ public class NetKit {
      * @param maskBit 给定的掩码位，如：30
      * @return 起始IP的长整型表示
      */
-    public static Long getBeginIpLong(final String ip, final int maskBit) {
+    public static long getBeginIpLong(final String ip, final int maskBit) {
         assertMaskBitValid(maskBit);
         return ipv4ToLong(ip) & MaskBit.getMaskIpLong(maskBit);
     }
@@ -997,7 +959,7 @@ public class NetKit {
      * @param maskBit 给定的掩码位，如：30
      * @return 终止IP的长整型表示
      */
-    public static Long getEndIpLong(final String ip, final int maskBit) {
+    public static long getEndIpLong(final String ip, final int maskBit) {
         return getBeginIpLong(ip, maskBit) + ~MaskBit.getMaskIpLong(maskBit);
     }
 
@@ -1039,6 +1001,7 @@ public class NetKit {
      * @return 掩码地址，点分十进制，如:255.255.255.0
      */
     public static String getMaskByMaskBit(final int maskBit) {
+        assertMaskBitValid(maskBit);
         return MaskBit.get(maskBit);
     }
 
@@ -1055,10 +1018,10 @@ public class NetKit {
         Assert.isTrue(fromIpLong <= toIpLong, "Start IP must be less than or equal to end IP!");
 
         return StringKit.builder(15)
-                .append(255 - getPartOfIpLong(toIpLong, 1) + getPartOfIpLong(fromIpLong, 1)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIpLong(toIpLong, 2) + getPartOfIpLong(fromIpLong, 2)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIpLong(toIpLong, 3) + getPartOfIpLong(fromIpLong, 3)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIpLong(toIpLong, 4) + getPartOfIpLong(fromIpLong, 4))
+                .append(255 - getPartOfIp(toIpLong, 1) + getPartOfIp(fromIpLong, 1)).append(Symbol.C_DOT)
+                .append(255 - getPartOfIp(toIpLong, 2) + getPartOfIp(fromIpLong, 2)).append(Symbol.C_DOT)
+                .append(255 - getPartOfIp(toIpLong, 3) + getPartOfIp(fromIpLong, 3)).append(Symbol.C_DOT)
+                .append(255 - getPartOfIp(toIpLong, 4) + getPartOfIp(fromIpLong, 4))
                 .toString();
     }
 
@@ -1070,9 +1033,7 @@ public class NetKit {
      * @return IP数量
      */
     public static int countByIpRange(final String fromIp, final String toIp) {
-        final long toIpLong = ipv4ToLong(toIp);
-        final long fromIpLong = ipv4ToLong(fromIp);
-        return countByIpRange(fromIpLong, toIpLong);
+        return countByIpRange(ipv4ToLong(fromIp), ipv4ToLong(toIp));
     }
 
     /**
@@ -1086,10 +1047,10 @@ public class NetKit {
         Assert.isTrue(fromIp <= toIp, "Start IP must be less than or equal to end IP!");
 
         int count = 1;
-        count += (getPartOfIpLong(toIp, 4) - getPartOfIpLong(fromIp, 4));
-        count += (getPartOfIpLong(toIp, 3) - getPartOfIpLong(fromIp, 3)) << 8;
-        count += (getPartOfIpLong(toIp, 2) - getPartOfIpLong(fromIp, 2)) << 16;
-        count += (getPartOfIpLong(toIp, 1) - getPartOfIpLong(fromIp, 1)) << 24;
+        count += (getPartOfIp(toIp, 4) - getPartOfIp(fromIp, 4))
+                + ((getPartOfIp(toIp, 3) - getPartOfIp(fromIp, 3)) << 8)
+                + ((getPartOfIp(toIp, 2) - getPartOfIp(fromIp, 2)) << 16)
+                + ((getPartOfIp(toIp, 1) - getPartOfIp(fromIp, 1)) << 24);
         return count;
     }
 
@@ -1143,10 +1104,13 @@ public class NetKit {
     private static long matchAddress(final Matcher matcher) {
         int addr = 0;
         // 每个点分十进制数字 转为 8位二进制
-        for (int i = 1; i <= 4; ++i) {
-            addr <<= 8;
-            addr |= Integer.parseInt(matcher.group(i));
-        }
+        addr |= Integer.parseInt(matcher.group(1));
+        addr <<= 8;
+        addr |= Integer.parseInt(matcher.group(2));
+        addr <<= 8;
+        addr |= Integer.parseInt(matcher.group(3));
+        addr <<= 8;
+        addr |= Integer.parseInt(matcher.group(4));
         // int的最高位无法直接使用，转为Long
         if (addr < 0) {
             return 0xffffffffL & addr;
@@ -1190,7 +1154,7 @@ public class NetKit {
      * @param position 指定位置，取值范围：[1,4]
      * @return ip地址指定部分的十进制值
      */
-    private static int getPartOfIpLong(final long ip, final int position) {
+    private static int getPartOfIp(final long ip, final int position) {
         switch (position) {
             case 1:
                 return ((int) ip >> 24) & 0xFF;

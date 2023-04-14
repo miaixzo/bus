@@ -29,7 +29,6 @@ import org.aoju.bus.core.beans.NullWrapper;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
@@ -3617,17 +3616,6 @@ public class ClassKit {
             Iterable<String> options,
             Iterable<? extends JavaFileObject> compilationUnits) {
         return SYSTEM_COMPILER.getTask(null, fileManager, diagnosticListener, options, null, compilationUnits);
-    }
-
-    /**
-     * 获取{@link JavaSourceCompiler}
-     *
-     * @param parent 父{@link ClassLoader}
-     * @return {@link JavaSourceCompiler}
-     * @see JavaSourceCompiler#create(ClassLoader)
-     */
-    public static JavaSourceCompiler getCompiler(ClassLoader parent) {
-        return JavaSourceCompiler.create(parent);
     }
 
     /**
