@@ -377,6 +377,15 @@ public class Fields {
     public final static FormatBuilder WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));
 
     /**
+     * 格式：秒时间戳（Unix时间戳）
+     */
+    public static final String NORM_FORMAT_SECONDS = "#sss";
+    /**
+     * 格式：毫秒时间戳
+     */
+    public static final String NORM_FORMAT_MILLISECONDS = "#SSS";
+
+    /**
      * 标准日期时间正则，每个字段支持单个数字或2个数字
      * <pre>
      *     yyyy-MM-dd HH:mm:ss.SSS

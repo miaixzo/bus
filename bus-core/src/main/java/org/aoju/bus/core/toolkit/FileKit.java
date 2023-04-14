@@ -32,7 +32,6 @@ import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.*;
 import org.aoju.bus.core.io.file.visitor.DeleteVisitor;
-import org.aoju.bus.core.io.file.visitor.MoveVisitor;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
@@ -242,6 +241,21 @@ public class FileKit {
         }
         final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
         return Files.isDirectory(path, options);
+    }
+
+    /**
+     * 判断是否为非目录
+     * <ul>
+     *     <li>如果path为{@code null}，返回{@code false}</li>
+     *     <li>如果path不存在，返回{@code false}</li>
+     * </ul>
+     *
+     * @param path          {@link Path}
+     * @param isFollowLinks 是否追踪到软链对应的真实地址
+     * @return 如果为目录true
+     */
+    public static boolean isExistsAndNotDirectory(final Path path, final boolean isFollowLinks) {
+        return exists(path, isFollowLinks) && false == isDirectory(path, isFollowLinks);
     }
 
     /**
@@ -576,6 +590,9 @@ public class FileKit {
      * @return 是否存在
      */
     public static boolean exists(Path path, boolean isFollowLinks) {
+        if (null == path) {
+            return false;
+        }
         final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
         return Files.exists(path, options);
     }
@@ -677,12 +694,11 @@ public class FileKit {
      * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
-     * @param fullFileOrDirPath 文件或者目录的路径
-     * @return 成功与否
+     * @param fileOrPath 文件或者目录的路径
      * @throws InternalException IO异常
      */
-    public static boolean delete(String fullFileOrDirPath) throws InternalException {
-        return delete(file(fullFileOrDirPath));
+    public static void delete(String fileOrPath) throws InternalException {
+        delete(file(fileOrPath));
     }
 
     /**
@@ -691,34 +707,11 @@ public class FileKit {
      * 某个文件删除失败会终止删除操作
      *
      * @param file 文件对象
-     * @return 成功与否
      * @throws InternalException IO异常
      */
-    public static boolean delete(File file) throws InternalException {
-        if (null == file || false == file.exists()) {
-            // 如果文件不存在或已被删除，此处返回true表示删除成功
-            return true;
-        }
-
-        if (file.isDirectory()) {
-            // 清空目录下所有文件和目录
-            boolean isOk = clean(file);
-            if (false == isOk) {
-                return false;
-            }
-        }
-
-        // 删除文件或清空后的目录
-        try {
-            Files.delete(file.toPath());
-        } catch (AccessDeniedException access) {
-            // 可能遇到只读文件，无法删除.使用 file 方法删除
-            return file.delete();
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-
-        return true;
+    public static void delete(File file) throws InternalException {
+        Assert.notNull(file, "File must be not null!");
+        delete(file.toPath());
     }
 
     /**
@@ -727,29 +720,10 @@ public class FileKit {
      * 某个文件删除失败会终止删除操作
      *
      * @param path 文件对象
-     * @return 成功与否
      * @throws InternalException IO异常
      */
-    public static boolean delete(Path path) throws InternalException {
-        if (Files.notExists(path)) {
-            return true;
-        }
-
-        try {
-            if (isDirectory(path)) {
-                Files.walkFileTree(path, DeleteVisitor.INSTANCE);
-            } else {
-                try {
-                    Files.delete(path);
-                } catch (AccessDeniedException access) {
-                    // 可能遇到只读文件，无法删除.使用 file 方法删除
-                    return path.toFile().delete();
-                }
-            }
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-        return true;
+    public static void delete(Path path) throws InternalException {
+        FileDeleter.of(path).delete();
     }
 
     /**
@@ -758,11 +732,10 @@ public class FileKit {
      * 某个文件删除失败会终止删除操作
      *
      * @param dirPath 文件夹路径
-     * @return 成功与否
      * @throws InternalException 异常
      */
-    public static boolean clean(String dirPath) throws InternalException {
-        return clean(file(dirPath));
+    public static void clean(String dirPath) throws InternalException {
+        clean(file(dirPath));
     }
 
     /**
@@ -771,25 +744,20 @@ public class FileKit {
      * 某个文件删除失败会终止删除操作
      *
      * @param directory 文件夹
-     * @return 成功与否
      * @throws InternalException 异常
      */
-    public static boolean clean(File directory) throws InternalException {
-        if (null == directory
-                || directory.exists() == false
-                || false == directory.isDirectory()) {
-            return true;
-        }
+    public static void clean(File directory) throws InternalException {
+        Assert.notNull(directory, "File must be not null!");
+        clean(directory.toPath());
+    }
 
-        final File[] files = directory.listFiles();
-        for (File childFile : files) {
-            boolean isOk = delete(childFile);
-            if (isOk == false) {
-                // 删除一个出错则本次删除任务失败
-                return false;
-            }
-        }
-        return true;
+    /**
+     * 清空目录
+     *
+     * @param path 目录路径
+     */
+    public static void clean(final Path path) {
+        FileDeleter.of(path).delete();
     }
 
     /**
@@ -1053,21 +1021,13 @@ public class FileKit {
      * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
      *
      * @param src     源文件路径
-     * @param dest    目标文件或目录,如果为目录使用与源文件相同的文件名
+     * @param target  目标文件或目录,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return Path
      * @throws InternalException 异常
      */
-    public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InternalException {
-        Assert.notNull(src, "Source File is null !");
-        Assert.notNull(dest, "Dest File or directory is null !");
-
-        Path destPath = isDirectory(dest) ? dest.resolve(src.getFileName()) : dest;
-        try {
-            return Files.copy(src, destPath, options);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
+    public static Path copyFile(Path src, Path target, StandardCopyOption... options) throws InternalException {
+        return FileCopier.of(src, target, options).copy();
     }
 
     /**
@@ -1084,26 +1044,6 @@ public class FileKit {
         try (FileInputStream fis = new FileInputStream(input)) {
             return IoKit.copy(fis, output);
         }
-    }
-
-    /**
-     * 复制文件或目录
-     * 情况如下：
-     *
-     * <pre>
-     * 1、src和dest都为目录,则将src下所有文件(包括子目录)拷贝到dest下
-     * 2、src和dest都为文件,直接复制,名字为dest
-     * 3、src为文件,dest为目录,将src拷贝到dest目录下
-     * </pre>
-     *
-     * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标目录或文件
-     * @throws InternalException 异常
-     */
-    public static File copyFile(File src, File dest, boolean isOverride) throws InternalException {
-        return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
     }
 
     /**
@@ -1137,27 +1077,7 @@ public class FileKit {
      * @throws InternalException 异常
      */
     public static File copy(File src, File dest, boolean isOverride) throws InternalException {
-        return FileCopier.create(src, dest).setOverride(isOverride).copy();
-    }
-
-    /**
-     * 复制文件或目录
-     * 情况如下：
-     *
-     * <pre>
-     * 1、src和dest都为目录,则将src下所有文件目录拷贝到dest下
-     * 2、src和dest都为文件,直接复制,名字为dest
-     * 3、src为文件,dest为目录,将src拷贝到dest目录下
-     * </pre>
-     *
-     * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标目录或文件
-     * @throws InternalException 异常
-     */
-    public static File copyContent(File src, File dest, boolean isOverride) throws InternalException {
-        return FileCopier.create(src, dest).setCopyContentIfDir(true).setOverride(isOverride).copy();
+        return FileCopier.of(src.toPath(), dest.toPath(), isOverride).copy().toFile();
     }
 
     /**
@@ -1225,56 +1145,65 @@ public class FileKit {
     }
 
     /**
-     * 移动文件或者目录
+     * 移动文件或目录到目标中，例如：
+     * <ul>
+     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d</li>
+     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     *     <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * </ul>
      *
-     * @param src        源文件或者目录
-     * @param target     目标文件或者目录
-     * @param isOverride 是否覆盖目标，只有目标为文件才覆盖
-     * @throws InternalException IO异常
+     * @param src        源文件或目录路径
+     * @param target     目标路径，如果为目录，则移动到此目录下
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标文件或目录
      */
-    public static void move(File src, File target, boolean isOverride) throws InternalException {
-        move(src.toPath(), target.toPath(), isOverride);
+    public static File move(final File src, final File target, final boolean isOverride) {
+        Assert.notNull(src, "Src file must be not null!");
+        Assert.notNull(target, "target file must be not null!");
+        return move(src.toPath(), target.toPath(), isOverride).toFile();
     }
 
     /**
-     * 移动文件或目录
-     * 当目标是目录时，会将源文件或文件夹整体移动至目标目录下
+     * 移动文件或目录到目标中，例如：
+     * <ul>
+     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d</li>
+     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     *     <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * </ul>
      *
      * @param src        源文件或目录路径
      * @param target     目标路径，如果为目录，则移动到此目录下
      * @param isOverride 是否覆盖目标文件
      * @return 目标文件Path
      */
-    public static Path move(Path src, Path target, boolean isOverride) {
-        Assert.notNull(src, "Src path must be not null !");
-        Assert.notNull(target, "Target path must be not null !");
+    public static Path move(final Path src, final Path target, final boolean isOverride) {
+        return FileMover.of(src, target, isOverride).move();
+    }
 
-        if(Files.exists(target) && equals(src, target)){
-            // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险
-            return target;
-        }
-
-        final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
-
-        // 自动创建目标的父目录
-        mkParentDirs(target);
-        try {
-            return Files.move(src, target, options);
-        } catch (final IOException e) {
-            if (e instanceof FileAlreadyExistsException) {
-                // 目标文件已存在，直接抛出异常
-                throw new InternalException(e);
-            }
-            // 移动失败，可能是跨分区移动导致的，采用递归移动方式
-            try {
-                Files.walkFileTree(src, new MoveVisitor(src, target, options));
-                // 移动后空目录没有删除
-                delete(src);
-            } catch (final IOException e2) {
-                throw new InternalException(e2);
-            }
-            return target;
-        }
+    /**
+     * 移动文件或目录内容到目标中，例如：
+     * <ul>
+     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行</li>
+     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d</li>
+     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     *     <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中</li>
+     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中</li>
+     * </ul>
+     *
+     * @param src        源文件或目录路径
+     * @param target     目标路径，如果为目录，则移动到此目录下
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标文件Path
+     */
+    public static Path moveContent(final Path src, final Path target, final boolean isOverride) {
+        return FileMover.of(src, target, isOverride).moveContent();
     }
 
     /**

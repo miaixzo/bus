@@ -127,7 +127,6 @@ public class UTCDateParser extends NormalMotd implements DateParser {
 
     /**
      * 如果日期中的毫秒部分超出3位，会导致秒数增加，因此只保留前三位<br>
-     * issue#2887
      *
      * @param dateStr 日期字符串
      * @param before  毫秒部分的前一个字符

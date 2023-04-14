@@ -1034,6 +1034,9 @@ public class Images implements Serializable {
      * @return 旋转后的图片
      */
     public Images rotate(int degree) {
+        if(0 == degree){
+            return this;
+        }
         final java.awt.Image image = getValidSrcImg();
         int width = image.getWidth(null);
         int height = image.getHeight(null);
