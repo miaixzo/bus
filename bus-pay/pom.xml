@@ -47,7 +47,7 @@
         <servlet.version>6.0.0</servlet.version>
         <zxing.version>3.5.1</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
-        <spring.boot.version>3.0.2</spring.boot.version>
+        <spring.boot.version>3.0.5</spring.boot.version>
         <weixin.pay.version>4.4.5.B</weixin.pay.version>
         <alipay.version>4.35.45.ALL</alipay.version>
         <paypal.version>2.0.0</paypal.version>
@@ -132,7 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>${project.compiler.version}</source>
                     <target>${project.compiler.version}</target>
@@ -141,7 +141,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
