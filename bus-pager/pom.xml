@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <mybatis.version>3.5.11</mybatis.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
         <jsqlparser.version>4.5</jsqlparser.version>
         <hikaricp.version>5.0.1</hikaricp.version>
         <druid.version>1.2.15</druid.version>

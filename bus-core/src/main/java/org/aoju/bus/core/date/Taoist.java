@@ -63,7 +63,7 @@ public class Taoist {
     /**
      * 日期对应的节日
      */
-    public static final Map<String, List<Festival>> FESTIVAL = new HashMap<String, List<Festival>>() {
+    public static final Map<String, List<Festival>> FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1;
 
         {
@@ -169,7 +169,7 @@ public class Taoist {
     /**
      * 八会日
      */
-    public static final Map<String, String> BA_HUI = new HashMap<String, String>() {
+    public static final Map<String, String> BA_HUI = new HashMap<>() {
 
         private static final long serialVersionUID = 1;
 
@@ -188,7 +188,7 @@ public class Taoist {
     /**
      * 八节日
      */
-    public static final Map<String, String> BA_JIE = new HashMap<String, String>() {
+    public static final Map<String, String> BA_JIE = new HashMap<>() {
 
         private static final long serialVersionUID = 1;
 

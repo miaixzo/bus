@@ -45,7 +45,7 @@
         <spring.boot.version>3.0.5</spring.boot.version>
         <curator.version>5.4.0</curator.version>
         <redisson.version>3.17.4</redisson.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
     </properties>
 
     <dependencies>
