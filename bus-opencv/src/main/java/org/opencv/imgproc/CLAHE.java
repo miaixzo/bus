@@ -114,7 +114,7 @@ public class CLAHE extends Algorithm {
     // C++:  void cv::CLAHE::collectGarbage()
     private static native void collectGarbage_0(long nativeObj);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

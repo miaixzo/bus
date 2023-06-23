@@ -67,7 +67,7 @@ public class HexKit {
         }
         return true;
     }
-    
+
     /**
      * 将字节数组转换为十六进制字符数组
      *

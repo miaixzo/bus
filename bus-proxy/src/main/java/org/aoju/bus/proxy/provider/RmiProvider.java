@@ -44,7 +44,7 @@ import java.rmi.server.RMIClientSocketFactory;
  */
 public class RmiProvider implements Provider {
 
-    private String host = Http.HTTP_HOST_LOCAL;
+    private String host = Http.HOST_LOCAL;
     private int port = Registry.REGISTRY_PORT;
     private RMIClientSocketFactory clientSocketFactory;
     private String name;

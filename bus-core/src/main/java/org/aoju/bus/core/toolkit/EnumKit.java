@@ -341,9 +341,7 @@ public class EnumKit {
      */
     public static Map<String, Object> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {
         final Enum<?>[] enums = clazz.getEnumConstants();
-        if (null == enums) {
-            return null;
-        }
+        Assert.notNull(enums, "Class [{}] is not an Enum type!", clazz);
         final Map<String, Object> map = MapKit.newHashMap(enums.length, true);
         for (Enum<?> e : enums) {
             map.put(e.name(), ReflectKit.getFieldValue(e, fieldName));

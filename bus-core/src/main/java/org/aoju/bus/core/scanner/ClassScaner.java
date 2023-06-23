@@ -77,10 +77,6 @@ public class ClassScaner {
      */
     private final java.nio.charset.Charset charset;
     /**
-     * 是否初始化类
-     */
-    private boolean initialize;
-    /**
      * 扫描结果集
      */
     private final Set<Class<?>> classes = new HashSet<>();
@@ -88,6 +84,10 @@ public class ClassScaner {
      * 获取加载错误的类名列表
      */
     private final Set<String> classesOfLoadError = new HashSet<>();
+    /**
+     * 是否初始化类
+     */
+    private boolean initialize;
     /**
      * 忽略loadClass时的错误
      */

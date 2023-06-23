@@ -32,6 +32,7 @@ import java.util.*;
  * 按照给定的排序规则,排序元素,当队列满时,
  * 按照给定的排序规则淘汰末尾元素
  *
+ * @param <E> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

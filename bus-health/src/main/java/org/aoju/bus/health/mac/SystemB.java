@@ -59,6 +59,19 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     int AF_INET6 = 30; // The Internet Protocol version 6 (IPv6) address family.
 
     /**
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes
+     * the "record not found" case)
+     */
+    MacUtmpx getutxent();
+
+    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
+
+    /**
      * Mac connection info
      */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad"})
@@ -160,17 +173,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Reads a line from the current file position in the utmp file. It returns a
-     * pointer to a structure containing the fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes
-     * the "record not found" case)
-     */
-    MacUtmpx getutxent();
-
-    /**
      * Union for TCP or internet socket info
      */
     class Pri extends Union {
@@ -179,8 +181,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         // max element is 524 bytes
         public byte[] max_size = new byte[524];
     }
-
-    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
     /**
      * Mac socket info

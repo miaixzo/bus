@@ -15,16 +15,16 @@
 		<img src="https://img.shields.io/badge/Java-17+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.7.0-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.0.5-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-3.1.6-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-4.1.2-blue.svg">
+		<img src="https://img.shields.io/badge/poi-5.2.3-blue.svg">
 	</a>
 	<a target="_blank" href="https://opensource.org/licenses/MIT">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
@@ -97,7 +97,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>8.0.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
@@ -150,7 +150,7 @@ welcome.
 
 ### Issue:
 
-- [版本情况]：jdk-openjdk_8_201 bus-xxx-6.x.x（请确保最新版本尝试是否还存在问题）
+- [版本情况]：jdk-openjdk_17 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
 - [问题描述]：（包括截图）
 - [复现代码]：
 - [堆栈信息]：
@@ -179,4 +179,4 @@ Thanks JetBrains for the OpenSource license.
 ##
    
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"Talk is cheap, Show me the code."
-，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。 

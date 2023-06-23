@@ -79,6 +79,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
     private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
     private final int bitness;
+    private final OpenBsdOperatingSystem os;
     private String name;
     private String path = "";
     private String user;
@@ -102,7 +103,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private long contextSwitches;
     private String commandLineBackup;
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-    private final OpenBsdOperatingSystem os;
 
     public OpenBsdOSProcess(int pid, Map<OpenBsdOperatingSystem.PsKeywords, String> psMap, OpenBsdOperatingSystem os) {
         super(pid);

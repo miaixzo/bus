@@ -26,11 +26,12 @@
 package org.aoju.bus.core.lang.mutable;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 
 /**
- * 可变<code>Object</code>
+ * 可变{@code Object}
  *
  * @param <T> 可变的类型
  * @author Kimi Liu
@@ -82,7 +83,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
         }
         if (this.getClass() == object.getClass()) {
             final MutableObject<?> that = (MutableObject<?>) object;
-            return this.value.equals(that.value);
+            return ObjectKit.equals(this.value, that.value);
         }
         return false;
     }

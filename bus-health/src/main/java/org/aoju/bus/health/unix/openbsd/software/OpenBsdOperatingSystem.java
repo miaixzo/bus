@@ -52,6 +52,13 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             .collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
+    private static long querySystemBootTime() {
+        // Boot time will be the first consecutive string of digits.
+        return Builder.parseLongOrDefault(
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                System.currentTimeMillis() / 1000);
+    }
+
     private List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
         // https://man.openbsd.org/ps#KEYWORDS
@@ -76,13 +83,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return procs;
-    }
-
-    private static long querySystemBootTime() {
-        // Boot time will be the first consecutive string of digits.
-        return Builder.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
-                System.currentTimeMillis() / 1000);
     }
 
     @Override

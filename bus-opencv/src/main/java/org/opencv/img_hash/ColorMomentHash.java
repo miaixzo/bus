@@ -3,6 +3,9 @@
 //
 package org.opencv.img_hash;
 
+import org.opencv.img_hash.ColorMomentHash;
+import org.opencv.img_hash.ImgHashBase;
+
 // C++: class ColorMomentHash
 /**
  * Image hash based on color moments.
@@ -35,7 +38,7 @@ public class ColorMomentHash extends ImgHashBase {
     // C++: static Ptr_ColorMomentHash cv::img_hash::ColorMomentHash::create()
     private static native long create_0();
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

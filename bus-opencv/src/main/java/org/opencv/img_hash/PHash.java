@@ -3,6 +3,8 @@
 //
 package org.opencv.img_hash;
 
+import org.opencv.img_hash.PHash;
+
 // C++: class PHash
 /**
  * pHash
@@ -37,7 +39,7 @@ public class PHash extends ImgHashBase {
     // C++: static Ptr_PHash cv::img_hash::PHash::create()
     private static native long create_0();
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

@@ -3,6 +3,8 @@
 //
 package org.opencv.img_hash;
 
+import org.opencv.img_hash.MarrHildrethHash;
+
 // C++: class MarrHildrethHash
 /**
  * Marr-Hildreth Operator Based Hash, slowest but more discriminative.
@@ -106,7 +108,7 @@ public class MarrHildrethHash extends ImgHashBase {
     private static native long create_1(float alpha);
     private static native long create_2();
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

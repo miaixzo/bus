@@ -46,7 +46,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.beans.XMLDecoder;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -231,47 +230,6 @@ public class XmlKit {
         } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new InternalException(e);
         }
-    }
-
-    /**
-     * 从XML中读取对象 Reads serialized object from the XML file.
-     *
-     * @param <T>    对象类型
-     * @param source XML文件
-     * @return 对象
-     */
-    public static <T> T readObjectFromXml(File source) {
-        return readObjectFromXml(new InputSource(FileKit.getInputStream(source)));
-    }
-
-    /**
-     * 从XML中读取对象 Reads serialized object from the XML file.
-     *
-     * @param <T>    对象类型
-     * @param xmlStr XML内容
-     * @return 对象
-     */
-    public static <T> T readObjectFromXml(String xmlStr) {
-        return readObjectFromXml(new InputSource(StringKit.getReader(xmlStr)));
-    }
-
-    /**
-     * 从XML中读取对象 Reads serialized object from the XML file.
-     *
-     * @param <T>    对象类型
-     * @param source {@link InputSource}
-     * @return 对象
-     */
-    public static <T> T readObjectFromXml(InputSource source) {
-        Object result;
-        XMLDecoder xmldec = null;
-        try {
-            xmldec = new XMLDecoder(source);
-            result = xmldec.readObject();
-        } finally {
-            IoKit.close(xmldec);
-        }
-        return (T) result;
     }
 
     /**

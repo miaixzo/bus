@@ -43,6 +43,7 @@ import java.util.function.UnaryOperator;
 /**
  * 为需要从类的层级结构中获取注解的{@link AnnotationScanner}提供基本实现
  *
+ * @param <T> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

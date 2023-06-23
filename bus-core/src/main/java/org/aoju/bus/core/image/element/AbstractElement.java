@@ -32,6 +32,7 @@ import org.aoju.bus.core.lang.Scale;
  *
  * @author Kimi Liu
  * @since Java 17+
+ * @param <T>    对象泛型
  */
 public abstract class AbstractElement<T extends AbstractElement> {
 

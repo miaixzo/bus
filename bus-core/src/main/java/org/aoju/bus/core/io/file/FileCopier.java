@@ -26,289 +26,165 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.exception.InternalException;
+import org.aoju.bus.core.io.file.visitor.CopyVisitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Duplicate;
-import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
 
 /**
- * 文件拷贝器
- * 支持以下几种情况：
- * 1、文件复制到文件
- * 2、文件复制到目录
- * 3、目录复制到目录
- * 4、目录下的文件和目录复制到另一个目录
+ * 文件复制封装
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FileCopier extends Duplicate<File, FileCopier> {
+public class FileCopier extends Duplicate<Path, FileCopier> {
+
+    private static final long serialVersionUID = 1L;
+
+    private final CopyOption[] options;
 
     /**
-     * 是否覆盖目标文件
+     * 创建文件或目录拷贝器
+     *
+     * @param src        源文件或目录
+     * @param target     目标文件或目录
+     * @param isOverride 是否覆盖目标文件
+     * @return {@code PathCopier}
      */
-    private boolean isOverride;
+    public static FileCopier of(final Path src, final Path target, final boolean isOverride) {
+        return of(src, target, isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{});
+    }
+
     /**
-     * 是否拷贝所有属性
+     * 创建文件或目录拷贝器
+     *
+     * @param src     源文件或目录
+     * @param target  目标文件或目录
+     * @param options 拷贝参数
+     * @return {@code PathCopier}
      */
-    private boolean isCopyAttributes;
-    /**
-     * 当拷贝来源是目录时是否只拷贝目录下的内容
-     */
-    private boolean isCopyContentIfDir;
-    /**
-     * 当拷贝来源是目录时是否只拷贝文件而忽略子目录
-     */
-    private boolean isOnlyCopyFile;
+    public static FileCopier of(final Path src, final Path target, final CopyOption[] options) {
+        return new FileCopier(src, target, options);
+    }
 
     /**
      * 构造
      *
-     * @param src  源文件
-     * @param dest 目标文件
+     * @param src     源文件或目录，不能为{@code null}且必须存在
+     * @param target  目标文件或目录
+     * @param options 移动参数
      */
-    public FileCopier(File src, File dest) {
+    public FileCopier(final Path src, final Path target, final CopyOption[] options) {
+        Assert.notNull(target, "Src path must be not null !");
+        if (false == FileKit.exists(src, false)) {
+            throw new IllegalArgumentException("Src path is not exist!");
+        }
         this.src = src;
-        this.dest = dest;
+        this.target = Assert.notNull(target, "Target path must be not null !");
+        this.options = ObjectKit.defaultIfNull(options, new CopyOption[]{});
     }
 
     /**
-     * 新建一个文件复制器
+     * 复制src到target中
+     * <ul>
+     *     <li>src路径和target路径相同时，不执行操作</li>
+     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变</li>
+     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     *     <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
+     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录</li>
+     *     <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * </ul>
      *
-     * @param srcPath  源文件路径(相对ClassPath路径或绝对路径)
-     * @param destPath 目标文件路径(相对ClassPath路径或绝对路径)
-     * @return this
-     */
-    public static FileCopier create(String srcPath, String destPath) {
-        return new FileCopier(FileKit.file(srcPath), FileKit.file(destPath));
-    }
-
-    /**
-     * 新建一个文件复制器
-     *
-     * @param src  源文件
-     * @param dest 目标文件
-     * @return this
-     */
-    public static FileCopier create(File src, File dest) {
-        return new FileCopier(src, dest);
-    }
-
-    /**
-     * 是否覆盖目标文件
-     *
-     * @return 是否覆盖目标文件
-     */
-    public boolean isOverride() {
-        return isOverride;
-    }
-
-    /**
-     * 设置是否覆盖目标文件
-     *
-     * @param isOverride 是否覆盖目标文件
-     * @return this
-     */
-    public FileCopier setOverride(boolean isOverride) {
-        this.isOverride = isOverride;
-        return this;
-    }
-
-    /**
-     * 是否拷贝所有属性
-     *
-     * @return 是否拷贝所有属性
-     */
-    public boolean isCopyAttributes() {
-        return isCopyAttributes;
-    }
-
-    /**
-     * 设置是否拷贝所有属性
-     *
-     * @param isCopyAttributes 是否拷贝所有属性
-     * @return this
-     */
-    public FileCopier setCopyAttributes(boolean isCopyAttributes) {
-        this.isCopyAttributes = isCopyAttributes;
-        return this;
-    }
-
-    /**
-     * 当拷贝来源是目录时是否只拷贝目录下的内容
-     *
-     * @return 当拷贝来源是目录时是否只拷贝目录下的内容
-     */
-    public boolean isCopyContentIfDir() {
-        return isCopyContentIfDir;
-    }
-
-    /**
-     * 当拷贝来源是目录时是否只拷贝目录下的内容
-     *
-     * @param isCopyContentIfDir 是否只拷贝目录下的内容
-     * @return this
-     */
-    public FileCopier setCopyContentIfDir(boolean isCopyContentIfDir) {
-        this.isCopyContentIfDir = isCopyContentIfDir;
-        return this;
-    }
-
-    /**
-     * 当拷贝来源是目录时是否只拷贝文件而忽略子目录
-     *
-     * @return 当拷贝来源是目录时是否只拷贝文件而忽略子目录
-     */
-    public boolean isOnlyCopyFile() {
-        return isOnlyCopyFile;
-    }
-
-    /**
-     * 设置当拷贝来源是目录时是否只拷贝文件而忽略子目录
-     *
-     * @param isOnlyCopyFile 当拷贝来源是目录时是否只拷贝文件而忽略子目录
-     * @return the fileCopier
-     */
-    public FileCopier setOnlyCopyFile(boolean isOnlyCopyFile) {
-        this.isOnlyCopyFile = isOnlyCopyFile;
-        return this;
-    }
-
-    /**
-     * 执行拷贝
-     * 拷贝规则为：
-     * <pre>
-     * 1、源为文件,目标为已存在目录,则拷贝到目录下,文件名不变
-     * 2、源为文件,目标为不存在路径,则目标以文件对待(自动创建父级目录)比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
-     * 3、源为文件,目标是一个已存在的文件,则当{@link #setOverride(boolean)}设为true时会被覆盖,默认不覆盖
-     * 4、源为目录,目标为已存在目录,当{@link #setCopyContentIfDir(boolean)}为true时,只拷贝目录中的内容到目标目录中,否则整个源目录连同其目录拷贝到目标目录中
-     * 5、源为目录,目标为不存在路径,则自动创建目标为新目录,然后按照规则4复制
-     * 6、源为目录,目标为文件,抛出IO异常
-     * 7、源路径和目标路径相同时,抛出IO异常
-     * </pre>
-     *
-     * @return 拷贝后目标的文件或目录
+     * @return 目标Path
      * @throws InternalException IO异常
      */
     @Override
-    public File copy() throws InternalException {
-        final File src = this.src;
-        final File dest = this.dest;
-        // check
-        Assert.notNull(src, "Source File is null !");
-        if (false == src.exists()) {
-            throw new InternalException("File not exist: " + src);
-        }
-        Assert.notNull(dest, "Destination File or directory is null !");
-        if (FileKit.equals(src, dest)) {
-            throw new InternalException("Files '{" + src + "}' and '{" + dest + "}' are equal");
-        }
-
-        if (src.isDirectory()) {// 复制目录
-            if (dest.exists() && false == dest.isDirectory()) {
-                //源为目录,目标为文件,抛出IO异常
-                throw new InternalException("Src is a directory but dest is a file!");
-            }
-            final File subTarget = isCopyContentIfDir ? dest : FileKit.mkdir(FileKit.file(dest, src.getName()));
-            internalCopyDirContent(src, subTarget);
-        } else {// 复制文件
-            internalCopyFile(src, dest);
-        }
-        return dest;
-    }
-
-    /**
-     * 拷贝目录内容,只用于内部,不做任何安全检查
-     * 拷贝内容的意思为源目录下的所有文件和目录拷贝到另一个目录下,而不拷贝源目录本身
-     *
-     * @param src  源目录
-     * @param dest 目标目录
-     * @throws InternalException IO异常
-     */
-    private void internalCopyDirContent(File src, File dest) throws InternalException {
-        if (null != predicate && false == predicate.test(src)) {
-            //被过滤的目录跳过
-            return;
-        }
-
-        if (false == dest.exists()) {
-            //目标为不存在路径,创建为目录
-            dest.mkdirs();
-        } else if (false == dest.isDirectory()) {
-            throw new InternalException(StringKit.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
-        }
-
-        final String[] files = src.list();
-        if (ArrayKit.isNotEmpty(files)) {
-            File srcFile;
-            File destFile;
-            for (String file : files) {
-                srcFile = new File(src, file);
-                destFile = this.isOnlyCopyFile ? dest : new File(dest, file);
-                // 递归复制
-                if (srcFile.isDirectory()) {
-                    internalCopyDirContent(srcFile, destFile);
+    public Path copy() throws InternalException {
+        if (FileKit.isDirectory(src)) {
+            if (FileKit.exists(target, false)) {
+                if (FileKit.isDirectory(target)) {
+                    return _copyContent(src, target.resolve(src.getFileName()), options);
                 } else {
-                    internalCopyFile(srcFile, destFile);
+                    // src目录，target文件，无法拷贝
+                    throw new IllegalArgumentException("Can not copy directory to a file!");
                 }
+            } else {
+                // 目标不存在，按照重命名对待
+                return _copyContent(src, target, options);
             }
         }
+        return copyFile(src, target, options);
     }
 
     /**
-     * 拷贝文件,只用于内部,不做任何安全检查
-     * 情况如下：
-     * <pre>
-     * 1、如果目标是一个不存在的路径,则目标以文件对待(自动创建父级目录)比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
-     * 2、如果目标是一个已存在的目录,则文件拷贝到此目录下,文件名与原文件名一致
-     * </pre>
+     * 复制src的内容到target中
+     * <ul>
+     *     <li>src路径和target路径相同时，不执行操作</li>
+     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变</li>
+     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     *     <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
+     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录</li>
+     *     <li>src为目录，target为文件，抛出IO异常</li>
+     * </ul>
      *
-     * @param src  源文件,必须为文件
-     * @param dest 目标文件,如果非覆盖模式必须为目录
+     * @return 目标Path
      * @throws InternalException IO异常
      */
-    private void internalCopyFile(File src, File dest) throws InternalException {
-        if (null != predicate && false == predicate.test(src)) {
-            // 被过滤的文件跳过
-            return;
+    public Path copyContent() throws InternalException {
+        if (FileKit.isDirectory(src, false)) {
+            return _copyContent(src, target, options);
         }
+        return copyFile(src, target, options);
+    }
 
-        // 如果已经存在目标文件,切为不覆盖模式,跳过之
-        if (dest.exists()) {
-            if (dest.isDirectory()) {
-                // 目标为目录,目录下创建同名文件
-                dest = new File(dest, src.getName());
-            }
-
-            if (dest.exists() && false == isOverride) {
-                // 非覆盖模式跳过
-                return;
-            }
-        } else {
-            // 路径不存在则创建父目录
-            FileKit.mkParentDirs(dest);
-        }
-
-        final List<CopyOption> optionList = new ArrayList<>(2);
-        if (isOverride) {
-            optionList.add(StandardCopyOption.REPLACE_EXISTING);
-        }
-        if (isCopyAttributes) {
-            optionList.add(StandardCopyOption.COPY_ATTRIBUTES);
-        }
-
+    /**
+     * 拷贝目录下的所有文件或目录到目标目录中，此方法不支持文件对文件的拷贝
+     * <ul>
+     *     <li>源文件为目录，目标也为目录或不存在，则拷贝目录下所有文件和目录到目标目录下</li>
+     *     <li>源文件为文件，目标为目录或不存在，则拷贝文件到目标目录下</li>
+     * </ul>
+     *
+     * @param src     源文件路径，如果为目录只在目标中创建新目录
+     * @param target  目标目录，如果为目录使用与源文件相同的文件名
+     * @param options {@link StandardCopyOption}
+     * @return Path
+     * @throws InternalException IO异常
+     */
+    private static Path _copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
         try {
-            Files.copy(src.toPath(), dest.toPath(), optionList.toArray(new CopyOption[0]));
-        } catch (IOException e) {
+            Files.walkFileTree(src, new CopyVisitor(src, target, options));
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+        return target;
+    }
+
+    /**
+     * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
+     * 此方法不支持递归拷贝目录，如果src传入是目录，只会在目标目录中创建空目录
+     *
+     * @param src     源文件路径，如果为目录只在目标中创建新目录
+     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
+     * @param options {@link StandardCopyOption}
+     * @return Path
+     * @throws InternalException IO异常
+     */
+    private static Path copyFile(final Path src, final Path target, final CopyOption... options) throws InternalException {
+        Assert.notNull(src, "Source File is null !");
+        Assert.notNull(target, "Destination File or directory is null !");
+
+        final Path targetPath = FileKit.isDirectory(target) ? target.resolve(src.getFileName()) : target;
+        // 创建级联父目录
+        FileKit.mkParentDirs(targetPath);
+        try {
+            return Files.copy(src, targetPath, options);
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }

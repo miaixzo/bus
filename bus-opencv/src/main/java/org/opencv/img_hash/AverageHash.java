@@ -3,6 +3,8 @@
 //
 package org.opencv.img_hash;
 
+import org.opencv.img_hash.AverageHash;
+
 // C++: class AverageHash
 /**
  * Computes average hash value of the input image
@@ -36,7 +38,7 @@ public class AverageHash extends ImgHashBase {
     // C++: static Ptr_AverageHash cv::img_hash::AverageHash::create()
     private static native long create_0();
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

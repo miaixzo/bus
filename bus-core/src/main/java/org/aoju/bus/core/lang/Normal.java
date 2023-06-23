@@ -363,17 +363,16 @@ public class Normal {
     public static final String UPPER_LOWER = UPPER + LOWER;
 
     /**
+     * 字符串: 小字母数字
+     */
+    public static final String UPPER_LOWER_NUMBER = UPPER_LOWER + NUMBER;
+    /**
      * 字符串: 小写字母 + 大写字母
      */
     public static final String LOWER_UPPER = LOWER + UPPER;
 
     /**
-     * 字符串: 大小字母数字
-     */
-    public static final String UPPER_LOWER_NUMBER = UPPER_LOWER + NUMBER;
-
-    /**
-     * 字符串: 大小字母数字
+     * 字符串: 大字母数字
      */
     public static final String LOWER_UPPER_NUMBER = LOWER_UPPER + NUMBER;
 

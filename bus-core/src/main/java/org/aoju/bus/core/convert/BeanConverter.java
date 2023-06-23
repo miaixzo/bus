@@ -106,7 +106,7 @@ public class BeanConverter implements Converter, Serializable {
             }
 
             // 限定被转换对象类型
-            return BeanCopier.create(value, ReflectKit.newInstanceIfPossible(targetClass), targetType, this.copyOptions).copy();
+            return BeanCopier.of(value, ReflectKit.newInstanceIfPossible(targetClass), targetType, this.copyOptions).copy();
         } else if (value instanceof byte[]) {
             // 尝试反序列化
             return ObjectKit.deserialize((byte[]) value);

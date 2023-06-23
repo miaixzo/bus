@@ -66,13 +66,6 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     // Whether to match task manager using Processor Utility ticks
     private static final boolean USE_CPU_UTILITY = VersionHelpers.IsWindows8OrGreater()
             && Config.get(Config.OS_WINDOWS_CPU_UTILITY, false);
-    // This tick query is memoized to enforce a minimum elapsed time for determining
-    // the capacity base multiplier
-    private final Supplier<Pair<List<String>, Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
-            ? Memoize.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters, TimeUnit.MILLISECONDS.toNanos(300L))
-            : null;
-    // populated by initProcessorCounts called by the parent constructor
-    private Map<String, Integer> numaNodeProcToLogicalProcMap;
     // Whether to start a daemon thread ot calculate load average
     private static final boolean USE_LOAD_AVERAGE = Config.get(Config.OSHI_OS_WINDOWS_LOADAVERAGE, false);
 
@@ -82,6 +75,13 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
+    // This tick query is memoized to enforce a minimum elapsed time for determining
+    // the capacity base multiplier
+    private final Supplier<Pair<List<String>, Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
+            ? Memoize.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters, TimeUnit.MILLISECONDS.toNanos(300L))
+            : null;
+    // populated by initProcessorCounts called by the parent constructor
+    private Map<String, Integer> numaNodeProcToLogicalProcMap;
     // Store the initial query and start the memoizer expiration
     private Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>> initialUtilityCounters = USE_CPU_UTILITY
             ? processorUtilityCounters.get().getRight()

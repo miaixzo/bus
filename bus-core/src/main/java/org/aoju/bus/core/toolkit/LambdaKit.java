@@ -171,7 +171,7 @@ public class LambdaKit {
      * @param <R>       getter方法返回值类型
      * @return Obj::getXxx
      */
-    public static <T, R> Function<T, R> buildGetter(Method getMethod) {
+    public static <T, R> Function<T, R> buildGetter(final Method getMethod) {
         return LambdaFactory.build(Function.class, getMethod);
     }
 
@@ -184,7 +184,7 @@ public class LambdaKit {
      * @param <R>       getter方法返回值类型
      * @return Obj::getXxx
      */
-    public static <T, R> Function<T, R> buildGetter(Class<T> clazz, String fieldName) {
+    public static <T, R> Function<T, R> buildGetter(final Class<T> clazz, final String fieldName) {
         return LambdaFactory.build(Function.class, BeanKit.getBeanDesc(clazz).getGetter(fieldName));
     }
 
@@ -196,7 +196,7 @@ public class LambdaKit {
      * @param <P>       setter方法返回的值类型
      * @return Obj::setXxx
      */
-    public static <T, P> BiConsumer<T, P> buildSetter(Method setMethod) {
+    public static <T, P> BiConsumer<T, P> buildSetter(final Method setMethod) {
         return LambdaFactory.build(BiConsumer.class, setMethod);
     }
 
@@ -209,7 +209,7 @@ public class LambdaKit {
      * @param <P>       setter方法返回的值类型
      * @return Obj::setXxx
      */
-    public static <T, P> BiConsumer<T, P> buildSetter(Class<T> clazz, String fieldName) {
+    public static <T, P> BiConsumer<T, P> buildSetter(final Class<T> clazz, final String fieldName) {
         return LambdaFactory.build(BiConsumer.class, BeanKit.getBeanDesc(clazz).getSetter(fieldName));
     }
 
@@ -223,7 +223,7 @@ public class LambdaKit {
      * @param <F>         函数式接口类型
      * @return Obj::method
      */
-    public static <F> F lambda(Class<F> lambdaType, Class<?> clazz, String methodName, Class... paramsTypes) {
+    public static <F> F lambda(final Class<F> lambdaType, Class<?> clazz, String methodName, Class... paramsTypes) {
         return LambdaFactory.build(lambdaType, clazz, methodName, paramsTypes);
     }
 

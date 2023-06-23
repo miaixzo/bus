@@ -87,7 +87,7 @@ public class PatternMatcher {
     private static boolean isMatchDayOfMonth(PartMatcher matcher, int dayOfMonth, int month, boolean isLeapYear) {
         return ((matcher instanceof DayOfMonthMatcher)
                 ? ((DayOfMonthMatcher) matcher).match(dayOfMonth, month, isLeapYear)
-                : matcher.match(dayOfMonth));
+                : matcher.test(dayOfMonth));
     }
 
     /**
@@ -117,7 +117,7 @@ public class PatternMatcher {
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     public boolean matchWeek(int dayOfWeekValue) {
-        return matchers[5].match(dayOfWeekValue);
+        return matchers[5].test(dayOfWeekValue);
     }
 
     /**
@@ -133,13 +133,13 @@ public class PatternMatcher {
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     private boolean match(int second, int minute, int hour, int dayOfMonth, int month, int dayOfWeek, int year) {
-        return ((second < 0) || matchers[0].match(second)) // 匹配秒（非秒匹配模式下始终返回true）
-                && matchers[1].match(minute)// 匹配分
-                && matchers[2].match(hour)// 匹配时
+        return ((second < 0) || matchers[0].test(second)) // 匹配秒（非秒匹配模式下始终返回true）
+                && matchers[1].test(minute)// 匹配分
+                && matchers[2].test(hour)// 匹配时
                 && isMatchDayOfMonth(matchers[3], dayOfMonth, month, Year.isLeap(year))// 匹配日
-                && matchers[4].match(month) // 匹配月
-                && matchers[5].match(dayOfWeek)// 匹配周
-                && matchers[6].match(year);// 匹配年
+                && matchers[4].test(month) // 匹配月
+                && matchers[5].test(dayOfWeek)// 匹配周
+                && matchers[6].test(year);// 匹配年
     }
 
     /**

@@ -60,7 +60,7 @@ public class ImgHashBase extends Algorithm {
     // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
     private static native double compare_0(long nativeObj, long hashOne_nativeObj, long hashTwo_nativeObj);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

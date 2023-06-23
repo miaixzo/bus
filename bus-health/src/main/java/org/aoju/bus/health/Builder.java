@@ -1086,7 +1086,7 @@ public final class Builder {
      * 0, 1, 4, 5, 6, and 7.
      *
      * @param text A string containing space-delimited integers or ranges of integers
-     *            with a hyphen
+     *             with a hyphen
      * @return A list of integers representing the provided range(s).
      */
     public static List<Integer> parseHyphenatedIntList(String text) {

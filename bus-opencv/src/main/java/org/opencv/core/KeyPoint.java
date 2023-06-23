@@ -1,5 +1,7 @@
 package org.opencv.core;
 
+import org.opencv.core.Point;
+
 //javadoc: KeyPoint
 public class KeyPoint {
 

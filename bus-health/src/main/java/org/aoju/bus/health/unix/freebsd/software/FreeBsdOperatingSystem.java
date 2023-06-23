@@ -60,20 +60,6 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             .collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
-    private List<OSProcess> getProcessListFromPS(int pid) {
-        String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
-        if (pid >= 0) {
-            psCommand += " -p " + pid;
-        }
-
-        Predicate<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
-        return Executor.runNative(psCommand).stream().skip(1).parallel()
-                .map(proc -> Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
-                .map(psMap -> new FreeBsdOSProcess(
-                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this))
-                .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
-    }
-
     private static long querySystemBootTime() {
         Timeval tv = new Timeval();
         if (!BsdSysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
@@ -86,6 +72,20 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         // tv now points to a 128-bit timeval structure for boot time.
         // First 8 bytes are seconds, second 8 bytes are microseconds (we ignore)
         return tv.tv_sec;
+    }
+
+    private List<OSProcess> getProcessListFromPS(int pid) {
+        String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
+        if (pid >= 0) {
+            psCommand += " -p " + pid;
+        }
+
+        Predicate<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
+        return Executor.runNative(psCommand).stream().skip(1).parallel()
+                .map(proc -> Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
+                .map(psMap -> new FreeBsdOSProcess(
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this))
+                .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 
     @Override

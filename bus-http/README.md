@@ -2,8 +2,10 @@
 
 HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效地使用HTTP能让资源加载更快，节省带宽。高效的HTTP客户端，它有以下默认特性：
 
-支持HTTP/2，允许所有同一个主机地址的请求共享同一个socket连接 连接池减少请求延时 透明的GZIP压缩减少响应数据的大小 缓存响应内容，避免一些完全重复的请求
-当网络出现问题的时候依然坚守自己的职责，它会自动恢复一般的连接问题，如果你的服务有多个IP地址，当第一个IP请求失败时，会交替尝试你配置的其他IP，使用现代TLS技术(SNI, ALPN)初始化新的连接，当握手失败时会回退到TLS 1.0。
+支持HTTP/2，允许所有同一个主机地址的请求共享同一个socket连接 连接池减少请求延时 透明的GZIP压缩减少响应数据的大小
+缓存响应内容，避免一些完全重复的请求
+当网络出现问题的时候依然坚守自己的职责，它会自动恢复一般的连接问题，如果你的服务有多个IP地址，当第一个IP请求失败时，会交替尝试你配置的其他IP，使用现代TLS技术(
+SNI, ALPN)初始化新的连接，当握手失败时会回退到TLS 1.0。
 
 ### Httpd 使用
 
@@ -30,7 +32,8 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     });
 ```
 
-1.2. 同步GET请求 前面几个步骤和异步方式一样，只是最后一部是通过 NewCall#execute() 来提交请求，注意这种方式会阻塞调用线程，所以在Android中应放在子线程中执行，否则有可能引起ANR异常，Android3.0
+1.2. 同步GET请求 前面几个步骤和异步方式一样，只是最后一部是通过 NewCall#execute()
+来提交请求，注意这种方式会阻塞调用线程，所以在Android中应放在子线程中执行，否则有可能引起ANR异常，Android3.0
 以后已经不允许在主线程访问网络。
 
 ```java
@@ -53,7 +56,8 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     }).start();
 ``` 
 
-2.1. POST方式提交String 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造 RequestBody 需要指定MediaType，用于描述请求/响应
+2.1. POST方式提交String 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造
+RequestBody 需要指定MediaType，用于描述请求/响应
 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
 
 ```java
@@ -243,12 +247,16 @@ Content-Disposition 。如果 Content-Length 和 Content-Type 可用的话，他
     });
 ```
 
-3.1. 拦截器 Httpd的拦截器链可谓是其整个框架的精髓，用户可传入的 interceptor 分为两类： ①一类是全局的 interceptor，该类 interceptor 在整个拦截器链中最早被调用，通过
-Httpd.Builder#addInterceptor(Interceptor) 传入； ②另外一类是非网页请求的 interceptor ，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，所有的
-interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用，具体可参考 RealCall#getResponseWithInterceptorChain() 方法。通过
+3.1. 拦截器 Httpd的拦截器链可谓是其整个框架的精髓，用户可传入的 interceptor 分为两类： ①一类是全局的 interceptor，该类
+interceptor 在整个拦截器链中最早被调用，通过
+Httpd.Builder#addInterceptor(Interceptor) 传入； ②另外一类是非网页请求的 interceptor
+，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，所有的
+interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用，具体可参考
+RealCall#getResponseWithInterceptorChain() 方法。通过
 Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 
-这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的 interceptor 在拦截器链头去做。
+这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的
+interceptor 在拦截器链头去做。
 
 ```java
     public class LoggingInterceptor implements Interceptor {
@@ -315,12 +323,14 @@ Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 ```
 
 注意到一点是这个请求做了重定向，原始的 request url 是 http://www.publicobject.com/helloworld.tx，而响应的 request url
-是 https://publicobject.com/helloworld.txt，这说明一定发生了重定向，但是做了几次重定向其实我们这里是不知道的，要知道这些的话，可以使用 addNetworkInterceptor()去做。更多的关于
+是 https://publicobject.com/helloworld.txt，这说明一定发生了重定向，但是做了几次重定向其实我们这里是不知道的，要知道这些的话，可以使用
+addNetworkInterceptor()去做。更多的关于
 interceptor的使用以及它们各自的优缺点
 
 ## 其他
 
-1. 推荐让 Httpd 保持单例，用同一个 Httpd 实例来执行你的所有请求，因为每一个 Httpd 实例都拥有自己的连接池和线程池，重用这些资源可以减少延时和节省资源，如果为每个请求创建一个 Httpd
+1. 推荐让 Httpd 保持单例，用同一个 Httpd 实例来执行你的所有请求，因为每一个 Httpd
+   实例都拥有自己的连接池和线程池，重用这些资源可以减少延时和节省资源，如果为每个请求创建一个 Httpd
    实例，显然就是一种资源的浪费。当然，也可以使用如下的方式来创建一个新的 Httpd 实例，它们共享连接池、线程池和配置信息。
 
 ```java
@@ -508,7 +518,8 @@ http.async("bus-http/test.zip")
         .get();
 ```
 
-这里要说明一下：`sync`与`async`的区别在于连接服务器并得到响应这个过程的同步与异步（这个过程的耗时在大文件下载中占比极小），而`start`方法启动的下载过程则都是异步的。
+这里要说明一下：`sync`与`async`
+的区别在于连接服务器并得到响应这个过程的同步与异步（这个过程的耗时在大文件下载中占比极小），而`start`方法启动的下载过程则都是异步的。
 
 ### 下载进度监听
 
@@ -534,7 +545,8 @@ http.sync("/download/test.zip")
         .start();
 ```
 
-值得一提的是：由于 Httpv 并没有把下载做的很特别，这里设置的进度回调不只对下载文件起用作，即使对响应JSON的常规请求，只要设置了进度回调，它也会告诉你报文接收的进度（提前是服务器响应的报文有`Content-Length`
+值得一提的是：由于 Httpv
+并没有把下载做的很特别，这里设置的进度回调不只对下载文件起用作，即使对响应JSON的常规请求，只要设置了进度回调，它也会告诉你报文接收的进度（提前是服务器响应的报文有`Content-Length`
 头），例如：
 
 ```java
@@ -581,7 +593,8 @@ http.async("bus-http/test.zip")
 
 ### 实现断点续传
 
-Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的例子可以看到，Httpv 通过一个失败回调拿到 **断点**，便将复杂的问题变得简单：
+Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的例子可以看到，Httpv
+通过一个失败回调拿到 **断点**，便将复杂的问题变得简单：
 
 ```java
 http.sync("bus-http/test.zip")
@@ -702,7 +715,8 @@ http.sync("/upload")
         .post();
 ```
 
-咦！怎么感觉和下载的进度回调的一样？没错！Httpv 还是使用同一套API处理上传和下载的进度回调，区别只在于上传是在`get/post`方法之前使用这些API，下载是在`getBody`方法之后使用。很好理解：`get/post`
+咦！怎么感觉和下载的进度回调的一样？没错！Httpv 还是使用同一套API处理上传和下载的进度回调，区别只在于上传是在`get/post`
+方法之前使用这些API，下载是在`getBody`方法之后使用。很好理解：`get/post`
 之前是准备发送请求时段，有上传的含义，而`getBody`之后，已是报文响应的时段，当然是下载。
 
 ### 上传过程控制

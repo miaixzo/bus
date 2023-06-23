@@ -29,7 +29,10 @@ import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 八字
@@ -208,8 +211,7 @@ public class EightChar {
     }
 
     private String getDiShi(int zhiIndex) {
-        int offset = CHANG_SHENG_OFFSET.get(getDayGan());
-        int index = offset + (getDayGanIndex() % 2 == 0 ? zhiIndex : -zhiIndex);
+        int index = CHANG_SHENG_OFFSET.get(getDayGan()) + (getDayGanIndex() % 2 == 0 ? zhiIndex : -zhiIndex);
         if (index >= 12) {
             index -= 12;
         }

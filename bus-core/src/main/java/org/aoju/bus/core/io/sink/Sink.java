@@ -56,6 +56,8 @@ public interface Sink extends Closeable, Flushable {
 
     /**
      * Returns the timeout for this sink.
+     *
+     * @return the {@link  Timeout}
      */
     Timeout timeout();
 

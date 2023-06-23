@@ -12,20 +12,23 @@ import java.util.List;
 public class Core {
     // these constants are wrapped inside functions to prevent inlining
     private static String getVersion() {
-        return "4.5.5";
+        return "4.6.0";
     }
 
     private static String getNativeLibraryName() {
         return "opencv_java";
     }
-    private static int getVersionMajorJ() { return 4; }
+
+    private static int getVersionMajorJ() {
+        return 4;
+    }
 
     private static int getVersionMinorJ() {
-        return 5;
+        return 6;
     }
 
     private static int getVersionRevisionJ() {
-        return 5;
+        return 0;
     }
 
     private static String getVersionStatusJ() {
@@ -2094,11 +2097,11 @@ public class Core {
      * - NaN handling is left unspecified, see patchNaNs().
      * - The returned index is always in bounds of input matrix.
      *
-     * @param src  input single-channel array.
-     * @param dst  output array of type CV_32SC1 with the same dimensionality as src,
-     *             except for axis being reduced - it should be set to 1.
+     * @param src input single-channel array.
+     * @param dst output array of type CV_32SC1 with the same dimensionality as src,
+     * except for axis being reduced - it should be set to 1.
      * @param axis axis to reduce along.
-     *             SEE: reduceArgMax, minMaxLoc, min, max, compare, reduce
+     * SEE: reduceArgMax, minMaxLoc, min, max, compare, reduce
      */
     public static void reduceArgMin(Mat src, Mat dst, int axis) {
         reduceArgMin_1(src.nativeObj, dst.nativeObj, axis);
@@ -2117,12 +2120,12 @@ public class Core {
      * - NaN handling is left unspecified, see patchNaNs().
      * - The returned index is always in bounds of input matrix.
      *
-     * @param src       input single-channel array.
-     * @param dst       output array of type CV_32SC1 with the same dimensionality as src,
-     *                  except for axis being reduced - it should be set to 1.
+     * @param src input single-channel array.
+     * @param dst output array of type CV_32SC1 with the same dimensionality as src,
+     * except for axis being reduced - it should be set to 1.
      * @param lastIndex whether to get the index of first or last occurrence of max.
-     * @param axis      axis to reduce along.
-     *                  SEE: reduceArgMin, minMaxLoc, min, max, compare, reduce
+     * @param axis axis to reduce along.
+     * SEE: reduceArgMin, minMaxLoc, min, max, compare, reduce
      */
     public static void reduceArgMax(Mat src, Mat dst, int axis, boolean lastIndex) {
         reduceArgMax_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
@@ -2136,11 +2139,11 @@ public class Core {
      * - NaN handling is left unspecified, see patchNaNs().
      * - The returned index is always in bounds of input matrix.
      *
-     * @param src  input single-channel array.
-     * @param dst  output array of type CV_32SC1 with the same dimensionality as src,
-     *             except for axis being reduced - it should be set to 1.
+     * @param src input single-channel array.
+     * @param dst output array of type CV_32SC1 with the same dimensionality as src,
+     * except for axis being reduced - it should be set to 1.
      * @param axis axis to reduce along.
-     *             SEE: reduceArgMin, minMaxLoc, min, max, compare, reduce
+     * SEE: reduceArgMin, minMaxLoc, min, max, compare, reduce
      */
     public static void reduceArgMax(Mat src, Mat dst, int axis) {
         reduceArgMax_1(src.nativeObj, dst.nativeObj, axis);
@@ -3445,6 +3448,26 @@ public class Core {
      */
     public static void transpose(Mat src, Mat dst) {
         transpose_0(src.nativeObj, dst.nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::transposeND(Mat src, vector_int order, Mat& dst)
+    //
+
+    /**
+     * Transpose for n-dimensional matrices.
+     *
+     * <b>Note:</b> Input should be continuous single-channel matrix.
+     *
+     * @param src   input array.
+     * @param order a permutation of [0,1,..,N-1] where N is the number of axes of src.
+     *              The i’th axis of dst will correspond to the axis numbered order[i] of the input.
+     * @param dst   output array of the same type as src.
+     */
+    public static void transposeND(Mat src, MatOfInt order, Mat dst) {
+        Mat order_mat = order;
+        transposeND_0(src.nativeObj, order_mat.nativeObj, dst.nativeObj);
     }
 
 
@@ -5301,9 +5324,8 @@ public class Core {
      * Returns the index of the currently executed thread within the current parallel region. Always
      * returns 0 if called outside of parallel region.
      *
-     * @return automatically generated
      * @deprecated Current implementation doesn't corresponding to this documentation.
-     * <p>
+     *
      * The exact meaning of the return value depends on the threading framework used by OpenCV library:
      * <ul>
      *   <li>
@@ -5324,6 +5346,7 @@ public class Core {
      * SEE: setNumThreads, getNumThreads
      *   </li>
      * </ul>
+     * @return automatically generated
      */
     @Deprecated
     public static int getThreadNum() {
@@ -5919,37 +5942,27 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
     private static native void batchDistance_1(long src1_nativeObj, long src2_nativeObj, long dist_nativeObj, int dtype, long nidx_nativeObj, int normType, int K, long mask_nativeObj, int update);
     private static native void batchDistance_2(long src1_nativeObj, long src2_nativeObj, long dist_nativeObj, int dtype, long nidx_nativeObj, int normType, int K, long mask_nativeObj);
     private static native void batchDistance_3(long src1_nativeObj, long src2_nativeObj, long dist_nativeObj, int dtype, long nidx_nativeObj, int normType, int K);
-
     private static native void batchDistance_4(long src1_nativeObj, long src2_nativeObj, long dist_nativeObj, int dtype, long nidx_nativeObj, int normType);
-
     private static native void batchDistance_5(long src1_nativeObj, long src2_nativeObj, long dist_nativeObj, int dtype, long nidx_nativeObj);
 
     // C++:  void cv::normalize(Mat src, Mat& dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype = -1, Mat mask = Mat())
     private static native void normalize_0(long src_nativeObj, long dst_nativeObj, double alpha, double beta, int norm_type, int dtype, long mask_nativeObj);
-
     private static native void normalize_1(long src_nativeObj, long dst_nativeObj, double alpha, double beta, int norm_type, int dtype);
-
     private static native void normalize_2(long src_nativeObj, long dst_nativeObj, double alpha, double beta, int norm_type);
-
     private static native void normalize_3(long src_nativeObj, long dst_nativeObj, double alpha, double beta);
-
     private static native void normalize_4(long src_nativeObj, long dst_nativeObj, double alpha);
-
     private static native void normalize_5(long src_nativeObj, long dst_nativeObj);
 
     // C++:  void cv::reduceArgMin(Mat src, Mat& dst, int axis, bool lastIndex = false)
     private static native void reduceArgMin_0(long src_nativeObj, long dst_nativeObj, int axis, boolean lastIndex);
-
     private static native void reduceArgMin_1(long src_nativeObj, long dst_nativeObj, int axis);
 
     // C++:  void cv::reduceArgMax(Mat src, Mat& dst, int axis, bool lastIndex = false)
     private static native void reduceArgMax_0(long src_nativeObj, long dst_nativeObj, int axis, boolean lastIndex);
-
     private static native void reduceArgMax_1(long src_nativeObj, long dst_nativeObj, int axis);
 
     // C++:  void cv::reduce(Mat src, Mat& dst, int dim, int rtype, int dtype = -1)
     private static native void reduce_0(long src_nativeObj, long dst_nativeObj, int dim, int rtype, int dtype);
-
     private static native void reduce_1(long src_nativeObj, long dst_nativeObj, int dim, int rtype);
 
     // C++:  void cv::merge(vector_Mat mv, Mat& dst)
@@ -6059,12 +6072,18 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
 
     // C++:  void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
     private static native void mulTransposed_0(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj, double scale, int dtype);
+
     private static native void mulTransposed_1(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj, double scale);
+
     private static native void mulTransposed_2(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj);
+
     private static native void mulTransposed_3(long src_nativeObj, long dst_nativeObj, boolean aTa);
 
     // C++:  void cv::transpose(Mat src, Mat& dst)
     private static native void transpose_0(long src_nativeObj, long dst_nativeObj);
+
+    // C++:  void cv::transposeND(Mat src, vector_int order, Mat& dst)
+    private static native void transposeND_0(long src_nativeObj, long order_mat_nativeObj, long dst_nativeObj);
 
     // C++:  void cv::transform(Mat src, Mat& dst, Mat m)
     private static native void transform_0(long src_nativeObj, long dst_nativeObj, long m_nativeObj);

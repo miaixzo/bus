@@ -20,7 +20,7 @@ public class Mat {
 
     // javadoc: Mat::Mat()
     public Mat() {
-        nativeObj = n_Mat();
+        this(n_Mat());
     }
 
     //
@@ -29,7 +29,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(rows, cols, type)
     public Mat(int rows, int cols, int type) {
-        nativeObj = n_Mat(rows, cols, type);
+        this(n_Mat(rows, cols, type));
     }
 
     //
@@ -38,7 +38,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(rows, cols, type, data)
     public Mat(int rows, int cols, int type, ByteBuffer data) {
-        nativeObj = n_Mat(rows, cols, type, data);
+        this(n_Mat(rows, cols, type, data));
     }
 
     //
@@ -47,7 +47,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(rows, cols, type, data, step)
     public Mat(int rows, int cols, int type, ByteBuffer data, long step) {
-        nativeObj = n_Mat(rows, cols, type, data, step);
+        this(n_Mat(rows, cols, type, data, step));
     }
 
     //
@@ -56,7 +56,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(size, type)
     public Mat(Size size, int type) {
-        nativeObj = n_Mat(size.width, size.height, type);
+        this(n_Mat(size.width, size.height, type));
     }
 
     //
@@ -65,7 +65,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(sizes, type)
     public Mat(int[] sizes, int type) {
-        nativeObj = n_Mat(sizes.length, sizes, type);
+        this(n_Mat(sizes.length, sizes, type));
     }
 
     //
@@ -74,7 +74,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(rows, cols, type, s)
     public Mat(int rows, int cols, int type, Scalar s) {
-        nativeObj = n_Mat(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3]);
+        this(n_Mat(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
 
     //
@@ -83,7 +83,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(size, type, s)
     public Mat(Size size, int type, Scalar s) {
-        nativeObj = n_Mat(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3]);
+        this(n_Mat(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
 
     //
@@ -92,7 +92,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(sizes, type, s)
     public Mat(int[] sizes, int type, Scalar s) {
-        nativeObj = n_Mat(sizes.length, sizes, type, s.val[0], s.val[1], s.val[2], s.val[3]);
+        this(n_Mat(sizes.length, sizes, type, s.val[0], s.val[1], s.val[2], s.val[3]));
     }
 
     //
@@ -101,12 +101,12 @@ public class Mat {
 
     // javadoc: Mat::Mat(m, rowRange, colRange)
     public Mat(Mat m, Range rowRange, Range colRange) {
-        nativeObj = n_Mat(m.nativeObj, rowRange.start, rowRange.end, colRange.start, colRange.end);
+        this(n_Mat(m.nativeObj, rowRange.start, rowRange.end, colRange.start, colRange.end));
     }
 
     // javadoc: Mat::Mat(m, rowRange)
     public Mat(Mat m, Range rowRange) {
-        nativeObj = n_Mat(m.nativeObj, rowRange.start, rowRange.end);
+        this(n_Mat(m.nativeObj, rowRange.start, rowRange.end));
     }
 
     //
@@ -115,7 +115,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(m, ranges)
     public Mat(Mat m, Range[] ranges) {
-        nativeObj = n_Mat(m.nativeObj, ranges);
+        this(n_Mat(m.nativeObj, ranges));
     }
 
     //
@@ -124,7 +124,7 @@ public class Mat {
 
     // javadoc: Mat::Mat(m, roi)
     public Mat(Mat m, Rect roi) {
-        nativeObj = n_Mat(m.nativeObj, roi.y, roi.y + roi.height, roi.x, roi.x + roi.width);
+        this(n_Mat(m.nativeObj, roi.y, roi.y + roi.height, roi.x, roi.x + roi.width));
     }
 
     //
@@ -466,12 +466,9 @@ public class Mat {
     // C++: Mat Mat::mul(Mat m, double scale = 1)
     //
 
-    private static native long n_matMul(long nativeObj, long m_nativeObj);
-
     /**
      * Element-wise multiplication with scale factor
-     *
-     * @param m     operand with with which to perform element-wise multiplication
+     * @param m operand with with which to perform element-wise multiplication
      * @param scale scale factor
      */
     public Mat mul(Mat m, double scale) {
@@ -479,12 +476,20 @@ public class Mat {
     }
 
     /**
-     * Element-wise multiplication
-     *
-     * @param m operand with with which to perform element-wise multiplication
-     */
+    * Element-wise multiplication
+    * @param m operand with with which to perform element-wise multiplication
+    */
     public Mat mul(Mat m) {
         return new Mat(n_mul(nativeObj, m.nativeObj));
+    }
+
+    /**
+    * Matrix multiplication
+    * @param m operand with with which to perform matrix multiplication
+    * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
+    */
+    public Mat matMul(Mat m) {
+        return new Mat(n_matMul(nativeObj, m.nativeObj));
     }
 
     //
@@ -1139,30 +1144,39 @@ public class Mat {
         return cols();
     }
 
-    /**
-     * Matrix multiplication
-     *
-     * @param m operand with with which to perform matrix multiplication
-     * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
-     */
-    public Mat matMul(Mat m) {
-        return new Mat(n_matMul(nativeObj, m.nativeObj));
-    }
-
     // javadoc:Mat::at(clazz, row, col)
+    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>) new AtableByte(this, row, col);
+            return (Atable<T>)new AtableByte(this, row, col);
         } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>) new AtableDouble(this, row, col);
+            return (Atable<T>)new AtableDouble(this, row, col);
         } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>) new AtableFloat(this, row, col);
+            return (Atable<T>)new AtableFloat(this, row, col);
         } else if (clazz == Integer.class || clazz == int.class) {
             return (Atable<T>)new AtableInteger(this, row, col);
         } else if (clazz == Short.class || clazz == short.class) {
             return (Atable<T>)new AtableShort(this, row, col);
         } else {
             throw new RuntimeException("Unsupported class type");
+        }
+    }
+
+    // javadoc:Mat::at(clazz, idx)
+    @SuppressWarnings("unchecked")
+    public <T> Atable<T> at(Class<T> clazz, int[] idx) {
+        if (clazz == Byte.class || clazz == byte.class) {
+            return (Atable<T>)new AtableByte(this, idx);
+        } else if (clazz == Double.class || clazz == double.class) {
+            return (Atable<T>)new AtableDouble(this, idx);
+        } else if (clazz == Float.class || clazz == float.class) {
+            return (Atable<T>)new AtableFloat(this, idx);
+        } else if (clazz == Integer.class || clazz == int.class) {
+            return (Atable<T>)new AtableInteger(this, idx);
+        } else if (clazz == Short.class || clazz == short.class) {
+            return (Atable<T>)new AtableShort(this, idx);
+        } else {
+            throw new RuntimeException("Unsupported class parameter");
         }
     }
 
@@ -1734,22 +1748,7 @@ public class Mat {
 
     private static native long n_mul(long nativeObj, long m_nativeObj);
 
-    // javadoc:Mat::at(clazz, idx)
-    public <T> Atable<T> at(Class<T> clazz, int[] idx) {
-        if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>) new AtableByte(this, idx);
-        } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>) new AtableDouble(this, idx);
-        } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>) new AtableFloat(this, idx);
-        } else if (clazz == Integer.class || clazz == int.class) {
-            return (Atable<T>) new AtableInteger(this, idx);
-        } else if (clazz == Short.class || clazz == short.class) {
-            return (Atable<T>) new AtableShort(this, idx);
-        } else {
-            throw new RuntimeException("Unsupported class parameter");
-        }
-    }
+    private static native long n_matMul(long nativeObj, long m_nativeObj);
 
     // C++: static Mat Mat::ones(int rows, int cols, int type)
     private static native long n_ones(int rows, int cols, int type);
@@ -1832,7 +1831,7 @@ public class Mat {
     // C++: static Mat Mat::zeros(int ndims, const int* sizes, int type)
     private static native long n_zeros(int ndims, int[] sizes, int type);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void n_delete(long nativeObj);
 
     private static native int nPutD(long self, int row, int col, int count, double[] data);

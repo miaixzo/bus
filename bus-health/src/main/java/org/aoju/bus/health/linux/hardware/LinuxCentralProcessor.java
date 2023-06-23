@@ -140,108 +140,6 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return String.format("%08X", midrBytes);
     }
 
-    @Override
-    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = "";
-        String cpuName = "";
-        String cpuFamily = "";
-        String cpuModel = "";
-        String cpuStepping = "";
-        String processorID;
-        long cpuFreq = 0L;
-        boolean cpu64bit = false;
-
-        StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
-        String[] flags = new String[0];
-        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
-        for (String line : cpuInfo) {
-            String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
-            if (splitLine.length < 2) {
-                // special case
-                if (line.startsWith("CPU architecture: ")) {
-                    cpuFamily = line.replace("CPU architecture: ", "").trim();
-                }
-                continue;
-            }
-            switch (splitLine[0]) {
-                case "vendor_id":
-                case "CPU implementer":
-                    cpuVendor = splitLine[1];
-                    break;
-                case "model name":
-                case "Processor": // some ARM chips
-                    // May be a processor number. Check for a space.
-                    if (splitLine[1].indexOf(' ') > 0) {
-                        cpuName = splitLine[1];
-                    }
-                    break;
-                case "flags":
-                    flags = splitLine[1].toLowerCase().split(" ");
-                    for (String flag : flags) {
-                        if ("lm".equals(flag)) {
-                            cpu64bit = true;
-                            break;
-                        }
-                    }
-                    break;
-                case "stepping":
-                    cpuStepping = splitLine[1];
-                    break;
-                case "CPU variant":
-                    if (!armStepping.toString().startsWith("r")) {
-                        // CPU variant format always starts with 0x
-                        int rev = Builder.parseLastInt(splitLine[1], 0);
-                        armStepping.insert(0, "r" + rev);
-                    }
-                    break;
-                case "CPU revision":
-                    if (!armStepping.toString().contains("p")) {
-                        armStepping.append('p').append(splitLine[1]);
-                    }
-                    break;
-                case "model":
-                case "CPU part":
-                    cpuModel = splitLine[1];
-                    break;
-                case "cpu family":
-                    cpuFamily = splitLine[1];
-                    break;
-                case "cpu MHz":
-                    cpuFreq = Builder.parseHertz(splitLine[1]);
-                    break;
-                default:
-                    // Do nothing
-            }
-        }
-        if (cpuName.isEmpty()) {
-            cpuName = Builder.getStringFromFile(ProcPath.MODEL);
-        }
-        if (cpuName.contains("Hz")) {
-            // if Name contains CPU vendor frequency, ignore cpuinfo and use it
-            cpuFreq = -1L;
-        } else {
-            // Try lshw and use it in preference to cpuinfo
-            long cpuCapacity = Lshw.queryCpuCapacity();
-            if (cpuCapacity > cpuFreq) {
-                cpuFreq = cpuCapacity;
-            }
-        }
-        if (cpuStepping.isEmpty()) {
-            cpuStepping = armStepping.toString();
-        }
-        processorID = getProcessorID(cpuVendor, cpuStepping, cpuModel, cpuFamily, flags);
-        if (cpuVendor.startsWith("0x")) {
-            List<String> lscpu = Executor.runNative("lscpu");
-            for (String line : lscpu) {
-                if (line.startsWith("Architecture:")) {
-                    cpuVendor = line.replace("Architecture:", "").trim();
-                }
-            }
-        }
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
-    }
-
     private static Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
         List<LogicalProcessor> logProcs = new ArrayList<>();
         Set<ProcessorCache> caches = new HashSet<>();
@@ -346,6 +244,108 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } catch (IllegalArgumentException e) {
             return ProcessorCache.Type.UNIFIED;
         }
+    }
+
+    @Override
+    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
+        String cpuVendor = "";
+        String cpuName = "";
+        String cpuFamily = "";
+        String cpuModel = "";
+        String cpuStepping = "";
+        String processorID;
+        long cpuFreq = 0L;
+        boolean cpu64bit = false;
+
+        StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
+        String[] flags = new String[0];
+        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
+        for (String line : cpuInfo) {
+            String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
+            if (splitLine.length < 2) {
+                // special case
+                if (line.startsWith("CPU architecture: ")) {
+                    cpuFamily = line.replace("CPU architecture: ", "").trim();
+                }
+                continue;
+            }
+            switch (splitLine[0]) {
+                case "vendor_id":
+                case "CPU implementer":
+                    cpuVendor = splitLine[1];
+                    break;
+                case "model name":
+                case "Processor": // some ARM chips
+                    // May be a processor number. Check for a space.
+                    if (splitLine[1].indexOf(' ') > 0) {
+                        cpuName = splitLine[1];
+                    }
+                    break;
+                case "flags":
+                    flags = splitLine[1].toLowerCase().split(" ");
+                    for (String flag : flags) {
+                        if ("lm".equals(flag)) {
+                            cpu64bit = true;
+                            break;
+                        }
+                    }
+                    break;
+                case "stepping":
+                    cpuStepping = splitLine[1];
+                    break;
+                case "CPU variant":
+                    if (!armStepping.toString().startsWith("r")) {
+                        // CPU variant format always starts with 0x
+                        int rev = Builder.parseLastInt(splitLine[1], 0);
+                        armStepping.insert(0, "r" + rev);
+                    }
+                    break;
+                case "CPU revision":
+                    if (!armStepping.toString().contains("p")) {
+                        armStepping.append('p').append(splitLine[1]);
+                    }
+                    break;
+                case "model":
+                case "CPU part":
+                    cpuModel = splitLine[1];
+                    break;
+                case "cpu family":
+                    cpuFamily = splitLine[1];
+                    break;
+                case "cpu MHz":
+                    cpuFreq = Builder.parseHertz(splitLine[1]);
+                    break;
+                default:
+                    // Do nothing
+            }
+        }
+        if (cpuName.isEmpty()) {
+            cpuName = Builder.getStringFromFile(ProcPath.MODEL);
+        }
+        if (cpuName.contains("Hz")) {
+            // if Name contains CPU vendor frequency, ignore cpuinfo and use it
+            cpuFreq = -1L;
+        } else {
+            // Try lshw and use it in preference to cpuinfo
+            long cpuCapacity = Lshw.queryCpuCapacity();
+            if (cpuCapacity > cpuFreq) {
+                cpuFreq = cpuCapacity;
+            }
+        }
+        if (cpuStepping.isEmpty()) {
+            cpuStepping = armStepping.toString();
+        }
+        processorID = getProcessorID(cpuVendor, cpuStepping, cpuModel, cpuFamily, flags);
+        if (cpuVendor.startsWith("0x")) {
+            List<String> lscpu = Executor.runNative("lscpu");
+            for (String line : lscpu) {
+                if (line.startsWith("Architecture:")) {
+                    cpuVendor = line.replace("Architecture:", "").trim();
+                }
+            }
+        }
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
+                cpuFreq);
     }
 
     @Override

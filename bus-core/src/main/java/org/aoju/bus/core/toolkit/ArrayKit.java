@@ -6389,6 +6389,7 @@ public class ArrayKit {
      * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
+     * @param <A>         泛型对象
      * @param array       已有数组
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素

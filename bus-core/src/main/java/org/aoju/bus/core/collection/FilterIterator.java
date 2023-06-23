@@ -35,6 +35,7 @@ import java.util.function.Predicate;
  * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出
  * 类实现来自Apache Commons Collection
  *
+ * @param <E> 对象泛型
  * @author Kimi Liu
  * @since Java 17+
  */

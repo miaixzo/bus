@@ -96,7 +96,7 @@ public class ExecCmd {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
         }
-        return Http.HTTP_HOST_IPV4;
+        return Http.HOST_IPV4;
     }
 
     /**

@@ -213,7 +213,7 @@ public class GeneralizedHough extends Algorithm {
     // C++:  int cv::GeneralizedHough::getMaxBufferSize()
     private static native int getMaxBufferSize_0(long nativeObj);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

@@ -82,41 +82,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         HAS_KSTAT2 = lib != null;
     }
 
-    private List<OSProcess> queryAllProcessesFromPrStat() {
-        return getProcessListFromProcfs(-1);
-    }
-
-    private List<OSProcess> getProcessListFromProcfs(int pid) {
-        List<OSProcess> procs = new ArrayList<>();
-
-        File[] numericFiles = null;
-        if (pid < 0) {
-            // If no pid, get process files in proc
-            File directory = new File("/proc");
-            numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
-        } else {
-            // If pid specified just find that file
-            File pidFile = new File("/proc/" + pid);
-            if (pidFile.exists()) {
-                numericFiles = new File[1];
-                numericFiles[0] = pidFile;
-            }
-        }
-        if (numericFiles == null) {
-            return procs;
-        }
-
-        // Iterate files
-        for (File pidFile : numericFiles) {
-            int pidNum = Builder.parseIntOrDefault(pidFile.getName(), 0);
-            OSProcess proc = new SolarisOSProcess(pidNum, this);
-            if (proc.getState() != OSProcess.State.INVALID) {
-                procs.add(proc);
-            }
-        }
-        return procs;
-    }
-
     private static long querySystemUptime() {
         if (HAS_KSTAT2) {
             // Use Kstat2 implementation
@@ -154,6 +119,41 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         long snap = results[1] == null ? 0L : (long) results[1] / 1_000_000_000L;
 
         return Pair.of(boot, snap);
+    }
+
+    private List<OSProcess> queryAllProcessesFromPrStat() {
+        return getProcessListFromProcfs(-1);
+    }
+
+    private List<OSProcess> getProcessListFromProcfs(int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+
+        File[] numericFiles = null;
+        if (pid < 0) {
+            // If no pid, get process files in proc
+            File directory = new File("/proc");
+            numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        } else {
+            // If pid specified just find that file
+            File pidFile = new File("/proc/" + pid);
+            if (pidFile.exists()) {
+                numericFiles = new File[1];
+                numericFiles[0] = pidFile;
+            }
+        }
+        if (numericFiles == null) {
+            return procs;
+        }
+
+        // Iterate files
+        for (File pidFile : numericFiles) {
+            int pidNum = Builder.parseIntOrDefault(pidFile.getName(), 0);
+            OSProcess proc = new SolarisOSProcess(pidNum, this);
+            if (proc.getState() != OSProcess.State.INVALID) {
+                procs.add(proc);
+            }
+        }
+        return procs;
     }
 
     @Override

@@ -74,19 +74,6 @@ public class Builder {
     public static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
     public static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
     /**
-     * Byte order marks.
-     */
-    private static final Blending UNICODE_BOMS = Blending.of(
-            ByteString.decodeHex("efbbbf"),   // UTF-8
-            ByteString.decodeHex("feff"),     // UTF-16BE
-            ByteString.decodeHex("fffe"),     // UTF-16LE
-            ByteString.decodeHex("0000ffff"), // UTF-32BE
-            ByteString.decodeHex("ffff0000")  // UTF-32LE
-    );
-
-    private static final Method addSuppressedExceptionMethod;
-
-    /**
      * 如果我们未能以非标准格式解析日期，请依次尝试这些格式.
      */
     public static final String[] BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS = new String[]{
@@ -106,10 +93,28 @@ public class Builder {
             "EEE, dd-MM-yyyy HH:mm:ss z",
             "EEE MMM d yyyy HH:mm:ss z",
     };
-
     public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS =
             new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
-
+    public static final String CONNECT = "CONNECT";
+    public static final String CONNECTED = "CONNECTED";
+    public static final String SEND = "SEND";
+    public static final String MESSAGE = "MESSAGE";
+    public static final String SUBSCRIBE = "SUBSCRIBE";
+    public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
+    public static final String ACK = "ACK";
+    public static final String UNKNOWN = "UNKNOWN";
+    public static final String ERROR = "ERROR";
+    /**
+     * Byte order marks.
+     */
+    private static final Blending UNICODE_BOMS = Blending.of(
+            ByteString.decodeHex("efbbbf"),   // UTF-8
+            ByteString.decodeHex("feff"),     // UTF-16BE
+            ByteString.decodeHex("fffe"),     // UTF-16LE
+            ByteString.decodeHex("0000ffff"), // UTF-32BE
+            ByteString.decodeHex("ffff0000")  // UTF-32LE
+    );
+    private static final Method addSuppressedExceptionMethod;
     /**
      * Most websites serve cookies in the blessed format. Eagerly create the parser to ensure such
      * cookies are on the fast path.
@@ -122,16 +127,6 @@ public class Builder {
                 rfc1123.setTimeZone(UTC);
                 return rfc1123;
             });
-
-    public static final String CONNECT = "CONNECT";
-    public static final String CONNECTED = "CONNECTED";
-    public static final String SEND = "SEND";
-    public static final String MESSAGE = "MESSAGE";
-    public static final String SUBSCRIBE = "SUBSCRIBE";
-    public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
-    public static final String ACK = "ACK";
-    public static final String UNKNOWN = "UNKNOWN";
-    public static final String ERROR = "ERROR";
 
     static {
         Method m;

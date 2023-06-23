@@ -3,6 +3,8 @@
 //
 package org.opencv.img_hash;
 
+import org.opencv.img_hash.RadialVarianceHash;
+
 // C++: class RadialVarianceHash
 /**
  * Image hash based on Radon transform.
@@ -93,7 +95,7 @@ public class RadialVarianceHash extends ImgHashBase {
     // C++:  void cv::img_hash::RadialVarianceHash::setSigma(double value)
     private static native void setSigma_0(long nativeObj, double value);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }

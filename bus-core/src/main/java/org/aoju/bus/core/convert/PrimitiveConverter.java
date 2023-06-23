@@ -52,6 +52,9 @@ public class PrimitiveConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 单例对象
+     */
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
 
     /**

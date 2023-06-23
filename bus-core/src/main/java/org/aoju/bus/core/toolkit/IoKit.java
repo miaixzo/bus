@@ -62,9 +62,6 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.Checksum;
 
 /**
  * IO工具类
@@ -502,7 +499,7 @@ public class IoKit {
     /**
      * 从流中读取内容，读取完毕后关闭流
      *
-     * @param in      输入流,读取完毕后并不关闭流
+     * @param in      输入流,读取完毕后关闭流
      * @param charset 字符集
      * @return 内容
      * @throws InternalException 异常
@@ -893,15 +890,27 @@ public class IoKit {
     }
 
     /**
-     * 文件转为流
+     * 文件转为{@link InputStream}
      *
      * @param file 文件
-     * @return {@link FileInputStream}
+     * @return {@link InputStream}
      */
-    public static FileInputStream toStream(File file) {
+    public static InputStream toStream(File file) {
+        Assert.notNull(file);
+        return toStream(file.toPath());
+    }
+
+    /**
+     * 文件转为{@link InputStream}
+     *
+     * @param path {@link Path}，非空
+     * @return {@link InputStream}
+     */
+    public static InputStream toStream(final Path path) {
+        Assert.notNull(path);
         try {
-            return new FileInputStream(file);
-        } catch (FileNotFoundException e) {
+            return Files.newInputStream(path);
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
@@ -1399,39 +1408,6 @@ public class IoKit {
         } catch (IOException e) {
             throw new InternalException(e);
         }
-    }
-
-    /**
-     * 计算流CRC32校验码,计算后关闭流
-     *
-     * @param in 文件,不能为目录
-     * @return CRC32值
-     * @throws InternalException 异常
-     */
-    public static long checksumCRC32(InputStream in) throws InternalException {
-        return checksum(in, new CRC32()).getValue();
-    }
-
-    /**
-     * 计算流的校验码,计算后关闭流
-     *
-     * @param in       流
-     * @param checksum {@link Checksum}
-     * @return Checksum
-     * @throws InternalException 异常
-     */
-    public static Checksum checksum(InputStream in, Checksum checksum) throws InternalException {
-        Assert.notNull(in, "InputStream is null !");
-        if (null == checksum) {
-            checksum = new CRC32();
-        }
-        try {
-            in = new CheckedInputStream(in, checksum);
-            IoKit.copy(in, EmptyOutputStream.INSTANCE);
-        } finally {
-            IoKit.close(in);
-        }
-        return checksum;
     }
 
     /**

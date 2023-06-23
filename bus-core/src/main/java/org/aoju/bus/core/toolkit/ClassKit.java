@@ -29,8 +29,8 @@ import org.aoju.bus.core.beans.NullWrapper;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
@@ -40,6 +40,10 @@ import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.loader.JarLoaders;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.InitialDirContext;
 import javax.tools.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -1038,7 +1042,7 @@ public class ClassKit {
         if (null == valueProvider) {
             return bean;
         }
-        return BeanCopier.create(valueProvider, bean, copyOptions).copy();
+        return BeanCopier.of(valueProvider, bean, copyOptions).copy();
     }
 
     /**
@@ -3615,17 +3619,6 @@ public class ClassKit {
     }
 
     /**
-     * 获取{@link JavaSourceCompiler}
-     *
-     * @param parent 父{@link ClassLoader}
-     * @return {@link JavaSourceCompiler}
-     * @see JavaSourceCompiler#create(ClassLoader)
-     */
-    public static JavaSourceCompiler getCompiler(ClassLoader parent) {
-        return JavaSourceCompiler.create(parent);
-    }
-
-    /**
      * 加载非原始类类，无缓存
      *
      * @param name          类名
@@ -3755,6 +3748,56 @@ public class ClassKit {
         return objectPackageName.startsWith("java.")
                 || objectPackageName.startsWith("javax.")
                 || clazz.getClassLoader() == null;
+    }
+
+    /**
+     * 获取指定容器环境的对象的属性
+     * 如获取DNS属性，则URI为类似：dns:aoju.org
+     *
+     * @param uri     URI字符串，格式为[scheme:][name]/[domain]
+     * @param attrIds 需要获取的属性ID名称
+     * @return {@link Attributes}
+     */
+    public static Attributes getAttributes(final String uri, final String... attrIds) {
+        try {
+            return createInitialDirContext(null).getAttributes(uri, attrIds);
+        } catch (final NamingException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 创建{@link InitialDirContext}
+     *
+     * @param environment 环境参数，{code null}表示无参数
+     * @return {@link InitialDirContext}
+     */
+    public static InitialDirContext createInitialDirContext(final Map<String, String> environment) {
+        try {
+            if (MapKit.isEmpty(environment)) {
+                return new InitialDirContext();
+            }
+            return new InitialDirContext(Convert.convert(Hashtable.class, environment));
+        } catch (final NamingException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 创建{@link InitialContext}
+     *
+     * @param environment 环境参数，{code null}表示无参数
+     * @return {@link InitialContext}
+     */
+    public static InitialContext createInitialContext(final Map<String, String> environment) {
+        try {
+            if (MapKit.isEmpty(environment)) {
+                return new InitialContext();
+            }
+            return new InitialContext(Convert.convert(Hashtable.class, environment));
+        } catch (final NamingException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**

@@ -42,6 +42,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
+ * 集合的stream操作封装
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

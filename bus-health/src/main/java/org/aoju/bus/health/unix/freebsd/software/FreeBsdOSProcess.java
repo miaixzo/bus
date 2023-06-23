@@ -65,6 +65,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
     private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+    private final FreeBsdOperatingSystem os;
     private String name;
     private String path = Normal.EMPTY;
     private String user;
@@ -88,8 +89,6 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private long contextSwitches;
     private String commandLineBackup;
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-
-    private final FreeBsdOperatingSystem os;
 
     public FreeBsdOSProcess(int pid, Map<FreeBsdOperatingSystem.PsKeywords, String> psMap, FreeBsdOperatingSystem os) {
         super(pid);

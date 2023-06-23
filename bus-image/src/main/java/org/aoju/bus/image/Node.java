@@ -84,7 +84,7 @@ public class Node {
         } catch (UnknownHostException e) {
             Logger.error("Cannot resolve hostname", e);
         }
-        return StringKit.hasText(hostname) ? hostname : Http.HTTP_HOST_IPV4;
+        return StringKit.hasText(hostname) ? hostname : Http.HOST_IPV4;
     }
 
     public static Node buildLocalDicomNode(Association as) {

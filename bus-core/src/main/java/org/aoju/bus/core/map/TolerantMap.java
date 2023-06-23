@@ -32,6 +32,8 @@ import java.util.Objects;
 /**
  * 提供默认值的Map
  *
+ * @param <K> 对象泛型键
+ * @param <V> 对象泛型值
  * @author Kimi Liu
  * @since Java 17+
  */

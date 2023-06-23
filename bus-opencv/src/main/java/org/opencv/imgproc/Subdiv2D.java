@@ -3,17 +3,26 @@
 //
 package org.opencv.imgproc;
 
-import org.opencv.core.*;
-import org.opencv.utils.Converters;
-
+import java.util.ArrayList;
 import java.util.List;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfFloat4;
+import org.opencv.core.MatOfFloat6;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.utils.Converters;
 
 // C++: class Subdiv2D
 
 public class Subdiv2D {
 
     protected final long nativeObj;
-    protected Subdiv2D(long addr) { nativeObj = addr; }
+    protected Subdiv2D(long addr) {
+      nativeObj = addr;
+      
+    }
 
     public long getNativeObjAddr() { return nativeObj; }
 
@@ -46,7 +55,7 @@ public class Subdiv2D {
      *     To create a new empty Delaunay subdivision you need to use the #initDelaunay function.
      */
     public Subdiv2D() {
-        nativeObj = Subdiv2D_0();
+        this(Subdiv2D_0());
     }
 
 
@@ -64,7 +73,7 @@ public class Subdiv2D {
      *     error is raised.
      */
     public Subdiv2D(Rect rect) {
-        nativeObj = Subdiv2D_1(rect.x, rect.y, rect.width, rect.height);
+        this(Subdiv2D_1(rect.x, rect.y, rect.width, rect.height));
     }
 
 
@@ -542,7 +551,7 @@ public class Subdiv2D {
     private static native int edgeDst_0(long nativeObj, int edge, double[] dstpt_out);
     private static native int edgeDst_1(long nativeObj, int edge);
 
-    // native support for java finalize()
+    // native support for deleting native object
     private static native void delete(long nativeObj);
 
 }
