@@ -152,7 +152,10 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>@{argLine}  -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.desktop/javax.imageio.stream=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED</argLine>
+                            <argLine>@{argLine} -XX:+IgnoreUnrecognizedVMOptions
+                                --add-opens=java.desktop/javax.imageio.stream=ALL-UNNAMED
+                                --add-opens=java.base/java.io=ALL-UNNAMED
+                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>

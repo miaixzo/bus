@@ -73,13 +73,13 @@ nohup java-jar/path/to/enforest.jar--xjar.keyfile=/path/to/forest.key
 
 ### 参数说明
 
-| 参数名称 | 参数含义 | 缺省值 | 说明 |
-| :------- | :------- | :----- | :--- |
-| --xjar.password |  密码 |
-| --xjar.algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
-| --xjar.keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
-| --xjar.ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
-| --xjar.keyfile |   密钥文件 | ./forest.key | 密钥文件相对或绝对路径。|
+| 参数名称             | 参数含义 | 缺省值          | 说明                         |
+|:-----------------|:-----|:-------------|:---------------------------|
+| --xjar.password  | 密码   |
+| --xjar.algorithm | 密钥算法 | AES          | 支持JDK所有内置算法，如AES / DES ... |
+| --xjar.keysize   | 密钥长度 | 128          | 根据不同的算法选取不同的密钥长度。          |
+| --xjar.ivsize    | 向量长度 | 128          | 根据不同的算法选取不同的向量长度。          |
+| --xjar.keyfile   | 密钥文件 | ./forest.key | 密钥文件相对或绝对路径。               |
 
 ### 密钥文件
 
@@ -95,17 +95,18 @@ hold: HOLD
 
 其中 algorithm/keysize/ivsize/hold 均有缺省值，当 hold 值不为 true | 1 | yes | y 时，密钥文件在读取后将自动删除。
 
-| 参数名称 | 参数含义 | 缺省值 | 说明 |
-| :------- | :------- | :----- | :--- |
-| password |  密码 | 无 | 密码字符串 |
-| algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
-| keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
-| ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
-| hold | 是否保留 | false | 读取后是否保留密钥文件。|
+| 参数名称      | 参数含义 | 缺省值   | 说明                         |
+|:----------|:-----|:------|:---------------------------|
+| password  | 密码   | 无     | 密码字符串                      |
+| algorithm | 密钥算法 | AES   | 支持JDK所有内置算法，如AES / DES ... |
+| keysize   | 密钥长度 | 128   | 根据不同的算法选取不同的密钥长度。          |
+| ivsize    | 向量长度 | 128   | 根据不同的算法选取不同的向量长度。          |
+| hold      | 是否保留 | false | 读取后是否保留密钥文件。               |
 
 ### 进阶用法
 
-默认情况下，即没有提供过滤器的时候，将会加密所有资源其中也包括项目其他依赖模块以及第三方依赖的 JAR 包资源， 框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
+默认情况下，即没有提供过滤器的时候，将会加密所有资源其中也包括项目其他依赖模块以及第三方依赖的 JAR 包资源，
+框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
 
 * #### 硬编码方式
 
@@ -143,7 +144,8 @@ Boot.encrypt(plaintext,encrypted,password,new XJarAntEntryFilter("com/company/pr
 
 * #### 混合方式
 
-当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 Builder 工具类提供的多个过滤器混合方法混合成一个，Builder 提供 “与” “或” “非” 三种逻辑运算的混合。
+当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 Builder 工具类提供的多个过滤器混合方法混合成一个，Builder 提供
+“与” “或” “非” 三种逻辑运算的混合。
 
 ```java
 // 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
@@ -174,8 +176,10 @@ XEntryFilter and=Builder.and()
 
 ### 静态资源无法加载问题
 
-由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器， 但实际上通过 加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
-由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器 查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下，
+由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器， 但实际上通过
+加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
+由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器
+查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下，
 我们只需要在加密时通过过滤器排除这些资源即可，可以采用以下的过滤器：
 
 ```java
@@ -202,19 +206,19 @@ mvn clean install -Dxjar.password=forest -Dxjar.targetDir=/directory/to/save/tar
 
 ### 参数说明
 
-| 参数名称 | 命令参数名称 | 参数说明 | 参数类型 | 缺省值 | 示例值 |
-| :------ | :----------- | :------ | :------ | :----- | :----- |
-| password | -Dxjar.password | 密码字符串 | String | 必须 | 任意字符串，forest |
-| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES | JDK内置加密算法，如：AES / DES |
-| keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定，56，128，256 |
-| ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定，128 |
-| mode | -Dxjar.mode | 加密模式 | int | 0 | 0：普通模式 1：危险模式(免密码启动)|
-| sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
-| sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
-| targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
-| targetJar | -Dxjar.targetJar | 目标jar名称 | String | ${project.build.finalName}.xjar | 文件名称 |
-| includes | -Dxjar.includes | 需要加密的资源路径表达式 | String[] | 无 | com/company/project/** , mapper/*Mapper.xml , 支持Ant表达式 |
-| excludes | -Dxjar.excludes | 无需加密的资源路径表达式 | String[] | 无 | static/** , META-INF/resources/** , 支持Ant表达式 |
+| 参数名称      | 命令参数名称           | 参数说明         | 参数类型     | 缺省值                             | 示例值                                                    |
+|:----------|:-----------------|:-------------|:---------|:--------------------------------|:-------------------------------------------------------|
+| password  | -Dxjar.password  | 密码字符串        | String   | 必须                              | 任意字符串，forest                                           |
+| algorithm | -Dxjar.algorithm | 加密算法名称       | String   | AES                             | JDK内置加密算法，如：AES / DES                                  |
+| keySize   | -Dxjar.keySize   | 密钥长度         | int      | 128                             | 根据加密算法而定，56，128，256                                    |
+| ivSize    | -Dxjar.ivSize    | 密钥向量长度       | int      | 128                             | 根据加密算法而定，128                                           |
+| mode      | -Dxjar.mode      | 加密模式         | int      | 0                               | 0：普通模式 1：危险模式(免密码启动)                                   |
+| sourceDir | -Dxjar.sourceDir | 源jar所在目录     | File     | ${project.build.directory}      | 文件目录                                                   |
+| sourceJar | -Dxjar.sourceJar | 源jar名称       | String   | ${project.build.finalName}.jar  | 文件名称                                                   |
+| targetDir | -Dxjar.targetDir | 目标jar存放目录    | File     | ${project.build.directory}      | 文件目录                                                   |
+| targetJar | -Dxjar.targetJar | 目标jar名称      | String   | ${project.build.finalName}.xjar | 文件名称                                                   |
+| includes  | -Dxjar.includes  | 需要加密的资源路径表达式 | String[] | 无                               | com/company/project/** , mapper/*Mapper.xml , 支持Ant表达式 |
+| excludes  | -Dxjar.excludes  | 无需加密的资源路径表达式 | String[] | 无                               | static/** , META-INF/resources/** , 支持Ant表达式           |
 
 #### 注意：
 

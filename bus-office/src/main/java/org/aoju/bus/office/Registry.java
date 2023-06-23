@@ -49,6 +49,10 @@ public class Registry {
      */
     public static final String ONLINE = "ONLINE";
     /**
+     * 没有引入POI的错误消息
+     */
+    public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'poi-ooxml' to your project, and version >= 4.1.2";
+    /**
      * 服务提供者列表
      */
     private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
@@ -94,6 +98,17 @@ public class Registry {
     }
 
     /**
+     * 检查POI包的引入情况
+     */
+    public static void check() {
+        try {
+            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+            throw new InternalException(NO_POI_ERROR_MSG);
+        }
+    }
+
+    /**
      * 是否包含指定名称的校验器
      *
      * @param name 校验器名称
@@ -126,22 +141,6 @@ public class Registry {
             object = this.require(clazz.getSimpleName());
         }
         return object;
-    }
-
-    /**
-     * 没有引入POI的错误消息
-     */
-    public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'poi-ooxml' to your project, and version >= 4.1.2";
-
-    /**
-     * 检查POI包的引入情况
-     */
-    public static void check() {
-        try {
-            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            throw new InternalException(NO_POI_ERROR_MSG);
-        }
     }
 
 }

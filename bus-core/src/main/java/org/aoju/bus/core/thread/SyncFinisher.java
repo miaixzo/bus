@@ -48,13 +48,12 @@ public class SyncFinisher implements Closeable {
 
     private final Set<Worker> workers;
     private final int threadSize;
-    private ExecutorService executorService;
-
-    private boolean isBeginAtSameTime;
     /**
      * 启动同步器，用于保证所有worker线程同时开始
      */
     private final CountDownLatch beginLatch;
+    private ExecutorService executorService;
+    private boolean isBeginAtSameTime;
     /**
      * 结束同步器，用于等待所有worker线程同时结束
      */

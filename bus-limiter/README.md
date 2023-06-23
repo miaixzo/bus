@@ -41,7 +41,8 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
 
 **Step 2.添加`HLock`注解**
 
-上面的接口并不安全，假如在极短的的时间内用户发起了多次相同兑换的请求，由于数据库的事务隔离特性，该兑换码便会被多次兑换，这个漏洞可能被用户恶意使用，造成损失。 这里涉及的重放攻击问题此处不再深入讨论,(
+上面的接口并不安全，假如在极短的的时间内用户发起了多次相同兑换的请求，由于数据库的事务隔离特性，该兑换码便会被多次兑换，这个漏洞可能被用户恶意使用，造成损失。
+这里涉及的重放攻击问题此处不再深入讨论,(
 欢迎移步我的[博客](https://blog.higgs.site/2019/06/24/从接口幂等性到重放攻击/#))。现在我们添加HLock注解保护该接口。
 
 ```java
@@ -52,7 +53,8 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
         }
 ```
 
-该注解的含义是，在请求到达时，使用`jdkLock`这个锁锁住`#request.vipCode`这个资源，如果锁成功了，后面的逻辑继续进行，在业务逻辑完成后便会释放该资源，如果`#request.vipCode`
+该注解的含义是，在请求到达时，使用`jdkLock`这个锁锁住`#request.vipCode`
+这个资源，如果锁成功了，后面的逻辑继续进行，在业务逻辑完成后便会释放该资源，如果`#request.vipCode`
 这个资源已经被锁定，便会降级到`fallbackToBusy`方法进行。这样其他相同 `#request.vipCode`的请求便会被拦截，
 
 在同一class下添加降级方法 `fallbackToBusy`
@@ -230,7 +232,9 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 @HLock(limiter = "jdkLock")
 ```
 
-- **key**  : 资源限制键，为空时将使用类名+方法名作为key，可以实现某一类需求。key中可以使用的参数包括方法的入参，参数注入器注入的参数。具体语法参考`SPEL`的语法。
+- **key**  :
+  资源限制键，为空时将使用类名+方法名作为key，可以实现某一类需求。key中可以使用的参数包括方法的入参，参数注入器注入的参数。具体语法参考`SPEL`
+  的语法。
 
 - **fallback** : 在锁定资源失败时，触发的降级策略，默认为`defaultFallbackResolver`。limiter工作时，
 
@@ -315,7 +319,8 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
 从名字便可以看出，这是用来限制调用频率的，额外的配置
 
 - **rate** ： 限制该资源的调用频率，单位为 次/秒，默认值为10
-- **capacity** ： 该资源最多可累计的数量， 比如该资源限制调用的频率为10次/秒，但是该资源已经3秒没有被调用过了，如果最大可累计数量为20，那该资源可在短期内超出10次/秒的限制。更多细节可以参考令牌桶算法。
+- **capacity** ： 该资源最多可累计的数量，
+  比如该资源限制调用的频率为10次/秒，但是该资源已经3秒没有被调用过了，如果最大可累计数量为20，那该资源可在短期内超出10次/秒的限制。更多细节可以参考令牌桶算法。
 
 ## 如何扩展
 
@@ -494,7 +499,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - Zookeeper为3节点
 
 |               | AVG RT    | AVG-QPS |
-| ------------- | --------- | ------- |
+|---------------|-----------|---------|
 | None          | 1008.38ms | 986.26  |
 | JdkLock       | 1012.50ms | 984.79  |
 | RedisLock     | 1034.64ms | 960.39  |
@@ -509,7 +514,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - Zoookeeper和Redis和应用处于同一主机
 
 |                  | AVG RT    | AVG-QPS |
-| ---------------- | --------- | ------- |
+|------------------|-----------|---------|
 | None             | 1008.38ms | 986.26  |
 | jdkRateLimiter   | 1008.50ms | 979.16  |
 | RedisRatelimiter | 1022.01ms | 976.51  |

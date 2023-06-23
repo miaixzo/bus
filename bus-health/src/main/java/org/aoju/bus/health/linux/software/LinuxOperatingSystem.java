@@ -61,6 +61,10 @@ import java.util.*;
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * This static field identifies if the udev library can be loaded.
+     */
+    public static final boolean HAS_UDEV;
     // Package private for access from LinuxOSProcess
     static final long BOOTTIME;
     private static final String OS_RELEASE_LOG = "os-release: {}";
@@ -68,22 +72,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
     private static final String RELEASE_DELIM = " release ";
     private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
-
-    /**
-     * This static field identifies if the udev library can be loaded.
-     */
-    public static final boolean HAS_UDEV;
-
-    static {
-        Udev lib = null;
-        try {
-            lib = Udev.INSTANCE;
-        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            // no udev
-        }
-        HAS_UDEV = lib != null;
-    }
-
     /**
      * Jiffies per second, used for process time counters.
      */
@@ -95,6 +83,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     private static final int[] PPID_INDEX = {3};
+
+    static {
+        Udev lib = null;
+        try {
+            lib = Udev.INSTANCE;
+        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+            // no udev
+        }
+        HAS_UDEV = lib != null;
+    }
 
     static {
         Map<Integer, Long> auxv = Auxv.queryAuxv();
@@ -128,17 +126,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public LinuxOperatingSystem() {
         super.getVersionInfo();
-    }
-
-    private List<OSProcess> queryProcessList(Set<Integer> descendantPids) {
-        List<OSProcess> procs = new ArrayList<>();
-        for (int pid : descendantPids) {
-            OSProcess proc = new LinuxOSProcess(pid, this);
-            if (!proc.getState().equals(OSProcess.State.INVALID)) {
-                procs.add(proc);
-            }
-        }
-        return procs;
     }
 
     private static Map<Integer, Integer> getParentPidsFromProcFiles(File[] pidFiles) {
@@ -466,6 +453,17 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static long getPageSize() {
         return PAGE_SIZE;
+    }
+
+    private List<OSProcess> queryProcessList(Set<Integer> descendantPids) {
+        List<OSProcess> procs = new ArrayList<>();
+        for (int pid : descendantPids) {
+            OSProcess proc = new LinuxOSProcess(pid, this);
+            if (!proc.getState().equals(OSProcess.State.INVALID)) {
+                procs.add(proc);
+            }
+        }
+        return procs;
     }
 
     @Override

@@ -92,6 +92,15 @@ public class SqlServerParser {
      */
     protected static final String PAGE_COLUMN_ALIAS_PREFIX = "ROW_ALIAS_";
 
+    /**
+     * 静态方法处理
+     */
+    static {
+        TOP100_PERCENT = new Top();
+        TOP100_PERCENT.setExpression(new LongValue(100));
+        TOP100_PERCENT.setPercentage(true);
+    }
+
     private final JSqlParser jSqlParser;
 
     public SqlServerParser() {
@@ -100,15 +109,6 @@ public class SqlServerParser {
 
     public SqlServerParser(JSqlParser jSqlParser) {
         this.jSqlParser = jSqlParser;
-    }
-
-    /**
-     * 静态方法处理
-     */
-    static {
-        TOP100_PERCENT = new Top();
-        TOP100_PERCENT.setExpression(new LongValue(100));
-        TOP100_PERCENT.setPercentage(true);
     }
 
     /**

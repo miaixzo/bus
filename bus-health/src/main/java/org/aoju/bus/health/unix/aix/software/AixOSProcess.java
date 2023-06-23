@@ -73,6 +73,7 @@ public class AixOSProcess extends AbstractOSProcess {
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoize.memoize(this::queryCommandlineEnvironment);
     // Memoized copy from OperatingSystem
     private final Supplier<perfstat_process_t[]> procCpu;
+    private final AixOperatingSystem os;
     private String name;
     private String path = Normal.EMPTY;
     private String commandLineBackup;
@@ -93,7 +94,6 @@ public class AixOSProcess extends AbstractOSProcess {
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
-    private final AixOperatingSystem os;
 
     public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu,
                         AixOperatingSystem os) {

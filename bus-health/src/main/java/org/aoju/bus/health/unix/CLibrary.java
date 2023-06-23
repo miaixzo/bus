@@ -65,10 +65,10 @@ public interface CLibrary extends LibCAPI, Library {
      * The sysctl() function retrieves system information and allows processes with
      * appropriate privileges to set system information. The information available
      * from sysctl() consists of integers, strings, and tables.
-     *
+     * <p>
      * The state is described using a "Management Information Base" (MIB) style
      * name, listed in name, which is a namelen length array of integers.
-     *
+     * <p>
      * The information is copied into the buffer specified by oldp. The size of the
      * buffer is given by the location specified by oldlenp before the call, and
      * that location gives the amount of data copied after a successful call and
@@ -77,30 +77,24 @@ public interface CLibrary extends LibCAPI, Library {
      * as much data as fits in the buffer provided and returns with the error code
      * ENOMEM. If the old value is not desired, oldp and oldlenp should be set to
      * NULL.
-     *
+     * <p>
      * The size of the available data can be determined by calling sysctl() with the
      * NULL argument for oldp. The size of the available data will be returned in
      * the location pointed to by oldlenp. For some operations, the amount of space
      * may change often. For these operations, the system attempts to round up so
      * that the returned size is large enough for a call to return the data shortly
      * thereafter.
-     *
+     * <p>
      * To set a new value, newp is set to point to a buffer of length newlen from
      * which the requested value is to be taken. If a new value is not to be set,
      * newp should be set to NULL and newlen set to 0.
      *
-     * @param name
-     *            MIB array of integers
-     * @param namelen
-     *            length of the MIB array
-     * @param oldp
-     *            Information retrieved
-     * @param oldlenp
-     *            Size of information retrieved
-     * @param newp
-     *            Information to be written
-     * @param newlen
-     *            Size of information to be written
+     * @param name    MIB array of integers
+     * @param namelen length of the MIB array
+     * @param oldp    Information retrieved
+     * @param oldlenp Size of information retrieved
+     * @param newp    Information to be written
+     * @param newlen  Size of information to be written
      * @return 0 on success; sets errno on failure
      */
     int sysctl(int[] name, int namelen, Pointer oldp, size_t.ByReference oldlenp, Pointer newp, size_t newlen);
@@ -138,33 +132,21 @@ public interface CLibrary extends LibCAPI, Library {
      * applications that want to repeatedly request the same variable (the sysctl()
      * function runs in about a third the time as the same request made via the
      * sysctlbyname() function).
-     *
+     * <p>
      * The number of elements in the mib array can be determined by calling
      * sysctlnametomib() with the NULL argument for mibp.
-     *
+     * <p>
      * The sysctlnametomib() function is also useful for fetching mib prefixes. If
      * size on input is greater than the number of elements written, the array still
      * contains the additional elements which may be written programmatically.
      *
-     * @param name
-     *            ASCII representation of the name
-     * @param mibp
-     *            Integer array containing the corresponding name vector.
-     * @param sizep
-     *            On input, number of elements in the returned array; on output, the
-     *            number of entries copied.
+     * @param name  ASCII representation of the name
+     * @param mibp  Integer array containing the corresponding name vector.
+     * @param sizep On input, number of elements in the returned array; on output, the
+     *              number of entries copied.
      * @return 0 on success; sets errno on failure
      */
     int sysctlnametomib(String name, Pointer mibp, size_t.ByReference sizep);
-
-    @FieldOrder({"sa_family", "sa_data"})
-    class Sockaddr extends Structure {
-        public short sa_family;
-        public byte[] sa_data = new byte[14];
-
-        public static class ByReference extends Sockaddr implements Structure.ByReference {
-        }
-    }
 
     /**
      * Returns the process ID of the calling process. The ID is guaranteed to be
@@ -203,6 +185,26 @@ public interface CLibrary extends LibCAPI, Library {
      */
     void setutxent();
 
+    /**
+     * Closes the utmp file. It should be called when the user code is done
+     * accessing the file with the other functions.
+     */
+    void endutxent();
+
+    int open(String absolutePath, int i);
+
+    // Last argument is really off_t
+    ssize_t pread(int fildes, Pointer buf, size_t nbyte, NativeLong offset);
+
+    @FieldOrder({"sa_family", "sa_data"})
+    class Sockaddr extends Structure {
+        public short sa_family;
+        public byte[] sa_data = new byte[14];
+
+        public static class ByReference extends Sockaddr implements Structure.ByReference {
+        }
+    }
+
     class BsdTcpstat {
         public int tcps_connattempt; // 0
         public int tcps_accepts; // 4
@@ -216,14 +218,6 @@ public interface CLibrary extends LibCAPI, Library {
         public int tcps_rcvmemdrop; // 120
         public int tcps_rcvshort; // 124
     }
-
-    /**
-     * Closes the utmp file. It should be called when the user code is done
-     * accessing the file with the other functions.
-     */
-    void endutxent();
-
-    int open(String absolutePath, int i);
 
     class BsdUdpstat {
         public int udps_ipackets; // 0
@@ -250,9 +244,6 @@ public interface CLibrary extends LibCAPI, Library {
         public long ip6s_total; // 0
         public long ip6s_localout; // 88
     }
-
-    // Last argument is really off_t
-    ssize_t pread(int fildes, Pointer buf, size_t nbyte, NativeLong offset);
 
     @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
             "ai_next"})

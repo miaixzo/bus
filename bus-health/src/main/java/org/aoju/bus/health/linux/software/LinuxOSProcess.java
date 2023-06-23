@@ -75,6 +75,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
     private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+    private final LinuxOperatingSystem os;
     private String name;
     private String path = "";
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
@@ -97,8 +98,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
-
-    private final LinuxOperatingSystem os;
 
     public LinuxOSProcess(int pid, LinuxOperatingSystem os) {
         super(pid);
@@ -430,6 +429,23 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return true;
     }
 
+    private long getProcessOpenFileLimit(long processId, int index) {
+        final String limitsPath = String.format("/proc/%d/limits", processId);
+        if (!Files.exists(Paths.get(limitsPath))) {
+            return -1; // not supported
+        }
+        final List<String> lines = Builder.readFile(limitsPath);
+        final Optional<String> maxOpenFilesLine = lines.stream().filter(line -> line.startsWith("Max open files"))
+                .findFirst();
+        if (!maxOpenFilesLine.isPresent()) {
+            return -1;
+        }
+
+        // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
+        final String[] split = maxOpenFilesLine.get().split("\\D+");
+        return Long.parseLong(split[index]);
+    }
+
     /**
      * Enum used to update attributes. The order field represents the 1-indexed
      * numeric order of the stat in /proc/pid/stat per the man file.
@@ -449,23 +465,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
         public int getOrder() {
             return this.order;
         }
-    }
-
-    private long getProcessOpenFileLimit(long processId, int index) {
-        final String limitsPath = String.format("/proc/%d/limits", processId);
-        if (!Files.exists(Paths.get(limitsPath))) {
-            return -1; // not supported
-        }
-        final List<String> lines = Builder.readFile(limitsPath);
-        final Optional<String> maxOpenFilesLine = lines.stream().filter(line -> line.startsWith("Max open files"))
-                .findFirst();
-        if (!maxOpenFilesLine.isPresent()) {
-            return -1;
-        }
-
-        // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
-        final String[] split = maxOpenFilesLine.get().split("\\D+");
-        return Long.parseLong(split[index]);
     }
 
 }

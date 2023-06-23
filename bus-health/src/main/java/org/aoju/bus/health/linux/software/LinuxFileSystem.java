@@ -224,6 +224,10 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return 0L;
     }
 
+    private static long getFileDescriptorsPerProcess() {
+        return Builder.getLongFromFile(ProcPath.SYS_FS_FILE_MAX);
+    }
+
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // Map of volume with device path as key
@@ -270,10 +274,6 @@ public class LinuxFileSystem extends AbstractFileSystem {
     @Override
     public long getMaxFileDescriptors() {
         return getFileDescriptors(2);
-    }
-
-    private static long getFileDescriptorsPerProcess() {
-        return Builder.getLongFromFile(ProcPath.SYS_FS_FILE_MAX);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoize.memoize(this::queryPsInfo, Memoize.defaultExpiration());
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoize.memoize(this::queryCommandlineEnvironment);
     private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoize.memoize(this::queryPrUsage, Memoize.defaultExpiration());
+    private final SolarisOperatingSystem os;
     private String name;
     private String path = "";
     private String commandLineBackup;
@@ -86,7 +87,6 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches = 0; // default
-    private final SolarisOperatingSystem os;
 
     public SolarisOSProcess(int pid, SolarisOperatingSystem os) {
         super(pid);

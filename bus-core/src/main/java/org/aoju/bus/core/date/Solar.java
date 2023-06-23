@@ -510,8 +510,8 @@ public class Solar {
         }
         List<Integer> hours = new ArrayList<>(2);
         String timeZhi = timeGanZhi.substring(1);
-        for(int i = 1, j = Fields.CN_ZHI.length; i < j; i++){
-            if(Fields.CN_ZHI[i].equals(timeZhi)){
+        for (int i = 1, j = Fields.CN_ZHI.length; i < j; i++) {
+            if (Fields.CN_ZHI[i].equals(timeZhi)) {
                 hours.add((i - 1) * 2);
                 break;
             }

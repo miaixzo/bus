@@ -2725,7 +2725,7 @@ public class Builder {
      * @return {@link KeyStore}
      */
     public static KeyStore getKeyStore(final String type) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();;
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
         try {
             return null == provider ? KeyStore.getInstance(type) : KeyStore.getInstance(type, provider);
         } catch (final KeyStoreException e) {

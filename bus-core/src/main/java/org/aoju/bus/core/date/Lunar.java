@@ -188,9 +188,9 @@ public class Lunar {
      * 月相，朔月也叫新月，望月也叫满月
      */
     public static final String[] YUE_XIANG = {
-            "","朔","既朔","蛾眉新","蛾眉新","蛾眉","夕","上弦","上弦","九夜","宵","宵","宵",
-            "渐盈凸","小望","望","既望","立待","居待","寝待","更待","渐亏凸","下弦","下弦",
-            "有明","有明","蛾眉残","蛾眉残","残","晓","晦"
+            "", "朔", "既朔", "蛾眉新", "蛾眉新", "蛾眉", "夕", "上弦", "上弦", "九夜", "宵", "宵", "宵",
+            "渐盈凸", "小望", "望", "既望", "立待", "居待", "寝待", "更待", "渐亏凸", "下弦", "下弦",
+            "有明", "有明", "蛾眉残", "蛾眉残", "残", "晓", "晦"
     };
 
     /**
@@ -2578,7 +2578,7 @@ public class Lunar {
                 String ys = left.substring(left.indexOf(Symbol.C_COLON) + 1);
                 ys = ys.substring(0, ys.indexOf(Symbol.COMMA));
                 for (int i = 0, j = ys.length(); i < j; i += 2) {
-                    l.add(YI_JI[Integer.parseInt(ys.substring(i, i + 2),16)]);
+                    l.add(YI_JI[Integer.parseInt(ys.substring(i, i + 2), 16)]);
                 }
                 break;
             }
@@ -6135,29 +6135,24 @@ public class Lunar {
      */
     public static class Month {
 
+        private final int index;
+        private final int zhiIndex;
         /**
          * 农历年
          */
         private int year;
-
         /**
          * 农历月：1-12，闰月为负数，如闰2月为-2
          */
         private int month;
-
         /**
          * 天数，大月30天，小月29天
          */
         private int dayCount;
-
         /**
          * 初一的儒略日
          */
         private double firstJulianDay;
-
-        private final int index;
-
-        private final int zhiIndex;
 
         /**
          * 初始化

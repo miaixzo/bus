@@ -36,20 +36,6 @@ import java.util.function.Predicate;
 public interface OSThread {
 
     /**
-     * Constants which may be used to filter Thread lists
-     */
-    final class ThreadFiltering {
-        /**
-         * Exclude processes with {@link OSProcess.State#INVALID} process state.
-         */
-        public static final Predicate<OSThread> VALID_THREAD = p -> !p.getState().equals(OSProcess.State.INVALID);
-
-        private ThreadFiltering() {
-
-        }
-    }
-
-    /**
      * The thread id. The meaning of this value is OS-dependent.
      *
      * @return Returns the id of the thread.
@@ -193,6 +179,20 @@ public interface OSThread {
      */
     default boolean updateAttributes() {
         return false;
+    }
+
+    /**
+     * Constants which may be used to filter Thread lists
+     */
+    final class ThreadFiltering {
+        /**
+         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         */
+        public static final Predicate<OSThread> VALID_THREAD = p -> !p.getState().equals(OSProcess.State.INVALID);
+
+        private ThreadFiltering() {
+
+        }
     }
 
 }

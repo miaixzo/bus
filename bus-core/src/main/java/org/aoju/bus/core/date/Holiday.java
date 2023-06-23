@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -368,7 +367,7 @@ public class Holiday {
     private static List<Holiday> findHolidaysBackward(String key) {
         List<Holiday> list = new ArrayList<>();
         String s = findBackward(key);
-        if(null!=s) {
+        if (null != s) {
             while (s.endsWith(key)) {
                 list.add(0, buildHolidayBackward(s));
                 s = s.substring(0, s.length() - SIZE);

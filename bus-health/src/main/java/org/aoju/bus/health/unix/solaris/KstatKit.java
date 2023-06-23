@@ -167,6 +167,85 @@ public final class KstatKit {
     }
 
     /**
+     * Query Kstat2 with a single map
+     *
+     * @param mapStr The map to query
+     * @param names  Names of data to query
+     * @return An object array with the data corresponding to the names
+     */
+    public static Object[] queryKstat2(String mapStr, String... names) {
+        if (!SolarisOperatingSystem.HAS_KSTAT2) {
+            throw new UnsupportedOperationException(
+                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
+        }
+        Object[] result = new Object[names.length];
+        Kstat2MatcherList matchers = new Kstat2MatcherList();
+        KstatKit.CHAIN.lock();
+        try {
+            matchers.addMatcher(Kstat2.KSTAT2_M_STRING, mapStr);
+            Kstat2Handle handle = new Kstat2Handle();
+            try {
+                Kstat2Map map = handle.lookupMap(mapStr);
+                for (int i = 0; i < names.length; i++) {
+                    result[i] = map.getValue(names[i]);
+                }
+            } finally {
+                handle.close();
+            }
+        } catch (Kstat2StatusException e) {
+            Logger.debug("Failed to get stats on {} for names {}: {}", mapStr, Arrays.toString(names), e.getMessage());
+        } finally {
+            KstatKit.CHAIN.unlock();
+            matchers.free();
+        }
+        return result;
+    }
+
+    /**
+     * Query Kstat2 iterating over maps using a wildcard indicating a 0-indexed
+     * list, such as a cpu.
+     *
+     * @param beforeStr The part of the string before the wildcard
+     * @param afterStr  The part of the string after the wildcard
+     * @param names     Names of data to query
+     * @return A list of object arrays with the data corresponding to the names
+     */
+    public static List<Object[]> queryKstat2List(String beforeStr, String afterStr, String... names) {
+        if (!SolarisOperatingSystem.HAS_KSTAT2) {
+            throw new UnsupportedOperationException(
+                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
+        }
+        List<Object[]> results = new ArrayList<>();
+        int s = 0;
+        Kstat2MatcherList matchers = new Kstat2MatcherList();
+        KstatKit.CHAIN.lock();
+        try {
+            matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + "*" + afterStr);
+            Kstat2Handle handle = new Kstat2Handle();
+            try {
+                for (s = 0; s < Integer.MAX_VALUE; s++) {
+                    Object[] result = new Object[names.length];
+                    Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
+                    for (int i = 0; i < names.length; i++) {
+                        result[i] = map.getValue(names[i]);
+                    }
+                    results.add(result);
+                }
+            } finally {
+                handle.close();
+            }
+        } catch (Kstat2StatusException e) {
+            // Expected to end iteration
+            Logger.debug("Failed to get stats on {}{}{} for names {}: {}", beforeStr, s, afterStr, Arrays.toString(names),
+                    e.getMessage());
+        } finally {
+            KstatKit.CHAIN.unlock();
+            matchers.free();
+        }
+        return results;
+    }
+
+    /**
      * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
      * one thread may actively use this object at any time.
      * <p>
@@ -283,85 +362,6 @@ public final class KstatKit {
         public void close() {
             CHAIN.unlock();
         }
-    }
-
-    /**
-     * Query Kstat2 with a single map
-     *
-     * @param mapStr The map to query
-     * @param names  Names of data to query
-     * @return An object array with the data corresponding to the names
-     */
-    public static Object[] queryKstat2(String mapStr, String... names) {
-        if (!SolarisOperatingSystem.HAS_KSTAT2) {
-            throw new UnsupportedOperationException(
-                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
-        }
-        Object[] result = new Object[names.length];
-        Kstat2MatcherList matchers = new Kstat2MatcherList();
-        KstatKit.CHAIN.lock();
-        try {
-            matchers.addMatcher(Kstat2.KSTAT2_M_STRING, mapStr);
-            Kstat2Handle handle = new Kstat2Handle();
-            try {
-                Kstat2Map map = handle.lookupMap(mapStr);
-                for (int i = 0; i < names.length; i++) {
-                    result[i] = map.getValue(names[i]);
-                }
-            } finally {
-                handle.close();
-            }
-        } catch (Kstat2StatusException e) {
-            Logger.debug("Failed to get stats on {} for names {}: {}", mapStr, Arrays.toString(names), e.getMessage());
-        } finally {
-            KstatKit.CHAIN.unlock();
-            matchers.free();
-        }
-        return result;
-    }
-
-    /**
-     * Query Kstat2 iterating over maps using a wildcard indicating a 0-indexed
-     * list, such as a cpu.
-     *
-     * @param beforeStr The part of the string before the wildcard
-     * @param afterStr  The part of the string after the wildcard
-     * @param names     Names of data to query
-     * @return A list of object arrays with the data corresponding to the names
-     */
-    public static List<Object[]> queryKstat2List(String beforeStr, String afterStr, String... names) {
-        if (!SolarisOperatingSystem.HAS_KSTAT2) {
-            throw new UnsupportedOperationException(
-                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
-        }
-        List<Object[]> results = new ArrayList<>();
-        int s = 0;
-        Kstat2MatcherList matchers = new Kstat2MatcherList();
-        KstatKit.CHAIN.lock();
-        try {
-            matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + "*" + afterStr);
-            Kstat2Handle handle = new Kstat2Handle();
-            try {
-                for (s = 0; s < Integer.MAX_VALUE; s++) {
-                    Object[] result = new Object[names.length];
-                    Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
-                    for (int i = 0; i < names.length; i++) {
-                        result[i] = map.getValue(names[i]);
-                    }
-                    results.add(result);
-                }
-            } finally {
-                handle.close();
-            }
-        } catch (Kstat2StatusException e) {
-            // Expected to end iteration
-            Logger.debug("Failed to get stats on {}{}{} for names {}: {}", beforeStr, s, afterStr, Arrays.toString(names),
-                    e.getMessage());
-        } finally {
-            KstatKit.CHAIN.unlock();
-            matchers.free();
-        }
-        return results;
     }
 
 }

@@ -76,11 +76,11 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SZOMB = 5; // intermediate state in process termination
     private static final int SSTOP = 6; // process being traced
     private static final int MAC_RLIMIT_NOFILE = 8;
-
-    private int majorVersion;
-    private int minorVersion;
     private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final MacOperatingSystem os;
+    private int majorVersion;
+    private int minorVersion;
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
     private String currentWorkingDirectory;
@@ -105,7 +105,6 @@ public class MacOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
-    private final MacOperatingSystem os;
 
     public MacOSProcess(int pid, int major, int minor, MacOperatingSystem os) {
         super(pid);

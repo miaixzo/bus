@@ -44,12 +44,12 @@ import org.aoju.bus.logger.Logger;
  */
 public class BridgeVerticleService extends AbstractVerticle {
 
-    @Resource
-    Resolvable resolvable;
+    private final BridgeProperties properties;
+
     @Resource
     Vertx vertx;
-
-    private final BridgeProperties properties;
+    @Resource
+    Resolvable resolvable;
 
     public BridgeVerticleService(BridgeProperties properties) {
         this.properties = properties;

@@ -75,7 +75,8 @@ final Builder ini=b.build();
 
 一些接口和抽象类的指路：
 
-ini元素相关：父类接口/抽象类: `IniElement`、`BaseElement`, 具体元素的接口和默认实现：`IniComment`(默认实现：`IniCommentImpl`)、`IniProperty`(
+ini元素相关：父类接口/抽象类: `IniElement`、`BaseElement`, 具体元素的接口和默认实现：`IniComment`(
+默认实现：`IniCommentImpl`)、`IniProperty`(
 默认实现：`IniPropertyImpl`)、`IniSection`(默认实现：`IniSectionImpl`)。
 
 ini读取相关：父类接口：`Readers` 或参考默认实现：`BufferedIniReader`。

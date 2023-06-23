@@ -65,6 +65,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     private final List<LogicalProcessor> logicalProcessors;
     private final List<PhysicalProcessor> physicalProcessors;
     private final List<ProcessorCache> processorCaches;
+
     /**
      * Create a Processor
      */

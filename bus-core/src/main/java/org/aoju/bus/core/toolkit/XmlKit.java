@@ -46,7 +46,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.beans.XMLDecoder;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
