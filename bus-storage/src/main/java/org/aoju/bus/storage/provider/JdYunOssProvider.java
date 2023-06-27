@@ -66,7 +66,7 @@ public class JdYunOssProvider extends AbstractProvider {
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
         ClientConfiguration config = new ClientConfiguration();
