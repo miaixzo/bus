@@ -69,7 +69,6 @@ public class MinioOssProvider extends AbstractProvider {
         Assert.notBlank(StringKit.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
         Assert.notBlank(StringKit.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
         Assert.notBlank(StringKit.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
-        Assert.notBlank(StringKit.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
 
         this.client = MinioClient.builder()
                 .endpoint(this.context.getEndpoint())
