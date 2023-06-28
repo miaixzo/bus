@@ -381,6 +381,11 @@ public class Httpx {
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
+    public static String post(final String url, final String data, final Map<String, String> headerMap, final String mediaType) {
+        return execute(Builder.builder().url(url).method(Http.POST).data(data).headerMap(headerMap).mediaType(mediaType)
+                .requestCharset(Charset.DEFAULT_UTF_8).responseCharset(Charset.DEFAULT_UTF_8).build());
+    }
+
     /**
      * 带查询参数 POST 请求 使用默认编码 UTF-8
      *
