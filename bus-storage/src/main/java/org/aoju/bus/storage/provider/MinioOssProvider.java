@@ -112,6 +112,10 @@ public class MinioOssProvider extends AbstractProvider {
             InputStream inputStream = this.client.getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
             OutputStream outputStream = new FileOutputStream(file);
             IoKit.copy(inputStream, outputStream);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
