@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <spring.boot.version>3.0.5</spring.boot.version>
-        <compress.version>1.21</compress.version>
+        <compress.version>1.24.0</compress.version>
         <freemarker.version>2.3.31</freemarker.version>
         <lombok.version>1.18.26</lombok.version>
         <hikaricp.version>5.0.1</hikaricp.version>
