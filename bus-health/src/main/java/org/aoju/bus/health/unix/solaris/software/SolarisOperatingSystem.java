@@ -31,6 +31,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
@@ -67,6 +68,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoize
             .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoize.defaultExpiration());
     private static final long BOOTTIME = querySystemBootTime();
+    private static final boolean ALLOW_KSTAT2 = Config.get(Config.OS_SOLARIS_ALLOWKSTAT2, true);
 
     static {
         String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
@@ -75,7 +77,9 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
         Kstat2 lib = null;
         try {
-            lib = Kstat2.INSTANCE;
+            if (ALLOW_KSTAT2) {
+                lib = Kstat2.INSTANCE;
+            }
         } catch (UnsatisfiedLinkError e) {
             // 11.3 or earlier, no kstat2
         }

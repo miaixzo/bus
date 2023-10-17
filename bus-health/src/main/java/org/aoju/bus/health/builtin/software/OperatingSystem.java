@@ -29,8 +29,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.IdGroup;
 import org.aoju.bus.health.builtin.software.OSProcess.State;
 import org.aoju.bus.health.unix.Who;
 import org.aoju.bus.health.unix.Xwininfo;
@@ -329,7 +328,7 @@ public interface OperatingSystem {
      * @return True if this process has elevated permissions
      */
     default boolean isElevated() {
-        return 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
+        return IdGroup.isElevated();
     }
 
     /**

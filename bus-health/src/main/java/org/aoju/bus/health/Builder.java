@@ -192,7 +192,7 @@ public final class Builder {
     public static int parseLastInt(String s, int i) {
         try {
             String ls = parseLastString(s);
-            if (ls.toLowerCase().startsWith("0x")) {
+            if (ls.toLowerCase(Locale.ROOT).startsWith("0x")) {
                 return Integer.decode(ls);
             } else {
                 return Integer.parseInt(ls);
@@ -213,7 +213,7 @@ public final class Builder {
     public static long parseLastLong(String s, long li) {
         try {
             String ls = parseLastString(s);
-            if (ls.toLowerCase().startsWith("0x")) {
+            if (ls.toLowerCase(Locale.ROOT).startsWith("0x")) {
                 return Long.decode(ls);
             } else {
                 return Long.parseLong(ls);
@@ -560,7 +560,7 @@ public final class Builder {
      * @return The parsed UUID, or the default if parsing fails
      */
     public static String parseUuidOrDefault(String s, String defaultStr) {
-        Matcher m = UUID_PATTERN.matcher(s.toLowerCase());
+        Matcher m = UUID_PATTERN.matcher(s.toLowerCase(Locale.ROOT));
         if (m.matches()) {
             return m.group(1);
         }
@@ -868,7 +868,7 @@ public final class Builder {
     public static String parseMmDdYyyyToYyyyMmDD(String dateString) {
         try {
             // Date is MM-DD-YYYY, convert to YYYY-MM-DD
-            return String.format("%s-%s-%s", dateString.substring(6, 10), dateString.substring(0, 2),
+            return String.format(Locale.ROOT, "%s-%s-%s", dateString.substring(6, 10), dateString.substring(0, 2),
                     dateString.substring(3, 5));
         } catch (StringIndexOutOfBoundsException e) {
             return dateString;
@@ -1013,8 +1013,8 @@ public final class Builder {
     public static Triple<String, String, String> parseDeviceIdToVendorProductSerial(String deviceId) {
         Matcher m = VENDOR_PRODUCT_ID_SERIAL.matcher(deviceId);
         if (m.matches()) {
-            String vendorId = "0x" + m.group(1).toLowerCase();
-            String productId = "0x" + m.group(2).toLowerCase();
+            String vendorId = "0x" + m.group(1).toLowerCase(Locale.ROOT);
+            String productId = "0x" + m.group(2).toLowerCase(Locale.ROOT);
             String serial = m.group(4);
             return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? "" : serial);
         }
@@ -1091,17 +1091,21 @@ public final class Builder {
      */
     public static List<Integer> parseHyphenatedIntList(String text) {
         List<Integer> result = new ArrayList<>();
-        for (String s : RegEx.SPACES.split(text)) {
-            if (s.contains("-")) {
-                int first = getFirstIntValue(s);
-                int last = getNthIntValue(s, 2);
-                for (int i = first; i <= last; i++) {
-                    result.add(i);
-                }
-            } else {
-                int only = Builder.parseIntOrDefault(s, -1);
-                if (only >= 0) {
-                    result.add(only);
+        String[] csvTokens = text.split(Symbol.COMMA);
+        for (String csvToken : csvTokens) {
+            csvToken = csvToken.trim();
+            for (String s : RegEx.SPACES.split(csvToken)) {
+                if (s.contains("-")) {
+                    int first = getFirstIntValue(s);
+                    int last = getNthIntValue(s, 2);
+                    for (int i = first; i <= last; i++) {
+                        result.add(i);
+                    }
+                } else {
+                    int only = Builder.parseIntOrDefault(s, -1);
+                    if (only >= 0) {
+                        result.add(only);
+                    }
                 }
             }
         }
@@ -1878,6 +1882,31 @@ public final class Builder {
             return Normal.UNKNOWN;
         }
         return s;
+    }
+
+    /**
+     * Tests if session of a user logged in a device is valid or not.
+     *
+     * @param user      The user logged in
+     * @param device    The device used by user
+     * @param loginTime The login time of the user
+     * @return True if Session is valid or False if the user of device is empty or the login time is lesser than zero or
+     * greater than current time.
+     */
+    public static boolean isSessionValid(String user, String device, Long loginTime) {
+        return !(user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis());
+    }
+
+    /**
+     * Checks if value exists in map for the given key or not and returns value or unknown based on it
+     *
+     * @param map A map of String key-value pairs
+     * @param key Fetch value for the given key
+     * @return Returns the value for the key if it exists in the map else it returns unknown
+     */
+    public static String getValueOrUnknown(Map<String, String> map, String key) {
+        String value = map.getOrDefault(key, "");
+        return value.isEmpty() ? Normal.UNKNOWN : value;
     }
 
 }

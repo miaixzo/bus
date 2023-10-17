@@ -48,6 +48,8 @@ import org.aoju.bus.health.linux.drivers.proc.UpTime;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -84,14 +86,54 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     private static final int[] PPID_INDEX = {3};
 
+    /**
+     * This static field identifies if the gettid function is in the c library.
+     */
+    public static final boolean HAS_GETTID;
+
     static {
-        Udev lib = null;
+        boolean hasGettid = false;
         try {
-            lib = Udev.INSTANCE;
-        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            // no udev
+            LinuxLibc.INSTANCE.gettid();
+            hasGettid = true;
+        } catch (UnsatisfiedLinkError e) {
+            Logger.debug("Did not find gettid function in operating system. Using fallbacks.");
         }
-        HAS_UDEV = lib != null;
+        HAS_GETTID = hasGettid;
+    }
+
+    /**
+     * This static field identifies if the syscall for gettid returns sane results.
+     */
+    public static final boolean HAS_SYSCALL_GETTID;
+
+    static {
+        boolean hasSyscallGettid = HAS_GETTID;
+        if (!HAS_GETTID) {
+            try {
+                hasSyscallGettid = LinuxLibc.INSTANCE.syscall(LinuxLibc.SYS_GETTID).intValue() > 0;
+            } catch (UnsatisfiedLinkError e) {
+                Logger.debug("Did not find working syscall gettid function in operating system. Using procfs");
+            }
+        }
+        HAS_SYSCALL_GETTID = hasSyscallGettid;
+    }
+
+    static {
+        boolean hasUdev = false;
+        try {
+            @SuppressWarnings("unused")
+            Udev lib = null;
+            try {
+                lib = Udev.INSTANCE;
+                hasUdev = true;
+            } catch (UnsatisfiedLinkError e) {
+                Logger.warn("Did not find udev library in operating system. Some features may not work.");
+            }
+        } catch (NoClassDefFoundError e) {
+            Logger.error("Did not find Udev class from JNA. There is likely an old JNA version on the classpath.");
+        }
+        HAS_UDEV = hasUdev;
     }
 
     static {
@@ -138,7 +180,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static int getParentPidFromProcFile(int pid) {
-        String stat = Builder.getStringFromFile(String.format("/proc/%d/stat", pid));
+        String stat = Builder.getStringFromFile(String.format(Locale.ROOT, "/proc/%d/stat", pid));
         // A race condition may leave us with an empty string
         if (stat.isEmpty()) {
             return 0;
@@ -431,8 +473,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return "Unknown";
         } else {
             Properties filenameProps = Config.readProperties(Config.FILENAME_PROPERTIES);
-            String family = filenameProps.getProperty(name.toLowerCase());
-            return family != null ? family : name.substring(0, 1).toUpperCase() + name.substring(1);
+            String family = filenameProps.getProperty(name.toLowerCase(Locale.ROOT));
+            return family != null ? family : name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
         }
     }
 
@@ -563,7 +605,16 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public int getThreadId() {
-        return LinuxLibc.INSTANCE.gettid();
+        if (HAS_SYSCALL_GETTID) {
+            return HAS_GETTID ? LinuxLibc.INSTANCE.gettid()
+                    : LinuxLibc.INSTANCE.syscall(LinuxLibc.SYS_GETTID).intValue();
+        }
+        try {
+            return Builder.parseIntOrDefault(
+                    Files.readSymbolicLink(new File(ProcPath.THREAD_SELF).toPath()).getFileName().toString(), 0);
+        } catch (IOException e) {
+            return 0;
+        }
     }
 
     @Override
@@ -630,7 +681,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             // Get Directories for stopped services
             File dir = new File("/etc/init");
             if (dir.exists() && dir.isDirectory()) {
-                for (File f : dir.listFiles((f, name) -> name.toLowerCase().endsWith(".conf"))) {
+                for (File f : dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"))) {
                     // remove .conf extension
                     String name = f.getName().substring(0, f.getName().length() - 5);
                     int index = name.lastIndexOf('.');

@@ -32,6 +32,7 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -134,12 +135,12 @@ public class LinuxOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        this.name = Builder
-                .getStringFromFile(String.format(ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
+        this.name = Builder.getStringFromFile(
+                String.format(Locale.ROOT, ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
         Map<String, String> status = Builder.getKeyValueMapFromFile(
-                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
-        String stat = Builder
-                .getStringFromFile(String.format(ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
+                String.format(Locale.ROOT, ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
+        String stat = Builder.getStringFromFile(
+                String.format(Locale.ROOT, ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
         if (stat.isEmpty()) {
             this.state = OSProcess.State.INVALID;
             return false;

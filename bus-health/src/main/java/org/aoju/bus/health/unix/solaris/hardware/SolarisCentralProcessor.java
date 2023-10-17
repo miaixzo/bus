@@ -178,7 +178,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 flags.append(' ').append(line.trim());
             }
         }
-        return createProcessorID(stepping, model, family, RegEx.SPACES.split(flags.toString().toLowerCase()));
+        return createProcessorID(stepping, model, family,
+                RegEx.SPACES.split(flags.toString().toLowerCase(Locale.ROOT)));
     }
 
     private static long queryContextSwitches2() {

@@ -128,15 +128,10 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         String machine = OpenBsdSysctlKit.sysctl(mib, "");
         boolean cpu64bit = machine != null && machine.contains("64")
                 || Executor.getFirstAnswer("uname -m").trim().contains("64");
-        String processorID = String.format("%08x%08x", cpufeature, cpuid);
+        String processorID = String.format(Locale.ROOT, "%08x%08x", cpufeature, cpuid);
 
         return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
                 cpuFreq);
-    }
-
-    @Override
-    protected long queryMaxFreq() {
-        return queryCurrentFreq()[0];
     }
 
     @Override

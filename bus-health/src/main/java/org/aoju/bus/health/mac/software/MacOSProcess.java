@@ -27,6 +27,8 @@ package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit;
+import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Group;
 import com.sun.jna.platform.mac.SystemB.Passwd;
@@ -36,6 +38,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.Struct;
@@ -105,6 +108,35 @@ public class MacOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
+
+    private static final long TICKS_PER_MS;
+
+    static {
+        // default to 1 tick per nanosecond
+        long ticksPerSec = 1_000_000_000L;
+        IOKit.IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
+        if (iter != null) {
+            IOKit.IORegistryEntry cpu = iter.next();
+            while (cpu != null) {
+                try {
+                    String s = cpu.getName().toLowerCase(Locale.ROOT);
+                    if (s.startsWith("cpu") && s.length() > 3) {
+                        byte[] data = cpu.getByteArrayProperty("timebase-frequency");
+                        if (data != null) {
+                            ticksPerSec = Builder.byteArrayToLong(data, 4, false);
+                            break;
+                        }
+                    }
+                } finally {
+                    cpu.release();
+                }
+                cpu = iter.next();
+            }
+            iter.release();
+        }
+        // Convert to ticks per millisecond
+        TICKS_PER_MS = ticksPerSec / 1000L;
+    }
 
     public MacOSProcess(int pid, int major, int minor, MacOperatingSystem os) {
         super(pid);
@@ -412,27 +444,23 @@ public class MacOSProcess extends AbstractOSProcess {
             this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
             this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
             Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
-            if (pwuid != null) {
-                this.user = pwuid.pw_name;
-            }
+            this.user = pwuid == null ? Integer.toString(taskAllInfo.pbsd.pbi_uid) : pwuid.pw_name;
             this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
             Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
-            if (grgid != null) {
-                this.group = grgid.gr_name;
-            }
+            this.group = grgid == null ? Integer.toString(taskAllInfo.pbsd.pbi_gid) : grgid.gr_name;
             this.threadCount = taskAllInfo.ptinfo.pti_threadnum;
             this.priority = taskAllInfo.ptinfo.pti_priority;
             this.virtualSize = taskAllInfo.ptinfo.pti_virtual_size;
             this.residentSetSize = taskAllInfo.ptinfo.pti_resident_size;
-            this.kernelTime = taskAllInfo.ptinfo.pti_total_system / 1_000_000L;
-            this.userTime = taskAllInfo.ptinfo.pti_total_user / 1_000_000L;
+            this.kernelTime = taskAllInfo.ptinfo.pti_total_system / TICKS_PER_MS;
+            this.userTime = taskAllInfo.ptinfo.pti_total_user / TICKS_PER_MS;
             this.startTime = taskAllInfo.pbsd.pbi_start_tvsec * 1000L + taskAllInfo.pbsd.pbi_start_tvusec / 1000L;
             this.upTime = now - this.startTime;
             this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
             this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
             this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
             // testing using getrusage confirms pti_faults includes both major and minor
-            this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;
+            this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins; // NOSONAR squid:S2184
             this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
         }
         if (this.majorVersion > 10 || this.minorVersion >= 9) {

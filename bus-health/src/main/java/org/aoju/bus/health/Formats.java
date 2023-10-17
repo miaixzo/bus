@@ -33,6 +33,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -87,9 +88,9 @@ public final class Formats {
      */
     public static String formatBytes(long bytes) {
         if (bytes == 1L) { // bytes
-            return String.format("%d byte", bytes);
+            return String.format(Locale.ROOT, "%d byte", bytes);
         } else if (bytes < KIBI) { // bytes
-            return String.format("%d bytes", bytes);
+            return String.format(Locale.ROOT, "%d bytes", bytes);
         } else if (bytes < MEBI) { // KiB
             return formatUnits(bytes, KIBI, "KiB");
         } else if (bytes < GIBI) { // MiB
@@ -116,9 +117,9 @@ public final class Formats {
      */
     private static String formatUnits(long value, long prefix, String unit) {
         if (value % prefix == 0) {
-            return String.format("%d %s", value / prefix, unit);
+            return String.format(Locale.ROOT, "%d %s", value / prefix, unit);
         }
-        return String.format("%.1f %s", (double) value / prefix, unit);
+        return String.format(Locale.ROOT, "%.1f %s", (double) value / prefix, unit);
     }
 
     /**
@@ -131,9 +132,9 @@ public final class Formats {
      */
     public static String formatBytesDecimal(long bytes) {
         if (bytes == 1L) { // bytes
-            return String.format("%d byte", bytes);
+            return String.format(Locale.ROOT, "%d byte", bytes);
         } else if (bytes < KILO) { // bytes
-            return String.format("%d bytes", bytes);
+            return String.format(Locale.ROOT, "%d bytes", bytes);
         } else {
             return formatValue(bytes, "B");
         }
@@ -159,7 +160,7 @@ public final class Formats {
      */
     public static String formatValue(long value, String unit) {
         if (value < KILO) {
-            return String.format("%d %s", value, unit).trim();
+            return String.format(Locale.ROOT, "%d %s", value, unit).trim();
         } else if (value < MEGA) { // K
             return formatUnits(value, KILO, "K" + unit);
         } else if (value < GIGA) { // M
@@ -190,7 +191,7 @@ public final class Formats {
         final long min = TimeUnit.SECONDS.toMinutes(eTime);
         eTime -= TimeUnit.MINUTES.toSeconds(min);
         final long sec = eTime;
-        return String.format("%d days, %02d:%02d:%02d", days, hr, min, sec);
+        return String.format(Locale.ROOT, "%d days, %02d:%02d:%02d", days, hr, min, sec);
     }
 
     /**
@@ -240,7 +241,7 @@ public final class Formats {
      * @return A string representing the error as 0x....
      */
     public static String formatError(int errorCode) {
-        return String.format(HEX_ERROR, errorCode);
+        return String.format(Locale.ROOT, HEX_ERROR, errorCode);
     }
 
     /**
@@ -261,11 +262,10 @@ public final class Formats {
      */
     public static String getManufacturerID(byte[] edid) {
         // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
-        String temp = String
-                .format("%8s%8s", Integer.toBinaryString(edid[8] & 0xFF), Integer.toBinaryString(edid[9] & 0xFF))
-                .replace(' ', '0');
+        String temp = String.format(Locale.ROOT, "%8s%8s", Integer.toBinaryString(edid[8] & 0xFF),
+                Integer.toBinaryString(edid[9] & 0xFF)).replace(' ', '0');
         Logger.debug("Manufacurer ID: {}", temp);
-        return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
+        return String.format(Locale.ROOT, "%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", "");
     }
@@ -294,12 +294,13 @@ public final class Formats {
         if (Logger.isDebug()) {
             Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
         }
-        return String.format("%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
+        return String.format(Locale.ROOT, "%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
                 getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
     }
 
     private static String getAlphaNumericOrHex(byte b) {
-        return Character.isLetterOrDigit((char) b) ? String.format("%s", (char) b) : String.format("%02X", b);
+        return Character.isLetterOrDigit((char) b) ? String.format(Locale.ROOT, "%s", (char) b)
+                : String.format(Locale.ROOT, "%02X", b);
     }
 
     /**
@@ -404,7 +405,7 @@ public final class Formats {
         int clock = ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
         int hActive = (desc[2] & 0xff) + ((desc[4] & 0xf0) << 4);
         int vActive = (desc[5] & 0xff) + ((desc[7] & 0xf0) << 4);
-        return String.format("Clock %dMHz, Active Pixels %dx%d ", clock, hActive, vActive);
+        return String.format(Locale.ROOT, "Clock %dMHz, Active Pixels %dx%d ", clock, hActive, vActive);
     }
 
     /**
@@ -414,8 +415,8 @@ public final class Formats {
      * @return A string describing some of the range limits
      */
     public static String getDescriptorRangeLimits(byte[] desc) {
-        return String.format("Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz", desc[5], desc[6],
-                desc[7], desc[8], desc[9] * 10);
+        return String.format(Locale.ROOT, "Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz",
+                desc[5], desc[6], desc[7], desc[8], desc[9] * 10);
     }
 
     /**
@@ -445,7 +446,8 @@ public final class Formats {
         sb.append(", EDID v").append(getVersion(edid));
         int hSize = getHcm(edid);
         int vSize = getVcm(edid);
-        sb.append(String.format("%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
+        sb.append(String.format(Locale.ROOT, "%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54,
+                vSize / 2.54));
         byte[][] desc = getDescriptors(edid);
         for (byte[] b : desc) {
             switch (getDescriptorType(b)) {

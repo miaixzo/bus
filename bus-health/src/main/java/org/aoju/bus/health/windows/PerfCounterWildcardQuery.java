@@ -105,7 +105,7 @@ public final class PerfCounterWildcardQuery {
                     + " must have at least two elements, an instance filter and a counter.");
         }
         String instanceFilter = ((PdhCounterWildcardProperty) propertyEnum.getEnumConstants()[0]).getCounter()
-                .toLowerCase();
+                .toLowerCase(Locale.ROOT);
         // Localize the perfObject using different variable for the EnumObjectItems
         // Will still use unlocalized perfObject for the query
         String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject, true);
@@ -125,7 +125,7 @@ public final class PerfCounterWildcardQuery {
         }
         List<String> instances = objectItems.getInstances();
         // Filter out instances not matching filter
-        instances.removeIf(i -> !Builder.wildcardMatch(i.toLowerCase(), instanceFilter));
+        instances.removeIf(i -> !Builder.wildcardMatch(i.toLowerCase(Locale.ROOT), instanceFilter));
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles

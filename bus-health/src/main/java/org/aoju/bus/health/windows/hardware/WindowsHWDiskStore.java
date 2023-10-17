@@ -95,7 +95,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             WmiResult<Win32DiskDrive.DiskDriveProperty> vals = Win32DiskDrive.queryDiskDrive(h);
             for (int i = 0; i < vals.getResultCount(); i++) {
                 WindowsHWDiskStore ds = new WindowsHWDiskStore(WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.NAME, i),
-                        String.format("%s %s", WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.MODEL, i),
+                        String.format(Locale.ROOT, "%s %s", WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.MODEL, i),
                                 WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.MANUFACTURER, i)).trim(),
                         // Most vendors store serial # as a hex string; convert
                         Builder.hexStringToString(WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.SERIALNUMBER, i)),

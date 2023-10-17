@@ -62,6 +62,8 @@ public final class Config {
     public static final String OS_WINDOWS_PERFOS_DIABLED = "bus.os.windows.perfos.disabled";
     public static final String OS_WINDOWS_PERFPROC_DIABLED = "bus.os.windows.perfproc.disabled";
     public static final String OS_UNIX_WHOCOMMAND = "bus.health.os.unix.whoCommand";
+    public static final String OS_SOLARIS_ALLOWKSTAT2 = "bus.health.os.solaris.allowKstat2";
+
     private static final Properties CONFIG = readProperties(PROPERTIES);
 
     /**

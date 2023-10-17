@@ -137,7 +137,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 31:24 - Implementer = vendor
         midrBytes |= Builder.parseLastInt(vendor, 0) << 24;
 
-        return String.format("%08X", midrBytes);
+        return String.format(Locale.ROOT, "%08X", midrBytes);
     }
 
     private static Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
@@ -240,7 +240,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     private static ProcessorCache.Type parseCacheType(String type) {
         try {
-            return ProcessorCache.Type.valueOf(type.toUpperCase());
+            return ProcessorCache.Type.valueOf(type.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             return ProcessorCache.Type.UNIFIED;
         }
@@ -269,20 +269,20 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
                 continue;
             }
-            switch (splitLine[0]) {
+            switch (splitLine[0].toLowerCase(Locale.ROOT)) {
                 case "vendor_id":
-                case "CPU implementer":
+                case "cpu implementer":
                     cpuVendor = splitLine[1];
                     break;
                 case "model name":
-                case "Processor": // some ARM chips
-                    // May be a processor number. Check for a space.
-                    if (splitLine[1].indexOf(' ') > 0) {
+                case "processor": // some ARM chips
+                    // Ignore processor number
+                    if (!splitLine[1].matches("[0-9]+")) {
                         cpuName = splitLine[1];
                     }
                     break;
                 case "flags":
-                    flags = splitLine[1].toLowerCase().split(" ");
+                    flags = splitLine[1].toLowerCase(Locale.ROOT).split(" ");
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;
@@ -336,11 +336,15 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             cpuStepping = armStepping.toString();
         }
         processorID = getProcessorID(cpuVendor, cpuStepping, cpuModel, cpuFamily, flags);
-        if (cpuVendor.startsWith("0x")) {
+        if (cpuVendor.startsWith("0x") || cpuModel.isEmpty()) {
             List<String> lscpu = Executor.runNative("lscpu");
             for (String line : lscpu) {
-                if (line.startsWith("Architecture:")) {
+                if (line.startsWith("Architecture:") && cpuVendor.startsWith("0x")) {
                     cpuVendor = line.replace("Architecture:", "").trim();
+                } else if (line.startsWith("Vendor ID:")) {
+                    cpuVendor = line.replace("Vendor ID:", "").trim();
+                } else if (line.startsWith("Model name:") && cpuModel.isEmpty()) {
+                    cpuModel = line.replace("Model name:", "").trim();
                 }
             }
         }
@@ -350,9 +354,14 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts() {
+        // Attempt to read from sysfs
         Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> topology = LinuxOperatingSystem.HAS_UDEV
                 ? readTopologyFromUdev()
                 : readTopologyFromSysfs();
+        // This sometimes fails so fall back to CPUID
+        if (topology.getA().isEmpty()) {
+            topology = readTopologyFromCpuinfo();
+        }
         List<LogicalProcessor> logProcs = topology.getA();
         List<ProcessorCache> caches = topology.getB();
         Map<Integer, Integer> coreEfficiencyMap = topology.getC();
@@ -360,6 +369,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // Failsafe
         if (logProcs.isEmpty()) {
             logProcs.add(new LogicalProcessor(0, 0, 0));
+        }
+        if (coreEfficiencyMap.isEmpty()) {
             coreEfficiencyMap.put(0, 0);
         }
         // Sort
@@ -432,7 +443,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
-            if (s.toLowerCase().contains("cpu mhz")) {
+            if (s.toLowerCase(Locale.ROOT).contains("cpu mhz")) {
                 freqs[proc] = Math.round(Builder.parseLastDouble(s, 0d) * 1_000_000d);
                 if (++proc >= freqs.length) {
                     break;
@@ -539,5 +550,123 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     public long queryInterrupts() {
         return CpuStat.getInterrupts();
     }
+
+
+    private static Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromCpuinfo() {
+        List<LogicalProcessor> logProcs = new ArrayList<>();
+        Set<ProcessorCache> caches = mapCachesFromLscpu();
+        Map<Integer, Integer> numaNodeMap = mapNumaNodesFromLscpu();
+        Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
+
+        List<String> procCpu = Builder.readFile(ProcPath.CPUINFO);
+        int currentProcessor = 0;
+        int currentCore = 0;
+        int currentPackage = 0;
+
+        boolean first = true;
+        for (String cpu : procCpu) {
+            // Count logical processors
+            if (cpu.startsWith("processor")) {
+                if (first) {
+                    first = false;
+                } else {
+                    // add from the previous iteration
+                    logProcs.add(new LogicalProcessor(currentProcessor, currentCore, currentPackage,
+                            numaNodeMap.getOrDefault(currentProcessor, 0)));
+                    // Count unique combinations of core id and physical id.
+                    coreEfficiencyMap.put((currentPackage << 16) + currentCore, 0);
+                }
+                // start creating for this iteration
+                currentProcessor = Builder.parseLastInt(cpu, 0);
+            } else if (cpu.startsWith("core id") || cpu.startsWith("cpu number")) {
+                currentCore = Builder.parseLastInt(cpu, 0);
+            } else if (cpu.startsWith("physical id")) {
+                currentPackage = Builder.parseLastInt(cpu, 0);
+            }
+        }
+        logProcs.add(new LogicalProcessor(currentProcessor, currentCore, currentPackage,
+                numaNodeMap.getOrDefault(currentProcessor, 0)));
+        coreEfficiencyMap.put((currentPackage << 16) + currentCore, 0);
+        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, Collections.emptyMap());
+    }
+
+    private static Map<Integer, Integer> mapNumaNodesFromLscpu() {
+        Map<Integer, Integer> numaNodeMap = new HashMap<>();
+        // Get numa node info from lscpu
+        List<String> lscpu = Executor.runNative("lscpu -p=cpu,node");
+        // Format:
+        // # comment lines starting with #
+        // # then comma-delimited cpu,node
+        // 0,0
+        // 1,0
+        for (String line : lscpu) {
+            if (!line.startsWith("#")) {
+                int pos = line.indexOf(',');
+                if (pos > 0 && pos < line.length()) {
+                    numaNodeMap.put(Builder.parseIntOrDefault(line.substring(0, pos), 0),
+                            Builder.parseIntOrDefault(line.substring(pos + 1), 0));
+                }
+            }
+        }
+        return numaNodeMap;
+    }
+
+    private static Set<ProcessorCache> mapCachesFromLscpu() {
+        Set<ProcessorCache> caches = new HashSet<>();
+        int level = 0;
+        ProcessorCache.Type type = null;
+        int associativity = 0;
+        int lineSize = 0;
+        long size = 0L;
+        // Get numa node info from lscpu
+        List<String> lscpu = Executor.runNative("lscpu -B -C --json");
+        for (String line : lscpu) {
+            String s = line.trim();
+            if (s.startsWith("}")) {
+                // done with this entry, save it
+                if (level > 0 && type != null) {
+                    caches.add(new ProcessorCache(level, associativity, lineSize, size, type));
+                }
+                level = 0;
+                type = null;
+                associativity = 0;
+                lineSize = 0;
+                size = 0L;
+            } else if (s.contains("one-size")) {
+                // "one-size": "65536",
+                String[] split = Builder.notDigits.split(s);
+                if (split.length > 1) {
+                    size = Builder.parseLongOrDefault(split[1], 0L);
+                }
+            } else if (s.contains("ways")) {
+                // "ways": null,
+                // "ways": 4,
+                String[] split = Builder.notDigits.split(s);
+                if (split.length > 1) {
+                    associativity = Builder.parseIntOrDefault(split[1], 0);
+                }
+            } else if (s.contains("type")) {
+                // "type": "Unified",
+                String[] split = s.split("\"");
+                if (split.length > 2) {
+                    type = parseCacheType(split[split.length - 2]);
+                }
+            } else if (s.contains("level")) {
+                // "level": 3,
+                String[] split = Builder.notDigits.split(s);
+                if (split.length > 1) {
+                    level = Builder.parseIntOrDefault(split[1], 0);
+                }
+            } else if (s.contains("coherency-size")) {
+                // "coherency-size": 64
+                String[] split = Builder.notDigits.split(s);
+                if (split.length > 1) {
+                    lineSize = Builder.parseIntOrDefault(split[1], 0);
+                }
+            }
+        }
+        return caches;
+    }
+
 
 }

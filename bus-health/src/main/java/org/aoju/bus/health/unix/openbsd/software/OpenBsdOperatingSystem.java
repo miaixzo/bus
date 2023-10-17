@@ -48,8 +48,8 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
-    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(","));
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
+            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {

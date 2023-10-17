@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A USB device
@@ -67,8 +68,8 @@ public abstract class AbstractUsbDevice implements UsbDevice {
      * @return The device toString, indented
      */
     private static String indentUsb(UsbDevice usbDevice, int indent) {
-        String indentFmt = indent > 4 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);
-        StringBuilder sb = new StringBuilder(String.format(indentFmt, ""));
+        String indentFmt = indent > 4 ? String.format(Locale.ROOT, "%%%ds|-- ", indent - 4) : String.format(Locale.ROOT, "%%%ds", indent);
+        StringBuilder sb = new StringBuilder(String.format(Locale.ROOT, indentFmt, ""));
         sb.append(usbDevice.getName());
         if (!usbDevice.getVendor().isEmpty()) {
             sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);

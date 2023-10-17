@@ -7,6 +7,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.logger.Logger;
 
+import java.util.Locale;
+
 /**
  * Tests whether performance counters are disabled
  */
@@ -28,7 +30,7 @@ public final class PerfmonDisabled {
         String perfDisabled = Config.get(config);
         // If null or empty, check registry
         if (StringKit.isBlank(perfDisabled)) {
-            String key = String.format("SYSTEM\\CurrentControlSet\\Services\\%s\\Performance", service);
+            String key = String.format(Locale.ROOT, "SYSTEM\\CurrentControlSet\\Services\\%s\\Performance", service);
             String value = "Disable Performance Counters";
             // If disabled in registry, log warning and return
             if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, key, value)) {

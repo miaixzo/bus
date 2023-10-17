@@ -339,6 +339,10 @@ public class Solar {
             minute -= 60;
             hour++;
         }
+        if (hour > 23) {
+            hour -= 24;
+            day += 1;
+        }
 
         this.year = year;
         this.month = month;
@@ -550,6 +554,9 @@ public class Solar {
      * @return true/false 闰年/非闰年
      */
     public static boolean isLeapYear(int year) {
+        if (year < 1600) {
+            return year % 4 == 0;
+        }
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 

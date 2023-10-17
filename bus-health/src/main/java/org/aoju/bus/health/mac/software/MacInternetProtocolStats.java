@@ -114,6 +114,10 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                     laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
                     faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
                     type += "6";
+                } else if (ini.insi_vflag == 3) {
+                    laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
+                    faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                    type += "46";
                 } else {
                     return null;
                 }

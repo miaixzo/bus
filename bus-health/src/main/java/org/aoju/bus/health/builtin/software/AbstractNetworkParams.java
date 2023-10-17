@@ -34,6 +34,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Common NetworkParams implementation.
@@ -115,7 +116,8 @@ public abstract class AbstractNetworkParams implements NetworkParams {
 
     @Override
     public String toString() {
-        return String.format("Host name: %s, Domain name: %s, DNS servers: %s, IPv4 Gateway: %s, IPv6 Gateway: %s",
+        return String.format(Locale.ROOT,
+                "Host name: %s, Domain name: %s, DNS servers: %s, IPv4 Gateway: %s, IPv6 Gateway: %s",
                 this.getHostName(), this.getDomainName(), Arrays.toString(this.getDnsServers()),
                 this.getIpv4DefaultGateway(), this.getIpv6DefaultGateway());
     }

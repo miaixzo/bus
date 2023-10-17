@@ -46,10 +46,7 @@ import org.aoju.bus.health.windows.drivers.perfmon.SystemInformation;
 import org.aoju.bus.health.windows.drivers.wmi.Win32Processor;
 import org.aoju.bus.logger.Logger;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -88,6 +85,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             : null;
     // Lazily initialized
     private Long utilityBaseMultiplier = null;
+    // Use to backup queryNTPower
+    private long cpuVendorFreq = 0L;
 
     /**
      * Parses identifier string
@@ -191,7 +190,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     curNode = node;
                     procNum = 0;
                 }
-                numaNodeProcToLogicalProcMap.put(String.format("%d,%d", logProc.getNumaNode(), procNum++), lp++);
+                numaNodeProcToLogicalProcMap.put(String.format(Locale.ROOT, "%d,%d", logProc.getNumaNode(), procNum++), lp++);
             }
             return procs;
         } else {
@@ -282,6 +281,10 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 freqs[i] = ppiArray[i].currentMhz * 1_000_000L;
             } else {
                 freqs[i] = -1L;
+            }
+            // In Win11 23H2 CallNtPowerInformation returns all 0's so use vendor freq
+            if (freqs[i] == 0) {
+                freqs[i] = this.cpuVendorFreq;
             }
         }
         return freqs;

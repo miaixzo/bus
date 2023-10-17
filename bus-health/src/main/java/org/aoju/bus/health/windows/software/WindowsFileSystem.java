@@ -39,10 +39,7 @@ import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.perfmon.ProcessInformation;
 import org.aoju.bus.health.windows.drivers.wmi.Win32LogicalDisk;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -182,7 +179,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     // Parse uuid from volume name
                     String uuid = Builder.parseUuidOrDefault(volume, "");
 
-                    fs.add(new WindowsOSFileStore(String.format("%s (%s)", strName, strMount), volume, strName,
+                    fs.add(new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", strName, strMount), volume, strName,
                             strMount, options.toString(), uuid, "", getDriveType(strMount), strFsType,
                             systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
                 }
@@ -226,7 +223,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     description = split[split.length - 1];
                 }
             }
-            fs.add(new WindowsOSFileStore(String.format("%s (%s)", description, name), volume, label, name + "\\",
+            fs.add(new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", description, name), volume, label, name + "\\",
                     options, "", "", getDriveType(name), WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.FILESYSTEM, i),
                     free, free, total, 0, 0));
         }

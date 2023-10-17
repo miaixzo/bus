@@ -75,13 +75,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
     private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+    private Supplier<String> user = Memoize.memoize(this::queryUser);
+    private Supplier<String> group = Memoize.memoize(this::queryGroup);
+
     private final LinuxOperatingSystem os;
     private String name;
     private String path = "";
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
-    private String user;
     private String userID;
-    private String group;
     private String groupID;
     private State state = State.INVALID;
     private int parentProcessID;
@@ -148,8 +149,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        return Arrays
-                .stream(Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
+        return Arrays.stream(Builder
+                        .getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
                 .collect(Collectors.joining(" "));
     }
 
@@ -159,8 +160,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private List<String> queryArguments() {
-        return Collections.unmodifiableList(Builder
-                .parseByteArrayToStrings(Builder.readAllBytes(String.format(ProcPath.PID_CMDLINE, getProcessID()))));
+        return Collections.unmodifiableList(Builder.parseByteArrayToStrings(
+                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()))));
     }
 
     @Override
@@ -169,14 +170,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private Map<String, String> queryEnvironmentVariables() {
-        return Collections.unmodifiableMap(Builder.parseByteArrayToStringMap(
-                Builder.readAllBytes(String.format(ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
+        return Collections.unmodifiableMap(Builder.parseByteArrayToStringMap(Builder
+                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
     }
 
     @Override
     public String getCurrentWorkingDirectory() {
         try {
-            String cwdLink = String.format(ProcPath.PID_CWD, getProcessID());
+            String cwdLink = String.format(Locale.ROOT, ProcPath.PID_CWD, getProcessID());
             String cwd = new File(cwdLink).getCanonicalPath();
             if (!cwd.equals(cwdLink)) {
                 return cwd;
@@ -189,7 +190,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public String getUser() {
-        return this.user;
+        return user.get();
     }
 
     @Override
@@ -199,7 +200,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public String getGroup() {
-        return this.group;
+        return group.get();
     }
 
     @Override
@@ -354,7 +355,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public boolean updateAttributes() {
-        String procPidExe = String.format(ProcPath.PID_EXE, getProcessID());
+        String procPidExe = String.format(Locale.ROOT, ProcPath.PID_EXE, getProcessID());
         try {
             Path link = Paths.get(procPidExe);
             this.path = Files.readSymbolicLink(link).toString();
@@ -368,10 +369,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.
-        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, getProcessID()), ":");
-        Map<String, String> status = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_STATUS, getProcessID()),
-                ":");
-        String stat = Builder.getStringFromFile(String.format(ProcPath.PID_STAT, getProcessID()));
+        Map<String, String> io = Builder
+                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_IO, getProcessID()), ":");
+        Map<String, String> status = Builder
+                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), ":");
+        String stat = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, getProcessID()));
         if (stat.isEmpty()) {
             this.state = State.INVALID;
             return false;
@@ -421,16 +423,16 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // Don't set open files or bitness or currentWorkingDirectory; fetch on demand.
 
         this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0];
-        this.user = IdGroup.getUser(userID);
+        // defer user lookup until asked
         this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0];
-        this.group = IdGroup.getGroupName(groupID);
+        // defer group lookup until asked
         this.name = status.getOrDefault("Name", "");
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         return true;
     }
 
     private long getProcessOpenFileLimit(long processId, int index) {
-        final String limitsPath = String.format("/proc/%d/limits", processId);
+        final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
         if (!Files.exists(Paths.get(limitsPath))) {
             return -1; // not supported
         }
@@ -444,6 +446,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
         final String[] split = maxOpenFilesLine.get().split("\\D+");
         return Long.parseLong(split[index]);
+    }
+
+    private String queryUser() {
+        return IdGroup.getUser(userID);
+    }
+
+    private String queryGroup() {
+        return IdGroup.getGroupName(groupID);
     }
 
     /**

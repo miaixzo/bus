@@ -265,13 +265,13 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         ArrayList<File> files = new ArrayList<>();
         File dir = new File(SYSTEM_LIBRARY_LAUNCH_AGENTS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase().endsWith(".plist"))));
+            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
             Logger.error("Directory: /System/Library/LaunchAgents does not exist");
         }
         dir = new File(SYSTEM_LIBRARY_LAUNCH_DAEMONS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase().endsWith(".plist"))));
+            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
             Logger.error("Directory: /System/Library/LaunchDaemons does not exist");
         }

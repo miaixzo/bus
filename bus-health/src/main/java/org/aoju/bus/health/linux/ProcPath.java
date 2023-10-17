@@ -73,6 +73,7 @@ public final class ProcPath {
     public static final String TASK_COMM = TASK_PATH + "/%d/comm";
     public static final String TASK_STATUS = TASK_PATH + "/%d/status";
     public static final String TASK_STAT = TASK_PATH + "/%d/stat";
+    public static final String THREAD_SELF = PROC + "/thread-self";
     public static final String UPTIME = PROC + "/uptime";
     public static final String VERSION = PROC + "/version";
     public static final String VMSTAT = PROC + "/vmstat";

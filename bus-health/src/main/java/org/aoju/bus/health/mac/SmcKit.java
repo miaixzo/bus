@@ -38,6 +38,7 @@ import org.aoju.bus.logger.Logger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -83,7 +84,7 @@ public final class SmcKit {
                 if (result == 0) {
                     return new IOConnect(connPtr.getValue());
                 } else if (Logger.isError()) {
-                    Logger.error(String.format("Unable to open connection to AppleSMC service. Error: 0x%08x", result));
+                    Logger.error(String.format(Locale.ROOT, "Unable to open connection to AppleSMC service. Error: 0x%08x", result));
                 }
             } finally {
                 smcService.release();

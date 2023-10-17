@@ -26,11 +26,13 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Fields;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * This class encapsulates information about users who are currently logged in
@@ -42,7 +44,7 @@ import java.time.format.DateTimeFormatter;
 @Immutable
 public class OSSession {
 
-    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_MINUTE_PATTERN, Locale.ROOT);
 
     private final String userName;
     private final String terminalDevice;
@@ -101,7 +103,7 @@ public class OSSession {
         if (!host.isEmpty() && !host.equals("::") && !host.equals("0.0.0.0")) {
             hostStr = ", (" + host + ")";
         }
-        return String.format("%s, %s, %s%s", userName, terminalDevice, loginStr, hostStr);
+        return String.format(Locale.ROOT, "%s, %s, %s%s", userName, terminalDevice, loginStr, hostStr);
     }
 
 }

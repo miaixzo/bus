@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 public class FreeBsdOSProcess extends AbstractOSProcess {
 
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
-            .map(String::toLowerCase).collect(Collectors.joining(","));
+            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
     private static final int ARGMAX = BsdSysctlKit.sysctl("kern.argmax", 0);
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
@@ -435,7 +435,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     private long getProcessOpenFileLimit(long processId, int index) {
-        final String limitsPath = String.format("/proc/%d/limits", processId);
+        final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
         if (!Files.exists(Paths.get(limitsPath))) {
             return -1; // not supported
         }

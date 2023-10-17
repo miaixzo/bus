@@ -96,7 +96,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             if (hwmac != null) {
                 List<String> octets = new ArrayList<>(6);
                 for (byte b : hwmac) {
-                    octets.add(String.format("%02x", b));
+                    octets.add(String.format(Locale.ROOT, "%02x", b));
                 }
                 this.mac = String.join(":", octets);
             } else {
@@ -227,7 +227,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public boolean isKnownVmMacAddr() {
         String oui = getMacaddr().length() > 7 ? getMacaddr().substring(0, 8) : getMacaddr();
-        return this.vmMacAddrProps.get().containsKey(oui.toUpperCase());
+        return this.vmMacAddrProps.get().containsKey(oui.toUpperCase(Locale.ROOT));
     }
 
     @Override

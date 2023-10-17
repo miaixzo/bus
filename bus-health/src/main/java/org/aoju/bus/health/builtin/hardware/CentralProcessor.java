@@ -38,6 +38,7 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -697,8 +698,9 @@ public interface CentralProcessor {
 
             @Override
             public String toString() {
-                return name().substring(0, 1) + name().substring(1).toLowerCase();
+                return name().substring(0, 1) + name().substring(1).toLowerCase(Locale.ROOT);
             }
+
         }
     }
 
@@ -729,7 +731,7 @@ public interface CentralProcessor {
 
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                                    String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
-            this.cpuVendor = cpuVendor;
+            this.cpuVendor = cpuVendor.startsWith("0x") ? queryVendorFromImplementer() : cpuVendor;
             this.cpuName = cpuName;
             this.cpuFamily = cpuFamily;
             this.cpuModel = cpuModel;
@@ -882,7 +884,7 @@ public interface CentralProcessor {
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
-            String ucVendor = this.cpuVendor.toUpperCase();
+            String ucVendor = this.cpuVendor.toUpperCase(Locale.ROOT);
             if (ucVendor.contains("AMD")) {
                 sb.append("amd.");
             } else if (ucVendor.contains("ARM")) {
@@ -921,6 +923,13 @@ public interface CentralProcessor {
         public String toString() {
             return getIdentifier();
         }
+
+        private String queryVendorFromImplementer() {
+            Properties archProps = Config.readProperties(Config.ARCHITECTURE_PROPERTIES);
+            String vendor = archProps.getProperty("hw_impl." + this.cpuVendor);
+            return (vendor == null ? this.cpuVendor : vendor);
+        }
+
     }
 
 }
