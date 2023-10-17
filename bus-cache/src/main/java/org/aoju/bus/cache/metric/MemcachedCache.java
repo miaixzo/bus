@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2023 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.metric;
 
+import jakarta.annotation.PreDestroy;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
@@ -33,7 +34,6 @@ import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.serialize.BaseSerializer;
 import org.aoju.bus.cache.serialize.Hessian2Serializer;
 
-import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
