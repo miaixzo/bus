@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,8 @@
 package org.aoju.bus.health.linux;
 
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.linux.LibC;
@@ -41,6 +43,13 @@ import org.aoju.bus.health.unix.CLibrary;
 public interface LinuxLibc extends LibC, CLibrary {
 
     LinuxLibc INSTANCE = Native.load("c", LinuxLibc.class);
+
+    /**
+     * SYS_gettid Defined in one of: arch/arm64/include/asm/unistd32.h, 224 arch/x86/include/uapi/asm/unistd_32.h, 224
+     * arch/x86/include/uapi/asm/unistd_64.h, 186 include/uapi/asm-generic/unistd.h, 178
+     */
+    NativeLong SYS_GETTID = new NativeLong(Platform.isIntel() ? (Platform.is64Bit() ? 186 : 224)
+            : ((Platform.isARM() && Platform.is64Bit()) ? 224 : 178));
 
     /**
      * Reads a line from the current file position in the utmp file. It returns a
@@ -60,6 +69,17 @@ public interface LinuxLibc extends LibC, CLibrary {
      * @return the thread ID of the calling thread.
      */
     int gettid();
+
+    /**
+     * syscall() performs the system call whose assembly language interface has the specified number with the specified
+     * arguments.
+     *
+     * @param number sys call number
+     * @param args   sys call arguments
+     * @return The return value is defined by the system call being invoked. In general, a 0 return value indicates
+     * success. A -1 return value indicates an error, and an error code is stored in errno.
+     */
+    NativeLong syscall(NativeLong number, Object... args);
 
     /**
      * Return type for getutxent()

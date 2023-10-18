@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -365,7 +365,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     @Override
     public List<OSThread> getThreadDetails() {
         // Get process files in proc
-        File directory = new File(String.format("/proc/%d/lwp", getProcessID()));
+        File directory = new File(String.format(Locale.ROOT, "/proc/%d/lwp", getProcessID()));
         File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
         if (numericFiles == null) {
             return Collections.emptyList();

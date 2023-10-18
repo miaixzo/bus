@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -101,17 +102,22 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 // Find <cpu> tag and extract bits
                 Matcher m = CPUMASK.matcher(topo);
                 if (m.matches()) {
+                    // If csv of hex values like "f,0,0,0", parse the first value
+                    String csvMatch = m.group(1);
+                    String[] csvTokens = csvMatch.split(Symbol.COMMA);
+                    String firstVal = csvTokens[0];
+
                     // Regex guarantees parsing digits so we won't get a
                     // NumberFormatException
                     switch (groupLevel) {
                         case 1:
-                            group1 = Long.parseLong(m.group(1), 16);
+                            group1 = Long.parseLong(firstVal, 16);
                             break;
                         case 2:
-                            group2.add(Long.parseLong(m.group(1), 16));
+                            group2.add(Long.parseLong(firstVal, 16));
                             break;
                         case 3:
-                            group3.add(Long.parseLong(m.group(1), 16));
+                            group3.add(Long.parseLong(firstVal, 16));
                             break;
                         default:
                             break;
@@ -167,7 +173,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             }
         }
         // If we've gotten this far, dmidecode failed. Used the passed-in values
-        return String.format("%016X", processorID);
+        return String.format(Locale.ROOT, "%016X", processorID);
     }
 
     @Override

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,6 +28,7 @@ package org.aoju.bus.health.linux.drivers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.IdGroup;
 
 /**
  * Utility to read info from {@code lshw}
@@ -38,19 +39,42 @@ import org.aoju.bus.health.Executor;
 @ThreadSafe
 public final class Lshw {
 
+    private static final String MODEL;
+    private static final String SERIAL;
+    private static final String UUID;
+
+    static {
+        String model = null;
+        String serial = null;
+        String uuid = null;
+
+        if (IdGroup.isElevated()) {
+            String modelMarker = "product:";
+            String serialMarker = "serial:";
+            String uuidMarker = "uuid:";
+
+            for (String checkLine : Executor.runNative("lshw -C system")) {
+                if (checkLine.contains(modelMarker)) {
+                    model = checkLine.split(modelMarker)[1].trim();
+                } else if (checkLine.contains(serialMarker)) {
+                    serial = checkLine.split(serialMarker)[1].trim();
+                } else if (checkLine.contains(uuidMarker)) {
+                    uuid = checkLine.split(uuidMarker)[1].trim();
+                }
+            }
+        }
+        MODEL = model;
+        SERIAL = serial;
+        UUID = uuid;
+    }
+
     /**
      * Query the model from lshw
      *
      * @return The model if available, null otherwise
      */
     public static String queryModel() {
-        String modelMarker = "product:";
-        for (String checkLine : Executor.runNative("lshw -C system")) {
-            if (checkLine.contains(modelMarker)) {
-                return checkLine.split(modelMarker)[1].trim();
-            }
-        }
-        return null;
+        return MODEL;
     }
 
     /**
@@ -59,13 +83,7 @@ public final class Lshw {
      * @return The serial number if available, null otherwise
      */
     public static String querySerialNumber() {
-        String serialMarker = "serial:";
-        for (String checkLine : Executor.runNative("lshw -C system")) {
-            if (checkLine.contains(serialMarker)) {
-                return checkLine.split(serialMarker)[1].trim();
-            }
-        }
-        return null;
+        return SERIAL;
     }
 
     /**
@@ -74,13 +92,7 @@ public final class Lshw {
      * @return The UUID if available, null otherwise
      */
     public static String queryUUID() {
-        String uuidMarker = "uuid:";
-        for (String checkLine : Executor.runNative("lshw -C system")) {
-            if (checkLine.contains(uuidMarker)) {
-                return checkLine.split(uuidMarker)[1].trim();
-            }
-        }
-        return null;
+        return UUID;
     }
 
     /**

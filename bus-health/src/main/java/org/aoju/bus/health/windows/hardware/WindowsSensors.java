@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,6 +34,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
 import org.aoju.bus.health.windows.drivers.wmi.*;
 import org.aoju.bus.logger.Logger;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -148,7 +149,7 @@ final class WindowsSensors extends AbstractSensors {
                 String cpuIdentifier = null;
                 for (int i = 0; i < ohmHardware.getResultCount(); i++) {
                     String id = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, i);
-                    if (id.toLowerCase().contains("cpu")) {
+                    if (id.toLowerCase(Locale.ROOT).contains("cpu")) {
                         cpuIdentifier = id;
                         break;
                     }

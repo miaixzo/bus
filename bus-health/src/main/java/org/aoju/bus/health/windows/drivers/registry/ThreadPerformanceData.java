@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -137,7 +137,9 @@ public final class ThreadPerformanceData {
                 int tid = tidList.get(inst).intValue();
                 String name = Integer.toString(nameIndex++);
                 long startTime = startTimeList.get(inst);
-                startTime = FILETIME.filetimeToDate((int) (startTime >> 32), (int) (startTime & 0xffffffffL)).getTime();
+                int lowerStartTimeLimit = (int) (startTime >> 32);
+                int higherStartTimeLimit = (int) (startTime & 0xffffffffL);
+                startTime = FILETIME.filetimeToDate(lowerStartTimeLimit, higherStartTimeLimit).getTime();
                 if (startTime > now) {
                     startTime = now - 1;
                 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,10 +36,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
 import org.aoju.bus.logger.Logger;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -199,11 +196,11 @@ public final class PerfCounterQuery {
         } catch (Win32Exception e) {
             Logger.warn(
                     "Unable to locate English counter names in registry Perflib 009. Assuming English counters. Error {}. {}",
-                    String.format("0x%x", e.getHR().intValue()),
+                    String.format(Locale.ROOT, "0x%x", e.getHR().intValue()),
                     "See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values");
         } catch (PdhException e) {
             Logger.warn("Unable to localize {} performance counter.  Error {}.", perfObject,
-                    String.format("0x%x", e.getErrorCode()));
+                    String.format(Locale.ROOT, "0x%x", e.getErrorCode()));
         }
         if (localized.isEmpty()) {
             return perfObject;

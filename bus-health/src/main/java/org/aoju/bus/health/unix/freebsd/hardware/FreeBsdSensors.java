@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,6 +32,8 @@ import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
 import org.aoju.bus.health.unix.FreeBsdLibc;
 
+import java.util.Locale;
+
 /**
  * Sensors from coretemp
  *
@@ -53,7 +55,7 @@ final class FreeBsdSensors extends AbstractSensors {
             int cpu = 0;
             double sumTemp = 0d;
             try (Memory p = new Memory(size.longValue())) {
-                while (0 == FreeBsdLibc.INSTANCE.sysctlbyname(String.format(name, cpu), p, size, null, size_t.ZERO)) {
+                while (0 == FreeBsdLibc.INSTANCE.sysctlbyname(String.format(Locale.ROOT, name, cpu), p, size, null, size_t.ZERO)) {
                     sumTemp += p.getInt(0) / 10d - 273.15;
                     cpu++;
                 }

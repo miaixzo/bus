@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -38,6 +38,8 @@ import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.logger.Logger;
+
+import java.util.Locale;
 
 /**
  * Helper class to centralize the boilerplate portions of PDH counter setup and
@@ -87,7 +89,7 @@ public final class PerfDataKit {
             }
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarn()) {
-                    Logger.warn("Failed to update counter. Error code: {}", String.format(Formats.formatError(ret)));
+                    Logger.warn("Failed to update counter. Error code: {}", String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return 0L;
             }
@@ -107,7 +109,7 @@ public final class PerfDataKit {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.isError()) {
-                Logger.error("Failed to open PDH Query. Error code: {}", String.format(Formats.formatError(ret)));
+                Logger.error("Failed to open PDH Query. Error code: {}", String.format(Locale.ROOT, Formats.formatError(ret)));
             }
             return false;
         }
@@ -136,7 +138,7 @@ public final class PerfDataKit {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarn()) {
-                    Logger.warn("Failed to get counter. Error code: {}", String.format(Formats.formatError(ret)));
+                    Logger.warn("Failed to get counter. Error code: {}", String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return ret;
             }
@@ -156,7 +158,7 @@ public final class PerfDataKit {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
                 if (Logger.isWarn()) {
-                    Logger.warn("Failed to get counter. Error code: {}", String.format(Formats.formatError(ret)));
+                    Logger.warn("Failed to get counter. Error code: {}", String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
                 return ret;
             }
@@ -179,7 +181,7 @@ public final class PerfDataKit {
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.isWarn()) {
                 Logger.warn("Failed to add PDH Counter: {}, Error code: {}", path,
-                        String.format(Formats.formatError(ret)));
+                        String.format(Locale.ROOT, Formats.formatError(ret)));
             }
             return false;
         }

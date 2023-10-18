@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -67,7 +67,7 @@ public final class Who {
                     String host = Builder.parseUtAddrV6toIP(ut.ut_addr_v6);
                     long loginTime = ut.ut_tv.tv_sec * 1000L + ut.ut_tv.tv_usec / 1000L;
                     // Sanity check. If errors, default to who command line
-                    if (user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis()) {
+                    if (!Builder.isSessionValid(user, device, loginTime)) {
                         return org.aoju.bus.health.unix.Who.queryWho();
                     }
                     whoList.add(new OSSession(user, device, loginTime, host));

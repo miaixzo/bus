@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,6 +29,8 @@ import com.sun.jna.platform.mac.IOKit.IOConnect;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
 import org.aoju.bus.health.mac.SmcKit;
+
+import java.util.Locale;
 
 /**
  * Sensors from SMC
@@ -62,7 +64,7 @@ final class MacSensors extends AbstractSensors {
         }
         int[] fanSpeeds = new int[this.numFans];
         for (int i = 0; i < this.numFans; i++) {
-            fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(SmcKit.SMC_KEY_FAN_SPEED, i));
+            fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(Locale.ROOT, SmcKit.SMC_KEY_FAN_SPEED, i));
         }
         SmcKit.smcClose(conn);
         return fanSpeeds;

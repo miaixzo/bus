@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,9 +29,9 @@ import com.sun.jna.Platform;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -45,11 +45,25 @@ import java.util.function.Supplier;
 @ThreadSafe
 public final class IdGroup {
 
-    // Temporarily cache users and groups, update each minute
+    // Temporarily cache users and groups in concurrent maps, completely refresh
+    // every 5 minutes
     private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoize.memoize(IdGroup::getUserMap,
-            TimeUnit.MINUTES.toNanos(1));
+            TimeUnit.MINUTES.toNanos(5));
     private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoize.memoize(IdGroup::getGroupMap,
-            TimeUnit.MINUTES.toNanos(1));
+            TimeUnit.MINUTES.toNanos(5));
+
+    private static final boolean ELEVATED = 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"),
+            -1);
+
+    /**
+     * Determine whether the current process has elevated permissions such as sudo /
+     * Administrator
+     *
+     * @return True if this process has elevated permissions
+     */
+    public static boolean isElevated() {
+        return ELEVATED;
+    }
 
     /**
      * Gets a user from their ID
@@ -59,7 +73,8 @@ public final class IdGroup {
      * as the second
      */
     public static String getUser(String userId) {
-        return USERS_ID_MAP.get().getOrDefault(userId, Normal.UNKNOWN);
+        // If value is in cached /etc/passwd return, else do getent passwd uid
+        return USERS_ID_MAP.get().getOrDefault(userId, getentPasswd(userId));
     }
 
     /**
@@ -69,17 +84,26 @@ public final class IdGroup {
      * @return a {@link java.lang.String} object.
      */
     public static String getGroupName(String groupId) {
-        return GROUPS_ID_MAP.get().getOrDefault(groupId, Normal.UNKNOWN);
+        // If value is in cached /etc/passwd return, else do getent group gid
+        return GROUPS_ID_MAP.get().getOrDefault(groupId, getentGroup(groupId));
     }
 
     private static Map<String, String> getUserMap() {
-        HashMap<String, String> userMap = new HashMap<>();
-        List<String> passwd;
+        return parsePasswd(Builder.readFile("/etc/passwd"));
+    }
+
+    private static String getentPasswd(String userId) {
         if (Platform.isAIX()) {
-            passwd = Builder.readFile("/etc/passwd");
-        } else {
-            passwd = Executor.runNative("getent passwd");
+            return Normal.UNKNOWN;
         }
+        Map<String, String> newUsers = parsePasswd(Executor.runNative("getent passwd " + userId));
+        // add to user map for future queries
+        USERS_ID_MAP.get().putAll(newUsers);
+        return newUsers.getOrDefault(userId, Normal.UNKNOWN);
+    }
+
+    private static Map<String, String> parsePasswd(List<String> passwd) {
+        Map<String, String> userMap = new ConcurrentHashMap<>();
         // see man 5 passwd for the fields
         for (String entry : passwd) {
             String[] split = entry.split(":");
@@ -95,13 +119,21 @@ public final class IdGroup {
     }
 
     private static Map<String, String> getGroupMap() {
-        Map<String, String> groupMap = new HashMap<>();
-        List<String> group;
+        return parseGroup(Builder.readFile("/etc/group"));
+    }
+
+    private static String getentGroup(String groupId) {
         if (Platform.isAIX()) {
-            group = Builder.readFile("/etc/group");
-        } else {
-            group = Executor.runNative("getent group");
+            return Normal.UNKNOWN;
         }
+        Map<String, String> newGroups = parseGroup(Executor.runNative("getent group " + groupId));
+        // add to group map for future queries
+        GROUPS_ID_MAP.get().putAll(newGroups);
+        return newGroups.getOrDefault(groupId, Normal.UNKNOWN);
+    }
+
+    private static Map<String, String> parseGroup(List<String> group) {
+        Map<String, String> groupMap = new ConcurrentHashMap<>();
         // see man 5 group for the fields
         for (String entry : group) {
             String[] split = entry.split(":");
@@ -113,5 +145,4 @@ public final class IdGroup {
         }
         return groupMap;
     }
-
 }

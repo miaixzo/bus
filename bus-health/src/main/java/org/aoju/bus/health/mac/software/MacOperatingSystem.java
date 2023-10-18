@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -265,13 +265,13 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         ArrayList<File> files = new ArrayList<>();
         File dir = new File(SYSTEM_LIBRARY_LAUNCH_AGENTS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase().endsWith(".plist"))));
+            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
             Logger.error("Directory: /System/Library/LaunchAgents does not exist");
         }
         dir = new File(SYSTEM_LIBRARY_LAUNCH_DAEMONS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase().endsWith(".plist"))));
+            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
         } else {
             Logger.error("Directory: /System/Library/LaunchDaemons does not exist");
         }

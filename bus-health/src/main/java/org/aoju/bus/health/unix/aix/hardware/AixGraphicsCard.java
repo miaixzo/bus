@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,6 +34,7 @@ import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
@@ -74,7 +75,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
             String s = line.trim();
             if (s.startsWith("Name:") && s.contains("display")) {
                 display = true;
-            } else if (display && s.toLowerCase().contains("graphics")) {
+            } else if (display && s.toLowerCase(Locale.ROOT).contains("graphics")) {
                 name = s;
             } else if (display && name != null) {
                 if (s.startsWith("Manufacture ID")) {

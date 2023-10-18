@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -183,12 +183,12 @@ public class MacUsbDevice extends AbstractUsbDevice {
         // Get vendorId and store in map
         Long vendorId = device.getLongProperty("idVendor");
         if (vendorId != null) {
-            vendorIdMap.put(id, String.format("%04x", 0xffff & vendorId));
+            vendorIdMap.put(id, String.format(Locale.ROOT, "%04x", 0xffff & vendorId));
         }
         // Get productId and store in map
         Long productId = device.getLongProperty("idProduct");
         if (productId != null) {
-            productIdMap.put(id, String.format("%04x", 0xffff & productId));
+            productIdMap.put(id, String.format(Locale.ROOT, "%04x", 0xffff & productId));
         }
         // Get serial and store in map
         String serial = device.getStringProperty("USB Serial Number");
@@ -258,14 +258,14 @@ public class MacUsbDevice extends AbstractUsbDevice {
                 if (parent != null) {
                     byte[] vid = parent.getByteArrayProperty("vendor-id");
                     if (vid != null && vid.length >= 2) {
-                        vendorIdMap.put(id, String.format("%02x%02x", vid[1], vid[0]));
+                        vendorIdMap.put(id, String.format(Locale.ROOT, "%02x%02x", vid[1], vid[0]));
                         found = true;
                     }
                     // look up the device-id by key
                     // device-id is a byte array of 4 bytes
                     byte[] pid = parent.getByteArrayProperty("device-id");
                     if (pid != null && pid.length >= 2) {
-                        productIdMap.put(id, String.format("%02x%02x", pid[1], pid[0]));
+                        productIdMap.put(id, String.format(Locale.ROOT, "%02x%02x", pid[1], pid[0]));
                         found = true;
                     }
                     parent.release();

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -114,6 +114,10 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                     laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
                     faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
                     type += "6";
+                } else if (ini.insi_vflag == 3) {
+                    laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
+                    faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                    type += "46";
                 } else {
                     return null;
                 }

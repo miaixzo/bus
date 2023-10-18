@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,6 +32,7 @@ import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
 import org.aoju.bus.logger.Logger;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -152,7 +153,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         if (value < 0) {
             if (Logger.isWarn()) {
                 Logger.warn("Error querying counter {}: {}", counter.getCounterPath(),
-                        String.format(Formats.formatError((int) value)));
+                        String.format(Locale.ROOT, Formats.formatError((int) value)));
             }
             return 0L;
         }

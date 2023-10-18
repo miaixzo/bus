@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -73,6 +73,7 @@ public final class ProcPath {
     public static final String TASK_COMM = TASK_PATH + "/%d/comm";
     public static final String TASK_STATUS = TASK_PATH + "/%d/status";
     public static final String TASK_STAT = TASK_PATH + "/%d/stat";
+    public static final String THREAD_SELF = PROC + "/thread-self";
     public static final String UPTIME = PROC + "/uptime";
     public static final String VERSION = PROC + "/version";
     public static final String VMSTAT = PROC + "/vmstat";

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,6 +32,7 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -134,12 +135,12 @@ public class LinuxOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        this.name = Builder
-                .getStringFromFile(String.format(ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
+        this.name = Builder.getStringFromFile(
+                String.format(Locale.ROOT, ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
         Map<String, String> status = Builder.getKeyValueMapFromFile(
-                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
-        String stat = Builder
-                .getStringFromFile(String.format(ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
+                String.format(Locale.ROOT, ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
+        String stat = Builder.getStringFromFile(
+                String.format(Locale.ROOT, ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
         if (stat.isEmpty()) {
             this.state = OSProcess.State.INVALID;
             return false;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2023 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -66,7 +66,7 @@ public class JdYunOssProvider extends AbstractProvider {
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
         ClientConfiguration config = new ClientConfiguration();

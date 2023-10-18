@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -97,7 +97,7 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
         if (iter != null) {
             IORegistryEntry cpu = iter.next();
             while (cpu != null) {
-                Matcher m = CPU_N.matcher(cpu.getName().toLowerCase());
+                Matcher m = CPU_N.matcher(cpu.getName().toLowerCase(Locale.ROOT));
                 if (m.matches()) {
                     int procId = Builder.parseIntOrDefault(m.group(1), 0);
                     // Compatible key is null-delimited C string array in byte array
@@ -160,9 +160,9 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
                 family = SysctlKit.sysctl("hw.cpufamily", 0);
             }
             // Translate to output
-            cpuFamily = String.format("0x%08x", family);
+            cpuFamily = String.format(Locale.ROOT, "0x%08x", family);
             // Processor ID is an intel concept but CPU type + family conveys same info
-            processorID = String.format("%08x%08x", type, family);
+            processorID = String.format(Locale.ROOT, "%08x%08x", type, family);
         } else {
             // Processing an Intel chip
             cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", Normal.EMPTY);
@@ -175,7 +175,7 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
             long processorIdBits = 0L;
             processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
             processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
-            processorID = String.format("%016x", processorIdBits);
+            processorID = String.format(Locale.ROOT, "%016x", processorIdBits);
         }
         if (isArmCpu) {
             calculateNominalFrequencies();
@@ -203,7 +203,7 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
         Map<Integer, String> compatMap = queryCompatibleStrings();
         int perflevels = SysctlKit.sysctl("hw.nperflevels", 1);
         List<PhysicalProcessor> physProcs = pkgCoreKeys.stream().sorted().map(k -> {
-            String compat = compatMap.getOrDefault(k, "").toLowerCase();
+            String compat = compatMap.getOrDefault(k, "").toLowerCase(Locale.ROOT);
             int efficiency = 0; // default, for E-core icestorm or blizzard
             if (compat.contains("firestorm") || compat.contains("avalanche")) {
                 // This is brittle. A better long term solution is to use sysctls

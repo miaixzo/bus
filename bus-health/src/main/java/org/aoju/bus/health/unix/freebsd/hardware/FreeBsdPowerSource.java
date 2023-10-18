@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,10 +34,7 @@ import org.aoju.bus.health.builtin.hardware.PowerSource;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A Power Source
@@ -124,10 +121,10 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         String cap = psMap.get("Design capacity");
         if (cap != null) {
             psDesignCapacity = Builder.getFirstIntValue(cap);
-            if (cap.toLowerCase().contains("mah")) {
-                psCapacityUnits = PowerSource.CapacityUnits.MAH;
-            } else if (cap.toLowerCase().contains("mwh")) {
-                psCapacityUnits = PowerSource.CapacityUnits.MWH;
+            if (cap.toLowerCase(Locale.ROOT).contains("mah")) {
+                psCapacityUnits = CapacityUnits.MAH;
+            } else if (cap.toLowerCase(Locale.ROOT).contains("mwh")) {
+                psCapacityUnits = CapacityUnits.MWH;
             }
         }
         cap = psMap.get("Last full capacity");

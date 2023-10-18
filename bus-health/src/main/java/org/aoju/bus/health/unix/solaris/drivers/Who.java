@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,6 +28,7 @@ package org.aoju.bus.health.unix.solaris.drivers;
 import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.SolarisLibc;
@@ -65,7 +66,7 @@ public final class Who {
                     String host = Native.toString(ut.ut_host, Charset.US_ASCII);
                     long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec.longValue() / 1000L;
                     // Sanity check. If errors, default to who command line
-                    if (user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis()) {
+                    if (!Builder.isSessionValid(user, device, loginTime)) {
                         return org.aoju.bus.health.unix.Who.queryWho();
                     }
                     whoList.add(new OSSession(user, device, loginTime, host));

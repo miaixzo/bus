@@ -1,4 +1,4 @@
-### 项目特性
+#### 项目说明
 
 1. 支持office，pdf等办公文档
 1. 支持txt,java,php,py,md,js,css等所有纯文本

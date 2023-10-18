@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,10 +40,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utility to query /proc/psinfo
@@ -67,7 +64,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested process
      */
     public static AixLibc.AixPsInfo queryPsInfo(int pid) {
-        return new AixLibc.AixPsInfo(Builder.readAllBytesAsBuffer(String.format("/proc/%d/psinfo", pid)));
+        return new AixLibc.AixPsInfo(Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/psinfo", pid)));
     }
 
     /**
@@ -78,7 +75,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested thread
      */
     public static AixLibc.AixLwpsInfo queryLwpsInfo(int pid, int tid) {
-        return new AixLibc.AixLwpsInfo(Builder.readAllBytesAsBuffer(String.format("/proc/%d/lwp/%d/lwpsinfo", pid, tid)));
+        return new AixLibc.AixLwpsInfo(Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/lwp/%d/lwpsinfo", pid, tid)));
     }
 
     /**

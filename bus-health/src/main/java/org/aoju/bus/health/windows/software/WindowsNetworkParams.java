@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,12 +27,9 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
 import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.Kernel32Util;
-import com.sun.jna.platform.win32.WinError;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -127,7 +124,11 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        return Kernel32Util.getComputerName();
+        try {
+            return Kernel32Util.getComputerName();
+        } catch (Win32Exception e) {
+            return super.getHostName();
+        }
     }
 
     @Override

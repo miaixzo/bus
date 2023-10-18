@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,6 +37,7 @@ import org.aoju.bus.health.windows.hardware.WindowsPowerSource;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A Power Source
@@ -132,7 +133,7 @@ public abstract class AbstractPowerSource implements PowerSource {
         } else {
             int hours = (int) (timeInSeconds / 3600);
             int minutes = (int) (timeInSeconds % 3600 / 60);
-            formattedTimeRemaining = String.format("%d:%02d", hours, minutes);
+            formattedTimeRemaining = String.format(Locale.ROOT, "%d:%02d", hours, minutes);
         }
         return formattedTimeRemaining;
     }

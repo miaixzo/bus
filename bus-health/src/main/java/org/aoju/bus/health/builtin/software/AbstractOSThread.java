@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,6 +28,7 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
@@ -76,9 +77,9 @@ public abstract class AbstractOSThread implements OSThread {
         return "OSThread [threadId=" + getThreadId() + ", owningProcessId=" + getOwningProcessId() + ", name="
                 + getName() + ", state=" + getState() + ", kernelTime=" + getKernelTime() + ", userTime="
                 + getUserTime() + ", upTime=" + getUpTime() + ", startTime=" + getStartTime()
-                + ", startMemoryAddress=0x" + String.format("%x", getStartMemoryAddress()) + ", contextSwitches="
-                + getContextSwitches() + ", minorFaults=" + getMinorFaults() + ", majorFaults=" + getMajorFaults()
-                + "]";
+                + ", startMemoryAddress=0x" + String.format(Locale.ROOT, "%x", getStartMemoryAddress())
+                + ", contextSwitches=" + getContextSwitches() + ", minorFaults=" + getMinorFaults() + ", majorFaults="
+                + getMajorFaults() + "]";
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -77,7 +77,7 @@ public final class ProcessStat {
      * If the process doesn't exist, returns null.
      */
     public static Triple<String, Character, Map<PidStat, Long>> getPidStats(int pid) {
-        String stat = Builder.getStringFromFile(String.format(ProcPath.PID_STAT, pid));
+        String stat = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, pid));
         if (stat.isEmpty()) {
             // If pid doesn't exist
             return null;
@@ -108,7 +108,7 @@ public final class ProcessStat {
      * If the process doesn't exist, returns null.
      */
     public static Map<PidStatM, Long> getPidStatM(int pid) {
-        String statm = Builder.getStringFromFile(String.format(ProcPath.PID_STATM, pid));
+        String statm = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STATM, pid));
         if (statm.isEmpty()) {
             // If pid doesn't exist
             return null;
@@ -132,7 +132,7 @@ public final class ProcessStat {
      * process
      */
     public static File[] getFileDescriptorFiles(int pid) {
-        return listNumericFiles(String.format(ProcPath.PID_FD, pid));
+        return listNumericFiles(String.format(Locale.ROOT, ProcPath.PID_FD, pid));
     }
 
     /**
@@ -176,7 +176,7 @@ public final class ProcessStat {
      * @return A list of thread id.
      */
     public static List<Integer> getThreadIds(int pid) {
-        File[] threads = listNumericFiles(String.format(ProcPath.TASK_PATH, pid));
+        File[] threads = listNumericFiles(String.format(Locale.ROOT, ProcPath.TASK_PATH, pid));
         return Arrays.stream(threads).map(thread -> Builder.parseIntOrDefault(thread.getName(), 0))
                 .filter(threadId -> threadId != pid).collect(Collectors.toList());
     }

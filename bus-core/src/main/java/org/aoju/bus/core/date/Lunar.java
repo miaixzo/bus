@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org 6tail and other contributors.                *
+ * Copyright (c) 2015-2023 aoju.org 6tail and other contributors.                *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -4236,13 +4236,8 @@ public class Lunar {
         } else if (solarYmd.compareTo(solarTerm.get("DONG_ZHI").build(false)) >= 0) {
             asc = true;
         }
-        int start = asc ? 6 : 2;
-        String dayZhi = getDayZhi();
-        if ("子午卯酉".contains(dayZhi)) {
-            start = asc ? 0 : 8;
-        } else if ("辰戌丑未".contains(dayZhi)) {
-            start = asc ? 3 : 5;
-        }
+        int[] offset = asc ? new int[]{0, 3, 6} : new int[]{8, 5, 2};
+        int start = offset[getDayZhiIndex() % 3];
         int index = asc ? start + timeZhiIndex : start + 9 - timeZhiIndex;
         return new NineStar(index % 9);
     }

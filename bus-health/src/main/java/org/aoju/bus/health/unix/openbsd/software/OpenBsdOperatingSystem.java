@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -48,8 +48,8 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
-    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(","));
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
+            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {

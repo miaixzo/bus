@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -133,9 +133,9 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                                 serial.startsWith("0x") ? Builder.hexStringToString(serial.replace("0x", Normal.EMPTY))
                                         : serial);
                     } else if (line.contains(".vendor_id =")) {
-                        vendorIdMap.put(key, String.format("%04x", Builder.getFirstIntValue(line)));
+                        vendorIdMap.put(key, String.format(Locale.ROOT, "%04x", Builder.getFirstIntValue(line)));
                     } else if (line.contains(".product_id =")) {
-                        productIdMap.put(key, String.format("%04x", Builder.getFirstIntValue(line)));
+                        productIdMap.put(key, String.format(Locale.ROOT, "%04x", Builder.getFirstIntValue(line)));
                     }
                 }
             }

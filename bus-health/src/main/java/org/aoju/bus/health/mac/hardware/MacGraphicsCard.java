@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2023 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,6 +35,7 @@ import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Graphics card info obtained by system_profiler SPDisplaysDataType.
@@ -77,7 +78,7 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
         for (String line : sp) {
             String[] split = line.trim().split(":", 2);
             if (split.length == 2) {
-                String prefix = split[0].toLowerCase();
+                String prefix = split[0].toLowerCase(Locale.ROOT);
                 if (prefix.equals("chipset model")) {
                     // Save previous card
                     if (cardNum++ > 0) {
