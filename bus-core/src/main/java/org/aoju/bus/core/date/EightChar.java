@@ -178,7 +178,7 @@ public class EightChar {
         List<String> hideGan = Lunar.ZHI_HIDE_GAN.get(zhi);
         List<String> l = new ArrayList<>(hideGan.size());
         for (String gan : hideGan) {
-            l.add(Lunar.SHI_SHEN_ZHI.get(getDayGan() + zhi + gan));
+            l.add(Lunar.SHI_SHEN_ZHI.get(getDayGan() + gan));
         }
         return l;
     }
