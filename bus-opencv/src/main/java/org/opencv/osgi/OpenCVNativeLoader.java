@@ -1,9 +1,9 @@
 package org.opencv.osgi;
 
+import org.opencv.core.Core;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.opencv.core.Core;
 
 /**
  * This class is intended to provide a convenient way to load OpenCV's native

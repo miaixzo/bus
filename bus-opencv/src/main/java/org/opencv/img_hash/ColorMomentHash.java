@@ -3,8 +3,6 @@
 //
 package org.opencv.img_hash;
 
-import org.opencv.img_hash.ColorMomentHash;
-
 // C++: class ColorMomentHash
 /**
  * Image hash based on color moments.

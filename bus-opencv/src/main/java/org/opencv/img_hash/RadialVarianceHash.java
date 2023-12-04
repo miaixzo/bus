@@ -3,9 +3,6 @@
 //
 package org.opencv.img_hash;
 
-import org.opencv.img_hash.ImgHashBase;
-import org.opencv.img_hash.RadialVarianceHash;
-
 // C++: class RadialVarianceHash
 /**
  * Image hash based on Radon transform.
