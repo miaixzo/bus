@@ -51,35 +51,35 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 ## 组件信息
 
-|  完成  | 模块 | 描述信息 |
-|--------| ------- | ------- |
-|[√]|bus-all|包含微服务所需的完整模块以及通用组件| 
-|[√]|bus-base|基础功能及base相关,实体(Entity),服务(Service),接口(Controller)|
-|[√]|bus-bom|包含所有组建信息,当然可以通过配置按需加载等|
-|[√]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
-|[√]|bus-core|核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具|
-|[√]|bus-cron|定时器及定时任务等功能|
-|[√]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
-|[√]|bus-extra|扩展功能及文件操作,FTP/文件/二维码/短信相关支持|
-|[√]|bus-health|应用服务器健康信息，软件硬件信息采集等|
-|[√]|bus-http|HTTP功能封装,根据业务场景可使用 Httpd/Httpx/Httpz 等方式|
-|[√]|bus-image|影像应用服务，解析预览等|
-|[×]|bus-limiter|请求限流,根据不同业务设置不同限流策略|
-|[√]|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
-|[√]|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率|
-|[√]|bus-oauth|第三方登录,已集成十多家第三方平台(国内外常用的基本都已包含)|
-|[√]|bus-pager|数据分页,mybatis|
-|[√]|bus-office|office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得简单|
-|[√]|bus-opencv|图像识别及分析，提供丰富的图形图像处理算法,跨平台支持等|
-|[√]|bus-proxy|公共代理，使动态代理变得简单|
-|[√]|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成|
-|[√]|bus-setting|设置工具类， 用于支持设置/配置|
-|[√]|bus-shade|Entity,Service,Mapper等相关代码生成工具|
-|[√]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
-|[√]|bus-starter|SpringBoot starter，spring相关配置，启动及相关配置文件信息|
-|[√]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
-|[×]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
-|[√]|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
+|  完成  | 模块 | 描述信息                                              |
+|--------| ------- |---------------------------------------------------|
+|[√]|bus-all| 包含微服务所需的完整模块以及通用组件                                | 
+|[√]|bus-base| 基础功能及base相关,实体(Entity),服务(Service),接口(Controller) |
+|[√]|bus-bom| 包含所有组建信息,当然可以通过配置按需加载等                            |
+|[√]|bus-cache| 缓存服务及工具,支持redis,memcached,,hessian等        |
+|[√]|bus-core| 核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具               |
+|[√]|bus-cron| 定时器及定时任务等功能                                       |
+|[√]|bus-crypto| 加密解密，支持支持AES/DES/REA/MD5等常用加密算法                   |
+|[√]|bus-extra| 扩展功能及文件操作,FTP/文件/二维码/短信相关支持                       |
+|[√]|bus-health| 应用服务器健康信息，软件硬件信息采集等                               |
+|[√]|bus-http| HTTP功能封装,根据业务场景可使用 Httpd/Httpx/Httpz 等方式          |
+|[√]|bus-image| 影像应用服务，解析预览等                                      |
+|[×]|bus-limiter| 请求限流,根据不同业务设置不同限流策略                               |
+|[√]|bus-logger| 日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单                |
+|[√]|bus-mapper| 数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率            |
+|[√]|bus-oauth| 第三方登录,已集成十多家第三方平台(国内外常用的基本都已包含)                   |
+|[√]|bus-pager| 数据分页,mybatis                                      |
+|[√]|bus-office| office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得简单        |
+|[√]|bus-opencv| 图像识别及分析，提供丰富的图形图像处理算法,跨平台支持等                      |
+|[√]|bus-proxy| 公共代理，使动态代理变得简单                                    |
+|[√]|bus-sensitive| 敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成                   |
+|[√]|bus-setting| 设置工具类， 用于支持设置/配置                                  |
+|[√]|bus-shade| Entity,Service,Mapper等相关代码生成工具                    |
+|[√]|bus-socket| 基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端                 |
+|[√]|bus-starter| SpringBoot starter，spring相关配置，启动及相关配置文件信息         |
+|[√]|bus-storage| 文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式                 |
+|[×]|bus-tracer| 轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪                   |
+|[√]|bus-validate| 参数校验，会默认拦截所有的标记有`@Valid`的方法或类                     |
 
 ## 功能概述
 

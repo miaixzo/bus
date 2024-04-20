@@ -11,7 +11,7 @@
 
     <name>${project.artifactId}</name>
     <description>Bus Cache</description>
-    <url>https://github.com/aoju/bus</url>
+    <url>https://github.com/839128/bus</url>
 
     <licenses>
         <license>
@@ -21,37 +21,36 @@
     </licenses>
 
     <scm>
-        <connection>scm:git@github.com:aoju/bus.git</connection>
-        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
-        <url>git@github.com:aoju/bus.git</url>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
     </scm>
 
     <developers>
         <developer>
             <name>Kimi Liu</name>
-            <url>https://github.com/aoju/bus.git</url>
+            <url>https://github.com/839128/bus.git</url>
         </developer>
     </developers>
 
     <issueManagement>
         <system>Github Issue</system>
-        <url>https://github.com/aoju/bus/issues</url>
+        <url>https://github.com/839128/bus/issues</url>
     </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>17</project.compiler.version>
+        <project.compiler.version>21</project.compiler.version>
+        <lombok.version>1.18.32</lombok.version>
         <spring.boot.version>3.0.5</spring.boot.version>
-        <lombok.version>1.18.26</lombok.version>
-        <guice.version>5.1.0</guice.version>
-        <jedis.version>4.2.3</jedis.version>
-        <xmemcached.version>2.4.7</xmemcached.version>
-        <ehcache.version>3.9.9</ehcache.version>
-        <curator.version>5.4.0</curator.version>
-        <guava.version>32.0.1-jre</guava.version>
-        <hession.version>4.0.66</hession.version>
-        <mysql.version>8.0.32</mysql.version>
+        <guice.version>7.0.0</guice.version>
+        <jedis.version>5.1.2</jedis.version>
+        <xmemcached.version>2.4.8</xmemcached.version>
+        <curator.version>5.6.0</curator.version>
+        <guava.version>33.1.0-jre</guava.version>
+        <hessian.version>4.0.66</hessian.version>
+        <mysql.version>8.3.0</mysql.version>
     </properties>
 
     <dependencies>
@@ -91,7 +90,7 @@
         <dependency>
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
-            <version>${hession.version}</version>
+            <version>${hessian.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -145,18 +144,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>${ehcache.version}</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
@@ -175,7 +162,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${project.compiler.version}</source>
                     <target>${project.compiler.version}</target>
@@ -184,7 +171,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -201,24 +188,12 @@
     <profiles>
         <profile>
             <id>release</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>OSS Snapshots Repository</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>sonatype-nexus-staging</id>
-                    <name>OSS Staging Repository</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -231,7 +206,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.3</version>
                         <executions>
                             <execution>
                                 <id>sonatype-nexus-staging</id>
@@ -243,14 +218,13 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.4.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
                         </configuration>
                     </plugin>
                 </plugins>

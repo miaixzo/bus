@@ -11,7 +11,7 @@
 
     <name>${project.artifactId}</name>
     <description>Bus Extra</description>
-    <url>https://github.com/aoju/bus</url>
+    <url>https://github.com/839128/bus</url>
 
     <licenses>
         <license>
@@ -21,46 +21,46 @@
     </licenses>
 
     <scm>
-        <connection>scm:git@github.com:aoju/bus.git</connection>
-        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
-        <url>git@github.com:aoju/bus.git</url>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
     </scm>
 
     <developers>
         <developer>
             <name>Kimi Liu</name>
-            <url>https://github.com/aoju/bus.git</url>
+            <url>https://github.com/839128/bus.git</url>
         </developer>
     </developers>
 
     <issueManagement>
         <system>Github Issue</system>
-        <url>https://github.com/aoju/bus/issues</url>
+        <url>https://github.com/839128/bus/issues</url>
     </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>17</project.compiler.version>
-        <lombok.version>1.18.26</lombok.version>
+        <project.compiler.version>21</project.compiler.version>
+        <lombok.version>1.18.32</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
-        <gson.version>2.10</gson.version>
-        <jackson.version>2.15.3</jackson.version>
+        <gson.version>2.10.1</gson.version>
+        <jackson.version>2.17.0</jackson.version>
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
-        <bopomofo4j.version>1.0.0</bopomofo4j.version>
-        <houbb.version>0.3.1</houbb.version>
-        <jsch.version>0.1.55</jsch.version>
-        <sshj.version>0.35.0</sshj.version>
-        <zxing.version>3.5.1</zxing.version>
-        <net.version>3.9.0</net.version>
+        <bopomofo4j.version>1.0.1</bopomofo4j.version>
+        <houbb.version>0.9.0</houbb.version>
+        <jsch.version>0.2.17</jsch.version>
+        <sshj.version>0.38.0</sshj.version>
+        <zxing.version>3.5.3</zxing.version>
+        <net.version>3.10.0</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
-        <compress.vetsion>1.24.0</compress.vetsion>
+        <compress.vetsion>1.26.1</compress.vetsion>
         <lzo.version>1.0.6</lzo.version>
         <lz4.version>1.8.0</lz4.version>
         <snappy.version>1.1.10.5</snappy.version>
-        <servlet.version>6.0.0</servlet.version>
+        <servlet.version>6.1.0-M2</servlet.version>
     </properties>
 
     <dependencies>
@@ -201,7 +201,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${project.compiler.version}</source>
                     <target>${project.compiler.version}</target>
@@ -210,7 +210,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -227,24 +227,12 @@
     <profiles>
         <profile>
             <id>release</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype-nexus-snapshots</id>
-                    <name>OSS Snapshots Repository</name>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>sonatype-nexus-staging</id>
-                    <name>OSS Staging Repository</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -257,7 +245,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.2.3</version>
                         <executions>
                             <execution>
                                 <id>sonatype-nexus-staging</id>
@@ -269,14 +257,13 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.4.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>sonatype-nexus-staging</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
                         </configuration>
                     </plugin>
                 </plugins>
