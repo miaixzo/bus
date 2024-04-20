@@ -1,0 +1,6 @@
+org.miaixz.bus.extra.effect.provider.Bzip2Provider
+org.miaixz.bus.extra.effect.provider.DeflaterProvider
+org.miaixz.bus.extra.effect.provider.GzipProvider
+org.miaixz.bus.extra.effect.provider.Lz4Provider
+org.miaixz.bus.extra.effect.provider.LzoProvider
+org.miaixz.bus.extra.effect.provider.SnappyProvider

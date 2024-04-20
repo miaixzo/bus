@@ -1,3 +1,3 @@
-org.aoju.bus.image.nimble.opencv.NativeJLSImageWriterSpi
-org.aoju.bus.image.nimble.opencv.NativeJPEGImageWriterSpi
-org.aoju.bus.image.nimble.opencv.NativeJ2kImageWriterSpi
+org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi
+org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi
+org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi

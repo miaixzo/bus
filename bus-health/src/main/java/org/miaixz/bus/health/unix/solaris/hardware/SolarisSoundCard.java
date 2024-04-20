@@ -1,0 +1,98 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
+package org.miaixz.bus.health.unix.solaris.hardware;
+
+import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.builtin.hardware.AbstractSoundCard;
+import org.miaixz.bus.health.builtin.hardware.SoundCard;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Solaris Sound Card.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+@Immutable
+final class SolarisSoundCard extends AbstractSoundCard {
+
+    private static final String LSHAL = "lshal";
+    private static final String DEFAULT_AUDIO_DRIVER = "audio810";
+
+    /**
+     * Constructor for SolarisSoundCard.
+     *
+     * @param kernelVersion The version
+     * @param name          The name
+     * @param codec         The codec
+     */
+    SolarisSoundCard(String kernelVersion, String name, String codec) {
+        super(kernelVersion, name, codec);
+    }
+
+    /**
+     * <p>
+     * getSoundCards.
+     * </p>
+     *
+     * @return a {@link java.util.List} object.
+     */
+    public static List<SoundCard> getSoundCards() {
+        Map<String, String> vendorMap = new HashMap<>();
+        Map<String, String> productMap = new HashMap<>();
+        List<String> sounds = new ArrayList<>();
+        String key = "";
+        for (String line : Executor.runNative(LSHAL)) {
+            line = line.trim();
+            if (line.startsWith("udi =")) {
+                // we have the key.
+                key = Builder.getSingleQuoteStringValue(line);
+            } else if (!key.isEmpty() && !line.isEmpty()) {
+                if (line.contains("info.solaris.driver =")
+                        && DEFAULT_AUDIO_DRIVER.equals(Builder.getSingleQuoteStringValue(line))) {
+                    sounds.add(key);
+                } else if (line.contains("info.product")) {
+                    productMap.put(key, Builder.getStringBetween(line, '\''));
+                } else if (line.contains("info.vendor")) {
+                    vendorMap.put(key, Builder.getStringBetween(line, '\''));
+                }
+            }
+        }
+        List<SoundCard> soundCards = new ArrayList<>();
+        for (String s : sounds) {
+            soundCards.add(new SolarisSoundCard(productMap.get(s) + " " + DEFAULT_AUDIO_DRIVER,
+                    vendorMap.get(s) + " " + productMap.get(s), productMap.get(s)));
+        }
+        return soundCards;
+    }
+
+}

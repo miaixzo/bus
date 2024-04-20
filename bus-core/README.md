@@ -12,13 +12,13 @@
 
 ```xml
 <dependency>
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
     <version>8.0.0</version>
 </dependency>
 ```
 
-#### org.aoju.bus.core.loader 资源加载器，充分拓展ClassLoader#getResources(name)的能力，实现递归加载，支持普通风格 / 包名风格 / ANT风格 / 正则风格路径的资源加载同时支持自定义过滤器，通常作为框架的基础类库
+#### org.miaixz.bus.core.loader 资源加载器，充分拓展ClassLoader#getResources(name)的能力，实现递归加载，支持普通风格 / 包名风格 / ANT风格 / 正则风格路径的资源加载同时支持自定义过滤器，通常作为框架的基础类库
 
 ###### 由于ClassLoader#getResources(name)方法提供的资源加载能力非常有限，不支持递归和搜索的特性，但是开发一个框架往往需要按照约定或配置去加载一些当前项目的资源或者扫描指定包目录下的类，能提供非常便利的API以满足需求
 
@@ -34,8 +34,8 @@
 ## **示例代码**
 
 ```java
-// 从当前的classpath中加载org/aoju/bus/core/loader目录的资源，但不递归加载子目录
-Loaders.std().load("org/aoju/bus/core/loader");
+// 从当前的classpath中加载org/miaixz/bus/core/loader目录的资源，但不递归加载子目录
+Loaders.std().load("org/miaixz/bus/core/loader");
 ```
 
 ```java
@@ -56,10 +56,10 @@ Loaders.std(otherClassLoader);
 
 ```java
 // 当加载某个package下的类资源时也要用路径的方式来写包名的话其实不太直观，这时可以采用pkg资源加载器
-Loaders.pkg().load("org.aoju.bus.core.loader"); // 不递归
-Loaders.pkg().load("org.aoju.bus.core.loader", true); // 递归
+Loaders.pkg().load("org.miaixz.bus.core.loader"); // 不递归
+Loaders.pkg().load("org.miaixz.bus.core.loader", true); // 递归
 // 递归加载io.loadkit包下名称以Loader.class结尾的资源
-Loaders.pkg().load("org.aoju.bus.core.loader", (name, url) -> name.endsWith("Loader.class")); 
+Loaders.pkg().load("org.miaixz.bus.core.loader", (name, url) -> name.endsWith("Loader.class")); 
 ```
 
 ```java
@@ -70,24 +70,24 @@ Loaders.pkg(Loaders.std(otherClassLoader));
 ```
 
 ```java
-// 在package资源加载器中要加载org.aoju.bus.core.loader包下的名称Loader.class结尾的资源是需要自定义过滤器，
+// 在package资源加载器中要加载org.miaixz.bus.core.loader包下的名称Loader.class结尾的资源是需要自定义过滤器，
 // 即便使用了Lambda表达式，但是采用ANT表达式就更简洁
 // * 任意个字符，但不包括子目录
 // ** 任意个字符，而且包括子目录
 // ? 单个字符，可以使用多个表达多个字符，例如：load??? 可匹配loadkit 但不匹配loader
-Loaders.ant().load("org/aoju/bus/core/loader/*Loader.class");
+Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
 ```
 
 ```java
 // 上面的ANT风格路径的资源加载器加载io.loadkit包的资源时，需要用 “/” 来分隔目录，用来加载包资源不太直观
 // 这时可以采用delegate模式用package资源加载器去包装一个ANT资源加载器，
 // 让资源加载同时拥有package 和 ant 两个加载器的解析能力
-Loaders.pkg(Loaders.ant()).load("org.aoju.bus.core.loader.*"); // 加载 org.aoju.bus.core.loader.*
+Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.loader.*"); // 加载 org.miaixz.bus.core.loader.*
 ```
 
 ```java
 // 有ANT表达式的资源加载器，自然也会有正则表达式的资源加载器。
-Loaders.regex().load("org/aoju/bus/core/loader/\\w+Loader.class"); // 加载 org.aoju.bus.core.loader 包下名称以Loader.class 结尾的资源
+Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class"); // 加载 org.miaixz.bus.core.loader 包下名称以Loader.class 结尾的资源
 ```
 
 ```java

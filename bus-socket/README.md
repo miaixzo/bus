@@ -7,11 +7,11 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
 要求Java 17+
 
 *
-* 通常情况下仅需实现{@link org.aoju.bus.socket.Protocol}、{@link org.aoju.bus.socket.process.MessageProcessor}即可
-* 如需仅需通讯层面的监控，bus-socket提供了接口{@link org.aoju.bus.socket.NetMonitor}以供使用
+* 通常情况下仅需实现{@link socket.org.miaixz.bus.Protocol}、{@link process.socket.org.miaixz.bus.MessageProcessor}即可
+* 如需仅需通讯层面的监控，bus-socket提供了接口{@link socket.org.miaixz.bus.NetMonitor}以供使用
 *
-* 完成本package的接口开发后，便可使用{@link org.aoju.bus.socket.AioQuickClient} / {@link
-  org.aoju.bus.socket.AioQuickServer}提供AIO的客户端/服务端通信服务
+* 完成本package的接口开发后，便可使用{@link socket.org.miaixz.bus.AioQuickClient} / {@link
+  socket.org.miaixz.bus.AioQuickServer}提供AIO的客户端/服务端通信服务
 *
 
 服务端开发主要分两步：
@@ -275,7 +275,7 @@ public class NioServer {
 ## 性能测试
 
 - 环境准备
-    1. 测试项目：[abarth](https://github.com/aoju/abarth)
+  1. 测试项目：[abarth](https://github.com/839128/abarth)
     2. 通信协议：Http
     3. 压测工具：[wrk](https://github.com/wg/wrk)
     4. 测试机：MacBook Pro, 2.9Ghz i5, 4核8G内存

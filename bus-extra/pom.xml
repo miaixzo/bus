@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-extra</artifactId>
     <version>8.0.0</version>
     <packaging>jar</packaging>
@@ -50,7 +50,7 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
-        <houbb.version>0.9.0</houbb.version>
+        <houbb.version>0.4.0</houbb.version>
         <jsch.version>0.2.17</jsch.version>
         <sshj.version>0.38.0</sshj.version>
         <zxing.version>3.5.3</zxing.version>
@@ -124,7 +124,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.jcraft</groupId>
+            <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
             <optional>true</optional>

@@ -1,0 +1,149 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
+package org.miaixz.bus.crypto.digest.otp;
+
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.toolkit.StringKit;
+
+import java.time.Duration;
+import java.time.Instant;
+
+/**
+ * <p>time-based one-time passwords (TOTP) 基于时间戳算法的一次性密码生成器，
+ * 规范见：<a href="https://tools.ietf.org/html/rfc6238">RFC&nbsp;6238</a></p>
+ *
+ * <p>时间同步，基于客户端的动态口令和动态口令验证服务器的时间比对，一般每30秒产生一个新口令，
+ * 要求客户端和服务器能够十分精确的保持正确的时钟，客户端和服务端基于时间计算的动态口令才能一致</p>
+ *
+ * <p>参考：https://github.com/jchambers/java-otp</p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public class TOTP extends HOTP {
+
+    /**
+     * 默认步进 (30秒)
+     */
+    public static final Duration DEFAULT_TIME_STEP = Duration.ofSeconds(30);
+
+    private final Duration timeStep;
+
+    /**
+     * 构造，使用默认HMAC算法(HmacSHA1)
+     *
+     * @param key 共享密码，RFC 4226要求最少128位
+     */
+    public TOTP(byte[] key) {
+        this(DEFAULT_TIME_STEP, key);
+    }
+
+    /**
+     * 构造，使用默认HMAC算法(HmacSHA1)
+     *
+     * @param timeStep 日期步进，用于生成移动因子（moving factor）
+     * @param key      共享密码，RFC 4226要求最少128位
+     */
+    public TOTP(Duration timeStep, byte[] key) {
+        this(timeStep, DEFAULT_PASSWORD_LENGTH, key);
+    }
+
+    /**
+     * 构造，使用默认HMAC算法(HmacSHA1)
+     *
+     * @param timeStep       日期步进，用于生成移动因子（moving factor）
+     * @param passwordLength 密码长度，可以是6,7,8
+     * @param key            共享密码，RFC 4226要求最少128位
+     */
+    public TOTP(Duration timeStep, int passwordLength, byte[] key) {
+        this(timeStep, passwordLength, Algorithm.HMACSHA1, key);
+    }
+
+    /**
+     * 构造
+     *
+     * @param timeStep       日期步进，用于生成移动因子（moving factor）
+     * @param passwordLength 密码长度，可以是6,7,8
+     * @param algorithm      HMAC算法枚举
+     * @param key            共享密码，RFC 4226要求最少128位
+     */
+    public TOTP(Duration timeStep, int passwordLength, Algorithm algorithm, byte[] key) {
+        super(passwordLength, algorithm, key);
+        this.timeStep = timeStep;
+    }
+
+    /**
+     * 生成谷歌认证器的字符串（扫码字符串）
+     * 基于时间的，计数器不适合
+     *
+     * @param account  账户名
+     * @param numBytes 将生成的种子字节数量
+     * @return 共享密钥
+     */
+    public static String generateGoogleSecretKey(String account, int numBytes) {
+        return StringKit.format("otpauth://totp/{}?secret={}", account, generateSecretKey(numBytes));
+    }
+
+    /**
+     * 使用给定的时间戳生成一次性密码
+     *
+     * @param timestamp 用于生成密码的时间戳
+     * @return 一次性密码的int形式
+     */
+    public int generate(Instant timestamp) {
+        return this.generate(timestamp.toEpochMilli() / this.timeStep.toMillis());
+    }
+
+    /**
+     * 用于验证code是否正确
+     *
+     * @param timestamp  验证时间戳
+     * @param offsetSize 误差范围
+     * @param code       code
+     * @return 是否通过
+     */
+    public boolean validate(Instant timestamp, int offsetSize, int code) {
+        if (offsetSize == 0) {
+            return generate(timestamp) == code;
+        }
+        for (int i = -offsetSize; i <= offsetSize; i++) {
+            if (generate(timestamp.plus(getTimeStep().multipliedBy(i))) == code) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取步进
+     *
+     * @return 步进
+     */
+    public Duration getTimeStep() {
+        return this.timeStep;
+    }
+
+}

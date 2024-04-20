@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
     <version>8.0.0</version>
     <packaging>jar</packaging>
@@ -55,7 +55,7 @@
         <mysql.version>8.3.0</mysql.version>
         <dubbo.version>3.2.11</dubbo.version>
         <servlet.version>6.1.0-M2</servlet.version>
-        <elasticsearch.version>8.13.2</elasticsearch.version>
+        <elasticsearch.version>7.17.20</elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -78,7 +78,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.aoju</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-goalie</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
@@ -156,7 +156,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.aoju</groupId>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-spring</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>

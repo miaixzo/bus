@@ -389,7 +389,7 @@ List<User> users=http.sync("/users") // http://api.example.com/users
 使用方法`async(String url)`开始一个异步请求：
 
 ```java
-http.async("/users/1")                //  http://api.aoju.org/users/1
+http.async("/users/1")                //  http://api.miaixz.org/users/1
         .setOnResponse((HttpResult result)->{
         // 得到目标数据
         User user=result.getBody().toBean(User.class);
@@ -455,7 +455,7 @@ Websocket 方法：
 * `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
 
 ```java
-http.async("https://api.aoju.org/auth/login")
+http.async("https://api.miaixz.org/auth/login")
         .addBodyPara("username","jack")
         .addBodyPara("password","xxxx")
         .setOnResponse((HttpResult result)->{
@@ -471,7 +471,7 @@ http.async("https://api.aoju.org/auth/login")
 
 工具类`Httpv`还支持以 SPI 方式注入自定义配置，分以下两步：
 
-#### 第一步、新建一个配置类，实现[`org.aoju.bus.http.metric.Config`]接口
+#### 第一步、新建一个配置类，实现[`org.miaixz.bus.http.metric.Config`]接口
 
 例如：
 
@@ -481,7 +481,7 @@ public class HttpvConfig implements Config {
     @Override
     public void with(Httpv.Builder builder) {
         // 在这里对 HTTP.Builder 做一些自定义的配置
-        builder.baseUrl("https://api.aoju.org");
+        builder.baseUrl("https://api.miaixz.org");
         // 如果项目中添加了 fastjson 或  gson 或  jackson 依赖
         // Httpv 会自动注入它们提供的 Convertor 
         // 所以这里就不需要再配置 Convertor 了 (内部实现自动注入的原理也是 SPI)
@@ -635,7 +635,7 @@ long doneBytes=...    // 拿到保存的断点
 当文件很大时，有时候我们会考虑分块下载，与断点续传的思路是一样的，示例代码：
 
 ```java
-    private static String url="https://www.aoju.org/dl/test.zip";
+    private static String url="https://www.miaixz.org/dl/test.zip";
 private static Httpv httpv;
 
 public static void httpv(){

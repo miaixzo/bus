@@ -168,7 +168,7 @@ USB Devices:
 
 ### Prepare
 
-* Make sure tests are green on [Travis CI](https://travis-ci.org/aoju/bus).
+* Make sure tests are green on [Travis CI](https://travis-ci.org/839128/bus).
 * Run `mvn clean test` on every OS you have access to
 * Choose an appropriate [version number](http://semver.org/) for the release
     * Proactively change version numbers in the download links on [README.md](README.md).

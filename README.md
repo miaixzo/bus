@@ -1,15 +1,15 @@
 <p align="center">
-	<a href="https://www.aoju.org"><img src="logo.png" width="45%"></a>
+	<a href="https://www.miaixz.org"><img src="logo.png" width="45%"></a>
 </p>
 <p align="center">
-	<a href="http://www.aoju.org">http://www.aoju.org</a>
+	<a href="http://www.miaixz.org">http://www.miaixz.org</a>
 </p>
 <p align="center">
-    <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
+    <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
 		<img src="https://img.shields.io/badge/maven--central-v8.0.0-blue.svg?label=Maven%20Central" />
 	</a>
-	<a target="_blank" href="https://travis-ci.org/aoju/bus">
-		<img src="https://travis-ci.com/aoju/bus.svg?branch=main">
+	<a target="_blank" href="https://travis-ci.org/839128/bus">
+		<img src="https://travis-ci.com/839128/bus.svg?branch=main">
 	</a>
 	<a target="_blank" href="https://jdk.java.net/">
 		<img src="https://img.shields.io/badge/Java-17+-green.svg">
@@ -95,7 +95,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 ```
 <dependency>
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
     <version>x.x.x</version>
 </dependency>
@@ -105,7 +105,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 ```
 <dependency>
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-xxx</artifactId>
     <version>x.x.x</version>
 </dependency>
@@ -114,20 +114,20 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 ### Gradle
 
 ```
-implementation 'org.aoju:bus-all:x.x.x'
+implementation 'org.839128:bus-all:x.x.x'
 ```
 
 ### Downlad
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 
-- [Maven中央库](https://repo1.maven.org/maven2/org/aoju)
+- [Maven中央库](https://repo1.maven.org/maven2/org/miaixz)
 
 ### 测试&使用
 
 为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
 
-- 地址: [https://github.com/aoju/abarth](https://github.com/aoju/abarth)
+- 地址: [https://github.com/839128/abarth](https://github.com/839128/abarth)
 
 > 注意
 > Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。

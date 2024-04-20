@@ -11,7 +11,7 @@
 ```xml
 
 <dependency>
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-notify</artifactId>
     <version>8.0.0</version>
 </dependency>

@@ -1,5 +1,5 @@
-org.aoju.bus.image.nimble.opencv.NativeJPEGImageReaderSpi
-org.aoju.bus.image.nimble.opencv.NativeJLSImageReaderSpi
-org.aoju.bus.image.nimble.opencv.NativeJ2kImageReaderSpi
-org.aoju.bus.image.nimble.reader.NativeDCMImageReaderSpi
-org.aoju.bus.image.nimble.reader.NativeRLEImageReaderSpi
+org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi
+org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi
+org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi
+org.miaixz.bus.image.nimble.reader.NativeDCMImageReaderSpi
+org.miaixz.bus.image.nimble.reader.NativeRLEImageReaderSpi

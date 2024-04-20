@@ -2,7 +2,7 @@
 *                                                                               *
 * The MIT License                                                               *
 *                                                                               *
-* Copyright (c) 2015-2023 aoju.org and other contributors.                      *
+* Copyright (c) 2015-2023 miaixz.org and other contributors.                    *
 *                                                                               *
 * Permission is hereby granted, free of charge, to any person obtaining a copy  *
 * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,7 @@
 package ${entityUrl};
 
 import lombok.Data;
-import org.aoju.bus.base.entity.BaseEntity;
+import entity.base.org.miaixz.bus.BaseEntity;
 import javax.persistence.Table;
 <#if isSwagger=="true" >
     import io.swagger.annotations.ApiModelProperty;
