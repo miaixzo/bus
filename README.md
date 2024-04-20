@@ -1,5 +1,5 @@
 <p align="center">
-	<a href="https://www.miaixz.org"><img src="logo.png" width="45%"></a>
+	<a href="https://www.miaixz.org"><img src="logo.svg" width="45%"></a>
 </p>
 <p align="center">
 	<a href="http://www.miaixz.org">http://www.miaixz.org</a>
@@ -9,7 +9,7 @@
 		<img src="https://img.shields.io/badge/maven--central-v8.0.0-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/839128/bus">
-		<img src="https://travis-ci.com/839128/bus.svg?branch=main">
+		<img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
 	</a>
 	<a target="_blank" href="https://jdk.java.net/">
 		<img src="https://img.shields.io/badge/Java-17+-green.svg">
@@ -21,10 +21,10 @@
 		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.1.6-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-5.2.3-blue.svg">
+		<img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
 	</a>
 	<a target="_blank" href="https://opensource.org/licenses/MIT">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
@@ -39,7 +39,7 @@
 
 ## 项目说明
 
-Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17+编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
+Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17+ 编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
 
 很开心地告诉大家这套组件上手和学习难度非常小。如果是以学会使用为目的，只要你会Java语言即可。之前做项目的时候，往往会遇到各种各样的问题，这些问题有可能是会遇到很多次，不善于总结沉淀，这是很多人的一个通病，包括我自己也是。
 
