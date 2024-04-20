@@ -70,7 +70,7 @@ public User create(@Valid(value = {"name"}) @NotNull User user){
 
 5. 框架内部可用校验器注解
     * 校验器注解的具体使用方法，可以阅读源代码的api注释文档。
-    * 注意该框架的校验器的包名为`org.aoju.bus.validate.annotation`
+   * 注意该框架的校验器的包名为`org.miaixz.bus.validate.annotation`
     * 下列校验器注解，默认都**不会**产生校验对象内部字段的功能。如需校验对象内部字段，请使用后文提到的`@Inside`注解。
 
 ```text

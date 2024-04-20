@@ -3,8 +3,6 @@
 //
 package org.opencv.img_hash;
 
-import org.opencv.img_hash.AverageHash;
-
 // C++: class AverageHash
 /**
  * Computes average hash value of the input image

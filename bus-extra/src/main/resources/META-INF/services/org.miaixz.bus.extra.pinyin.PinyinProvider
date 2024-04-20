@@ -1,0 +1,4 @@
+org.miaixz.bus.extra.pinyin.provider.Bopomofo4jProvider
+org.miaixz.bus.extra.pinyin.provider.JPinyinProvider
+org.miaixz.bus.extra.pinyin.provider.Pinyin4JProvider
+org.miaixz.bus.extra.pinyin.provider.TinyPinyinProvider

@@ -480,7 +480,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 ***在注解中指定注解解析器的全限定类名，启用该组件***
 
 ```java
-@EnableLimiter(annotationParser = "org.aoju.bus.limiter.limitertest.extend.BlacklistAnnotationParser")
+@EnableLimiter(annotationParser = "org.miaixz.bus.limiter.limitertest.extend.BlacklistAnnotationParser")
 ```
 
 ## 性能测试

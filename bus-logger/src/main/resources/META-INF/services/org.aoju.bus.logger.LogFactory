@@ -1,5 +1,0 @@
-org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory
-org.aoju.bus.logger.dialect.log4j2.Log4j2LogFactory
-org.aoju.bus.logger.dialect.commons.ApacheCommonsLogFactory
-org.aoju.bus.logger.dialect.tinylog.TinyLogFactory
-org.aoju.bus.logger.dialect.jboss.JbossLogFactory

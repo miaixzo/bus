@@ -3,8 +3,6 @@
 //
 package org.opencv.img_hash;
 
-import org.opencv.img_hash.MarrHildrethHash;
-
 // C++: class MarrHildrethHash
 /**
  * Marr-Hildreth Operator Based Hash, slowest but more discriminative.

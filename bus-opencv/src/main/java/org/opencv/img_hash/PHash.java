@@ -3,8 +3,6 @@
 //
 package org.opencv.img_hash;
 
-import org.opencv.img_hash.PHash;
-
 // C++: class PHash
 /**
  * pHash

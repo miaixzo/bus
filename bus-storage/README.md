@@ -122,11 +122,11 @@ extend:
       qliyun:
         accessKey: 10******85
         secretKey: 1f7d************************d629e
-        prefix: http://oauth.aoju.org/qq/callback
+        prefix: http://oauth.miaixz.org/qq/callback
       baidu:
         accessKey: 10******85
         secretKey: 1f7d************************d629e
-        prefix: http://oauth.aoju.org/qq/callback
+        prefix: http://oauth.miaixz.org/qq/callback
 ......
 ```
 

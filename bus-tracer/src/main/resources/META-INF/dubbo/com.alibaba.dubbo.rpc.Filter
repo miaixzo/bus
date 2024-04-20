@@ -1,2 +1,2 @@
-ProviderTranceFilter=org.aoju.bus.tracer.binding.dubbo.ProviderTraceFilter
-ConsumeTraceFilter=org.aoju.bus.tracer.binding.dubbo.ConsumerTraceFilter
+ProviderTranceFilter=dubbo.binding.tracer.org.miaixz.bus.ProviderTraceFilter
+ConsumeTraceFilter=dubbo.binding.tracer.org.miaixz.bus.ConsumerTraceFilter

@@ -3,12 +3,7 @@
 //
 package org.opencv.img_hash;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
-import org.opencv.img_hash.BlockMeanHash;
-import org.opencv.utils.Converters;
 
 // C++: class BlockMeanHash
 /**

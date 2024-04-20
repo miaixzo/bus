@@ -5,7 +5,6 @@ package org.opencv.imgproc;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.imgproc.IntelligentScissorsMB;
 
 // C++: class IntelligentScissorsMB
 /**

@@ -3,8 +3,6 @@
 //
 package org.opencv.imgproc;
 
-import org.opencv.imgproc.GeneralizedHough;
-
 // C++: class GeneralizedHoughGuil
 /**
  * finds arbitrary template in the grayscale image using Generalized Hough Transform

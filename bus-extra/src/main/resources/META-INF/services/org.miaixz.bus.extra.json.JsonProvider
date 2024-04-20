@@ -1,0 +1,3 @@
+org.miaixz.bus.extra.json.provider.FastJsonProvider
+org.miaixz.bus.extra.json.provider.GsonProvider
+org.miaixz.bus.extra.json.provider.JacksonProvider

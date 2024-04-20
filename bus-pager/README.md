@@ -28,7 +28,7 @@
 
 你可以从下面的地址中下载最新版本的 jar 包
 
-- https://repo1.maven.org/maven2/org/aoju/bus-pager/
+- https://repo1.maven.org/maven2/org/miaixz/bus-pager/
 
 由于使用了sql 解析工具，你还需要下载 jsqlparser.jar(需要和bus-pager依赖的版本一致) ：
 
@@ -41,7 +41,7 @@
 ```xml  
 
 <dependency>
-    <groupId>org.aoju</groupId>
+    <groupId>org.miaixz</groupId>
     <artifactId>bus-pager</artifactId>
     <version>8.0.0</version>
 </dependency>
@@ -51,7 +51,7 @@
 
 ### 2. 配置拦截器插件
 
-特别注意，新版拦截器是 `org.aoju.bus.pager.plugin.PageInterceptor`。
+特别注意，新版拦截器是 `org.miaixz.bus.pager.plugin.PageInterceptor`。
 
 ```xml
 
@@ -59,7 +59,7 @@
     <!-- 注意其他配置 -->
     <property name="plugins">
         <array>
-            <bean class="org.aoju.bus.pager.plugin.PageInterceptor">
+            <bean class="org.miaixz.bus.pager.plugin.PageInterceptor">
                 <property name="properties">
                     <!--使用下面的方式配置参数，一行配置一个 -->
                     <value>
@@ -79,7 +79,7 @@
 分页插件可选参数如下：
 
 - `dialect`：默认情况下会使用 Page
-  方式进行分页，如果想要实现自己的分页逻辑，可以实现 `Dialect`(`org.aoju.bus.pager.dialect.Dialect`)
+  方式进行分页，如果想要实现自己的分页逻辑，可以实现 `Dialect`(`org.miaixz.bus.pager.dialect.Dialect`)
   接口，然后配置该属性为实现类的全限定名称。
 
 **下面几个参数都是针对默认 dialect 情况下的参数。使用自定义 dialect 实现时，下面的参数没有任何作用。**
@@ -109,7 +109,7 @@
 
 7. `supportMethodsArguments`：支持通过 Mapper 接口参数来传递分页参数，默认值`false`
    ，分页插件会从查询方法的参数值中，自动根据上面 `params` 配置的字段中取值，查找到合适的值时就会自动分页。
-   使用方法可以参考测试代码中的 `org.aoju.bus.pager.test.basic` 包下的 `ArgumentsMapTest` 和 `ArgumentsObjTest`。
+   使用方法可以参考测试代码中的 `org.miaixz.bus.pager.test.basic` 包下的 `ArgumentsMapTest` 和 `ArgumentsObjTest`。
 
 8. `autoRuntimeDialect`：默认值为 `false`。设置为 `true` 时，允许在运行时根据多数据源自动识别对应方言的分页
    （不支持自动选择`sqlserver2012`，只能使用`sqlserver`
@@ -343,8 +343,8 @@ PageContext.startPage(1,10);
 ```xml
 
 <plugins>
-    <!-- org.aoju.bus.pager为PageContext类所在包名 -->
-    <plugin interceptor="org.aoju.bus.pager.plugin.PageInterceptor">
+    <!-- org.miaixz.bus.pager为PageContext类所在包名 -->
+    <plugin interceptor="org.miaixz.bus.pager.plugin.PageInterceptor">
         <!-- 使用下面的方式配置参数，后面会有所有的参数介绍 -->
         <property name="supportMethodsArguments" value="true"/>
         <property name="params" value="PageNo=PageNoKey;pageSize=pageSizeKey;"/>

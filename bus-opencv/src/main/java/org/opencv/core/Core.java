@@ -11,29 +11,12 @@ import java.util.List;
 
 public class Core {
     // these constants are wrapped inside functions to prevent inlining
-    private static String getVersion() {
-        return "4.6.0";
-    }
-
-    private static String getNativeLibraryName() {
-        return "opencv_java";
-    }
-
-    private static int getVersionMajorJ() {
-        return 4;
-    }
-
-    private static int getVersionMinorJ() {
-        return 6;
-    }
-
-    private static int getVersionRevisionJ() {
-        return 0;
-    }
-
-    private static String getVersionStatusJ() {
-        return "";
-    }
+    private static String getVersion() { return "4.8.0"; }
+    private static String getNativeLibraryName() { return "opencv_java"; }
+    private static int getVersionMajorJ() { return 4; }
+    private static int getVersionMinorJ() { return 8; }
+    private static int getVersionRevisionJ() { return 0; }
+    private static String getVersionStatusJ() { return ""; }
 
     public static final String VERSION = getVersion();
     public static final String NATIVE_LIBRARY_NAME = getNativeLibraryName();
@@ -239,6 +222,11 @@ public class Core {
             Param_UINT64 = 9,
             Param_UCHAR = 11,
             Param_SCALAR = 12;
+
+
+    // C++: enum ReduceTypes (cv.ReduceTypes)
+    public static final int
+            REDUCE_SUM2 = 4;
 
 
     // C++: enum RotateFlags (cv.RotateFlags)
@@ -1206,6 +1194,23 @@ public class Core {
 
 
     //
+    // C++:  bool cv::hasNonZero(Mat src)
+    //
+
+    /**
+     * Checks for the presence of at least one non-zero array element.
+     *
+     * The function returns whether there are non-zero elements in src
+     * @param src single-channel array.
+     * SEE:  mean, meanStdDev, norm, minMaxLoc, calcCovarMatrix
+     * @return automatically generated
+     */
+    public static boolean hasNonZero(Mat src) {
+        return hasNonZero_0(src.nativeObj);
+    }
+
+
+    //
     // C++:  int cv::countNonZero(Mat src)
     //
 
@@ -2078,12 +2083,12 @@ public class Core {
      * - NaN handling is left unspecified, see patchNaNs().
      * - The returned index is always in bounds of input matrix.
      *
-     * @param src       input single-channel array.
-     * @param dst       output array of type CV_32SC1 with the same dimensionality as src,
-     *                  except for axis being reduced - it should be set to 1.
+     * @param src input single-channel array.
+     * @param dst output array of type CV_32SC1 with the same dimensionality as src,
+     * except for axis being reduced - it should be set to 1.
      * @param lastIndex whether to get the index of first or last occurrence of min.
-     * @param axis      axis to reduce along.
-     *                  SEE: reduceArgMax, minMaxLoc, min, max, compare, reduce
+     * @param axis axis to reduce along.
+     * SEE: reduceArgMax, minMaxLoc, min, max, compare, reduce
      */
     public static void reduceArgMin(Mat src, Mat dst, int axis, boolean lastIndex) {
         reduceArgMin_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
@@ -2161,7 +2166,7 @@ public class Core {
      * 1D vectors and performing the specified operation on the vectors until a single row/column is
      * obtained. For example, the function can be used to compute horizontal and vertical projections of a
      * raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
-     * In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
+     * In case of #REDUCE_SUM, #REDUCE_SUM2 and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
      * And multi-channel arrays are also supported in these two reduction modes.
      *
      * The following code demonstrates its usage for a single channel matrix.
@@ -2190,7 +2195,7 @@ public class Core {
      * 1D vectors and performing the specified operation on the vectors until a single row/column is
      * obtained. For example, the function can be used to compute horizontal and vertical projections of a
      * raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
-     * In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
+     * In case of #REDUCE_SUM, #REDUCE_SUM2 and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
      * And multi-channel arrays are also supported in these two reduction modes.
      *
      * The following code demonstrates its usage for a single channel matrix.
@@ -2343,6 +2348,21 @@ public class Core {
      */
     public static void flip(Mat src, Mat dst, int flipCode) {
         flip_0(src.nativeObj, dst.nativeObj, flipCode);
+    }
+
+
+    //
+    // C++:  void cv::flipND(Mat src, Mat& dst, int axis)
+    //
+
+    /**
+     * Flips a n-dimensional at given axis
+     * @param src input array
+     * @param dst output array that has the same shape of src
+     * @param axis axis that performs a flip on. 0 &lt;= axis &lt; src.dims.
+     */
+    public static void flipND(Mat src, Mat dst, int axis) {
+        flipND_0(src.nativeObj, dst.nativeObj, axis);
     }
 
 
@@ -3128,14 +3148,14 @@ public class Core {
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
      * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
      * function either returns false (when quiet=true) or throws an exception.
+     *   </li>
+     * </ul>
      * @param a input array.
      * @param quiet a flag, indicating whether the functions quietly return false when the array elements
      * are out of range or they throw an exception.
      * elements.
      * @param minVal inclusive lower boundary of valid values range.
      * @param maxVal exclusive upper boundary of valid values range.
-     *   </li>
-     * </ul>
      * @return automatically generated
      */
     public static boolean checkRange(Mat a, boolean quiet, double minVal, double maxVal) {
@@ -3152,13 +3172,13 @@ public class Core {
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
      * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
      * function either returns false (when quiet=true) or throws an exception.
+     *   </li>
+     * </ul>
      * @param a input array.
      * @param quiet a flag, indicating whether the functions quietly return false when the array elements
      * are out of range or they throw an exception.
      * elements.
      * @param minVal inclusive lower boundary of valid values range.
-     *   </li>
-     * </ul>
      * @return automatically generated
      */
     public static boolean checkRange(Mat a, boolean quiet, double minVal) {
@@ -3175,12 +3195,12 @@ public class Core {
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
      * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
      * function either returns false (when quiet=true) or throws an exception.
+     *   </li>
+     * </ul>
      * @param a input array.
      * @param quiet a flag, indicating whether the functions quietly return false when the array elements
      * are out of range or they throw an exception.
      * elements.
-     *   </li>
-     * </ul>
      * @return automatically generated
      */
     public static boolean checkRange(Mat a, boolean quiet) {
@@ -3197,11 +3217,11 @@ public class Core {
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
      * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
      * function either returns false (when quiet=true) or throws an exception.
+     *   </li>
+     * </ul>
      * @param a input array.
      * are out of range or they throw an exception.
      * elements.
-     *   </li>
-     * </ul>
      * @return automatically generated
      */
     public static boolean checkRange(Mat a) {
@@ -3459,11 +3479,10 @@ public class Core {
      * Transpose for n-dimensional matrices.
      *
      * <b>Note:</b> Input should be continuous single-channel matrix.
-     *
-     * @param src   input array.
+     * @param src input array.
      * @param order a permutation of [0,1,..,N-1] where N is the number of axes of src.
-     *              The i’th axis of dst will correspond to the axis numbered order[i] of the input.
-     * @param dst   output array of the same type as src.
+     * The i’th axis of dst will correspond to the axis numbered order[i] of the input.
+     * @param dst output array of the same type as src.
      */
     public static void transposeND(Mat src, MatOfInt order, Mat dst) {
         Mat order_mat = order;
@@ -4376,6 +4395,8 @@ public class Core {
      *   <li>
      *    (Python) An example rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
+     *   </li>
+     * </ul>
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
      * @param flags transformation flags, representing a combination of the #DftFlags
@@ -4386,8 +4407,6 @@ public class Core {
      * cross-correlation or convolution using DFT.
      * SEE: dct , getOptimalDFTSize , mulSpectrums, filter2D , matchTemplate , flip , cartToPolar ,
      * magnitude , phase
-     *   </li>
-     * </ul>
      */
     public static void dft(Mat src, Mat dst, int flags, int nonzeroRows) {
         dft_0(src.nativeObj, dst.nativeObj, flags, nonzeroRows);
@@ -4554,6 +4573,8 @@ public class Core {
      *   <li>
      *    (Python) An example rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
+     *   </li>
+     * </ul>
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
      * @param flags transformation flags, representing a combination of the #DftFlags
@@ -4563,8 +4584,6 @@ public class Core {
      * cross-correlation or convolution using DFT.
      * SEE: dct , getOptimalDFTSize , mulSpectrums, filter2D , matchTemplate , flip , cartToPolar ,
      * magnitude , phase
-     *   </li>
-     * </ul>
      */
     public static void dft(Mat src, Mat dst, int flags) {
         dft_1(src.nativeObj, dst.nativeObj, flags);
@@ -4731,6 +4750,8 @@ public class Core {
      *   <li>
      *    (Python) An example rearranging the quadrants of a Fourier image can be found at
      *     opencv_source/samples/python/dft.py
+     *   </li>
+     * </ul>
      * @param src input array that could be real or complex.
      * @param dst output array whose size and type depends on the flags .
      * nonzeroRows rows of the input array (#DFT_INVERSE is not set) or only the first nonzeroRows of the
@@ -4739,8 +4760,6 @@ public class Core {
      * cross-correlation or convolution using DFT.
      * SEE: dct , getOptimalDFTSize , mulSpectrums, filter2D , matchTemplate , flip , cartToPolar ,
      * magnitude , phase
-     *   </li>
-     * </ul>
      */
     public static void dft(Mat src, Mat dst) {
         dft_2(src.nativeObj, dst.nativeObj);
@@ -5149,9 +5168,11 @@ public class Core {
      *   <li>
      *    (Python) An example on K-means clustering can be found at
      *     opencv_source_code/samples/python/kmeans.py
+     *   </li>
+     * </ul>
      * @param data Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      * Examples of this array can be:
-     *   </li>
+     * <ul>
      *   <li>
      *    Mat points(count, 2, CV_32F);
      *   </li>
@@ -5163,6 +5184,8 @@ public class Core {
      *   </li>
      *   <li>
      *    std::vector&lt;cv::Point2f&gt; points(sampleCount);
+     *   </li>
+     * </ul>
      * @param K Number of clusters to split the set by.
      * @param bestLabels Input/output integer array that stores the cluster indices for every sample.
      * @param criteria The algorithm termination criteria, that is, the maximum number of iterations and/or
@@ -5180,8 +5203,6 @@ public class Core {
      * function, set the number of attempts to 1, initialize labels each time using a custom algorithm,
      * pass them with the ( flags = #KMEANS_USE_INITIAL_LABELS ) flag, and then choose the best
      * (most-compact) clustering.
-     *   </li>
-     * </ul>
      */
     public static double kmeans(Mat data, int K, Mat bestLabels, TermCriteria criteria, int attempts, int flags, Mat centers) {
         return kmeans_0(data.nativeObj, K, bestLabels.nativeObj, criteria.type, criteria.maxCount, criteria.epsilon, attempts, flags, centers.nativeObj);
@@ -5199,9 +5220,11 @@ public class Core {
      *   <li>
      *    (Python) An example on K-means clustering can be found at
      *     opencv_source_code/samples/python/kmeans.py
+     *   </li>
+     * </ul>
      * @param data Data for clustering. An array of N-Dimensional points with float coordinates is needed.
      * Examples of this array can be:
-     *   </li>
+     * <ul>
      *   <li>
      *    Mat points(count, 2, CV_32F);
      *   </li>
@@ -5213,6 +5236,8 @@ public class Core {
      *   </li>
      *   <li>
      *    std::vector&lt;cv::Point2f&gt; points(sampleCount);
+     *   </li>
+     * </ul>
      * @param K Number of clusters to split the set by.
      * @param bestLabels Input/output integer array that stores the cluster indices for every sample.
      * @param criteria The algorithm termination criteria, that is, the maximum number of iterations and/or
@@ -5229,8 +5254,6 @@ public class Core {
      * function, set the number of attempts to 1, initialize labels each time using a custom algorithm,
      * pass them with the ( flags = #KMEANS_USE_INITIAL_LABELS ) flag, and then choose the best
      * (most-compact) clustering.
-     *   </li>
-     * </ul>
      */
     public static double kmeans(Mat data, int K, Mat bestLabels, TermCriteria criteria, int attempts, int flags) {
         return kmeans_1(data.nativeObj, K, bestLabels.nativeObj, criteria.type, criteria.maxCount, criteria.epsilon, attempts, flags);
@@ -5242,11 +5265,11 @@ public class Core {
     //
 
     /**
-     * OpenCV will try to set the number of threads for the next parallel region.
+     * OpenCV will try to set the number of threads for subsequent parallel regions.
      *
-     * If threads == 0, OpenCV will disable threading optimizations and run all it's functions
-     * sequentially. Passing threads &lt; 0 will reset threads number to system default. This function must
-     * be called outside of parallel region.
+     * If threads == 1, OpenCV will disable threading optimizations and run all it's functions
+     * sequentially. Passing threads &lt; 0 will reset threads number to system default.
+     * The function is not thread-safe. It must not be called in parallel region or concurrent threads.
      *
      * OpenCV will try to run its functions with specified threads number, but some behaviour differs from
      * framework:
@@ -5267,10 +5290,10 @@ public class Core {
      *   </li>
      *   <li>
      *    {@code C=} - No special defined behaviour.
-     * @param nthreads Number of threads used by OpenCV.
-     * SEE: getNumThreads, getThreadNum
      *   </li>
      * </ul>
+     * @param nthreads Number of threads used by OpenCV.
+     * SEE: getNumThreads, getThreadNum
      */
     public static void setNumThreads(int nthreads) {
         setNumThreads_0(nthreads);
@@ -5491,6 +5514,25 @@ public class Core {
 
 
     //
+    // C++:  bool cv::checkHardwareSupport(int feature)
+    //
+
+    /**
+     * Returns true if the specified feature is supported by the host hardware.
+     *
+     * The function returns true if the host hardware supports the specified feature. When user calls
+     * setUseOptimized(false), the subsequent calls to checkHardwareSupport() will return false until
+     * setUseOptimized(true) is called. This way user can dynamically switch on and off the optimized code
+     * in OpenCV.
+     * @param feature The feature of interest, one of cv::CpuFeatures
+     * @return automatically generated
+     */
+    public static boolean checkHardwareSupport(int feature) {
+        return checkHardwareSupport_0(feature);
+    }
+
+
+    //
     // C++:  String cv::getHardwareFeatureName(int feature)
     //
 
@@ -5545,6 +5587,44 @@ public class Core {
      */
     public static int getNumberOfCPUs() {
         return getNumberOfCPUs_0();
+    }
+
+
+    //
+    // C++:  void cv::setUseOptimized(bool onoff)
+    //
+
+    /**
+     * Enables or disables the optimized code.
+     *
+     * The function can be used to dynamically turn on and off optimized dispatched code (code that uses SSE4.2, AVX/AVX2,
+     * and other instructions on the platforms that support it). It sets a global flag that is further
+     * checked by OpenCV functions. Since the flag is not checked in the inner OpenCV loops, it is only
+     * safe to call the function on the very top level in your application where you can be sure that no
+     * other OpenCV function is currently executed.
+     *
+     * By default, the optimized code is enabled unless you disable it in CMake. The current status can be
+     * retrieved using useOptimized.
+     * @param onoff The boolean flag specifying whether the optimized code should be used (onoff=true)
+     * or not (onoff=false).
+     */
+    public static void setUseOptimized(boolean onoff) {
+        setUseOptimized_0(onoff);
+    }
+
+
+    //
+    // C++:  bool cv::useOptimized()
+    //
+
+    /**
+     * Returns the status of optimized code usage.
+     *
+     * The function returns true if the optimized code is enabled. Otherwise, it returns false.
+     * @return automatically generated
+     */
+    public static boolean useOptimized() {
+        return useOptimized_0();
     }
 
 
@@ -5909,6 +5989,9 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
     // C++:  Scalar cv::sum(Mat src)
     private static native double[] sumElems_0(long src_nativeObj);
 
+    // C++:  bool cv::hasNonZero(Mat src)
+    private static native boolean hasNonZero_0(long src_nativeObj);
+
     // C++:  int cv::countNonZero(Mat src)
     private static native int countNonZero_0(long src_nativeObj);
 
@@ -5982,6 +6065,9 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
 
     // C++:  void cv::flip(Mat src, Mat& dst, int flipCode)
     private static native void flip_0(long src_nativeObj, long dst_nativeObj, int flipCode);
+
+    // C++:  void cv::flipND(Mat src, Mat& dst, int axis)
+    private static native void flipND_0(long src_nativeObj, long dst_nativeObj, int axis);
 
     // C++:  void cv::rotate(Mat src, Mat& dst, int rotateCode)
     private static native void rotate_0(long src_nativeObj, long dst_nativeObj, int rotateCode);
@@ -6072,11 +6158,8 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
 
     // C++:  void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
     private static native void mulTransposed_0(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj, double scale, int dtype);
-
     private static native void mulTransposed_1(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj, double scale);
-
     private static native void mulTransposed_2(long src_nativeObj, long dst_nativeObj, boolean aTa, long delta_nativeObj);
-
     private static native void mulTransposed_3(long src_nativeObj, long dst_nativeObj, boolean aTa);
 
     // C++:  void cv::transpose(Mat src, Mat& dst)
@@ -6242,6 +6325,9 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
     // C++:  int64 cv::getCPUTickCount()
     private static native long getCPUTickCount_0();
 
+    // C++:  bool cv::checkHardwareSupport(int feature)
+    private static native boolean checkHardwareSupport_0(int feature);
+
     // C++:  String cv::getHardwareFeatureName(int feature)
     private static native String getHardwareFeatureName_0(int feature);
 
@@ -6250,6 +6336,12 @@ public static MinMaxLocResult minMaxLoc(Mat src) {
 
     // C++:  int cv::getNumberOfCPUs()
     private static native int getNumberOfCPUs_0();
+
+    // C++:  void cv::setUseOptimized(bool onoff)
+    private static native void setUseOptimized_0(boolean onoff);
+
+    // C++:  bool cv::useOptimized()
+    private static native boolean useOptimized_0();
 
     // C++:  String cv::samples::findFile(String relative_path, bool required = true, bool silentMode = false)
     private static native String findFile_0(String relative_path, boolean required, boolean silentMode);
