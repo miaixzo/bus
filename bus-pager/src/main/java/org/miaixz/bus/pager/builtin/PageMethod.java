@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.proxy;
+package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Querying;
@@ -33,17 +33,16 @@ import java.util.Properties;
 /**
  * 基础分页方法
  *
- * @author Kimi Liu
- * @since Java 17+
+ * @author liuzh
  */
 public abstract class PageMethod {
-
-    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<>();
+    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<Page>();
     protected static boolean DEFAULT_COUNT = true;
 
     /**
-     * @param <T> 对象
-     * @return 结果
+     * 获取 Page 参数
+     *
+     * @return
      */
     public static <T> Page<T> getLocalPage() {
         return LOCAL_PAGE.get();
@@ -52,9 +51,9 @@ public abstract class PageMethod {
     /**
      * 设置 Page 参数
      *
-     * @param page 分页对象
+     * @param page
      */
-    protected static void setLocalPage(Page page) {
+    public static void setLocalPage(Page page) {
         LOCAL_PAGE.set(page);
     }
 
@@ -68,11 +67,12 @@ public abstract class PageMethod {
     /**
      * 获取任意查询方法的count总数
      *
-     * @param select 查询对象
-     * @return the long
+     * @param select
+     * @return
      */
     public static long count(Querying select) {
-        Page<?> page = startPage(1, -1, true);
+        //单纯count查询时禁用异步count
+        Page<?> page = startPage(1, -1, true).disableAsyncCount();
         select.doSelect();
         return page.getTotal();
     }
@@ -80,9 +80,7 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>    对象
-     * @param params 参数
-     * @return 结果
+     * @param params
      */
     public static <E> Page<E> startPage(Object params) {
         Page<E> page = PageObject.getPageFromObject(params, true);
@@ -98,10 +96,8 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>      对象
-     * @param pageNo   页码
+     * @param pageNo  页码
      * @param pageSize 每页显示数量
-     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize) {
         return startPage(pageNo, pageSize, DEFAULT_COUNT);
@@ -110,11 +106,9 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>      对象
-     * @param pageNo   页码
+     * @param pageNo  页码
      * @param pageSize 每页显示数量
      * @param count    是否进行count查询
-     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count) {
         return startPage(pageNo, pageSize, count, null, null);
@@ -123,11 +117,9 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>      对象
-     * @param pageNo   页码
+     * @param pageNo  页码
      * @param pageSize 每页显示数量
      * @param orderBy  排序
-     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, String orderBy) {
         Page<E> page = startPage(pageNo, pageSize);
@@ -138,16 +130,14 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>          对象
-     * @param pageNo       页码
+     * @param pageNo      页码
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置
      * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
-     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
-        Page<E> page = new Page<>(pageNo, pageSize, count);
+        Page<E> page = new Page<E>(pageNo, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
         //当已经执行过orderBy的时候
@@ -162,10 +152,8 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>    对象
      * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
-     * @return 结果
      */
     public static <E> Page<E> offsetPage(int offset, int limit) {
         return offsetPage(offset, limit, DEFAULT_COUNT);
@@ -174,15 +162,13 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param <E>    对象
      * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
      * @param count  是否进行count查询
-     * @return 结果
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
-        Page<E> page = new Page<>(new int[]{offset, limit}, count);
-        // 当已经执行过orderBy的时候
+        Page<E> page = new Page<E>(new int[]{offset, limit}, count);
+        //当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -194,12 +180,15 @@ public abstract class PageMethod {
     /**
      * 排序
      *
-     * @param orderBy 排序
+     * @param orderBy
      */
     public static void orderBy(String orderBy) {
         Page<?> page = getLocalPage();
         if (page != null) {
             page.setOrderBy(orderBy);
+            if (page.getPageSizeZero() != null && page.getPageSizeZero() && page.getPageSize() == 0) {
+                page.setOrderByOnly(true);
+            }
         } else {
             page = new Page();
             page.setOrderBy(orderBy);
@@ -214,7 +203,7 @@ public abstract class PageMethod {
      * @param properties 插件属性
      */
     protected static void setStaticProperties(Properties properties) {
-        // defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
+        //defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
         if (properties != null) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }

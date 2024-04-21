@@ -26,9 +26,9 @@
 package org.miaixz.bus.pager;
 
 import org.miaixz.bus.core.exception.PageException;
-import org.miaixz.bus.pager.plugins.BoundSqlHandler;
-import org.miaixz.bus.pager.plugins.SqlInjection;
-import org.miaixz.bus.pager.proxy.PageAutoDialect;
+import org.miaixz.bus.pager.builtin.PageAutoDialect;
+import org.miaixz.bus.pager.plugin.BoundSqlHandler;
+import org.miaixz.bus.pager.plugin.PageSqlHandler;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -45,7 +45,12 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 页码,从1开始
+     * 记录当前堆栈,可查找到page在何处创建
+     * 需开启page.debug
+     */
+    private final String stackTrace = PageSqlHandler.isDebug() ? Builder.current() : null;
+    /**
+     * 页码，从1开始
      */
     private int pageNo;
     /**
@@ -93,14 +98,6 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private boolean orderByOnly;
     /**
-     * 转换count查询时保留查询的 order by 排序
-     */
-    private Boolean keepOrderBy;
-    /**
-     * 转换count查询时保留子查询的 order by 排序
-     */
-    private Boolean keepSubSelectOrderBy;
-    /**
      * sql拦截处理
      */
     private BoundSqlHandler boundSqlHandler;
@@ -109,6 +106,18 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
      */
     private String dialectClass;
+    /**
+     * 转换count查询时保留查询的 order by 排序
+     */
+    private Boolean keepOrderBy;
+    /**
+     * 转换count查询时保留子查询的 order by 排序
+     */
+    private Boolean keepSubSelectOrderBy;
+    /**
+     * 异步count查询
+     */
+    private Boolean asyncCount;
 
     public Page() {
         super();
@@ -138,6 +147,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * @param rowBounds 分页对象
      * @param count     总数
+     *
+     * int[] rowBounds
+     * 0 : offset
+     * 1 : limit
      */
     public Page(int[] rowBounds, boolean count) {
         super(0);
@@ -152,6 +165,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         this.startRow = rowBounds[0];
         this.count = count;
         this.endRow = this.startRow + rowBounds[1];
+    }
+
+    public String getStackTrace() {
+        return stackTrace;
     }
 
     public List<E> getResult() {
@@ -266,8 +283,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @param orderBy 排序字段
      */
     public <E> Page<E> setOrderBy(String orderBy) {
-        if (SqlInjection.check(orderBy)) {
-            throw new PageException("order by [" + orderBy + "] 存在 SQL 注入风险, 如想避免 SQL 注入校验，可以调用 Page.setUnsafeOrderBy");
+        if (Builder.check(orderBy)) {
+            throw new PageException("order by [" + orderBy + "] has a risk of SQL injection, " +
+                    "if you want to avoid SQL injection verification, you can call Page.setUnsafeOrderBy");
         }
         this.orderBy = orderBy;
         return (Page<E>) this;
@@ -291,6 +309,50 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     public void setOrderByOnly(boolean orderByOnly) {
         this.orderByOnly = orderByOnly;
+    }
+
+    public String getDialectClass() {
+        return dialectClass;
+    }
+
+    public void setDialectClass(String dialectClass) {
+        this.dialectClass = dialectClass;
+    }
+
+    public Boolean getKeepOrderBy() {
+        return keepOrderBy;
+    }
+
+    public Page<E> setKeepOrderBy(Boolean keepOrderBy) {
+        this.keepOrderBy = keepOrderBy;
+        return this;
+    }
+
+    public Boolean getKeepSubSelectOrderBy() {
+        return keepSubSelectOrderBy;
+    }
+
+    public void setKeepSubSelectOrderBy(Boolean keepSubSelectOrderBy) {
+        this.keepSubSelectOrderBy = keepSubSelectOrderBy;
+    }
+
+    public Boolean getAsyncCount() {
+        return asyncCount;
+    }
+
+    public void setAsyncCount(Boolean asyncCount) {
+        this.asyncCount = asyncCount;
+    }
+
+    /**
+     * 指定使用的分页实现，如果自己使用的很频繁，建议自己增加一层封装再使用
+     *
+     * @param dialect 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
+     * @return the object
+     */
+    public Page<E> using(String dialect) {
+        this.dialectClass = dialect;
+        return this;
     }
 
     /**
@@ -385,10 +447,16 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @return 结果
      */
     public Page<E> countColumn(String columnName) {
-        this.countColumn = columnName;
+        setCountColumn(columnName);
         return this;
     }
 
+    /**
+     * 转换count查询时保留查询的 order by 排序
+     *
+     * @param keepOrderBy
+     * @return
+     */
     public Page<E> keepOrderBy(boolean keepOrderBy) {
         this.keepOrderBy = keepOrderBy;
         return this;
@@ -398,20 +466,53 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this.keepOrderBy != null && this.keepOrderBy;
     }
 
-    public Boolean getKeepOrderBy() {
-        return keepOrderBy;
-    }
-
-    public void setKeepOrderBy(Boolean keepOrderBy) {
-        this.keepOrderBy = keepOrderBy;
-    }
-
-    public Boolean getKeepSubSelectOrderBy() {
-        return keepSubSelectOrderBy;
-    }
-
-    public void setKeepSubSelectOrderBy(Boolean keepSubSelectOrderBy) {
+    /**
+     * 转换count查询时保留子查询的 order by 排序
+     *
+     * @param keepSubSelectOrderBy
+     * @return
+     */
+    public Page<E> keepSubSelectOrderBy(boolean keepSubSelectOrderBy) {
         this.keepSubSelectOrderBy = keepSubSelectOrderBy;
+        return this;
+    }
+
+    public boolean keepSubSelectOrderBy() {
+        return this.keepSubSelectOrderBy != null && this.keepSubSelectOrderBy;
+    }
+
+    /**
+     * 异步count查询
+     *
+     * @param asyncCount
+     * @return
+     */
+    public Page<E> asyncCount(boolean asyncCount) {
+        this.asyncCount = asyncCount;
+        return this;
+    }
+
+    /**
+     * 使用异步count查询
+     *
+     * @return
+     */
+    public Page<E> enableAsyncCount() {
+        return asyncCount(true);
+    }
+
+    /**
+     * 不使用异步count查询
+     *
+     * @return
+     */
+    public Page<E> disableAsyncCount() {
+        return asyncCount(false);
+    }
+
+
+    public boolean asyncCount() {
+        return this.asyncCount != null && this.asyncCount;
     }
 
     public Paginating<E> toPageInfo() {
@@ -489,6 +590,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public void setCountColumn(String countColumn) {
+        if (!"0".equals(countColumn) && !"*".equals(countColumn) && Builder.check(countColumn)) {
+            throw new PageException("count(" + countColumn + ") has a risk of SQL injection");
+        }
         this.countColumn = countColumn;
     }
 
@@ -506,25 +610,6 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     void setChain(BoundSqlHandler.Chain chain) {
         this.chain = chain;
-    }
-
-    public String getDialectClass() {
-        return dialectClass;
-    }
-
-    public void setDialectClass(String dialectClass) {
-        this.dialectClass = dialectClass;
-    }
-
-    /**
-     * 指定使用的分页实现，如果自己使用的很频繁，建议自己增加一层封装再使用
-     *
-     * @param dialect 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
-     * @return this
-     */
-    public Page<E> using(String dialect) {
-        this.dialectClass = dialect;
-        return this;
     }
 
     @Override
@@ -548,7 +633,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 兼容低版本 Java 7
+     * 兼容低版本 Java 7-
      */
     public interface Function<E, T> {
 

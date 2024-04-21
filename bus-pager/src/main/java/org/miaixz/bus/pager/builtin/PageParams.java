@@ -23,9 +23,8 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.proxy;
+package org.miaixz.bus.pager.builtin;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
@@ -37,11 +36,9 @@ import java.util.Properties;
 /**
  * Page 参数信息
  *
- * @author Kimi Liu
- * @since Java 17+
+ * @author liuzh
  */
 public class PageParams {
-
     /**
      * RowBounds参数offset作为PageNo使用 - 默认不使用
      */
@@ -51,7 +48,7 @@ public class PageParams {
      */
     protected boolean rowBoundsWithCount = false;
     /**
-     * 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
+     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
      */
     protected boolean pageSizeZero = false;
     /**
@@ -59,13 +56,13 @@ public class PageParams {
      */
     protected boolean reasonable = false;
     /**
-     * 是否支持接口参数来传递分页参数,默认false
+     * 是否支持接口参数来传递分页参数，默认false
      */
     protected boolean supportMethodsArguments = false;
     /**
      * 默认count(0)
      */
-    protected String countColumn = Symbol.ZERO;
+    protected String countColumn = "0";
     /**
      * 转换count查询时保留 order by 排序
      */
@@ -74,23 +71,27 @@ public class PageParams {
      * 转换count查询时保留子查询的 order by 排序
      */
     private boolean keepSubSelectOrderBy = false;
+    /**
+     * 异步count查询
+     */
+    private boolean asyncCount = false;
 
     /**
      * 获取分页参数
      *
-     * @param parameterObject 参数
-     * @param rowBounds       rowBounds对象
-     * @return the page
+     * @param parameterObject
+     * @param rowBounds
+     * @return
      */
     public Page getPage(Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();
-        if (null == page) {
+        if (page == null) {
             if (rowBounds != org.apache.ibatis.session.RowBounds.DEFAULT) {
                 if (offsetAsPageNo) {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
                 } else {
                     page = new Page(new int[]{rowBounds.getOffset(), rowBounds.getLimit()}, rowBoundsWithCount);
-                    // offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
+                    //offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
                     page.setReasonable(false);
                 }
                 if (rowBounds instanceof RowBounds) {
@@ -104,16 +105,16 @@ public class PageParams {
                     return null;
                 }
             }
-            if (null == page) {
+            if (page == null) {
                 return null;
             }
             PageContext.setLocalPage(page);
         }
-        // 分页合理化
+        //分页合理化
         if (page.getReasonable() == null) {
             page.setReasonable(reasonable);
         }
-        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+        //当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
         if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }
@@ -146,12 +147,15 @@ public class PageParams {
         if (StringKit.isNotEmpty(countColumn)) {
             this.countColumn = countColumn;
         }
-        // 当offsetAsPageNo=false的时候，不能参数映射
+        // 当offsetAsPageNo=false的时候，不能
+        // 参数映射
         PageObject.setParams(properties.getProperty("params"));
         // count查询时，是否保留查询中的 order by
         keepOrderBy = Boolean.parseBoolean(properties.getProperty("keepOrderBy"));
         // count查询时，是否保留子查询中的 order by
         keepSubSelectOrderBy = Boolean.parseBoolean(properties.getProperty("keepSubSelectOrderBy"));
+        // 异步count查询
+        asyncCount = Boolean.parseBoolean(properties.getProperty("asyncCount"));
     }
 
     public boolean isOffsetAsPageNo() {
@@ -176,6 +180,10 @@ public class PageParams {
 
     public String getCountColumn() {
         return countColumn;
+    }
+
+    public boolean isAsyncCount() {
+        return asyncCount;
     }
 
 }

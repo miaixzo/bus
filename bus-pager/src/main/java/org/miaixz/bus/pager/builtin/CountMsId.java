@@ -23,58 +23,37 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.plugins;
+package org.miaixz.bus.pager.builtin;
 
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 
 /**
- * QuerySQLHandler 规范
+ * 构建当前查询对应的 count 方法 id
+ * <p>
+ * 返回的 msId 会先判断是否存在自定义的方法，存在就直接使用
+ * <p>
+ * 如果不存在，会根据当前的 msId 创建 MappedStatement
  *
- * @author Kimi Liu
- * @since Java 17+
+ * @author liuzh
  */
-@Intercepts(
-        {
-                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
-                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
-        }
-)
-public class QuerySqlHandler implements Interceptor {
+public interface CountMsId {
 
-    @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        Object[] args = invocation.getArgs();
-        MappedStatement ms = (MappedStatement) args[0];
-        Object parameter = args[1];
-        RowBounds rowBounds = (RowBounds) args[2];
-        ResultHandler resultHandler = (ResultHandler) args[3];
-        Executor executor = (Executor) invocation.getTarget();
-        CacheKey cacheKey;
-        BoundSql boundSql;
-        // 由于逻辑关系，只会进入一次
-        if (args.length == 4) {
-            // 4 个参数时
-            boundSql = ms.getBoundSql(parameter);
-            cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
-        } else {
-            // 6 个参数时
-            cacheKey = (CacheKey) args[4];
-            boundSql = (BoundSql) args[5];
-        }
+    /**
+     * 默认实现
+     */
+    CountMsId DEFAULT = (ms, parameter, boundSql, countSuffix) -> ms.getId() + countSuffix;
 
-        // 注：下面的方法可以根据自己的逻辑调用多次，在分页插件中，count 和 page 各调用了一次
-        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
-    }
-
-    @Override
-    public Object plugin(Object target) {
-        return Plugin.wrap(target, this);
-    }
+    /**
+     * 构建当前查询对应的 count 方法 id
+     *
+     * @param ms          查询对应的 MappedStatement
+     * @param parameter   方法参数
+     * @param boundSql    查询SQL
+     * @param countSuffix 配置的 count 后缀
+     * @return count 查询丢的 msId
+     */
+    String genCountMsId(MappedStatement ms, Object parameter,
+                        BoundSql boundSql, String countSuffix);
 
 }

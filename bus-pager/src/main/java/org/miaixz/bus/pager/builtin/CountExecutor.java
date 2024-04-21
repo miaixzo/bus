@@ -23,11 +23,8 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.proxy;
+package org.miaixz.bus.pager.builtin;
 
-import org.miaixz.bus.core.exception.PageException;
-import org.miaixz.bus.pager.Dialect;
-import org.miaixz.bus.pager.plugins.BoundSqlHandler;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -36,6 +33,9 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.pager.Dialect;
+import org.miaixz.bus.pager.plugin.BoundSqlHandler;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -51,6 +51,7 @@ import java.util.Map;
 public abstract class CountExecutor {
 
     private static Field additionalParametersField;
+
     private static Field providerMethodArgumentNamesField;
 
     static {
@@ -58,7 +59,7 @@ public abstract class CountExecutor {
             additionalParametersField = BoundSql.class.getDeclaredField("additionalParameters");
             additionalParametersField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new PageException("获取 BoundSql 属性 additionalParameters 失败: " + e, e);
+            throw new PageException("Failed to get the BoundSql property additionalParameters: " + e, e);
         }
         try {
             // 兼容低版本
@@ -78,7 +79,7 @@ public abstract class CountExecutor {
         try {
             return (Map<String, Object>) additionalParametersField.get(boundSql);
         } catch (IllegalAccessException e) {
-            throw new PageException("获取 BoundSql 属性值 additionalParameters 失败: " + e, e);
+            throw new PageException("Failed to get the BoundSql property additionalParameters: " + e, e);
         }
     }
 
@@ -92,7 +93,7 @@ public abstract class CountExecutor {
         try {
             return providerMethodArgumentNamesField != null ? (String[]) providerMethodArgumentNamesField.get(providerSqlSource) : null;
         } catch (IllegalAccessException e) {
-            throw new PageException("获取 ProviderSqlSource 属性值 providerMethodArgumentNames: " + e, e);
+            throw new PageException("Get the ProviderSqlSource property value of providerMethodArgumentNames: " + e, e);
         }
     }
 

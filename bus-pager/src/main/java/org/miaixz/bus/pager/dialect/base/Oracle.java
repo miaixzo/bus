@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.base;
 
-import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.Page;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 import java.util.Map;
 
@@ -57,10 +57,10 @@ public class Oracle extends AbstractPaging {
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
         sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( \n");
+        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGER_ROW_ID FROM ( \n");
         sqlBuilder.append(sql);
         sqlBuilder.append("\n ) TMP_PAGE)");
-        sqlBuilder.append(" WHERE PAGEHELPER_ROW_ID <= ? AND PAGEHELPER_ROW_ID > ?");
+        sqlBuilder.append(" WHERE PAGER_ROW_ID <= ? AND PAGER_ROW_ID > ?");
         return sqlBuilder.toString();
     }
 

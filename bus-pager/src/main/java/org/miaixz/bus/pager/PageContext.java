@@ -25,23 +25,28 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-import org.miaixz.bus.pager.plugins.BoundSqlChain;
-import org.miaixz.bus.pager.plugins.BoundSqlHandler;
-import org.miaixz.bus.pager.plugins.PageBoundSqlHandler;
-import org.miaixz.bus.pager.proxy.PageAutoDialect;
-import org.miaixz.bus.pager.proxy.PageMethod;
-import org.miaixz.bus.pager.proxy.PageParams;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.pager.builtin.PageAutoDialect;
+import org.miaixz.bus.pager.builtin.PageMethod;
+import org.miaixz.bus.pager.builtin.PageParams;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
+import org.miaixz.bus.pager.parser.CountSqlParser;
+import org.miaixz.bus.pager.plugin.BoundSqlChain;
+import org.miaixz.bus.pager.plugin.BoundSqlHandler;
+import org.miaixz.bus.pager.plugin.PageBoundSqlHandler;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.Future;
 
 /**
  * Mybatis - 通用分页拦截器
@@ -54,6 +59,7 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
     private PageParams pageParams;
     private PageAutoDialect autoDialect;
     private PageBoundSqlHandler pageBoundSqlHandler;
+    private ForkJoinPool asyncCountService;
 
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
@@ -65,9 +71,37 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
             if (StringKit.isEmpty(page.getCountColumn())) {
                 page.setCountColumn(pageParams.getCountColumn());
             }
+            // 设置默认的异步 count 设置
+            if (page.getAsyncCount() == null) {
+                page.setAsyncCount(pageParams.isAsyncCount());
+            }
             autoDialect.initDelegateDialect(ms, page.getDialectClass());
             return false;
         }
+    }
+
+    @Override
+    public boolean isAsyncCount() {
+        return getLocalPage().asyncCount();
+    }
+
+    @Override
+    public <T> Future<T> asyncCountTask(Callable<T> task) {
+        // 异步执行时需要将ThreadLocal值传递，否则会找不到
+        AbstractPaging dialectThreadLocal = autoDialect.getDialectThreadLocal();
+        Page<Object> localPage = getLocalPage();
+        String countId = UUID.randomUUID().toString();
+        return asyncCountService.submit(() -> {
+            try {
+                //设置 ThreadLocal
+                autoDialect.setDialectThreadLocal(dialectThreadLocal);
+                setLocalPage(localPage);
+                return task.call();
+            } finally {
+                autoDialect.clearDelegate();
+                clearPage();
+            }
+        });
     }
 
     @Override
@@ -158,6 +192,14 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
         pageBoundSqlHandler.setProperties(properties);
         // 20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
+        // 异步 asyncCountService 并发度设置，这里默认为应用可用的处理器核心数 * 2，更合理的值应该综合考虑数据库服务器的处理能力
+        int asyncCountParallelism = Integer.parseInt(properties.getProperty("asyncCountParallelism",
+                "" + (Runtime.getRuntime().availableProcessors() * 2)));
+        asyncCountService = new ForkJoinPool(asyncCountParallelism,
+                pool -> {
+                    final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+                    worker.setName("pager-async-count-" + worker.getPoolIndex());
+                    return worker;
+                }, null, true);
     }
-
 }

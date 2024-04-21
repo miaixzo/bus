@@ -23,33 +23,48 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.parser;
+package org.miaixz.bus.pager.builtin;
 
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
+import org.miaixz.bus.core.exception.PageException;
+
+import java.lang.reflect.Method;
 
 /**
- * 为了兼容不同版本 jdk 和 jsqlparser
- * 使用 sqlserver 时，可以重写parse方法
- *
- * @author Kimi Liu
- * @since Java 17+
+ * @author liuzh
  */
-public interface JSqlParser {
+public class MetaObject {
 
-    /**
-     * 默认实现
-     */
-    JSqlParser DEFAULT = statementReader -> CCJSqlParserUtil.parse(statementReader);
+    public static Method method;
 
-    /**
-     * 解析 SQL
-     *
-     * @param statementReader SQL
-     * @return
-     * @throws JSQLParserException
-     */
-    Statement parse(String statementReader) throws JSQLParserException;
+    static {
+        try {
+            // 高版本中的 MetaObject.forObject 有 4 个参数，低版本是 1 个
+            //先判断当前使用的是否为高版本
+            Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
+            // 下面这个 MetaObjectWithCache 带反射的缓存信息
+            Class<?> metaClass = Class.forName("org.miaixz.bus.pager.builtin.MetaObjectWithCache");
+            method = metaClass.getDeclaredMethod("forObject", Object.class);
+        } catch (Throwable e1) {
+            try {
+                Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.SystemMetaObject");
+                method = metaClass.getDeclaredMethod("forObject", Object.class);
+            } catch (Exception e2) {
+                try {
+                    Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.MetaObject");
+                    method = metaClass.getDeclaredMethod("forObject", Object.class);
+                } catch (Exception e3) {
+                    throw new PageException(e3);
+                }
+            }
+        }
+    }
+
+    public static org.apache.ibatis.reflection.MetaObject forObject(Object object) {
+        try {
+            return (org.apache.ibatis.reflection.MetaObject) method.invoke(null, object);
+        } catch (Exception e) {
+            throw new PageException(e);
+        }
+    }
 
 }

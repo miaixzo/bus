@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.parser;
+package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
@@ -34,12 +34,14 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.parser.SqlServerSqlParser;
 
 import java.util.*;
 
 /**
- * 将sqlserver查询语句转换为分页语句
- * 注意事项：
+ * 将sqlserver查询语句转换为分页语句<br>
+ * 注意事项：<br>
  * <ol>
  * <li>请先保证你的SQL可以执行</li>
  * <li>sql中最好直接包含order by，可以自动从sql提取</li>
@@ -53,7 +55,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SqlServerParser {
+public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
 
     /**
      * 开始行号
@@ -72,7 +74,7 @@ public class SqlServerParser {
      */
     protected static final String PAGE_TABLE_NAME = "PAGE_TABLE_ALIAS";
     /**
-     * protected
+     * 别名
      */
     public static final Alias PAGE_TABLE_ALIAS = new Alias(PAGE_TABLE_NAME);
     /**
@@ -101,16 +103,6 @@ public class SqlServerParser {
         TOP100_PERCENT.setPercentage(true);
     }
 
-    private final JSqlParser jSqlParser;
-
-    public SqlServerParser() {
-        this.jSqlParser = JSqlParser.DEFAULT;
-    }
-
-    public SqlServerParser(JSqlParser jSqlParser) {
-        this.jSqlParser = jSqlParser;
-    }
-
     /**
      * 转换为分页语句
      *
@@ -133,21 +125,21 @@ public class SqlServerParser {
         // 解析SQL
         Statement stmt;
         try {
-            stmt = jSqlParser.parse(sql);
+            stmt = Builder.parse(sql);
         } catch (Throwable e) {
-            throw new PageException("不支持该SQL转换为分页查询!", e);
+            throw new PageException("The SQL statement cannot be converted to a pagination query!", e);
         }
         if (!(stmt instanceof Select)) {
-            throw new PageException("分页语句必须是Select查询!");
+            throw new PageException("the pagination statement must be a select query!");
         }
         // 获取分页查询的select
         Select pageSelect = getPageSelect((Select) stmt);
         String pageSql = pageSelect.toString();
-        // 缓存移到外面了,所以不替换参数
-        if (null != offset) {
+        // 缓存移到外面了，所以不替换参数
+        if (offset != null) {
             pageSql = pageSql.replace(START_ROW, String.valueOf(offset));
         }
-        if (null != limit) {
+        if (limit != null) {
             pageSql = pageSql.replace(PAGE_SIZE, String.valueOf(limit));
         }
         return pageSql;
@@ -160,65 +152,63 @@ public class SqlServerParser {
      * @return the select
      */
     protected Select getPageSelect(Select select) {
-        SelectBody selectBody = select.getSelectBody();
-        if (selectBody instanceof SetOperationList) {
-            selectBody = wrapSetOperationList((SetOperationList) selectBody);
+        if (select instanceof SetOperationList) {
+            select = wrapSetOperationList((SetOperationList) select);
         }
         // 这里的selectBody一定是PlainSelect
-        if (((PlainSelect) selectBody).getTop() != null) {
-            throw new PageException("被分页的语句已经包含了Top，不能再通过分页插件进行分页查询!");
+        if (((PlainSelect) select).getTop() != null) {
+            throw new PageException("The pagination statement already contains the top, and can no longer be used to query the pagination plugin!");
         }
         // 获取查询列
-        List<SelectItem> selectItems = getSelectItems((PlainSelect) selectBody);
+        List<SelectItem<?>> selectItems = getSelectItems((PlainSelect) select);
         // 对一层的SQL增加ROW_NUMBER()
-        List<SelectItem> autoItems = new ArrayList<>();
-        SelectItem orderByColumn = addRowNumber((PlainSelect) selectBody, autoItems);
+        List<SelectItem<?>> autoItems = new ArrayList<>();
+        SelectItem<?> orderByColumn = addRowNumber((PlainSelect) select, autoItems);
         // 加入自动生成列
-        ((PlainSelect) selectBody).addSelectItems(autoItems.toArray(new SelectItem[autoItems.size()]));
+        ((PlainSelect) select).addSelectItems(autoItems.toArray(new SelectItem[0]));
         // 处理子语句中的order by
-        processSelectBody(selectBody, 0);
+        processSelectBody(select, 0);
 
         // 中层子查询
         PlainSelect innerSelectBody = new PlainSelect();
         // PAGE_ROW_NUMBER
         innerSelectBody.addSelectItems(orderByColumn);
-        innerSelectBody.addSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
-        //将原始查询作为内层子查询
-        SubSelect fromInnerItem = new SubSelect();
-        fromInnerItem.setSelectBody(selectBody);
+        innerSelectBody.addSelectItems(selectItems.toArray(new SelectItem[0]));
+        // 将原始查询作为内层子查询
+        ParenthesedSelect fromInnerItem = new ParenthesedSelect();
+        fromInnerItem.setSelect(select);
         fromInnerItem.setAlias(PAGE_TABLE_ALIAS);
         innerSelectBody.setFromItem(fromInnerItem);
 
         // 新建一个select
-        Select newSelect = new Select();
-        PlainSelect newSelectBody = new PlainSelect();
+        PlainSelect newSelect = new PlainSelect();
         // 设置top
         Top top = new Top();
         top.setExpression(new LongValue(Long.MAX_VALUE));
-        newSelectBody.setTop(top);
+        newSelect.setTop(top);
         // 设置order by
-        List<OrderByElement> orderByElements = new ArrayList<>();
+        List<OrderByElement> orderByElements = new ArrayList<OrderByElement>();
         OrderByElement orderByElement = new OrderByElement();
         orderByElement.setExpression(PAGE_ROW_NUMBER_COLUMN);
         orderByElements.add(orderByElement);
-        newSelectBody.setOrderByElements(orderByElements);
+        newSelect.setOrderByElements(orderByElements);
         // 设置where
         GreaterThan greaterThan = new GreaterThan();
         greaterThan.setLeftExpression(PAGE_ROW_NUMBER_COLUMN);
         greaterThan.setRightExpression(new LongValue(Long.MIN_VALUE));
-        newSelectBody.setWhere(greaterThan);
+        newSelect.setWhere(greaterThan);
         // 设置selectItems
-        newSelectBody.setSelectItems(selectItems);
+        newSelect.setSelectItems(selectItems);
         // 设置fromIterm
-        SubSelect fromItem = new SubSelect();
+        ParenthesedSelect fromItem = new ParenthesedSelect();
         // 中层子查询
-        fromItem.setSelectBody(innerSelectBody);
+        fromItem.setSelect(innerSelectBody);
         fromItem.setAlias(PAGE_TABLE_ALIAS);
-        newSelectBody.setFromItem(fromItem);
+        newSelect.setFromItem(fromItem);
 
-        newSelect.setSelectBody(newSelectBody);
         if (isNotEmptyList(select.getWithItemsList())) {
             newSelect.setWithItemsList(select.getWithItemsList());
+            select.setWithItemsList(null);
         }
         return newSelect;
     }
@@ -227,28 +217,28 @@ public class SqlServerParser {
      * 包装SetOperationList
      *
      * @param setOperationList SetOperationList
-     * @return the selectBody
+     * @return the select
      */
-    protected SelectBody wrapSetOperationList(SetOperationList setOperationList) {
+    protected Select wrapSetOperationList(SetOperationList setOperationList) {
         // 获取最后一个plainSelect
-        SelectBody setSelectBody = setOperationList.getSelects().get(setOperationList.getSelects().size() - 1);
+        Select setSelectBody = setOperationList.getSelects().get(setOperationList.getSelects().size() - 1);
         if (!(setSelectBody instanceof PlainSelect)) {
-            throw new PageException("目前无法处理该SQL!");
+            throw new PageException("Unable to process the SQL, you can submit issues in GitHub for help.!");
         }
         PlainSelect plainSelect = (PlainSelect) setSelectBody;
         PlainSelect selectBody = new PlainSelect();
-        List<SelectItem> selectItems = getSelectItems(plainSelect);
+        List<SelectItem<?>> selectItems = getSelectItems(plainSelect);
         selectBody.setSelectItems(selectItems);
 
         // 设置fromIterm
-        SubSelect fromItem = new SubSelect();
-        fromItem.setSelectBody(setOperationList);
+        ParenthesedSelect fromItem = new ParenthesedSelect();
+        fromItem.setSelect(setOperationList);
         fromItem.setAlias(new Alias(WRAP_TABLE));
         selectBody.setFromItem(fromItem);
         // order by
-        if (isNotEmptyList(plainSelect.getOrderByElements())) {
-            selectBody.setOrderByElements(plainSelect.getOrderByElements());
-            plainSelect.setOrderByElements(null);
+        if (isNotEmptyList(setOperationList.getOrderByElements())) {
+            selectBody.setOrderByElements(setOperationList.getOrderByElements());
+            setOperationList.setOrderByElements(null);
         }
         return selectBody;
     }
@@ -257,35 +247,29 @@ public class SqlServerParser {
      * 获取查询列
      *
      * @param plainSelect PlainSelect
-     * @return 结果
+     * @return the list
      */
-    protected List<SelectItem> getSelectItems(PlainSelect plainSelect) {
-        // 设置selectItems
-        List<SelectItem> selectItems = new ArrayList<>();
-        for (SelectItem selectItem : plainSelect.getSelectItems()) {
-            // 别名需要特殊处理
-            if (selectItem instanceof SelectExpressionItem) {
-                SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
-                if (null != selectExpressionItem.getAlias()) {
-                    // 直接使用别名
-                    Column column = new Column(selectExpressionItem.getAlias().getName());
-                    SelectExpressionItem expressionItem = new SelectExpressionItem(column);
-                    selectItems.add(expressionItem);
-                } else if (selectExpressionItem.getExpression() instanceof Column) {
-                    Column column = (Column) selectExpressionItem.getExpression();
-                    SelectExpressionItem item;
-                    if (null != column.getTable()) {
-                        Column newColumn = new Column(column.getColumnName());
-                        item = new SelectExpressionItem(newColumn);
-                        selectItems.add(item);
-                    } else {
-                        selectItems.add(selectItem);
-                    }
+    protected List<SelectItem<?>> getSelectItems(PlainSelect plainSelect) {
+        //设置selectItems
+        List<SelectItem<?>> selectItems = new ArrayList<>();
+        for (SelectItem<?> selectItem : plainSelect.getSelectItems()) {
+            if (selectItem.getExpression() instanceof AllTableColumns) {
+                selectItems.add(new SelectItem<>(new AllColumns()));
+            } else if (selectItem.getAlias() != null) {
+                //直接使用别名
+                Column column = new Column(selectItem.getAlias().getName());
+                SelectItem<?> expressionItem = new SelectItem<>(column);
+                selectItems.add(expressionItem);
+            } else if (selectItem.getExpression() instanceof Column) {
+                Column column = (Column) selectItem.getExpression();
+                SelectItem<?> item = null;
+                if (column.getTable() != null) {
+                    Column newColumn = new Column(column.getColumnName());
+                    item = new SelectItem<>(newColumn);
+                    selectItems.add(item);
                 } else {
                     selectItems.add(selectItem);
                 }
-            } else if (selectItem instanceof AllTableColumns) {
-                selectItems.add(new AllColumns());
             } else {
                 selectItems.add(selectItem);
             }
@@ -295,8 +279,8 @@ public class SqlServerParser {
         // SELECT * FROM (SELECT *, 1 AS alias FROM TEST)
         // 不应该为
         // SELECT *, alias FROM (SELECT *, 1 AS alias FROM TEST)
-        for (SelectItem selectItem : selectItems) {
-            if (selectItem instanceof AllColumns) {
+        for (SelectItem<?> selectItem : selectItems) {
+            if (selectItem.getExpression() instanceof AllColumns) {
                 return Collections.singletonList(selectItem);
             }
         }
@@ -310,7 +294,7 @@ public class SqlServerParser {
      * @param autoItems   自动生成的查询列
      * @return ROW_NUMBER() 列
      */
-    protected SelectItem addRowNumber(PlainSelect plainSelect, List<SelectItem> autoItems) {
+    protected SelectItem<?> addRowNumber(PlainSelect plainSelect, List<SelectItem<?>> autoItems) {
         // 增加ROW_NUMBER()
         StringBuilder orderByBuilder = new StringBuilder();
         orderByBuilder.append("ROW_NUMBER() OVER (");
@@ -324,55 +308,57 @@ public class SqlServerParser {
         }
         orderByBuilder.append(") ");
         orderByBuilder.append(PAGE_ROW_NUMBER);
-        return new SelectExpressionItem(new Column(orderByBuilder.toString()));
+        return new SelectItem<>(new Column(orderByBuilder.toString()));
     }
 
     /**
      * 处理selectBody去除Order by
      *
-     * @param selectBody 获取body
-     * @param level      int
+     * @param select 查询
+     * @param level  int
      */
-    protected void processSelectBody(SelectBody selectBody, int level) {
-        if (selectBody instanceof PlainSelect) {
-            processPlainSelect((PlainSelect) selectBody, level + 1);
-        } else if (selectBody instanceof WithItem) {
-            WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSubSelect()) {
-                processSelectBody(withItem.getSubSelect().getSelectBody(), level + 1);
-            }
-        } else {
-            SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
-                List<SelectBody> plainSelects = operationList.getSelects();
-                for (SelectBody plainSelect : plainSelects) {
-                    processSelectBody(plainSelect, level + 1);
+    protected void processSelectBody(Select select, int level) {
+        if (select != null) {
+            if (select instanceof PlainSelect) {
+                processPlainSelect((PlainSelect) select, level + 1);
+            } else if (select instanceof WithItem) {
+                WithItem withItem = (WithItem) select;
+                if (withItem.getSelect() != null) {
+                    processSelectBody(withItem.getSelect(), level + 1);
+                }
+            } else {
+                SetOperationList operationList = (SetOperationList) select;
+                if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
+                    List<Select> plainSelects = operationList.getSelects();
+                    for (Select plainSelect : plainSelects) {
+                        processSelectBody(plainSelect, level + 1);
+                    }
                 }
             }
         }
     }
 
     /**
-     * 处理PlainSelect类型的selectBody
+     * 处理PlainSelect类型的select
      *
-     * @param plainSelect 获取body
+     * @param plainSelect 查询
      * @param level       int
      */
     protected void processPlainSelect(PlainSelect plainSelect, int level) {
         if (level > 1) {
             if (isNotEmptyList(plainSelect.getOrderByElements())) {
-                if (null == plainSelect.getTop()) {
+                if (plainSelect.getTop() == null) {
                     plainSelect.setTop(TOP100_PERCENT);
                 }
             }
         }
-        if (null != plainSelect.getFromItem()) {
+        if (plainSelect.getFromItem() != null) {
             processFromItem(plainSelect.getFromItem(), level + 1);
         }
-        if (null != plainSelect.getJoins() && plainSelect.getJoins().size() > 0) {
+        if (plainSelect.getJoins() != null && !plainSelect.getJoins().isEmpty()) {
             List<Join> joins = plainSelect.getJoins();
             for (Join join : joins) {
-                if (null != join.getRightItem()) {
+                if (join.getRightItem() != null) {
                     processFromItem(join.getRightItem(), level + 1);
                 }
             }
@@ -386,35 +372,16 @@ public class SqlServerParser {
      * @param level    int
      */
     protected void processFromItem(FromItem fromItem, int level) {
-        if (fromItem instanceof SubJoin) {
-            SubJoin subJoin = (SubJoin) fromItem;
-            if (null != subJoin.getJoinList() && subJoin.getJoinList().size() > 0) {
-                for (Join join : subJoin.getJoinList()) {
-                    if (null != join.getRightItem()) {
-                        processFromItem(join.getRightItem(), level + 1);
-                    }
-                }
-            }
-            if (null != subJoin.getLeft()) {
-                processFromItem(subJoin.getLeft(), level + 1);
-            }
-        } else if (fromItem instanceof SubSelect) {
-            SubSelect subSelect = (SubSelect) fromItem;
-            if (null != subSelect.getSelectBody()) {
-                processSelectBody(subSelect.getSelectBody(), level + 1);
-            }
-        } else if (fromItem instanceof ValuesList) {
-
-        } else if (fromItem instanceof LateralSubSelect) {
-            LateralSubSelect lateralSubSelect = (LateralSubSelect) fromItem;
-            if (null != lateralSubSelect.getSubSelect()) {
-                SubSelect subSelect = lateralSubSelect.getSubSelect();
-                if (null != subSelect.getSelectBody()) {
-                    processSelectBody(subSelect.getSelectBody(), level + 1);
-                }
-            }
+        if (fromItem instanceof LateralSubSelect) {
+            processSelectBody(((LateralSubSelect) fromItem).getSelect(), level + 1);
+        } else if (fromItem instanceof ParenthesedSelect) {
+            processSelectBody(((ParenthesedSelect) fromItem).getSelect(), level + 1);
+        } else if (fromItem instanceof Select) {
+            processSelectBody((Select) fromItem, level + 1);
+        } else if (fromItem instanceof ParenthesedFromItem) {
+            processFromItem(((ParenthesedFromItem) fromItem).getFromItem(), level + 1);
         }
-        //Table时不用处理
+        // Table时不用处理
     }
 
     /**
@@ -424,7 +391,7 @@ public class SqlServerParser {
      * @return the boolean
      */
     public boolean isNotEmptyList(List<?> list) {
-        if (list == null || list.size() == 0) {
+        if (list == null || list.isEmpty()) {
             return false;
         }
         return true;
@@ -465,13 +432,13 @@ public class SqlServerParser {
      * @return 新的排序列表
      */
     protected List<OrderByElement> getOrderByElements(PlainSelect plainSelect,
-                                                      List<SelectItem> autoItems) {
+                                                      List<SelectItem<?>> autoItems) {
         List<OrderByElement> orderByElements = plainSelect.getOrderByElements();
         ListIterator<OrderByElement> iterator = orderByElements.listIterator();
         OrderByElement orderByElement;
 
         // 非 `*` 且 非 `t.*` 查询列集合
-        Map<String, SelectExpressionItem> selectMap = new HashMap<>();
+        Map<String, SelectItem<?>> selectMap = new HashMap<>();
         // 别名集合
         Set<String> aliases = new HashSet<>();
         // 是否包含 `*` 查询列
@@ -479,21 +446,18 @@ public class SqlServerParser {
         // `t.*` 查询列的表名集合
         Set<String> allColumnsTables = new HashSet<>();
 
-        for (SelectItem item : plainSelect.getSelectItems()) {
-            if (item instanceof SelectExpressionItem) {
-                SelectExpressionItem expItem = (SelectExpressionItem) item;
-                selectMap.put(expItem.getExpression().toString(), expItem);
-
-                Alias alias = expItem.getAlias();
-                if (null != alias) {
+        for (SelectItem<?> item : plainSelect.getSelectItems()) {
+            Expression expression = item.getExpression();
+            if (expression instanceof AllTableColumns) {
+                allColumnsTables.add(((AllTableColumns) expression).getTable().getName());
+            } else if (expression instanceof AllColumns) {
+                allColumns = true;
+            } else {
+                selectMap.put(expression.toString(), item);
+                Alias alias = item.getAlias();
+                if (alias != null) {
                     aliases.add(alias.getName());
                 }
-
-            } else if (item instanceof AllColumns) {
-                allColumns = true;
-
-            } else if (item instanceof AllTableColumns) {
-                allColumnsTables.add(((AllTableColumns) item).getTable().getName());
             }
         }
 
@@ -502,10 +466,10 @@ public class SqlServerParser {
         while (iterator.hasNext()) {
             orderByElement = iterator.next();
             Expression expression = orderByElement.getExpression();
-            SelectExpressionItem selectExpressionItem = selectMap.get(expression.toString());
-            if (null != selectExpressionItem) { // OrderByElement 在查询列表中
+            SelectItem<?> selectExpressionItem = selectMap.get(expression.toString());
+            if (selectExpressionItem != null) { // OrderByElement 在查询列表中
                 Alias alias = selectExpressionItem.getAlias();
-                if (null != alias) { // 查询列含有别名时用查询列别名
+                if (alias != null) { // 查询列含有别名时用查询列别名
                     iterator.set(cloneOrderByElement(orderByElement, alias.getName()));
 
                 } else { // 查询列不包含别名
@@ -513,6 +477,7 @@ public class SqlServerParser {
                         // 查询列为普通列，这时因为列在嵌套查询外时名称中不包含表名，故去除排序列的表名引用
                         // 例（仅为解释此处逻辑，不代表最终分页结果）：
                         // SELECT TEST.A FROM TEST ORDER BY TEST.A
+                        // -->
                         // SELECT A FROM (SELECT TEST.A FROM TEST) ORDER BY A
                         ((Column) expression).setTable(null);
 
@@ -520,7 +485,7 @@ public class SqlServerParser {
                         // 查询列不为普通列时（例如函数列）不支持分页
                         // 此种情况比较难预测，简单的增加新列容易产生不可预料的结果
                         // 而为列增加别名是非常简单的，故此要求排序复杂列必须使用别名
-                        throw new PageException("列 \"" + expression + "\" 需要定义别名");
+                        throw new PageException("The column \"" + expression + "\" needs to define an alias");
                     }
                 }
 
@@ -550,8 +515,7 @@ public class SqlServerParser {
                 // 将排序列加入查询列中
                 String aliasName = PAGE_COLUMN_ALIAS_PREFIX + aliasNo++;
 
-                SelectExpressionItem item = new SelectExpressionItem();
-                item.setExpression(expression);
+                SelectItem<?> item = new SelectItem<>(expression);
                 item.setAlias(new Alias(aliasName));
                 autoItems.add(item);
 

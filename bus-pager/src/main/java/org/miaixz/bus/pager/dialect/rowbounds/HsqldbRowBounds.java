@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.rowbounds;
 
-import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
  * hsqldb 基于 RowBounds 的分页

@@ -23,53 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.plugins;
+package org.miaixz.bus.pager.parser;
 
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParser;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.parser.ParseException;
+import net.sf.jsqlparser.statement.Statement;
 
 /**
- * BoundSql 处理器
+ * 为了能自己控制是否使用单线程池，是否支持超时控制，所以自己实现了一个
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BoundSqlHandler {
+public interface SqlParser {
 
     /**
-     * boundsql 处理
+     * 不使用单线程池，不支持超时控制
+     */
+    SqlParser DEFAULT = statementReader -> {
+        CCJSqlParser parser = CCJSqlParserUtil.newParser(statementReader);
+        parser.withSquareBracketQuotation(true);
+        return parser.Statement();
+    };
+
+    /**
+     * 解析 SQL
      *
-     * @param type     类型
-     * @param boundSql 当前类型的 boundSql
-     * @param cacheKey 缓存 key
-     * @param chain    处理器链，通过 chain.doBoundSql 方法继续执行后续方法，也可以直接返回 boundSql 终止后续方法的执行
-     * @return 允许修改 boundSql 并返回修改后的
+     * @param statementReader SQL
+     * @return
+     * @throws JSQLParserException
      */
-    BoundSql boundSql(Type type, BoundSql boundSql, CacheKey cacheKey, Chain chain);
-
-    enum Type {
-        /**
-         * 原始SQL，分页插件执行前，先执行这个类型
-         */
-        ORIGINAL,
-        /**
-         * count SQL，第二个执行这里
-         */
-        COUNT_SQL,
-        /**
-         * 分页 SQL，最后执行这里
-         */
-        PAGE_SQL
-    }
-
-    /**
-     * 处理器链，可以控制是否继续执行
-     */
-    interface Chain {
-
-        Chain DO_NOTHING = (type, boundSql, cacheKey) -> boundSql;
-
-        BoundSql doBoundSql(Type type, BoundSql boundSql, CacheKey cacheKey);
-    }
+    Statement parse(String statementReader) throws JSQLParserException, ParseException;
 
 }

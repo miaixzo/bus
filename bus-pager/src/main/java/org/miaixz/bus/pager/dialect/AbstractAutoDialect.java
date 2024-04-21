@@ -23,11 +23,12 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
+
 package org.miaixz.bus.pager.dialect;
 
-import org.miaixz.bus.pager.AutoDialect;
-import org.miaixz.bus.pager.proxy.PageAutoDialect;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.AutoDialect;
+import org.miaixz.bus.pager.builtin.PageAutoDialect;
 
 import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
@@ -35,7 +36,7 @@ import java.lang.reflect.Type;
 import java.util.Properties;
 
 /**
- * 默认实现
+ * 默认实现，使用 Hikari 连接池时，简单获取 jdbcUrl
  *
  * @author Kimi Liu
  * @since Java 17+

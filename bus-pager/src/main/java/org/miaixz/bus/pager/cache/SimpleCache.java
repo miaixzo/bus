@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.cache;
 
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.CacheBuilder;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.Properties;
 

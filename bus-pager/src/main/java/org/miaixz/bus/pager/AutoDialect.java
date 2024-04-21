@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
-import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 import javax.sql.DataSource;
 import java.util.Properties;

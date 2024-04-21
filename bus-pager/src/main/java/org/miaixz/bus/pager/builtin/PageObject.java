@@ -23,13 +23,12 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.proxy;
+package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.core.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Paging;
-import org.apache.ibatis.reflection.MetaObject;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -43,6 +42,9 @@ import java.util.Map;
  */
 public abstract class PageObject {
 
+    /**
+     * request获取方法
+     */
     protected static Boolean hasRequest;
     protected static Class<?> requestClass;
     protected static Method getParameterMap;
@@ -51,7 +53,7 @@ public abstract class PageObject {
     static {
         try {
             requestClass = Class.forName("javax.servlet.ServletRequest");
-            getParameterMap = requestClass.getMethod("getParameterMap", new Class[]{});
+            getParameterMap = requestClass.getMethod("getParameterMap");
             hasRequest = true;
         } catch (Throwable e) {
             hasRequest = false;
@@ -74,7 +76,7 @@ public abstract class PageObject {
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
         if (params == null) {
-            throw new PageException("无法获取分页查询参数!");
+            throw new PageException("unable to get paginated query parameters!");
         }
         if (params instanceof Paging) {
             Paging pageParams = (Paging) params;
@@ -95,18 +97,18 @@ public abstract class PageObject {
         }
         int pageNo;
         int pageSize;
-        MetaObject paramsObject = null;
+        org.apache.ibatis.reflection.MetaObject paramsObject = null;
         if (hasRequest && requestClass.isAssignableFrom(params.getClass())) {
             try {
-                paramsObject = org.miaixz.bus.mapper.reflect.MetaObject.forObject(getParameterMap.invoke(params, new Object[]{}));
+                paramsObject = MetaObject.forObject(getParameterMap.invoke(params));
             } catch (Exception e) {
-                // ignore
+                //忽略
             }
         } else {
-            paramsObject = org.miaixz.bus.mapper.reflect.MetaObject.forObject(params);
+            paramsObject = MetaObject.forObject(params);
         }
         if (paramsObject == null) {
-            throw new PageException("分页查询参数处理失败!");
+            throw new PageException("The pagination query parameter failed to be processed!");
         }
         Object orderBy = getParamValue(paramsObject, "orderBy", false);
         boolean hasOrderBy = false;
@@ -128,7 +130,7 @@ public abstract class PageObject {
             pageNo = Integer.parseInt(String.valueOf(_pageNo));
             pageSize = Integer.parseInt(String.valueOf(_pageSize));
         } catch (NumberFormatException e) {
-            throw new PageException("分页参数不是合法的数字类型!", e);
+            throw new PageException("pagination parameters are not a valid number type!", e);
         }
         Page page = new Page(pageNo, pageSize);
         // count查询
@@ -161,7 +163,7 @@ public abstract class PageObject {
      * @param required     是否必须
      * @return 结果
      */
-    protected static Object getParamValue(MetaObject paramsObject, String paramName, boolean required) {
+    protected static Object getParamValue(org.apache.ibatis.reflection.MetaObject paramsObject, String paramName, boolean required) {
         Object value = null;
         if (paramsObject.hasGetter(PARAMS.get(paramName))) {
             value = paramsObject.getValue(PARAMS.get(paramName));
@@ -175,7 +177,7 @@ public abstract class PageObject {
             }
         }
         if (required && value == null) {
-            throw new PageException("分页查询缺少必要的参数:" + PARAMS.get(paramName));
+            throw new PageException("Paginated queries are missing the necessary parameters:" + PARAMS.get(paramName));
         }
         return value;
     }

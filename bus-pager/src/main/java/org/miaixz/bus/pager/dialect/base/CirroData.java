@@ -23,60 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.proxy;
+package org.miaixz.bus.pager.dialect.base;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.mapping.ResultMapping;
+import org.miaixz.bus.pager.Page;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
- * 创建新的MappedStatement,主要是Count返回值int
- *
- * @author Kimi Liu
- * @since Java 17+
+ * @author sxh
  */
-public class CountMappedStatement {
+public class CirroData extends AbstractPaging {
+    @Override
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
+        paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
+        //处理pageKey
+        pageKey.update(page.getStartRow() + 1);
+        pageKey.update(page.getEndRow());
+        //处理参数配置
+        handleParameter(boundSql, ms, long.class, long.class);
+        return paramMap;
+    }
 
-    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
-
-    /**
-     * 新建count查询的MappedStatement
-     *
-     * @param ms      MappedStatement
-     * @param newMsId 标识
-     * @return the mappedStatement
-     */
-    public static MappedStatement newCountMappedStatement(MappedStatement ms, String newMsId) {
-        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), newMsId, ms.getSqlSource(), ms.getSqlCommandType());
-        builder.resource(ms.getResource());
-        builder.fetchSize(ms.getFetchSize());
-        builder.statementType(ms.getStatementType());
-        builder.keyGenerator(ms.getKeyGenerator());
-        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
-            StringBuilder keyProperties = new StringBuilder();
-            for (String keyProperty : ms.getKeyProperties()) {
-                keyProperties.append(keyProperty).append(Symbol.COMMA);
-            }
-            keyProperties.delete(keyProperties.length() - 1, keyProperties.length());
-            builder.keyProperty(keyProperties.toString());
-        }
-        builder.timeout(ms.getTimeout());
-        builder.parameterMap(ms.getParameterMap());
-        // count查询返回值int
-        List<ResultMap> resultMaps = new ArrayList<>();
-        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), Long.class, EMPTY_RESULTMAPPING).build();
-        resultMaps.add(resultMap);
-        builder.resultMaps(resultMaps);
-        builder.resultSetType(ms.getResultSetType());
-        builder.cache(ms.getCache());
-        builder.flushCacheRequired(ms.isFlushCacheRequired());
-        builder.useCache(ms.isUseCache());
-
-        return builder.build();
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 16);
+        sqlBuilder.append(sql);
+        sqlBuilder.append("\n LIMIT ( ?, ? )");
+        return sqlBuilder.toString();
     }
 
 }

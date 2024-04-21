@@ -23,50 +23,60 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.plugins;
+package org.miaixz.bus.pager.builtin;
 
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.ResultMapping;
+import org.miaixz.bus.core.lang.Symbol;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 创建新的MappedStatement,主要是Count返回值int
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BoundSqlChain implements BoundSqlHandler.Chain {
+public class CountMappedStatement {
 
-    private final BoundSqlHandler.Chain original;
-    private final List<BoundSqlHandler> interceptors;
+    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
 
-    private int index = 0;
-    private boolean executable;
-
-    public BoundSqlChain(BoundSqlHandler.Chain original, List<BoundSqlHandler> interceptors) {
-        this(original, interceptors, false);
-    }
-
-    private BoundSqlChain(BoundSqlHandler.Chain original, List<BoundSqlHandler> interceptors, boolean executable) {
-        this.original = original;
-        this.interceptors = interceptors;
-        this.executable = executable;
-    }
-
-    @Override
-    public BoundSql doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
-        if (executable) {
-            return _doBoundSql(type, boundSql, cacheKey);
-        } else {
-            return new BoundSqlChain(original, interceptors, true).doBoundSql(type, boundSql, cacheKey);
+    /**
+     * 新建count查询的MappedStatement
+     *
+     * @param ms      MappedStatement
+     * @param newMsId 标识
+     * @return the mappedStatement
+     */
+    public static MappedStatement newCountMappedStatement(MappedStatement ms, String newMsId) {
+        MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), newMsId, ms.getSqlSource(), ms.getSqlCommandType());
+        builder.resource(ms.getResource());
+        builder.fetchSize(ms.getFetchSize());
+        builder.statementType(ms.getStatementType());
+        builder.keyGenerator(ms.getKeyGenerator());
+        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
+            StringBuilder keyProperties = new StringBuilder();
+            for (String keyProperty : ms.getKeyProperties()) {
+                keyProperties.append(keyProperty).append(Symbol.COMMA);
+            }
+            keyProperties.delete(keyProperties.length() - 1, keyProperties.length());
+            builder.keyProperty(keyProperties.toString());
         }
-    }
+        builder.timeout(ms.getTimeout());
+        builder.parameterMap(ms.getParameterMap());
+        // count查询返回值int
+        List<ResultMap> resultMaps = new ArrayList<>();
+        ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), Long.class, EMPTY_RESULTMAPPING).build();
+        resultMaps.add(resultMap);
+        builder.resultMaps(resultMaps);
+        builder.resultSetType(ms.getResultSetType());
+        builder.cache(ms.getCache());
+        builder.flushCacheRequired(ms.isFlushCacheRequired());
+        builder.useCache(ms.isUseCache());
 
-    private BoundSql _doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
-        if (this.interceptors == null || this.interceptors.size() == this.index) {
-            return this.original != null ? this.original.doBoundSql(type, boundSql, cacheKey) : boundSql;
-        } else {
-            return this.interceptors.get(this.index++).boundSql(type, boundSql, cacheKey, this);
-        }
+        return builder.build();
     }
 
 }

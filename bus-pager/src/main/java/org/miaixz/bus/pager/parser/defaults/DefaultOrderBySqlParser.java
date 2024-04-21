@@ -23,12 +23,14 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.parser;
+package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import org.miaixz.bus.core.exception.PageException;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.parser.OrderBySqlParser;
 
 import java.util.List;
 
@@ -38,57 +40,22 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class OrderByParser {
-
-    /**
-     * convert to order by sql
-     *
-     * @param sql     sql
-     * @param orderBy 排序
-     * @return the string
-     */
-    public static String converToOrderBySql(String sql, String orderBy, JSqlParser jSqlParser) {
-        // 解析SQL
-        Statement stmt;
-        try {
-            stmt = jSqlParser.parse(sql);
-            Select select = (Select) stmt;
-            SelectBody selectBody = select.getSelectBody();
-            // 处理body-去最外层order by
-            List<OrderByElement> orderByElements = extraOrderBy(selectBody);
-            String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
-            if (defaultOrderBy.indexOf('?') != -1) {
-                throw new PageException("原SQL[" + sql + "]中的order by包含参数，因此不能使用OrderBy插件进行修改!");
-            }
-            // 新的sql
-            sql = select.toString();
-        } catch (Throwable e) {
-            Logger.warn("处理排序失败: " + e + "，降级为直接拼接 order by 参数");
-        }
-        return sql + " order by " + orderBy;
-    }
+public class DefaultOrderBySqlParser implements OrderBySqlParser {
 
     /**
      * extra order by and set default orderby to null
      *
-     * @param selectBody 获取body
-     * @return 结果
+     * @param select 获取select
+     * @return the list
      */
-    public static List<OrderByElement> extraOrderBy(SelectBody selectBody) {
-        if (selectBody instanceof PlainSelect) {
-            List<OrderByElement> orderByElements = ((PlainSelect) selectBody).getOrderByElements();
-            ((PlainSelect) selectBody).setOrderByElements(null);
-            return orderByElements;
-        } else if (selectBody instanceof WithItem) {
-            WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSubSelect()) {
-                return extraOrderBy(withItem.getSubSelect().getSelectBody());
-            }
-        } else {
-            SetOperationList operationList = (SetOperationList) selectBody;
-            if (null != operationList.getSelects() && operationList.getSelects().size() > 0) {
-                List<SelectBody> plainSelects = operationList.getSelects();
-                return extraOrderBy(plainSelects.get(plainSelects.size() - 1));
+    public static List<OrderByElement> extraOrderBy(Select select) {
+        if (select != null) {
+            if (select instanceof PlainSelect || select instanceof SetOperationList) {
+                List<OrderByElement> orderByElements = select.getOrderByElements();
+                select.setOrderByElements(null);
+                return orderByElements;
+            } else if (select instanceof ParenthesedSelect) {
+                extraOrderBy(((ParenthesedSelect) select).getSelect());
             }
         }
         return null;
@@ -97,12 +64,28 @@ public class OrderByParser {
     /**
      * convert to order by sql
      *
-     * @param sql     SQL
-     * @param orderBy 排序属性
+     * @param sql     sql
+     * @param orderBy 排序
      * @return the string
      */
-    public static String converToOrderBySql(String sql, String orderBy) {
-        return converToOrderBySql(sql, orderBy, JSqlParser.DEFAULT);
+    @Override
+    public String converToOrderBySql(String sql, String orderBy) {
+        try {
+            // 解析SQL
+            Statement stmt = Builder.parse(sql);
+            Select select = (Select) stmt;
+            // 处理body-去最外层order by
+            List<OrderByElement> orderByElements = extraOrderBy(select);
+            String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
+            if (defaultOrderBy.indexOf('?') != -1) {
+                throw new PageException("The order by in the original SQL[" + sql + "] contains parameters, so it cannot be modified using the OrderBy plugin!");
+            }
+            // 新的sql
+            sql = select.toString();
+        } catch (Throwable e) {
+            Logger.warn("Failed to handle sorting: " + e + ", downgraded to a direct splice of the order by parameter");
+        }
+        return sql + " order by " + orderBy;
     }
 
 }

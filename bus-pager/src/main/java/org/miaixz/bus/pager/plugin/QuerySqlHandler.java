@@ -23,48 +23,63 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.pager.plugins;
+package org.miaixz.bus.pager.plugin;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.pager.Property;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 /**
+ * QuerySqlHandler 规范
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PageBoundSqlHandler {
-
-    private BoundSqlHandler.Chain chain;
-
-    public void setProperties(Properties properties) {
-        // 初始化 boundSqlInterceptorChain
-        String boundSqlInterceptorStr = properties.getProperty("boundSqlInterceptors");
-        if (StringKit.isNotEmpty(boundSqlInterceptorStr)) {
-            String[] boundSqlInterceptors = boundSqlInterceptorStr.split("[;|,]");
-            List<BoundSqlHandler> list = new ArrayList<>();
-            for (int i = 0; i < boundSqlInterceptors.length; i++) {
-                try {
-                    BoundSqlHandler boundSqlInterceptor = (BoundSqlHandler) Class.forName(boundSqlInterceptors[i]).getConstructor().newInstance();
-                    if (boundSqlInterceptor instanceof Property) {
-                        ((Property) boundSqlInterceptor).setProperties(properties);
-                    }
-                    list.add(boundSqlInterceptor);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (list.size() > 0) {
-                chain = new BoundSqlChain(null, list);
-            }
+@Intercepts(
+        {
+                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
+                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         }
+)
+public class QuerySqlHandler implements Interceptor {
+
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        Object[] args = invocation.getArgs();
+        MappedStatement ms = (MappedStatement) args[0];
+        Object parameter = args[1];
+        RowBounds rowBounds = (RowBounds) args[2];
+        ResultHandler resultHandler = (ResultHandler) args[3];
+        Executor executor = (Executor) invocation.getTarget();
+        CacheKey cacheKey;
+        BoundSql boundSql;
+        // 由于逻辑关系，只会进入一次
+        if (args.length == 4) {
+            // 4 个参数时
+            boundSql = ms.getBoundSql(parameter);
+            cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
+        } else {
+            // 6 个参数时
+            cacheKey = (CacheKey) args[4];
+            boundSql = (BoundSql) args[5];
+        }
+        // 注：下面的方法可以根据自己的逻辑调用多次，在分页插件中，count 和 pages 各调用了一次
+        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 
-    public BoundSqlHandler.Chain getChain() {
-        return chain;
+    @Override
+    public Object plugin(Object target) {
+        return Plugin.wrap(target, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
     }
 
 }

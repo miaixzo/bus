@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.rowbounds;
 
-import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
  * db2 基于 RowBounds 的分页
@@ -39,9 +39,9 @@ public class Db2RowBounds extends AbstractRowBounds {
         int startRow = rowBounds.getOffset() + 1;
         int endRow = rowBounds.getOffset() + rowBounds.getLimit();
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS PAGEHELPER_ROW_ID FROM ( \n");
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS PAGER_ROW_ID FROM ( \n");
         sqlBuilder.append(sql);
-        sqlBuilder.append("\n ) AS TMP_PAGE) TMP_PAGE WHERE PAGEHELPER_ROW_ID BETWEEN ");
+        sqlBuilder.append("\n ) AS TMP_PAGE) TMP_PAGE WHERE PAGER_ROW_ID BETWEEN ");
         sqlBuilder.append(startRow);
         sqlBuilder.append(" AND ");
         sqlBuilder.append(endRow);

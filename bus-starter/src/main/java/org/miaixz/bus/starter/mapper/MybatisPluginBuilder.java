@@ -28,7 +28,7 @@ package org.miaixz.bus.starter.mapper;
 import org.apache.ibatis.plugin.Interceptor;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.pager.plugins.PageSqlHandler;
+import org.miaixz.bus.pager.plugin.PageSqlHandler;
 import org.miaixz.bus.spring.BusXConfig;
 import org.miaixz.bus.spring.PlaceBinder;
 import org.miaixz.bus.starter.sensitive.SensitiveProperties;

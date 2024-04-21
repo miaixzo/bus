@@ -35,6 +35,9 @@ import org.miaixz.bus.pager.dialect.ReplaceSql;
  */
 public class RegexWithNolock implements ReplaceSql {
 
+    // with(nolock)
+    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
+
     @Override
     public String replace(String sql) {
         return sql.replaceAll("((?i)\\s*(\\w+)\\s*with\\s*\\(\\s*nolock\\s*\\))", " $2_PAGEWITHNOLOCK");

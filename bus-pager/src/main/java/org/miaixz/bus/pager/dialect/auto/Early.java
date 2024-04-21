@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.auto;
 
+import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.AutoDialect;
+import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-import org.miaixz.bus.pager.proxy.PageAutoDialect;
-import org.apache.ibatis.mapping.MappedStatement;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -73,7 +73,7 @@ public class Early implements AutoDialect<String> {
     public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource, Properties properties) {
         String dialectStr = PageAutoDialect.fromJdbcUrl(dialectKey);
         if (dialectStr == null) {
-            throw new PageException("无法自动获取数据库类型，请通过 dialect 参数指定!");
+            throw new PageException("The database type cannot be obtained automatically, please specify it via the pagerDialect parameter!");
         }
         return PageAutoDialect.instanceDialect(dialectStr, properties);
     }

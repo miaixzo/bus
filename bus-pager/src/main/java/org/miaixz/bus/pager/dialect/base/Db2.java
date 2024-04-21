@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.base;
 
-import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.Page;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 import java.util.Map;
 
@@ -56,9 +56,9 @@ public class Db2 extends AbstractPaging {
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 140);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS PAGEHELPER_ROW_ID FROM ( \n");
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS PAGER_ROW_ID FROM ( \n");
         sqlBuilder.append(sql);
-        sqlBuilder.append("\n ) AS TMP_PAGE) TMP_PAGE WHERE PAGEHELPER_ROW_ID BETWEEN ? AND ?");
+        sqlBuilder.append("\n ) AS TMP_PAGE) TMP_PAGE WHERE PAGER_ROW_ID BETWEEN ? AND ?");
         return sqlBuilder.toString();
     }
 

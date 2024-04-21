@@ -25,18 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.PageContext;
-import org.miaixz.bus.pager.RowBounds;
-import org.miaixz.bus.pager.parser.OrderByParser;
-import org.miaixz.bus.pager.proxy.CountExecutor;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.reflection.MetaObject;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.pager.Page;
+import org.miaixz.bus.pager.PageContext;
+import org.miaixz.bus.pager.RowBounds;
+import org.miaixz.bus.pager.builtin.CountExecutor;
+import org.miaixz.bus.pager.builtin.MetaObject;
 
 import java.util.*;
 
@@ -77,6 +76,7 @@ public abstract class AbstractPaging extends AbstractDialect {
 
     @Override
     public final boolean skip(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+        // 该方法不会被调用
         return true;
     }
 
@@ -147,7 +147,7 @@ public abstract class AbstractPaging extends AbstractDialect {
             // 动态sql时的判断条件不会出现在ParameterMapping中，但是必须有，所以这里需要收集所有的getter属性
             // TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
             boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(parameterObject.getClass());
-            MetaObject metaObject = org.miaixz.bus.mapper.reflect.MetaObject.forObject(parameterObject);
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(parameterObject);
             // 需要针对注解形式的MyProviderSqlSource保存原值
             if (!hasTypeHandler) {
                 for (String name : metaObject.getGetterNames()) {
@@ -202,7 +202,7 @@ public abstract class AbstractPaging extends AbstractDialect {
         String orderBy = page.getOrderBy();
         if (StringKit.isNotEmpty(orderBy)) {
             pageKey.update(orderBy);
-            sql = OrderByParser.converToOrderBySql(sql, orderBy, jSqlParser);
+            sql = orderBySqlParser.converToOrderBySql(sql, orderBy);
         }
         if (page.isOrderByOnly()) {
             return sql;
@@ -227,12 +227,13 @@ public abstract class AbstractPaging extends AbstractDialect {
             return pageList;
         }
         page.addAll(pageList);
-        if (!page.isCount()) {
-            page.setTotal(-1);
-        } else if ((page.getPageSizeZero() != null && page.getPageSizeZero()) && page.getPageSize() == 0) {
+        // 调整判断顺序，如果查全部，total就是size，如果只排序，也是全部，其他情况下如果不查询count就是-1
+        if ((page.getPageSizeZero() != null && page.getPageSizeZero()) && page.getPageSize() == 0) {
             page.setTotal(pageList.size());
         } else if (page.isOrderByOnly()) {
             page.setTotal(pageList.size());
+        } else if (!page.isCount()) {
+            page.setTotal(-1);
         }
         return page;
     }
@@ -258,7 +259,7 @@ public abstract class AbstractPaging extends AbstractDialect {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, firstClass).build());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, secondClass).build());
-            MetaObject metaObject = org.miaixz.bus.mapper.reflect.MetaObject.forObject(boundSql);
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
             metaObject.setValue("parameterMappings", newParameterMappings);
         }
     }

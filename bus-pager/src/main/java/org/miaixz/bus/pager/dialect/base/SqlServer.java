@@ -25,21 +25,21 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.base;
 
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.Property;
 import org.miaixz.bus.pager.cache.Cache;
 import org.miaixz.bus.pager.cache.CacheFactory;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.miaixz.bus.pager.dialect.ReplaceSql;
 import org.miaixz.bus.pager.dialect.replace.RegexWithNolock;
 import org.miaixz.bus.pager.dialect.replace.SimpleWithNolock;
-import org.miaixz.bus.pager.parser.OrderByParser;
-import org.miaixz.bus.pager.parser.SqlServerParser;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.pager.parser.SqlServerSqlParser;
+import org.miaixz.bus.pager.parser.defaults.DefaultSqlServerSqlParser;
 
 import java.util.Map;
 import java.util.Properties;
@@ -52,7 +52,7 @@ import java.util.Properties;
  */
 public class SqlServer extends AbstractPaging {
 
-    protected SqlServerParser pageSql;
+    protected SqlServerSqlParser sqlServerSqlParser;
     protected Cache<String, String> CACHE_COUNTSQL;
     protected Cache<String, String> CACHE_PAGESQL;
     protected ReplaceSql replaceSql;
@@ -87,7 +87,7 @@ public class SqlServer extends AbstractPaging {
         if (cacheSql == null) {
             cacheSql = sql;
             cacheSql = replaceSql.replace(cacheSql);
-            cacheSql = pageSql.convertToPageSql(cacheSql, null, null);
+            cacheSql = sqlServerSqlParser.convertToPageSql(cacheSql, null, null);
             cacheSql = replaceSql.restore(cacheSql);
             CACHE_PAGESQL.put(sql, cacheSql);
         }
@@ -96,6 +96,13 @@ public class SqlServer extends AbstractPaging {
         return cacheSql;
     }
 
+    /**
+     * 分页查询，Pager转换SQL时报错with(nolock)不识别的问题，
+     * 重写父类AbstractPaging.getPageSql转换出错的方法。
+     * 1. this.replaceSql.replace(sql);先转换成假的表名
+     * 2. 然后进行SQL转换
+     * 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
+     */
     @Override
     public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
         String sql = boundSql.getSql();
@@ -104,7 +111,7 @@ public class SqlServer extends AbstractPaging {
         if (StringKit.isNotEmpty(orderBy)) {
             pageKey.update(orderBy);
             sql = this.replaceSql.replace(sql);
-            sql = OrderByParser.converToOrderBySql(sql, orderBy, jSqlParser);
+            sql = orderBySqlParser.converToOrderBySql(sql, orderBy);
             sql = this.replaceSql.restore(sql);
         }
 
@@ -114,30 +121,22 @@ public class SqlServer extends AbstractPaging {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-        this.pageSql = new SqlServerParser(jSqlParser);
+        this.sqlServerSqlParser = Builder.newInstance(properties.getProperty("sqlServerSqlParser"), SqlServerSqlParser.class, properties, DefaultSqlServerSqlParser::new);
         String replaceSql = properties.getProperty("replaceSql");
         if (StringKit.isEmpty(replaceSql) || "regex".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new RegexWithNolock();
         } else if ("simple".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new SimpleWithNolock();
         } else {
-            try {
-                this.replaceSql = (ReplaceSql) Class.forName(replaceSql).getConstructor().newInstance();
-                if (this.replaceSql instanceof Property) {
-                    ((Property) this.replaceSql).setProperties(properties);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
-                        + ReplaceSql.class.getName() + " 接口的全限定类名", e);
-            }
+            this.replaceSql = Builder.newInstance(replaceSql, properties);
         }
         String sqlCacheClass = properties.getProperty("sqlCacheClass");
         if (StringKit.isNotEmpty(sqlCacheClass) && !sqlCacheClass.equalsIgnoreCase("false")) {
             CACHE_COUNTSQL = CacheFactory.createCache(sqlCacheClass, "count", properties);
-            CACHE_PAGESQL = CacheFactory.createCache(sqlCacheClass, "page", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(sqlCacheClass, "pages", properties);
         } else {
             CACHE_COUNTSQL = CacheFactory.createCache(null, "count", properties);
-            CACHE_PAGESQL = CacheFactory.createCache(null, "page", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(null, "pages", properties);
         }
     }
 

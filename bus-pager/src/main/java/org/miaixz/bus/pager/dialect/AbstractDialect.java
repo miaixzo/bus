@@ -25,16 +25,16 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect;
 
-import org.miaixz.bus.core.exception.PageException;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.pager.Dialect;
-import org.miaixz.bus.pager.Property;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-import org.miaixz.bus.pager.parser.JSqlParser;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.Dialect;
+import org.miaixz.bus.pager.parser.CountSqlParser;
+import org.miaixz.bus.pager.parser.OrderBySqlParser;
+import org.miaixz.bus.pager.parser.defaults.DefaultCountSqlParser;
+import org.miaixz.bus.pager.parser.defaults.DefaultOrderBySqlParser;
 
 import java.util.Properties;
 
@@ -50,7 +50,7 @@ public abstract class AbstractDialect implements Dialect {
      * 处理SQL
      */
     protected CountSqlParser countSqlParser;
-    protected JSqlParser jSqlParser;
+    protected OrderBySqlParser orderBySqlParser;
 
     @Override
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
@@ -59,22 +59,8 @@ public abstract class AbstractDialect implements Dialect {
 
     @Override
     public void setProperties(Properties properties) {
-        // 自定义 jsqlparser 的 sql 解析器
-        String sqlParser = properties.getProperty("sqlParser");
-        if (StringKit.isNotEmpty(sqlParser)) {
-            try {
-                Class<?> aClass = Class.forName(sqlParser);
-                jSqlParser = (JSqlParser) aClass.getConstructor().newInstance();
-                if (jSqlParser instanceof Property) {
-                    ((Property) jSqlParser).setProperties(properties);
-                }
-            } catch (Exception e) {
-                throw new PageException(e);
-            }
-        } else {
-            jSqlParser = JSqlParser.DEFAULT;
-        }
-        this.countSqlParser = new CountSqlParser(jSqlParser);
+        this.countSqlParser = Builder.newInstance(properties.getProperty("countSqlParser"), CountSqlParser.class, properties, DefaultCountSqlParser::new);
+        this.orderBySqlParser = Builder.newInstance(properties.getProperty("orderBySqlParser"), OrderBySqlParser.class, properties, DefaultOrderBySqlParser::new);
     }
 
 }
