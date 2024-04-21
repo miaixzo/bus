@@ -233,14 +233,6 @@ public class DefaultCountSqlParser implements CountSqlParser {
                     select.setOrderByElements(null);
                 }
             }
-            /*
-            if (select instanceof WithItem) {
-                WithItem withItem = (WithItem) selectBody;
-                if (withItem.getSubSelect() != null && !keepSubSelectOrderBy()) {
-                    processSelectBody(withItem.getSubSelect().getSelectBody());
-                }
-            }
-             */
         }
     }
 

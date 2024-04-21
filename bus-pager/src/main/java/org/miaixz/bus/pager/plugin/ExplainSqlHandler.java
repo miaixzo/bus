@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.starter.mapper;
+package org.miaixz.bus.pager.plugin;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -49,7 +49,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * @since Java 17+
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-public class ExplainSqlHandler extends AbstractSqlParserHandler implements Interceptor {
+public class ExplainSqlHandler extends SqlParserHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

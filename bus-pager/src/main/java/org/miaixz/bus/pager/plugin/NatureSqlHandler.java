@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.starter.mapper;
+package org.miaixz.bus.pager.plugin;
 
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -61,7 +61,7 @@ import java.util.regex.Matcher;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class NatureSqlHandler extends AbstractSqlParserHandler implements Interceptor {
+public class NatureSqlHandler extends SqlParserHandler implements Interceptor {
 
     private static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
         Logger.debug(sqlId + " :  ==> " + time + " ms");

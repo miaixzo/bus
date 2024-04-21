@@ -23,9 +23,8 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.starter.mapper;
+package org.miaixz.bus.pager.plugin;
 
-import lombok.Data;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -38,9 +37,9 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.ParenthesedSelect;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -86,7 +85,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since Java 17+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class IllegalSqlHandler extends AbstractSqlParserHandler implements Interceptor {
+public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
 
     /**
      * 缓存验证结果，提高性能
@@ -117,14 +116,14 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
                 Function function = (Function) binaryExpression.getLeftExpression();
                 throw new InternalException("非法SQL，where条件中不能使用数据库函数，错误函数信息：" + function.toString());
             }
-            if (binaryExpression.getRightExpression() instanceof SubSelect) {
-                SubSelect subSelect = (SubSelect) binaryExpression.getRightExpression();
+            if (binaryExpression.getRightExpression() instanceof ParenthesedSelect) {
+                ParenthesedSelect subSelect = (ParenthesedSelect) binaryExpression.getRightExpression();
                 throw new InternalException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
             }
         } else if (expression instanceof InExpression) {
             InExpression inExpression = (InExpression) expression;
-            if (inExpression.getRightItemsList() instanceof SubSelect) {
-                SubSelect subSelect = (SubSelect) inExpression.getRightItemsList();
+            if (inExpression.getRightExpression() instanceof ParenthesedSelect) {
+                ParenthesedSelect subSelect = (ParenthesedSelect) inExpression.getRightExpression();
                 throw new InternalException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
             }
         }
@@ -352,7 +351,6 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
     /**
      * 索引对象
      */
-    @Data
     private static class IndexInfo {
 
         private String dbName;
@@ -360,6 +358,30 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
         private String tableName;
 
         private String columnName;
+
+        public String getDbName() {
+            return dbName;
+        }
+
+        public void setDbName(String dbName) {
+            this.dbName = dbName;
+        }
+
+        public String getTableName() {
+            return tableName;
+        }
+
+        public void setTableName(String tableName) {
+            this.tableName = tableName;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+
+        public void setColumnName(String columnName) {
+            this.columnName = columnName;
+        }
     }
 
 }

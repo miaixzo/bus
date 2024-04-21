@@ -69,7 +69,7 @@ import java.util.concurrent.Future;
                 @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         }
 )
-public class PageSqlHandler implements Interceptor {
+public class PageSqlHandler extends SqlParserHandler implements Interceptor {
 
     private static boolean debug = false;
     protected Cache<String, MappedStatement> msCountMap = null;

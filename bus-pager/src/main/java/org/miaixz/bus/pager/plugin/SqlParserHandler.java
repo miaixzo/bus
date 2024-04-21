@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.starter.mapper;
+package org.miaixz.bus.pager.plugin;
 
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -32,7 +32,6 @@ import net.sf.jsqlparser.statement.Statements;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
@@ -43,13 +42,15 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 
+import java.util.List;
+
 /**
  * 抽象 SQL 解析类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
+public abstract class SqlParserHandler extends AbstractSqlHandler {
 
     /**
      * 解析 SQL 方法
@@ -108,18 +109,23 @@ public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
     /**
      * 查询
      *
-     * @param selectBody 查询信息
+     * @param select 查询信息
      */
-    public void processSelectBody(SelectBody selectBody) {
-        if (selectBody instanceof WithItem) {
-            WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSubSelect().getSelectBody()) {
-                processSelectBody(withItem.getSubSelect().getSelectBody());
-            }
-        } else {
-            SetOperationList operationList = (SetOperationList) selectBody;
-            if (null != operationList.getSelects() && operationList.getSelects().size() > 0) {
-                operationList.getSelects().forEach(this::processSelectBody);
+    public void processSelectBody(Select select) {
+        if (select != null) {
+            if (select instanceof WithItem) {
+                WithItem withItem = (WithItem) select;
+                if (withItem.getSelect() != null) {
+                    processSelectBody(withItem.getSelect());
+                }
+            } else {
+                SetOperationList operationList = (SetOperationList) select;
+                if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
+                    List<Select> plainSelects = operationList.getSelects();
+                    for (Select plainSelect : plainSelects) {
+                        processSelectBody(plainSelect);
+                    }
+                }
             }
         }
     }
