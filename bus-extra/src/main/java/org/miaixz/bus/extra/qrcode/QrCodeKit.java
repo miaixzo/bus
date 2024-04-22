@@ -32,11 +32,9 @@ import com.google.zxing.common.HybridBinarizer;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.image.Images;
+import org.miaixz.bus.core.lang.Ansi;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.FileType;
-import org.miaixz.bus.core.lang.ansi.Ansi8BitColor;
-import org.miaixz.bus.core.lang.ansi.AnsiElement;
-import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.awt.*;
@@ -605,8 +603,8 @@ public class QrCodeKit {
         final int height = bitMatrix.getHeight();
 
 
-        final AnsiElement foreground = qrConfig.foreColor == null ? null : Ansi8BitColor.foreground(rgbToAnsi8BitValue(qrConfig.foreColor));
-        final AnsiElement background = qrConfig.backColor == null ? null : Ansi8BitColor.background(rgbToAnsi8BitValue(qrConfig.backColor));
+        final Ansi.Element foreground = qrConfig.foreColor == null ? null : Ansi.Color8Bit.foreground(rgbToAnsi8BitValue(qrConfig.foreColor));
+        final Ansi.Element background = qrConfig.backColor == null ? null : Ansi.Color8Bit.background(rgbToAnsi8BitValue(qrConfig.backColor));
 
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i <= height; i += 2) {
@@ -624,7 +622,7 @@ public class QrCodeKit {
                     rowBuilder.append('█');//'\u2588'
                 }
             }
-            builder.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append('\n');
+            builder.append(Ansi.encode(foreground, background, rowBuilder)).append('\n');
         }
         return builder.toString();
     }
@@ -649,7 +647,6 @@ public class QrCodeKit {
         }
         return l;
     }
-
 
     /**
      * 创建解码选项
