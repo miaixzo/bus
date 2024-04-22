@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 权限不足异常
+ * 类型: 权限不足异常
  *
  * @author Kimi Liu
  * @since Java 17+

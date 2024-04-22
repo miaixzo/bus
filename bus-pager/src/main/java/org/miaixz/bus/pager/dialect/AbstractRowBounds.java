@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect;
 
-import org.miaixz.bus.pager.RowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.RowBounds;
 
 import java.util.List;
 import java.util.Properties;

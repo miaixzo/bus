@@ -31,14 +31,14 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.apache.ibatis.scripting.xmltags.SqlNode;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.mapper.entity.Config;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
-import org.miaixz.bus.mapper.reflect.MetaObject;
-import org.miaixz.bus.mapper.reflect.Reflector;
+import org.miaixz.bus.mapper.entity.Property;
+import org.miaixz.bus.mapper.support.MetaObject;
+import org.miaixz.bus.mapper.support.Reflector;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -168,7 +168,18 @@ public abstract class MapperTemplate {
                 if (type instanceof ParameterizedType) {
                     ParameterizedType t = (ParameterizedType) type;
                     if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
-                        Class<?> returnType = (Class<?>) t.getActualTypeArguments()[0];
+                        Type actualType = t.getActualTypeArguments()[0];
+                        Class<?> returnType;
+                        if (actualType instanceof Class) {
+                            returnType = (Class<?>) actualType;
+                        } else if (actualType instanceof ParameterizedType) {
+                            // 获取泛型信息后发现任然是泛型的场景
+                            returnType = (Class<?>) ((ParameterizedType) actualType).getRawType();
+                        } else {
+                            // GenericArrayType、TypeVariable以及WildcardType不受支持
+                            throw new MapperException(msId + " 方法的泛型信息不受支持!");
+                        }
+
                         // 获取该类型后，第一次对该类型进行初始化
                         EntityBuilder.initEntityNameMap(returnType, mapperBuilder.getConfig());
                         entityClassMap.put(msId, returnType);
@@ -177,7 +188,7 @@ public abstract class MapperTemplate {
                 }
             }
         }
-        throw new InternalException("无法获取 " + msId + " 方法的泛型信息!");
+        throw new MapperException("无法获取 " + msId + " 方法的泛型信息!");
     }
 
     /**
@@ -199,7 +210,7 @@ public abstract class MapperTemplate {
         return entityTable.getName();
     }
 
-    public Config getConfig() {
+    public Property getConfig() {
         return mapperBuilder.getConfig();
     }
 
@@ -226,7 +237,7 @@ public abstract class MapperTemplate {
      */
     public void setSqlSource(MappedStatement ms) {
         if (this.mapperClass == Reflector.getMapperClass(ms.getId())) {
-            throw new InternalException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
+            throw new MapperException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
         }
         Method method = methodMap.get(Reflector.getMethodName(ms));
         try {
@@ -247,12 +258,12 @@ public abstract class MapperTemplate {
                 // 替换原有的SqlSource
                 setSqlSource(ms, sqlSource);
             } else {
-                throw new InternalException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
+                throw new MapperException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
             }
         } catch (IllegalAccessException e) {
-            throw new InternalException(e);
+            throw new MapperException(e);
         } catch (InvocationTargetException e) {
-            throw new InternalException(e.getTargetException() != null ? e.getTargetException() : e);
+            throw new MapperException(e.getTargetException() != null ? e.getTargetException() : e);
         }
     }
 

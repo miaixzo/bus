@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.common;
 
-
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.common.sqlserver.InsertMapper;
 import org.miaixz.bus.mapper.common.sqlserver.InsertSelectiveMapper;
@@ -33,7 +32,7 @@ import org.miaixz.bus.mapper.common.sqlserver.InsertSelectiveMapper;
 /**
  * 通用Mapper接口,SqlServerMapper独有的通用方法
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

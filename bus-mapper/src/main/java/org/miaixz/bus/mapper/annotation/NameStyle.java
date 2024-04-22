@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.annotation;
 
-import org.miaixz.bus.mapper.criteria.Style;
+import org.miaixz.bus.core.lang.Ansi;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -42,6 +42,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NameStyle {
 
-    Style value() default Style.normal;
+    Ansi.Mode value() default Ansi.Mode.NORMAL;
 
 }

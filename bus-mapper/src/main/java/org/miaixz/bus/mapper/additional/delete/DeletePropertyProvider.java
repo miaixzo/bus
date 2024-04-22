@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.additional.delete;
 
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
@@ -35,7 +35,7 @@ import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
-import org.miaixz.bus.mapper.reflect.MetaObject;
+import org.miaixz.bus.mapper.support.MetaObject;
 
 /**
  * 删除属性
@@ -66,7 +66,7 @@ public class DeletePropertyProvider extends MapperTemplate {
         boolean isNull = false;
         if (safeDelete) {
             if (null == value) {
-                throw new InternalException("安全删除模式下，不允许执行不带查询条件的 delete 方法");
+                throw new MapperException("安全删除模式下，不允许执行不带查询条件的 delete 方法");
             }
         } else {
             if (null == value) {
@@ -110,7 +110,7 @@ public class DeletePropertyProvider extends MapperTemplate {
                 .append(propertyHelper)
                 .append("@getColumnByProperty(@java.lang.Class@forName(\"")
                 .append(entityClassName)
-                .append("\"), @reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))}").toString();
+                .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
         sql.append("</where>");
@@ -141,9 +141,9 @@ public class DeletePropertyProvider extends MapperTemplate {
         String entityClassName = entityClass.getName();
         String sqlSegment =
                 "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))} in"
-                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"object\">\n"
-                        + "#{object}\n"
+                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} in"
+                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"obj\">\n"
+                        + "#{obj}\n"
                         + "</foreach>\n";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件
@@ -176,7 +176,7 @@ public class DeletePropertyProvider extends MapperTemplate {
         String entityClassName = entityClass.getName();
         String sqlSegment =
                 "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))} "
+                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} "
                         + "between #{begin} and #{end}";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件

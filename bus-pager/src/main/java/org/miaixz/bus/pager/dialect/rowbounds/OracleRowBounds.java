@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.rowbounds;
 
-import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
  * oracle 基于 RowBounds 的分页
@@ -46,7 +46,7 @@ public class OracleRowBounds extends AbstractRowBounds {
             sqlBuilder.append("SELECT * FROM ( ");
         }
         if (endRow > 0) {
-            sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( ");
+            sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGER_ROW_ID FROM ( ");
         }
         sqlBuilder.append("\n");
         sqlBuilder.append(sql);
@@ -57,7 +57,7 @@ public class OracleRowBounds extends AbstractRowBounds {
             pageKey.update(endRow);
         }
         if (startRow > 0) {
-            sqlBuilder.append(" ) WHERE PAGEHELPER_ROW_ID > ");
+            sqlBuilder.append(" ) WHERE PAGER_ROW_ID > ");
             sqlBuilder.append(startRow);
             pageKey.update(startRow);
         }

@@ -32,7 +32,9 @@ import org.miaixz.bus.core.lang.function.XFunction;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 
 /**
- * @param <T> 不能为空
+ * 删除
+ *
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -34,6 +34,7 @@ import java.util.List;
 /**
  * 通用聚合查询接口,特殊方法
  *
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

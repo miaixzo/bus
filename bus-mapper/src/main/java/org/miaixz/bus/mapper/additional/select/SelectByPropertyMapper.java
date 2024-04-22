@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * 根据属性查询接口
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -149,7 +149,6 @@ public class Builder {
      */
     public static final ASN1ObjectIdentifier ID_SM2_PUBLIC_KEY_PARAM = new ASN1ObjectIdentifier("1.2.156.10197.1.301");
 
-
     /**
      * MD5加密
      * 例：

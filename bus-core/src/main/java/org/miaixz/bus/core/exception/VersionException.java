@@ -1,7 +1,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 版本异常
+ * 类型: 版本异常
  *
  * @author Kimi Liu
  * @since Java 17+

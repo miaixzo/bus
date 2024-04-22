@@ -85,7 +85,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
 
     @Override
     public <T> List<T> toList(String json, Type type) {
-        TypeReference<T> typeReference = new TypeReference<T>() {
+        TypeReference<T> typeReference = new TypeReference<>() {
             @Override
             public Type getType() {
                 return type;

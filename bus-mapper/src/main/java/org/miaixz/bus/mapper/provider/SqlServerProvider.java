@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.provider;
 
+import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
-import org.apache.ibatis.mapping.MappedStatement;
 
 /**
  * SqlServerProvider实现类，特殊方法实现类
@@ -46,12 +46,11 @@ public class SqlServerProvider extends MapperTemplate {
     /**
      * 插入
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param ms
      */
     public String insert(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
-        // 开始拼sql
+        //开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.insertColumns(entityClass, true, false, false));
@@ -66,8 +65,8 @@ public class SqlServerProvider extends MapperTemplate {
     /**
      * 插入不为null的字段
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param ms
+     * @return
      */
     public String insertSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -81,5 +80,4 @@ public class SqlServerProvider extends MapperTemplate {
 
         return sql.toString();
     }
-
 }

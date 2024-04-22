@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 无效的参数异常
+ * 类型: 无效的参数
  *
  * @author Kimi Liu
  * @since Java 17+

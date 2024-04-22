@@ -28,7 +28,7 @@ package org.miaixz.bus.core.exception;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 /**
- * 转换异常
+ *  类型: 转换异常
  *
  * @author Kimi Liu
  * @since Java 17+

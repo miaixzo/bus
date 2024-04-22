@@ -26,16 +26,16 @@
 package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
-import org.miaixz.bus.mapper.criteria.Assert;
-import org.miaixz.bus.mapper.criteria.Words;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
+import org.miaixz.bus.mapper.support.SqlWords;
 
 import java.text.MessageFormat;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class AggregationProvider extends MapperTemplate {
     }
 
     private static String wrapKeyword(String wrapKeyword, String columnName) {
-        if (StringKit.isNotEmpty(wrapKeyword) && Words.containsWord(columnName)) {
+        if (StringKit.isNotEmpty(wrapKeyword) && SqlWords.containsWord(columnName)) {
             return MessageFormat.format(wrapKeyword, columnName);
         }
         return columnName;
@@ -114,14 +114,14 @@ public class AggregationProvider extends MapperTemplate {
         if (isCheckConditionEntityClass()) {
             sql.append(SqlBuilder.conditionCheck(entityClass));
         }
-        sql.append("SELECT ${@aggregation.additional.mapper.org.miaixz.bus.AggregationProvider@aggregationSelectClause(");
+        sql.append("SELECT ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationSelectClause(");
         sql.append("@").append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");
         sql.append(")} ");
         sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.updateByConditionWhereClause());
-        sql.append(" ${@aggregation.additional.mapper.org.miaixz.bus.AggregationProvider@aggregationGroupBy(");
+        sql.append(" ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationGroupBy(");
         sql.append("@").append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");

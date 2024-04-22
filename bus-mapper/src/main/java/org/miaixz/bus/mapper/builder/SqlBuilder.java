@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.annotation.LogicDelete;
 import org.miaixz.bus.mapper.annotation.Version;
-import org.miaixz.bus.mapper.entity.DynamicTableName;
 import org.miaixz.bus.mapper.entity.EntityColumn;
+import org.miaixz.bus.mapper.entity.TableNames;
 
 import java.util.Set;
 
@@ -52,10 +52,10 @@ public class SqlBuilder {
      * @return the string
      */
     public static String getDynamicTableName(Class<?> entityClass, String tableName) {
-        if (DynamicTableName.class.isAssignableFrom(entityClass)) {
+        if (TableNames.class.isAssignableFrom(entityClass)) {
             StringBuilder sql = new StringBuilder();
             sql.append("<choose>");
-            sql.append("<when test=\"@criteria.mapper.org.miaixz.bus.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
+            sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
             sql.append("${dynamicTableName}\n");
             sql.append("</when>");
             // 不支持指定列的时候查询全部列
@@ -78,11 +78,11 @@ public class SqlBuilder {
      * @return the string
      */
     public static String getDynamicTableName(Class<?> entityClass, String tableName, String parameterName) {
-        if (DynamicTableName.class.isAssignableFrom(entityClass)) {
+        if (TableNames.class.isAssignableFrom(entityClass)) {
             if (StringKit.isNotEmpty(parameterName)) {
                 StringBuilder sql = new StringBuilder();
                 sql.append("<choose>");
-                sql.append("<when test=\"@criteria.mapper.org.miaixz.bus.OGNL@isDynamicParameter(" + parameterName + ") and " + parameterName + ".dynamicTableName != null and " + parameterName + ".dynamicTableName != ''\">");
+                sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(" + parameterName + ") and " + parameterName + ".dynamicTableName != null and " + parameterName + ".dynamicTableName != ''\">");
                 sql.append("${" + parameterName + ".dynamicTableName}");
                 sql.append("</when>");
                 // 不支持指定列的时候查询全部列
@@ -490,20 +490,20 @@ public class SqlBuilder {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append("<bind name=\"").append(column.getProperty()).append("Version\" value=\"");
-                    sql.append("@version.mapper.org.miaixz.bus.DefaultNextVersion@nextVersion(")
+                    sql.append("@org.miaixz.bus.mapper.Version@nextVersion(")
                             .append("@").append(versionClass).append("@class, ");
                     if (StringKit.isNotEmpty(entityName)) {
-                        sql.append(entityName).append('.');
+                        sql.append(entityName).append(".");
                     }
-                    sql.append(column.getProperty()).append(")},");
+                    sql.append(column.getProperty()).append(")\"/>");
+                    sql.append(column.getColumn()).append(" = #{").append(column.getProperty()).append("Version},");
+                } else if (column == logicDeleteColumn) {
+                    sql.append(logicDeleteColumnEqualsValue(column, false)).append(",");
                 } else if (notNull) {
-                    sql.append(getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + ",", notEmpty));
+                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + ",", notEmpty));
                 } else {
-                    sql.append(column.getColumnEqualsHolder(entityName)).append(",");
+                    sql.append(column.getColumnEqualsHolder(entityName) + ",");
                 }
-            } else if (column.isId() && column.isUpdatable()) {
-                //set id = id,
-                sql.append(column.getColumn()).append(" = ").append(column.getColumn()).append(",");
             }
         }
         sql.append("</set>");
@@ -544,6 +544,9 @@ public class SqlBuilder {
                 } else {
                     sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
                 }
+            } else if (column.isId() && column.isUpdatable()) {
+                //set id = id,
+                sql.append(column.getColumn()).append(" = ").append(column.getColumn()).append(Symbol.COMMA);
             }
         }
         sql.append("</set>");
@@ -559,7 +562,7 @@ public class SqlBuilder {
      */
     public static String notAllNullParameterCheck(String parameterName, Set<EntityColumn> columnSet) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"notAllNullParameterCheck\" value=\"@criteria.mapper.org.miaixz.bus.OGNL@notAllNullParameterCheck(");
+        sql.append("<bind name=\"notAllNullParameterCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notAllNullParameterCheck(");
         sql.append(parameterName).append(", '");
         StringBuilder fields = new StringBuilder();
         for (EntityColumn column : columnSet) {
@@ -581,7 +584,7 @@ public class SqlBuilder {
      */
     public static String conditionHasAtLeastOneCriteriaCheck(String parameterName) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"conditionHasAtLeastOneCriteriaCheck\" value=\"@criteria.mapper.org.miaixz.bus.OGNL@conditionHasAtLeastOneCriteriaCheck(");
+        sql.append("<bind name=\"conditionHasAtLeastOneCriteriaCheck\" value=\"@org.miaixz.bus.mapper.OGNL@conditionHasAtLeastOneCriteriaCheck(");
         sql.append(parameterName).append(")\"/>");
         return sql.toString();
     }
@@ -711,7 +714,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
                 result = " AND " + column.getColumnEqualsHolder(entityName);
@@ -766,7 +769,12 @@ public class SqlBuilder {
     public static String logicDeleteColumnEqualsValue(EntityColumn column, boolean isDeleted) {
         String result = "";
         if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
-            result = column.getColumn() + " = " + getLogicDeletedValue(column, isDeleted);
+            Integer logicDeletedValue = getLogicDeletedValue(column, isDeleted);
+            if (logicDeletedValue == null) {
+                result = column.getColumn() + " is null ";
+            } else {
+                result = column.getColumn() + " = " + logicDeletedValue;
+            }
         }
         return result;
     }
@@ -778,15 +786,15 @@ public class SqlBuilder {
      * @param isDeleted true：逻辑删除的值，false：未逻辑删除的值
      * @return the int
      */
-    public static int getLogicDeletedValue(EntityColumn column, boolean isDeleted) {
+    public static Integer getLogicDeletedValue(EntityColumn column, boolean isDeleted) {
         if (!column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
             throw new InternalException(column.getColumn() + " 没有 @LogicDelete 注解!");
         }
         LogicDelete logicDelete = column.getEntityField().getAnnotation(LogicDelete.class);
         if (isDeleted) {
-            return logicDelete.isDeletedValue();
+            return logicDelete.isNullForDeletedValue() ? null : logicDelete.isDeletedValue();
         }
-        return logicDelete.notDeletedValue();
+        return logicDelete.isNullForNotDeletedValue() ? null : logicDelete.notDeletedValue();
     }
 
     /**
@@ -846,7 +854,7 @@ public class SqlBuilder {
     public static String conditionSelectColumns(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
         sql.append("<choose>");
-        sql.append("<when test=\"@criteria.mapper.org.miaixz.bus.OGNL@hasSelectColumns(_parameter)\">");
+        sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@hasSelectColumns(_parameter)\">");
         sql.append("<foreach collection=\"_parameter.selectColumns\" item=\"selectColumn\" separator=\",\">");
         sql.append("${selectColumn}");
         sql.append("</foreach>");
@@ -868,7 +876,7 @@ public class SqlBuilder {
     public static String conditionCountColumn(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
         sql.append("<choose>");
-        sql.append("<when test=\"@criteria.mapper.org.miaixz.bus.OGNL@hasCountColumn(_parameter)\">");
+        sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@hasCountColumn(_parameter)\">");
         sql.append("COUNT(<if test=\"distinct\">distinct </if>${countColumn})");
         sql.append("</when>");
         sql.append("<otherwise>");
@@ -926,7 +934,7 @@ public class SqlBuilder {
      */
     public static String conditionForUpdate() {
         StringBuilder sql = new StringBuilder();
-        sql.append("<if test=\"@criteria.mapper.org.miaixz.bus.OGNL@hasForUpdate(_parameter)\">");
+        sql.append("<if test=\"@org.miaixz.bus.mapper.OGNL@hasForUpdate(_parameter)\">");
         sql.append("FOR UPDATE");
         sql.append("</if>");
         return sql.toString();
@@ -940,7 +948,7 @@ public class SqlBuilder {
      */
     public static String conditionCheck(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"checkConditionEntityClass\" value=\"@criteria.mapper.org.miaixz.bus.OGNL@checkConditionEntityClass(_parameter, '");
+        sql.append("<bind name=\"checkConditionEntityClass\" value=\"@org.miaixz.bus.mapper.OGNL@checkConditionEntityClass(_parameter, '");
         sql.append(entityClass.getName());
         sql.append("')\"/>");
         return sql.toString();
@@ -954,25 +962,25 @@ public class SqlBuilder {
     public static String conditionWhereClause() {
         return "<if test=\"_parameter != null\">" +
                 "<where>\n" +
-                " ${@criteria.mapper.org.miaixz.bus.OGNL@andNotLogicDelete(_parameter)}" +
+                " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(_parameter)}" +
                 " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "  <foreach collection=\"oredCriteria\" item=\"criteria\">\n" +
                 "    <if test=\"criteria.valid\">\n" +
-                "      ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criteria)}" +
+                "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}" +
                 "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" +
                 "          <choose>\n" +
                 "            <when test=\"criterion.noValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.singleValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.betweenValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.listValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
                 "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n" +
                 "                #{listItem}\n" +
                 "              </foreach>\n" +
@@ -994,25 +1002,25 @@ public class SqlBuilder {
      */
     public static String updateByConditionWhereClause() {
         return "<where>\n" +
-                " ${@criteria.mapper.org.miaixz.bus.OGNL@andNotLogicDelete(condition)}" +
+                " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(condition)}" +
                 " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\">\n" +
                 "    <if test=\"criteria.valid\">\n" +
-                "      ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criteria)}" +
+                "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}" +
                 "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" +
                 "          <choose>\n" +
                 "            <when test=\"criterion.noValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.singleValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.betweenValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
                 "            </when>\n" +
                 "            <when test=\"criterion.listValue\">\n" +
-                "              ${@criteria.mapper.org.miaixz.bus.OGNL@andOr(criterion)} ${criterion.condition}\n" +
+                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
                 "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n" +
                 "                #{listItem}\n" +
                 "              </foreach>\n" +

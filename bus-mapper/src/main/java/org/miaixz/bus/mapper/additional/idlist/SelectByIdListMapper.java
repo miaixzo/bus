@@ -28,14 +28,14 @@ package org.miaixz.bus.mapper.additional.idlist;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.provider.IdListProvider;
 
 import java.util.List;
 
 /**
  * 通用Mapper接口,根据ids查询
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
+ * @param <PK> 主键
  * @author Kimi Liu
  * @since Java 17+
  */

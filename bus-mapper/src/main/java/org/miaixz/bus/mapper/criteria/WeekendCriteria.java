@@ -28,11 +28,15 @@ package org.miaixz.bus.mapper.criteria;
 import org.miaixz.bus.core.lang.function.XFunction;
 import org.miaixz.bus.mapper.entity.Condition.Criteria;
 import org.miaixz.bus.mapper.entity.EntityColumn;
-import org.miaixz.bus.mapper.reflect.Reflector;
+import org.miaixz.bus.mapper.support.Reflector;
 
 import java.util.Map;
 
 /**
+ * 条件语句函数
+ *
+ * @param <A>  泛型
+ * @param <B>  泛型
  * @author Kimi Liu
  * @since Java 17+
  */

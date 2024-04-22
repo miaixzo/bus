@@ -34,6 +34,7 @@ import java.util.List;
 /**
  * 通用Mapper接口, 非空字段强制更新
  *
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

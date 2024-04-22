@@ -1,10 +1,9 @@
 package org.miaixz.bus.mapper.provider;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.mapper.builder.*;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.mapper.builder.*;
 import org.miaixz.bus.mapper.entity.EntityColumn;
-import org.apache.ibatis.mapping.MappedStatement;
 
 import java.lang.reflect.Field;
 import java.util.Set;
@@ -109,13 +108,13 @@ public class SaveProvider extends MapperTemplate {
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
-                    throw new InternalException(ms.getId() + "对应的实体类" + entityClass.getName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new MapperException(ms.getId() + "对应的实体类" + entityClass.getName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 // 插入selectKey
                 SelectKeyBuilder.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
                 hasIdentityKey = true;
             } else if (column.getGenIdClass() != null) {
-                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@genid.mapper.org.miaixz.bus.GenId@genId(");
+                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
                 sql.append("_parameter").append(", '").append(column.getProperty()).append("'");
                 sql.append(", @").append(column.getGenIdClass().getName()).append("@class");
                 sql.append(", '").append(tableName(entityClass)).append("'");

@@ -58,15 +58,15 @@ public final class BufferPool {
 
     /**
      * @param pageSize 内存页大小
-     * @param pageNum  内存页个数
+     * @param pageNo   内存页个数
      * @param isDirect 是否使用直接缓冲区
      */
-    public BufferPool(final int pageSize, final int pageNum, final boolean isDirect) {
-        bufferPages = new BufferPage[pageNum];
-        for (int i = 0; i < pageNum; i++) {
+    public BufferPool(final int pageSize, final int pageNo, final boolean isDirect) {
+        bufferPages = new BufferPage[pageNo];
+        for (int i = 0; i < pageNo; i++) {
             bufferPages[i] = new BufferPage(bufferPages, pageSize, isDirect);
         }
-        if (pageNum == 0 || pageSize == 0) {
+        if (pageNo == 0 || pageSize == 0) {
             future.cancel(false);
         }
     }

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.auto;
 
+import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.pager.AutoDialect;
 import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-import org.apache.ibatis.mapping.MappedStatement;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -52,11 +52,14 @@ public class Defalut implements AutoDialect<String> {
         try {
             AUTO_DIALECTS.add(new Hikari());
         } catch (Exception ignore) {
-            // ignore
+        }
+        try {
+            AUTO_DIALECTS.add(new Druid());
+        } catch (Exception ignore) {
         }
     }
 
-    private final Map<String, AbstractAutoDialect> urlMap = new ConcurrentHashMap<>();
+    private Map<String, AbstractAutoDialect> urlMap = new ConcurrentHashMap<>();
 
     /**
      * 允许手工添加额外的实现，实际上没有必要

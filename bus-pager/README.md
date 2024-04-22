@@ -213,7 +213,7 @@ public interface CountryMapper {
     //当 user 中的 null != PageNo && null != pageSize 时，会自动分页
     List<User> list = userMapper.selectByPageNoSize(user);
 
-    //第六种，ISelect 接口方式
+//第六种，Querying 接口方式
 //jdk6,7用法，创建接口
     Page<User> page = PageContext.startPage(1, 10).doSelectPage(new ISelect() {
         @Override

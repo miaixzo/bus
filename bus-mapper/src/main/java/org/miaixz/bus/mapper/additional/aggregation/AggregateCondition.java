@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.additional.aggregation;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.mapper.criteria.Assert;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,6 +56,9 @@ public class AggregateCondition implements Serializable {
      */
     private AggregateType aggregateType;
 
+    /**
+     * 构造
+     */
     public AggregateCondition() {
         this(null, AggregateType.COUNT, null);
     }
@@ -90,6 +93,8 @@ public class AggregateCondition implements Serializable {
     }
 
     /**
+     * 查询
+     *
      * @param aggregateProperty 不能为空，为保证返回结果key与传入值相同 方法不会去除前后空格
      * @param aggregateType     聚合函数
      * @param groupByProperties 为保证返回结果key与传入值相同 方法不会去除每一项前后空格
@@ -105,10 +110,21 @@ public class AggregateCondition implements Serializable {
         groupBy(groupByProperties);
     }
 
+    /**
+     * 构造
+     *
+     * @return the object
+     */
     public static AggregateCondition builder() {
         return new AggregateCondition();
     }
 
+    /**
+     * 查询条件
+     *
+     * @param groupByProperties 属性
+     * @return the object
+     */
     public AggregateCondition groupBy(String... groupByProperties) {
         if (groupByProperties != null && groupByProperties.length > 0) {
             this.groupByProperties.addAll(Arrays.asList(groupByProperties));
@@ -116,6 +132,12 @@ public class AggregateCondition implements Serializable {
         return this;
     }
 
+    /**
+     * 查询条件
+     *
+     * @param aggregateProperty 属性
+     * @return the object
+     */
     public AggregateCondition aggregateBy(String aggregateProperty) {
         Assert.notEmpty(aggregateProperty,
                 "aggregateProperty must have length; it must not be null or empty");
@@ -128,6 +150,12 @@ public class AggregateCondition implements Serializable {
         return this;
     }
 
+    /**
+     * aggregateType
+     *
+     * @param aggregateType aggregateType
+     * @return the object
+     */
     public AggregateCondition aggregateType(AggregateType aggregateType) {
         Assert.notNull(aggregateType,
                 "aggregateType is required; it must not be null");

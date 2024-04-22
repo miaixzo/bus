@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * HTTP请求异常
+ * 类型: HTTP请求异常
  *
  * @author Kimi Liu
  * @since Java 17+

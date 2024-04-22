@@ -25,17 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.common.rowbounds;
 
-import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.provider.base.BaseSelectProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.mapper.annotation.RegisterMapper;
+import org.miaixz.bus.mapper.provider.BasicSelectProvider;
 
 import java.util.List;
 
 /**
  * 通用Mapper接口,查询
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -49,7 +49,7 @@ public interface SelectRowBoundsMapper<T> {
      * @param rowBounds RowBounds
      * @return the list
      */
-    @SelectProvider(type = BaseSelectProvider.class, method = "dynamicSQL")
+    @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     List<T> selectByRowBounds(T record, RowBounds rowBounds);
 
 }

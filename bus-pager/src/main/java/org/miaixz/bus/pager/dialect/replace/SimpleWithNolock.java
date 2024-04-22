@@ -35,14 +35,17 @@ import org.miaixz.bus.pager.dialect.ReplaceSql;
  */
 public class SimpleWithNolock implements ReplaceSql {
 
+    // with(nolock)
+    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
+
     @Override
     public String replace(String sql) {
-        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", ", PAGEWITHNOLOCK");
+        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
     }
 
     @Override
     public String restore(String sql) {
-        return sql.replaceAll(", PAGEWITHNOLOCK", " with(nolock)");
+        return sql.replaceAll(WITHNOLOCK, " with(nolock)");
     }
 
 }

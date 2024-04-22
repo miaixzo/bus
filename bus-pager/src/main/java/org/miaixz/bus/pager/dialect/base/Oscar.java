@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.base;
 
-import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.reflection.MetaObject;
+import org.miaixz.bus.pager.Page;
+import org.miaixz.bus.pager.builtin.MetaObject;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class Oscar extends AbstractPaging {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, int.class).build());
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
             }
-            MetaObject metaObject = org.miaixz.bus.mapper.reflect.MetaObject.forObject(boundSql);
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
             metaObject.setValue("parameterMappings", newParameterMappings);
         }
         return paramMap;

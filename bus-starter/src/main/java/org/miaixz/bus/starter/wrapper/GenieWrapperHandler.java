@@ -27,9 +27,8 @@ package org.miaixz.bus.starter.wrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.miaixz.bus.core.lang.Ansi;
 import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
-import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.extra.servlet.ServletKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -125,28 +124,28 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * @param request 网络请求
      */
     private void requestInfo(HttpServletRequest request, String method) {
-        String requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
+        String requestMethod = Ansi.encode(Ansi.Color.GREEN, " %s ", method);
         switch (method) {
             case Http.ALL:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.WHITE, " %s ", method);
                 break;
             case Http.POST:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.MAGENTA, " %s ", method);
                 break;
             case Http.DELETE:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.BLUE, " %s ", method);
                 break;
             case Http.PUT:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.RED, " %s ", method);
                 break;
             case Http.OPTIONS:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.YELLOW, " %s ", method);
                 break;
             case Http.BEFORE:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.BLACK, " %s ", method);
                 break;
             case Http.AFTER:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
+                requestMethod = Ansi.encode(Ansi.Color.CYAN, " %s ", method);
                 break;
         }
         Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), requestMethod, request.getRequestURL().toString());

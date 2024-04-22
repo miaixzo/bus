@@ -44,7 +44,8 @@
         <project.compiler.version>21</project.compiler.version>
         <alipay.version>4.39.42.ALL</alipay.version>
         <lombok.version>1.18.32</lombok.version>
-        <fastjson.version>1.2.83</fastjson.version>
+        <bouncycastle.version>1.78.1</bouncycastle.version>
+        <fastjson.version>2.0.49</fastjson.version>
     </properties>
 
     <dependencies>
@@ -65,6 +66,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
@@ -75,6 +82,16 @@
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay.version}</version>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

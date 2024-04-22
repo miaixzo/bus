@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * 通用Mapper接口,特殊方法，批量插入，支持批量插入的数据库都可以使用，例如mysql,h2等
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -42,9 +42,7 @@ public interface InsertListMapper<T> {
 
     /**
      * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等
-     * <p>
      * 不支持主键策略，插入前需要设置好主键的值
-     * <p>
      * 特别注意：该方法支持 @KeySql 注解的 genId 方式
      *
      * @param recordList 记录值

@@ -42,6 +42,20 @@ public @interface LogicDelete {
 
     int isDeletedValue() default 1;
 
+    /**
+     * 优先级比isDeletedValue更高 表示以null作为删除记录的标识
+     *
+     * @return the boolean
+     */
+    boolean isNullForDeletedValue() default false;
+
     int notDeletedValue() default 0;
+
+    /**
+     * 优先级比notDeletedValue更高 表示以null作为未删除记录的标识
+     *
+     * @return the boolean
+     */
+    boolean isNullForNotDeletedValue() default false;
 
 }

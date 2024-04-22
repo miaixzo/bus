@@ -27,12 +27,11 @@ package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.common.condition.*;
-import org.miaixz.bus.mapper.common.condition.*;
 
 /**
  * 通用Mapper接口,Condition查询
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

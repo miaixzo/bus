@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -159,18 +160,32 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     public static <T> Paginating<T> of(List<? extends T> list) {
-        return new Paginating<>(list);
+        return new Paginating<T>(list);
+    }
+
+
+    /**
+     * 手动指定总记录数获取分页信息
+     *
+     * @param total 总记录数
+     * @param list  page结果
+     */
+    public static <T> Paginating<T> of(long total, List<? extends T> list) {
+        if (list instanceof Page) {
+            Page page = (Page) list;
+            page.setTotal(total);
+        }
+        return new Paginating<T>(list);
     }
 
     public static <T> Paginating<T> of(List<? extends T> list, int navigatePages) {
-        return new Paginating<>(list, navigatePages);
+        return new Paginating<T>(list, navigatePages);
     }
 
     /**
      * 返回一个空的 Pageinfo 对象
      *
-     * @param <T> 分页对象
-     * @return this
+     * @return
      */
     public static <T> Paginating<T> emptyPageInfo() {
         return new Paginating(Collections.emptyList(), 0);
@@ -179,7 +194,7 @@ public class Paginating<T> extends Serialize<T> {
     public void calcByNavigatePages(int navigatePages) {
         setNavigatePages(navigatePages);
         // 计算导航页
-        calcnavigatepageNo();
+        calcNavigatepageNo();
         // 计算前后页，第一页，最后一页
         calcPage();
         // 判断页面边界
@@ -189,7 +204,7 @@ public class Paginating<T> extends Serialize<T> {
     /**
      * 计算导航页
      */
-    private void calcnavigatepageNo() {
+    private void calcNavigatepageNo() {
         // 当总页数小于或等于导航页码数时
         if (pages <= navigatePages) {
             navigatepageNo = new int[pages];
@@ -203,7 +218,7 @@ public class Paginating<T> extends Serialize<T> {
 
             if (startNum < 1) {
                 startNum = 1;
-                // 最前navigatePages页
+                // (最前navigatePages页
                 for (int i = 0; i < navigatePages; i++) {
                     navigatepageNo[i] = startNum++;
                 }
@@ -249,9 +264,40 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 是否包含内容
+     * 数据对象转换
      *
-     * @return the boolean
+     * @param function 用以转换数据对象的函数
+     * @param <E>      目标类型
+     * @return 转换了对象类型的包装结果
+     */
+    public <E> Paginating<E> convert(Page.Function<T, E> function) {
+        List<E> list = new ArrayList<E>(this.list.size());
+        for (T t : this.list) {
+            list.add(function.apply(t));
+        }
+        Paginating<E> newPaginating = new Paginating<>(list);
+        newPaginating.setPageNo(this.pageNo);
+        newPaginating.setPageSize(this.pageSize);
+        newPaginating.setSize(this.size);
+        newPaginating.setStartRow(this.startRow);
+        newPaginating.setEndRow(this.endRow);
+        newPaginating.setTotal(this.total);
+        newPaginating.setPages(this.pages);
+        newPaginating.setPrePage(this.prePage);
+        newPaginating.setNextPage(this.nextPage);
+        newPaginating.setIsFirstPage(this.isFirstPage);
+        newPaginating.setIsLastPage(this.isLastPage);
+        newPaginating.setHasPreviousPage(this.hasPreviousPage);
+        newPaginating.setHasNextPage(this.hasNextPage);
+        newPaginating.setNavigatePages(this.navigatePages);
+        newPaginating.setNavigateFirstPage(this.navigateFirstPage);
+        newPaginating.setNavigateLastPage(this.navigateLastPage);
+        newPaginating.setNavigatepageNo(this.navigatepageNo);
+        return newPaginating;
+    }
+
+    /**
+     * 是否包含内容
      */
     public boolean hasContent() {
         return this.size > 0;
@@ -361,11 +407,11 @@ public class Paginating<T> extends Serialize<T> {
         this.navigatePages = navigatePages;
     }
 
-    public int[] getnavigatepageNo() {
+    public int[] getNavigatepageNo() {
         return navigatepageNo;
     }
 
-    public void setnavigatepageNo(int[] navigatepageNo) {
+    public void setNavigatepageNo(int[] navigatepageNo) {
         this.navigatepageNo = navigatepageNo;
     }
 
@@ -373,12 +419,12 @@ public class Paginating<T> extends Serialize<T> {
         return navigateFirstPage;
     }
 
-    public void setNavigateFirstPage(int navigateFirstPage) {
-        this.navigateFirstPage = navigateFirstPage;
-    }
-
     public int getNavigateLastPage() {
         return navigateLastPage;
+    }
+
+    public void setNavigateFirstPage(int navigateFirstPage) {
+        this.navigateFirstPage = navigateFirstPage;
     }
 
     public void setNavigateLastPage(int navigateLastPage) {
@@ -387,7 +433,7 @@ public class Paginating<T> extends Serialize<T> {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("PageInfo{");
+        final StringBuilder sb = new StringBuilder("Paginating{");
         sb.append("pageNo=").append(pageNo);
         sb.append(", pageSize=").append(pageSize);
         sb.append(", size=").append(size);

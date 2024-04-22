@@ -3,7 +3,7 @@ package org.miaixz.bus.core.exception;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 /**
- * 加解密异常
+ * 类型: 加解密异常
  *
  * @author Kimi Liu
  * @since Java 17+

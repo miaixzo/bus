@@ -25,17 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.dialect.rowbounds;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.pager.Property;
-import org.miaixz.bus.pager.dialect.AbstractRowBounds;
-import org.miaixz.bus.pager.dialect.ReplaceSql;
-import org.miaixz.bus.pager.dialect.replace.RegexWithNolock;
-import org.miaixz.bus.pager.dialect.replace.SimpleWithNolock;
-import org.miaixz.bus.pager.parser.SqlServerParser;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.dialect.AbstractRowBounds;
+import org.miaixz.bus.pager.dialect.ReplaceSql;
+import org.miaixz.bus.pager.dialect.replace.RegexWithNolock;
+import org.miaixz.bus.pager.dialect.replace.SimpleWithNolock;
+import org.miaixz.bus.pager.parser.SqlServerSqlParser;
+import org.miaixz.bus.pager.parser.defaults.DefaultSqlServerSqlParser;
 
 import java.util.Properties;
 
@@ -47,7 +48,7 @@ import java.util.Properties;
  */
 public class SqlServerRowBounds extends AbstractRowBounds {
 
-    protected SqlServerParser pageSql = new SqlServerParser();
+    protected SqlServerSqlParser sqlServerSqlParser;
     protected ReplaceSql replaceSql;
 
     @Override
@@ -65,7 +66,7 @@ public class SqlServerRowBounds extends AbstractRowBounds {
         pageKey.update(rowBounds.getOffset());
         pageKey.update(rowBounds.getLimit());
         sql = replaceSql.replace(sql);
-        sql = pageSql.convertToPageSql(sql, null, null);
+        sql = sqlServerSqlParser.convertToPageSql(sql, null, null);
         sql = replaceSql.restore(sql);
         sql = sql.replace(String.valueOf(Long.MIN_VALUE), String.valueOf(rowBounds.getOffset()));
         sql = sql.replace(String.valueOf(Long.MAX_VALUE), String.valueOf(rowBounds.getLimit()));
@@ -75,21 +76,14 @@ public class SqlServerRowBounds extends AbstractRowBounds {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
+        this.sqlServerSqlParser = Builder.newInstance(properties.getProperty("sqlServerSqlParser"), SqlServerSqlParser.class, properties, DefaultSqlServerSqlParser::new);
         String replaceSql = properties.getProperty("replaceSql");
         if (StringKit.isEmpty(replaceSql) || "simple".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new SimpleWithNolock();
         } else if ("regex".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new RegexWithNolock();
         } else {
-            try {
-                this.replaceSql = (ReplaceSql) Class.forName(replaceSql).getConstructor().newInstance();
-                if (this.replaceSql instanceof Property) {
-                    ((Property) this.replaceSql).setProperties(properties);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
-                        + ReplaceSql.class.getName() + " 接口的全限定类名", e);
-            }
+            this.replaceSql = Builder.newInstance(replaceSql, properties);
         }
     }
 

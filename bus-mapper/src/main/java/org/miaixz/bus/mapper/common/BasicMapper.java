@@ -26,22 +26,23 @@
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.common.base.BaseDeleteMapper;
-import org.miaixz.bus.mapper.common.base.BaseInsertMapper;
-import org.miaixz.bus.mapper.common.base.BaseSelectMapper;
-import org.miaixz.bus.mapper.common.base.BaseUpdateMapper;
+import org.miaixz.bus.mapper.common.basic.BasicDeleteMapper;
+import org.miaixz.bus.mapper.common.basic.BasicInsertMapper;
+import org.miaixz.bus.mapper.common.basic.BasicSelectMapper;
+import org.miaixz.bus.mapper.common.basic.BasicUpdateMapper;
 
 /**
  * 通用Mapper接口,其他接口继承该接口即可
  *
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */
 @RegisterMapper
 public interface BasicMapper<T> extends
-        BaseSelectMapper<T>,
-        BaseInsertMapper<T>,
-        BaseUpdateMapper<T>,
-        BaseDeleteMapper<T> {
+        BasicSelectMapper<T>,
+        BasicInsertMapper<T>,
+        BasicUpdateMapper<T>,
+        BasicDeleteMapper<T> {
 
 }

@@ -65,7 +65,7 @@ public abstract class CacheFactory {
                     Constructor<? extends Cache> constructor = clazz.getConstructor(Properties.class, String.class);
                     return constructor.newInstance(properties, prefix);
                 } catch (Exception e) {
-                    Cache cache = clazz.getConstructor().newInstance();
+                    Cache cache = clazz.newInstance();
                     if (cache instanceof Property) {
                         ((Property) cache).setProperties(properties);
                     }
