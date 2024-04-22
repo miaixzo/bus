@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 令牌过期/其他
+ * 类型: 令牌过期/其他
  *
  * @author Kimi Liu
  * @since Java 17+

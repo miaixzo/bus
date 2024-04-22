@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 实例化异常
+ * 类型: 实例化异常
  *
  * @author Kimi Liu
  * @since Java 17+

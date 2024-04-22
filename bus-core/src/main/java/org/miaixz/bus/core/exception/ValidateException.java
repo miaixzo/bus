@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 验证异常
+ * 类型: 校验异常
  *
  * @author Kimi Liu
  * @since Java 17+

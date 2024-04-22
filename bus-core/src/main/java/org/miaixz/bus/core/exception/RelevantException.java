@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * 自定义异常: 未受检异常
+ * 类型: 未受检异常
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: Socket异常
+ * 类型: Socket异常
  *
  * @author Kimi Liu
  * @since Java 17+

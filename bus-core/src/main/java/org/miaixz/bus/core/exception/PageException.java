@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 分页插件异常
+ * 类型: 分页插件异常
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -28,7 +28,7 @@ package org.miaixz.bus.core.exception;
 import lombok.ToString;
 
 /**
- * 自定义异常: 业务异常
+ * 类型: 业务异常
  *
  * @author Kimi Liu
  * @since Java 17+

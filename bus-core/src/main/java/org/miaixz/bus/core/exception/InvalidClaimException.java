@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 无效的范围要求
+ * 类型: 无效的范围要求
  *
  * @author Kimi Liu
  * @since Java 17+

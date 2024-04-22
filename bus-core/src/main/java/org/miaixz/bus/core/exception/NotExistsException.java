@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 对象不存在
+ * 类型: 对象不存在
  *
  * @author Kimi Liu
  * @since Java 17+

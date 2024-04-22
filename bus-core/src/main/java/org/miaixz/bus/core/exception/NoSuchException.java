@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.exception;
 
 /**
- * 自定义异常: 无法找到方法
+ * 类型: 无法找到方法
  *
  * @author Kimi Liu
  * @since Java 17+

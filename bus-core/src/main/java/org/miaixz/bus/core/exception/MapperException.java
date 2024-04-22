@@ -23,69 +23,32 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.core.lang.ansi;
+package org.miaixz.bus.core.exception;
 
 /**
- * 生成ANSI格式的编码输出
+ * 类型: 数据操作异常
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AnsiEncoder {
+public class MapperException extends UncheckedException {
 
-    private static final String ENCODE_JOIN = ";";
-    private static final String ENCODE_START = "\033[";
-    private static final String ENCODE_END = "m";
-    private static final String RESET = "0;" + Ansi4BitColor.DEFAULT;
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 创建ANSI字符串，参数中的{@link AnsiElement}会被转换为编码形式。
-     *
-     * @param args 节点数组
-     * @return ANSI字符串
-     */
-    public static String encode(final Object... args) {
-        final StringBuilder sb = new StringBuilder();
-        buildEnabled(sb, args);
-        return sb.toString();
+    public MapperException() {
+        super();
     }
 
-    /**
-     * 追加需要需转义的节点
-     *
-     * @param sb   {@link StringBuilder}
-     * @param args 节点列表
-     */
-    private static void buildEnabled(final StringBuilder sb, final Object[] args) {
-        boolean writingAnsi = false;
-        boolean containsEncoding = false;
-        for (final Object element : args) {
-            if (null == element) {
-                continue;
-            }
-            if (element instanceof AnsiElement) {
-                containsEncoding = true;
-                if (writingAnsi) {
-                    sb.append(ENCODE_JOIN);
-                } else {
-                    sb.append(ENCODE_START);
-                    writingAnsi = true;
-                }
-            } else {
-                if (writingAnsi) {
-                    sb.append(ENCODE_END);
-                    writingAnsi = false;
-                }
-            }
-            sb.append(element);
-        }
+    public MapperException(String message) {
+        super(message);
+    }
 
-        // 恢复默认
-        if (containsEncoding) {
-            sb.append(writingAnsi ? ENCODE_JOIN : ENCODE_START);
-            sb.append(RESET);
-            sb.append(ENCODE_END);
-        }
+    public MapperException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MapperException(Throwable cause) {
+        super(cause);
     }
 
 }
