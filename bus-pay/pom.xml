@@ -6,7 +6,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>8.0.0</version>
+    <version>6.6.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

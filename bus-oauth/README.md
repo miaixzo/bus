@@ -18,7 +18,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>8.0.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
