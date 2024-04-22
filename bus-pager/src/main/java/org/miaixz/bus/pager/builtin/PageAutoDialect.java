@@ -48,7 +48,8 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 基础方言信息
  *
- * @author liuzh
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class PageAutoDialect {
 
@@ -164,7 +165,7 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化 base
+     * 初始化 basic
      *
      * @param dialectClass
      * @param properties
@@ -172,7 +173,7 @@ public class PageAutoDialect {
     public static AbstractPaging instanceDialect(String dialectClass, Properties properties) {
         AbstractPaging dialect;
         if (StringKit.isEmpty(dialectClass)) {
-            throw new PageException("When you use the PageContext pagination plugin, you must set the base property");
+            throw new PageException("When you use the PageContext pagination plugin, you must set the basic property");
         }
         try {
             Class sqlDialectClass = resloveDialectClass(dialectClass);
@@ -182,7 +183,7 @@ public class PageAutoDialect {
                 throw new PageException("When using PageContext, the dialect must be an implementation class that implements the " + AbstractPaging.class.getCanonicalName() + " interface!");
             }
         } catch (Exception e) {
-            throw new PageException("error initializing base dialectclass[" + dialectClass + "]" + e.getMessage(), e);
+            throw new PageException("error initializing basic dialectclass[" + dialectClass + "]" + e.getMessage(), e);
         }
         dialect.setProperties(properties);
         return dialect;

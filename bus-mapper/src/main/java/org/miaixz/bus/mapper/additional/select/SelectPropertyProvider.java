@@ -39,6 +39,8 @@ import org.miaixz.bus.mapper.entity.EntityTable;
 import java.util.Objects;
 
 /**
+ * 根据属性查询
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -108,7 +110,7 @@ public class SelectPropertyProvider extends MapperTemplate {
                 .append(propertyHelper)
                 .append("@getColumnByProperty(@java.lang.Class@forName(\"")
                 .append(entityClassName)
-                .append("\"), @reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))}").toString();
+                .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
         // 逻辑删除的未删除查询条件
@@ -144,7 +146,7 @@ public class SelectPropertyProvider extends MapperTemplate {
                 .append(propertyHelper)
                 .append("@getColumnByProperty(@java.lang.Class@forName(\"")
                 .append(entityClassName)
-                .append("\"), @reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))}").toString();
+                .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
         // 逻辑删除的未删除查询条件
@@ -171,9 +173,9 @@ public class SelectPropertyProvider extends MapperTemplate {
         String propertyHelper = SelectPropertyProvider.class.getName();
         String sqlSegment =
                 "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))} in"
-                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"object\">\n"
-                        + "#{object}\n"
+                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} in"
+                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"obj\">\n"
+                        + "#{obj}\n"
                         + "</foreach>\n";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件
@@ -200,7 +202,7 @@ public class SelectPropertyProvider extends MapperTemplate {
         String propertyHelper = SelectPropertyProvider.class.getName();
         String sqlSegment =
                 "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))} "
+                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} "
                         + "between #{begin} and #{end}";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件
@@ -235,7 +237,7 @@ public class SelectPropertyProvider extends MapperTemplate {
                 .append(propertyHelper)
                 .append("@getColumnByProperty(@java.lang.Class@forName(\"")
                 .append(entityClassName)
-                .append("\"), @reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))}").toString();
+                .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
         // 逻辑删除的未删除查询条件
@@ -270,7 +272,7 @@ public class SelectPropertyProvider extends MapperTemplate {
                 .append(propertyHelper)
                 .append("@getColumnByProperty(@java.lang.Class@forName(\"")
                 .append(entityClassName)
-                .append("\"), @reflect.mapper.org.miaixz.bus.Reflector@fnToFieldName(fn))}").toString();
+                .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
         // 逻辑删除的未删除查询条件

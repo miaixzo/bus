@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.entity;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.criteria.SqlCriteria;
-import org.miaixz.bus.mapper.reflect.MetaObject;
+import org.miaixz.bus.mapper.criteria.Sqls;
+import org.miaixz.bus.mapper.support.MetaObject;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Condition implements DynamicTableName {
+public class Condition implements TableNames {
 
     protected String orderByClause;
 
@@ -125,7 +126,7 @@ public class Condition implements DynamicTableName {
         this.propertyMap = builder.propertyMap;
         this.selectColumns = builder.selectColumns;
         this.excludeColumns = builder.excludeColumns;
-        this.oredCriteria = builder.conditionCriterias;
+        this.oredCriteria = builder.oredCriteria;
         this.forUpdate = builder.forUpdate;
         this.tableName = builder.tableName;
         this.ORDERBY = new OrderBy(this, propertyMap);
@@ -159,7 +160,7 @@ public class Condition implements DynamicTableName {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new InternalException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -181,7 +182,7 @@ public class Condition implements DynamicTableName {
                 if (propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new InternalException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -325,11 +326,11 @@ public class Condition implements DynamicTableName {
 
         private String property(String property) {
             if (StringKit.isEmpty(property) || StringKit.isEmpty(property.trim())) {
-                throw new InternalException("接收的property为空！");
+                throw new MapperException("接收的property为空！");
             }
             property = property.trim();
             if (!propertyMap.containsKey(property)) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             }
             return propertyMap.get(property).getColumn();
         }
@@ -341,7 +342,7 @@ public class Condition implements DynamicTableName {
                 return this;
             }
             if (StringKit.isNotEmpty(condition.getOrderByClause())) {
-                condition.setOrderByClause(condition.getOrderByClause() + Symbol.COMMA + column);
+                condition.setOrderByClause(condition.getOrderByClause() + "," + column);
             } else {
                 condition.setOrderByClause(column);
             }
@@ -397,7 +398,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return propertyMap.get(property).getColumn();
             } else if (exists) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -407,7 +408,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return property;
             } else if (exists) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -415,7 +416,7 @@ public class Condition implements DynamicTableName {
 
         protected void addCriterion(String condition) {
             if (condition == null) {
-                throw new InternalException("Value for condition cannot be null");
+                throw new MapperException("Value for condition cannot be null");
             }
             if (condition.startsWith("null")) {
                 return;
@@ -426,7 +427,7 @@ public class Condition implements DynamicTableName {
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 if (notNull) {
-                    throw new InternalException("Value for " + property + " cannot be null");
+                    throw new MapperException("Value for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -440,7 +441,7 @@ public class Condition implements DynamicTableName {
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 if (notNull) {
-                    throw new InternalException("Between values for " + property + " cannot be null");
+                    throw new MapperException("Between values for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -453,7 +454,7 @@ public class Condition implements DynamicTableName {
 
         protected void addOrCriterion(String condition) {
             if (condition == null) {
-                throw new InternalException("Value for condition cannot be null");
+                throw new MapperException("Value for condition cannot be null");
             }
             if (condition.startsWith("null")) {
                 return;
@@ -464,7 +465,7 @@ public class Condition implements DynamicTableName {
         protected void addOrCriterion(String condition, Object value, String property) {
             if (value == null) {
                 if (notNull) {
-                    throw new InternalException("Value for " + property + " cannot be null");
+                    throw new MapperException("Value for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -478,7 +479,7 @@ public class Condition implements DynamicTableName {
         protected void addOrCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 if (notNull) {
-                    throw new InternalException("Between values for " + property + " cannot be null");
+                    throw new MapperException("Between values for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -793,12 +794,21 @@ public class Condition implements DynamicTableName {
 
     public static class Criteria extends GeneratedCriteria {
 
+        /**
+         * 构造
+         *
+         * @param propertyMap 属性
+         * @param exists      是否存在
+         * @param notNull     是否不为空
+         */
         protected Criteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
             super(propertyMap, exists, notNull);
         }
+
     }
 
     public static class Criterion {
+
         private String condition;
 
         private Object value;
@@ -917,7 +927,11 @@ public class Condition implements DynamicTableName {
         }
     }
 
+    /**
+     * 构造提供者
+     */
     public static class Builder {
+
         private final Class<?> entityClass;
         protected EntityTable table;
         /**
@@ -938,11 +952,8 @@ public class Condition implements DynamicTableName {
          */
         private Set<String> excludeColumns;
         private String countColumn;
-        private List<SqlCriteria.Criteria> sqlsCriteria;
-        /**
-         * 动态表名
-         */
-        private List<Condition.Criteria> conditionCriterias;
+        private List<Sqls.Criteria> sqlsCriteria;
+        private List<Criteria> oredCriteria;
         /**
          * 动态表名
          */
@@ -989,7 +1000,7 @@ public class Condition implements DynamicTableName {
                     if (this.propertyMap.containsKey(property)) {
                         this.selectColumns.add(propertyMap.get(property).getColumn());
                     } else {
-                        throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                        throw new MapperException("当前实体类不包含名为" + property + "的属性!");
                     }
                 }
             }
@@ -1005,7 +1016,7 @@ public class Condition implements DynamicTableName {
                     if (propertyMap.containsKey(property)) {
                         this.excludeColumns.add(propertyMap.get(property).getColumn());
                     } else {
-                        throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                        throw new MapperException("当前实体类不包含名为" + property + "的属性!");
                     }
                 }
             }
@@ -1016,43 +1027,43 @@ public class Condition implements DynamicTableName {
             return setTableName(tableName);
         }
 
-        public Builder where(SqlCriteria sqlCriteria) {
-            SqlCriteria.Criteria criteria = sqlCriteria.getCriteria();
+        public Builder where(Sqls sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("and");
             this.sqlsCriteria.add(criteria);
             return this;
         }
 
-        public Builder where(SqlsCriteria sqls) {
-            SqlCriteria.Criteria criteria = sqls.getCriteria();
+        public Builder where(SqlCriteria sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("and");
             this.sqlsCriteria.add(criteria);
             return this;
         }
 
-        public Builder andWhere(SqlCriteria sqlCriteria) {
-            SqlCriteria.Criteria criteria = sqlCriteria.getCriteria();
+        public Builder andWhere(Sqls sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("and");
             this.sqlsCriteria.add(criteria);
             return this;
         }
 
-        public Builder andWhere(SqlsCriteria sqls) {
-            SqlCriteria.Criteria criteria = sqls.getCriteria();
+        public Builder andWhere(SqlCriteria sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("and");
             this.sqlsCriteria.add(criteria);
             return this;
         }
 
-        public Builder orWhere(SqlCriteria sqlCriteria) {
-            SqlCriteria.Criteria criteria = sqlCriteria.getCriteria();
+        public Builder orWhere(Sqls sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("or");
             this.sqlsCriteria.add(criteria);
             return this;
         }
 
-        public Builder orWhere(SqlsCriteria sqls) {
-            SqlCriteria.Criteria criteria = sqls.getCriteria();
+        public Builder orWhere(SqlCriteria sqls) {
+            Sqls.Criteria criteria = sqls.getCriteria();
             criteria.setAndOr("or");
             this.sqlsCriteria.add(criteria);
             return this;
@@ -1080,24 +1091,25 @@ public class Condition implements DynamicTableName {
                     columns.append(Symbol.COMMA).append(column).append(order);
                 }
             }
+            ;
             if (columns.length() > 0) {
                 orderByClause.append(columns);
             }
         }
 
         public Condition build() {
-            this.conditionCriterias = new ArrayList<>();
-            for (SqlCriteria.Criteria criteria : sqlsCriteria) {
-                Condition.Criteria conditionCriteria = new Condition.Criteria(this.propertyMap, this.exists, this.notNull);
+            this.oredCriteria = new ArrayList<>();
+            for (Sqls.Criteria criteria : sqlsCriteria) {
+                Criteria conditionCriteria = new Criteria(this.propertyMap, this.exists, this.notNull);
                 conditionCriteria.setAndOr(criteria.getAndOr());
-                for (SqlCriteria.Criterion criterion : criteria.getCriterions()) {
+                for (Sqls.Criterion criterion : criteria.getCriterions()) {
                     String condition = criterion.getCondition();
                     String andOr = criterion.getAndOr();
                     String property = criterion.getProperty();
                     Object[] values = criterion.getValues();
                     transformCriterion(conditionCriteria, condition, property, values, andOr);
                 }
-                this.conditionCriterias.add(conditionCriteria);
+                oredCriteria.add(conditionCriteria);
             }
 
             if (this.orderByClause.length() > 0) {
@@ -1107,24 +1119,24 @@ public class Condition implements DynamicTableName {
             return new Condition(this);
         }
 
-        private void transformCriterion(Condition.Criteria conditionCriteria, String condition, String property, Object[] values, String andOr) {
+        private void transformCriterion(Criteria criteria, String condition, String property, Object[] values, String andOr) {
             if (values.length == 0) {
                 if ("and".equals(andOr)) {
-                    conditionCriteria.addCriterion(column(property) + " " + condition);
+                    criteria.addCriterion(column(property) + " " + condition);
                 } else {
-                    conditionCriteria.addOrCriterion(column(property) + " " + condition);
+                    criteria.addOrCriterion(column(property) + " " + condition);
                 }
             } else if (values.length == 1) {
                 if ("and".equals(andOr)) {
-                    conditionCriteria.addCriterion(column(property) + " " + condition, values[0], property(property));
+                    criteria.addCriterion(column(property) + " " + condition, values[0], property(property));
                 } else {
-                    conditionCriteria.addOrCriterion(column(property) + " " + condition, values[0], property(property));
+                    criteria.addOrCriterion(column(property) + " " + condition, values[0], property(property));
                 }
             } else if (values.length == 2) {
                 if ("and".equals(andOr)) {
-                    conditionCriteria.addCriterion(column(property) + " " + condition, values[0], values[1], property(property));
+                    criteria.addCriterion(column(property) + " " + condition, values[0], values[1], property(property));
                 } else {
-                    conditionCriteria.addOrCriterion(column(property) + " " + condition, values[0], values[1], property(property));
+                    criteria.addOrCriterion(column(property) + " " + condition, values[0], values[1], property(property));
                 }
             }
         }
@@ -1133,7 +1145,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return propertyMap.get(property).getColumn();
             } else if (exists) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -1143,7 +1155,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return property;
             } else if (exists) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -1151,11 +1163,11 @@ public class Condition implements DynamicTableName {
 
         private String propertyforOderBy(String property) {
             if (StringKit.isEmpty(property) || StringKit.isEmpty(property.trim())) {
-                throw new InternalException("接收的property为空！");
+                throw new MapperException("接收的property为空！");
             }
             property = property.trim();
             if (!propertyMap.containsKey(property)) {
-                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
+                throw new MapperException("当前实体类不包含名为" + property + "的属性!");
             }
             return propertyMap.get(property).getColumn();
         }

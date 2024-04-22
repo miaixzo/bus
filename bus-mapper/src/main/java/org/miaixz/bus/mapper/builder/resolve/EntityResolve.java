@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.builder.resolve;
 
-import org.miaixz.bus.mapper.entity.Config;
 import org.miaixz.bus.mapper.entity.EntityTable;
+import org.miaixz.bus.mapper.entity.Property;
 
 /**
  * 解析实体类接口
@@ -40,9 +40,9 @@ public interface EntityResolve {
      * 解析类为 EntityTable
      *
      * @param entityClass 实体Class对象
-     * @param config      配置
+     * @param property      配置
      * @return the object
      */
-    EntityTable resolveEntity(Class<?> entityClass, Config config);
+    EntityTable resolveEntity(Class<?> entityClass, Property property);
 
 }

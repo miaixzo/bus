@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.common.special.InsertUseGeneratedKeysMapper;
 /**
  * 通用Mapper接口,MySql独有的通用方法
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

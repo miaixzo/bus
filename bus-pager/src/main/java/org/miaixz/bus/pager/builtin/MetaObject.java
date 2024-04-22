@@ -30,7 +30,8 @@ import org.miaixz.bus.core.exception.PageException;
 import java.lang.reflect.Method;
 
 /**
- * @author liuzh
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class MetaObject {
 

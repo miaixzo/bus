@@ -26,14 +26,14 @@
 package org.miaixz.bus.mapper.builder;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.builder.resolve.DefaultEntityResolve;
 import org.miaixz.bus.mapper.builder.resolve.EntityResolve;
-import org.miaixz.bus.mapper.entity.Config;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
-import org.miaixz.bus.mapper.reflect.MetaObject;
+import org.miaixz.bus.mapper.entity.Property;
+import org.miaixz.bus.mapper.support.MetaObject;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,9 +67,19 @@ public class EntityBuilder {
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
         if (entityTable == null) {
-            throw new InternalException("无法获取实体类" + entityClass.getName() + "对应的表名!");
+            throw new MapperException("无法获取实体类" + entityClass.getName() + "对应的表名!");
         }
         return entityTable;
+    }
+
+    /**
+     * 获取表对象，如果没有则返回Null
+     *
+     * @param entityClass
+     * @return
+     */
+    public static EntityTable getEntityTableOrNull(Class<?> entityClass) {
+        return entityTableMap.get(entityClass);
     }
 
     /**
@@ -141,7 +151,7 @@ public class EntityBuilder {
         for (EntityColumn entityColumn : columnList) {
             selectBuilder.append(entityColumn.getColumn());
             if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
-                //不等的时候分几种情况，例如`DESC`
+                // 不等的时候分几种情况，例如`DESC`
                 if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1).equalsIgnoreCase(entityColumn.getProperty())) {
                     selectBuilder.append(Symbol.COMMA);
                 } else {
@@ -159,14 +169,14 @@ public class EntityBuilder {
      * 初始化实体属性
      *
      * @param entityClass 实体Class对象
-     * @param config      配置
+     * @param property      配置
      */
-    public static synchronized void initEntityNameMap(Class<?> entityClass, Config config) {
+    public static synchronized void initEntityNameMap(Class<?> entityClass, Property property) {
         if (entityTableMap.get(entityClass) != null) {
             return;
         }
         // 创建并缓存EntityTable
-        EntityTable entityTable = resolve.resolveEntity(entityClass, config);
+        EntityTable entityTable = resolve.resolveEntity(entityClass, property);
         entityTableMap.put(entityClass, entityTable);
     }
 

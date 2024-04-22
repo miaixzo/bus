@@ -36,6 +36,8 @@ import org.miaixz.bus.mapper.entity.EntityColumn;
 import java.util.Set;
 
 /**
+ * 新增
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -55,7 +57,7 @@ public class InsertListProvider extends MapperTemplate {
         final Class<?> entityClass = getEntityClass(ms);
         // 开始拼sql
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"listNotEmptyCheck\" value=\"@criteria.mapper.org.miaixz.bus.OGNL@notEmptyCollectionCheck(list, '" + ms.getId() + " 方法参数为空')\"/>");
+        sql.append("<bind name=\"listNotEmptyCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notEmptyCollectionCheck(list, '" + ms.getId() + " 方法参数为空')\"/>");
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass), "list[0]"));
         sql.append(SqlBuilder.insertColumns(entityClass, false, false, false));
         sql.append(" VALUES ");
@@ -63,10 +65,12 @@ public class InsertListProvider extends MapperTemplate {
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         // 获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
+        // 获取逻辑删除列
+        EntityColumn logicDeleteColumn = SqlBuilder.getLogicDeleteColumn(entityClass);
         // 单独增加对 genId 方式的支持
         for (EntityColumn column : columnList) {
             if (column.getGenIdClass() != null) {
-                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@genid.mapper.org.miaixz.bus.GenId@genId(");
+                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
                 sql.append("record").append(", '").append(column.getProperty()).append("'");
                 sql.append(", @").append(column.getGenIdClass().getName()).append("@class");
                 sql.append(", '").append(tableName(entityClass)).append("'");
@@ -76,9 +80,14 @@ public class InsertListProvider extends MapperTemplate {
         }
         // 当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
-            if (column.isInsertable()) {
-                sql.append(column.getColumnHolder("record") + Symbol.COMMA);
+            if (!column.isInsertable()) {
+                continue;
             }
+            if (logicDeleteColumn != null && logicDeleteColumn == column) {
+                sql.append(SqlBuilder.getLogicDeletedValue(column, false)).append(Symbol.COMMA);
+                continue;
+            }
+            sql.append(column.getColumnHolder("record") + Symbol.COMMA);
         }
         sql.append("</trim>");
         sql.append("</foreach>");

@@ -25,15 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.common.sqlserver;
 
-import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.provider.SqlServerProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
+import org.miaixz.bus.mapper.annotation.RegisterMapper;
+import org.miaixz.bus.mapper.provider.SqlServerProvider;
 
 /**
  * 通用Mapper接口,插入
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -161,14 +161,29 @@ public class EntityField {
         return name != null ? name.hashCode() : 0;
     }
 
+    /**
+     * 获取javaType
+     *
+     * @return
+     */
     public Class<?> getJavaType() {
         return javaType;
     }
 
+    /**
+     * 设置javaType
+     *
+     * @param javaType
+     */
     public void setJavaType(Class<?> javaType) {
         this.javaType = javaType;
     }
 
+    /**
+     * 字段属性名
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }

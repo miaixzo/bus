@@ -5,7 +5,7 @@ import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
-import org.miaixz.bus.mapper.entity.Config;
+import org.miaixz.bus.mapper.entity.Property;
 import org.miaixz.bus.spring.BusXConfig;
 import org.miaixz.bus.spring.PlaceBinder;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -204,13 +204,13 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     /**
      * 配置通用 Mapper
      *
-     * @param config 配置信息
+     * @param property 配置信息
      */
-    public void setConfig(Config config) {
+    public void setConfig(Property property) {
         if (mapperBuilder == null) {
             mapperBuilder = new MapperBuilder();
         }
-        mapperBuilder.setConfig(config);
+        mapperBuilder.setConfig(property);
     }
 
     public void setMapperFactoryBean(MapperFactoryBean<?> mapperFactoryBean) {
@@ -228,17 +228,17 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      */
     public void setMapperProperties(Environment environment) {
         try {
-            Config config = PlaceBinder.bind(environment, Config.class, BusXConfig.MYBATIS);
+            Property property = PlaceBinder.bind(environment, Property.class, BusXConfig.MYBATIS);
             if (mapperBuilder == null) {
                 mapperBuilder = new MapperBuilder();
             }
-            if (config != null) {
-                mapperBuilder.setConfig(config);
+            if (property != null) {
+                mapperBuilder.setConfig(property);
             }
         } catch (Exception e) {
             Logger.warn("只有 Spring Boot 环境中可以通过 Environment(配置文件,环境变量,运行参数等方式) 配置通用 Mapper，" +
                     "其他环境请通过 @EnableMapper 注解中的 mapperBuilderRef 或 properties 参数进行配置!" +
-                    "当然,如果你使用 session.mapper.org.miaixz.bus.Configuration 配置的通用 Mapper，可以忽略该警告!", e);
+                    "当然,如果你使用 org.miaixz.bus..mapper.Property 配置的通用 Mapper，可以忽略该警告!", e);
         }
     }
 

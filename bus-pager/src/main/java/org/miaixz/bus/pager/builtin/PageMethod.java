@@ -33,10 +33,12 @@ import java.util.Properties;
 /**
  * 基础分页方法
  *
- * @author liuzh
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public abstract class PageMethod {
-    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<Page>();
+
+    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<>();
     protected static boolean DEFAULT_COUNT = true;
 
     /**
@@ -168,7 +170,7 @@ public abstract class PageMethod {
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
         Page<E> page = new Page<E>(new int[]{offset, limit}, count);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -203,7 +205,7 @@ public abstract class PageMethod {
      * @param properties 插件属性
      */
     protected static void setStaticProperties(Properties properties) {
-        //defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
+        // defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
         if (properties != null) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }

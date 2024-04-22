@@ -26,10 +26,10 @@
 package org.miaixz.bus.mapper.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.mapper.criteria.Identity;
-import org.miaixz.bus.mapper.criteria.Order;
-import org.miaixz.bus.mapper.genid.GenId;
-import org.miaixz.bus.mapper.gensql.GenSql;
+import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Registry;
+import org.miaixz.bus.mapper.support.GenId;
+import org.miaixz.bus.mapper.support.GenSql;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -58,7 +58,7 @@ public @interface KeySql {
      *
      * @return the object
      */
-    Identity dialect() default Identity.NULL;
+    Registry dialect() default Registry.NULL;
 
     /**
      * 取主键的 SQL
@@ -79,7 +79,7 @@ public @interface KeySql {
      *
      * @return the object
      */
-    Order order() default Order.DEFAULT;
+    ORDER order() default ORDER.DEFAULT;
 
     /**
      * Java 方式生成主键，可以和发号器一类的服务配合使用

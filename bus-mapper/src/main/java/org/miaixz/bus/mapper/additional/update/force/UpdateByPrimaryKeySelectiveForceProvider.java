@@ -92,7 +92,7 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn())
-                            .append(" = ${@version.mapper.org.miaixz.bus.DefaultNextVersion@nextVersion(")
+                            .append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
                             .append("@").append(versionClass).append("@class, ");
                     // 虽然从函数调用上来看entityName必为"record"，但还是判断一下
                     if (StringKit.isNotEmpty(entityName)) {

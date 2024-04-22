@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.entity;
 
+import org.apache.ibatis.type.JdbcType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.mapper.criteria.Order;
-import org.miaixz.bus.mapper.genid.GenId;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
+import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.support.GenId;
 
 /**
  * 数据库表对应的列
@@ -45,7 +44,7 @@ public class EntityColumn {
     private String column;
     private Class<?> javaType;
     private JdbcType jdbcType;
-    private Class<? extends TypeHandler<?>> typeHandler;
+    private Class<?> typeHandler;
     private boolean id = false;
     private boolean identity = false;
     private Class<? extends GenId> genIdClass;
@@ -70,7 +69,7 @@ public class EntityColumn {
     /**
      * 排序
      */
-    private Order order = Order.DEFAULT;
+    private ORDER order = ORDER.DEFAULT;
     /**
      * 是否设置 javaType
      */
@@ -287,11 +286,11 @@ public class EntityColumn {
         this.table = table;
     }
 
-    public Class<? extends TypeHandler<?>> getTypeHandler() {
+    public Class<?> getTypeHandler() {
         return typeHandler;
     }
 
-    public void setTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
+    public void setTypeHandler(Class<?> typeHandler) {
         this.typeHandler = typeHandler;
     }
 
@@ -335,11 +334,11 @@ public class EntityColumn {
         this.updatable = updatable;
     }
 
-    public Order getOrder() {
+    public ORDER getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(ORDER order) {
         this.order = order;
     }
 

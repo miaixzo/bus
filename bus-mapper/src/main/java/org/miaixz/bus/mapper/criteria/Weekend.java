@@ -27,11 +27,14 @@ package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.lang.function.XFunction;
 import org.miaixz.bus.mapper.entity.Condition;
-import org.miaixz.bus.mapper.reflect.Reflector;
+import org.miaixz.bus.mapper.support.Reflector;
 
 import java.util.stream.Stream;
 
 /**
+ * 条件
+ *
+ * @param <T>  泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -58,7 +61,7 @@ public class Weekend<T> extends Condition {
     }
 
     public static <A> Weekend<A> of(Class<A> clazz) {
-        return new Weekend<>(clazz, Boolean.TRUE);
+        return new Weekend<A>(clazz, Boolean.TRUE);
     }
 
     public WeekendCriteria<T, Object> createCriteriaAddOn() {
@@ -122,4 +125,5 @@ public class Weekend<T> extends Condition {
         this.setTableName(tableName);
         return this;
     }
+
 }

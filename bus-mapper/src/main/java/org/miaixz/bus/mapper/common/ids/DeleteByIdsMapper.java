@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.provider.IdsProvider;
 /**
  * 通用Mapper接口,根据ids删除
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

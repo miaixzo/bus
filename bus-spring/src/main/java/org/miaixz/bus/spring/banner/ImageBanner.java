@@ -248,18 +248,18 @@ public class ImageBanner {
 
         for (int y = 0; y < image.getHeight(); y++) {
             if (dark) {
-                banner.append("${Ansi4BitColor.BG_BLACK}");
+                banner.append("${Ansi.Color.BG_BLACK}");
             } else {
-                banner.append("${Ansi4BitColor.BG_DEFAULT}");
+                banner.append("${Ansi.Color.BG_DEFAULT}");
             }
             for (int x = 0; x < image.getWidth(); x++) {
                 Color color = new Color(image.getRGB(x, y), false);
                 banner.append(getFormatString(color, dark, cie94));
             }
             if (dark) {
-                banner.append("${Ansi4BitBgColor.DEFAULT}");
+                banner.append("${Ansi.Color.DEFAULT}");
             }
-            banner.append("${Ansi4BitColor.DEFAULT}\n");
+            banner.append("${Ansi.Color.DEFAULT}\n");
         }
 
         return banner.toString();
@@ -283,7 +283,7 @@ public class ImageBanner {
             }
         }
 
-        return "${Ansi4BitColor." + matchedColorName + Symbol.BRACE_RIGHT + getAsciiCharacter(color, dark);
+        return "${Ansi.Color." + matchedColorName + Symbol.BRACE_RIGHT + getAsciiCharacter(color, dark);
     }
 
 }

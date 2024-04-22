@@ -28,31 +28,33 @@ package org.miaixz.bus.mapper.builder.resolve;
 import jakarta.persistence.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.text.NamingCase;
+import org.miaixz.bus.core.exception.MapperException;
+import org.miaixz.bus.core.lang.Ansi;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.ORDER;
+import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.annotation.ColumnType;
 import org.miaixz.bus.mapper.annotation.KeySql;
 import org.miaixz.bus.mapper.annotation.NameStyle;
 import org.miaixz.bus.mapper.annotation.Order;
 import org.miaixz.bus.mapper.builder.FieldBuilder;
-import org.miaixz.bus.mapper.criteria.Identity;
-import org.miaixz.bus.mapper.criteria.SimpleType;
-import org.miaixz.bus.mapper.criteria.Style;
-import org.miaixz.bus.mapper.criteria.Words;
-import org.miaixz.bus.mapper.entity.Config;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityField;
 import org.miaixz.bus.mapper.entity.EntityTable;
-import org.miaixz.bus.mapper.genid.GenId;
-import org.miaixz.bus.mapper.gensql.GenSql;
+import org.miaixz.bus.mapper.entity.Property;
+import org.miaixz.bus.mapper.support.GenId;
+import org.miaixz.bus.mapper.support.GenSql;
+import org.miaixz.bus.mapper.support.SimpleType;
+import org.miaixz.bus.mapper.support.SqlWords;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
+ * 默认解析
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -62,34 +64,76 @@ public class DefaultEntityResolve implements EntityResolve {
      * 根据指定的样式进行转换
      *
      * @param text  字符串
-     * @param style 样式
+     * @param mode 样式
      * @return the string
      */
-    public static String convertByStyle(String text, Style style) {
-        switch (style) {
-            case camelhump:
-                return NamingCase.toUnderlineCase(text);
-            case uppercase:
+    public static String convertByStyle(String text, Ansi.Mode mode) {
+        switch (mode) {
+            case CAMEL:
+                return camelToUnderline(text);
+            case UPPER_CASE:
                 return text.toUpperCase();
-            case lowercase:
+            case LOWER_CASE:
                 return text.toLowerCase();
-            case camelhumpAndLowercase:
-                return NamingCase.toUnderlineCase(text).toLowerCase();
-            case camelhumpAndUppercase:
-                return NamingCase.toUnderlineCase(text).toUpperCase();
-            case normal:
+            case CAMEL_UNDERLINE_LOWER_CASE:
+                return camelToUnderline(text).toLowerCase();
+            case CAMEL_UNDERLINE_UPPER_CASE:
+                return camelToUnderline(text).toUpperCase();
+            case NORMAL:
             default:
                 return text;
         }
     }
 
+    /**
+     * 将驼峰风格替换为下划线风格
+     */
+    public static String camelToUnderline(String text) {
+        final int size;
+        final char[] chars;
+        final StringBuilder sb = new StringBuilder(
+                (size = (chars = text.toCharArray()).length) * 3 / 2 + 1);
+        char c;
+        for (int i = 0; i < size; i++) {
+            c = chars[i];
+            if (isUppercaseAlpha(c)) {
+                sb.append('_').append(toLowerAscii(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.charAt(0) == '_' ? sb.substring(1) : sb.toString();
+    }
+
+    public static boolean isUppercaseAlpha(char c) {
+        return (c >= 'A') && (c <= 'Z');
+    }
+
+    public static boolean isLowercaseAlpha(char c) {
+        return (c >= 'a') && (c <= 'z');
+    }
+
+    public static char toUpperAscii(char c) {
+        if (isLowercaseAlpha(c)) {
+            c -= (char) 0x20;
+        }
+        return c;
+    }
+
+    public static char toLowerAscii(char c) {
+        if (isUppercaseAlpha(c)) {
+            c += (char) 0x20;
+        }
+        return c;
+    }
+
     @Override
-    public EntityTable resolveEntity(Class<?> entityClass, Config config) {
-        Style style = config.getStyle();
-        // style，该注解优先于全局配置
+    public EntityTable resolveEntity(Class<?> entityClass, Property property) {
+        Ansi.Mode mode = property.getStyle();
+        // mode，该注解优先于全局配置
         if (entityClass.isAnnotationPresent(NameStyle.class)) {
             NameStyle nameStyle = entityClass.getAnnotation(NameStyle.class);
-            style = nameStyle.value();
+            mode = nameStyle.value();
         }
 
         // 创建并缓存EntityTable
@@ -104,10 +148,10 @@ public class DefaultEntityResolve implements EntityResolve {
         if (entityTable == null) {
             entityTable = new EntityTable(entityClass);
             // 可以通过stye控制
-            String tableName = convertByStyle(entityClass.getSimpleName(), style);
+            String tableName = convertByStyle(entityClass.getSimpleName(), mode);
             // 自动处理关键字
-            if (StringKit.isNotEmpty(config.getWrapKeyword()) && Words.containsWord(tableName)) {
-                tableName = MessageFormat.format(config.getWrapKeyword(), tableName);
+            if (StringKit.isNotEmpty(property.getWrapKeyword()) && SqlWords.containsWord(tableName)) {
+                tableName = MessageFormat.format(property.getWrapKeyword(), tableName);
             }
             entityTable.setName(tableName);
         }
@@ -115,19 +159,21 @@ public class DefaultEntityResolve implements EntityResolve {
         entityTable.setEntityClassPKColumns(new LinkedHashSet<>());
         // 处理所有列
         List<EntityField> fields;
-        if (config.isEnableMethodAnnotation()) {
+        if (property.isEnableMethodAnnotation()) {
             fields = FieldBuilder.getAll(entityClass);
         } else {
             fields = FieldBuilder.getFields(entityClass);
         }
         for (EntityField field : fields) {
             // 如果启用了简单类型，就做简单类型校验，如果不是简单类型，直接跳过
-            if (!config.isUseSimpleType() // 关闭简单类型限制时，所有字段都处理
-                    || (config.isUseSimpleType() && SimpleType.isSimpleType(field.getJavaType())) // 开启简单类型时只处理包含的简单类型
+            // 3.5.0 如果启用了枚举作为简单类型，就不会自动忽略枚举类型
+            // 4.0 如果标记了 Column 或 ColumnType 注解，也不忽略
+            if (!property.isUseSimpleType() // 关闭简单类型限制时，所有字段都处理
+                    || (property.isUseSimpleType() && SimpleType.isSimpleType(field.getJavaType())) // 开启简单类型时只处理包含的简单类型
                     || field.isAnnotationPresent(Column.class) // 有注解的处理，不考虑类型
                     || field.isAnnotationPresent(ColumnType.class) // 有注解的处理，不考虑类型
-                    || (config.isEnumAsSimpleType() && Enum.class.isAssignableFrom(field.getJavaType()))) { //开启枚举作为简单类型时处理
-                processField(entityTable, field, config, style);
+                    || (property.isEnumAsSimpleType() && Enum.class.isAssignableFrom(field.getJavaType()))) { // 开启枚举作为简单类型时处理
+                processField(entityTable, field, property, mode);
             }
         }
         // 当pk.size=0的时候使用所有列作为主键
@@ -143,10 +189,10 @@ public class DefaultEntityResolve implements EntityResolve {
      *
      * @param entityTable 对象表
      * @param field       字段
-     * @param config      配置
-     * @param style       样式
+     * @param property      配置
+     * @param mode       样式
      */
-    protected void processField(EntityTable entityTable, EntityField field, Config config, Style style) {
+    protected void processField(EntityTable entityTable, EntityField field, Property property, Ansi.Mode mode) {
         // 排除字段
         if (field.isAnnotationPresent(Transient.class)) {
             return;
@@ -154,7 +200,7 @@ public class DefaultEntityResolve implements EntityResolve {
         // Id
         EntityColumn entityColumn = new EntityColumn(entityTable);
         // 是否使用 {xx, javaType=xxx}
-        entityColumn.setUseJavaType(config.isUseJavaType());
+        entityColumn.setUseJavaType(property.isUseJavaType());
         // 记录 field 信息，方便后续扩展使用
         entityColumn.setEntityField(field);
         if (field.isAnnotationPresent(Id.class)) {
@@ -186,11 +232,11 @@ public class DefaultEntityResolve implements EntityResolve {
         }
         // 列名
         if (StringKit.isEmpty(columnName)) {
-            columnName = convertByStyle(field.getName(), style);
+            columnName = convertByStyle(field.getName(), mode);
         }
         // 自动处理关键字
-        if (StringKit.isNotEmpty(config.getWrapKeyword()) && Words.containsWord(columnName)) {
-            columnName = MessageFormat.format(config.getWrapKeyword(), columnName);
+        if (StringKit.isNotEmpty(property.getWrapKeyword()) && SqlWords.containsWord(columnName)) {
+            columnName = MessageFormat.format(property.getWrapKeyword(), columnName);
         }
         entityColumn.setProperty(field.getName());
         entityColumn.setColumn(columnName);
@@ -276,16 +322,16 @@ public class DefaultEntityResolve implements EntityResolve {
                 entityColumn.setIdentity(true);
                 if (!"".equals(generatedValue.generator())) {
                     String generator;
-                    Identity identity = Identity.getDatabaseDialect(generatedValue.generator());
-                    if (identity != null) {
-                        generator = identity.getIdentityRetrievalStatement();
+                    Registry registry = Registry.getDatabaseDialect(generatedValue.generator());
+                    if (registry != null) {
+                        generator = registry.getIdentityRetrievalStatement();
                     } else {
                         generator = generatedValue.generator();
                     }
                     entityColumn.setGenerator(generator);
                 }
             } else {
-                throw new InternalException(entityColumn.getProperty()
+                throw new MapperException(entityColumn.getProperty()
                         + " - 该字段@GeneratedValue配置只允许以下几种形式:" +
                         "\n1.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  " +
                         "\n2.类似mysql数据库的@GeneratedValue(strategy=GenerationType.IDENTITY[,generator=\"Mysql\"])");
@@ -306,13 +352,13 @@ public class DefaultEntityResolve implements EntityResolve {
             entityColumn.setGenerator("JDBC");
             entityTable.setKeyProperties(entityColumn.getProperty());
             entityTable.setKeyColumns(entityColumn.getColumn());
-        } else if (keySql.dialect() == Identity.DEFAULT) {
+        } else if (keySql.dialect() == Registry.DEFAULT) {
             entityColumn.setIdentity(true);
-            entityColumn.setOrder(org.miaixz.bus.mapper.criteria.Order.AFTER);
-        } else if (keySql.dialect() != Identity.NULL) {
-            //自动增长
+            entityColumn.setOrder(ORDER.AFTER);
+        } else if (keySql.dialect() != Registry.NULL) {
+            // 自动增长
             entityColumn.setIdentity(true);
-            entityColumn.setOrder(org.miaixz.bus.mapper.criteria.Order.AFTER);
+            entityColumn.setOrder(ORDER.AFTER);
             entityColumn.setGenerator(keySql.dialect().getIdentityRetrievalStatement());
         } else if (StringKit.isNotEmpty(keySql.sql())) {
 
@@ -323,17 +369,17 @@ public class DefaultEntityResolve implements EntityResolve {
             entityColumn.setIdentity(true);
             entityColumn.setOrder(keySql.order());
             try {
-                GenSql genSql = keySql.genSql().getConstructor().newInstance();
+                GenSql genSql = keySql.genSql().newInstance();
                 entityColumn.setGenerator(genSql.genSql(entityTable, entityColumn));
             } catch (Exception e) {
                 Logger.error("实例化 GenSql 失败: " + e, e);
-                throw new InternalException("实例化 GenSql 失败: " + e, e);
+                throw new MapperException("实例化 GenSql 失败: " + e, e);
             }
         } else if (keySql.genId() != GenId.NULL.class) {
             entityColumn.setIdentity(false);
             entityColumn.setGenIdClass(keySql.genId());
         } else {
-            throw new InternalException(entityTable.getEntityClass().getName()
+            throw new MapperException(entityTable.getEntityClass().getName()
                     + " 类中的 @KeySql 注解配置无效!");
         }
     }

@@ -25,9 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.annotation;
 
-import org.miaixz.bus.mapper.version.DefaultNextVersion;
-import org.miaixz.bus.mapper.version.NextVersion;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -48,6 +45,6 @@ public @interface Version {
      *
      * @return the class
      */
-    Class<? extends NextVersion> nextVersion() default DefaultNextVersion.class;
+    Class<? extends org.miaixz.bus.mapper.Version> nextVersion() default org.miaixz.bus.mapper.Version.class;
 
 }

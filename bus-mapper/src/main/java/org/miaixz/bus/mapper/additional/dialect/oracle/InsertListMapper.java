@@ -36,6 +36,7 @@ import java.util.List;
  * 支持@{@link KeySql#genId()}，不支持@{@link KeySql#sql()}
  * 因INSERT ALL语法不支持序列，可手工获取序列并设置至Entity或绑定触发器
  *
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

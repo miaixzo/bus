@@ -30,7 +30,8 @@ import org.miaixz.bus.mapper.annotation.RegisterMapper;
 /**
  * 通用Mapper接口,根据idList操作
  *
- * @param <T> 不能为空
+ * @param <T>  泛型
+ * @param <PK> 主键
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -26,15 +26,15 @@
 package org.miaixz.bus.mapper.entity;
 
 import jakarta.persistence.Table;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
+import org.miaixz.bus.core.exception.MapperException;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -43,6 +43,8 @@ import java.util.regex.Pattern;
 
 /**
  * 数据库表
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class EntityTable {
 
@@ -111,7 +113,7 @@ public class EntityTable {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
-                    throw new InternalException(e);
+                    throw new MapperException(e);
                 }
             }
             List<ResultFlag> flags = new ArrayList<>();

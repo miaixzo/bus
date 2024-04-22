@@ -30,12 +30,11 @@ import org.apache.ibatis.mapping.MappedStatement;
 
 /**
  * 构建当前查询对应的 count 方法 id
- * <p>
  * 返回的 msId 会先判断是否存在自定义的方法，存在就直接使用
- * <p>
  * 如果不存在，会根据当前的 msId 创建 MappedStatement
  *
- * @author liuzh
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public interface CountMsId {
 

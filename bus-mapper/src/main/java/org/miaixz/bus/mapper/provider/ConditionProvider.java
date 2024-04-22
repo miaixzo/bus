@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.provider;
 
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
-import org.miaixz.bus.mapper.reflect.MetaObject;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
+import org.miaixz.bus.mapper.support.MetaObject;
 
 /**
  * ConditionProvider实现类，基础方法实现类

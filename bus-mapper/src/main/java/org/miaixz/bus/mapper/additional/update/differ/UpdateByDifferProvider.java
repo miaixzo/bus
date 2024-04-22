@@ -38,6 +38,8 @@ import org.miaixz.bus.mapper.entity.EntityColumn;
 import java.util.Set;
 
 /**
+ * 更新
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -136,8 +138,7 @@ public class UpdateByDifferProvider extends MapperTemplate {
                 if (column == versionColumn) {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
-                    sql.append(column.getColumn())
-                            .append(" = ${@version.mapper.org.miaixz.bus.DefaultNextVersion@nextVersion(")
+                    sql.append(column.getColumn()).append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
                             .append("@").append(versionClass).append("@class, ")
                             .append(NEWER).append('.').append(column.getProperty()).append(")},");
                 } else {

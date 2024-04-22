@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.provider;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
-import org.apache.ibatis.mapping.MappedStatement;
 
 import java.util.Set;
 
@@ -50,25 +49,24 @@ public class SpecialProvider extends MapperTemplate {
     /**
      * 批量插入
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param ms
      */
     public String insertList(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
-        // 开始拼sql
+        //开始拼sql
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"listNotEmptyCheck\" value=\"@criteria.mapper.org.miaixz.bus.OGNL@notEmptyCollectionCheck(list, '" + ms.getId() + " 方法参数为空')\"/>");
+        sql.append("<bind name=\"listNotEmptyCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notEmptyCollectionCheck(list, '" + ms.getId() + " 方法参数为空')\"/>");
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass), "list[0]"));
         sql.append(SqlBuilder.insertColumns(entityClass, true, false, false));
         sql.append(" VALUES ");
         sql.append("<foreach collection=\"list\" item=\"record\" separator=\",\" >");
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
-        // 获取全部列
+        //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        // 当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isId() && column.isInsertable()) {
-                sql.append(column.getColumnHolder("record") + Symbol.COMMA);
+                sql.append(column.getColumnHolder("record") + ",");
             }
         }
         sql.append("</trim>");
@@ -83,12 +81,11 @@ public class SpecialProvider extends MapperTemplate {
     /**
      * 插入，主键id，自增
      *
-     * @param ms MappedStatement
-     * @return the string
+     * @param ms
      */
     public String insertUseGeneratedKeys(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
-        // 开始拼sql
+        //开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.insertColumns(entityClass, true, false, false));
@@ -99,5 +96,4 @@ public class SpecialProvider extends MapperTemplate {
 
         return sql.toString();
     }
-
 }

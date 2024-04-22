@@ -25,15 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.common.special;
 
-import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.provider.SpecialProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Options;
+import org.miaixz.bus.mapper.annotation.RegisterMapper;
+import org.miaixz.bus.mapper.provider.SpecialProvider;
 
 /**
  * 通用Mapper接口,特殊方法，批量插入，支持批量插入的数据库都可以使用，例如mysql,h2等
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.common.ids.SelectByIdsMapper;
 /**
  * 通用Mapper接口,根据ids操作
  *
- * @param <T> 不能为空
+ * @param <T>   泛型
  * @author Kimi Liu
  * @since Java 17+
  */

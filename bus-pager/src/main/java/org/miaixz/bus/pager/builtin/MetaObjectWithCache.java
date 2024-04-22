@@ -37,7 +37,8 @@ import org.miaixz.bus.core.exception.PageException;
 /**
  * 反射带缓存，提高反射性能
  *
- * @author liuzh
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class MetaObjectWithCache {
 
