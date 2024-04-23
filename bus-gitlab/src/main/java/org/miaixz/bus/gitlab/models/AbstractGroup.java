@@ -89,37 +89,31 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
         this.fullPath = fullPath;
     }
 
-    @SuppressWarnings("unchecked")
     public G withId(Long id) {
         this.id = id;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withName(String name) {
         this.name = name;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withWebUrl(String url) {
         this.webUrl = url;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withFullName(String fullName) {
         this.fullName = fullName;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withFullPath(String fullPath) {
         this.fullPath = fullPath;
         return (G) this;

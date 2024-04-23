@@ -157,7 +157,6 @@ public class ReferenceMap<K, V> implements ConcurrentMap<K, V>, Iterable<Map.Ent
         return this.raw.computeIfPresent(ofKey(key, this.lastQueue), (kWeakKey, value) -> remappingFunction.apply(key, value));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public V remove(final Object key) {
         this.purgeStaleKeys();

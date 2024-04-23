@@ -1148,7 +1148,6 @@ public class Mat {
     }
 
     // javadoc:Mat::at(clazz, row, col)
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>)new AtableByte(this, row, col);
@@ -1166,7 +1165,6 @@ public class Mat {
     }
 
     // javadoc:Mat::at(clazz, idx)
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>)new AtableByte(this, idx);

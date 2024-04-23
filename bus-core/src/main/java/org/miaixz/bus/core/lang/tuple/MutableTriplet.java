@@ -34,7 +34,7 @@ package org.miaixz.bus.core.lang.tuple;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MutableTriple<L, M, R> extends Triple<L, M, R> {
+public class MutableTriplet<L, M, R> extends Triplet<L, M, R> {
 
     /**
      * 左边对象
@@ -52,7 +52,7 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
     /**
      * 创建一个包含三个空值的新三元组实例.
      */
-    public MutableTriple() {
+    public MutableTriplet() {
         super();
     }
 
@@ -63,7 +63,7 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param middle 中间可以为null
      * @param right  右值可以为null
      */
-    public MutableTriple(final L left, final M middle, final R right) {
+    public MutableTriplet(final L left, final M middle, final R right) {
         super();
         this.left = left;
         this.middle = middle;
@@ -81,8 +81,8 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param right  右值可以为null
      * @return a triple formed from the three parameters, not null
      */
-    public static <L, M, R> MutableTriple<L, M, R> of(final L left, final M middle, final R right) {
-        return new MutableTriple<>(left, middle, right);
+    public static <L, M, R> MutableTriplet<L, M, R> of(final L left, final M middle, final R right) {
+        return new MutableTriplet<>(left, middle, right);
     }
 
     @Override

@@ -26,11 +26,11 @@
 package org.miaixz.bus.core.date.formatter;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,8 +45,8 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class FormatCache<F extends Format> {
 
-    private static final ConcurrentMap<MultipartKey, String> C_DATE_TIME_INSTANCE_CACHE = new ConcurrentHashMap<>(7);
-    private final ConcurrentMap<MultipartKey, F> cInstanceCache = new ConcurrentHashMap<>(7);
+    private static final ConcurrentMap<Tuple, String> C_DATE_TIME_INSTANCE_CACHE = new ConcurrentHashMap<>(7);
+    private final ConcurrentMap<Tuple, F> cInstanceCache = new ConcurrentHashMap<>(7);
 
     /**
      * 获取指定样式和区域设置的日期/时间格式
@@ -58,7 +58,7 @@ public abstract class FormatCache<F extends Format> {
      * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     static String getPatternForStyle(final Integer dateStyle, final Integer timeStyle, final Locale locale) {
-        final MultipartKey key = new MultipartKey(dateStyle, timeStyle, locale);
+        final Tuple key = new Tuple(dateStyle, timeStyle, locale);
 
         String pattern = C_DATE_TIME_INSTANCE_CACHE.get(key);
         if (null == pattern) {
@@ -109,7 +109,7 @@ public abstract class FormatCache<F extends Format> {
         if (null == locale) {
             locale = Locale.getDefault();
         }
-        final MultipartKey key = new MultipartKey(pattern, timeZone, locale);
+        final Tuple key = new Tuple(pattern, timeZone, locale);
         F format = cInstanceCache.get(key);
         if (null == format) {
             format = createInstance(pattern, timeZone, locale);
@@ -188,52 +188,6 @@ public abstract class FormatCache<F extends Format> {
      */
     F getTimeInstance(final int timeStyle, final TimeZone timeZone, final Locale locale) {
         return getDateTimeInstance(null, Integer.valueOf(timeStyle), timeZone, locale);
-    }
-
-    /**
-     * 帮助类来保存多部分映射键
-     */
-    private static class MultipartKey {
-        private final Object[] keys;
-        private int hashCode;
-
-        /**
-         * 构造一个MultipartKey的实例来保存指定的对象
-         *
-         * @param keys 组成键的一组对象。每个键可以为空
-         */
-        public MultipartKey(final Object... keys) {
-            this.keys = keys;
-        }
-
-        @Override
-        public boolean equals(final Object object) {
-            if (this == object) {
-                return true;
-            }
-            if (null == object) {
-                return false;
-            }
-            if (getClass() != object.getClass()) {
-                return false;
-            }
-            final MultipartKey other = (MultipartKey) object;
-            return false != Arrays.equals(keys, other.keys);
-        }
-
-        @Override
-        public int hashCode() {
-            if (hashCode == 0) {
-                int rc = 0;
-                for (final Object key : keys) {
-                    if (null != key) {
-                        rc = rc * 7 + key.hashCode();
-                    }
-                }
-                hashCode = rc;
-            }
-            return hashCode;
-        }
     }
 
 }

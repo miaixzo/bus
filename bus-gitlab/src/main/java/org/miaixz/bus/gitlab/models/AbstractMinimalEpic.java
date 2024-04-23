@@ -79,7 +79,6 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
         this.title = title;
     }
 
-    @SuppressWarnings("unchecked")
     public E withTitle(String title) {
         this.title = title;
         return (E) (this);

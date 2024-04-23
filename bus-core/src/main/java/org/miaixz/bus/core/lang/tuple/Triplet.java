@@ -49,7 +49,7 @@ import java.util.Objects;
  */
 @Getter
 @ThreadSafe
-public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {
+public abstract class Triplet<L, M, R> implements Comparable<Triplet<L, M, R>>, Serializable {
 
     /**
      * 获取由三个推断泛型类型的对象组成的不可变三元组
@@ -62,8 +62,8 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
      * @param right  右值可以为null
      * @return 由三个参数组成的三元组，不为空
      */
-    public static <L, M, R> Triple<L, M, R> of(final L left, final M middle, final R right) {
-        return new ImmutableTriple<>(left, middle, right);
+    public static <L, M, R> Triplet<L, M, R> of(final L left, final M middle, final R right) {
+        return new ImmutableTriplet<>(left, middle, right);
     }
 
     public abstract L getLeft();
@@ -73,7 +73,7 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
     public abstract R getRight();
 
     @Override
-    public int compareTo(final Triple<L, M, R> other) {
+    public int compareTo(final Triplet<L, M, R> other) {
         return new CompareBuilder().append(getLeft(), other.getLeft())
                 .append(getMiddle(), other.getMiddle())
                 .append(getRight(), other.getRight()).toComparison();
@@ -84,8 +84,8 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
         if (object == this) {
             return true;
         }
-        if (object instanceof Triple<?, ?, ?>) {
-            final Triple<?, ?, ?> other = (Triple<?, ?, ?>) object;
+        if (object instanceof Triplet<?, ?, ?>) {
+            final Triplet<?, ?, ?> other = (Triplet<?, ?, ?>) object;
             return Objects.equals(getLeft(), other.getLeft())
                     && Objects.equals(getMiddle(), other.getMiddle())
                     && Objects.equals(getRight(), other.getRight());

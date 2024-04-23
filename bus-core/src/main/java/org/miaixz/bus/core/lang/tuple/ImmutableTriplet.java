@@ -41,12 +41,12 @@ package org.miaixz.bus.core.lang.tuple;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
+public final class ImmutableTriplet<L, M, R> extends Triplet<L, M, R> {
 
     /**
      * An immutable triple of nulls.
      */
-    private static final ImmutableTriple NULL = of(null, null, null);
+    private static final ImmutableTriplet NULL = of(null, null, null);
 
     /**
      * Serialization version
@@ -72,7 +72,7 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param middle the middle value, may be null
      * @param right  the right value, may be null
      */
-    public ImmutableTriple(final L left, final M middle, final R right) {
+    public ImmutableTriplet(final L left, final M middle, final R right) {
         super();
         this.left = left;
         this.middle = middle;
@@ -87,7 +87,7 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param <R> the right element of this triple. Value is {@code null}.
      * @return an immutable triple of nulls.
      */
-    public static <L, M, R> ImmutableTriple<L, M, R> nullTriple() {
+    public static <L, M, R> ImmutableTriplet<L, M, R> nullTriplet() {
         return NULL;
     }
 
@@ -105,8 +105,8 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param right  the right element, may be null
      * @return a triple formed from the three parameters, not null
      */
-    public static <L, M, R> ImmutableTriple<L, M, R> of(final L left, final M middle, final R right) {
-        return new ImmutableTriple<>(left, middle, right);
+    public static <L, M, R> ImmutableTriplet<L, M, R> of(final L left, final M middle, final R right) {
+        return new ImmutableTriplet<>(left, middle, right);
     }
 
     @Override

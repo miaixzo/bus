@@ -1485,7 +1485,6 @@ public class ObjectKit {
      * @return 比较结果
      * @see java.util.Comparator#compare(Object, Object)
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> int compare(final T c1, final T c2, final Comparator<T> comparator) {
         if (null == comparator) {
             return compare((Comparable) c1, (Comparable) c2);
@@ -1543,7 +1542,6 @@ public class ObjectKit {
      * @param isNullGreater null值是否做为最大值
      * @return 比较结果，如果o1 &lt; o2，返回数小于0，o1==o2返回0，o1 &gt; o2 大于0
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> int compare(final T o1, final T o2, final boolean isNullGreater) {
         if (o1 == o2) {
             return 0;

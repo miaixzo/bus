@@ -288,11 +288,8 @@ public abstract class NotificationService implements Serializable {
     }
 
     @JsonIgnore
-    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
-
         Object value = (properties != null ? properties.get(prop) : null);
-
         // HACK: Sometimes GitLab returns "0" or "1" for true/false
         if (value != null && defaultValue instanceof Boolean) {
             if ("0".equals(value)) {
