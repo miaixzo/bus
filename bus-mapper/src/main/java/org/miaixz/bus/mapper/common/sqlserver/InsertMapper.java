@@ -31,7 +31,7 @@ import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.provider.SqlServerProvider;
 
 /**
- * 通用Mapper接口,插入
+ * SqlServer,插入
  *
  * @param <T>   泛型
  * @author Kimi Liu
