@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE;
-import static java.lang.invoke.MethodType.methodType;
-
 /**
  * 以类似反射的方式动态创建Lambda，在性能上有一定优势，同时避免每次调用Lambda时创建匿名内部类
  *
@@ -83,10 +80,10 @@ public class LambdaFactory {
             final Method invokeMethod = abstractMethods.get(0);
             final MethodHandles.Lookup caller = LookupFactory.lookup(method.getDeclaringClass());
             final String invokeName = invokeMethod.getName();
-            final MethodType invokedType = methodType(functionInterfaceType);
-            final MethodType samMethodType = methodType(invokeMethod.getReturnType(), invokeMethod.getParameterTypes());
+            final MethodType invokedType = MethodType.methodType(functionInterfaceType);
+            final MethodType samMethodType = MethodType.methodType(invokeMethod.getReturnType(), invokeMethod.getParameterTypes());
             final MethodHandle implMethod = Optional.ofTry(() -> caller.unreflect(method)).get();
-            final MethodType insMethodType = methodType(method.getReturnType(), method.getDeclaringClass(), method.getParameterTypes());
+            final MethodType insMethodType = MethodType.methodType(method.getReturnType(), method.getDeclaringClass(), method.getParameterTypes());
             final boolean isSerializable = Serializable.class.isAssignableFrom(functionInterfaceType);
             try {
                 final CallSite callSite = isSerializable ?
@@ -97,7 +94,7 @@ public class LambdaFactory {
                                 samMethodType,
                                 implMethod,
                                 insMethodType,
-                                FLAG_SERIALIZABLE
+                                LambdaMetafactory.FLAG_SERIALIZABLE
                         ) :
                         LambdaMetafactory.metafactory(
                                 caller,

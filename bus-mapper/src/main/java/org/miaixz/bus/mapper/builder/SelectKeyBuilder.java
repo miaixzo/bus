@@ -31,6 +31,7 @@ import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.scripting.defaults.RawSqlSource;
 import org.apache.ibatis.session.Configuration;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.support.MetaObject;
@@ -62,7 +63,7 @@ public class SelectKeyBuilder {
         }
         Configuration configuration = ms.getConfiguration();
         KeyGenerator keyGenerator;
-        String IDENTITY = (column.getGenerator() == null || "".equals(column.getGenerator())) ? identity : column.getGenerator();
+        String IDENTITY = (column.getGenerator() == null || Normal.EMPTY.equals(column.getGenerator())) ? identity : column.getGenerator();
         if ("JDBC".equalsIgnoreCase(IDENTITY)) {
             keyGenerator = new Jdbc3KeyGenerator();
         } else {

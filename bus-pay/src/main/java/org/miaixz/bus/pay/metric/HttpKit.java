@@ -1,6 +1,7 @@
 package org.miaixz.bus.pay.metric;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class HttpKit extends AbstractHttpDelegate {
         Map<String, String[]> requestParams = request.getParameterMap();
         for (String name : requestParams.keySet()) {
             String[] values = requestParams.get(name);
-            String valueStr = "";
+            String valueStr = Normal.EMPTY;
             for (int i = 0; i < values.length; i++) {
                 valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
             }

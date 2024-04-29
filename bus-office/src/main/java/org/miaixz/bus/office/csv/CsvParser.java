@@ -356,7 +356,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         field = StringKit.trim(field, 1, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
 
         field = StringKit.unWrap(field, textDelimiter);
-        field = StringKit.replace(field, "" + textDelimiter + textDelimiter, textDelimiter + "");
+        field = StringKit.replace(field, Normal.EMPTY + textDelimiter + textDelimiter, textDelimiter + Normal.EMPTY);
         if (this.config.trimField) {
             field = StringKit.trim(field);
         }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.socket.plugins;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.AioQuickServer;
 import org.miaixz.bus.socket.QuickTimer;
@@ -79,7 +80,7 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     Field field = BufferPool.class.getDeclaredField("bufferPages");
                     field.setAccessible(true);
                     BufferPage[] pages = (BufferPage[]) field.get(pagePool);
-                    String logger = "";
+                    String logger = Normal.EMPTY;
                     for (BufferPage page : pages) {
                         logger += "\r\n" + page.toString();
                     }
@@ -97,4 +98,5 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
             future = null;
         }
     }
+
 }

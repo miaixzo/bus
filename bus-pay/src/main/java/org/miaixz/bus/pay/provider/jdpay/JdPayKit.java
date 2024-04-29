@@ -68,7 +68,7 @@ public class JdPayKit {
     }
 
     public static String addXmlHead(String xml) {
-        if (xml != null && !"".equals(xml) &&
+        if (xml != null && !Normal.EMPTY.equals(xml) &&
                 !xml.trim().startsWith("<?xml")) {
             xml = XML_HEAD + xml;
         }

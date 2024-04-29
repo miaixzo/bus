@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -457,7 +459,7 @@ public class Paginating<T> extends Serialize<T> {
         } else {
             sb.append('[');
             for (int i = 0; i < navigatepageNo.length; ++i) {
-                sb.append(i == 0 ? "" : ", ").append(navigatepageNo[i]);
+                sb.append(i == 0 ? Normal.EMPTY : ", ").append(navigatepageNo[i]);
             }
             sb.append(']');
         }

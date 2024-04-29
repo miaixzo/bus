@@ -27,6 +27,7 @@ package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
@@ -99,7 +100,7 @@ public class AggregationProvider extends MapperTemplate {
             }
             return groupByBuilder.toString();
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

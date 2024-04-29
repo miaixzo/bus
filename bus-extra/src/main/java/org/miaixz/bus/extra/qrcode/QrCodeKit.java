@@ -35,6 +35,7 @@ import org.miaixz.bus.core.image.Images;
 import org.miaixz.bus.core.lang.Ansi;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.FileType;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.awt.*;
@@ -553,7 +554,7 @@ public class QrCodeKit {
             }
         }
         qrHeight *= moduleHeight;
-        String logoBase64 = "";
+        String logoBase64 = Normal.EMPTY;
         int logoWidth = 0;
         int logoHeight = 0;
         int logoX = 0;
