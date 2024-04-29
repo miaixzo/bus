@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,14 +27,12 @@ package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Formats;
 
 /**
- * A region on a hard disk or other secondary storage, so that an operating
- * system can manage information in each region separately. A partition appears
- * in the operating system as a distinct "logical" disk that uses part of the
- * actual disk.
+ * A region on a hard disk or other secondary storage, so that an operating system can manage information in each region
+ * separately. A partition appears in the operating system as a distinct "logical" disk that uses part of the actual
+ * disk.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -167,12 +165,11 @@ public class HWPartition {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getIdentification()).append(": ");
-        sb.append(getName()).append(Symbol.SPACE);
-        sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
-        sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
+        sb.append(getName()).append(" ");
+        sb.append("(").append(getType()).append(") ");
+        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(", ");
         sb.append("size: ").append(Formats.formatBytesDecimal(getSize()));
         sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
         return sb.toString();
     }
-
 }

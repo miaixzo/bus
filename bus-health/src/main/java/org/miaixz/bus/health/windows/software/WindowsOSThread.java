@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,11 +26,10 @@
 package org.miaixz.bus.health.windows.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.software.AbstractOSThread;
 import org.miaixz.bus.health.builtin.software.OSProcess;
-import org.miaixz.bus.health.builtin.software.OSProcess.State;
-import org.miaixz.bus.health.windows.drivers.registry.ThreadPerformanceData;
-import org.miaixz.bus.health.windows.drivers.registry.ThreadPerformanceData.PerfCounterBlock;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
+import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData;
+import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData.PerfCounterBlock;
 
 import java.util.Collections;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class WindowsOSThread extends AbstractOSThread {
 
     private final int threadId;
     private String name;
-    private State state;
+    private OSProcess.State state;
     private long startMemoryAddress;
     private long contextSwitches;
     private long kernelTime;
@@ -73,7 +72,7 @@ public class WindowsOSThread extends AbstractOSThread {
     }
 
     @Override
-    public State getState() {
+    public OSProcess.State getState() {
         return state;
     }
 
@@ -115,14 +114,10 @@ public class WindowsOSThread extends AbstractOSThread {
     @Override
     public boolean updateAttributes() {
         Set<Integer> pids = Collections.singleton(getOwningProcessId());
-        // Get data from the registry if possible
+        String procName = this.name.split("/")[0];
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
-                .buildThreadMapFromRegistry(pids);
-        // otherwise performance counters with WMI backup
-        if (threads == null) {
-            threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
-        }
-        return updateAttributes(this.name.split("/")[0], threads.get(getThreadId()));
+                .buildThreadMapFromPerfCounters(pids, procName, getThreadId());
+        return updateAttributes(procName, threads.get(getThreadId()));
     }
 
     private boolean updateAttributes(String procName, PerfCounterBlock pcb) {

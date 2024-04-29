@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,11 +29,11 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.hardware.AbstractVirtualMemory;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -50,9 +50,9 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
 
     private final MacGlobalMemory global;
 
-    private final Supplier<Pair<Long, Long>> usedTotal = Memoize.memoize(MacVirtualMemory::querySwapUsage, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer.memoize(MacVirtualMemory::querySwapUsage, Memoizer.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = Memoize.memoize(MacVirtualMemory::queryVmStat, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoizer.memoize(MacVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
     /**
      * Constructor for MacVirtualMemory.
@@ -61,34 +61,6 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
      */
     MacVirtualMemory(MacGlobalMemory macGlobalMemory) {
         this.global = macGlobalMemory;
-    }
-
-    private static Pair<Long, Long> querySwapUsage() {
-        long swapUsed = 0L;
-        long swapTotal = 0L;
-        try (Struct.CloseableXswUsage xswUsage = new Struct.CloseableXswUsage()) {
-            if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
-                swapUsed = xswUsage.xsu_used;
-                swapTotal = xswUsage.xsu_total;
-            }
-        }
-        return Pair.of(swapUsed, swapTotal);
-    }
-
-    private static Pair<Long, Long> queryVmStat() {
-        long swapPagesIn = 0L;
-        long swapPagesOut = 0L;
-        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
-             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(vmStats.size() / SystemB.INT_SIZE)) {
-            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
-                    size)) {
-                swapPagesIn = Builder.unsignedIntToLong(vmStats.pageins);
-                swapPagesOut = Builder.unsignedIntToLong(vmStats.pageouts);
-            } else {
-                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
-            }
-        }
-        return Pair.of(swapPagesIn, swapPagesOut);
     }
 
     @Override
@@ -121,4 +93,31 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         return inOut.get().getRight();
     }
 
+    private static Pair<Long, Long> querySwapUsage() {
+        long swapUsed = 0L;
+        long swapTotal = 0L;
+        try (Struct.CloseableXswUsage xswUsage = new Struct.CloseableXswUsage()) {
+            if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
+                swapUsed = xswUsage.xsu_used;
+                swapTotal = xswUsage.xsu_total;
+            }
+        }
+        return Pair.of(swapUsed, swapTotal);
+    }
+
+    private static Pair<Long, Long> queryVmStat() {
+        long swapPagesIn = 0L;
+        long swapPagesOut = 0L;
+        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
+             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(vmStats.size() / SystemB.INT_SIZE)) {
+            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
+                    size)) {
+                swapPagesIn = Parsing.unsignedIntToLong(vmStats.pageins);
+                swapPagesOut = Parsing.unsignedIntToLong(vmStats.pageouts);
+            } else {
+                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+            }
+        }
+        return Pair.of(swapPagesIn, swapPagesOut);
+    }
 }

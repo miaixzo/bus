@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,8 +29,9 @@ import com.sun.jna.platform.linux.Udev;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.hardware.AbstractLogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
+import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -39,16 +40,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author Kimi Liu
- * @since Java 17+
+ *
  */
-public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
+public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
     private static final String BLOCK = "block";
     private static final String DM_UUID = "DM_UUID";
     private static final String DM_VG_NAME = "DM_VG_NAME";
     private static final String DM_LV_NAME = "DM_LV_NAME";
-    private static final String DEV_LOCATION = "/dev/";
 
     LinuxLogicalVolumeGroup(String name, Map<String, Set<String>> lvMap, Set<String> pvSet) {
         super(name, lvMap, pvSet);
@@ -66,7 +65,7 @@ public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
         // This requires elevated permissions and may fail
         for (String s : Executor.runNative("pvs -o vg_name,pv_name")) {
             String[] split = RegEx.SPACES.split(s.trim());
-            if (split.length == 2 && split[1].startsWith(DEV_LOCATION)) {
+            if (split.length == 2 && split[1].startsWith(DevPath.DEV)) {
                 physicalVolumesMap.computeIfAbsent(split[0], k -> new HashSet<>()).add(split[1]);
             }
         }
@@ -84,7 +83,7 @@ public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                     if (device != null) {
                         try {
                             String devnode = device.getDevnode();
-                            if (devnode != null && devnode.startsWith("/dev/dm")) {
+                            if (devnode != null && devnode.startsWith(DevPath.DM)) {
                                 String uuid = device.getPropertyValue(DM_UUID);
                                 if (uuid != null && uuid.startsWith("LVM-")) {
                                     String vgName = device.getPropertyValue(DM_VG_NAME);
@@ -102,10 +101,10 @@ public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                                             for (File f : slaves) {
                                                 String pvName = f.getName();
                                                 lvMapForGroup.computeIfAbsent(lvName, k -> new HashSet<>())
-                                                        .add(DEV_LOCATION + pvName);
+                                                        .add(DevPath.DEV + pvName);
                                                 // Backup to add to pv set if pvs command failed
                                                 // Added /dev/ to remove duplicates like /dev/sda1 and sda1
-                                                pvSetForGroup.add(DEV_LOCATION + pvName);
+                                                pvSetForGroup.add(DevPath.DEV + pvName);
                                             }
                                         }
                                     }
@@ -126,5 +125,4 @@ public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 .map(e -> new LinuxLogicalVolumeGroup(e.getKey(), e.getValue(), physicalVolumesMap.get(e.getKey())))
                 .collect(Collectors.toList());
     }
-
 }

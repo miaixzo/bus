@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,15 +28,13 @@ package org.miaixz.bus.health.builtin.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 
 /**
- * The Baseboard represents the system board, also called motherboard, logic
- * board, etc.
+ * The Baseboard represents the system board, also called motherboard, logic board, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Immutable
 public interface Baseboard {
-
     /**
      * Get the baseboard manufacturer.
      *
@@ -64,5 +62,4 @@ public interface Baseboard {
      * @return The serial number.
      */
     String getSerialNumber();
-
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,8 +35,8 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 
 import java.util.*;
 
@@ -60,17 +60,15 @@ public class MacUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing
-     * devices connected via a usb port (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
+     * (including internal devices).
      * <p>
-     * If the value of {@code tree} is true, the top level devices returned from
-     * this method are the USB Controllers; connected hubs and devices in its device
-     * tree share that controller's bandwidth. If the value of {@code tree} is
+     * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
+     * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
      * false, USB devices (not controllers) are listed in a single flat list.
      *
-     * @param tree If true, returns a list of controllers, which requires recursive
-     *             iteration of connected devices. If false, returns a flat list of
-     *             devices excluding controllers.
+     * @param tree If true, returns a list of controllers, which requires recursive iteration of connected devices. If
+     *             false, returns a flat list of devices excluding controllers.
      * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
@@ -219,11 +217,9 @@ public class MacUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Looks up vendor and product id information for a USB Host Controller by
-     * cross-referencing the location
+     * Looks up vendor and product id information for a USB Host Controller by cross-referencing the location
      *
-     * @param id                 The global unique ID for the host controller used as a key for
-     *                           maps
+     * @param id                 The global unique ID for the host controller used as a key for maps
      * @param locationId         The locationID of this controller returned from the registry
      * @param locationIDKey      A pointer to the locationID string
      * @param ioPropertyMatchKey A pointer to the IOPropertyMatch string
@@ -279,8 +275,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Recursively creates MacUsbDevices by fetching information from maps to
-     * populate fields
+     * Recursively creates MacUsbDevices by fetching information from maps to populate fields
      *
      * @param registryEntryId The device unique registry id.
      * @param vid             The default (parent) vendor ID
@@ -309,5 +304,4 @@ public class MacUsbDevice extends AbstractUsbDevice {
                 vendorMap.getOrDefault(registryEntryId, Normal.EMPTY), vendorId, productId,
                 serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId), usbDevices);
     }
-
 }

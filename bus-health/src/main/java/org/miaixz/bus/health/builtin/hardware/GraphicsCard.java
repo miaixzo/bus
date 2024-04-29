@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -53,14 +53,13 @@ public interface GraphicsCard {
     /**
      * Retrieves the card's manufacturer/vendor
      *
-     * @return The vendor of the card as human-readable text if possible, or the
-     * Vendor ID (VID) otherwise
+     * @return The vendor of the card as human-readable text if possible, or the Vendor ID (VID) otherwise
      */
     String getVendor();
 
     /**
-     * Retrieves a list of version/revision data from the card. Users may need to
-     * further parse this list to identify specific GPU capabilities.
+     * Retrieves a list of version/revision data from the card. Users may need to further parse this list to identify
+     * specific GPU capabilities.
      *
      * @return A comma-delimited list of version/revision data
      */
@@ -72,5 +71,4 @@ public interface GraphicsCard {
      * @return Total number of bytes.
      */
     long getVRam();
-
 }

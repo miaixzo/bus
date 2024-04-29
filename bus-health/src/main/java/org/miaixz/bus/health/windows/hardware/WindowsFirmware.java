@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,10 +30,11 @@ import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quintet;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractFirmware;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 import org.miaixz.bus.health.windows.WmiKit;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32Bios;
+import org.miaixz.bus.health.windows.driver.wmi.Win32Bios;
+import org.miaixz.bus.health.windows.driver.wmi.Win32Bios.BiosProperty;
 
 import java.util.function.Supplier;
 
@@ -46,29 +47,8 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoize.memoize(
+    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoizer.memoize(
             WindowsFirmware::queryManufNameDescVersRelease);
-
-    private static Quintet<String, String, String, String, String> queryManufNameDescVersRelease() {
-        String manufacturer = null;
-        String name = null;
-        String description = null;
-        String version = null;
-        String releaseDate = null;
-        WmiResult<Win32Bios.BiosProperty> win32BIOS = Win32Bios.queryBiosInfo();
-        if (win32BIOS.getResultCount() > 0) {
-            manufacturer = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.MANUFACTURER, 0);
-            name = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.NAME, 0);
-            description = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.DESCRIPTION, 0);
-            version = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.VERSION, 0);
-            releaseDate = WmiKit.getDateString(win32BIOS, Win32Bios.BiosProperty.RELEASEDATE, 0);
-        }
-        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringKit.isBlank(name) ? Normal.UNKNOWN : name,
-                StringKit.isBlank(description) ? Normal.UNKNOWN : description,
-                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
-                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
-    }
 
     @Override
     public String getManufacturer() {
@@ -93,6 +73,27 @@ final class WindowsFirmware extends AbstractFirmware {
     @Override
     public String getReleaseDate() {
         return manufNameDescVersRelease.get().getE();
+    }
+
+    private static Quintet<String, String, String, String, String> queryManufNameDescVersRelease() {
+        String manufacturer = null;
+        String name = null;
+        String description = null;
+        String version = null;
+        String releaseDate = null;
+        WmiResult<BiosProperty> win32BIOS = Win32Bios.queryBiosInfo();
+        if (win32BIOS.getResultCount() > 0) {
+            manufacturer = WmiKit.getString(win32BIOS, BiosProperty.MANUFACTURER, 0);
+            name = WmiKit.getString(win32BIOS, BiosProperty.NAME, 0);
+            description = WmiKit.getString(win32BIOS, BiosProperty.DESCRIPTION, 0);
+            version = WmiKit.getString(win32BIOS, BiosProperty.VERSION, 0);
+            releaseDate = WmiKit.getDateString(win32BIOS, BiosProperty.RELEASEDATE, 0);
+        }
+        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                StringKit.isBlank(description) ? Normal.UNKNOWN : description,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
 }

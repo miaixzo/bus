@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,12 +27,12 @@ package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractComputerSystem;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
-import org.miaixz.bus.health.linux.drivers.*;
-import org.miaixz.bus.health.linux.drivers.proc.CpuInfo;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
+import org.miaixz.bus.health.linux.driver.*;
+import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
 
 import java.util.function.Supplier;
 
@@ -45,44 +45,18 @@ import java.util.function.Supplier;
 @Immutable
 final class LinuxComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<String> manufacturer = Memoize.memoize(LinuxComputerSystem::queryManufacturer);
+    private final Supplier<String> manufacturer = Memoizer.memoize(LinuxComputerSystem::queryManufacturer);
 
-    private final Supplier<String> model = Memoize.memoize(LinuxComputerSystem::queryModel);
+    private final Supplier<String> model = Memoizer.memoize(LinuxComputerSystem::queryModel);
 
-    private final Supplier<String> serialNumber = Memoize.memoize(LinuxComputerSystem::querySerialNumber);
+    private final Supplier<String> serialNumber = Memoizer.memoize(LinuxComputerSystem::querySerialNumber);
 
-    private final Supplier<String> uuid = Memoize.memoize(LinuxComputerSystem::queryUUID);
-
-    private static String queryManufacturer() {
-        String result;
-        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
+    private final Supplier<String> uuid = Memoizer.memoize(LinuxComputerSystem::queryUUID);
 
     private static String queryModel() {
         String result;
-        if ((result = Sysfs.queryProductModel()) == null && (result = DeviceTree.queryModel()) == null
+        if ((result = Sysfs.queryProductModel()) == null && (result = Devicetree.queryModel()) == null
                 && (result = Lshw.queryModel()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
-    private static String querySerialNumber() {
-        String result;
-        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
-                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
-    private static String queryUUID() {
-        String result;
-        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
-                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -113,9 +87,34 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         return new LinuxFirmware();
     }
 
+    private static String queryManufacturer() {
+        String result;
+        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
     @Override
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
     }
 
+    private static String querySerialNumber() {
+        String result;
+        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
+                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
+    private static String queryUUID() {
+        String result;
+        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
+                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
 }

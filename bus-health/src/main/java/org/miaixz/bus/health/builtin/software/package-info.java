@@ -1,6 +1,5 @@
 /**
- * Provides cross-platform implementation to retrieve OS,
- * FileSystem, and Process information
+ * Provides cross-platform implementation to retrieve OS, FileSystem, and Process information
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,8 @@ package org.miaixz.bus.health.windows;
 
 import org.miaixz.bus.core.annotation.NotThreadSafe;
 import org.miaixz.bus.health.Formats;
-import org.miaixz.bus.health.builtin.ByRef;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.windows.PerfDataKit.PerfCounter;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.HashMap;
@@ -36,8 +37,8 @@ import java.util.Map;
 
 /**
  * Utility to handle Performance Counter Queries
- * This class is not thread safe. Each query handler instance should only be
- * used in a single thread, preferably in a try-with-resources block.
+ * This class is not thread safe. Each query handler instance should only be used in a single thread, preferably in a
+ * try-with-resources block.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,10 +47,9 @@ import java.util.Map;
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
     // Map of counter handles
-    private Map<PerfDataKit.PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
+    private final Map<PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
     // The query handle
     private ByRef.CloseableHANDLEByReference queryHandle = null;
-
 
     /**
      * Begin monitoring a Performance Data counter.
@@ -57,7 +57,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * @param counter A PerfCounter object.
      * @return True if the counter was successfully added to the query.
      */
-    public boolean addCounterToQuery(PerfDataKit.PerfCounter counter) {
+    public boolean addCounterToQuery(PerfCounter counter) {
         // Open a new query or get the handle to an existing one
         if (this.queryHandle == null) {
             this.queryHandle = new ByRef.CloseableHANDLEByReference();
@@ -85,7 +85,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * @param counter A PerfCounter object
      * @return True if the counter was successfully removed.
      */
-    public boolean removeCounterFromQuery(PerfDataKit.PerfCounter counter) {
+    public boolean removeCounterFromQuery(PerfCounter counter) {
         boolean success = false;
         try (ByRef.CloseableHANDLEByReference href = counterHandleMap.remove(counter)) {
             // null if handle wasn't present
@@ -122,8 +122,8 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     /**
      * Update all counters on this query.
      *
-     * @return The timestamp for the update of all the counters, in milliseconds
-     * since the epoch, or 0 if the update failed
+     * @return The timestamp for the update of all the counters, in milliseconds since the epoch, or 0 if the update
+     * failed
      */
     public long updateQuery() {
         if (this.queryHandle == null) {
@@ -134,13 +134,13 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     }
 
     /**
-     * Query the raw counter value of a Performance Data counter. Further
-     * mathematical manipulation/conversion is left to the caller.
+     * Query the raw counter value of a Performance Data counter. Further mathematical manipulation/conversion is left
+     * to the caller.
      *
      * @param counter The counter to query
      * @return The raw value of the counter
      */
-    public long queryCounter(PerfDataKit.PerfCounter counter) {
+    public long queryCounter(PerfCounter counter) {
         if (!counterHandleMap.containsKey(counter)) {
             if (Logger.isWarn()) {
                 Logger.warn("Counter {} does not exist to query.", counter.getCounterPath());

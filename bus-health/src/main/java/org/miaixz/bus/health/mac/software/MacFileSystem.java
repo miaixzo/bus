@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,8 +43,9 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.software.AbstractFileSystem;
+import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
+import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 import org.miaixz.bus.health.mac.CFKit;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.logger.Logger;
@@ -56,10 +57,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * The Mac File System contains {@link OSFileStore}s which are
- * a storage pool, device, partition, volume, concrete file system or other
- * implementation specific means of file storage. In macOS, these are found in
- * the /Volumes directory.
+ * The Mac File System contains {@link OSFileStore}s which are a storage pool, device, partition,
+ * volume, concrete file system or other implementation specific means of file storage. In macOS, these are found in the
+ * /Volumes directory.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,19 +67,14 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
-    public static final String MAC_FS_PATH_EXCLUDES = "bus.health.os.mac.filesystem.path.excludes";
-    public static final String MAC_FS_PATH_INCLUDES = "bus.health.os.mac.filesystem.path.includes";
-    public static final String MAC_FS_VOLUME_EXCLUDES = "bus.health.os.mac.filesystem.volume.excludes";
-    public static final String MAC_FS_VOLUME_INCLUDES = "bus.health.os.mac.filesystem.volume.includes";
-
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(MAC_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(MAC_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_INCLUDES);
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(MAC_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_EXCLUDES);
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(MAC_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_INCLUDES);
 
     // Regexp matcher for /dev/disk1 etc.
     private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
@@ -132,11 +127,6 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_DEFWRITE, "defwrite");
         OPTIONS_MAP.put(MNT_MULTILABEL, "multilabel");
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
-    }
-
-    // Called by MacOSFileStore
-    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
-        return getFileStoreMatching(nameToMatch, false);
     }
 
     private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
@@ -256,6 +246,11 @@ public class MacFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    // Called by MacOSFileStore
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
+        return getFileStoreMatching(nameToMatch, false);
+    }
+
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // List of file systems
@@ -276,5 +271,4 @@ public class MacFileSystem extends AbstractFileSystem {
     public long getMaxFileDescriptorsPerProcess() {
         return SysctlKit.sysctl("kern.maxfilesperproc", 0);
     }
-
 }

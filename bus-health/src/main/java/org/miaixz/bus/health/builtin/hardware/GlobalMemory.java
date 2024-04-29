@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,15 +30,14 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import java.util.List;
 
 /**
- * The GlobalMemory class tracks information about the use of a computer's
- * physical memory (RAM) as well as any available virtual memory.
+ * The GlobalMemory class tracks information about the use of a computer's physical memory (RAM) as well as any
+ * available virtual memory.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @ThreadSafe
 public interface GlobalMemory {
-
     /**
      * The amount of actual physical memory, in bytes.
      *
@@ -70,11 +69,9 @@ public interface GlobalMemory {
     /**
      * Physical memory, such as banks of memory.
      * <p>
-     * On Linux, requires elevated permissions. On FreeBSD and Solaris, requires
-     * installation of dmidecode.
+     * On Linux, requires elevated permissions. On FreeBSD and Solaris, requires installation of dmidecode.
      *
      * @return A list of PhysicalMemory objects.
      */
     List<PhysicalMemory> getPhysicalMemory();
-
 }

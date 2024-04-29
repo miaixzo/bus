@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,14 +36,14 @@ import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.health.mac.hardware.MacHardwareAbstractionLayer;
 import org.miaixz.bus.health.mac.software.MacOperatingSystem;
-import org.miaixz.bus.health.unix.aix.hardware.AixHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.aix.software.AixOperatingSystem;
-import org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem;
-import org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem;
-import org.miaixz.bus.health.unix.solaris.hardware.SolarisHardwareAbstractionLayer;
-import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
+import org.miaixz.bus.health.unix.platform.aix.hardware.AixHardwareAbstractionLayer;
+import org.miaixz.bus.health.unix.platform.aix.software.AixOperatingSystem;
+import org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdHardwareAbstractionLayer;
+import org.miaixz.bus.health.unix.platform.freebsd.software.FreeBsdOperatingSystem;
+import org.miaixz.bus.health.unix.platform.openbsd.hardware.OpenBsdHardwareAbstractionLayer;
+import org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOperatingSystem;
+import org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisHardwareAbstractionLayer;
+import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
 import org.miaixz.bus.health.windows.software.WindowsOperatingSystem;
 
@@ -67,9 +67,9 @@ public class Platform {
 
     public static final String NOT_SUPPORTED = "Operating system not supported: ";
 
-    public static final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
+    public final Supplier<OperatingSystem> os = Memoizer.memoize(Platform::createOperatingSystem);
 
-    public static final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
+    public final Supplier<HardwareAbstractionLayer> hardware = Memoizer.memoize(Platform::createHardware);
 
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();
@@ -429,11 +429,12 @@ public class Platform {
         return CURRENT_PLATFORM;
     }
 
-    public static OperatingSystem createOperatingSystem() {
+    private static OperatingSystem createOperatingSystem() {
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsOperatingSystem();
             case LINUX:
+            case ANDROID:
                 return new LinuxOperatingSystem();
             case MACOS:
                 return new MacOperatingSystem();
@@ -450,11 +451,12 @@ public class Platform {
         }
     }
 
-    public static HardwareAbstractionLayer createHardware() {
+    private static HardwareAbstractionLayer createHardware() {
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsHardwareAbstractionLayer();
             case LINUX:
+            case ANDROID:
                 return new LinuxHardwareAbstractionLayer();
             case MACOS:
                 return new MacHardwareAbstractionLayer();
@@ -472,28 +474,26 @@ public class Platform {
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific
-     * {@link OperatingSystem}.
+     * Creates a new instance of the appropriate platform-specific {@link OperatingSystem}.
      *
      * @return A new instance of {@link OperatingSystem}.
      */
-    public static OperatingSystem getOperatingSystem() {
+    public OperatingSystem getOperatingSystem() {
         return os.get();
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific
-     * {@link HardwareAbstractionLayer}.
+     * Creates a new instance of the appropriate platform-specific {@link HardwareAbstractionLayer}.
      *
      * @return A new instance of {@link HardwareAbstractionLayer}.
      */
-    public static HardwareAbstractionLayer getHardware() {
+    public HardwareAbstractionLayer getHardware() {
         return hardware.get();
     }
 
     /**
-     * An enumeration of supported operating systems. The order of declaration
-     * matches the osType constants in the JNA Platform class.
+     * An enumeration of supported operating systems. The order of declaration matches the osType constants in the JNA
+     * Platform class.
      */
     public enum OS {
 
@@ -559,8 +559,7 @@ public class Platform {
         /**
          * Gets the friendly name of the specified JNA Platform type
          *
-         * @param osType The constant returned from JNA's
-         *               {@link com.sun.jna.Platform#getOSType()} method.
+         * @param osType The constant returned from JNA's {@link com.sun.jna.Platform#getOSType()} method.
          * @return the friendly name of the specified JNA Platform type
          */
         public static String getName(int osType) {
@@ -570,8 +569,7 @@ public class Platform {
         /**
          * Gets the value corresponding to the specified JNA Platform type
          *
-         * @param osType The constant returned from JNA's
-         *               {@link com.sun.jna.Platform#getOSType()} method.
+         * @param osType The constant returned from JNA's {@link com.sun.jna.Platform#getOSType()} method.
          * @return the value corresponding to the specified JNA Platform type
          */
         public static OS getValue(int osType) {

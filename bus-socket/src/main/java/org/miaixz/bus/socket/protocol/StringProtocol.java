@@ -31,7 +31,6 @@ import org.miaixz.bus.socket.convert.FixedLengthFrameDecoder;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /**
@@ -50,7 +49,7 @@ public class StringProtocol implements Protocol<String> {
     }
 
     public StringProtocol() {
-        this(StandardCharsets.UTF_8);
+        this(org.miaixz.bus.core.lang.Charset.UTF_8);
     }
 
     @Override

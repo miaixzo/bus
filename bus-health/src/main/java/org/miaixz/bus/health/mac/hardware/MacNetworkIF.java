@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,10 +29,10 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
-import org.miaixz.bus.health.mac.SystemConfiguration;
-import org.miaixz.bus.health.mac.drivers.net.NetStat;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
+import org.miaixz.bus.health.mac.driver.net.NetStat;
+import org.miaixz.bus.health.mac.jna.SystemConfiguration;
 import org.miaixz.bus.logger.Logger;
 
 import java.net.NetworkInterface;
@@ -171,8 +171,8 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Updates interface network statistics on the given interface. Statistics
-     * include packets and bytes sent and received, and interface speed.
+     * Updates interface network statistics on the given interface. Statistics include packets and bytes sent and
+     * received, and interface speed.
      *
      * @param data A map of network interface statistics with the index as the key
      * @return {@code true} if the update was successful, {@code false} otherwise.

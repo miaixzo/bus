@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -54,8 +54,7 @@ public final class CFKit {
      *
      * @param result        Pointer to the CFString
      * @param returnUnknown Whether to return the "unknown" string
-     * @return a CFString including a possible empty one if {@code returnUnknown} is
-     * false, or "unknown" if it is true
+     * @return a CFString including a possible empty one if {@code returnUnknown} is false, or "unknown" if it is true
      */
     public static String cfPointerToString(Pointer result, boolean returnUnknown) {
         String s = Normal.EMPTY;

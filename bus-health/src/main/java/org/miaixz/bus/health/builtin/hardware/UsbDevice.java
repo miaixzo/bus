@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,16 +30,14 @@ import org.miaixz.bus.core.annotation.Immutable;
 import java.util.List;
 
 /**
- * A USB device is a device connected via a USB port, possibly
- * internally/permanently. Hubs may contain ports to which other devices connect
- * in a recursive fashion.
+ * A USB device is a device connected via a USB port, possibly internally/permanently. Hubs may contain ports to which
+ * other devices connect in a recursive fashion.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Immutable
 public interface UsbDevice extends Comparable<UsbDevice> {
-
     /**
      * Name of the USB device
      *
@@ -76,9 +74,8 @@ public interface UsbDevice extends Comparable<UsbDevice> {
     String getSerialNumber();
 
     /**
-     * A Unique Device ID of the USB device, such as the PnPDeviceID (Windows),
-     * Device Node Path (Linux), Registry Entry ID (macOS), or Device Node number
-     * (Unix)
+     * A Unique Device ID of the USB device, such as the PnPDeviceID (Windows), Device Node Path (Linux), Registry Entry
+     * ID (macOS), or Device Node number (Unix)
      *
      * @return The Unique Device ID
      */
@@ -87,9 +84,7 @@ public interface UsbDevice extends Comparable<UsbDevice> {
     /**
      * Other devices connected to this hub
      *
-     * @return An {@code UnmodifiableList} of other devices connected to this hub,
-     * if any, or an empty list if none
+     * @return An {@code UnmodifiableList} of other devices connected to this hub, if any, or an empty list if none
      */
     List<UsbDevice> getConnectedDevices();
-
 }

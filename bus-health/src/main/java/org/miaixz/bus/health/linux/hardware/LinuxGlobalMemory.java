@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,9 +29,10 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractGlobalMemory;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 
@@ -49,21 +50,19 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();
 
-    private final Supplier<Pair<Long, Long>> availTotal = Memoize.memoize(LinuxGlobalMemory::readMemInfo, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoizer.memoize(LinuxGlobalMemory::readMemInfo, Memoizer.defaultExpiration());
 
-    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
-     * Updates instance variables from reading /proc/meminfo. While most of the
-     * information is available in the sysinfo structure, the most accurate
-     * calculation of MemAvailable is only available from reading this pseudo-file.
-     * The maintainers of the Linux Kernel have indicated this location will be kept
-     * up to date if the calculation changes: see
-     * https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?
+     * Updates instance variables from reading /proc/meminfo. While most of the information is available in the sysinfo
+     * structure, the most accurate calculation of MemAvailable is only available from reading this pseudo-file. The
+     * maintainers of the Linux Kernel have indicated this location will be kept up to date if the calculation changes:
+     * see https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?
      * id=34e431b0ae398fc54ea69ff85ec700722c9da773
      * <p>
-     * Internally, reading /proc/meminfo is faster than sysinfo because it only
-     * spends time populating the memory components of the sysinfo structure.
+     * Internally, reading /proc/meminfo is faster than sysinfo because it only spends time populating the memory
+     * components of the sysinfo structure.
      *
      * @return A pair containing available and total memory in bytes
      */
@@ -82,23 +81,23 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "MemTotal:":
-                        memTotal = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        memTotal = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "MemAvailable:":
-                        memAvailable = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        memAvailable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         // We're done!
                         return Pair.of(memAvailable, memTotal);
                     case "MemFree:":
-                        memFree = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        memFree = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "Active(file):":
-                        activeFile = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        activeFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "Inactive(file):":
-                        inactiveFile = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        inactiveFile = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "SReclaimable:":
-                        sReclaimable = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
+                        sReclaimable = Parsing.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     default:
                         // do nothing with other lines
@@ -133,5 +132,4 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
     private VirtualMemory createVirtualMemory() {
         return new LinuxVirtualMemory(this);
     }
-
 }

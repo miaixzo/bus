@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,9 +26,12 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.hardware.AbstractSensors;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
+import org.miaixz.bus.health.linux.SysPath;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -43,7 +46,7 @@ import java.util.*;
  * @since Java 17+
  */
 @ThreadSafe
-public final class LinuxSensors extends AbstractSensors {
+final class LinuxSensors extends AbstractSensors {
 
     // Possible sensor types. See sysfs documentation for others, e.g. current
     private static final String TEMP = "temp";
@@ -53,10 +56,10 @@ public final class LinuxSensors extends AbstractSensors {
 
     // Base HWMON path, adds 0, 1, etc. to end for various sensors
     private static final String HWMON = "hwmon";
-    private static final String HWMON_PATH = "/sys/class/hwmon/" + HWMON;
+    private static final String HWMON_PATH = SysPath.HWMON + HWMON;
     // Base THERMAL_ZONE path, adds 0, 1, etc. to end for temperature sensors
     private static final String THERMAL_ZONE = "thermal_zone";
-    private static final String THERMAL_ZONE_PATH = "/sys/class/thermal/" + THERMAL_ZONE;
+    private static final String THERMAL_ZONE_PATH = SysPath.THERMAL + THERMAL_ZONE;
 
     // Initial test to see if we are running on a Pi
     private static final boolean IS_PI = queryCpuTemperatureFromVcGenCmd() > 0;
@@ -88,7 +91,7 @@ public final class LinuxSensors extends AbstractSensors {
         String tempStr = Executor.getFirstAnswer("vcgencmd measure_temp");
         // temp=50.8'C
         if (tempStr.startsWith("temp=")) {
-            return Builder.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", ""), 0d);
+            return Parsing.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);
         }
         return 0d;
     }
@@ -103,37 +106,9 @@ public final class LinuxSensors extends AbstractSensors {
         String voltageStr = Executor.getFirstAnswer("vcgencmd measure_volts core");
         // volt=1.20V
         if (voltageStr.startsWith("volt=")) {
-            return Builder.parseDoubleOrDefault(voltageStr.replaceAll("[^\\d|\\.]+", ""), 0d);
+            return Parsing.parseDoubleOrDefault(voltageStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);
         }
         return 0d;
-    }
-
-    /*
-     * Iterate over all hwmon* directories and look for sensor files, e.g.,
-     * /sys/class/hwmon/hwmon0/temp1_input
-     */
-    private void populateSensorsMapFromHwmon() {
-        for (String sensor : SENSORS) {
-            // Final to pass to anonymous class
-            final String sensorPrefix = sensor;
-            // Find any *_input files in that path
-            getSensorFilesFromPath(HWMON_PATH, sensor, f -> {
-                try {
-                    return f.getName().startsWith(sensorPrefix) && f.getName().endsWith("_input")
-                            && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
-                } catch (IOException e) {
-                    return false;
-                }
-            });
-        }
-    }
-
-    /*
-     * Iterate over all thermal_zone* directories and look for sensor files, e.g.,
-     * /sys/class/thermal/thermal_zone0/temp
-     */
-    private void populateSensorsMapFromThermalZone() {
-        getSensorFilesFromPath(THERMAL_ZONE_PATH, TEMP, f -> f.getName().equals(TEMP));
     }
 
     /**
@@ -154,6 +129,32 @@ public final class LinuxSensors extends AbstractSensors {
             }
             i++;
         }
+    }
+
+    /*
+     * Iterate over all hwmon* directories and look for sensor files, e.g., /sys/class/hwmon/hwmon0/temp1_input
+     */
+    private void populateSensorsMapFromHwmon() {
+        for (String sensor : SENSORS) {
+            // Final to pass to anonymous class
+            final String sensorPrefix = sensor;
+            // Find any *_input files in that path
+            getSensorFilesFromPath(HWMON_PATH, sensor, f -> {
+                try {
+                    return f.getName().startsWith(sensorPrefix) && f.getName().endsWith("_input")
+                            && Builder.getIntFromFile(f.getCanonicalPath()) > 0;
+                } catch (IOException e) {
+                    return false;
+                }
+            });
+        }
+    }
+
+    /*
+     * Iterate over all thermal_zone* directories and look for sensor files, e.g., /sys/class/thermal/thermal_zone0/temp
+     */
+    private void populateSensorsMapFromThermalZone() {
+        getSensorFilesFromPath(THERMAL_ZONE_PATH, TEMP, f -> f.getName().equals(TEMP));
     }
 
     @Override

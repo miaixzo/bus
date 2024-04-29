@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,8 +29,8 @@ import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.health.Formats;
 
 /**
- * The PhysicalMemory class represents a physical memory device located on a
- * computer system and available to the operating system.
+ * The PhysicalMemory class represents a physical memory device located on a computer system and available to the
+ * operating system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,13 +43,16 @@ public class PhysicalMemory {
     private final long clockSpeed;
     private final String manufacturer;
     private final String memoryType;
+    private final String partNumber;
 
-    public PhysicalMemory(String bankLabel, long capacity, long clockSpeed, String manufacturer, String memoryType) {
+    public PhysicalMemory(String bankLabel, long capacity, long clockSpeed, String manufacturer, String memoryType,
+                          String partNumber) {
         this.bankLabel = bankLabel;
         this.capacity = capacity;
         this.clockSpeed = clockSpeed;
         this.manufacturer = manufacturer;
         this.memoryType = memoryType;
+        this.partNumber = partNumber;
     }
 
     /**
@@ -73,8 +76,7 @@ public class PhysicalMemory {
     /**
      * The configured memory clock speed in hertz.
      * <p>
-     * For DDR memory, this is the data transfer rate, which is a multiple of the
-     * actual bus clock speed.
+     * For DDR memory, this is the data transfer rate, which is a multiple of the actual bus clock speed.
      *
      * @return the clock speed, if avaialable. If unknown, returns -1.
      */
@@ -100,6 +102,15 @@ public class PhysicalMemory {
         return memoryType;
     }
 
+    /**
+     * The part number of the physical memory
+     *
+     * @return the part number
+     */
+    public String getPartNumber() {
+        return partNumber;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -108,7 +119,7 @@ public class PhysicalMemory {
         sb.append(", Clock speed: " + Formats.formatHertz(getClockSpeed()));
         sb.append(", Manufacturer: " + getManufacturer());
         sb.append(", Memory type: " + getMemoryType());
+        sb.append(", Part number: " + getPartNumber());
         return sb.toString();
     }
-
 }

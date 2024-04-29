@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,14 +30,15 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.Struct;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.*;
+import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
 import org.miaixz.bus.health.mac.SysctlKit;
-import org.miaixz.bus.health.mac.drivers.Who;
-import org.miaixz.bus.health.mac.drivers.WindowInfo;
+import org.miaixz.bus.health.mac.driver.Who;
+import org.miaixz.bus.health.mac.driver.WindowInfo;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
@@ -45,9 +46,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * macOS, previously Mac OS X and later OS X) is a series of proprietary
- * graphical operating systems developed and marketed by Apple Inc. since 2001.
- * It is the primary operating system for Apple's Mac computers.
+ * macOS, previously Mac OS X and later OS X) is a series of proprietary graphical operating systems developed and
+ * marketed by Apple Inc. since 2001. It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,8 +64,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
                 // Usually this works. If it doesn't, fall back to text parsing.
                 // Boot time will be the first consecutive string of digits.
-                BOOTTIME = Builder.parseLongOrDefault(
-                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                BOOTTIME = Parsing.parseLongOrDefault(
+                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
                         System.currentTimeMillis() / 1000);
             } else {
                 // tv now points to a 64-bit timeval structure for boot time.
@@ -83,16 +83,16 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     public MacOperatingSystem() {
         String version = System.getProperty("os.version");
-        int verMajor = Builder.getFirstIntValue(version);
-        int verMinor = Builder.getNthIntValue(version, 2);
+        int verMajor = Parsing.getFirstIntValue(version);
+        int verMinor = Parsing.getNthIntValue(version, 2);
         // Big Sur (11.x) may return 10.16
         if (verMajor == 10 && verMinor > 15) {
             String swVers = Executor.getFirstAnswer("sw_vers -productVersion");
             if (!swVers.isEmpty()) {
                 version = swVers;
             }
-            verMajor = Builder.getFirstIntValue(version);
-            verMinor = Builder.getNthIntValue(version, 2);
+            verMajor = Parsing.getFirstIntValue(version);
+            verMinor = Parsing.getNthIntValue(version, 2);
         }
         this.osXVersion = version;
         this.major = verMajor;
@@ -107,16 +107,16 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
                 : System.getProperty("os.name");
         String codeName = parseCodeName();
         String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
-        return Pair.of(family, new OSVersionInfo(this.osXVersion, codeName, buildNumber));
+        return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
     private String parseCodeName() {
-        Properties verProps = Config.readProperties(Config.MACOS_VERSIONS_PROPERTIES);
+        Properties verProps = Config.readProperties(Config._MACOS_VERSIONS_PROPERTIES);
         String codeName = null;
         if (this.major > 10) {
             codeName = verProps.getProperty(Integer.toString(this.major));
@@ -134,7 +134,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         if (jvmBitness == 64 || (this.major == 10 && this.minor > 6)) {
             return 64;
         }
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), 32);
+        return Parsing.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), 32);
     }
 
     @Override

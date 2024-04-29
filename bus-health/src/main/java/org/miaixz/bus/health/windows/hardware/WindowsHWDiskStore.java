@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,18 +29,24 @@ import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.hardware.AbstractHWDiskStore;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
-import org.miaixz.bus.health.windows.drivers.perfmon.PhysicalDisk;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32DiskDrive;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32DiskDriveToDiskPartition;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32DiskPartition;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32LogicalDiskToPartition;
+import org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk;
+import org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk.PhysicalDiskProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive.DiskDriveProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition.DriveToPartitionProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition;
+import org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition.DiskPartitionProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition;
+import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition.DiskToPartitionProperty;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.*;
@@ -92,16 +98,16 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             DiskStats stats = queryReadWriteStats(null);
             PartitionMaps maps = queryPartitionMaps(h);
 
-            WmiResult<Win32DiskDrive.DiskDriveProperty> vals = Win32DiskDrive.queryDiskDrive(h);
+            WmiResult<DiskDriveProperty> vals = Win32DiskDrive.queryDiskDrive(h);
             for (int i = 0; i < vals.getResultCount(); i++) {
-                WindowsHWDiskStore ds = new WindowsHWDiskStore(WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.NAME, i),
-                        String.format(Locale.ROOT, "%s %s", WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.MODEL, i),
-                                WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.MANUFACTURER, i)).trim(),
+                WindowsHWDiskStore ds = new WindowsHWDiskStore(WmiKit.getString(vals, DiskDriveProperty.NAME, i),
+                        String.format(Locale.ROOT, "%s %s", WmiKit.getString(vals, DiskDriveProperty.MODEL, i),
+                                WmiKit.getString(vals, DiskDriveProperty.MANUFACTURER, i)).trim(),
                         // Most vendors store serial # as a hex string; convert
-                        Builder.hexStringToString(WmiKit.getString(vals, Win32DiskDrive.DiskDriveProperty.SERIALNUMBER, i)),
-                        WmiKit.getUint64(vals, Win32DiskDrive.DiskDriveProperty.SIZE, i));
+                        Parsing.hexStringToString(WmiKit.getString(vals, DiskDriveProperty.SERIALNUMBER, i)),
+                        WmiKit.getUint64(vals, DiskDriveProperty.SIZE, i));
 
-                String index = Integer.toString(WmiKit.getUint32(vals, Win32DiskDrive.DiskDriveProperty.INDEX, i));
+                String index = Integer.toString(WmiKit.getUint32(vals, DiskDriveProperty.INDEX, i));
                 ds.reads = stats.readMap.getOrDefault(index, 0L);
                 ds.readBytes = stats.readByteMap.getOrDefault(index, 0L);
                 ds.writes = stats.writeMap.getOrDefault(index, 0L);
@@ -112,6 +118,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                 // However, alternative calculations require use of a timestamp with 1/64-second
                 // resolution producing unacceptable variation in what should be a monotonically
                 // increasing counter. See extended discussion and experiments here:
+                // https://github.com/oshi/oshi/issues/1504
                 ds.transferTime = stats.diskTimeMap.getOrDefault(index, 0L);
                 ds.timeStamp = stats.timeStamp;
                 // Get partitions
@@ -141,8 +148,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Gets disk stats for the specified index. If the index is null, populates all
-     * the maps
+     * Gets disk stats for the specified index. If the index is null, populates all the maps
      *
      * @param index The index to populate/update maps for
      * @return An object encapsulating maps with the stats
@@ -150,16 +156,16 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     private static DiskStats queryReadWriteStats(String index) {
         // Create object to hold and return results
         DiskStats stats = new DiskStats();
-        Pair<List<String>, Map<PhysicalDisk.PhysicalDiskProperty, List<Long>>> instanceValuePair = PhysicalDisk.queryDiskCounters();
+        Pair<List<String>, Map<PhysicalDiskProperty, List<Long>>> instanceValuePair = PhysicalDisk.queryDiskCounters();
         List<String> instances = instanceValuePair.getLeft();
-        Map<PhysicalDisk.PhysicalDiskProperty, List<Long>> valueMap = instanceValuePair.getRight();
+        Map<PhysicalDiskProperty, List<Long>> valueMap = instanceValuePair.getRight();
         stats.timeStamp = System.currentTimeMillis();
-        List<Long> readList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKREADSPERSEC);
-        List<Long> readByteList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKREADBYTESPERSEC);
-        List<Long> writeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKWRITESPERSEC);
-        List<Long> writeByteList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKWRITEBYTESPERSEC);
-        List<Long> queueLengthList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
-        List<Long> diskTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTDISKTIME);
+        List<Long> readList = valueMap.get(PhysicalDiskProperty.DISKREADSPERSEC);
+        List<Long> readByteList = valueMap.get(PhysicalDiskProperty.DISKREADBYTESPERSEC);
+        List<Long> writeList = valueMap.get(PhysicalDiskProperty.DISKWRITESPERSEC);
+        List<Long> writeByteList = valueMap.get(PhysicalDiskProperty.DISKWRITEBYTESPERSEC);
+        List<Long> queueLengthList = valueMap.get(PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
+        List<Long> diskTimeList = valueMap.get(PhysicalDiskProperty.PERCENTDISKTIME);
 
         if (instances.isEmpty() || readList == null || readByteList == null || writeList == null
                 || writeByteList == null || queueLengthList == null || diskTimeList == null) {
@@ -190,10 +196,10 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         Matcher mDep;
 
         // Map drives to partitions
-        WmiResult<Win32DiskDriveToDiskPartition.DriveToPartitionProperty> drivePartitionMap = Win32DiskDriveToDiskPartition.queryDriveToPartition(h);
+        WmiResult<DriveToPartitionProperty> drivePartitionMap = Win32DiskDriveToDiskPartition.queryDriveToPartition(h);
         for (int i = 0; i < drivePartitionMap.getResultCount(); i++) {
-            mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.ANTECEDENT, i));
-            mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.DEPENDENT, i));
+            mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, DriveToPartitionProperty.ANTECEDENT, i));
+            mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
                 maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", "\\"), x -> new ArrayList<>())
                         .add(mDep.group(1));
@@ -201,12 +207,12 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         }
 
         // Map partitions to logical disks
-        WmiResult<Win32LogicalDiskToPartition.DiskToPartitionProperty> diskPartitionMap = Win32LogicalDiskToPartition.queryDiskToPartition(h);
+        WmiResult<DiskToPartitionProperty> diskPartitionMap = Win32LogicalDiskToPartition.queryDiskToPartition(h);
         for (int i = 0; i < diskPartitionMap.getResultCount(); i++) {
-            mAnt = DEVICE_ID.matcher(WmiKit.getRefString(diskPartitionMap, Win32LogicalDiskToPartition.DiskToPartitionProperty.ANTECEDENT, i));
-            mDep = DEVICE_ID.matcher(WmiKit.getRefString(diskPartitionMap, Win32LogicalDiskToPartition.DiskToPartitionProperty.DEPENDENT, i));
-            long size = WmiKit.getUint64(diskPartitionMap, Win32LogicalDiskToPartition.DiskToPartitionProperty.ENDINGADDRESS, i)
-                    - WmiKit.getUint64(diskPartitionMap, Win32LogicalDiskToPartition.DiskToPartitionProperty.STARTINGADDRESS, i) + 1L;
+            mAnt = DEVICE_ID.matcher(WmiKit.getRefString(diskPartitionMap, DiskToPartitionProperty.ANTECEDENT, i));
+            mDep = DEVICE_ID.matcher(WmiKit.getRefString(diskPartitionMap, DiskToPartitionProperty.DEPENDENT, i));
+            long size = WmiKit.getUint64(diskPartitionMap, DiskToPartitionProperty.ENDINGADDRESS, i)
+                    - WmiKit.getUint64(diskPartitionMap, DiskToPartitionProperty.STARTINGADDRESS, i) + 1L;
             if (mAnt.matches() && mDep.matches()) {
                 if (maps.partitionToLogicalDriveMap.containsKey(mAnt.group(1))) {
                     maps.partitionToLogicalDriveMap.get(mAnt.group(1)).add(Pair.of(mDep.group(1) + "\\", size));
@@ -219,9 +225,9 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         }
 
         // Next, get all partitions and create objects
-        WmiResult<Win32DiskPartition.DiskPartitionProperty> hwPartitionQueryMap = Win32DiskPartition.queryPartition(h);
+        WmiResult<DiskPartitionProperty> hwPartitionQueryMap = Win32DiskPartition.queryPartition(h);
         for (int i = 0; i < hwPartitionQueryMap.getResultCount(); i++) {
-            String deviceID = WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DEVICEID, i);
+            String deviceID = WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.DEVICEID, i);
             List<Pair<String, Long>> logicalDrives = maps.partitionToLogicalDriveMap.get(deviceID);
             if (logicalDrives == null) {
                 continue;
@@ -231,14 +237,14 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                 if (logicalDrive != null && !logicalDrive.getLeft().isEmpty()) {
                     char[] volumeChr = new char[GUID_BUFSIZE];
                     Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(logicalDrive.getLeft(), volumeChr, GUID_BUFSIZE);
-                    String uuid = Builder.parseUuidOrDefault(new String(volumeChr).trim(), "");
+                    String uuid = Parsing.parseUuidOrDefault(new String(volumeChr).trim(), Normal.EMPTY);
                     HWPartition pt = new HWPartition(
-                            WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.NAME, i),
-                            WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.TYPE, i),
-                            WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DESCRIPTION, i), uuid,
+                            WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.NAME, i),
+                            WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.TYPE, i),
+                            WmiKit.getString(hwPartitionQueryMap, DiskPartitionProperty.DESCRIPTION, i), uuid,
                             logicalDrive.getRight(),
-                            WmiKit.getUint32(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DISKINDEX, i),
-                            WmiKit.getUint32(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.INDEX, i),
+                            WmiKit.getUint32(hwPartitionQueryMap, DiskPartitionProperty.DISKINDEX, i),
+                            WmiKit.getUint32(hwPartitionQueryMap, DiskPartitionProperty.INDEX, i),
                             logicalDrive.getLeft());
                     if (maps.partitionMap.containsKey(deviceID)) {
                         maps.partitionMap.get(deviceID).add(pt);
@@ -251,19 +257,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             }
         }
         return maps;
-    }
-
-    /**
-     * Parse a drive name like "0 C:" to just the index "0"
-     *
-     * @param s A drive name to parse
-     * @return The first space-delimited value
-     */
-    private static String getIndexFromName(String s) {
-        if (s.isEmpty()) {
-            return s;
-        }
-        return s.split("\\s")[0];
     }
 
     @Override
@@ -306,9 +299,22 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         return this.partitionList;
     }
 
+    /**
+     * Parse a drive name like "0 C:" to just the index "0"
+     *
+     * @param s A drive name to parse
+     * @return The first space-delimited value
+     */
+    private static String getIndexFromName(String s) {
+        if (s.isEmpty()) {
+            return s;
+        }
+        return s.split("\\s")[0];
+    }
+
     @Override
     public boolean updateAttributes() {
-        String index = null;
+        String index;
         List<HWPartition> partitions = getPartitions();
         if (!partitions.isEmpty()) {
             // If a partition exists on this drive, the major property

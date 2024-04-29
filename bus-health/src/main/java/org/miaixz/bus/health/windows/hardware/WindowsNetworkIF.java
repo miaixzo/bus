@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,10 +29,11 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.hardware.AbstractNetworkIF;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.logger.Logger;
 
 import java.net.NetworkInterface;
@@ -191,7 +192,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 this.inDrops = ifRow.InDiscards; // closest proxy
                 this.speed = ifRow.ReceiveLinkSpeed;
                 this.ifAlias = Native.toString(ifRow.Alias);
-                this.ifOperStatus = IfOperStatus.byValue(ifRow.OperStatus);
+                this.ifOperStatus = NetworkIF.IfOperStatus.byValue(ifRow.OperStatus);
             }
         } else {
             // Create new MIB_IFROW and set index to this interface index
@@ -205,17 +206,17 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
                 }
                 this.ifType = ifRow.dwType;
                 // These are unsigned ints. Widen them to longs.
-                this.bytesSent = Builder.unsignedIntToLong(ifRow.dwOutOctets);
-                this.bytesRecv = Builder.unsignedIntToLong(ifRow.dwInOctets);
-                this.packetsSent = Builder.unsignedIntToLong(ifRow.dwOutUcastPkts);
-                this.packetsRecv = Builder.unsignedIntToLong(ifRow.dwInUcastPkts);
-                this.outErrors = Builder.unsignedIntToLong(ifRow.dwOutErrors);
-                this.inErrors = Builder.unsignedIntToLong(ifRow.dwInErrors);
-                this.collisions = Builder.unsignedIntToLong(ifRow.dwOutDiscards); // closest proxy
-                this.inDrops = Builder.unsignedIntToLong(ifRow.dwInDiscards); // closest proxy
-                this.speed = Builder.unsignedIntToLong(ifRow.dwSpeed);
-                this.ifAlias = ""; // not supported by MIB_IFROW
-                this.ifOperStatus = IfOperStatus.UNKNOWN; // not supported
+                this.bytesSent = Parsing.unsignedIntToLong(ifRow.dwOutOctets);
+                this.bytesRecv = Parsing.unsignedIntToLong(ifRow.dwInOctets);
+                this.packetsSent = Parsing.unsignedIntToLong(ifRow.dwOutUcastPkts);
+                this.packetsRecv = Parsing.unsignedIntToLong(ifRow.dwInUcastPkts);
+                this.outErrors = Parsing.unsignedIntToLong(ifRow.dwOutErrors);
+                this.inErrors = Parsing.unsignedIntToLong(ifRow.dwInErrors);
+                this.collisions = Parsing.unsignedIntToLong(ifRow.dwOutDiscards); // closest proxy
+                this.inDrops = Parsing.unsignedIntToLong(ifRow.dwInDiscards); // closest proxy
+                this.speed = Parsing.unsignedIntToLong(ifRow.dwSpeed);
+                this.ifAlias = Normal.EMPTY; // not supported by MIB_IFROW
+                this.ifOperStatus = NetworkIF.IfOperStatus.UNKNOWN; // not supported
             }
         }
         this.timeStamp = System.currentTimeMillis();

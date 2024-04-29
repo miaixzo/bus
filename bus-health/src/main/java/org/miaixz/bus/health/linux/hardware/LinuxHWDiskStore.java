@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,9 +34,11 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.hardware.AbstractHWDiskStore;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
+import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
@@ -72,16 +74,11 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     private static final String DM_VG_NAME = "DM_VG_NAME";
     private static final String DM_LV_NAME = "DM_LV_NAME";
     private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
-    private static final String DEV_LOCATION = "/dev/";
-    private static final String DEV_MAPPER = DEV_LOCATION + "mapper/";
 
     private static final int SECTORSIZE = 512;
 
-    // Get a list of orders to pass to ParseUtil
+    // Get a list of orders to pass to Parsing
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
-    // There are at least 11 elements in udev stat output or sometimes 15. We want
-    // the rightmost 11 or 15 if there is leading text.
-    private static final int UDEV_STAT_LENGTH;
 
     static {
         for (UdevStat stat : UdevStat.values()) {
@@ -89,11 +86,15 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         }
     }
 
+    // There are at least 11 elements in udev stat output or sometimes 15. We want
+    // the rightmost 11 or 15 if there is leading text.
+    private static final int UDEV_STAT_LENGTH;
+
     static {
         String stat = Builder.getStringFromFile(ProcPath.DISKSTATS);
         int statLength = 11;
         if (!stat.isEmpty()) {
-            statLength = Builder.countStringToLongArray(stat, ' ');
+            statLength = Parsing.countStringToLongArray(stat, ' ');
         }
         UDEV_STAT_LENGTH = statLength;
     }
@@ -109,15 +110,6 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     private LinuxHWDiskStore(String name, String model, String serial, long size) {
         super(name, model, serial, size);
-    }
-
-    /**
-     * Gets the disks on this machine
-     *
-     * @return a list of {@link HWDiskStore} objects representing the disks
-     */
-    public static List<HWDiskStore> getDisks() {
-        return getDisks(null);
     }
 
     private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
@@ -144,15 +136,15 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                             // devnode is what we use as name, like /dev/sda
                             String devnode = device.getDevnode();
                             // Ignore loopback and ram disks; do nothing
-                            if (devnode != null && !devnode.startsWith("/dev/loop")
-                                    && !devnode.startsWith("/dev/ram")) {
+                            if (devnode != null && !devnode.startsWith(DevPath.LOOP)
+                                    && !devnode.startsWith(DevPath.RAM)) {
                                 if (DISK.equals(device.getDevtype())) {
                                     // Null model and serial in virtual environments
                                     String devModel = device.getPropertyValue(ID_MODEL);
                                     String devSerial = device.getPropertyValue(ID_SERIAL_SHORT);
-                                    long devSize = Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                    long devSize = Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
-                                    if (devnode.startsWith("/dev/dm")) {
+                                    if (devnode.startsWith(DevPath.DM)) {
                                         devModel = LOGICAL_VOLUME_GROUP;
                                         devSerial = device.getPropertyValue(DM_UUID);
                                         store = new LinuxHWDiskStore(devnode, devModel,
@@ -163,12 +155,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                 getPartitionNameForDmDevice(vgName, lvName), device.getSysname(),
                                                 device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? ""
+                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
                                                         : device.getPropertyValue(ID_FS_UUID),
-                                                Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,
-                                                Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
-                                                Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
                                                 getMountPointOfDmDevice(vgName, lvName)));
                                     } else {
                                         store = new LinuxHWDiskStore(devnode,
@@ -202,12 +194,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         store.partitionList.add(new HWPartition(name, device.getSysname(),
                                                 device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? ""
+                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
                                                         : device.getPropertyValue(ID_FS_UUID),
-                                                Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                Parsing.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,
-                                                Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
-                                                Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                Parsing.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
                                                 mountsMap.getOrDefault(name,
                                                         getDependentNamesFromHoldersDirectory(device.getSysname()))));
                                     }
@@ -237,7 +229,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
             String[] split = RegEx.SPACES.split(mount);
-            if (split.length < 2 || !split[0].startsWith(DEV_LOCATION)) {
+            if (split.length < 2 || !split[0].startsWith(DevPath.DEV)) {
                 continue;
             }
             mountsMap.put(split[0], split[1]);
@@ -246,7 +238,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
+        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes
@@ -259,20 +251,11 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static String getPartitionNameForDmDevice(String vgName, String lvName) {
-        return new StringBuilder().append(DEV_LOCATION).append(vgName).append('/').append(lvName).toString();
+        return DevPath.DEV + vgName + '/' + lvName;
     }
 
     private static String getMountPointOfDmDevice(String vgName, String lvName) {
-        return new StringBuilder().append(DEV_MAPPER).append(vgName).append('-').append(lvName).toString();
-    }
-
-    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
-        File holdersDir = new File(sysPath + "/holders");
-        File[] holders = holdersDir.listFiles();
-        if (holders != null) {
-            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
-        }
-        return "";
+        return DevPath.MAPPER + vgName + '-' + lvName;
     }
 
     @Override
@@ -288,6 +271,15 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     @Override
     public long getWrites() {
         return writes;
+    }
+
+    /**
+     * Gets the disks on this machine
+     *
+     * @return a list of {@link HWDiskStore} objects representing the disks
+     */
+    public static List<HWDiskStore> getDisks() {
+        return getDisks(null);
     }
 
     @Override
@@ -322,21 +314,29 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return !getDisks(this).isEmpty();
     }
 
+    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
+        File holdersDir = new File(sysPath + "/holders");
+        File[] holders = holdersDir.listFiles();
+        if (holders != null) {
+            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
+        }
+        return Normal.EMPTY;
+    }
+
     // Order the field is in udev stats
     enum UdevStat {
-        // The parsing implementation in ParseUtil requires these to be declared
+        // The parsing implementation in Parsing requires these to be declared
         // in increasing order. Use 0-ordered index here
         READS(0), READ_BYTES(2), WRITES(4), WRITE_BYTES(6), QUEUE_LENGTH(8), ACTIVE_MS(9);
 
         private final int order;
 
-        UdevStat(int order) {
-            this.order = order;
-        }
-
         public int getOrder() {
             return this.order;
         }
-    }
 
+        UdevStat(int order) {
+            this.order = order;
+        }
+    }
 }

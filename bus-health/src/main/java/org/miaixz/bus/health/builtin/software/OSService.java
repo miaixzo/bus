@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,12 +28,10 @@ package org.miaixz.bus.health.builtin.software;
 import org.miaixz.bus.core.annotation.Immutable;
 
 /**
- * Operating system services are responsible for the management of platform
- * resources, including the processor, memory, files, and input and output. They
- * generally shield applications from the implementation details of the machine.
- * <p>
- * This class is provided for information purposes only. Interpretation of the
- * meaning of services is platform-dependent.
+ * Operating system services are responsible for the management of platform resources, including the processor, memory,
+ * files, and input and output. They generally shield applications from the implementation details of the machine.
+ * This class is provided for information purposes only. Interpretation of the meaning of services is
+ * platform-dependent.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,6 +42,13 @@ public class OSService {
     private final String name;
     private final int processID;
     private final State state;
+
+    /**
+     * Service Execution States
+     */
+    public enum State {
+        RUNNING, STOPPED, OTHER
+    }
 
     /**
      * Instantiate a new {@link OSService}.
@@ -89,13 +94,6 @@ public class OSService {
      */
     public State getState() {
         return this.state;
-    }
-
-    /**
-     * Service Execution States
-     */
-    public enum State {
-        RUNNING, STOPPED, OTHER
     }
 
 }

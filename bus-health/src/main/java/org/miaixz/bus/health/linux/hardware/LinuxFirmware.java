@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,10 +30,10 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractFirmware;
-import org.miaixz.bus.health.linux.drivers.Dmidecode;
-import org.miaixz.bus.health.linux.drivers.Sysfs;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
+import org.miaixz.bus.health.linux.driver.Dmidecode;
+import org.miaixz.bus.health.linux.driver.Sysfs;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -50,38 +50,16 @@ import java.util.function.Supplier;
 @Immutable
 final class LinuxFirmware extends AbstractFirmware {
 
+    // Jan 13 2013 16:24:29
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter.ofPattern("MMM d uuuu HH:mm:ss",
             Locale.ENGLISH);
-    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoize.memoize(LinuxFirmware::queryVcGenCmd);
-    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
-    private final Supplier<String> description = Memoize.memoize(this::queryDescription);
-    private final Supplier<String> releaseDate = Memoize.memoize(this::queryReleaseDate);
-    private final Supplier<Pair<String, String>> biosNameRev = Memoize.memoize(Dmidecode::queryBiosNameRev);
-    private final Supplier<String> version = Memoize.memoize(this::queryVersion);
-    private final Supplier<String> name = Memoize.memoize(this::queryName);
-
-    private static VcGenCmdStrings queryVcGenCmd() {
-        String vcReleaseDate;
-        String vcManufacturer;
-        String vcVersion;
-
-        List<String> vcgencmd = Executor.runNative("vcgencmd version");
-        if (vcgencmd.size() >= 3) {
-            // First line is date
-            try {
-                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
-            } catch (DateTimeParseException e) {
-                vcReleaseDate = Normal.UNKNOWN;
-            }
-            // Second line is copyright
-            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
-            vcManufacturer = copyright[copyright.length - 1];
-            // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", "");
-            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
-        }
-        return new VcGenCmdStrings(null, null, null, null, null);
-    }
+    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoizer.memoize(LinuxFirmware::queryVcGenCmd);
+    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final Supplier<String> description = Memoizer.memoize(this::queryDescription);
+    private final Supplier<String> releaseDate = Memoizer.memoize(this::queryReleaseDate);
+    private final Supplier<Pair<String, String>> biosNameRev = Memoizer.memoize(Dmidecode::queryBiosNameRev);
+    private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+    private final Supplier<String> name = Memoizer.memoize(this::queryName);
 
     @Override
     public String getManufacturer() {
@@ -147,6 +125,29 @@ final class LinuxFirmware extends AbstractFirmware {
             return Normal.UNKNOWN;
         }
         return result;
+    }
+
+    private static VcGenCmdStrings queryVcGenCmd() {
+        String vcReleaseDate;
+        String vcManufacturer;
+        String vcVersion;
+
+        List<String> vcgencmd = Executor.runNative("vcgencmd version");
+        if (vcgencmd.size() >= 3) {
+            // First line is date
+            try {
+                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
+            } catch (DateTimeParseException e) {
+                vcReleaseDate = Normal.UNKNOWN;
+            }
+            // Second line is copyright
+            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
+            vcManufacturer = copyright[copyright.length - 1];
+            // Third line is version
+            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
+            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
+        }
+        return new VcGenCmdStrings(null, null, null, null, null);
     }
 
     private static final class VcGenCmdStrings {

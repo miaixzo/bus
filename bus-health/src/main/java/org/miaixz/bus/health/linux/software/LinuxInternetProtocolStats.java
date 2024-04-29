@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,14 +26,16 @@
 package org.miaixz.bus.health.linux.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.software.AbstractInternetProtocolStats;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
+import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
 import org.miaixz.bus.health.linux.ProcPath;
-import org.miaixz.bus.health.linux.drivers.proc.ProcessStat;
-import org.miaixz.bus.health.unix.NetStat;
+import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
+import org.miaixz.bus.health.unix.driver.NetStat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +50,18 @@ import java.util.Map;
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
-        List<IPConnection> conns = new ArrayList<>();
-        for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
+    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
+        List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
+        for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
             if (s.indexOf(':') >= 0) {
                 String[] split = RegEx.SPACES.split(s.trim());
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
                     Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
-                    TcpState state = stateLookup(Builder.hexStringToInt(split[3], 0));
+                    InternetProtocolStats.TcpState state = stateLookup(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
-                    int inode = Builder.parseIntOrDefault(split[9], 0);
-                    conns.add(new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
+                    int inode = Parsing.parseIntOrDefault(split[9], 0);
+                    conns.add(new InternetProtocolStats.IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
                             state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
                 }
             }
@@ -70,7 +72,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static Pair<byte[], Integer> parseIpAddr(String s) {
         int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
-            byte[] first = Builder.hexStringToByteArray(s.substring(0, colon));
+            byte[] first = Parsing.hexStringToByteArray(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
             for (int i = 0; i + 3 < first.length; i += 4) {
                 byte tmp = first[i];
@@ -80,7 +82,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                 first[i + 1] = first[i + 2];
                 first[i + 2] = tmp;
             }
-            int second = Builder.hexStringToInt(s.substring(colon + 1), 0);
+            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
             return Pair.of(first, second);
         }
         return Pair.of(new byte[0], 0);
@@ -89,14 +91,14 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static Pair<Integer, Integer> parseHexColonHex(String s) {
         int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
-            int first = Builder.hexStringToInt(s.substring(0, colon), 0);
-            int second = Builder.hexStringToInt(s.substring(colon + 1), 0);
+            int first = Parsing.hexStringToInt(s.substring(0, colon), 0);
+            int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
             return Pair.of(first, second);
         }
         return Pair.of(0, 0);
     }
 
-    private static TcpState stateLookup(int state) {
+    private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
             case 0x01:
                 return InternetProtocolStats.TcpState.ESTABLISHED;
@@ -151,5 +153,4 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         conns.addAll(queryConnections("udp", 6, pidMap));
         return conns;
     }
-
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,11 +28,15 @@ package org.miaixz.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.software.AbstractFileSystem;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
+import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
+import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.logger.Logger;
 
@@ -45,10 +49,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * The Linux File System contains {@link OSFileStore}s which
- * are a storage pool, device, partition, volume, concrete file system or other
- * implementation specific means of file storage. In Linux, these are found in
- * the /proc/mount filesystem, excluding temporary and kernel mounts.
+ * The Linux File System contains {@link OSFileStore}s which are a storage pool, device, partition,
+ * volume, concrete file system or other implementation specific means of file storage. In Linux, these are found in the
+ * /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,26 +59,16 @@ import java.util.*;
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {
 
-    public static final String LINUX_FS_PATH_EXCLUDES = "bus.health.os.linux.filesystem.path.excludes";
-    public static final String LINUX_FS_PATH_INCLUDES = "bus.health.os.linux.filesystem.path.includes";
-    public static final String LINUX_FS_VOLUME_EXCLUDES = "bus.health.os.linux.filesystem.volume.excludes";
-    public static final String LINUX_FS_VOLUME_INCLUDES = "bus.health.os.linux.filesystem.volume.includes";
-
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(LINUX_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Config._LINUX_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(LINUX_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Config._LINUX_FS_PATH_INCLUDES);
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(LINUX_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Config._LINUX_FS_VOLUME_EXCLUDES);
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(LINUX_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Config._LINUX_FS_VOLUME_INCLUDES);
 
     private static final String UNICODE_SPACE = "\\040";
-
-    // called from LinuxOSFileStore
-    static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
-        return getFileStoreMatching(nameToMatch, uuidMap, false);
-    }
 
     private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap,
                                                           boolean localOnly) {
@@ -121,10 +114,10 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
+            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
 
             String description;
-            if (volume.startsWith("/dev")) {
+            if (volume.startsWith(DevPath.DEV)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";
@@ -136,13 +129,12 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Add in logical volume found at /dev/mapper, useful when linking
             // file system with drive.
-            String logicalVolume = "";
-            String volumeMapperDirectory = "/dev/mapper/";
+            String logicalVolume = Normal.EMPTY;
             Path link = Paths.get(volume);
             if (link.toFile().exists() && Files.isSymbolicLink(link)) {
                 try {
                     Path slink = Files.readSymbolicLink(link);
-                    Path full = Paths.get(volumeMapperDirectory + slink.toString());
+                    Path full = Paths.get(DevPath.MAPPER + slink.toString());
                     if (full.toFile().exists()) {
                         logicalVolume = full.normalize().toString();
                     }
@@ -187,6 +179,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
+    // called from LinuxOSFileStore
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
+        return getFileStoreMatching(nameToMatch, uuidMap, false);
+    }
+
     private static Map<String, String> queryLabelMap() {
         Map<String, String> labelMap = new HashMap<>();
         for (String line : Executor.runNative("lsblk -o mountpoint,label")) {
@@ -201,11 +198,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
     /**
      * Returns a value from the Linux system file /proc/sys/fs/file-nr.
      *
-     * @param index The index of the value to retrieve. 0 returns the total allocated
-     *              file descriptors. 1 returns the number of used file descriptors
-     *              for kernel 2.4, or the number of unused file descriptors for
-     *              kernel 2.6. 2 returns the maximum number of file descriptors that
-     *              can be allocated.
+     * @param index The index of the value to retrieve. 0 returns the total allocated file descriptors. 1 returns the
+     *              number of used file descriptors for kernel 2.4, or the number of unused file descriptors for kernel
+     *              2.6. 2 returns the maximum number of file descriptors that can be allocated.
      * @return Corresponding file descriptor value from the Linux system file.
      */
     private static long getFileDescriptors(int index) {
@@ -216,7 +211,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         List<String> osDescriptors = Builder.readFile(filename);
         if (!osDescriptors.isEmpty()) {
             String[] splittedLine = osDescriptors.get(0).split("\\D+");
-            return Builder.parseLongOrDefault(splittedLine[index], 0L);
+            return Parsing.parseLongOrDefault(splittedLine[index], 0L);
         }
         return 0L;
     }
@@ -229,7 +224,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
     public List<OSFileStore> getFileStores(boolean localOnly) {
         // Map of volume with device path as key
         Map<String, String> volumeDeviceMap = new HashMap<>();
-        File devMapper = new File("/dev/mapper");
+        File devMapper = new File(DevPath.MAPPER);
         File[] volumes = devMapper.listFiles();
         if (volumes != null) {
             for (File volume : volumes) {
@@ -242,7 +237,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         }
         // Map uuids with device path as key
         Map<String, String> uuidMap = new HashMap<>();
-        File uuidDir = new File("/dev/disk/by-uuid");
+        File uuidDir = new File(DevPath.DISK_BY_UUID);
         File[] uuids = uuidDir.listFiles();
         if (uuids != null) {
             for (File uuid : uuids) {
@@ -277,5 +272,4 @@ public class LinuxFileSystem extends AbstractFileSystem {
     public long getMaxFileDescriptorsPerProcess() {
         return getFileDescriptorsPerProcess();
     }
-
 }

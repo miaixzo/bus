@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,12 +31,12 @@ import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.software.AbstractNetworkParams;
-import org.miaixz.bus.health.linux.LinuxLibc;
-import org.miaixz.bus.health.unix.CLibrary;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.linux.jna.LinuxLibc;
+import org.miaixz.bus.health.unix.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
 import java.net.InetAddress;
@@ -50,11 +50,11 @@ import java.util.List;
  * @since Java 17+
  */
 @ThreadSafe
-public class LinuxNetworkParams extends AbstractNetworkParams {
+final class LinuxNetworkParams extends AbstractNetworkParams {
 
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
-    private static final String IPV4_DEFAULT_DEST = "0.0.0.0";
+    private static final String IPV4_DEFAULT_DEST = "0.0.0.0"; // NOSONAR
     private static final String IPV6_DEFAULT_DEST = "::/0";
 
     @Override
@@ -96,17 +96,17 @@ public class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv4DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet -n");
         if (routes.size() <= 2) {
-            return "";
+            return Normal.EMPTY;
         }
 
-        String gateway = "";
+        String gateway = Normal.EMPTY;
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
             String[] fields = RegEx.SPACES.split(routes.get(i));
             if (fields.length > 4 && fields[0].equals(IPV4_DEFAULT_DEST)) {
                 boolean isGateway = fields[3].indexOf('G') != -1;
-                int metric = Builder.parseIntOrDefault(fields[4], Integer.MAX_VALUE);
+                int metric = Parsing.parseIntOrDefault(fields[4], Integer.MAX_VALUE);
                 if (isGateway && metric < minMetric) {
                     minMetric = metric;
                     gateway = fields[1];
@@ -120,17 +120,17 @@ public class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv6DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet6 -n");
         if (routes.size() <= 2) {
-            return "";
+            return Normal.EMPTY;
         }
 
-        String gateway = "";
+        String gateway = Normal.EMPTY;
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
             String[] fields = RegEx.SPACES.split(routes.get(i));
             if (fields.length > 3 && fields[0].equals(IPV6_DEFAULT_DEST)) {
                 boolean isGateway = fields[2].indexOf('G') != -1;
-                int metric = Builder.parseIntOrDefault(fields[3], Integer.MAX_VALUE);
+                int metric = Parsing.parseIntOrDefault(fields[3], Integer.MAX_VALUE);
                 if (isGateway && metric < minMetric) {
                     minMetric = metric;
                     gateway = fields[1];

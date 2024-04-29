@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,16 +26,15 @@
 package org.miaixz.bus.health.linux;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Config;
 
 import java.io.File;
 
 /**
  * Provides constants for paths in the {@code /proc} filesystem on Linux.
- * <p>
- * If the user desires to configure a custom {@code /proc} path, it must be
- * declared in the health configuration file or updated in the
- * {@link Config} class prior to initializing this class.
+ * If the user desires to configure a custom {@code /proc} path, it must be declared in the configuration file or
+ * updated in the {@link Config} class prior to initializing this class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -78,16 +77,12 @@ public final class ProcPath {
     public static final String VERSION = PROC + "/version";
     public static final String VMSTAT = PROC + "/vmstat";
 
-    private ProcPath() {
-
-    }
-
     private static String queryProcConfig() {
-        String procPath = Config.get(Config.PROC_PATH, "/proc");
+        String procPath = Config.get(Config._UTIL_PROC_PATH, "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
-        procPath = '/' + procPath.replaceAll("/$|^/", "");
+        procPath = '/' + procPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(procPath).exists()) {
-            throw new Config.PropertyException(Config.PROC_PATH, "The path does not exist");
+            throw new Config.PropertyException(Config._UTIL_PROC_PATH, "The path does not exist");
         }
         return procPath;
     }

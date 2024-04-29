@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,10 +33,10 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quartet;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractComputerSystem;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 
 import java.util.function.Supplier;
 
@@ -49,33 +49,8 @@ import java.util.function.Supplier;
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Quartet<String, String, String, String>> manufacturerModelSerialUUID = Memoize.memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufacturerModelSerialUUID = Memoizer.memoize(
             MacComputerSystem::platformExpert);
-
-    private static Quartet<String, String, String, String> platformExpert() {
-        String manufacturer = null;
-        String model = null;
-        String serialNumber = null;
-        String uuid = null;
-        IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
-        if (platformExpert != null) {
-            byte[] data = platformExpert.getByteArrayProperty("manufacturer");
-            if (data != null) {
-                manufacturer = Native.toString(data, Charset.UTF_8);
-            }
-            data = platformExpert.getByteArrayProperty("model");
-            if (data != null) {
-                model = Native.toString(data, Charset.UTF_8);
-            }
-            serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
-            uuid = platformExpert.getStringProperty("IOPlatformUUID");
-            platformExpert.release();
-        }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
-                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
-                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
-                StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid);
-    }
 
     @Override
     public String getManufacturer() {
@@ -105,6 +80,31 @@ final class MacComputerSystem extends AbstractComputerSystem {
     @Override
     public Baseboard createBaseboard() {
         return new MacBaseboard();
+    }
+
+    private static Quartet<String, String, String, String> platformExpert() {
+        String manufacturer = null;
+        String model = null;
+        String serialNumber = null;
+        String uuid = null;
+        IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
+        if (platformExpert != null) {
+            byte[] data = platformExpert.getByteArrayProperty("manufacturer");
+            if (data != null) {
+                manufacturer = Native.toString(data, Charset.UTF_8);
+            }
+            data = platformExpert.getByteArrayProperty("model");
+            if (data != null) {
+                model = Native.toString(data, Charset.UTF_8);
+            }
+            serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
+            uuid = platformExpert.getStringProperty("IOPlatformUUID");
+            platformExpert.release();
+        }
+        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
+                StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid);
     }
 
 }

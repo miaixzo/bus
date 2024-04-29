@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,14 +27,15 @@ package org.miaixz.bus.health.linux.software;
 
 import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.*;
-import org.miaixz.bus.health.builtin.software.AbstractOSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;
-import org.miaixz.bus.health.linux.LinuxLibc;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.linux.ProcPath;
-import org.miaixz.bus.health.linux.drivers.proc.ProcessStat;
+import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
+import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
@@ -59,10 +60,11 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
 
-    // Get a list of orders to pass to ParseUtil
-    private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
-    private static final boolean LOG_PROCFS_WARNING = Config.get(Config.OS_LINUX_PROCFS_LOGWARNING,
+    private static final boolean LOG_PROCFS_WARNING = Config.get(Config._LINUX_PROCFS_LOGWARNING,
             false);
+
+    // Get a list of orders to pass to Parsing
+    private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
 
     static {
         for (ProcPidStat stat : ProcPidStat.values()) {
@@ -72,17 +74,18 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
-    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-    private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
-    private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
     private final LinuxOperatingSystem os;
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
+    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
+    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
+    private String path = Normal.EMPTY;
+
     private String name;
-    private String path = "";
-    private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
+    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
     private String userID;
-    private Supplier<String> user = Memoize.memoize(this::queryUser);
     private String groupID;
-    private Supplier<String> group = Memoize.memoize(this::queryGroup);
     private State state = State.INVALID;
     private int parentProcessID;
     private int threadCount;
@@ -106,8 +109,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * If some details couldn't be read from ProcPath.PID_STATUS try reading it from
-     * ProcPath.PID_STAT
+     * If some details couldn't be read from ProcPath.PID_STATUS try reading it from ProcPath.PID_STAT
      *
      * @param status status map to fill.
      * @param stat   string to read from.
@@ -147,6 +149,11 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return commandLine.get();
     }
 
+    @Override
+    public List<String> getArguments() {
+        return arguments.get();
+    }
+
     private String queryCommandLine() {
         return Arrays.stream(Builder
                         .getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
@@ -154,23 +161,13 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public List<String> getArguments() {
-        return arguments.get();
-    }
-
-    private List<String> queryArguments() {
-        return Collections.unmodifiableList(Builder.parseByteArrayToStrings(
-                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()))));
-    }
-
-    @Override
     public Map<String, String> getEnvironmentVariables() {
         return environmentVariables.get();
     }
 
-    private Map<String, String> queryEnvironmentVariables() {
-        return Collections.unmodifiableMap(Builder.parseByteArrayToStringMap(Builder
-                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
+    private List<String> queryArguments() {
+        return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(
+                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()))));
     }
 
     @Override
@@ -184,12 +181,17 @@ public class LinuxOSProcess extends AbstractOSProcess {
         } catch (IOException e) {
             Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     @Override
     public String getUser() {
         return user.get();
+    }
+
+    private Map<String, String> queryEnvironmentVariables() {
+        return Collections.unmodifiableMap(Parsing.parseByteArrayToStringMap(Builder
+                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
     }
 
     @Override
@@ -200,6 +202,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
     @Override
     public String getGroup() {
         return group.get();
+    }
+
+    private String queryUser() {
+        return IdGroup.getUser(userID);
     }
 
     @Override
@@ -336,6 +342,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
         return 0;
     }
 
+    private String queryGroup() {
+        return IdGroup.getGroupName(groupID);
+    }
+
     @Override
     public long getAffinityMask() {
         // Would prefer to use native sched_getaffinity call but variable sizing is
@@ -386,7 +396,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // We can get name and status more easily from /proc/pid/status which we
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
+        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
                 ProcessStat.PROC_PID_STAT_LENGTH, ' ');
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
@@ -409,23 +419,23 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];
         this.majorFaults = statArray[ProcPidStat.MAJOR_FAULTS.ordinal()];
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
+        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
+        long voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
 
         this.upTime = now - startTime;
 
         // See man proc for how to parse /proc/[pid]/io
-        this.bytesRead = Builder.parseLongOrDefault(io.getOrDefault("read_bytes", ""), 0L);
-        this.bytesWritten = Builder.parseLongOrDefault(io.getOrDefault("write_bytes", ""), 0L);
+        this.bytesRead = Parsing.parseLongOrDefault(io.getOrDefault("read_bytes", Normal.EMPTY), 0L);
+        this.bytesWritten = Parsing.parseLongOrDefault(io.getOrDefault("write_bytes", Normal.EMPTY), 0L);
 
         // Don't set open files or bitness or currentWorkingDirectory; fetch on demand.
 
-        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0];
+        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", Normal.EMPTY))[0];
         // defer user lookup until asked
-        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0];
+        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", Normal.EMPTY))[0];
         // defer group lookup until asked
-        this.name = status.getOrDefault("Name", "");
+        this.name = status.getOrDefault("Name", Normal.EMPTY);
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         return true;
     }
@@ -444,23 +454,15 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
         // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
         final String[] split = maxOpenFilesLine.get().split("\\D+");
-        return Long.parseLong(split[index]);
-    }
-
-    private String queryUser() {
-        return IdGroup.getUser(userID);
-    }
-
-    private String queryGroup() {
-        return IdGroup.getGroupName(groupID);
+        return Parsing.parseLongOrDefault(split[index], -1);
     }
 
     /**
-     * Enum used to update attributes. The order field represents the 1-indexed
-     * numeric order of the stat in /proc/pid/stat per the man file.
+     * Enum used to update attributes. The order field represents the 1-indexed numeric order of the stat in
+     * /proc/pid/stat per the man file.
      */
     private enum ProcPidStat {
-        // The parsing implementation in ParseUtil requires these to be declared
+        // The parsing implementation in Parsing requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
         START_TIME(22), VSZ(23), RSS(24);
@@ -475,5 +477,4 @@ public class LinuxOSProcess extends AbstractOSProcess {
             return this.order;
         }
     }
-
 }

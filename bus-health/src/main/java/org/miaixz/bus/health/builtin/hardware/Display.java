@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,20 +28,17 @@ package org.miaixz.bus.health.builtin.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 
 /**
- * Display refers to the information regarding a video source and monitor
- * identified by the EDID standard.
+ * Display refers to the information regarding a video source and monitor identified by the EDID standard.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Immutable
 public interface Display {
-
     /**
      * The EDID byte array.
      *
      * @return The original unparsed EDID byte array.
      */
     byte[] getEdid();
-
 }

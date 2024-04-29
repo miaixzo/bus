@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,8 +32,9 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
+import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -41,7 +42,6 @@ import java.io.File;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -66,7 +66,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
     private String ifAlias = Normal.EMPTY;
-    private IfOperStatus ifOperStatus = NetworkIF.IfOperStatus.UNKNOWN;
+    private NetworkIF.IfOperStatus ifOperStatus = NetworkIF.IfOperStatus.UNKNOWN;
 
     public LinuxNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint, queryIfModel(netint));
@@ -81,7 +81,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         UdevContext udev = Udev.INSTANCE.udev_new();
         if (udev != null) {
             try {
-                UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
+                UdevDevice device = udev.deviceNewFromSyspath(SysPath.NET + name);
                 if (device != null) {
                     try {
                         String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
@@ -104,7 +104,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     }
 
     private static String queryIfModelFromSysfs(String name) {
-        Map<String, String> uevent = Builder.getKeyValueMapFromFile("/sys/class/net/" + name + "/uevent", "=");
+        Map<String, String> uevent = Builder.getKeyValueMapFromFile(SysPath.NET + name + "/uevent", "=");
         String devVendor = uevent.get("ID_VENDOR_FROM_DATABASE");
         String devModel = uevent.get("ID_MODEL_FROM_DATABASE");
         if (!StringKit.isBlank(devModel)) {
@@ -132,26 +132,6 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
             }
         }
         return ifList;
-    }
-
-    private static NetworkIF.IfOperStatus parseIfOperStatus(String operState) {
-        switch (operState) {
-            case "up":
-                return NetworkIF.IfOperStatus.UP;
-            case "down":
-                return NetworkIF.IfOperStatus.DOWN;
-            case "testing":
-                return NetworkIF.IfOperStatus.TESTING;
-            case "dormant":
-                return NetworkIF.IfOperStatus.DORMANT;
-            case "notpresent":
-                return NetworkIF.IfOperStatus.NOT_PRESENT;
-            case "lowerlayerdown":
-                return NetworkIF.IfOperStatus.LOWER_LAYER_DOWN;
-            case "unknown":
-            default:
-                return NetworkIF.IfOperStatus.UNKNOWN;
-        }
     }
 
     @Override
@@ -224,48 +204,55 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         return ifOperStatus;
     }
 
+    private static NetworkIF.IfOperStatus parseIfOperStatus(String operState) {
+        switch (operState) {
+            case "up":
+                return NetworkIF.IfOperStatus.UP;
+            case "down":
+                return NetworkIF.IfOperStatus.DOWN;
+            case "testing":
+                return NetworkIF.IfOperStatus.TESTING;
+            case "dormant":
+                return NetworkIF.IfOperStatus.DORMANT;
+            case "notpresent":
+                return NetworkIF.IfOperStatus.NOT_PRESENT;
+            case "lowerlayerdown":
+                return NetworkIF.IfOperStatus.LOWER_LAYER_DOWN;
+            case "unknown":
+            default:
+                return NetworkIF.IfOperStatus.UNKNOWN;
+        }
+    }
+
     @Override
     public boolean updateAttributes() {
+        String name = SysPath.NET + getName();
         try {
-            File ifDir = new File(String.format(Locale.ROOT, "/sys/class/net/%s/statistics", getName()));
+            File ifDir = new File(name + "/statistics");
             if (!ifDir.isDirectory()) {
                 return false;
             }
         } catch (SecurityException e) {
             return false;
         }
-        String ifTypePath = String.format(Locale.ROOT, "/sys/class/net/%s/type", getName());
-        String carrierPath = String.format(Locale.ROOT, "/sys/class/net/%s/carrier", getName());
-        String txBytesPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/tx_bytes", getName());
-        String rxBytesPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/rx_bytes", getName());
-        String txPacketsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/tx_packets", getName());
-        String rxPacketsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/rx_packets", getName());
-        String txErrorsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/tx_errors", getName());
-        String rxErrorsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/rx_errors", getName());
-        String collisionsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/collisions", getName());
-        String rxDropsPath = String.format(Locale.ROOT, "/sys/class/net/%s/statistics/rx_dropped", getName());
-        String ifSpeed = String.format(Locale.ROOT, "/sys/class/net/%s/speed", getName());
-        String ifAliasPath = String.format(Locale.ROOT, "/sys/class/net/%s/ifalias", getName());
-        String ifOperStatusPath = String.format(Locale.ROOT, "/sys/class/net/%s/operstate", getName());
 
         this.timeStamp = System.currentTimeMillis();
-        this.ifType = Builder.getIntFromFile(ifTypePath);
-        this.connectorPresent = Builder.getIntFromFile(carrierPath) > 0;
-        this.bytesSent = Builder.getUnsignedLongFromFile(txBytesPath);
-        this.bytesRecv = Builder.getUnsignedLongFromFile(rxBytesPath);
-        this.packetsSent = Builder.getUnsignedLongFromFile(txPacketsPath);
-        this.packetsRecv = Builder.getUnsignedLongFromFile(rxPacketsPath);
-        this.outErrors = Builder.getUnsignedLongFromFile(txErrorsPath);
-        this.inErrors = Builder.getUnsignedLongFromFile(rxErrorsPath);
-        this.collisions = Builder.getUnsignedLongFromFile(collisionsPath);
-        this.inDrops = Builder.getUnsignedLongFromFile(rxDropsPath);
-        long speedMiB = Builder.getUnsignedLongFromFile(ifSpeed);
+        this.ifType = Builder.getIntFromFile(name + "/type");
+        this.connectorPresent = Builder.getIntFromFile(name + "/carrier") > 0;
+        this.bytesSent = Builder.getUnsignedLongFromFile(name + "/statistics/tx_bytes");
+        this.bytesRecv = Builder.getUnsignedLongFromFile(name + "/statistics/rx_bytes");
+        this.packetsSent = Builder.getUnsignedLongFromFile(name + "/statistics/tx_packets");
+        this.packetsRecv = Builder.getUnsignedLongFromFile(name + "/statistics/rx_packets");
+        this.outErrors = Builder.getUnsignedLongFromFile(name + "/statistics/tx_errors");
+        this.inErrors = Builder.getUnsignedLongFromFile(name + "/statistics/rx_errors");
+        this.collisions = Builder.getUnsignedLongFromFile(name + "/statistics/collisions");
+        this.inDrops = Builder.getUnsignedLongFromFile(name + "/statistics/rx_dropped");
+        long speedMiB = Builder.getUnsignedLongFromFile(name + "/speed");
         // speed may be -1 from file.
         this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
-        this.ifAlias = Builder.getStringFromFile(ifAliasPath);
-        this.ifOperStatus = parseIfOperStatus(Builder.getStringFromFile(ifOperStatusPath));
+        this.ifAlias = Builder.getStringFromFile(name + "/ifalias");
+        this.ifOperStatus = parseIfOperStatus(Builder.getStringFromFile(name + "/operstate"));
 
         return true;
     }
-
 }

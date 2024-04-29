@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,10 +27,11 @@ package org.miaixz.bus.health.linux.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.software.AbstractOSThread;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 import org.miaixz.bus.health.linux.ProcPath;
-import org.miaixz.bus.health.linux.drivers.proc.ProcessStat;
+import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 
 import java.util.Locale;
 import java.util.Map;
@@ -146,7 +147,7 @@ public class LinuxOSThread extends AbstractOSThread {
             return false;
         }
         long now = System.currentTimeMillis();
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS,
+        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS,
                 ProcessStat.PROC_PID_STAT_LENGTH, ' ');
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
@@ -163,8 +164,8 @@ public class LinuxOSThread extends AbstractOSThread {
         this.minorFaults = statArray[ThreadPidStat.MINOR_FAULTS.ordinal()];
         this.majorFaults = statArray[ThreadPidStat.MAJOR_FAULT.ordinal()];
         this.startMemoryAddress = statArray[ThreadPidStat.START_CODE.ordinal()];
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
+        long voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
+        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         this.kernelTime = statArray[ThreadPidStat.KERNEL_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
@@ -175,11 +176,11 @@ public class LinuxOSThread extends AbstractOSThread {
     }
 
     /**
-     * Enum used to update attributes. The order field represents the 1-indexed
-     * numeric order of the stat in /proc/pid/task/tid/stat per the man file.
+     * Enum used to update attributes. The order field represents the 1-indexed numeric order of the stat in
+     * /proc/pid/task/tid/stat per the man file.
      */
     private enum ThreadPidStat {
-        // The parsing implementation in ParseUtil requires these to be declared
+        // The parsing implementation in Parsing requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULT(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
         START_TIME(22), VSZ(23), RSS(24), START_CODE(26);
@@ -194,5 +195,4 @@ public class LinuxOSThread extends AbstractOSThread {
             return this.order;
         }
     }
-
 }

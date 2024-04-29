@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,8 +30,9 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.Immutable;
-import org.miaixz.bus.health.builtin.hardware.AbstractUsbDevice;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -60,17 +61,15 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing
-     * devices connected via a usb port (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
+     * (including internal devices).
      * <p>
-     * If the value of {@code tree} is true, the top level devices returned from
-     * this method are the USB Controllers; connected hubs and devices in its device
-     * tree share that controller's bandwidth. If the value of {@code tree} is
+     * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
+     * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
      * false, USB devices (not controllers) are listed in a single flat list.
      *
-     * @param tree If true, returns a list of controllers, which requires recursive
-     *             iteration of connected devices. If false, returns a flat list of
-     *             devices excluding controllers.
+     * @param tree If true, returns a list of controllers, which requires recursive iteration of connected devices. If
+     *             false, returns a flat list of devices excluding controllers.
      * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
@@ -183,8 +182,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Recursively creates LinuxUsbDevices by fetching information from maps to
-     * populate fields
+     * Recursively creates LinuxUsbDevices by fetching information from maps to populate fields
      *
      * @param devPath      The device node path.
      * @param vid          The default (parent) vendor ID
@@ -210,7 +208,8 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         }
         Collections.sort(usbDevices);
         return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
-                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }
+
 }

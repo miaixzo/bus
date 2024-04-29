@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,26 +30,37 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.IdGroup;
-import org.miaixz.bus.health.unix.Who;
-import org.miaixz.bus.health.unix.Xwininfo;
+import org.miaixz.bus.health.unix.driver.Who;
+import org.miaixz.bus.health.unix.driver.Xwininfo;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * An operating system (OS) is the software on a computer that manages the way
- * different programs use its hardware, and regulates the ways that a user
- * controls the computer.
- * <p>
- * Considered thread safe, but see remarks for the {@link #getSessions()}
- * method.
+ * An operating system (OS) is the software on a computer that manages the way different programs use its hardware, and
+ * regulates the ways that a user controls the computer.
+ * Considered thread safe, but see remarks for the {@link #getSessions()} method.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @ThreadSafe
 public interface OperatingSystem {
+
+    /**
+     * Instantiates a {@link FileSystem} object.
+     *
+     * @return A {@link FileSystem} object.
+     */
+    FileSystem getFileSystem();
+
+    /**
+     * Instantiates a {@link InternetProtocolStats} object.
+     *
+     * @return a {@link InternetProtocolStats} object.
+     */
+    InternetProtocolStats getInternetProtocolStats();
 
     /**
      * Get the Operating System family.
@@ -73,23 +84,9 @@ public interface OperatingSystem {
     OSVersionInfo getVersionInfo();
 
     /**
-     * Instantiates a {@link  FileSystem} object.
-     *
-     * @return A {@link  FileSystem} object.
-     */
-    FileSystem getFileSystem();
-
-    /**
-     * Instantiates a {@link  InternetProtocolStats} object.
-     *
-     * @return a {@link  InternetProtocolStats} object.
-     */
-    InternetProtocolStats getInternetProtocolStats();
-
-    /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return A list of {@link  OSProcess} objects for the specified number (or all) of currently
+     * @return A list of {@link OSProcess} objects for the specified number (or all) of currently
      * running processes, sorted as specified. The list may contain null elements or processes with a state of
      * {@link OSProcess.State#INVALID} if a process terminates during iteration.
      */
@@ -105,7 +102,7 @@ public interface OperatingSystem {
      * @param sort   An optional {@link Comparator} specifying the sorting order. Some common comparators are available
      *               in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit  Max number of results to return, or 0 to return all results
-     * @return A list of {@link  OSProcess} objects, optionally filtered, sorted, and limited to the
+     * @return A list of {@link OSProcess} objects, optionally filtered, sorted, and limited to the
      * specified number.
      * <p>
      * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
@@ -114,22 +111,10 @@ public interface OperatingSystem {
     List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
 
     /**
-     * Gets information on a {@link Collection} of currently running processes. This has potentially improved
-     * performance vs. iterating individual processes.
-     *
-     * @param pids A collection of process IDs
-     * @return A list of {@link OSProcess} objects for the specified process ids if it is running
-     */
-    default List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Gets information on a currently running process
      *
      * @param pid A process ID
-     * @return An {@link  OSProcess} object for the specified process id if it is running; null
+     * @return An {@link OSProcess} object for the specified process id if it is running; null
      * otherwise
      */
     OSProcess getProcess(int pid);
@@ -144,7 +129,7 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link  OSProcess} objects representing the currently running child processes
+     * @return A list of {@link OSProcess} objects representing the currently running child processes
      * of the provided PID, optionally filtered, sorted, and limited to the specified number.
      * <p>
      * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
@@ -152,6 +137,18 @@ public interface OperatingSystem {
      */
     List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
                                       int limit);
+
+    /**
+     * Gets information on a {@link Collection} of currently running processes. This has potentially improved
+     * performance vs. iterating individual processes.
+     *
+     * @param pids A collection of process IDs
+     * @return A list of {@link OSProcess} objects for the specified process ids if it is running
+     */
+    default List<OSProcess> getProcesses(Collection<Integer> pids) {
+        return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Gets currently running processes of provided parent PID's descendants, including their children, the children's
@@ -163,7 +160,7 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link  OSProcess} objects representing the currently running descendant
+     * @return A list of {@link OSProcess} objects representing the currently running descendant
      * processes of the provided PID, optionally filtered, sorted, and limited to the specified number.
      * <p>
      * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
@@ -171,6 +168,31 @@ public interface OperatingSystem {
      */
     List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
                                            int limit);
+
+    /**
+     * Instantiates a {@link NetworkParams} object.
+     *
+     * @return A {@link NetworkParams} object.
+     */
+    NetworkParams getNetworkParams();
+
+    /**
+     * Gets currently logged in users.
+     * <p>
+     * On macOS, Linux, and Unix systems, the default implementation uses native code (see {@code man getutxent}) that
+     * is not thread safe. OSHI's use of this code is synchronized and may be used in a multi-threaded environment
+     * without introducing any additional conflicts. Users should note, however, that other operating system code may
+     * access the same native code.
+     * <p>
+     * The {@link Who#queryWho()} method produces similar output parsing the output of the
+     * Posix-standard {@code who} command, and may internally employ reentrant code on some platforms. Users may opt to
+     * use this command-line variant by default using the {@code bus.health.unix.whoCommand} configuration property.
+     *
+     * @return A list of {@link OSSession} objects representing logged-in users
+     */
+    default List<OSSession> getSessions() {
+        return Who.queryWho();
+    }
 
     /**
      * Gets the current process ID (PID).
@@ -253,40 +275,6 @@ public interface OperatingSystem {
     }
 
     /**
-     * Instantiates a {@link  NetworkParams} object.
-     *
-     * @return A {@link  NetworkParams} object.
-     */
-    NetworkParams getNetworkParams();
-
-    /**
-     * Gets the all services on the system. The definition of what is a service is platform-dependent.
-     *
-     * @return An array of {@link OSService} objects
-     */
-    default List<OSService> getServices() {
-        return new ArrayList<>();
-    }
-
-    /**
-     * Gets currently logged in users.
-     * <p>
-     * On macOS, Linux, and Unix systems, the default implementation uses native code (see {@code man getutxent}) that
-     * is not thread safe. OSHI's use of this code is synchronized and may be used in a multi-threaded environment
-     * without introducing any additional conflicts. Users should note, however, that other operating system code may
-     * access the same native code.
-     * <p>
-     * The {@link  Who#queryWho()} method produces similar output parsing the output of the
-     * Posix-standard {@code who} command, and may internally employ reentrant code on some platforms. Users may opt to
-     * use this command-line variant by default using the {@code oshi.os.unix.whoCommand} configuration property.
-     *
-     * @return A list of {@link  OSSession} objects representing logged-in users
-     */
-    default List<OSSession> getSessions() {
-        return Who.queryWho();
-    }
-
-    /**
      * Gets windows on the operating system's GUI desktop.
      * <p>
      * On Unix-like systems, reports X11 windows only, which may be limited to the current display and will not report
@@ -299,12 +287,21 @@ public interface OperatingSystem {
      *                    <p>
      *                    This is a best effort attempt at a reasonable definition of visibility. Visible windows may be
      *                    completely transparent.
-     * @return A list of {@link  OSDesktopWindow} objects representing the desktop windows.
+     * @return A list of {@link OSDesktopWindow} objects representing the desktop windows.
      */
     default List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         // Default X11 implementation for Unix-like operating systems.
         // Overridden on Windows and macOS
         return Xwininfo.queryXWindows(visibleOnly);
+    }
+
+    /**
+     * Gets the all services on the system. The definition of what is a service is platform-dependent.
+     *
+     * @return An array of {@link OSService} objects
+     */
+    default List<OSService> getServices() {
+        return new ArrayList<>();
     }
 
     /**
@@ -333,7 +330,6 @@ public interface OperatingSystem {
          * Only include 32-bit processes.
          */
         public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
-
         private ProcessFiltering() {
         }
     }
@@ -380,7 +376,6 @@ public interface OperatingSystem {
          */
         public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
                 String.CASE_INSENSITIVE_ORDER);
-
         private ProcessSorting() {
         }
     }
@@ -442,5 +437,4 @@ public interface OperatingSystem {
             return this.versionStr;
         }
     }
-
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,12 +27,13 @@ package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Guid.GUID;
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quintet;
-import org.miaixz.bus.core.lang.tuple.Triple;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.hardware.AbstractUsbDevice;
+import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
-import org.miaixz.bus.health.windows.drivers.DeviceTree;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
+import org.miaixz.bus.health.windows.driver.DeviceTree;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -56,17 +57,14 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing
-     * devices connected via a usb port (including internal devices).
-     * <p>
-     * If the value of {@code tree} is true, the top level devices returned from
-     * this method are the USB Controllers; connected hubs and devices in its device
-     * tree share that controller's bandwidth. If the value of {@code tree} is
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
+     * (including internal devices).
+     * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
+     * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
      * false, USB devices (not controllers) are listed in a single flat list.
      *
-     * @param tree If true, returns a list of controllers, which requires recursive
-     *             iteration of connected devices. If false, returns a flat list of
-     *             devices excluding controllers.
+     * @param tree If true, returns a list of controllers, which requires recursive iteration of connected devices. If
+     *             false, returns a flat list of devices excluding controllers.
      * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
@@ -105,7 +103,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         // recursively build results
         for (Integer controllerDevice : controllerDevices.getA()) {
             WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(controllerDevice, parentMap, nameMap,
-                    deviceIdMap, mfgMap, "0000", "0000", "");
+                    deviceIdMap, mfgMap, "0000", "0000", Normal.EMPTY);
             if (deviceAndChildren != null) {
                 usbDevices.add(deviceAndChildren);
             }
@@ -121,7 +119,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         String vendorId = vid;
         String productId = pid;
         String serial = parentSerial;
-        Triple<String, String, String> idsAndSerial = Builder
+        Triplet<String, String, String> idsAndSerial = Parsing
                 .parseDeviceIdToVendorProductSerial(deviceIdMap.get(device));
         if (idsAndSerial != null) {
             vendorId = idsAndSerial.getLeft();

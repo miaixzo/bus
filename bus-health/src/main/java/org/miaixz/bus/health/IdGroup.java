@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -47,12 +47,12 @@ public final class IdGroup {
 
     // Temporarily cache users and groups in concurrent maps, completely refresh
     // every 5 minutes
-    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoize.memoize(IdGroup::getUserMap,
+    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer.memoize(IdGroup::getUserMap,
             TimeUnit.MINUTES.toNanos(5));
-    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoize.memoize(IdGroup::getGroupMap,
+    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer.memoize(IdGroup::getGroupMap,
             TimeUnit.MINUTES.toNanos(5));
 
-    private static final boolean ELEVATED = 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"),
+    private static final boolean ELEVATED = 0 == Parsing.parseIntOrDefault(Executor.getFirstAnswer("id -u"),
             -1);
 
     /**
@@ -145,4 +145,5 @@ public final class IdGroup {
         }
         return groupMap;
     }
+
 }

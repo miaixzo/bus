@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.mac.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.software.AbstractOSThread;
 import org.miaixz.bus.health.builtin.software.OSProcess;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 
 /**
  * OSThread implementation
@@ -46,10 +46,6 @@ public class MacOSThread extends AbstractOSThread {
     private final long upTime;
     private final int priority;
 
-    public MacOSThread(int processId) {
-        this(processId, 0, OSProcess.State.INVALID, 0L, 0L, 0L, 0L, 0);
-    }
-
     public MacOSThread(int pid, int threadId, OSProcess.State state, long kernelTime, long userTime, long startTime, long upTime,
                        int priority) {
         super(pid);
@@ -60,6 +56,10 @@ public class MacOSThread extends AbstractOSThread {
         this.startTime = startTime;
         this.upTime = upTime;
         this.priority = priority;
+    }
+
+    public MacOSThread(int processId) {
+        this(processId, 0, OSProcess.State.INVALID, 0L, 0L, 0L, 0L, 0);
     }
 
     @Override
@@ -96,5 +96,4 @@ public class MacOSThread extends AbstractOSThread {
     public int getPriority() {
         return priority;
     }
-
 }

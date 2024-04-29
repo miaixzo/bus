@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,17 +30,13 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import java.util.List;
 
 /**
- * A storage mechanism where data are recorded by various electronic, magnetic,
- * optical, or mechanical changes to a surface layer of one or more rotating
- * disks or or flash storage such as a removable or solid state drive. In
- * constrast to a File System, defining the way an Operating system uses the
- * storage, the Disk Store represents the hardware which a FileSystem uses for
- * its File Stores.
- * <p>
- * Thread safe for the designed use of retrieving the most recent data. Users
- * should be aware that the {@link #updateAttributes()} method may update
- * attributes, including the time stamp, and should externally synchronize such
- * usage to ensure consistent calculations.
+ * A storage mechanism where data are recorded by various electronic, magnetic, optical, or mechanical changes to a
+ * surface layer of one or more rotating disks or or flash storage such as a removable or solid state drive. In
+ * constrast to a File System, defining the way an Operating system uses the storage, the Disk Store represents the
+ * hardware which a FileSystem uses for its File Stores.
+ * Thread safe for the designed use of retrieving the most recent data. Users should be aware that the
+ * {@link #updateAttributes()} method may update attributes, including the time stamp, and should externally synchronize
+ * such usage to ensure consistent calculations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -105,9 +101,8 @@ public interface HWDiskStore {
     long getWriteBytes();
 
     /**
-     * The length of the disk queue (#I/O's in progress). Includes I/O requests that
-     * have been issued to the device driver but have not yet completed. Not
-     * supported on macOS.
+     * The length of the disk queue (#I/O's in progress). Includes I/O requests that have been issued to the device
+     * driver but have not yet completed. Not supported on macOS.
      *
      * @return the current disk queue length
      */
@@ -135,15 +130,12 @@ public interface HWDiskStore {
     long getTimeStamp();
 
     /**
-     * Make a best effort to update all the statistics about the drive without
-     * needing to recreate the drive list. This method provides for more frequent
-     * periodic updates of individual drive statistics but may be less efficient to
-     * use if updating all drives. It will not detect if a removable drive has been
-     * removed and replaced by a different drive in between method calls.
+     * Make a best effort to update all the statistics about the drive without needing to recreate the drive list. This
+     * method provides for more frequent periodic updates of individual drive statistics but may be less efficient to
+     * use if updating all drives. It will not detect if a removable drive has been removed and replaced by a different
+     * drive in between method calls.
      *
-     * @return True if the update was (probably) successful, false if the disk was
-     * not found
+     * @return True if the update was (probably) successful, false if the disk was not found
      */
     boolean updateAttributes();
-
 }
