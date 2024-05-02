@@ -775,7 +775,6 @@ public class ObjectKit {
     /**
      * 获取对象中的非空属性(属性如果是对象,则只会在同一个map中新增,不会出现map嵌套情况)
      * (不会清空初始值)
-     * <p>
      * request param
      *
      * @param bean 对象
