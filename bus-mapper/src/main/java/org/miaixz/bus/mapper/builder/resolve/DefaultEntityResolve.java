@@ -28,8 +28,10 @@ package org.miaixz.bus.mapper.builder.resolve;
 import jakarta.persistence.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
+import org.miaixz.bus.core.annotation.Order;
 import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Ansi;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.ORDER;
@@ -37,7 +39,6 @@ import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.annotation.ColumnType;
 import org.miaixz.bus.mapper.annotation.KeySql;
 import org.miaixz.bus.mapper.annotation.NameStyle;
-import org.miaixz.bus.mapper.annotation.Order;
 import org.miaixz.bus.mapper.builder.FieldBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityField;
@@ -262,17 +263,17 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param entityColumn 对象列
      */
     protected void processOrderBy(EntityTable entityTable, EntityField field, EntityColumn entityColumn) {
-        String orderBy = "";
+        String orderBy = Normal.EMPTY;
         if (field.isAnnotationPresent(OrderBy.class)) {
             orderBy = field.getAnnotation(OrderBy.class).value();
-            if ("".equals(orderBy)) {
+            if (Normal.EMPTY.equals(orderBy)) {
                 orderBy = "ASC";
             }
             Logger.warn(OrderBy.class + " is outdated, use " + Order.class + " instead!");
         }
         if (field.isAnnotationPresent(Order.class)) {
             Order order = field.getAnnotation(Order.class);
-            if ("".equals(order.value()) && "".equals(orderBy)) {
+            if (Normal.EMPTY.equals(order.value()) && Normal.EMPTY.equals(orderBy)) {
                 orderBy = "ASC";
             } else {
                 orderBy = order.value();
@@ -320,7 +321,7 @@ public class DefaultEntityResolve implements EntityResolve {
             if (generatedValue.strategy() == GenerationType.IDENTITY) {
                 // mysql的自动增长
                 entityColumn.setIdentity(true);
-                if (!"".equals(generatedValue.generator())) {
+                if (!Normal.EMPTY.equals(generatedValue.generator())) {
                     String generator;
                     Registry registry = Registry.getDatabaseDialect(generatedValue.generator());
                     if (registry != null) {

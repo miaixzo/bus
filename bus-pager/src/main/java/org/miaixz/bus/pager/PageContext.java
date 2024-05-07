@@ -29,6 +29,7 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.builtin.PageMethod;
@@ -194,7 +195,7 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
         // 异步 asyncCountService 并发度设置，这里默认为应用可用的处理器核心数 * 2，更合理的值应该综合考虑数据库服务器的处理能力
         int asyncCountParallelism = Integer.parseInt(properties.getProperty("asyncCountParallelism",
-                "" + (Runtime.getRuntime().availableProcessors() * 2)));
+                Normal.EMPTY + (Runtime.getRuntime().availableProcessors() * 2)));
         asyncCountService = new ForkJoinPool(asyncCountParallelism,
                 pool -> {
                     final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
@@ -202,4 +203,5 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
                     return worker;
                 }, null, true);
     }
+
 }

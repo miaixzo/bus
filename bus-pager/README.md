@@ -43,7 +43,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>8.0.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```  
 

@@ -36,6 +36,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.scripting.defaults.RawSqlSource;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.exception.MapperException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -274,7 +275,7 @@ public class MapperBuilder {
         if (mapperInterface != null) {
             prefix = mapperInterface.getName();
         } else {
-            prefix = "";
+            prefix = Normal.EMPTY;
         }
         for (Object object : new ArrayList<Object>(configuration.getMappedStatements())) {
             if (object instanceof MappedStatement) {

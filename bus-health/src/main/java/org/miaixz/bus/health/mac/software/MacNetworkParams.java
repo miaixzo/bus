@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,10 +31,10 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.software.AbstractNetworkParams;
-import org.miaixz.bus.health.mac.SystemB;
-import org.miaixz.bus.health.unix.CLibrary;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
+import org.miaixz.bus.health.mac.jna.SystemB;
+import org.miaixz.bus.health.unix.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
 import java.net.InetAddress;
@@ -51,17 +51,19 @@ import java.util.List;
 final class MacNetworkParams extends AbstractNetworkParams {
 
     private static final SystemB SYS = SystemB.INSTANCE;
+
     private static final String IPV6_ROUTE_HEADER = "Internet6:";
+
     private static final String DEFAULT_GATEWAY = "default";
 
     @Override
     public String getDomainName() {
-        String hostname = "";
+        String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return "";
+            return Normal.EMPTY;
         }
         try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo(); ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
             hint.ai_flags = CLibrary.AI_CANONNAME;
@@ -70,9 +72,9 @@ final class MacNetworkParams extends AbstractNetworkParams {
                 if (Logger.isError()) {
                     Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
                 }
-                return "";
+                return Normal.EMPTY;
             }
-            CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
+            CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue()); // NOSONAR
             String canonname = info.ai_canonname.trim();
             SYS.freeaddrinfo(ptr.getValue());
             return canonname;
@@ -109,5 +111,4 @@ final class MacNetworkParams extends AbstractNetworkParams {
         }
         return Normal.EMPTY;
     }
-
 }

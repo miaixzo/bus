@@ -1212,8 +1212,6 @@ public class ReflectKit {
         if (currentClass.isPrimitive()) {
             // 只有下面九种基础数据类型以及数组，才有独立的描述符
             final char descriptor;
-            // see sun.invoke.util.XWrapper
-            // These must be in the order defined for widening primitive conversions in JLS 5.1.2
             if (currentClass == boolean.class) {
                 descriptor = 'Z';
             } else if (currentClass == byte.class) {

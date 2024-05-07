@@ -26,7 +26,7 @@
 package org.miaixz.bus.starter.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.oauth.metric.OauthCache;
+import org.miaixz.bus.oauth.cache.OauthCache;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -36,7 +36,7 @@ public enum AccessLevel {
 
     INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), @Deprecated MASTER(40), MAINTAINER(40), OWNER(50), ADMIN(60);
 
-    private static final Map<Integer, AccessLevel> valuesMap = new HashMap<Integer, AccessLevel>(9);
+    private static final Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
     static {
         for (AccessLevel accessLevel : AccessLevel.values())

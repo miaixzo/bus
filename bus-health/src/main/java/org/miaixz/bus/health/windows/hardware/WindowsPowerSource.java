@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,19 +28,17 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
-import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.win32.W32APITypeMapper;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.hardware.AbstractPowerSource;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
-import org.miaixz.bus.health.windows.PowrProf;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.jna.Struct;
+import org.miaixz.bus.health.windows.jna.Kernel32;
+import org.miaixz.bus.health.windows.jna.PowrProf;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -55,7 +53,7 @@ import java.util.List;
 @ThreadSafe
 public final class WindowsPowerSource extends AbstractPowerSource {
 
-    private static final GUID GUID_DEVCLASS_BATTERY = GUID.fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
+    private static final Guid.GUID GUID_DEVCLASS_BATTERY = Guid.GUID.fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
     private static final int CHAR_WIDTH = W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ? 2 : 1;
     private static final boolean X64 = Platform.is64Bit();
 
@@ -73,7 +71,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
     public WindowsPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
                               double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
                               double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
                               int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
                               String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -103,7 +101,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         boolean psPowerOnLine = false;
         boolean psCharging = false;
         boolean psDischarging = false;
-        CapacityUnits psCapacityUnits = CapacityUnits.RELATIVE;
+        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
         int psCurrentCapacity = 0;
         int psMaxCapacity = 1;
         int psDesignCapacity = 1;
@@ -124,7 +122,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // across all IOCTL entries if there are more than one.
 
         try (PowrProf.SystemBatteryState batteryState = new PowrProf.SystemBatteryState()) {
-            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.SystemBatteryState, null, 0,
+            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState, null, 0,
                     batteryState.getPointer(), batteryState.size()) && batteryState.batteryPresent > 0) {
                 if (batteryState.acOnLine == 0 && batteryState.charging == 0 && batteryState.discharging > 0) {
                     psTimeRemainingEstimated = batteryState.estimatedTime;
@@ -142,7 +140,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // Ported from:
         // https://docs.microsoft.com/en-us/windows/win32/power/enumerating-battery-devices
 
-        HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
+        WinNT.HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hdev)) {
             boolean batteryFound = false;
@@ -169,7 +167,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                     // Enumerated a battery. Ask it for information.
                                     String devicePath = CHAR_WIDTH > 1 ? pdidd.getWideString(Integer.BYTES)
                                             : pdidd.getString(Integer.BYTES);
-                                    HANDLE hBattery = Kernel32.INSTANCE.CreateFile(devicePath, // pdidd->DevicePath
+                                    WinNT.HANDLE hBattery = Kernel32.INSTANCE.CreateFile(devicePath, // pdidd->DevicePath
                                             WinNT.GENERIC_READ | WinNT.GENERIC_WRITE,
                                             WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE, null, WinNT.OPEN_EXISTING,
                                             WinNT.FILE_ATTRIBUTE_NORMAL, null);
@@ -199,7 +197,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 && 0 == (bi.Capabilities & BATTERY_IS_SHORT_TERM)) {
                                                             // Capabilities flags non-mWh units
                                                             if (0 == (bi.Capabilities & BATTERY_CAPACITY_RELATIVE)) {
-                                                                psCapacityUnits = CapacityUnits.MWH;
+                                                                psCapacityUnits = PowerSource.CapacityUnits.MWH;
                                                             }
                                                             psChemistry = Native.toString(bi.Chemistry,
                                                                     Charset.US_ASCII);
@@ -321,7 +319,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                 psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
     }
 
-    private static String batteryQueryString(HANDLE hBattery, int tag, int infoLevel) {
+    private static String batteryQueryString(WinNT.HANDLE hBattery, int tag, int infoLevel) {
         try (PowrProf.BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
              ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
             bqi.BatteryTag = tag;

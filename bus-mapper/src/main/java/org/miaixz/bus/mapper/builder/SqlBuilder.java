@@ -27,6 +27,7 @@ package org.miaixz.bus.mapper.builder;
 
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.exception.VersionException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.annotation.LogicDelete;
@@ -710,7 +711,7 @@ public class SqlBuilder {
     public static String whereVersion(Class<?> entityClass, String entityName) {
         Set<EntityColumn> columnSet = EntityBuilder.getColumns(entityClass);
         boolean hasVersion = false;
-        String result = "";
+        String result = Normal.EMPTY;
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
@@ -733,7 +734,7 @@ public class SqlBuilder {
      */
     public static String whereLogicDelete(Class<?> entityClass, boolean isDeleted) {
         String value = logicDeleteColumnEqualsValue(entityClass, isDeleted);
-        return "".equals(value) ? "" : " AND " + value;
+        return "".equals(value) ? Normal.EMPTY : " AND " + value;
     }
 
     /**
@@ -753,7 +754,7 @@ public class SqlBuilder {
             return logicDeleteColumnEqualsValue(logicDeleteColumn, isDeleted);
         }
 
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -767,7 +768,7 @@ public class SqlBuilder {
      * @return the string
      */
     public static String logicDeleteColumnEqualsValue(EntityColumn column, boolean isDeleted) {
-        String result = "";
+        String result = Normal.EMPTY;
         if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
             Integer logicDeletedValue = getLogicDeletedValue(column, isDeleted);
             if (logicDeletedValue == null) {

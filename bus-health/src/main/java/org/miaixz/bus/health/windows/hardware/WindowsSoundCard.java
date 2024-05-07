@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,8 +30,8 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinReg;
 import org.miaixz.bus.core.annotation.Immutable;
-import org.miaixz.bus.health.builtin.hardware.AbstractSoundCard;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +59,9 @@ final class WindowsSoundCard extends AbstractSoundCard {
     }
 
     /**
-     * Returns Windows audio device driver information, which represents the closest
-     * proxy we have to sound cards.
-     * <p>
-     * NOTE : The reason why the codec name is same as the card name is because
-     * windows does not provide the name of the codec chip but sometimes the name of
-     * the card returned is infact the name of the codec chip also. Example :
+     * Returns Windows audio device driver information, which represents the closest proxy we have to sound cards.
+     * NOTE : The reason why the codec name is same as the card name is because windows does not provide the name of the
+     * codec chip but sometimes the name of the card returned is infact the name of the codec chip also. Example :
      * Realtek ALC887 HD Audio Device
      *
      * @return List of sound cards

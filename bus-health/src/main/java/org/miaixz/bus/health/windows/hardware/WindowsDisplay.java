@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,11 @@
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.WinReg.HKEY;
 import org.miaixz.bus.core.annotation.Immutable;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.hardware.AbstractDisplay;
 import org.miaixz.bus.health.builtin.hardware.Display;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ final class WindowsDisplay extends AbstractDisplay {
                 deviceInterfaceData.cbSize = deviceInterfaceData.size();
 
                 for (int memberIndex = 0; SU.SetupDiEnumDeviceInfo(hDevInfo, memberIndex, info); memberIndex++) {
-                    HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0, SetupApi.DIREG_DEV,
+                    WinReg.HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0, SetupApi.DIREG_DEV,
                             WinNT.KEY_QUERY_VALUE);
 
                     byte[] edid = new byte[1];

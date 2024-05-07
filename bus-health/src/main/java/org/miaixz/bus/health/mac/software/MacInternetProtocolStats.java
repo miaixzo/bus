@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,14 +28,14 @@ package org.miaixz.bus.health.mac.software;
 import com.sun.jna.Memory;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.software.AbstractInternetProtocolStats;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
+import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
 import org.miaixz.bus.health.mac.SysctlKit;
-import org.miaixz.bus.health.mac.SystemB;
-import org.miaixz.bus.health.unix.CLibrary;
-import org.miaixz.bus.health.unix.NetStat;
+import org.miaixz.bus.health.mac.jna.SystemB;
+import org.miaixz.bus.health.unix.driver.NetStat;
+import org.miaixz.bus.health.unix.jna.CLibrary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,43 +51,24 @@ import java.util.function.Supplier;
 public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private final boolean isElevated;
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStat::queryTcpnetstat, Memoize.defaultExpiration());
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoize.memoize(MacInternetProtocolStats::queryTcpstat, Memoize.defaultExpiration());
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoize.memoize(MacInternetProtocolStats::queryUdpstat, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(MacInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(MacInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
-    private final Supplier<CLibrary.BsdIpstat> ipstat = Memoize.memoize(MacInternetProtocolStats::queryIpstat, Memoize.defaultExpiration());
-    private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoize.memoize(MacInternetProtocolStats::queryIp6stat, Memoize.defaultExpiration());
-
+    private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer.memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer.memoize(MacInternetProtocolStats::queryIp6stat, Memoizer.defaultExpiration());
     public MacInternetProtocolStats(boolean elevated) {
         this.isElevated = elevated;
     }
 
-    private static List<Integer> queryFdList(int pid) {
-        List<Integer> fdList = new ArrayList<>();
-        int bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, null, 0);
-        if (bufferSize > 0) {
-            SystemB.ProcFdInfo fdInfo = new SystemB.ProcFdInfo();
-            int numStructs = bufferSize / fdInfo.size();
-            SystemB.ProcFdInfo[] fdArray = (SystemB.ProcFdInfo[]) fdInfo.toArray(numStructs);
-            bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, fdArray[0], bufferSize);
-            numStructs = bufferSize / fdInfo.size();
-            for (int i = 0; i < numStructs; i++) {
-                if (fdArray[i].proc_fdtype == SystemB.PROX_FDTYPE_SOCKET) {
-                    fdList.add(fdArray[i].proc_fd);
-                }
-            }
-        }
-        return fdList;
-    }
-
-    private static IPConnection queryIPConnection(int pid, int fd) {
+    private static InternetProtocolStats.IPConnection queryIPConnection(int pid, int fd) {
         try (SystemB.SocketFdInfo si = new SystemB.SocketFdInfo()) {
             int ret = SystemB.INSTANCE.proc_pidfdinfo(pid, fd, SystemB.PROC_PIDFDSOCKETINFO, si, si.size());
             if (si.size() == ret && si.psi.soi_family == SystemB.AF_INET || si.psi.soi_family == SystemB.AF_INET6) {
                 SystemB.InSockInfo ini;
                 String type;
-                TcpState state;
+                InternetProtocolStats.TcpState state;
                 if (si.psi.soi_kind == SystemB.SOCKINFO_TCP) {
                     si.psi.soi_proto.setType("pri_tcp");
                     si.psi.soi_proto.read();
@@ -98,7 +79,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                     si.psi.soi_proto.setType("pri_in");
                     si.psi.soi_proto.read();
                     ini = si.psi.soi_proto.pri_in;
-                    state = TcpState.NONE;
+                    state = InternetProtocolStats.TcpState.NONE;
                     type = "udp";
                 } else {
                     return null;
@@ -107,30 +88,30 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 byte[] laddr;
                 byte[] faddr;
                 if (ini.insi_vflag == 1) {
-                    laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
-                    faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                    laddr = Parsing.parseIntToIP(ini.insi_laddr[3]);
+                    faddr = Parsing.parseIntToIP(ini.insi_faddr[3]);
                     type += "4";
                 } else if (ini.insi_vflag == 2) {
-                    laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
-                    faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
+                    laddr = Parsing.parseIntArrayToIP(ini.insi_laddr);
+                    faddr = Parsing.parseIntArrayToIP(ini.insi_faddr);
                     type += "6";
                 } else if (ini.insi_vflag == 3) {
-                    laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
-                    faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                    laddr = Parsing.parseIntToIP(ini.insi_laddr[3]);
+                    faddr = Parsing.parseIntToIP(ini.insi_faddr[3]);
                     type += "46";
                 } else {
                     return null;
                 }
-                int lport = Builder.bigEndian16ToLittleEndian(ini.insi_lport);
-                int fport = Builder.bigEndian16ToLittleEndian(ini.insi_fport);
-                return new IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen,
+                int lport = Parsing.bigEndian16ToLittleEndian(ini.insi_lport);
+                int fport = Parsing.bigEndian16ToLittleEndian(ini.insi_fport);
+                return new InternetProtocolStats.IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen,
                         pid);
             }
         }
         return null;
     }
 
-    private static TcpState stateLookup(int state) {
+    private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
             case 0:
                 return InternetProtocolStats.TcpState.CLOSED;
@@ -206,6 +187,24 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return mi6;
     }
 
+    private static List<Integer> queryFdList(int pid) {
+        List<Integer> fdList = new ArrayList<>();
+        int bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, null, 0);
+        if (bufferSize > 0) {
+            SystemB.ProcFdInfo fdInfo = new SystemB.ProcFdInfo();
+            int numStructs = bufferSize / fdInfo.size();
+            SystemB.ProcFdInfo[] fdArray = (SystemB.ProcFdInfo[]) fdInfo.toArray(numStructs);
+            bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, fdArray[0], bufferSize);
+            numStructs = bufferSize / fdInfo.size();
+            for (int i = 0; i < numStructs; i++) {
+                if (fdArray[i].proc_fdtype == SystemB.PROX_FDTYPE_SOCKET) {
+                    fdList.add(fdArray[i].proc_fd);
+                }
+            }
+        }
+        return fdList;
+    }
+
     public static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
         try (Memory m = SysctlKit.sysctl("net.inet.udp.stats")) {
@@ -227,55 +226,55 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
         if (this.isElevated) {
-            return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
-                    Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
-                    Builder.unsignedIntToLong(tcp.tcps_drops), Builder.unsignedIntToLong(tcp.tcps_sndpack),
-                    Builder.unsignedIntToLong(tcp.tcps_rcvpack), Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                    Builder.unsignedIntToLong(
+            return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Parsing.unsignedIntToLong(tcp.tcps_connattempt),
+                    Parsing.unsignedIntToLong(tcp.tcps_accepts), Parsing.unsignedIntToLong(tcp.tcps_conndrops),
+                    Parsing.unsignedIntToLong(tcp.tcps_drops), Parsing.unsignedIntToLong(tcp.tcps_sndpack),
+                    Parsing.unsignedIntToLong(tcp.tcps_rcvpack), Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
+                    Parsing.unsignedIntToLong(
                             tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
                     0L);
         }
         CLibrary.BsdIpstat ip = ipstat.get();
         CLibrary.BsdUdpstat udp = udpstat.get();
-        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
-                Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
-                Builder.unsignedIntToLong(tcp.tcps_drops),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
-                Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_badsum + ip.ips_tooshort + ip.ips_toosmall
+        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Parsing.unsignedIntToLong(tcp.tcps_connattempt),
+                Parsing.unsignedIntToLong(tcp.tcps_accepts), Parsing.unsignedIntToLong(tcp.tcps_conndrops),
+                Parsing.unsignedIntToLong(tcp.tcps_drops),
+                Math.max(0L, Parsing.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
+                Math.max(0L, Parsing.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
+                Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
+                Math.max(0L, Parsing.unsignedIntToLong(ip.ips_badsum + ip.ips_tooshort + ip.ips_toosmall
                         + ip.ips_badhlen + ip.ips_badlen - udp.udps_hdrops + udp.udps_badsum + udp.udps_badlen)),
                 0L);
     }
 
     /*
-     * There are multiple versions of some tcp/udp/ip stats structures in macOS.
-     * Since we only need a few of the hundreds of fields, we can improve
-     * performance by selectively reading the ints from the appropriate offsets,
+     * There are multiple versions of some tcp/udp/ip stats structures in macOS. Since we only need a few of the
+     * hundreds of fields, we can improve performance by selectively reading the ints from the appropriate offsets,
      * which are consistent across the structure.
      */
+
     @Override
     public InternetProtocolStats.TcpStats getTCPv6Stats() {
         CLibrary.BsdIp6stat ip6 = ip6stat.get();
         CLibrary.BsdUdpstat udp = udpstat.get();
         return new InternetProtocolStats.TcpStats(establishedv4v6.get().getRight(), 0L, 0L, 0L, 0L,
-                ip6.ip6s_localout - Builder.unsignedIntToLong(udp.udps_snd6_swcsum),
-                ip6.ip6s_total - Builder.unsignedIntToLong(udp.udps_rcv6_swcsum), 0L, 0L, 0L);
+                ip6.ip6s_localout - Parsing.unsignedIntToLong(udp.udps_snd6_swcsum),
+                ip6.ip6s_total - Parsing.unsignedIntToLong(udp.udps_rcv6_swcsum), 0L, 0L, 0L);
     }
 
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
-        return new InternetProtocolStats.UdpStats(Builder.unsignedIntToLong(stat.udps_opackets),
-                Builder.unsignedIntToLong(stat.udps_ipackets), Builder.unsignedIntToLong(stat.udps_noportmcast),
-                Builder.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
+        return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_opackets),
+                Parsing.unsignedIntToLong(stat.udps_ipackets), Parsing.unsignedIntToLong(stat.udps_noportmcast),
+                Parsing.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
     }
 
     @Override
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
-        return new InternetProtocolStats.UdpStats(Builder.unsignedIntToLong(stat.udps_snd6_swcsum),
-                Builder.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
+        return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_snd6_swcsum),
+                Parsing.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.miaixz.bus.http.metric.suffix;
 
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.GzipSource;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -25,8 +26,6 @@ import java.io.InterruptedIOException;
 import java.net.IDN;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A database of public suffixes provided by
@@ -142,7 +141,7 @@ public final class Suffixes {
                     low = mid + end + 1;
                 } else {
                     // Found a match.
-                    match = new String(bytesToSearch, mid, publicSuffixLength, UTF_8);
+                    match = new String(bytesToSearch, mid, publicSuffixLength, Charset.UTF_8);
                     break;
                 }
             }
@@ -217,7 +216,7 @@ public final class Suffixes {
         // Break apart the domain into UTF-8 labels, i.e. foo.bar.com turns into [foo, bar, com].
         byte[][] domainLabelsUtf8Bytes = new byte[domainLabels.length][];
         for (int i = 0; i < domainLabels.length; i++) {
-            domainLabelsUtf8Bytes[i] = domainLabels[i].getBytes(UTF_8);
+            domainLabelsUtf8Bytes[i] = domainLabels[i].getBytes(Charset.UTF_8);
         }
 
         // Start by looking for exact matches. We start at the leftmost label. For example, foo.bar.com

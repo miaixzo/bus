@@ -94,7 +94,6 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
         }
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public Iterator<Watcher> iterator() {
         return this.chain.iterator();

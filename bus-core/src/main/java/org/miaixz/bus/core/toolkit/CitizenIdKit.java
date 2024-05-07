@@ -674,7 +674,7 @@ public class CitizenIdKit {
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(Normal.Gender.of(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
+            citizenInfo.setGender(Gender.of(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
             citizenInfo.setZodiac(DateKit.getZodiac(month, day));
             citizenInfo.setAnimal(DateKit.getAnimal(year));
         } else {

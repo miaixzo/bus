@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,14 +30,14 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Psapi;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Triple;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.hardware.AbstractGlobalMemory;
+import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.PhysicalMemory;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.windows.WmiKit;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32PhysicalMemory;
+import org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -55,10 +55,10 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
 
     private static final boolean IS_WINDOWS10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
 
-    private final Supplier<Triple<Long, Long, Long>> availTotalSize = Memoize.memoize(WindowsGlobalMemory::readPerfInfo,
-            Memoize.defaultExpiration());
+    private final Supplier<Triplet<Long, Long, Long>> availTotalSize = Memoizer.memoize(WindowsGlobalMemory::readPerfInfo,
+            Memoizer.defaultExpiration());
 
-    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Convert memory type number to a human readable string
@@ -68,6 +68,8 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
      */
     private static String memoryType(int type) {
         switch (type) {
+            case 0:
+                return "Unknown";
             case 1:
                 return "Other";
             case 2:
@@ -111,13 +113,12 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
             case 21:
                 return "DDR2";
             case 22:
-                return "DDR2-FB-DIMM";
-            case 24:
-                return "DDR3";
-            case 25:
-                return "FBD2";
+                return "BRAM";
+            case 23:
+                return "DDR FB-DIMM";
             default:
-                return "Unknown";
+                // values 24 and higher match SMBIOS types
+                return smBiosMemoryType(type);
         }
     }
 
@@ -128,8 +129,8 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
      * @return A string describing the type
      */
     private static String smBiosMemoryType(int type) {
-        // https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.2.0.pdf
-        // table 76
+        // https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.7.0.pdf
+        // table 77
         switch (type) {
             case 0x01:
                 return "Other";
@@ -185,22 +186,32 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                 return "LPDDR4";
             case 0x1F:
                 return "Logical non-volatile device";
+            case 0x20:
+                return "HBM";
+            case 0x21:
+                return "HBM2";
+            case 0x22:
+                return "DDR5";
+            case 0x23:
+                return "LPDDR5";
+            case 0x24:
+                return "HBM3";
             case 0x02:
             default:
                 return "Unknown";
         }
     }
 
-    private static Triple<Long, Long, Long> readPerfInfo() {
+    private static Triplet<Long, Long, Long> readPerfInfo() {
         try (Struct.CloseablePerformanceInformation performanceInfo = new Struct.CloseablePerformanceInformation()) {
             if (!Psapi.INSTANCE.GetPerformanceInfo(performanceInfo, performanceInfo.size())) {
                 Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-                return Triple.of(0L, 0L, 4098L);
+                return Triplet.of(0L, 0L, 4098L);
             }
             long pageSize = performanceInfo.PageSize.longValue();
             long memAvailable = pageSize * performanceInfo.PhysicalAvailable.longValue();
             long memTotal = pageSize * performanceInfo.PhysicalTotal.longValue();
-            return Triple.of(memAvailable, memTotal, pageSize);
+            return Triplet.of(memAvailable, memTotal, pageSize);
         }
     }
 
@@ -240,7 +251,9 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                 String manufacturer = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.MANUFACTURER, index);
                 String memoryType = smBiosMemoryType(
                         WmiKit.getUint32(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.SMBIOSMEMORYTYPE, index));
-                physicalMemoryList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
+                String partNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.PARTNUMBER, index);
+                physicalMemoryList
+                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber));
             }
         } else {
             WmiResult<Win32PhysicalMemory.PhysicalMemoryPropertyWin8> bankMap = Win32PhysicalMemory.queryphysicalMemoryWin8();
@@ -251,7 +264,9 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                 String manufacturer = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.MANUFACTURER, index);
                 String memoryType = memoryType(
                         WmiKit.getUint16(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.MEMORYTYPE, index));
-                physicalMemoryList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
+                String partNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.PARTNUMBER, index);
+                physicalMemoryList
+                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber));
             }
         }
         return physicalMemoryList;

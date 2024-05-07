@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,13 +26,14 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.hardware.AbstractLogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -87,5 +88,4 @@ final class MacLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 .map(e -> new MacLogicalVolumeGroup(e.getKey(), e.getValue(), physicalVolumesMap.get(e.getKey())))
                 .collect(Collectors.toList());
     }
-
 }

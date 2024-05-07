@@ -74,7 +74,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.description = description;
     }
 
-    @SuppressWarnings("unchecked")
     public E withDescription(String description) {
         this.description = description;
         return (E) (this);
@@ -112,7 +111,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.author = author;
     }
 
-    @SuppressWarnings("unchecked")
     public E withAuthor(Author author) {
         this.author = author;
         return (E) (this);
@@ -126,7 +124,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.labels = labels;
     }
 
-    @SuppressWarnings("unchecked")
     public E withLabels(List<String> labels) {
         this.labels = labels;
         return (E) (this);
@@ -140,7 +137,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.startDate = startDate;
     }
 
-    @SuppressWarnings("unchecked")
     public E withStartDate(Date startDate) {
         this.startDate = startDate;
         return (E) (this);
@@ -162,7 +158,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.endDate = endDate;
     }
 
-    @SuppressWarnings("unchecked")
     public E withEndDate(Date endDate) {
         this.endDate = endDate;
         return (E) (this);

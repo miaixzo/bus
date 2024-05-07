@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,8 +33,8 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.builtin.hardware.AbstractPowerSource;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.mac.CFKit;
 
 import java.time.LocalDate;
@@ -56,7 +56,7 @@ public final class MacPowerSource extends AbstractPowerSource {
     public MacPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
                           double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
                           double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                          CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+                          PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
                           int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
                           String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -160,13 +160,13 @@ public final class MacPowerSource extends AbstractPowerSource {
             }
             psPowerUsageRate = psVoltage * psAmperage;
 
-            Boolean value = smartBattery.getBooleanProperty("ExternalConnected");
-            if (value != null) {
-                psPowerOnLine = value;
+            Boolean bool = smartBattery.getBooleanProperty("ExternalConnected");
+            if (bool != null) {
+                psPowerOnLine = bool;
             }
-            value = smartBattery.getBooleanProperty("IsCharging");
-            if (value != null) {
-                psCharging = value;
+            bool = smartBattery.getBooleanProperty("IsCharging");
+            if (bool != null) {
+                psCharging = bool;
             }
             psDischarging = !psCharging;
 
@@ -237,5 +237,4 @@ public final class MacPowerSource extends AbstractPowerSource {
 
         return psList;
     }
-
 }

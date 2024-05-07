@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.windows.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.software.AbstractOSFileStore;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore;
 
 import java.util.List;
 

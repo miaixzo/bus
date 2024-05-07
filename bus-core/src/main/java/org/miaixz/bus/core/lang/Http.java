@@ -465,6 +465,19 @@ public class Http {
         return StringKit.isEmpty(url) || url.contains(Http.HOST_IPV4) || url.contains(Http.HOST_LOCAL);
     }
 
+
+    /**
+     * 是否为https协议或本地主机（域名）
+     *
+     * @param url 待验证的url
+     * @return true: https协议或本地主机 false: 非https协议或本机主机
+     */
+    public static boolean isHttpsOrLocalHost(String url) {
+        if (StringKit.isEmpty(url)) {
+            return false;
+        }
+        return isHttps(url) || isLocalHost(url);
+    }
     /**
      * WebDAV
      *

@@ -34,9 +34,11 @@ import org.miaixz.bus.pager.dialect.AbstractPaging;
 import java.util.Map;
 
 /**
- * @author bluezealot
+ * AS400
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-@SuppressWarnings("rawtypes")
 public class AS400 extends AbstractPaging {
 
     @Override
@@ -54,4 +56,5 @@ public class AS400 extends AbstractPaging {
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         return sql + " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY";
     }
+
 }

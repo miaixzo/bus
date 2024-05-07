@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.ByRef;
-import org.miaixz.bus.health.builtin.software.AbstractNetworkParams;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return fields[2];
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     private static String parseIpv6Route() {
@@ -72,7 +72,26 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return fields[3];
             }
         }
-        return "";
+        return Normal.EMPTY;
+    }
+
+    @Override
+    public String getHostName() {
+        try {
+            return Kernel32Util.getComputerName();
+        } catch (Win32Exception e) {
+            return super.getHostName();
+        }
+    }
+
+    @Override
+    public String getIpv4DefaultGateway() {
+        return parseIpv4Route();
+    }
+
+    @Override
+    public String getIpv6DefaultGateway() {
+        return parseIpv6Route();
     }
 
     @Override
@@ -120,25 +139,6 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return list.toArray(new String[0]);
             }
         }
-    }
-
-    @Override
-    public String getHostName() {
-        try {
-            return Kernel32Util.getComputerName();
-        } catch (Win32Exception e) {
-            return super.getHostName();
-        }
-    }
-
-    @Override
-    public String getIpv4DefaultGateway() {
-        return parseIpv4Route();
-    }
-
-    @Override
-    public String getIpv6DefaultGateway() {
-        return parseIpv6Route();
     }
 
 }

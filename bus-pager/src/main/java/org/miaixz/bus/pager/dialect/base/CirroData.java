@@ -34,7 +34,10 @@ import org.miaixz.bus.pager.dialect.AbstractPaging;
 import java.util.Map;
 
 /**
- * @author sxh
+ * CirroData
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class CirroData extends AbstractPaging {
     @Override

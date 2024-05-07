@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * 主键处理
  *
@@ -42,8 +44,8 @@ public enum Registry {
     SYBASE("SELECT @@IDENTITY"),
     DB2_MF("SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"),
     INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1"),
-    DEFAULT(""),
-    NULL("");
+    DEFAULT(Normal.EMPTY),
+    NULL(Normal.EMPTY);
 
     private String identityRetrievalStatement;
 
@@ -71,7 +73,7 @@ public enum Registry {
             returnValue = DB2_MF;
         } else if ("Informix".equalsIgnoreCase(database)) {
             returnValue = INFORMIX;
-        } else if ("".equals(database)) {
+        } else if (Normal.EMPTY.equals(database)) {
             return DEFAULT;
         }
         return returnValue;

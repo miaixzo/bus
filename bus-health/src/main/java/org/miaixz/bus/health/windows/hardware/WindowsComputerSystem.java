@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,14 +30,17 @@ import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractComputerSystem;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 import org.miaixz.bus.health.windows.WmiKit;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32Bios;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32ComputerSystem;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32ComputerSystemProduct;
+import org.miaixz.bus.health.windows.driver.wmi.Win32Bios;
+import org.miaixz.bus.health.windows.driver.wmi.Win32Bios.BiosSerialProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem;
+import org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem.ComputerSystemProperty;
+import org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct;
+import org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct.ComputerSystemProductProperty;
 
 import java.util.function.Supplier;
 
@@ -50,18 +53,18 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Pair<String, String>> manufacturerModel = Memoize.memoize(
+    private final Supplier<Pair<String, String>> manufacturerModel = Memoizer.memoize(
             WindowsComputerSystem::queryManufacturerModel);
-    private final Supplier<Pair<String, String>> serialNumberUUID = Memoize.memoize(
+    private final Supplier<Pair<String, String>> serialNumberUUID = Memoizer.memoize(
             WindowsComputerSystem::querySystemSerialNumberUUID);
 
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;
         String model = null;
-        WmiResult<Win32ComputerSystem.ComputerSystemProperty> win32ComputerSystem = Win32ComputerSystem.queryComputerSystem();
+        WmiResult<ComputerSystemProperty> win32ComputerSystem = Win32ComputerSystem.queryComputerSystem();
         if (win32ComputerSystem.getResultCount() > 0) {
-            manufacturer = WmiKit.getString(win32ComputerSystem, Win32ComputerSystem.ComputerSystemProperty.MANUFACTURER, 0);
-            model = WmiKit.getString(win32ComputerSystem, Win32ComputerSystem.ComputerSystemProperty.MODEL, 0);
+            manufacturer = WmiKit.getString(win32ComputerSystem, ComputerSystemProperty.MANUFACTURER, 0);
+            model = WmiKit.getString(win32ComputerSystem, ComputerSystemProperty.MODEL, 0);
         }
         return Pair.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model);
@@ -70,12 +73,12 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
     private static Pair<String, String> querySystemSerialNumberUUID() {
         String serialNumber = null;
         String uuid = null;
-        WmiResult<Win32ComputerSystemProduct.ComputerSystemProductProperty> win32ComputerSystemProduct = Win32ComputerSystemProduct
+        WmiResult<ComputerSystemProductProperty> win32ComputerSystemProduct = Win32ComputerSystemProduct
                 .queryIdentifyingNumberUUID();
         if (win32ComputerSystemProduct.getResultCount() > 0) {
             serialNumber = WmiKit.getString(win32ComputerSystemProduct,
-                    Win32ComputerSystemProduct.ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
-            uuid = WmiKit.getString(win32ComputerSystemProduct, Win32ComputerSystemProduct.ComputerSystemProductProperty.UUID, 0);
+                    ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
+            uuid = WmiKit.getString(win32ComputerSystemProduct, ComputerSystemProductProperty.UUID, 0);
         }
         if (StringKit.isBlank(serialNumber)) {
             serialNumber = querySerialFromBios();
@@ -90,9 +93,9 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
     }
 
     private static String querySerialFromBios() {
-        WmiResult<Win32Bios.BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
+        WmiResult<BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
         if (serialNum.getResultCount() > 0) {
-            return WmiKit.getString(serialNum, Win32Bios.BiosSerialProperty.SERIALNUMBER, 0);
+            return WmiKit.getString(serialNum, BiosSerialProperty.SERIALNUMBER, 0);
         }
         return null;
     }

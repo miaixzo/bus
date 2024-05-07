@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,11 +37,11 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.mac.CFKit;
-import org.miaixz.bus.health.mac.drivers.disk.Fsstat;
+import org.miaixz.bus.health.mac.driver.disk.Fsstat;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.*;
@@ -59,11 +59,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
 
-    private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
     private long writes = 0L;
     private long writeBytes = 0L;
+    private final long currentQueueLength = 0L;
     private long transferTime = 0L;
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;
@@ -189,11 +189,9 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Temporarily cache pointers to keys. The values from this map must be released
-     * after use.}
+     * Temporarily cache pointers to keys. The values from this map must be released after use.}
      *
-     * @return A map of keys in the {@link CFKey} enum to corresponding
-     * {@link CFStringRef}.
+     * @return A map of keys in the {@link CFKey} enum to corresponding {@link CFStringRef}.
      */
     private static Map<CFKey, CFStringRef> mapCFKeys() {
         Map<CFKey, CFStringRef> keyMap = new EnumMap<>(CFKey.class);
@@ -412,19 +410,19 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return false;
     }
 
-    /**
+    /*
      * Strings to convert to CFStringRef for pointer lookups
      */
     private enum CFKey {
-        IO_PROPERTY_MATCH("IOPropertyMatch"),
+        IO_PROPERTY_MATCH("IOPropertyMatch"), //
 
-        STATISTICS("Statistics"),
-        READ_OPS("Operations (Read)"), READ_BYTES("Bytes (Read)"), READ_TIME("Total Time (Read)"),
-        WRITE_OPS("Operations (Write)"), WRITE_BYTES("Bytes (Write)"), WRITE_TIME("Total Time (Write)"),
+        STATISTICS("Statistics"), //
+        READ_OPS("Operations (Read)"), READ_BYTES("Bytes (Read)"), READ_TIME("Total Time (Read)"), //
+        WRITE_OPS("Operations (Write)"), WRITE_BYTES("Bytes (Write)"), WRITE_TIME("Total Time (Write)"), //
 
-        BSD_UNIT("BSD Unit"), LEAF("Leaf"), WHOLE("Whole"),
+        BSD_UNIT("BSD Unit"), LEAF("Leaf"), WHOLE("Whole"), //
 
-        DA_MEDIA_NAME("DAMediaName"), DA_VOLUME_NAME("DAVolumeName"), DA_MEDIA_SIZE("DAMediaSize"),
+        DA_MEDIA_NAME("DAMediaName"), DA_VOLUME_NAME("DAVolumeName"), DA_MEDIA_SIZE("DAMediaSize"), //
         DA_DEVICE_MODEL("DADeviceModel"), MODEL("Model");
 
         private final String key;
@@ -437,5 +435,4 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
             return this.key;
         }
     }
-
 }

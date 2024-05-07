@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,7 +30,8 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.ByRef;
+import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
+import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -65,7 +66,7 @@ public final class SysctlKit {
      */
     public static int sysctl(String name, int def, boolean logWarning) {
         int intSize = com.sun.jna.platform.mac.SystemB.INT_SIZE;
-        try (Memory p = new Memory(intSize); ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
+        try (Memory p = new Memory(intSize); CloseableSizeTByReference size = new CloseableSizeTByReference(intSize)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 if (logWarning) {
                     Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
@@ -86,7 +87,7 @@ public final class SysctlKit {
     public static long sysctl(String name, long def) {
         int uint64Size = com.sun.jna.platform.mac.SystemB.UINT64_SIZE;
         try (Memory p = new Memory(uint64Size);
-             ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
+             CloseableSizeTByReference size = new CloseableSizeTByReference(uint64Size)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -103,16 +104,32 @@ public final class SysctlKit {
      * @return The String result of the call if successful; the default otherwise
      */
     public static String sysctl(String name, String def) {
+        return sysctl(name, def, true);
+    }
+
+    /**
+     * Executes a sysctl call with a String result
+     *
+     * @param name       name of the sysctl
+     * @param def        default String value
+     * @param logWarning whether to log the warning if not available
+     * @return The String result of the call if successful; the default otherwise
+     */
+    public static String sysctl(String name, String def, boolean logWarning) {
         // Call first time with null pointer to get value of size
-        try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
+        try (CloseableSizeTByReference size = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
-                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                if (logWarning) {
+                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                }
                 return def;
             }
             // Add 1 to size for null terminated string
             try (Memory p = new Memory(size.longValue() + 1L)) {
                 if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                    if (logWarning) {
+                        Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+                    }
                     return def;
                 }
                 return p.getString(0);
@@ -128,7 +145,7 @@ public final class SysctlKit {
      * @return True if structure is successfuly populated, false otherwise
      */
     public static boolean sysctl(String name, Structure struct) {
-        try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(struct.size())) {
+        try (CloseableSizeTByReference size = new CloseableSizeTByReference(struct.size())) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return false;
@@ -142,11 +159,11 @@ public final class SysctlKit {
      * Executes a sysctl call with a Pointer result
      *
      * @param name name of the sysctl
-     * @return An allocated memory buffer containing the result on success, null
-     * otherwise. Its value on failure is undefined.
+     * @return An allocated memory buffer containing the result on success, null otherwise. Its value on failure is
+     * undefined.
      */
     public static Memory sysctl(String name) {
-        try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
+        try (CloseableSizeTByReference size = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return null;
@@ -160,5 +177,4 @@ public final class SysctlKit {
             return m;
         }
     }
-
 }

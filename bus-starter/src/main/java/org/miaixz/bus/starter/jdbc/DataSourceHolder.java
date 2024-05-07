@@ -80,7 +80,7 @@ public class DataSourceHolder {
         /**
          * 扫描所有含有@DataSource注解的类
          */
-        @Pointcut("@annotation(jdbc.starter.org.miaixz.bus.DataSource)")
+        @Pointcut("@annotation(org.miaixz.bus.starter.jdbc.DataSource)")
         public void switching() {
 
         }

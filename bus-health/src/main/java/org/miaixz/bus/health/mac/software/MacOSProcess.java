@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,8 @@ package org.miaixz.bus.health.mac.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.platform.mac.IOKit;
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Group;
@@ -38,15 +39,14 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.Struct;
-import org.miaixz.bus.health.builtin.software.AbstractOSProcess;
-import org.miaixz.bus.health.builtin.software.OSProcess;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.OSThread;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.mac.SysctlKit;
-import org.miaixz.bus.health.mac.drivers.ThreadInfo;
+import org.miaixz.bus.health.mac.driver.ThreadInfo;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.*;
@@ -63,10 +63,10 @@ import java.util.stream.Collectors;
 public class MacOSProcess extends AbstractOSProcess {
 
     private static final int ARGMAX = SysctlKit.sysctl("kern.argmax", 0);
-
-    private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config.OS_MAC_SYSCTL_LOGWARNING,
+    private static final long TICKS_PER_MS;
+    private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING,
             false);
-
+    private static final int MAC_RLIMIT_NOFILE = 8;
     // 64-bit flag
     private static final int P_LP64 = 0x4;
     /*
@@ -78,22 +78,20 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SIDL = 4; // intermediate state in process creation
     private static final int SZOMB = 5; // intermediate state in process termination
     private static final int SSTOP = 6; // process being traced
-    private static final int MAC_RLIMIT_NOFILE = 8;
-    private static final long TICKS_PER_MS;
 
     static {
         // default to 1 tick per nanosecond
         long ticksPerSec = 1_000_000_000L;
-        IOKit.IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
+        IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
         if (iter != null) {
-            IOKit.IORegistryEntry cpu = iter.next();
+            IORegistryEntry cpu = iter.next();
             while (cpu != null) {
                 try {
                     String s = cpu.getName().toLowerCase(Locale.ROOT);
                     if (s.startsWith("cpu") && s.length() > 3) {
                         byte[] data = cpu.getByteArrayProperty("timebase-frequency");
                         if (data != null) {
-                            ticksPerSec = Builder.byteArrayToLong(data, 4, false);
+                            ticksPerSec = Parsing.byteArrayToLong(data, 4, false);
                             break;
                         }
                     }
@@ -108,11 +106,12 @@ public class MacOSProcess extends AbstractOSProcess {
         TICKS_PER_MS = ticksPerSec / 1000L;
     }
 
-    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
-    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-    private final MacOperatingSystem os;
     private int majorVersion;
     private int minorVersion;
+
+    private final MacOperatingSystem os;
+    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer.memoize(this::queryArgsAndEnvironment);
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
     private String currentWorkingDirectory;
@@ -120,7 +119,7 @@ public class MacOSProcess extends AbstractOSProcess {
     private String userID;
     private String group;
     private String groupID;
-    private State state = OSProcess.State.INVALID;
+    private State state = State.INVALID;
     private int parentProcessID;
     private int threadCount;
     private int priority;
@@ -400,7 +399,7 @@ public class MacOSProcess extends AbstractOSProcess {
         try (Struct.CloseableProcTaskAllInfo taskAllInfo = new Struct.CloseableProcTaskAllInfo()) {
             if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
                     taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
-                this.state = OSProcess.State.INVALID;
+                this.state = State.INVALID;
                 return false;
             }
             try (Memory buf = new Memory(SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
@@ -420,25 +419,25 @@ public class MacOSProcess extends AbstractOSProcess {
 
             switch (taskAllInfo.pbsd.pbi_status) {
                 case SSLEEP:
-                    this.state = OSProcess.State.SLEEPING;
+                    this.state = State.SLEEPING;
                     break;
                 case SWAIT:
-                    this.state = OSProcess.State.WAITING;
+                    this.state = State.WAITING;
                     break;
                 case SRUN:
-                    this.state = OSProcess.State.RUNNING;
+                    this.state = State.RUNNING;
                     break;
                 case SIDL:
-                    this.state = OSProcess.State.NEW;
+                    this.state = State.NEW;
                     break;
                 case SZOMB:
-                    this.state = OSProcess.State.ZOMBIE;
+                    this.state = State.ZOMBIE;
                     break;
                 case SSTOP:
-                    this.state = OSProcess.State.STOPPED;
+                    this.state = State.STOPPED;
                     break;
                 default:
-                    this.state = OSProcess.State.OTHER;
+                    this.state = State.OTHER;
                     break;
             }
             this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
@@ -478,5 +477,4 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         return true;
     }
-
 }

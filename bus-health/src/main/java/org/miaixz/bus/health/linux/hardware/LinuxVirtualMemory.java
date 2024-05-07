@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,11 @@ package org.miaixz.bus.health.linux.hardware;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Triple;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractVirtualMemory;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
 import org.miaixz.bus.health.linux.ProcPath;
 
 import java.util.List;
@@ -44,14 +45,14 @@ import java.util.function.Supplier;
  * @since Java 17+
  */
 @ThreadSafe
-public final class LinuxVirtualMemory extends AbstractVirtualMemory {
+final class LinuxVirtualMemory extends AbstractVirtualMemory {
 
     private final LinuxGlobalMemory global;
 
-    private final Supplier<Triple<Long, Long, Long>> usedTotalCommitLim = Memoize.memoize(LinuxVirtualMemory::queryMemInfo,
-            Memoize.defaultExpiration());
+    private final Supplier<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer.memoize(LinuxVirtualMemory::queryMemInfo,
+            Memoizer.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = Memoize.memoize(LinuxVirtualMemory::queryVmStat, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoizer.memoize(LinuxVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
     /**
      * Constructor for LinuxVirtualMemory.
@@ -62,7 +63,7 @@ public final class LinuxVirtualMemory extends AbstractVirtualMemory {
         this.global = linuxGlobalMemory;
     }
 
-    private static Triple<Long, Long, Long> queryMemInfo() {
+    private static Triplet<Long, Long, Long> queryMemInfo() {
         long swapFree = 0L;
         long swapTotal = 0L;
         long commitLimit = 0L;
@@ -87,7 +88,7 @@ public final class LinuxVirtualMemory extends AbstractVirtualMemory {
                 }
             }
         }
-        return Triple.of(swapTotal - swapFree, swapTotal, commitLimit);
+        return Triplet.of(swapTotal - swapFree, swapTotal, commitLimit);
     }
 
     private static Pair<Long, Long> queryVmStat() {
@@ -99,10 +100,10 @@ public final class LinuxVirtualMemory extends AbstractVirtualMemory {
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "pswpin":
-                        swapPagesIn = Builder.parseLongOrDefault(memorySplit[1], 0L);
+                        swapPagesIn = Parsing.parseLongOrDefault(memorySplit[1], 0L);
                         break;
                     case "pswpout":
-                        swapPagesOut = Builder.parseLongOrDefault(memorySplit[1], 0L);
+                        swapPagesOut = Parsing.parseLongOrDefault(memorySplit[1], 0L);
                         break;
                     default:
                         // do nothing with other lines
@@ -123,7 +124,7 @@ public final class LinuxVirtualMemory extends AbstractVirtualMemory {
         if (memorySplit.length < 2) {
             return 0L;
         }
-        long memory = Builder.parseLongOrDefault(memorySplit[1], 0L);
+        long memory = Parsing.parseLongOrDefault(memorySplit[1], 0L);
         if (memorySplit.length > 2 && "kB".equals(memorySplit[2])) {
             memory *= 1024;
         }
@@ -159,5 +160,4 @@ public final class LinuxVirtualMemory extends AbstractVirtualMemory {
     public long getSwapPagesOut() {
         return inOut.get().getRight();
     }
-
 }

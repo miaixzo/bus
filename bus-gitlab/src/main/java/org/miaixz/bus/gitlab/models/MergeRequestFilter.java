@@ -40,9 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ALL;
-import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
-
 /**
  * This class is used to filter merge requests when getting lists of them.
  */
@@ -510,7 +507,7 @@ public class MergeRequestFilter implements Serializable {
                 .withParam("wip", (wip == null ? null : wip ? "yes" : "no"))
                 .withParam("not", toStringMap(not), false);
 
-        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
+        if (authorId != null && (scope == Constants.MergeRequestScope.ALL || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }
         return params;
@@ -552,4 +549,5 @@ public class MergeRequestFilter implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

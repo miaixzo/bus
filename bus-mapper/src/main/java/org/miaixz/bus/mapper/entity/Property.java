@@ -78,7 +78,7 @@ public class Property {
     /**
      * 处理关键字，默认空，mysql可以设置为 `{0}`, sqlserver 为 [{0}]，{0} 代表的列名
      */
-    private String wrapKeyword = "";
+    private String wrapKeyword = Normal.EMPTY;
     /**
      * 配置解析器
      */

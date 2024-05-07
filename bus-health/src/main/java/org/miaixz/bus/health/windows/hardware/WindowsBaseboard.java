@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,10 +30,11 @@ import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quartet;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractBaseboard;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
 import org.miaixz.bus.health.windows.WmiKit;
-import org.miaixz.bus.health.windows.drivers.wmi.Win32BaseBoard;
+import org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard;
+import org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard.BaseBoardProperty;
 
 import java.util.function.Supplier;
 
@@ -46,25 +47,8 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoize.memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoizer.memoize(
             WindowsBaseboard::queryManufModelVersSerial);
-
-    private static Quartet<String, String, String, String> queryManufModelVersSerial() {
-        String manufacturer = null;
-        String model = null;
-        String version = null;
-        String serialNumber = null;
-        WmiResult<Win32BaseBoard.BaseBoardProperty> win32BaseBoard = Win32BaseBoard.queryBaseboardInfo();
-        if (win32BaseBoard.getResultCount() > 0) {
-            manufacturer = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.MANUFACTURER, 0);
-            model = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.MODEL, 0);
-            version = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.VERSION, 0);
-            serialNumber = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.SERIALNUMBER, 0);
-        }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
-                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
-    }
 
     @Override
     public String getManufacturer() {
@@ -84,6 +68,23 @@ final class WindowsBaseboard extends AbstractBaseboard {
     @Override
     public String getSerialNumber() {
         return manufModelVersSerial.get().getD();
+    }
+
+    private static Quartet<String, String, String, String> queryManufModelVersSerial() {
+        String manufacturer = null;
+        String model = null;
+        String version = null;
+        String serialNumber = null;
+        WmiResult<BaseBoardProperty> win32BaseBoard = Win32BaseBoard.queryBaseboardInfo();
+        if (win32BaseBoard.getResultCount() > 0) {
+            manufacturer = WmiKit.getString(win32BaseBoard, BaseBoardProperty.MANUFACTURER, 0);
+            model = WmiKit.getString(win32BaseBoard, BaseBoardProperty.MODEL, 0);
+            version = WmiKit.getString(win32BaseBoard, BaseBoardProperty.VERSION, 0);
+            serialNumber = WmiKit.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);
+        }
+        return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
 }

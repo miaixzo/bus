@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,10 @@ package org.miaixz.bus.health.linux.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quartet;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractBaseboard;
-import org.miaixz.bus.health.linux.drivers.Sysfs;
-import org.miaixz.bus.health.linux.drivers.proc.CpuInfo;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
+import org.miaixz.bus.health.linux.driver.Sysfs;
+import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
 
 import java.util.function.Supplier;
 
@@ -44,12 +44,12 @@ import java.util.function.Supplier;
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufacturerModelVersionSerial = Memoize.memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufacturerModelVersionSerial = Memoizer.memoize(
             CpuInfo::queryBoardInfo);
-    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
-    private final Supplier<String> model = Memoize.memoize(this::queryModel);
-    private final Supplier<String> version = Memoize.memoize(this::queryVersion);
-    private final Supplier<String> serialNumber = Memoize.memoize(this::querySerialNumber);
+    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final Supplier<String> model = Memoizer.memoize(this::queryModel);
+    private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+    private final Supplier<String> serialNumber = Memoizer.memoize(this::querySerialNumber);
 
     @Override
     public String getManufacturer() {
@@ -72,7 +72,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryManufacturer() {
-        String result;
+        String result = null;
         if ((result = Sysfs.queryBoardVendor()) == null
                 && (result = manufacturerModelVersionSerial.get().getA()) == null) {
             return Normal.UNKNOWN;
@@ -90,7 +90,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryVersion() {
-        String result = null;
+        String result;
         if ((result = Sysfs.queryBoardVersion()) == null
                 && (result = manufacturerModelVersionSerial.get().getC()) == null) {
             return Normal.UNKNOWN;
@@ -106,5 +106,4 @@ final class LinuxBaseboard extends AbstractBaseboard {
         }
         return result;
     }
-
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,9 +27,10 @@ package org.miaixz.bus.health.mac.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
-import org.miaixz.bus.health.builtin.hardware.AbstractSoundCard;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +58,7 @@ final class MacSoundCard extends AbstractSoundCard {
     }
 
     /**
-     * public method used by
-     * {@link AbstractHardwareAbstractionLayer} to access the
-     * sound cards.
+     * public method used by {@link AbstractHardwareAbstractionLayer} to access the sound cards.
      *
      * @return List of {@link MacSoundCard} objects.
      */
@@ -88,7 +87,7 @@ final class MacSoundCard extends AbstractSoundCard {
             }
             if (version) {
                 kernelVersion = "AppleHDAController "
-                        + Builder.getTextBetweenStrings(checkLine, "<string>", "</string>");
+                        + Parsing.getTextBetweenStrings(checkLine, "<string>", "</string>");
                 version = false;
             }
         }
@@ -96,5 +95,4 @@ final class MacSoundCard extends AbstractSoundCard {
 
         return soundCards;
     }
-
 }

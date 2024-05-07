@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -35,8 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 /**
- * This class encapsulates information about users who are currently logged in
- * to an operating system.
+ * This class encapsulates information about users who are currently logged in to an operating system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -88,8 +88,8 @@ public class OSSession {
     /**
      * Gets the remote host from which the user logged in
      *
-     * @return the host as either an IPv4 or IPv6 representation. If the host is
-     * unspecified, may also be an empty string, depending on the platform.
+     * @return the host as either an IPv4 or IPv6 representation. If the host is unspecified, may also be an empty
+     * string, depending on the platform.
      */
     public String getHost() {
         return host;
@@ -99,7 +99,7 @@ public class OSSession {
     public String toString() {
         String loginStr = loginTime == 0 ? "No login"
                 : LocalDateTime.ofInstant(Instant.ofEpochMilli(loginTime), ZoneId.systemDefault()).format(LOGIN_FORMAT);
-        String hostStr = "";
+        String hostStr = Normal.EMPTY;
         if (!host.isEmpty() && !host.equals("::") && !host.equals("0.0.0.0")) {
             hostStr = ", (" + host + ")";
         }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.provider.AbstractProvider;
+import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 import java.util.List;
 
@@ -40,7 +39,8 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,37 +57,41 @@ public class Context {
     private String appSecret;
 
     /**
-     * 支付宝公钥：当选择支付宝登录时,该值可用
-     * 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
-     */
-    private String publicKey;
-
-    /**
-     * Stack Overflow Key
-     */
-    private String overflowKey;
-
-    /**
-     * 企业微信,授权方的网页应用ID
-     */
-    private String agentId;
-
-    /**
      * 登录成功后的回调地址
      */
     private String redirectUri;
 
     /**
-     * 是否需要申请unionid,目前只针对qq登录
-     * 注：QQ授权登录时,获取unionid需要单独发送邮件申请权限 如果个人开发者账号中申请了该权限,
-     * 可以将该值置为true,在获取openId时就会同步获取unionId
+     * 是否需要申请unionid，目前只针对qq登录
+     * 注：QQ授权登录时，获取unionid需要单独发送邮件申请权限。如果个人开发者账号中申请了该权限，可以将该值置为true，在获取openId时就会同步获取unionId
      * 参考链接：http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D
      */
     private boolean unionId;
 
     /**
+     * Stack Overflow Key
+     */
+    private String stackOverflowKey;
+
+    /**
+     * 企业微信，授权方的网页应用ID
+     */
+    private String agentId;
+
+    /**
+     * 企业微信第三方授权用户类型，member|admin
+     */
+    private String usertype;
+
+    /**
+     * 域名前缀
+     * 使用 CodingScope 登录和 OktaScope 登录时，需要传该值
+     */
+    private String prefix;
+
+    /**
      * 忽略校验 {@code state} 参数，默认不开启。当 {@code ignoreCheckState} 为 {@code true} 时，
-     * {@link AbstractProvider#login(Callback callback)} 将不会校验 {@code state} 的合法性。
+     * {@link DefaultProvider#login(Callback)} 将不会校验 {@code state} 的合法性。
      * <p>
      * 使用场景：当且仅当使用自实现 {@code state} 校验逻辑时开启
      * <p>
@@ -99,17 +103,6 @@ public class Context {
      * <strong>如非特殊需要，不建议开启这个配置</strong>
      */
     private boolean ignoreCheckState;
-
-    /**
-     * 域名前缀
-     * <p>
-     * 使用 Coding 登录和 Okta 登录时，需要传该值。
-     * <p>
-     * Coding 登录：团队域名前缀，比如以“ https://auth.coding.net ”为例，{@code prefix} = auth
-     * <p>
-     * Okta 登录：Okta 账号域名前缀，比如以“ https://auth.okta.com ”为例，{@code prefix} = auth
-     */
-    private String prefix;
 
     /**
      * 支持自定义授权平台的 scope 内容
@@ -127,7 +120,7 @@ public class Context {
     private Integer clientOsType;
 
     /**
-     * 喜马拉雅：客户端包名，如果client_os_type为1或2时必填。对Android客户端是包名，对IOS客户端是Bundle ID
+     * 喜马拉雅：客户端包名，如果 {@link Context#clientOsType} 为1或2时必填。对Android客户端是包名，对IOS客户端是Bundle ID
      */
     private String packId;
 
@@ -137,9 +130,29 @@ public class Context {
     private boolean pkce;
 
     /**
+     * OktaScope 授权服务器的 ID， 默认为 default。如果要使用自定义授权服务，此处传实际的授权服务器 ID（一个随机串）
+     * 创建自定义授权服务器，请参考：
+     * ① https://developer.okta.com/docs/concepts/auth-servers
+     * ② https://developer.okta.com/docs/guides/customize-authz-server
+     */
+    private String authServerId;
+    /**
      * 忽略校验 {@code redirectUri} 参数，默认不开启。当 {@code ignoreCheckRedirectUri} 为 {@code true} 时，
-     * {@link AbstractProvider#checkContext(Context, Complex)} 将不会校验 {@code redirectUri} 的合法性。
+     * {@link Checker#checkConfig(Context, Complex)} 将不会校验 {@code redirectUri} 的合法性。
      */
     private boolean ignoreCheckRedirectUri;
+    /**
+     * MicrosoftScope Entra ID（原微软 AAD）中的租户 ID
+     */
+    private String tenantId;
+
+    /**
+     * 适配 builder 模式 set 值的情况
+     *
+     * @return authServerId
+     */
+    public String getAuthServerId() {
+        return StringKit.isEmpty(authServerId) ? "default" : authServerId;
+    }
 
 }

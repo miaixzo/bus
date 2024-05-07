@@ -26,6 +26,7 @@
 package org.miaixz.bus.starter.elastic;
 
 import lombok.Data;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -81,9 +82,10 @@ public class ElasticProperties {
     private List<String> hostList;
 
     public List<String> getHostList() {
-        if (null == this.hosts || "".equalsIgnoreCase(this.hosts.trim())) {
+        if (null == this.hosts || Normal.EMPTY.equalsIgnoreCase(this.hosts.trim())) {
             return Collections.emptyList();
         }
         return Arrays.asList(this.hosts.split(Symbol.COMMA));
     }
+
 }

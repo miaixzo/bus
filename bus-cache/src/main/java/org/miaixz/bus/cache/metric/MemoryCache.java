@@ -75,6 +75,35 @@ public class MemoryCache implements CacheX {
     }
 
     /**
+     * 获取缓存
+     *
+     * @param key 缓存KEY
+     * @return 缓存内容
+     */
+    @Override
+    public Object read(String key) {
+        readLock.lock();
+        try {
+            CacheState cacheState = map.get(key);
+            if (null == cacheState || cacheState.isExpired()) {
+                return null;
+            }
+            return cacheState.getState();
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    @Override
+    public Map<String, Object> read(Collection<String> keys) {
+        Map<String, Object> subCache = new HashMap<>(keys.size());
+        for (String key : keys) {
+            subCache.put(key, read(key));
+        }
+        return subCache;
+    }
+
+    /**
      * 设置缓存
      *
      * @param keyValueMap 缓存内容
@@ -104,33 +133,9 @@ public class MemoryCache implements CacheX {
         }
     }
 
-    /**
-     * 获取缓存
-     *
-     * @param key 缓存KEY
-     * @return 缓存内容
-     */
     @Override
-    public Object read(String key) {
-        readLock.lock();
-        try {
-            CacheState cacheState = map.get(key);
-            if (null == cacheState || cacheState.isExpired()) {
-                return null;
-            }
-            return cacheState.getState();
-        } finally {
-            readLock.unlock();
-        }
-    }
-
-    @Override
-    public Map<String, Object> read(Collection<String> keys) {
-        Map<String, Object> subCache = new HashMap<>(keys.size());
-        for (String key : keys) {
-            subCache.put(key, read(key));
-        }
-        return subCache;
+    public boolean containsKey(String key) {
+        return map.containsKey(key);
     }
 
     /**

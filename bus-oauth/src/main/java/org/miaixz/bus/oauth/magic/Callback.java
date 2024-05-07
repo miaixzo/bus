@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth.magic;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 /**
  * 授权回调时的参数类
@@ -36,7 +37,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Callback {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Callback implements Serializable {
 
     /**
      * 访问AuthorizeUrl后回调时带的参数code
@@ -44,12 +48,12 @@ public class Callback {
     private String code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数auth_code,该参数目前只使用于支付宝登录
+     * 访问AuthorizeUrl后回调时带的参数auth_code，该参数目前只使用于支付宝登录
      */
     private String auth_code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数state,用于和请求AuthorizeUrl前的state比较,防止CSRF攻击
+     * 访问AuthorizeUrl后回调时带的参数state，用于和请求AuthorizeUrl前的state比较，防止CSRF攻击
      */
     private String state;
 
@@ -61,11 +65,11 @@ public class Callback {
     /**
      * Twitter回调后返回的oauth_token
      */
-    private String oauthToken;
+    private String oauth_token;
 
     /**
      * Twitter回调后返回的oauth_verifier
      */
-    private String oauthVerifier;
+    private String oauth_verifier;
 
 }

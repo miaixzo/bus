@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,11 +27,11 @@ package org.miaixz.bus.health.mac.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.hardware.AbstractGraphicsCard;
-import org.miaixz.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +60,7 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
     }
 
     /**
-     * public method used by
-     * {@link AbstractHardwareAbstractionLayer} to access the
-     * graphics cards.
+     * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
      * @return List of {@link MacGraphicsCard} objects.
      */
@@ -95,7 +93,7 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                 } else if (prefix.contains("version") || prefix.contains("revision")) {
                     versionInfoList.add(line.trim());
                 } else if (prefix.startsWith("vram")) {
-                    vram = Builder.parseDecimalMemorySizeToBinary(split[1].trim());
+                    vram = Parsing.parseDecimalMemorySizeToBinary(split[1].trim());
                 }
             }
         }
@@ -103,5 +101,4 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                 versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
         return cardList;
     }
-
 }

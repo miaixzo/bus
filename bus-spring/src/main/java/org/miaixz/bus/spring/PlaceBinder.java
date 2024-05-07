@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.env.Environment;
@@ -73,7 +74,7 @@ public interface PlaceBinder {
                 Constructor<?> resolverConstructor = resolverClass.getDeclaredConstructor(PropertyResolver.class);
                 Method getSubPropertiesMethod = resolverClass.getDeclaredMethod("getSubProperties", String.class);
                 Object resolver = resolverConstructor.newInstance(environment);
-                Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod.invoke(resolver, "");
+                Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod.invoke(resolver, Normal.EMPTY);
                 // 创建结果类
                 T target = targetClass.getConstructor().newInstance();
                 // 反射使用 org.springframework.boot.bind.RelaxedDataBinder

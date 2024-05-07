@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,8 +34,8 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Quintet;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.health.Memoize;
-import org.miaixz.bus.health.builtin.hardware.AbstractFirmware;
+import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 
 import java.util.function.Supplier;
 
@@ -48,7 +48,7 @@ import java.util.function.Supplier;
 @Immutable
 final class MacFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoize.memoize(
+    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoizer.memoize(
             MacFirmware::queryEfi);
 
     private static Quintet<String, String, String, String, String> queryEfi() {
@@ -154,5 +154,4 @@ final class MacFirmware extends AbstractFirmware {
     public String getReleaseDate() {
         return manufNameDescVersRelease.get().getE();
     }
-
 }

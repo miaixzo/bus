@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.image.GifEncoder;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.RandomKit;
 
@@ -202,7 +203,7 @@ public class GifProvider extends AbstractProvider {
                     RandomKit.randomInt(5, 30), 5 + RandomKit.randomInt(5, 30)
             );
             // 绘制椭圆边框
-            g2d.drawString(words[i] + "", x + (font.getSize() + m) * i, y);
+            g2d.drawString(words[i] + Normal.EMPTY, x + (font.getSize() + m) * i, y);
         }
         g2d.dispose();
         return image;

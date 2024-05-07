@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,8 +28,7 @@ package org.miaixz.bus.health.builtin.software;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 
 /**
- * NetworkParams presents network parameters of running OS, such as DNS, host
- * name etc.
+ * NetworkParams presents network parameters of running OS, such as DNS, host name etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,14 +37,14 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 public interface NetworkParams {
 
     /**
-     * Gets the HostName of the machine executing health.
+     * Gets the HostName of the machine executing OSHI.
      *
      * @return the hostname
      */
     String getHostName();
 
     /**
-     * Gets the Domain Name of the machine executing health.
+     * Gets the Domain Name of the machine executing OSHI.
      *
      * @return the domain name
      */
@@ -59,8 +58,7 @@ public interface NetworkParams {
     String[] getDnsServers();
 
     /**
-     * Gets the default gateway(routing destination for 0.0.0.0/0) for IPv4
-     * connections.
+     * Gets the default gateway(routing destination for 0.0.0.0/0) for IPv4 connections.
      *
      * @return default gateway for IPv4, or empty string if not defined.
      */
@@ -72,5 +70,4 @@ public interface NetworkParams {
      * @return default gateway for IPv6, or empty string if not defined.
      */
     String getIpv6DefaultGateway();
-
 }

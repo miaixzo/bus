@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               *
+ * Copyright (c) 2015-2024 miaixz.org OSHI Team and other contributors.          *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,18 +31,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A logical volume group implemented as part of logical volume management,
- * combining the space on one or more storage devices such as disks or
- * partitions (physical volumes) into a storage pool, and subsequently
- * allocating that space to virtual partitions (logical volumes) as block
- * devices accessible to the file system.
+ * A logical volume group implemented as part of logical volume management, combining the space on one or more storage
+ * devices such as disks or partitions (physical volumes) into a storage pool, and subsequently allocating that space to
+ * virtual partitions (logical volumes) as block devices accessible to the file system.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Immutable
 public interface LogicalVolumeGroup {
-
     /**
      * Gets the logical volume group name.
      *
@@ -58,15 +55,12 @@ public interface LogicalVolumeGroup {
     Set<String> getPhysicalVolumes();
 
     /**
-     * Gets a map containing information about the logical volumes in the logical
-     * volume group, represented to the file system as block devices. The keyset for
-     * the map represents a collection of the logical volumes, while the values
-     * associated with these keys represent the physical volumes mapped to each
-     * logical volume (if known).
+     * Gets a map containing information about the logical volumes in the logical volume group, represented to the file
+     * system as block devices. The keyset for the map represents a collection of the logical volumes, while the values
+     * associated with these keys represent the physical volumes mapped to each logical volume (if known).
      *
-     * @return A map with the logical volume names as the key, and a set of
-     * associated physical volume names as the value.
+     * @return A map with the logical volume names as the key, and a set of associated physical volume names as the
+     * value.
      */
     Map<String, Set<String>> getLogicalVolumes();
-
 }

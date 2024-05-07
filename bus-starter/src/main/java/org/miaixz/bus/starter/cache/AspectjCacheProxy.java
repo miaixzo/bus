@@ -60,21 +60,21 @@ public class AspectjCacheProxy {
         core = Module.coreInstance(config);
     }
 
-    @Around("@annotation(annotation.cache.org.miaixz.bus.CachedGet)")
+    @Around("@annotation(org.miaixz.bus.cache.annotation.CachedGet)")
     public Object read(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         CachedGet cachedGet = method.getAnnotation(CachedGet.class);
         return core.read(cachedGet, method, new InvocationInvoker(point));
     }
 
-    @Around("@annotation(annotation.cache.org.miaixz.bus.Cached)")
+    @Around("@annotation(org.miaixz.bus.cache.annotation.Cached)")
     public Object readWrite(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Cached cached = method.getAnnotation(Cached.class);
         return core.readWrite(cached, method, new InvocationInvoker(point));
     }
 
-    @After("@annotation(annotation.cache.org.miaixz.bus.Invalid)")
+    @After("@annotation(org.miaixz.bus.cache.annotation.Invalid)")
     public void remove(JoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Invalid invalid = method.getAnnotation(Invalid.class);
