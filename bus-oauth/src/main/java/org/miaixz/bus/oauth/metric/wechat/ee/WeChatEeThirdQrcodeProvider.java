@@ -46,11 +46,11 @@ import org.miaixz.bus.oauth.magic.*;
 public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     public WeChatEeThirdQrcodeProvider(Context context) {
-        super(context, Registry.WECHAT_ENTERPRISE_QRCODE_THIRD);
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD);
     }
 
     public WeChatEeThirdQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_ENTERPRISE_QRCODE_THIRD, authorizeCache);
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD, authorizeCache);
     }
 
     @Override

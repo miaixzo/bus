@@ -201,11 +201,11 @@ public class AuthProviderService {
             return new ToutiaoProvider(context, extendCache);
         } else if (Registry.TWITTER.equals(type)) {
             return new TwitterProvider(context, extendCache);
-        } else if (Registry.WECHAT_ENTERPRISE.equals(type)) {
+        } else if (Registry.WECHAT_EE.equals(type)) {
             return new WeChatEeQrcodeProvider(context, extendCache);
-        } else if (Registry.WECHAT_ENTERPRISE_QRCODE_THIRD.equals(type)) {
+        } else if (Registry.WECHAT_EE_QRCODE_THIRD.equals(type)) {
             return new WeChatEeThirdQrcodeProvider(context, extendCache);
-        } else if (Registry.WECHAT_ENTERPRISE_WEB.equals(type)) {
+        } else if (Registry.WECHAT_EE_WEB.equals(type)) {
             return new WeChatEeWebProvider(context, extendCache);
         } else if (Registry.WECHAT_MP.equals(type)) {
             return new WeChatMpProvider(context, extendCache);
@@ -213,7 +213,7 @@ public class AuthProviderService {
             return new WeChatOpenProvider(context, extendCache);
         } else if (Registry.WEIBO.equals(type)) {
             return new WeiboProvider(context, extendCache);
-        } else if (Registry.XMLY.equals(type)) {
+        } else if (Registry.XIMALAYA.equals(type)) {
             return new XimalayaProvider(context, extendCache);
         }
         throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());

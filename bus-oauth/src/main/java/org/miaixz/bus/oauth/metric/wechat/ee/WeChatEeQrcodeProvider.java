@@ -39,11 +39,11 @@ import org.miaixz.bus.oauth.Registry;
 public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
 
     public WeChatEeQrcodeProvider(Context context) {
-        super(context, Registry.WECHAT_ENTERPRISE);
+        super(context, Registry.WECHAT_EE);
     }
 
     public WeChatEeQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_ENTERPRISE, authorizeCache);
+        super(context, Registry.WECHAT_EE, authorizeCache);
     }
 
     @Override

@@ -56,11 +56,11 @@ import java.util.TreeMap;
 public class XimalayaProvider extends DefaultProvider {
 
     public XimalayaProvider(Context context) {
-        super(context, Registry.XMLY);
+        super(context, Registry.XIMALAYA);
     }
 
     public XimalayaProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.XMLY, authorizeCache);
+        super(context, Registry.XIMALAYA, authorizeCache);
     }
 
     /**

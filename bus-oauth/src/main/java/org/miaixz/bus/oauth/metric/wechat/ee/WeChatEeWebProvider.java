@@ -40,11 +40,11 @@ import org.miaixz.bus.oauth.Registry;
 public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
 
     public WeChatEeWebProvider(Context context) {
-        super(context, Registry.WECHAT_ENTERPRISE_WEB);
+        super(context, Registry.WECHAT_EE_WEB);
     }
 
     public WeChatEeWebProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_ENTERPRISE_WEB, authorizeCache);
+        super(context, Registry.WECHAT_EE_WEB, authorizeCache);
     }
 
     @Override

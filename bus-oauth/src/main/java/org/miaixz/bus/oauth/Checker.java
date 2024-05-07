@@ -53,13 +53,13 @@ public class Checker {
         if (isSupported && Registry.STACK_OVERFLOW == complex) {
             isSupported = StringKit.isNotEmpty(context.getStackOverflowKey());
         }
-        if (isSupported && Registry.WECHAT_ENTERPRISE == complex) {
+        if (isSupported && Registry.WECHAT_EE == complex) {
             isSupported = StringKit.isNotEmpty(context.getAgentId());
         }
         if (isSupported && (Registry.CODING == complex || Registry.OKTA == complex)) {
             isSupported = StringKit.isNotEmpty(context.getPrefix());
         }
-        if (isSupported && Registry.XMLY == complex) {
+        if (isSupported && Registry.XIMALAYA == complex) {
             isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getClientOsType();
             if (isSupported) {
                 isSupported = context.getClientOsType() == 3 || StringKit.isNotEmpty(context.getPackId());
