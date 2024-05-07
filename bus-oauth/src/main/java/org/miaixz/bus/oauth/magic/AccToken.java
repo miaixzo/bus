@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,22 +27,25 @@ package org.miaixz.bus.oauth.magic;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * 授权所需的token
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccToken {
+public class AccToken implements Serializable {
 
-    private int expireIn;
     private String accessToken;
+    private int expireIn;
     private String refreshToken;
+    private int refreshTokenExpireIn;
     private String uid;
     private String openId;
     private String accessCode;
@@ -65,6 +68,11 @@ public class AccToken {
      * 企业微信附带属性
      */
     private String code;
+    /**
+     * 微信公众号 - 网页授权的登录时可用
+     * 微信针对网页授权登录，增加了一个快照页的逻辑，快照页获取到的微信用户的 uid oid 和头像昵称都是虚拟的信息
+     */
+    private boolean snapshotUser;
 
     /**
      * Twitter附带属性

@@ -73,6 +73,16 @@ public interface CacheX {
     void write(Map<String, Object> map, long expire);
 
     /**
+     * 是否存在key，如果对应key的value值已过期，也返回false
+     *
+     * @param key 缓存key
+     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     */
+    default boolean containsKey(String key) {
+        return true;
+    }
+
+    /**
      * 从缓存中移除对象
      *
      * @param keys 键

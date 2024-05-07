@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,10 +27,12 @@ package org.miaixz.bus.oauth.magic;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.*;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Gender;
+
+import java.io.Serializable;
 
 /**
- * 授权成功后的用户信息,根据授权平台的不同,获取的数据完整性也不同
+ * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +42,11 @@ import org.miaixz.bus.core.lang.Normal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Property {
+public class Property implements Serializable {
 
     /**
-     * 用户第三方系统的唯一id 在调用方集成改组件时,可以用uuid + source唯一确定一个用户
+     * 用户第三方系统的唯一id。在调用方集成该组件时，可以用uuid + source唯一确定一个用户
+     *
      */
     private String uuid;
     /**
@@ -75,13 +78,13 @@ public class Property {
      */
     private String email;
     /**
-     * 用户备注(各平台中的用户个人介绍)
+     * 用户备注（各平台中的用户个人介绍）
      */
     private String remark;
     /**
      * 性别
      */
-    private Normal.Gender gender;
+    private Gender gender;
     /**
      * 用户来源
      */
@@ -94,5 +97,11 @@ public class Property {
      * 第三方平台返回的原始用户信息
      */
     private JSONObject rawJson;
+
+    /**
+     * 微信公众号 - 网页授权的登录时可用
+     * 微信针对网页授权登录，增加了一个快照页的逻辑，快照页获取到的微信用户的 uid oid 和头像昵称都是虚拟的信息
+     */
+    private boolean snapshotUser;
 
 }

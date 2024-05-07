@@ -50,7 +50,7 @@ public class GuavaCache implements CacheX {
                 .newBuilder()
                 .maximumSize(size)
                 .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
-                .build(new CacheLoader<String, Object>() {
+                .build(new CacheLoader<>() {
                     @Override
                     public Object load(String key) {
                         return null;

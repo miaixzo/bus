@@ -222,8 +222,8 @@ public class Httpx {
     /**
      * 简单的 GET 请求 使用默认编码 UTF-8
      *
-     * @param url URL地址 String
-     * @return String
+     * @param url URL地址
+     * @return the {@link String}
      */
     public static String get(final String url) {
         return get(url, Charset.DEFAULT_UTF_8);
@@ -232,9 +232,9 @@ public class Httpx {
     /**
      * 简单的 GET 请求 使用自定义编码
      *
-     * @param url     URL地址 String
-     * @param charset 自定义编码 String
-     * @return String
+     * @param url     URL地址
+     * @param charset 自定义编码
+     * @return the {@link String}
      */
     public static String get(final String url, final String charset) {
         return execute(Builder.builder().url(url).requestCharset(charset).responseCharset(charset).build());
@@ -245,7 +245,7 @@ public class Httpx {
      *
      * @param url     URL地址
      * @param isAsync 是否异步
-     * @return String
+     * @return the {@link String}
      */
     public static String get(final String url, final boolean isAsync) {
         if (isAsync) {
@@ -257,46 +257,46 @@ public class Httpx {
     /**
      * 带查询参数 GET 请求 使用默认编码 UTF-8
      *
-     * @param url      URL地址 String
-     * @param queryMap 查询参数 Map
-     * @return String
+     * @param url     URL地址
+     * @param formMap 查询参数
+     * @return the {@link String}
      */
-    public static String get(final String url, final Map<String, Object> queryMap) {
-        return get(url, queryMap, null, Charset.DEFAULT_UTF_8);
+    public static String get(final String url, final Map<String, Object> formMap) {
+        return get(url, formMap, null, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 带查询参数 GET 请求 使用默认编码 UTF-8
      *
-     * @param url       URL地址 String
-     * @param queryMap  查询参数 Map
-     * @param headerMap Header参数 Map
-     * @return String
+     * @param url       URL地址
+     * @param formMap   查询参数
+     * @param headerMap Header参数
+     * @return the {@link String}
      */
-    public static String get(final String url, final Map<String, Object> queryMap, Map<String, String> headerMap) {
-        return get(url, queryMap, headerMap, Charset.DEFAULT_UTF_8);
+    public static String get(final String url, final Map<String, Object> formMap, Map<String, String> headerMap) {
+        return get(url, formMap, headerMap, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 带查询参数 GET 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param queryMap  查询参数 Map
-     * @param headerMap Header参数 Map
-     * @param charset   自定义编码 String
-     * @return String
+     * @param url       URL地址
+     * @param formMap   查询参数
+     * @param headerMap Header参数
+     * @param charset   自定义编码
+     * @return the {@link String}
      */
-    public static String get(final String url, final Map<String, Object> queryMap, Map<String, String> headerMap,
+    public static String get(final String url, final Map<String, Object> formMap, Map<String, String> headerMap,
                              final String charset) {
-        return execute(Builder.builder().url(url).headerMap(headerMap).queryMap(queryMap)
+        return execute(Builder.builder().url(url).headerMap(headerMap).formMap(formMap)
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
      * 异步处理的GET请求,自定义请求类型
      *
-     * @param url      URL地址 String
-     * @param callback 回调信息 callback
+     * @param url      URL地址
+     * @param callback 回调信息
      */
     public static void get(String url, Callback callback) {
         Request request = new Request.Builder().url(url).get().build();
@@ -307,16 +307,16 @@ public class Httpx {
     /**
      * 异步处理的POST请求,自定义请求类型
      *
-     * @param url      URL地址 String
-     * @param queryMap 查询参数 Map
-     * @param callback 回调信息 callback
+     * @param url      URL地址
+     * @param formMap  查询参数
+     * @param callback 回调信息
      */
-    public static void post(String url, Map<String, Object> queryMap, Callback callback) {
+    public static void post(String url, Map<String, Object> formMap, Callback callback) {
         StringBuilder data = new StringBuilder();
-        if (ObjectKit.isNotEmpty(queryMap)) {
-            Set<String> keys = queryMap.keySet();
+        if (ObjectKit.isNotEmpty(formMap)) {
+            Set<String> keys = formMap.keySet();
             for (String key : keys) {
-                data.append(key).append(Symbol.EQUAL).append(queryMap.get(key)).append(Symbol.AND);
+                data.append(key).append(Symbol.EQUAL).append(formMap.get(key)).append(Symbol.AND);
             }
         }
         RequestBody requestBody = RequestBody.create(MediaType.TEXT_HTML_TYPE, data.toString());
@@ -329,7 +329,7 @@ public class Httpx {
      * form 方式 POST 请求
      *
      * @param url URL地址 String
-     * @return String
+     * @return the {@link String}
      */
     public static String post(final String url) {
         return post(url, null);
@@ -339,9 +339,9 @@ public class Httpx {
      * form 方式 POST 请求
      * application/x-www-form-urlencoded
      *
-     * @param url     URL地址 String
-     * @param formMap 查询参数 Map
-     * @return String
+     * @param url     URL地址
+     * @param formMap 查询参数
+     * @return the {@link String}
      */
     public static String post(final String url, final Map<String, Object> formMap) {
         String data = Normal.EMPTY;
@@ -356,10 +356,10 @@ public class Httpx {
     /**
      * 带查询参数 POST 请求 使用默认编码 UTF-8
      *
-     * @param url       URL地址 String
-     * @param data      请求数据 String
-     * @param mediaType 类型 String
-     * @return String
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
      */
     public static String post(final String url, final String data,
                               final String mediaType) {
@@ -369,11 +369,11 @@ public class Httpx {
     /**
      * 带查询参数 POST 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param data      请求数据 String
-     * @param mediaType 类型 String
-     * @param charset   自定义编码 String
-     * @return String
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
      */
     public static String post(final String url, final String data, final String mediaType,
                               final String charset) {
@@ -389,82 +389,82 @@ public class Httpx {
     /**
      * 带查询参数 POST 请求 使用默认编码 UTF-8
      *
-     * @param url       URL地址 String
-     * @param queryMap  请求数据 Map
-     * @param mediaType 类型 String
-     * @return String
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, Object> queryMap,
+    public static String post(final String url, final Map<String, Object> formMap,
                               final String mediaType) {
-        return post(url, queryMap, mediaType, Charset.DEFAULT_UTF_8);
+        return post(url, formMap, mediaType, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 带查询参数 POST 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param headerMap 头部数据 Map
-     * @param queryMap  请求数据 Map
-     * @return String
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param headerMap 头部数据
+     * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, Object> queryMap,
+    public static String post(final String url, final Map<String, Object> formMap,
                               final Map<String, String> headerMap) {
-        return post(url, queryMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
+        return post(url, formMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     /**
      * 带查询参数 POST 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param queryMap  请求数据 Map
-     * @param mediaType 类型 String
-     * @param charset   自定义编码 String
-     * @return String
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, Object> queryMap,
+    public static String post(final String url, final Map<String, Object> formMap,
                               final String mediaType, final String charset) {
-        return execute(Builder.builder().url(url).method(Http.POST).queryMap(queryMap).mediaType(mediaType)
+        return execute(Builder.builder().url(url).method(Http.POST).formMap(formMap).mediaType(mediaType)
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
      * 带查询参数 POST 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param headerMap 头部数据 Map
-     * @param queryMap  请求数据 Map
-     * @param mediaType 类型 String
-     * @return String
+     * @param url       URL地址
+     * @param headerMap 头部数据
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, Object> queryMap,
+    public static String post(final String url, final Map<String, Object> formMap,
                               final Map<String, String> headerMap, final String mediaType) {
-        return post(url, queryMap, headerMap, mediaType, Charset.DEFAULT_UTF_8);
+        return post(url, formMap, headerMap, mediaType, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 带查询参数 POST 请求 使用自定义编码
      *
-     * @param url       URL地址 String
-     * @param headerMap 头部数据 Map
-     * @param queryMap  请求数据 Map
-     * @param mediaType 类型 String
-     * @param charset   自定义编码 String
-     * @return String
+     * @param url       URL地址
+     * @param headerMap 头部数据
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, Object> queryMap,
+    public static String post(final String url, final Map<String, Object> formMap,
                               final Map<String, String> headerMap, final String mediaType,
                               final String charset) {
-        return execute(Builder.builder().url(url).method(Http.POST).headerMap(headerMap).queryMap(queryMap)
+        return execute(Builder.builder().url(url).method(Http.POST).headerMap(headerMap).formMap(formMap)
                 .mediaType(mediaType).requestCharset(charset).responseCharset(charset).build());
     }
 
     /**
      * 表单提交带文件上传
      *
-     * @param url      请求地址 String
-     * @param params   请求参数 Map
-     * @param pathList 上传文件 List
-     * @return String
+     * @param url      请求地址
+     * @param params   请求参数
+     * @param pathList 上传文件
+     * @return the {@link String}
      */
     public static String post(final String url, final Map<String, Object> params,
                               final List<String> pathList) {
@@ -497,7 +497,7 @@ public class Httpx {
      * 通用同步执行方法
      *
      * @param builder Builder
-     * @return Request 信息
+     * @return the {@link Request.Builder}
      */
     private static Request.Builder builder(final Builder builder) {
         if (StringKit.isBlank(builder.requestCharset)) {
@@ -524,11 +524,11 @@ public class Httpx {
         String method = builder.method.toUpperCase();
         String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
         if (StringKit.equals(method, Http.GET)) {
-            if (MapKit.isNotEmpty(builder.queryMap)) {
-                String queryParams = builder.queryMap.entrySet().stream()
+            if (MapKit.isNotEmpty(builder.formMap)) {
+                String form = builder.formMap.entrySet().stream()
                         .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                         .collect(Collectors.joining(Symbol.AND));
-                builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
+                builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
             }
             request.get();
         } else if (ArrayKit.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
@@ -536,9 +536,9 @@ public class Httpx {
                 RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
                 request.method(method, requestBody);
             }
-            if (MapKit.isNotEmpty(builder.queryMap)) {
+            if (MapKit.isNotEmpty(builder.formMap)) {
                 FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
-                builder.queryMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));
+                builder.formMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));
                 request.method(method, form.build());
             }
         } else {
@@ -551,7 +551,7 @@ public class Httpx {
      * 通用同步执行方法
      *
      * @param builder Builder
-     * @return String 执行结果
+     * @return the {@link String}
      */
     private static String execute(final Builder builder) {
         Request.Builder request = builder(builder);
@@ -575,7 +575,7 @@ public class Httpx {
      * 通用异步执行方法
      *
      * @param builder Builder
-     * @return String 执行结果
+     * @return the {@link String}
      */
     private static String enqueue(final Builder builder) {
         Request.Builder request = builder(builder);
@@ -623,7 +623,7 @@ public class Httpx {
         /**
          * 请求参数
          */
-        private Map<String, Object> queryMap;
+        private Map<String, Object> formMap;
         /**
          * 头部参数
          */
