@@ -71,7 +71,7 @@ import org.miaixz.bus.oauth.metric.wechat.ee.WeChatEeWebProvider;
 import org.miaixz.bus.oauth.metric.wechat.mp.WeChatMpProvider;
 import org.miaixz.bus.oauth.metric.wechat.open.WeChatOpenProvider;
 import org.miaixz.bus.oauth.metric.weibo.WeiboProvider;
-import org.miaixz.bus.oauth.metric.xmly.XmlyProvider;
+import org.miaixz.bus.oauth.metric.ximalaya.XimalayaProvider;
 
 /**
  * 内置的各api需要的url， 用枚举类分平台类型管理
@@ -1296,7 +1296,7 @@ public enum Registry implements Complex {
 
         @Override
         public Class<? extends DefaultProvider> getTargetClass() {
-            return XmlyProvider.class;
+            return XimalayaProvider.class;
         }
     }
 

@@ -112,7 +112,7 @@ public class GitlabProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes("+", false, this.getDefaultScopes(GitlabScope.values())))
                 .build();
     }

@@ -100,7 +100,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
                 .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(GoogleScope.values())))
                 .queryParam("prompt", "select_account")
@@ -115,7 +115,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     /**

@@ -3988,6 +3988,26 @@ public class CharsKit {
                 str2.substring(strLength - suffixLength));
     }
 
+    /**
+     * 如果给定字符串 {@code text} 中不包含 {@code suffix}，则在{@code text} 后追加{@code suffix}
+     * 如果已包含 {@code suffix}，则在 {@code text} 后追加 {@code args}
+     *
+     * @param text   给定的字符串
+     * @param suffix 需要追加的内容
+     * @param args   当{@code suffix}不满足时追加到{@code text}后的内容
+     * @return 追加后的字符串
+     */
+    public static String appendIfMissing(final String text,
+                                         final String suffix,
+                                         final String args) {
+        if (StringKit.isEmpty(text) || StringKit.isEmpty(suffix)) {
+            return text;
+        }
+        if (text.contains(suffix)) {
+            return text.concat(args);
+        }
+        return text.concat(suffix);
+    }
 
     /**
      * 如果字符串还没有以后缀结尾，则将后缀追加到字符串的末尾

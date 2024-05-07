@@ -32,6 +32,7 @@ import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -153,9 +154,9 @@ public class FeishuProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("app_id", context.getAppKey())
-                .queryParam("redirect_uri", Builder.urlEncode(context.getRedirectUri()))
+                .queryParam("redirect_uri", UriKit.encode(context.getRedirectUri()))
                 .queryParam("state", getRealState(state))
                 .build();
     }

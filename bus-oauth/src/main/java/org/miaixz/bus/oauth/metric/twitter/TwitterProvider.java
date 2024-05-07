@@ -26,12 +26,11 @@
 package org.miaixz.bus.oauth.metric.twitter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.constants.Constants;
-import com.xkcoding.http.util.MapUtil;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
@@ -94,8 +93,8 @@ public class TwitterProvider extends DefaultProvider {
      * @param tokenSecret oauth token secret
      * @return BASE64 encoded signature string
      */
-    public static String generateTwitterSignature(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
-        TreeMap<String, String> map = new TreeMap<>(params);
+    public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
+        TreeMap<String, Object> map = new TreeMap<>(params);
         String str = Builder.parseMapToString(map, true);
         String baseStr = method.toUpperCase() + "&" + UriKit.encode(baseUrl) + "&" + UriKit.encode(str);
         String signKey = apiSecret + "&" + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
@@ -113,7 +112,7 @@ public class TwitterProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         AccToken token = this.getRequestToken();
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("oauth_token", token.getOauthToken())
                 .build();
     }
@@ -129,14 +128,14 @@ public class TwitterProvider extends DefaultProvider {
 
         Map<String, String> form = buildOauthParams();
         form.put("oauth_callback", context.getRedirectUri());
-        form.put("oauth_signature", generateTwitterSignature(form, "POST", baseUrl, context.getAppSecret(), null));
+        form.put("oauth_signature", sign(form, "POST", baseUrl, context.getAppSecret(), null));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(form));
         header.put("User-Agent", "'Httpx' HTTP Client Simple-Http");
         String requestToken = Httpx.post(baseUrl, null, header);
 
-        Map<String, String> res = MapUtil.parseStringToMap(requestToken, false);
+        Map<String, String> res = Builder.parseStringToMap(requestToken);
 
         return AccToken.builder()
                 .oauthToken(res.get("oauth_token"))
@@ -156,18 +155,18 @@ public class TwitterProvider extends DefaultProvider {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", authCallback.getOauth_token());
         headerMap.put("oauth_verifier", authCallback.getOauth_verifier());
-        headerMap.put("oauth_signature", generateTwitterSignature(headerMap, "POST", complex.accessToken(), context.getAppSecret(), authCallback
+        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), authCallback
                 .getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
-        header.put(Constants.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
         Map<String, Object> form = new HashMap<>(3);
         form.put("oauth_verifier", authCallback.getOauth_verifier());
         String response = Httpx.post(complex.accessToken(), form, header);
 
-        Map<String, String> requestToken = MapUtil.parseStringToMap(response, false);
+        Map<String, String> requestToken = Builder.parseStringToMap(response);
 
         return AccToken.builder()
                 .oauthToken(requestToken.get("oauth_token"))
@@ -179,7 +178,6 @@ public class TwitterProvider extends DefaultProvider {
 
     @Override
     protected Property getUserInfo(AccToken accToken) {
-
         Map<String, String> form = buildOauthParams();
         form.put("oauth_token", accToken.getOauthToken());
 
@@ -187,7 +185,7 @@ public class TwitterProvider extends DefaultProvider {
         params.put("include_entities", Boolean.toString(true));
         params.put("include_email", Boolean.toString(true));
 
-        form.put("oauth_signature", generateTwitterSignature(params, "GET", complex.userInfo(), context.getAppSecret(), accToken.getOauthTokenSecret()));
+        form.put("oauth_signature", sign(params, "GET", complex.userInfo(), context.getAppSecret(), accToken.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(form));
@@ -210,14 +208,6 @@ public class TwitterProvider extends DefaultProvider {
                 .build();
     }
 
-    @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
-                .queryParam("include_entities", true)
-                .queryParam("include_email", true)
-                .build();
-    }
-
     private Map<String, String> buildOauthParams() {
         Map<String, String> params = new HashMap<>(12);
         params.put("oauth_consumer_key", context.getAppKey());
@@ -236,6 +226,14 @@ public class TwitterProvider extends DefaultProvider {
         }
 
         return sb.deleteCharAt(sb.length() - 2).toString();
+    }
+
+    @Override
+    protected String userInfoUrl(AccToken accToken) {
+        return Builder.fromUrl(complex.userInfo())
+                .queryParam("include_entities", true)
+                .queryParam("include_email", true)
+                .build();
     }
 
 }

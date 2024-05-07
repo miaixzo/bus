@@ -105,7 +105,7 @@ public class FacebookProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400),link")
                 .build();
@@ -130,7 +130,7 @@ public class FacebookProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(FacebookScope.values())))
                 .build();
     }

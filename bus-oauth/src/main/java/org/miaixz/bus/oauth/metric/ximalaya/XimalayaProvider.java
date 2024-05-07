@@ -23,13 +23,16 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.oauth.metric.xmly;
+package org.miaixz.bus.oauth.metric.ximalaya;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.HttpUtil;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -38,6 +41,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,14 +53,41 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XmlyProvider extends DefaultProvider {
+public class XimalayaProvider extends DefaultProvider {
 
-    public XmlyProvider(Context context) {
+    public XimalayaProvider(Context context) {
         super(context, Registry.XMLY);
     }
 
-    public XmlyProvider(Context context, ExtendCache authorizeCache) {
+    public XimalayaProvider(Context context, ExtendCache authorizeCache) {
         super(context, Registry.XMLY, authorizeCache);
+    }
+
+    /**
+     * 签名算法
+     * {@code https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69}
+     *
+     * @param params       加密参数
+     * @param clientSecret 平台应用的授权key
+     * @return Signature
+     */
+    private static String sign(Map<String, Object> params, String clientSecret) {
+        TreeMap<String, Object> map = new TreeMap<>(params);
+        String baseStr = Base64.encode(Builder.parseMapToString(map, false));
+        byte[] sign = Builder.sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
+        MessageDigest md5;
+        StringBuilder builder = null;
+        try {
+            builder = new StringBuilder();
+            md5 = MessageDigest.getInstance("MD5");
+            md5.update(sign);
+            byte[] byteData = md5.digest();
+            for (byte byteDatum : byteData) {
+                builder.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (Exception ignored) {
+        }
+        return null == builder ? "" : builder.toString();
     }
 
     /**
@@ -68,14 +99,14 @@ public class XmlyProvider extends DefaultProvider {
      */
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, String> map = new HashMap<>(9);
+        Map<String, Object> map = new HashMap<>(9);
         map.put("code", authCallback.getCode());
         map.put("client_id", context.getAppKey());
         map.put("client_secret", context.getAppSecret());
         map.put("device_id", context.getDeviceId());
         map.put("grant_type", "authorization_code");
         map.put("redirect_uri", context.getRedirectUri());
-        String response = HttpUtil.post(complex.accessToken(), map, true).getBody();
+        String response = Httpx.post(complex.accessToken(), map);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
 
@@ -95,43 +126,13 @@ public class XmlyProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .queryParam("client_os_type", "3")
                 .queryParam("device_id", context.getDeviceId())
-                .build();
-    }
-
-    /**
-     * 使用token换取用户信息
-     *
-     * @param accToken token信息
-     * @return 用户信息
-     * @see DefaultProvider#getAccessToken(Callback)
-     */
-    @Override
-    public Property getUserInfo(AccToken accToken) {
-        Map<String, String> map = new TreeMap<>();
-        map.put("app_key", context.getAppKey());
-        map.put("client_os_type", Optional.ofNullable(context.getClientOsType()).orElse(3).toString());
-        map.put("device_id", context.getDeviceId());
-        map.put("pack_id", context.getPackId());
-        map.put("access_token", accToken.getAccessToken());
-        map.put("sig", Builder.generateXmlySignature(map, context.getAppSecret()));
-        String rawUserInfo = HttpUtil.get(complex.userInfo(), map, false).getBody();
-        JSONObject object = JSONObject.parseObject(rawUserInfo);
-        checkResponse(object);
-        return Property.builder()
-                .uuid(object.getString("id"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar_url"))
-                .rawJson(object)
-                .source(complex.toString())
-                .token(accToken)
-                .gender(Gender.UNKNOWN)
                 .build();
     }
 
@@ -144,6 +145,36 @@ public class XmlyProvider extends DefaultProvider {
         if (object.containsKey("errcode")) {
             throw new AuthorizedException(object.getString("error_no"), object.getString("error_desc"));
         }
+    }
+
+    /**
+     * 使用token换取用户信息
+     *
+     * @param accToken token信息
+     * @return 用户信息
+     * @see DefaultProvider#getAccessToken(Callback)
+     */
+    @Override
+    public Property getUserInfo(AccToken accToken) {
+        Map<String, Object> map = new TreeMap<>();
+        map.put("app_key", context.getAppKey());
+        map.put("client_os_type", Optional.ofNullable(context.getClientOsType()).orElse(3).toString());
+        map.put("device_id", context.getDeviceId());
+        map.put("pack_id", context.getPackId());
+        map.put("access_token", accToken.getAccessToken());
+        map.put("sig", sign(map, context.getAppSecret()));
+        String rawUserInfo = Httpx.get(complex.userInfo(), map);
+        JSONObject object = JSONObject.parseObject(rawUserInfo);
+        checkResponse(object);
+        return Property.builder()
+                .uuid(object.getString("id"))
+                .nickname(object.getString("nickname"))
+                .avatar(object.getString("avatar_url"))
+                .rawJson(object)
+                .source(complex.toString())
+                .token(accToken)
+                .gender(Gender.UNKNOWN)
+                .build();
     }
 
 }

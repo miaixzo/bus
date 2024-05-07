@@ -60,7 +60,7 @@ public class KujialeProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(KujialeScope.values())))
                 .build();
     }
@@ -92,7 +92,7 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public Property getUserInfo(AccToken accToken) {
         String openId = this.getOpenId(accToken);
-        String response = Httpx.get(Builder.fromBaseUrl(complex.userInfo())
+        String response = Httpx.get(Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("open_id", openId)
                 .build());
@@ -120,7 +120,7 @@ public class KujialeProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken accToken) {
-        String response = Httpx.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
+        String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
                 .queryParam("access_token", accToken.getAccessToken())
                 .build());
         JSONObject accessTokenObject = checkResponse(response);

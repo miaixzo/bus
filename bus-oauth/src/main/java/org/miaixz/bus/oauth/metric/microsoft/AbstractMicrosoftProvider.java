@@ -144,7 +144,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
     public String authorize(String state) {
         // 兼容 MicrosoftScope Entra ID 登录（原微软 AAD）
         String tenantId = StringKit.isEmpty(context.getTenantId()) ? "common" : context.getTenantId();
-        return Builder.fromBaseUrl(String.format(complex.authorize(), tenantId))
+        return Builder.fromUrl(String.format(complex.authorize(), tenantId))
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -163,7 +163,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
     @Override
     protected String accessTokenUrl(String code) {
         String tenantId = StringKit.isEmpty(context.getTenantId()) ? "common" : context.getTenantId();
-        return Builder.fromBaseUrl(String.format(complex.accessToken(), tenantId))
+        return Builder.fromUrl(String.format(complex.accessToken(), tenantId))
                 .queryParam("code", code)
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
@@ -181,7 +181,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo()).build();
+        return Builder.fromUrl(complex.userInfo()).build();
     }
 
     /**
@@ -193,7 +193,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         String tenantId = StringKit.isEmpty(context.getTenantId()) ? "common" : context.getTenantId();
-        return Builder.fromBaseUrl(String.format(complex.refresh(), tenantId))
+        return Builder.fromUrl(String.format(complex.refresh(), tenantId))
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)

@@ -55,7 +55,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
@@ -107,7 +107,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return accessTokenUrl
      */
     protected String accessTokenUrl() {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .build();
     }
 
@@ -128,7 +128,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken()).
                 build();
     }

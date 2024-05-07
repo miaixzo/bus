@@ -110,7 +110,7 @@ public class WeiboProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("uid", accToken.getUid())
                 .build();
@@ -118,7 +118,7 @@ public class WeiboProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(WeiboScope.values())))
                 .build();
     }

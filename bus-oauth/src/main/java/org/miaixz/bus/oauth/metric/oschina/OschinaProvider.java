@@ -94,7 +94,7 @@ public class OschinaProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("code", code)
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
@@ -112,7 +112,7 @@ public class OschinaProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("dataType", "json")
                 .build();

@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -40,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 京东 登录
@@ -78,33 +80,32 @@ public class JdProvider extends DefaultProvider {
                 .build();
     }
 
-    @Override
-    protected Property getUserInfo(AccToken accToken) {
-        Builder urlBuilder = Builder.fromBaseUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("app_key", context.getAppKey())
-                .queryParam("method", "jingdong.user.getUserInfoByOpenId")
-                .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")
-                .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .queryParam("v", "2.0");
-        urlBuilder.queryParam("sign", Builder.generateJdSignature(context.getAppSecret(), urlBuilder.getReadOnlyParams()));
-        String response = Httpx.post(urlBuilder.build(true));
-        JSONObject object = JSONObject.parseObject(response);
-
-        this.checkResponse(object);
-
-        JSONObject data = this.getUserDataJsonObject(object);
-
-        return Property.builder()
-                .rawJson(data)
-                .uuid(accToken.getOpenId())
-                .username(data.getString("nickName"))
-                .nickname(data.getString("nickName"))
-                .avatar(data.getString("imageUrl"))
-                .gender(Gender.of(data.getString("gendar")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+    /**
+     * 京东宙斯平台的签名字符串
+     * 宙斯签名规则过程如下:
+     * 将所有请求参数按照字母先后顺序排列，例如将access_token,app_key,method,timestamp,v 排序为access_token,app_key,method,timestamp,v
+     * 1.把所有参数名和参数值进行拼接，例如：access_tokenxxxapp_keyxxxmethodxxxxxxtimestampxxxxxxvx
+     * 2.把appSecret夹在字符串的两端，例如：appSecret+XXXX+appSecret
+     * 3.使用MD5进行加密，再转化成大写
+     * link: http://open.jd.com/home/home#/doc/common?listId=890
+     * link: https://github.com/pingjiang/jd-open-api-sdk-src/blob/master/src/main/java/com/jd/open/api/sdk/DefaultJdClient.java
+     *
+     * @param appSecret 京东应用密钥
+     * @param params    签名参数
+     * @return 签名后的字符串
+     */
+    public static String sign(String appSecret, Map<String, Object> params) {
+        Map<String, Object> treeMap = new TreeMap<>(params);
+        StringBuilder signBuilder = new StringBuilder(appSecret);
+        for (Map.Entry<String, Object> entry : treeMap.entrySet()) {
+            String name = entry.getKey();
+            String value = String.valueOf(entry.getValue());
+            if (StringKit.isNotEmpty(name) && StringKit.isNotEmpty(value)) {
+                signBuilder.append(name).append(value);
+            }
+        }
+        signBuilder.append(appSecret);
+        return org.miaixz.bus.crypto.Builder.md5Hex(signBuilder.toString()).toUpperCase();
     }
 
     /**
@@ -151,8 +152,37 @@ public class JdProvider extends DefaultProvider {
     }
 
     @Override
+    protected Property getUserInfo(AccToken accToken) {
+        Builder urlBuilder = Builder.fromUrl(complex.userInfo())
+                .queryParam("access_token", accToken.getAccessToken())
+                .queryParam("app_key", context.getAppKey())
+                .queryParam("method", "jingdong.user.getUserInfoByOpenId")
+                .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")
+                .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .queryParam("v", "2.0");
+        urlBuilder.queryParam("sign", sign(context.getAppSecret(), urlBuilder.getReadOnlyParams()));
+        String response = Httpx.post(urlBuilder.build(true));
+        JSONObject object = JSONObject.parseObject(response);
+
+        this.checkResponse(object);
+
+        JSONObject data = this.getUserDataJsonObject(object);
+
+        return Property.builder()
+                .rawJson(data)
+                .uuid(accToken.getOpenId())
+                .username(data.getString("nickName"))
+                .nickname(data.getString("nickName"))
+                .avatar(data.getString("imageUrl"))
+                .gender(Gender.of(data.getString("gendar")))
+                .token(accToken)
+                .source(complex.toString())
+                .build();
+    }
+
+    @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("app_key", context.getAppKey())
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", context.getRedirectUri())

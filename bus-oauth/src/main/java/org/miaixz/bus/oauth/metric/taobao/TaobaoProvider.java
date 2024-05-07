@@ -30,6 +30,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -87,7 +88,7 @@ public class TaobaoProvider extends DefaultProvider {
         }
         accToken = this.getAuthToken(accessTokenObject);
 
-        String nick = Builder.urlDecode(accessTokenObject.getString("taobao_user_nick"));
+        String nick = UriKit.decode(accessTokenObject.getString("taobao_user_nick"));
         return Property.builder()
                 .rawJson(accessTokenObject)
                 .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid())
@@ -118,7 +119,7 @@ public class TaobaoProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())

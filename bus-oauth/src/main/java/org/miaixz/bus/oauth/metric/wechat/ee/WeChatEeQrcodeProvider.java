@@ -48,7 +48,7 @@ public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getAgentId())
                 .queryParam("redirect_uri", context.getRedirectUri())

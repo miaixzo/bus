@@ -29,12 +29,13 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
 /**
  * 微信公众平台 登录
@@ -42,7 +43,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WeChatMpProvider extends DefaultProvider {
+public class WeChatMpProvider extends AbstractWeChatProvider {
 
     public WeChatMpProvider(Context context) {
         super(context, Registry.WECHAT_MP);
@@ -95,7 +96,7 @@ public class WeChatMpProvider extends DefaultProvider {
                 .location(location)
                 .uuid(openId)
                 .snapshotUser(accToken.isSnapshotUser())
-                .gender(Builder.getWechatRealGender(object.getString("sex")))
+                .gender(getWechatRealGender(object.getString("sex")))
                 .token(accToken)
                 .source(complex.toString())
                 .build();
@@ -150,9 +151,9 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("appid", context.getAppKey())
-                .queryParam("redirect_uri", Builder.urlEncode(context.getRedirectUri()))
+                .queryParam("redirect_uri", UriKit.encode(context.getRedirectUri()))
                 .queryParam("response_type", "code")
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(WechatMpScope.values())))
                 .queryParam("state", getRealState(state).concat("#wechat_redirect"))
@@ -167,7 +168,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("secret", context.getAppSecret())
                 .queryParam("code", code)
@@ -183,7 +184,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("openid", accToken.getOpenId())
                 .queryParam("lang", "zh_CN")
@@ -198,7 +199,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(complex.refresh())
+        return Builder.fromUrl(complex.refresh())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", refreshToken)

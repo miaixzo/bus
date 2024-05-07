@@ -186,7 +186,7 @@ public class AlipayProvider extends DefaultProvider {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("refresh_token");
         request.setRefreshToken(accToken.getRefreshToken());
-        AlipaySystemOauthTokenResponse response = null;
+        AlipaySystemOauthTokenResponse response;
         try {
             response = this.alipayClient.execute(request);
         } catch (Exception e) {
@@ -210,7 +210,7 @@ public class AlipayProvider extends DefaultProvider {
     protected Property getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
-        AlipayUserInfoShareResponse response = null;
+        AlipayUserInfoShareResponse response;
         try {
             response = this.alipayClient.execute(request, accessToken);
         } catch (AlipayApiException e) {
@@ -244,7 +244,7 @@ public class AlipayProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("app_id", context.getAppKey())
                 .queryParam("scope", "auth_user")
                 .queryParam("redirect_uri", context.getRedirectUri())

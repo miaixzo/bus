@@ -102,7 +102,7 @@ public class BaiduProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken accToken) {
-        String refreshUrl = Builder.fromBaseUrl(this.complex.refresh())
+        String refreshUrl = Builder.fromUrl(this.complex.refresh())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", accToken.getRefreshToken())
                 .queryParam("client_id", this.context.getAppKey())
@@ -123,7 +123,7 @@ public class BaiduProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("display", "popup")
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(BaiduScope.values())))
                 .build();

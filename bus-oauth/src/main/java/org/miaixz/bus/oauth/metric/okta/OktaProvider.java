@@ -138,7 +138,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(String.format(complex.authorize(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix(), context.getAuthServerId()))
                 .queryParam("response_type", "code")
                 .queryParam("prompt", "consent")
                 .queryParam("client_id", context.getAppKey())
@@ -150,7 +150,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(String.format(complex.accessToken(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix(), context.getAuthServerId()))
                 .queryParam("code", code)
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -159,7 +159,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(String.format(complex.refresh(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.refresh(), context.getPrefix(), context.getAuthServerId()))
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

@@ -26,10 +26,10 @@
 package org.miaixz.bus.oauth.metric.mi;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.constants.Constants;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;
@@ -64,7 +64,7 @@ public class MiProvider extends DefaultProvider {
 
     private AccToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
-        String jsonStr = response.replace(PREFIX, Constants.EMPTY);
+        String jsonStr = response.replace(PREFIX, Normal.EMPTY);
         JSONObject accessTokenObject = JSONObject.parseObject(jsonStr);
 
         if (accessTokenObject.containsKey("error")) {
@@ -145,7 +145,7 @@ public class MiProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("skip_confirm", "false")
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(MiScope.values())))
                 .build();
@@ -159,9 +159,10 @@ public class MiProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("clientId", context.getAppKey())
                 .queryParam("token", accToken.getAccessToken())
                 .build();
     }
+
 }

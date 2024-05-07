@@ -174,7 +174,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -189,7 +189,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
      * @return 返回获取accessToken的url
      */
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("code", code)
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
@@ -205,7 +205,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
      * @return 返回获取accessToken的url
      */
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(complex.refresh())
+        return Builder.fromUrl(complex.refresh())
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
@@ -221,7 +221,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
      * @return 返回获取userInfo的url
      */
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
      * @return 返回获取revoke authorization的url
      */
     protected String revokeUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.revoke()).queryParam("access_token", accToken.getAccessToken()).build();
+        return Builder.fromUrl(complex.revoke()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     /**

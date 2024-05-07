@@ -75,7 +75,7 @@ import org.miaixz.bus.oauth.metric.wechat.ee.WeChatEeWebProvider;
 import org.miaixz.bus.oauth.metric.wechat.mp.WeChatMpProvider;
 import org.miaixz.bus.oauth.metric.wechat.open.WeChatOpenProvider;
 import org.miaixz.bus.oauth.metric.weibo.WeiboProvider;
-import org.miaixz.bus.oauth.metric.xmly.XmlyProvider;
+import org.miaixz.bus.oauth.metric.ximalaya.XimalayaProvider;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -214,7 +214,7 @@ public class AuthProviderService {
         } else if (Registry.WEIBO.equals(type)) {
             return new WeiboProvider(context, extendCache);
         } else if (Registry.XMLY.equals(type)) {
-            return new XmlyProvider(context, extendCache);
+            return new XimalayaProvider(context, extendCache);
         }
         throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
     }

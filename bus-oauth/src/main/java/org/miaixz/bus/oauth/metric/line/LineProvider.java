@@ -132,14 +132,14 @@ public class LineProvider extends DefaultProvider {
 
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("user", accToken.getUid())
                 .build();
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("nonce", state)
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(LineScope.values())))
                 .build();

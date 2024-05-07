@@ -28,9 +28,13 @@ package org.miaixz.bus.oauth.metric.dingtalk;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
@@ -90,6 +94,18 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
     }
 
     /**
+     * 钉钉请求的签名
+     *
+     * @param secretKey 平台应用的授权密钥
+     * @param timestamp 时间戳
+     * @return Signature
+     */
+    public static String sign(String secretKey, String timestamp) {
+        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
+        return UriKit.encode(new String(Base64.encode(signData, false)));
+    }
+
+    /**
      * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
      *
      * @param state state 验证授权流程的参数，可以防止csrf
@@ -97,7 +113,7 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("appid", context.getAppKey())
                 .queryParam("scope", "snsapi_login")
@@ -116,9 +132,9 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken accToken) {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + "";
-        String urlEncodeSignature = Builder.generateDingTalkSignature(context.getAppSecret(), timestamp);
+        String urlEncodeSignature = sign(context.getAppSecret(), timestamp);
 
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("signature", urlEncodeSignature)
                 .queryParam("timestamp", timestamp)
                 .queryParam("accessKey", context.getAppKey())

@@ -27,10 +27,10 @@ package org.miaixz.bus.oauth.metric.renren;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.util.UrlUtil;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -101,8 +101,8 @@ public class RenrenProvider extends DefaultProvider {
         return AccToken.builder()
                 .tokenType(jsonObject.getString("token_type"))
                 .expireIn(jsonObject.getIntValue("expires_in"))
-                .accessToken(UrlUtil.urlEncode(jsonObject.getString("access_token")))
-                .refreshToken(UrlUtil.urlEncode(jsonObject.getString("refresh_token")))
+                .accessToken(UriKit.encode(jsonObject.getString("access_token")))
+                .refreshToken(UriKit.encode(jsonObject.getString("refresh_token")))
                 .openId(jsonObject.getJSONObject("user").getString("id"))
                 .build();
     }
@@ -139,7 +139,7 @@ public class RenrenProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("userId", accToken.getOpenId())
                 .build();
@@ -147,7 +147,7 @@ public class RenrenProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(RenrenScope.values())))
                 .build();
     }

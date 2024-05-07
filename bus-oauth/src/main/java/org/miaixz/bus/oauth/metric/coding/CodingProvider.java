@@ -108,7 +108,7 @@ public class CodingProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(String.format(complex.authorize(), context.getPrefix()))
+        return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix()))
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -125,7 +125,7 @@ public class CodingProvider extends DefaultProvider {
      */
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(String.format(complex.accessToken(), context.getPrefix()))
+        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix()))
                 .queryParam("code", code)
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
@@ -142,7 +142,7 @@ public class CodingProvider extends DefaultProvider {
      */
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(String.format(complex.userInfo(), context.getPrefix()))
+        return Builder.fromUrl(String.format(complex.userInfo(), context.getPrefix()))
                 .queryParam("access_token", accToken.getAccessToken())
                 .build();
     }

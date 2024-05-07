@@ -75,7 +75,7 @@ public class GithubProvider extends DefaultProvider {
     protected Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "token " + accToken.getAccessToken());
-        String response = Httpx.get(Builder.fromBaseUrl(complex.userInfo()).build(), null, header);
+        String response = Httpx.get(Builder.fromUrl(complex.userInfo()).build(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object.containsKey("error"), object.getString("error_description"));
@@ -111,7 +111,7 @@ public class GithubProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(GithubScope.values())))
                 .build();
     }

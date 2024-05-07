@@ -152,7 +152,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(HuaweiScope.values())))
                 .build();
@@ -166,7 +166,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("nsp_ts", System.currentTimeMillis())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("nsp_fmt", "JS")

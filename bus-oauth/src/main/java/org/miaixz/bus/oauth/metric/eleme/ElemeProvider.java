@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth.metric.eleme;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -42,6 +43,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 饿了么 登录
@@ -85,6 +87,54 @@ public class ElemeProvider extends DefaultProvider {
                 .build();
     }
 
+    /**
+     * 生成饿了么请求的签名
+     *
+     * @param appKey     平台应用的授权key
+     * @param secret     平台应用的授权密钥
+     * @param timestamp  时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
+     * @param action     饿了么请求的api方法
+     * @param token      用户授权的token
+     * @param parameters 加密参数
+     * @return Signature
+     */
+    public static String sign(String appKey, String secret, long timestamp, String action, String token, Map<String, Object> parameters) {
+        final Map<String, Object> sorted = new TreeMap<>(parameters);
+        sorted.put("app_key", appKey);
+        sorted.put("timestamp", timestamp);
+        StringBuffer string = new StringBuffer();
+        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
+            string.append(entry.getKey()).append("=").append(JSON.toJSONString(entry.getValue()));
+        }
+        String splice = String.format("%s%s%s%s", action, token, string, secret);
+        String calculatedSignature = org.miaixz.bus.crypto.Builder.md5Hex(splice);
+        return calculatedSignature.toUpperCase();
+    }
+
+    @Override
+    public Message refresh(AccToken oldToken) {
+        Map<String, Object> form = new HashMap<>(4);
+        form.put("refresh_token", oldToken.getRefreshToken());
+        form.put("grant_type", "refresh_token");
+
+        Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);
+        String response = Httpx.post(complex.refresh(), form, header);
+
+        JSONObject object = JSONObject.parseObject(response);
+
+        this.checkResponse(object);
+
+        return Message.builder()
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder()
+                        .accessToken(object.getString("access_token"))
+                        .refreshToken(object.getString("refresh_token"))
+                        .tokenType(object.getString("token_type"))
+                        .expireIn(object.getIntValue("expires_in"))
+                        .build())
+                .build();
+    }
+
     @Override
     protected Property getUserInfo(AccToken accToken) {
         Map<String, Object> parameters = new HashMap<>(4);
@@ -96,7 +146,7 @@ public class ElemeProvider extends DefaultProvider {
         Map<String, Object> metasHashMap = new HashMap<>(4);
         metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", timestamp);
-        String signature = Builder.generateElemeSignature(context.getAppKey(), context.getAppSecret(), timestamp, action, accToken
+        String signature = sign(context.getAppKey(), context.getAppSecret(), timestamp, action, accToken
                 .getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
@@ -136,35 +186,6 @@ public class ElemeProvider extends DefaultProvider {
                 .build();
     }
 
-    @Override
-    public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>(4);
-        form.put("refresh_token", oldToken.getRefreshToken());
-        form.put("grant_type", "refresh_token");
-
-        Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);
-        String response = Httpx.post(complex.refresh(), form, header);
-
-        JSONObject object = JSONObject.parseObject(response);
-
-        this.checkResponse(object);
-
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder()
-                        .accessToken(object.getString("access_token"))
-                        .refreshToken(object.getString("refresh_token"))
-                        .tokenType(object.getString("token_type"))
-                        .expireIn(object.getIntValue("expires_in"))
-                        .build())
-                .build();
-    }
-
-    @Override
-    public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state)).queryParam("scope", "all").build();
-    }
-
     private String getBasic(String appKey, String appSecret) {
         StringBuilder sb = new StringBuilder();
         String encodeToString = Base64.encode((appKey + ":" + appSecret).getBytes());
@@ -194,6 +215,11 @@ public class ElemeProvider extends DefaultProvider {
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error_description"));
         }
+    }
+
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state)).queryParam("scope", "all").build();
     }
 
 }

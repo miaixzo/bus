@@ -90,7 +90,7 @@ public class AfDianProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("scope", "basic")
                 .queryParam("client_id", context.getAppKey())

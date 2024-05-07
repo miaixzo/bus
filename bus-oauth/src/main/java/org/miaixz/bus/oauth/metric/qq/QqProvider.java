@@ -101,7 +101,7 @@ public class QqProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken accToken) {
-        String response = Httpx.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
+        String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
@@ -127,7 +127,7 @@ public class QqProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("oauth_consumer_key", context.getAppKey())
                 .queryParam("openid", accToken.getOpenId())
@@ -148,7 +148,7 @@ public class QqProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(QqScope.values())))
                 .build();
     }

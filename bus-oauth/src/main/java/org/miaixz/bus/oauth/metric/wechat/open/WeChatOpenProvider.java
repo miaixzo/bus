@@ -33,7 +33,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
 /**
  * 微信开放平台 登录
@@ -41,7 +41,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WeChatOpenProvider extends DefaultProvider {
+public class WeChatOpenProvider extends AbstractWeChatProvider {
 
     public WeChatOpenProvider(Context context) {
         super(context, Registry.WECHAT_OPEN);
@@ -84,7 +84,7 @@ public class WeChatOpenProvider extends DefaultProvider {
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
-                .gender(Builder.getWechatRealGender(object.getString("sex")))
+                .gender(getWechatRealGender(object.getString("sex")))
                 .token(accToken)
                 .source(complex.toString())
                 .build();
@@ -137,7 +137,7 @@ public class WeChatOpenProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -154,7 +154,7 @@ public class WeChatOpenProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("code", code)
                 .queryParam("appid", context.getAppKey())
                 .queryParam("secret", context.getAppSecret())
@@ -170,7 +170,7 @@ public class WeChatOpenProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("openid", accToken.getOpenId())
                 .queryParam("lang", "zh_CN")
@@ -185,10 +185,11 @@ public class WeChatOpenProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(complex.refresh())
+        return Builder.fromUrl(complex.refresh())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();
     }
+
 }

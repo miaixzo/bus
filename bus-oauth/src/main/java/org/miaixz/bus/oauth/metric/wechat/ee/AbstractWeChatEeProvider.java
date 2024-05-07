@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
 /**
  * 企业微信 登录
@@ -46,7 +46,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractWeChatEeProvider extends DefaultProvider {
+public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
     public AbstractWeChatEeProvider(Context context, Complex complex) {
         super(context, complex);
@@ -91,7 +91,7 @@ public abstract class AbstractWeChatEeProvider extends DefaultProvider {
                 .location(userDetail.getString("address"))
                 .email(userDetail.getString("email"))
                 .uuid(userId)
-                .gender(Builder.getWechatRealGender(userDetail.getString("gender")))
+                .gender(getWechatRealGender(userDetail.getString("gender")))
                 .token(accToken)
                 .source(complex.toString())
                 .build();
@@ -122,7 +122,7 @@ public abstract class AbstractWeChatEeProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("corpid", context.getAppKey())
                 .queryParam("corpsecret", context.getAppSecret())
                 .build();
@@ -136,7 +136,7 @@ public abstract class AbstractWeChatEeProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("code", accToken.getCode())
                 .build();
@@ -152,7 +152,7 @@ public abstract class AbstractWeChatEeProvider extends DefaultProvider {
      */
     private JSONObject getUserDetail(String accessToken, String userId, String userTicket) {
         // 用户基础信息
-        String userInfoUrl = Builder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
+        String userInfoUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .queryParam("access_token", accessToken)
                 .queryParam("userid", userId)
                 .build();
@@ -161,7 +161,7 @@ public abstract class AbstractWeChatEeProvider extends DefaultProvider {
 
         // 用户敏感信息
         if (StringKit.isNotEmpty(userTicket)) {
-            String userDetailUrl = Builder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
+            String userDetailUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
                     .queryParam("access_token", accessToken)
                     .build();
             JSONObject param = new JSONObject();

@@ -108,7 +108,7 @@ public class GiteeProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(GiteeScope.values())))
                 .build();
     }

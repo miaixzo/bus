@@ -28,10 +28,10 @@ package org.miaixz.bus.oauth.metric.linkedin;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
-import com.xkcoding.http.constants.Constants;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -202,7 +202,7 @@ public class LinkedinProvider extends DefaultProvider {
     private AccToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap();
         header.put("Host", "www.linkedin.com");
-        header.put(Constants.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
         String response = Httpx.post(accessTokenUrl, null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
@@ -224,7 +224,7 @@ public class LinkedinProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(LinkedinScope.values())))
                 .build();
     }
@@ -237,7 +237,7 @@ public class LinkedinProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }

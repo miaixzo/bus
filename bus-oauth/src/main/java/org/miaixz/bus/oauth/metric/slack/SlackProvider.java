@@ -130,7 +130,7 @@ public class SlackProvider extends DefaultProvider {
 
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("user", accToken.getUid())
                 .build();
     }
@@ -143,7 +143,7 @@ public class SlackProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(complex.authorize())
+        return Builder.fromUrl(complex.authorize())
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("state", getRealState(state))
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -153,7 +153,7 @@ public class SlackProvider extends DefaultProvider {
 
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(complex.accessToken())
+        return Builder.fromUrl(complex.accessToken())
                 .queryParam("code", code)
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())

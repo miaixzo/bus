@@ -26,11 +26,11 @@
 package org.miaixz.bus.oauth.metric.stackoverflow;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.constants.Constants;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -67,7 +67,7 @@ public class StackOverflowProvider extends DefaultProvider {
         UriKit.decodeVal(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();
-        header.put(Constants.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
         String response = Httpx.post(accessTokenUrl, form, header);
 
         JSONObject accessTokenObject = JSONObject.parseObject(response);
@@ -81,7 +81,7 @@ public class StackOverflowProvider extends DefaultProvider {
 
     @Override
     protected Property getUserInfo(AccToken accToken) {
-        String userInfoUrl = Builder.fromBaseUrl(this.complex.userInfo())
+        String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getStackOverflowKey())
@@ -112,7 +112,7 @@ public class StackOverflowProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(StackoverflowScope.values())))
                 .build();
     }

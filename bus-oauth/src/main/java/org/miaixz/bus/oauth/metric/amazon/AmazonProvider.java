@@ -26,7 +26,6 @@
 package org.miaixz.bus.oauth.metric.amazon;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xkcoding.http.util.UrlUtil;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.exception.AuthorizedException;
@@ -34,6 +33,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -103,7 +103,7 @@ public class AmazonProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        Builder builder = Builder.fromBaseUrl(complex.authorize())
+        Builder builder = Builder.fromUrl(complex.authorize())
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(AmazonScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -218,7 +218,7 @@ public class AmazonProvider extends DefaultProvider {
     }
 
     private void checkToken(String accessToken) {
-        String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlUtil.urlEncode(accessToken));
+        String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UriKit.encode(accessToken));
         JSONObject jsonObject = JSONObject.parseObject(tokenInfo);
         if (!context.getAppKey().equals(jsonObject.getString("aud"))) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());
@@ -227,7 +227,7 @@ public class AmazonProvider extends DefaultProvider {
 
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(complex.userInfo())
+        return Builder.fromUrl(complex.userInfo())
                 .queryParam("user_id", accToken.getUserId())
                 .queryParam("screen_name", accToken.getScreenName())
                 .queryParam("include_entities", true)
