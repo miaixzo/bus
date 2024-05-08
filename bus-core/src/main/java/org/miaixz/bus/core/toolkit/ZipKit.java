@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.EnumerationIterator;
+import org.miaixz.bus.core.collection.Iterator.EnumerationIterator;
 import org.miaixz.bus.core.compress.*;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.io.resource.Resource;

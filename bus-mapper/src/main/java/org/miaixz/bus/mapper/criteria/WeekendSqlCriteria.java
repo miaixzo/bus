@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.criteria;
 
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.mapper.criteria.Sqls.Criteria;
 import org.miaixz.bus.mapper.criteria.Sqls.Criterion;
 import org.miaixz.bus.mapper.support.Reflector;
@@ -54,7 +54,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andIsNull(XFunction<T, Object> fn) {
+    public WeekendSqlCriteria<T> andIsNull(FuncX<T, Object> fn) {
         return this.andIsNull(Reflector.fnToFieldName(fn));
     }
 
@@ -63,7 +63,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andIsNotNull(XFunction<T, Object> fn) {
+    public WeekendSqlCriteria<T> andIsNotNull(FuncX<T, Object> fn) {
         return this.andIsNotNull(Reflector.fnToFieldName(fn));
     }
 
@@ -72,7 +72,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -81,7 +81,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andNotEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andNotEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andNotEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -90,7 +90,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andGreaterThan(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andGreaterThan(FuncX<T, Object> fn, Object value) {
         return this.andGreaterThan(Reflector.fnToFieldName(fn), value);
     }
 
@@ -99,7 +99,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andGreaterThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andGreaterThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andGreaterThanOrEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -108,7 +108,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andLessThan(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andLessThan(FuncX<T, Object> fn, Object value) {
         return this.andLessThan(Reflector.fnToFieldName(fn), value);
     }
 
@@ -117,7 +117,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andLessThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> andLessThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andLessThanOrEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -126,7 +126,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andIn(XFunction<T, Object> fn, Iterable values) {
+    public WeekendSqlCriteria<T> andIn(FuncX<T, Object> fn, Iterable values) {
         return this.andIn(Reflector.fnToFieldName(fn), values);
     }
 
@@ -135,7 +135,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andNotIn(XFunction<T, Object> fn, Iterable values) {
+    public WeekendSqlCriteria<T> andNotIn(FuncX<T, Object> fn, Iterable values) {
         return this.andNotIn(Reflector.fnToFieldName(fn), values);
     }
 
@@ -144,7 +144,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public WeekendSqlCriteria<T> andBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         return this.andBetween(Reflector.fnToFieldName(fn), value1, value2);
     }
 
@@ -153,7 +153,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andNotBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public WeekendSqlCriteria<T> andNotBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         return this.andNotBetween(Reflector.fnToFieldName(fn), value1, value2);
     }
 
@@ -162,7 +162,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andLike(XFunction<T, Object> fn, String value) {
+    public WeekendSqlCriteria<T> andLike(FuncX<T, Object> fn, String value) {
         return this.andLike(Reflector.fnToFieldName(fn), value);
     }
 
@@ -171,7 +171,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> andNotLike(XFunction<T, Object> fn, String value) {
+    public WeekendSqlCriteria<T> andNotLike(FuncX<T, Object> fn, String value) {
         return this.andNotLike(Reflector.fnToFieldName(fn), value);
     }
 
@@ -180,7 +180,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orIsNull(XFunction<T, Object> fn) {
+    public WeekendSqlCriteria<T> orIsNull(FuncX<T, Object> fn) {
         return this.orIsNull(Reflector.fnToFieldName(fn));
     }
 
@@ -189,7 +189,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orIsNotNull(XFunction<T, Object> fn) {
+    public WeekendSqlCriteria<T> orIsNotNull(FuncX<T, Object> fn) {
         return this.orIsNotNull(Reflector.fnToFieldName(fn));
     }
 
@@ -198,7 +198,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -207,7 +207,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orNotEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orNotEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orNotEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -216,7 +216,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orGreaterThan(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orGreaterThan(FuncX<T, Object> fn, Object value) {
         return this.orGreaterThan(Reflector.fnToFieldName(fn), value);
     }
 
@@ -225,7 +225,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orGreaterThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orGreaterThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orGreaterThanOrEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -234,7 +234,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orLessThan(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orLessThan(FuncX<T, Object> fn, Object value) {
         return this.orLessThan(Reflector.fnToFieldName(fn), value);
     }
 
@@ -243,7 +243,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orLessThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orLessThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orLessThanOrEqualTo(Reflector.fnToFieldName(fn), value);
     }
 
@@ -252,7 +252,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orIn(XFunction<T, Object> fn, Iterable values) {
+    public WeekendSqlCriteria<T> orIn(FuncX<T, Object> fn, Iterable values) {
         return this.orIn(Reflector.fnToFieldName(fn), values);
     }
 
@@ -261,7 +261,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orNotIn(XFunction<T, Object> fn, Iterable values) {
+    public WeekendSqlCriteria<T> orNotIn(FuncX<T, Object> fn, Iterable values) {
         return this.orNotIn(Reflector.fnToFieldName(fn), values);
     }
 
@@ -270,7 +270,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public WeekendSqlCriteria<T> orBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         return this.orBetween(Reflector.fnToFieldName(fn), value1, value2);
     }
 
@@ -279,7 +279,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orNotBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public WeekendSqlCriteria<T> orNotBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         return this.orNotBetween(Reflector.fnToFieldName(fn), value1, value2);
     }
 
@@ -288,7 +288,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orLike(XFunction<T, Object> fn, String value) {
+    public WeekendSqlCriteria<T> orLike(FuncX<T, Object> fn, String value) {
         return this.orLike(Reflector.fnToFieldName(fn), value);
     }
 
@@ -297,7 +297,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
         return this;
     }
 
-    public WeekendSqlCriteria<T> orNotLike(XFunction<T, Object> fn, Object value) {
+    public WeekendSqlCriteria<T> orNotLike(FuncX<T, Object> fn, Object value) {
         return this.orNotLike(Reflector.fnToFieldName(fn), value);
     }
 

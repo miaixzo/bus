@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.collection.ComputeIterator;
+import org.miaixz.bus.core.collection.Iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.finder.TextFinder;
 import org.miaixz.bus.core.toolkit.StringKit;

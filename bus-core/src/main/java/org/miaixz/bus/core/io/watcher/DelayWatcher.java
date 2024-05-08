@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.watcher;
 
-import org.miaixz.bus.core.collection.ConcurrentHashSet;
+import org.miaixz.bus.core.collection.set.ConcurrentHashSet;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.toolkit.ThreadKit;
 

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.reader;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XWrapper;
+import org.miaixz.bus.core.lang.Wrapper;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -38,7 +38,7 @@ import java.nio.CharBuffer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ReaderWrapper extends Reader implements XWrapper<Reader> {
+public class ReaderWrapper extends Reader implements Wrapper<Reader> {
 
     protected final Reader raw;
 

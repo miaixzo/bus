@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.lang.function.XWrapper;
+import org.miaixz.bus.core.lang.Wrapper;
 
 import javax.crypto.Cipher;
 import java.security.InvalidAlgorithmParameterException;
@@ -45,7 +45,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Ciphers implements XWrapper<Cipher> {
+public class Ciphers implements Wrapper<Cipher> {
 
     /**
      * Cipher负责完成加密或解密工作

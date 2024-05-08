@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Readers;
@@ -582,7 +582,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param fields lambda,不能为空
      * @return this
      */
-    public PopSetting setFields(final XSupplier<String>... fields) {
+    public PopSetting setFields(final SupplierX<String>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
         return this;
     }

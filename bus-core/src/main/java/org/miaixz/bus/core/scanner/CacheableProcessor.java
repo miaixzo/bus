@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.scanner;
 
-import org.miaixz.bus.core.map.RowKeyTable;
-import org.miaixz.bus.core.map.Table;
+import org.miaixz.bus.core.map.multi.RowKeyTable;
+import org.miaixz.bus.core.map.multi.Table;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.util.Collection;

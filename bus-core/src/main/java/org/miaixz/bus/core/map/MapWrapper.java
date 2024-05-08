@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.map;
 
-import org.miaixz.bus.core.lang.function.XWrapper;
+import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, XWrapper<Map<K, V>>, Serializable, Cloneable {
+public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
 
     /**
      * 默认增长因子

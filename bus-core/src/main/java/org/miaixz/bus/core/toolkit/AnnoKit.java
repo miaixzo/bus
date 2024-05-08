@@ -30,7 +30,7 @@ import org.miaixz.bus.core.annotation.AnnoProxy;
 import org.miaixz.bus.core.annotation.Annotated;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.scanner.AnnotationScanner;
 import org.miaixz.bus.core.scanner.Synthetic;
 import org.miaixz.bus.core.scanner.annotation.FieldScanner;
@@ -227,7 +227,7 @@ public class AnnoKit {
      * @param propertyName  属性名，例如注解中定义了name()方法，则 此处传入name
      * @return 注解对象
      */
-    public static <A extends Annotation, R> R getAnnotationValue(final AnnotatedElement annotationEle, final XFunction<A, R> propertyName) {
+    public static <A extends Annotation, R> R getAnnotationValue(final AnnotatedElement annotationEle, final FuncX<A, R> propertyName) {
         if (propertyName == null) {
             return null;
         } else {

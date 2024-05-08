@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.map;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XWrapper;
+import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
@@ -725,7 +725,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @see #entrySet()
      * @see #values()
      */
-    public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>> implements Map.Entry<K, TreeEntry<K, V>>, XWrapper<N> {
+    public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>> implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
         private final N entryNode;
 
         EntryNodeWrapper(final N entryNode) {

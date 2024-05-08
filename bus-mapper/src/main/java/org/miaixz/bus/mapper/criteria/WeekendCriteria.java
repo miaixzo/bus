@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.criteria;
 
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.mapper.entity.Condition.Criteria;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.support.Reflector;
@@ -46,142 +46,142 @@ public class WeekendCriteria<A, B> extends Criteria {
         super(propertyMap, exists, notNull);
     }
 
-    public WeekendCriteria<A, B> andIsNull(XFunction<A, B> fn) {
+    public WeekendCriteria<A, B> andIsNull(FuncX<A, B> fn) {
         this.andIsNull(Reflector.fnToFieldName(fn));
         return this;
     }
 
-    public WeekendCriteria<A, B> andIsNotNull(XFunction<A, B> fn) {
+    public WeekendCriteria<A, B> andIsNotNull(FuncX<A, B> fn) {
         super.andIsNotNull(Reflector.fnToFieldName(fn));
         return this;
     }
 
-    public WeekendCriteria<A, B> andEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andEqualTo(FuncX<A, B> fn, Object value) {
         super.andEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andNotEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andNotEqualTo(FuncX<A, B> fn, Object value) {
         super.andNotEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andGreaterThan(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andGreaterThan(FuncX<A, B> fn, Object value) {
         super.andGreaterThan(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andGreaterThanOrEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andGreaterThanOrEqualTo(FuncX<A, B> fn, Object value) {
         super.andGreaterThanOrEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andLessThan(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andLessThan(FuncX<A, B> fn, Object value) {
         super.andLessThan(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andLessThanOrEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> andLessThanOrEqualTo(FuncX<A, B> fn, Object value) {
         super.andLessThanOrEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andIn(XFunction<A, B> fn, Iterable values) {
+    public WeekendCriteria<A, B> andIn(FuncX<A, B> fn, Iterable values) {
         super.andIn(Reflector.fnToFieldName(fn), values);
         return this;
     }
 
-    public WeekendCriteria<A, B> andNotIn(XFunction<A, B> fn, Iterable values) {
+    public WeekendCriteria<A, B> andNotIn(FuncX<A, B> fn, Iterable values) {
         super.andNotIn(Reflector.fnToFieldName(fn), values);
         return this;
     }
 
-    public WeekendCriteria<A, B> andBetween(XFunction<A, B> fn, Object value1, Object value2) {
+    public WeekendCriteria<A, B> andBetween(FuncX<A, B> fn, Object value1, Object value2) {
         super.andBetween(Reflector.fnToFieldName(fn), value1, value2);
         return this;
     }
 
-    public WeekendCriteria<A, B> andNotBetween(XFunction<A, B> fn, Object value1, Object value2) {
+    public WeekendCriteria<A, B> andNotBetween(FuncX<A, B> fn, Object value1, Object value2) {
         super.andNotBetween(Reflector.fnToFieldName(fn), value1, value2);
         return this;
     }
 
-    public WeekendCriteria<A, B> andLike(XFunction<A, B> fn, String value) {
+    public WeekendCriteria<A, B> andLike(FuncX<A, B> fn, String value) {
         super.andLike(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> andNotLike(XFunction<A, B> fn, String value) {
+    public WeekendCriteria<A, B> andNotLike(FuncX<A, B> fn, String value) {
         super.andNotLike(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orIsNull(XFunction<A, B> fn) {
+    public WeekendCriteria<A, B> orIsNull(FuncX<A, B> fn) {
         super.orIsNull(Reflector.fnToFieldName(fn));
         return this;
     }
 
-    public WeekendCriteria<A, B> orIsNotNull(XFunction<A, B> fn) {
+    public WeekendCriteria<A, B> orIsNotNull(FuncX<A, B> fn) {
         super.orIsNotNull(Reflector.fnToFieldName(fn));
         return this;
     }
 
-    public WeekendCriteria<A, B> orEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orEqualTo(FuncX<A, B> fn, Object value) {
         super.orEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orNotEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orNotEqualTo(FuncX<A, B> fn, Object value) {
         super.orNotEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orGreaterThan(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orGreaterThan(FuncX<A, B> fn, Object value) {
         super.orGreaterThan(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orGreaterThanOrEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orGreaterThanOrEqualTo(FuncX<A, B> fn, Object value) {
         super.orGreaterThanOrEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orLessThan(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orLessThan(FuncX<A, B> fn, Object value) {
         super.orLessThan(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orLessThanOrEqualTo(XFunction<A, B> fn, Object value) {
+    public WeekendCriteria<A, B> orLessThanOrEqualTo(FuncX<A, B> fn, Object value) {
         super.orLessThanOrEqualTo(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orIn(XFunction<A, B> fn, Iterable values) {
+    public WeekendCriteria<A, B> orIn(FuncX<A, B> fn, Iterable values) {
         super.orIn(Reflector.fnToFieldName(fn), values);
         return this;
     }
 
-    public WeekendCriteria<A, B> orNotIn(XFunction<A, B> fn, Iterable values) {
+    public WeekendCriteria<A, B> orNotIn(FuncX<A, B> fn, Iterable values) {
         super.orNotIn(Reflector.fnToFieldName(fn), values);
         return this;
     }
 
-    public WeekendCriteria<A, B> orBetween(XFunction<A, B> fn, Object value1, Object value2) {
+    public WeekendCriteria<A, B> orBetween(FuncX<A, B> fn, Object value1, Object value2) {
         super.orBetween(Reflector.fnToFieldName(fn), value1, value2);
         return this;
     }
 
-    public WeekendCriteria<A, B> orNotBetween(XFunction<A, B> fn, Object value1, Object value2) {
+    public WeekendCriteria<A, B> orNotBetween(FuncX<A, B> fn, Object value1, Object value2) {
         super.orNotBetween(Reflector.fnToFieldName(fn), value1, value2);
         return this;
     }
 
-    public WeekendCriteria<A, B> orLike(XFunction<A, B> fn, String value) {
+    public WeekendCriteria<A, B> orLike(FuncX<A, B> fn, String value) {
         super.orLike(Reflector.fnToFieldName(fn), value);
         return this;
     }
 
-    public WeekendCriteria<A, B> orNotLike(XFunction<A, B> fn, String value) {
+    public WeekendCriteria<A, B> orNotLike(FuncX<A, B> fn, String value) {
         super.orNotLike(Reflector.fnToFieldName(fn), value);
         return this;
     }

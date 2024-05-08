@@ -358,7 +358,7 @@ public class ByteKit {
      * @param byteOrder 端序
      * @return long值
      */
-    public static long bytesToLong(byte[] data, int start, ByteOrder byteOrder) {
+    public static long bytesToLong(final byte[] data, final int start, final ByteOrder byteOrder) {
         long values = 0;
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
             for (int i = (Long.BYTES - 1); i >= 0; i--) {
@@ -1528,6 +1528,30 @@ public class ByteKit {
             }
         }
         return temp;
+    }
+
+    /**
+     * 将long值转为bytes并填充到给定的bytes中
+     *
+     * @param longValue long值
+     * @param start     开始位置（包含）
+     * @param byteOrder 端续
+     * @param bytes     被填充的bytes
+     * @return 填充后的bytes
+     */
+    public static byte[] fill(long longValue, final int start, final ByteOrder byteOrder, final byte[] bytes) {
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            for (int i = start; i < bytes.length; i++) {
+                bytes[i] = (byte) (longValue & 0xFF);
+                longValue >>= Byte.SIZE;
+            }
+        } else {
+            for (int i = (bytes.length - 1); i >= start; i--) {
+                bytes[i] = (byte) (longValue & 0xFF);
+                longValue >>= Byte.SIZE;
+            }
+        }
+        return bytes;
     }
 
     /**

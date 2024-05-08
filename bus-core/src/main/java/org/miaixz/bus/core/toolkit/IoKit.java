@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.LineIterator;
+import org.miaixz.bus.core.collection.Iterator.LineIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.io.LifeCycle;
@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 
 import java.io.ObjectInputStream;
 import java.io.*;
@@ -810,7 +810,7 @@ public class IoKit {
      * @throws InternalException 异常
      */
     public static <T extends Collection<String>> T readLines(Reader reader, T collection) throws InternalException {
-        readLines(reader, (XConsumer<String>) collection::add);
+        readLines(reader, (ConsumerX<String>) collection::add);
         return collection;
     }
 
@@ -821,7 +821,7 @@ public class IoKit {
      * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readLines(InputStream in, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(InputStream in, ConsumerX<String> lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
@@ -833,7 +833,7 @@ public class IoKit {
      * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readLines(InputStream in, java.nio.charset.Charset charset, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(InputStream in, java.nio.charset.Charset charset, ConsumerX<String> lineHandler) throws InternalException {
         readLines(getReader(in, charset), lineHandler);
     }
 
@@ -845,7 +845,7 @@ public class IoKit {
      * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readLines(Reader reader, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(Reader reader, ConsumerX<String> lineHandler) throws InternalException {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 

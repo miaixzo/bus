@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;

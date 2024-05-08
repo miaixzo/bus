@@ -26,7 +26,7 @@
 package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.mapper.support.Reflector;
 
 import java.util.Optional;
@@ -56,7 +56,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param fn 函数
      * @return the object
      */
-    public SqlsCriteria<T> andIsNull(XFunction<T, Object> fn) {
+    public SqlsCriteria<T> andIsNull(FuncX<T, Object> fn) {
         this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), "is null", "and"));
         return this;
     }
@@ -67,7 +67,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param fn 函数
      * @return the object
      */
-    public SqlsCriteria<T> andIsNotNull(XFunction<T, Object> fn) {
+    public SqlsCriteria<T> andIsNotNull(FuncX<T, Object> fn) {
         this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), "is not null", "and"));
         return this;
     }
@@ -80,7 +80,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andEqualTo(fn, value, false);
     }
 
@@ -93,7 +93,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      *                 true 当value = null 则转 is null 查询： AND column is null
      * @return the object
      */
-    public SqlsCriteria<T> andEqualTo(XFunction<T, Object> fn, Object value, boolean required) {
+    public SqlsCriteria<T> andEqualTo(FuncX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "=", "and"));
         } else {
@@ -113,7 +113,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andNotEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andNotEqualTo(FuncX<T, Object> fn, Object value) {
         return this.andNotEqualTo(fn, value, false);
     }
 
@@ -126,7 +126,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      *                 true 当value = null 则转 is not null 查询 ： AND column is not null
      * @return
      */
-    public SqlsCriteria<T> andNotEqualTo(XFunction<T, Object> fn, Object value, boolean required) {
+    public SqlsCriteria<T> andNotEqualTo(FuncX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<>", "and"));
         } else {
@@ -146,7 +146,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andGreaterThan(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andGreaterThan(FuncX<T, Object> fn, Object value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, ">", "and"));
         }
@@ -161,7 +161,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andGreaterThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andGreaterThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, ">=", "and"));
         }
@@ -176,7 +176,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andLessThan(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andLessThan(FuncX<T, Object> fn, Object value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<", "and"));
         }
@@ -191,7 +191,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andLessThanOrEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> andLessThanOrEqualTo(FuncX<T, Object> fn, Object value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<=", "and"));
         }
@@ -206,7 +206,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param values 值
      * @return the object
      */
-    public SqlsCriteria<T> andIn(XFunction<T, Object> fn, Iterable values) {
+    public SqlsCriteria<T> andIn(FuncX<T, Object> fn, Iterable values) {
         if (Optional.ofNullable(values).isPresent() && values.iterator().hasNext()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), values, "in", "and"));
         }
@@ -221,7 +221,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param values 值
      * @return the object
      */
-    public SqlsCriteria<T> andNotIn(XFunction<T, Object> fn, Iterable values) {
+    public SqlsCriteria<T> andNotIn(FuncX<T, Object> fn, Iterable values) {
         if (Optional.ofNullable(values).isPresent() && values.iterator().hasNext()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), values, "not in", "and"));
         }
@@ -237,7 +237,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value2 值2
      * @return the object
      */
-    public SqlsCriteria<T> andBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public SqlsCriteria<T> andBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "and"));
         }
@@ -253,7 +253,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value2 值2
      * @return the object
      */
-    public SqlsCriteria<T> andNotBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public SqlsCriteria<T> andNotBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "and"));
         }
@@ -268,7 +268,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andLike(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andLike(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "and"));
@@ -284,7 +284,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andLikeLeft(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andLikeLeft(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "and"));
@@ -300,7 +300,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andLikeRight(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andLikeRight(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "and"));
@@ -316,7 +316,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andNotLike(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andNotLike(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
@@ -332,7 +332,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andNotLikeLeft(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andNotLikeLeft(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
@@ -348,7 +348,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> andNotLikeRight(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> andNotLikeRight(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
@@ -363,7 +363,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param fn 函数
      * @return the object
      */
-    public SqlsCriteria<T> orIsNull(XFunction<T, Object> fn) {
+    public SqlsCriteria<T> orIsNull(FuncX<T, Object> fn) {
         this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), "is null", "or"));
         return this;
     }
@@ -375,7 +375,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param fn 函数
      * @return the object
      */
-    public SqlsCriteria<T> orIsNotNull(XFunction<T, Object> fn) {
+    public SqlsCriteria<T> orIsNotNull(FuncX<T, Object> fn) {
         this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), "is not null", "or"));
         return this;
     }
@@ -388,20 +388,20 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> orEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orEqualTo(fn, value, false);
     }
 
     /**
      * OR column = value
-     * 当request = true 且  value = null时 转 #{@link #orIsNull(XFunction)}
+     * 当request = true 且  value = null时 转 #{@link #orIsNull(FuncX)}
      *
      * @param fn       函数
      * @param value    值
      * @param required 是否必须
      * @return the object
      */
-    public SqlsCriteria<T> orEqualTo(XFunction<T, Object> fn, Object value, boolean required) {
+    public SqlsCriteria<T> orEqualTo(FuncX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "=", "or"));
         } else {
@@ -421,20 +421,20 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orNotEqualTo(XFunction<T, Object> fn, Object value) {
+    public SqlsCriteria<T> orNotEqualTo(FuncX<T, Object> fn, Object value) {
         return this.orNotEqualTo(fn, value, false);
     }
 
     /**
      * OR column 不等于 value
-     * 当request = true 且  value = null时 转 #{@link #orIsNotNull(XFunction)}
+     * 当request = true 且  value = null时 转 #{@link #orIsNotNull(FuncX)}
      *
      * @param fn       函数
      * @param value    值
      * @param required 是否必须
      * @return the object
      */
-    public SqlsCriteria<T> orNotEqualTo(XFunction<T, Object> fn, Object value, boolean required) {
+    public SqlsCriteria<T> orNotEqualTo(FuncX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<>", "or"));
         } else {
@@ -453,7 +453,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orGreaterThan(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orGreaterThan(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, ">", "or"));
         }
@@ -468,7 +468,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orGreaterThanOrEqualTo(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orGreaterThanOrEqualTo(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, ">=", "or"));
         }
@@ -483,7 +483,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orLessThan(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orLessThan(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<", "or"));
         }
@@ -498,7 +498,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orLessThanOrEqualTo(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orLessThanOrEqualTo(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "<=", "or"));
         }
@@ -513,7 +513,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param values 值
      * @return the object
      */
-    public SqlsCriteria<T> orIn(XFunction<T, Object> fn, Iterable values) {
+    public SqlsCriteria<T> orIn(FuncX<T, Object> fn, Iterable values) {
         if (Optional.ofNullable(values).isPresent() && values.iterator().hasNext()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), values, "in", "or"));
         }
@@ -528,7 +528,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param values 值
      * @return the object
      */
-    public SqlsCriteria<T> orNotIn(XFunction<T, Object> fn, Iterable values) {
+    public SqlsCriteria<T> orNotIn(FuncX<T, Object> fn, Iterable values) {
         if (Optional.ofNullable(values).isPresent() && values.iterator().hasNext()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), values, "not in", "or"));
         }
@@ -544,7 +544,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value2 值2
      * @return the object
      */
-    public SqlsCriteria<T> orBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public SqlsCriteria<T> orBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "or"));
         }
@@ -560,7 +560,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value2 值2
      * @return the object
      */
-    public SqlsCriteria<T> orNotBetween(XFunction<T, Object> fn, Object value1, Object value2) {
+    public SqlsCriteria<T> orNotBetween(FuncX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "or"));
         }
@@ -575,7 +575,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orLike(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orLike(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = "%" + value + "%";
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
@@ -591,7 +591,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orLikeLeft(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orLikeLeft(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = "%" + value;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
@@ -607,7 +607,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orLikeRight(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orLikeRight(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = value + "%";
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
@@ -623,7 +623,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orNotLike(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orNotLike(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "or"));
@@ -639,7 +639,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orNotLikeLeft(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orNotLikeLeft(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "or"));
@@ -655,7 +655,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      * @param value 值
      * @return the object
      */
-    public SqlsCriteria<T> orNotLikeRight(XFunction<T, Object> fn, String value) {
+    public SqlsCriteria<T> orNotLikeRight(FuncX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "or"));

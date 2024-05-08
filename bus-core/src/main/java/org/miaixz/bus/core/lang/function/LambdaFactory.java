@@ -5,7 +5,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.lang.reflect.LookupFactory;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.toolkit.ReflectKit;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 public class LambdaFactory {
 
-    private static final Map<MutableEntry<Class<?>, Method>, Object> CACHE = new WeakMap<>();
+    private static final Map<MutableEntry<Class<?>, Method>, Object> CACHE = new WeakConcurrentMap<>();
 
 
     private LambdaFactory() throws IllegalAccessException {
@@ -41,7 +41,7 @@ public class LambdaFactory {
      *     // ... 省略GetterSetter方法
      * }
      * Function<Something, Long> getIdFunction = LambdaFactory.buildLambda(Function.class, Something.class, "getId");
-     * XConsumer<Something, String> setNameConsumer = LambdaFactory.buildLambda(BiConsumer.class, Something.class, "setName", String.class);
+     * ConsumerX<Something, String> setNameConsumer = LambdaFactory.buildLambda(BiConsumer.class, Something.class, "setName", String.class);
      * }
      * </pre>
      *

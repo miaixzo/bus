@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.lang.function.XWrapper;
+import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.toolkit.FileKit;
 
 import java.io.File;
@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FileWrapper implements XWrapper<File>, Serializable {
+public class FileWrapper implements Wrapper<File>, Serializable {
 
     /**
      * 默认编码：UTF-8

@@ -57,7 +57,7 @@ public class ID {
      * @return ObjectId
      */
     public static String objectId() {
-        return ObjectID.id();
+        return ObjectId.id();
     }
 
     /**

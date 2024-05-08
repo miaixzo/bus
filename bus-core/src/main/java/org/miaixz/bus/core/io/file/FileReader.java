@@ -27,7 +27,7 @@ package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -202,7 +202,7 @@ public class FileReader extends FileWrapper {
      * @param lineHandler 行处理器
      * @throws InternalException 异常
      */
-    public void readLines(final XConsumer<String> lineHandler) throws InternalException {
+    public void readLines(final ConsumerX<String> lineHandler) throws InternalException {
         BufferedReader reader = null;
         try {
             reader = FileKit.getReader(file, charset);

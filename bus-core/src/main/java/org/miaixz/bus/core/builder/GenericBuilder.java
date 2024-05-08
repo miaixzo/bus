@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.builder;
 
-import org.miaixz.bus.core.lang.function.XMultiple;
+import org.miaixz.bus.core.lang.function.MultipleX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class GenericBuilder<T> implements Builder<T> {
      * @param <P2>     参数二类型
      * @return GenericBuilder对象
      */
-    public <P1, P2> GenericBuilder<T> with(final XMultiple<T, P1, P2> consumer, final P1 p1, final P2 p2) {
+    public <P1, P2> GenericBuilder<T> with(final MultipleX<T, P1, P2> consumer, final P1 p1, final P2 p2) {
         modifiers.add(instant -> consumer.accept(instant, p1, p2));
         return this;
     }

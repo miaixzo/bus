@@ -31,7 +31,7 @@ import org.miaixz.bus.core.getter.GroupedGetter;
 import org.miaixz.bus.core.getter.TypeGetter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.io.Serializable;
@@ -59,7 +59,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @param <T>  返回值类型
      * @return 获取表达式对应属性和返回的对象
      */
-    public <P, T> T get(final XFunction<P, T> func) {
+    public <P, T> T get(final FuncX<P, T> func) {
         final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
         return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }

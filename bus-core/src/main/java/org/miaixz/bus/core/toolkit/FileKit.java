@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.EnumerationIterator;
+import org.miaixz.bus.core.collection.Iterator.EnumerationIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.io.LineHandler;
 import org.miaixz.bus.core.io.file.FileReader;
@@ -38,7 +38,7 @@ import org.miaixz.bus.core.io.resource.UriResource;
 import org.miaixz.bus.core.io.stream.BOMInputStream;
 import org.miaixz.bus.core.io.stream.EmptyOutputStream;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 
 import java.io.*;
 import java.lang.System;
@@ -2052,7 +2052,7 @@ public class FileKit {
             if (StringKit.containsAny(substr, SPECIAL_SUFFIX)) {
                 return substr;
             }
-            String ext = fileName.substring(index + 1);
+            final String ext = fileName.substring(index + 1);
             // 扩展名中不能包含路径相关的符号
             return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
         }
@@ -2675,7 +2675,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(File file, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(File file, ConsumerX<String> lineHandler) throws InternalException {
         readLines(file, Charset.UTF_8, lineHandler);
     }
 
@@ -2687,7 +2687,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(File file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) throws InternalException {
+    public static void readLines(File file, java.nio.charset.Charset charset, ConsumerX<String> lineHandler) throws InternalException {
         FileReader.create(file, charset).readLines(lineHandler);
     }
 
@@ -2699,7 +2699,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) {
+    public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, ConsumerX<String> lineHandler) {
         String line;
         try {
             while (null != (line = file.readLine())) {
@@ -2717,7 +2717,7 @@ public class FileKit {
      * @param charset     编码
      * @param lineHandler {@link LineHandler}行处理器
      */
-    public static void readLine(RandomAccessFile file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) {
+    public static void readLine(RandomAccessFile file, java.nio.charset.Charset charset, ConsumerX<String> lineHandler) {
         final String line = readLine(file, charset);
         if (null != line) {
             lineHandler.accept(line);
@@ -3905,7 +3905,7 @@ public class FileKit {
      * @param file    文件
      * @param handler 行处理器
      */
-    public static void tail(final File file, final XConsumer<String> handler) {
+    public static void tail(final File file, final ConsumerX<String> handler) {
         tail(file, Charset.UTF_8, handler);
     }
 
@@ -3917,7 +3917,7 @@ public class FileKit {
      * @param charset 编码
      * @param handler 行处理器
      */
-    public static void tail(final File file, final java.nio.charset.Charset charset, final XConsumer<String> handler) {
+    public static void tail(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> handler) {
         new Tailer(file, charset, handler).start();
     }
 

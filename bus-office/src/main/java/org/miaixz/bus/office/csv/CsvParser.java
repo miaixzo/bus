@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.collection.ComputeIterator;
+import org.miaixz.bus.core.collection.Iterator.ComputeIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;

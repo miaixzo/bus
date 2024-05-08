@@ -39,9 +39,39 @@ import org.miaixz.bus.core.toolkit.StringKit;
 public class Version {
 
     /**
+     * 版本信息
+     */
+    public static final String _VERSION = "8.0.0.RELEASE";
+
+    /**
+     * JDK版本
+     */
+    public static final int _JVM_VERSION;
+
+    /**
+     * 是否大于等于JDK17
+     */
+    public static final boolean _IS_JDK17;
+
+    /**
+     * 是否Android环境
+     */
+    public static final boolean _IS_ANDROID;
+
+    /**
      * 是否完整模式,默认使用完整模式
      */
     private boolean complete = true;
+
+    static {
+        // JVM版本
+        _JVM_VERSION = _getJvmVersion();
+        _IS_JDK17 = _JVM_VERSION >= 17;
+
+        // JVM名称
+        final String jvmName = _getJvmName();
+        _IS_ANDROID = jvmName.equals("Dalvik");
+    }
 
     /**
      * 获取 Version 的版本号,版本号的命名规范
@@ -60,7 +90,7 @@ public class Version {
      * @return 项目的版本号
      */
     public static String get() {
-        return "8.0.0.RELEASE";
+        return _VERSION;
     }
 
     /**
@@ -191,6 +221,40 @@ public class Version {
      */
     private int compare(String version) {
         return ObjectKit.compare(get(), version, complete);
+    }
+
+    /**
+     * 获取JVM名称
+     *
+     * @return JVM名称
+     */
+    private static String _getJvmName() {
+        return System.getProperty("java.vm.name");
+    }
+
+    /**
+     * 根据{@code java.specification.version}属性值，获取版本号
+     *
+     * @return 版本号
+     */
+    private static int _getJvmVersion() {
+        int jvmVersion = -1;
+        try {
+            String javaSpecVer = System.getProperty("java.specification.version");
+            if (StringKit.isNotBlank(javaSpecVer)) {
+                if (javaSpecVer.startsWith("1.")) {
+                    javaSpecVer = javaSpecVer.substring(2);
+                }
+                if (javaSpecVer.indexOf(Symbol.C_DOT) == -1) {
+                    jvmVersion = Integer.parseInt(javaSpecVer);
+                }
+            }
+        } catch (Throwable ignore) {
+            // 默认JDK17
+            jvmVersion = 17;
+        }
+
+        return jvmVersion;
     }
 
 }

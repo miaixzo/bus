@@ -1,6 +1,6 @@
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.collection.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.ArrayKit;

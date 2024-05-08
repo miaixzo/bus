@@ -27,7 +27,7 @@ package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.io.watcher.IgnoreWatcher;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 import org.miaixz.bus.core.toolkit.FileKit;
 
 import java.io.IOException;
@@ -46,16 +46,16 @@ public class LineReadWatcher extends IgnoreWatcher implements Runnable {
 
     private final RandomAccessFile randomAccessFile;
     private final Charset charset;
-    private final XConsumer<String> lineHandler;
+    private final ConsumerX<String> lineHandler;
 
     /**
      * 构造
      *
      * @param randomAccessFile {@link RandomAccessFile}
      * @param charset          编码
-     * @param lineHandler      行处理器{@link XConsumer}实现
+     * @param lineHandler      行处理器{@link ConsumerX}实现
      */
-    public LineReadWatcher(RandomAccessFile randomAccessFile, Charset charset, XConsumer<String> lineHandler) {
+    public LineReadWatcher(RandomAccessFile randomAccessFile, Charset charset, ConsumerX<String> lineHandler) {
         this.randomAccessFile = randomAccessFile;
         this.charset = charset;
         this.lineHandler = lineHandler;
@@ -70,7 +70,7 @@ public class LineReadWatcher extends IgnoreWatcher implements Runnable {
     public void onModify(WatchEvent<?> event, Path currentPath) {
         final RandomAccessFile randomAccessFile = this.randomAccessFile;
         final Charset charset = this.charset;
-        final XConsumer<String> lineHandler = this.lineHandler;
+        final ConsumerX<String> lineHandler = this.lineHandler;
 
         try {
             final long currentLength = randomAccessFile.length();

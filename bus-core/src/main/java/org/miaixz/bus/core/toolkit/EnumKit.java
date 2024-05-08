@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -269,7 +269,7 @@ public class EnumKit {
      * @param <C>       字段类型
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, C> E getBy(XFunction<E, C> condition, C value) {
+    public static <E extends Enum<E>, C> E getBy(FuncX<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(condition);
         if (Enum.class.equals(implClass)) {
             implClass = LambdaKit.getRealClass(condition);
@@ -287,7 +287,7 @@ public class EnumKit {
      * @param <C>         值类型
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, C> E getBy(final XFunction<E, C> condition, final C value, final E defaultEnum) {
+    public static <E extends Enum<E>, C> E getBy(final FuncX<E, C> condition, final C value, final E defaultEnum) {
         return ObjectKit.defaultIfNull(getBy(condition, value), defaultEnum);
     }
 
@@ -302,7 +302,7 @@ public class EnumKit {
      * @param <C>       条件字段类型
      * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, F, C> F getFieldBy(XFunction<E, F> field,
+    public static <E extends Enum<E>, F, C> F getFieldBy(FuncX<E, F> field,
                                                          Function<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(field);
         if (Enum.class.equals(implClass)) {

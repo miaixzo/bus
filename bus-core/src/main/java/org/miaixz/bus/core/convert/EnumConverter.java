@@ -27,7 +27,7 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.exception.ConvertException;
 import org.miaixz.bus.core.lang.Enums;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.lang.reflect.Method;
@@ -45,12 +45,12 @@ public class EnumConverter extends AbstractConverter {
 
     public static final EnumConverter INSTANCE = new EnumConverter();
     private static final long serialVersionUID = 1L;
-    private static final WeakMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
 
     /**
      * 尝试转换，转换规则为：
      * <ul>
-     *     <li>如果实现{@link Enums}接口，则调用fromInt或fromStr转换</li>
+     *     <li>如果实现{@link Enums}接口，则调用fromInt或fromString转换</li>
      *     <li>找到类似转换的静态方法调用实现转换且优先使用</li>
      *     <li>约定枚举类应该提供 valueOf(String) 和 valueOf(Integer)用于转换</li>
      *     <li>oriInt /name 转换托底</li>

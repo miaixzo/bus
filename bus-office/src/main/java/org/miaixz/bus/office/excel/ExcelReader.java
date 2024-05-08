@@ -25,12 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XBiConsumer;
-import org.miaixz.bus.core.toolkit.*;
-import org.miaixz.bus.office.excel.cell.CellEditor;
-import org.miaixz.bus.office.excel.reader.ListSheetReader;
-import org.miaixz.bus.office.excel.reader.SheetReader;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.extractor.ExcelExtractor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -39,6 +33,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.extractor.XSSFExcelExtractor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.function.BiConsumerX;
+import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.reader.ListSheetReader;
+import org.miaixz.bus.office.excel.reader.SheetReader;
 
 import java.io.File;
 import java.io.InputStream;
@@ -258,7 +258,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param cellHandler 单元格处理器，用于处理读到的单元格及其数据
      */
-    public void read(XBiConsumer<Cell, Object> cellHandler) {
+    public void read(BiConsumerX<Cell, Object> cellHandler) {
         read(0, Integer.MAX_VALUE, cellHandler);
     }
 
@@ -286,7 +286,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param endRowIndex   结束行（包含，从0开始计数）
      * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
-    public void read(int startRowIndex, int endRowIndex, XBiConsumer<Cell, Object> cellHandler) {
+    public void read(int startRowIndex, int endRowIndex, BiConsumerX<Cell, Object> cellHandler) {
         checkNotClosed();
 
         // 读取起始行（包含）

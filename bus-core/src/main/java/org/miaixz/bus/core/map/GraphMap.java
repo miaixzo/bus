@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.map;
 
+import org.miaixz.bus.core.map.multi.SetValueMap;
 import org.miaixz.bus.core.toolkit.CollKit;
 
 import java.util.*;

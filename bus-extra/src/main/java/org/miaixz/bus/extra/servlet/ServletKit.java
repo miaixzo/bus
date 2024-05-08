@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
-import org.miaixz.bus.core.collection.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.map.CaseInsensitiveMap;

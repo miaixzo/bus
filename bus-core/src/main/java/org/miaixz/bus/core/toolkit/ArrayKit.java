@@ -28,7 +28,7 @@ package org.miaixz.bus.core.toolkit;
 import org.miaixz.bus.core.builder.HashCodeBuilder;
 import org.miaixz.bus.core.builder.ToStringBuilder;
 import org.miaixz.bus.core.builder.ToStringStyle;
-import org.miaixz.bus.core.collection.UniqueKeySet;
+import org.miaixz.bus.core.collection.set.UniqueKeySet;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Optional;
@@ -7207,8 +7207,36 @@ public class ArrayKit {
 
     /**
      * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
+     * 数组复制，源数组和目标数组都是从位置0开始复制，复制长度为源数组的长度
+     *
+     * @param <T>  目标数组类型
+     * @param src  源数组
+     * @param dest 目标数组
+     * @return 目标数组
+     */
+    public static <T> T copy(final Object src, final T dest) {
+        return copy(src, dest, length(src));
+    }
+
+    /**
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
+     * 数组复制，源数组和目标数组都是从位置0开始复制
+     *
+     * @param <T>    目标数组类型
+     * @param src    源数组
+     * @param dest   目标数组
+     * @param length 拷贝数组长度
+     * @return 目标数组
+     */
+    public static <T> T copy(final Object src, final T dest, final int length) {
+        return copy(src, 0, dest, 0, length);
+    }
+
+    /**
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
      * 数组复制
      *
+     * @param <T>     目标数组类型
      * @param src     源数组
      * @param srcPos  源数组开始位置
      * @param dest    目标数组
@@ -7216,22 +7244,8 @@ public class ArrayKit {
      * @param length  拷贝数组长度
      * @return 目标数组
      */
-    public static Object copy(Object src, int srcPos, Object dest, int destPos, int length) {
+    public static <T> T copy(final Object src, final int srcPos, final T dest, final int destPos, final int length) {
         System.arraycopy(src, srcPos, dest, destPos, length);
-        return dest;
-    }
-
-    /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
-     * 数组复制,缘数组和目标数组都是从位置0开始复制
-     *
-     * @param src    源数组
-     * @param dest   目标数组
-     * @param length 拷贝数组长度
-     * @return 目标数组
-     */
-    public static Object copy(Object src, Object dest, int length) {
-        System.arraycopy(src, 0, dest, 0, length);
         return dest;
     }
 

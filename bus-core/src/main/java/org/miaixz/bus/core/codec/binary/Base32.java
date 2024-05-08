@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec.binary;
 
-import org.miaixz.bus.core.codec.provider.Base32Provider;
+import org.miaixz.bus.core.codec.binary.provider.Base32Provider;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.nio.charset.Charset;

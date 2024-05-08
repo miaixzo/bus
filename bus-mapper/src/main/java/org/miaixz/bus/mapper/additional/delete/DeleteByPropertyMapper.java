@@ -28,7 +28,7 @@ package org.miaixz.bus.mapper.additional.delete;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 
 /**
@@ -49,7 +49,7 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @DeleteProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteByProperty(@Param("fn") XFunction<T, ?> fn, @Param("value") Object value);
+    int deleteByProperty(@Param("fn") FuncX<T, ?> fn, @Param("value") Object value);
 
     /**
      * 根据实体中的属性删除，条件使用 in
@@ -59,7 +59,7 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @DeleteProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteInByProperty(@Param("fn") XFunction<T, ?> fn, @Param("values") Object value);
+    int deleteInByProperty(@Param("fn") FuncX<T, ?> fn, @Param("values") Object value);
 
     /**
      * 根据属性及对应值进行删除，删除条件使用 between
@@ -70,6 +70,6 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @SelectProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteBetweenByProperty(@Param("fn") XFunction<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
+    int deleteBetweenByProperty(@Param("fn") FuncX<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
 
 }

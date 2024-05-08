@@ -270,6 +270,22 @@ public class RandomKit {
     }
 
     /**
+     * 随机bytes
+     *
+     * @param length 长度
+     * @param random {@link Random}
+     * @return bytes
+     */
+    public static byte[] randomBytes(final int length, Random random) {
+        if (null == random) {
+            random = getRandom();
+        }
+        final byte[] bytes = new byte[length];
+        random.nextBytes(bytes);
+        return bytes;
+    }
+
+    /**
      * 随机获得列表中的元素
      *
      * @param <T>  元素类型

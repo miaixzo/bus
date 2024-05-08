@@ -28,7 +28,7 @@ package org.miaixz.bus.core.instance;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.ReflectKit;
@@ -139,7 +139,7 @@ public final class Instances {
      * @param supplier 单例对象的创建函数
      * @return 单例对象
      */
-    public static <T> T singletion(String key, XSupplier<T> supplier) {
+    public static <T> T singletion(String key, SupplierX<T> supplier) {
         Object value = POOL.get(key);
         if (null == value) {
             POOL.putIfAbsent(key, supplier.get());

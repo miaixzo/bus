@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans;
 
-import org.miaixz.bus.core.lang.function.XSupplier;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.lang.function.SupplierX;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 
 /**
  * Bean缓存
@@ -44,7 +44,7 @@ public enum BeanCache {
     /**
      * 缓存
      */
-    private final WeakMap<Class<?>, BeanDesc> bdCache = new WeakMap<>();
+    private final WeakConcurrentMap<Class<?>, BeanDesc> bdCache = new WeakConcurrentMap<>();
 
     /**
      * 获得属性名和{@link BeanDesc}Map映射
@@ -53,7 +53,7 @@ public enum BeanCache {
      * @param supplier  对象不存在时创建对象的函数
      * @return 属性名和 {@link BeanDesc} 映射
      */
-    public BeanDesc getBeanDesc(Class<?> beanClass, XSupplier<BeanDesc> supplier) {
+    public BeanDesc getBeanDesc(Class<?> beanClass, SupplierX<BeanDesc> supplier) {
         return bdCache.computeIfAbsent(beanClass, (key) -> supplier.get());
     }
 

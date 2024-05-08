@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
@@ -77,7 +77,7 @@ public class Assert {
      * @param supplier   指定断言不通过时抛出的异常
      * @throws X if expression is {@code false}
      */
-    public static <X extends Throwable> void isTrue(boolean expression, XSupplier<? extends X> supplier) throws X {
+    public static <X extends Throwable> void isTrue(boolean expression, SupplierX<? extends X> supplier) throws X {
         if (false == expression) {
             throw supplier.get();
         }

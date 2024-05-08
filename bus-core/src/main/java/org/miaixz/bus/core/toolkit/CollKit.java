@@ -25,7 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.*;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.EnumerationIterator;
+import org.miaixz.bus.core.collection.Iterator.IteratorEnumeration;
+import org.miaixz.bus.core.collection.SimpleCollector;
+import org.miaixz.bus.core.collection.TransCollection;
+import org.miaixz.bus.core.collection.set.UniqueKeySet;
 import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.convert.Convert;
@@ -3502,7 +3507,7 @@ public class CollKit {
      * @return 新类型的集合
      */
     public static <F, T> Collection<T> trans(Collection<F> collection, Function<? super F, ? extends T> function) {
-        return new TransitionCollection<>(collection, function);
+        return new TransCollection<>(collection, function);
     }
 
     /**

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 
@@ -58,7 +58,7 @@ public class Tailer implements Serializable {
     /**
      * 行处理器
      */
-    private final XConsumer<String> lineHandler;
+    private final ConsumerX<String> lineHandler;
     /**
      * 初始读取的行数
      */
@@ -77,7 +77,7 @@ public class Tailer implements Serializable {
      * @param file        文件
      * @param lineHandler 行处理器
      */
-    public Tailer(final File file, final XConsumer<String> lineHandler) {
+    public Tailer(final File file, final ConsumerX<String> lineHandler) {
         this(file, lineHandler, 0);
     }
 
@@ -88,7 +88,7 @@ public class Tailer implements Serializable {
      * @param lineHandler  行处理器
      * @param initReadLine 启动时预读取的行数
      */
-    public Tailer(final File file, final XConsumer<String> lineHandler, final int initReadLine) {
+    public Tailer(final File file, final ConsumerX<String> lineHandler, final int initReadLine) {
         this(file, org.miaixz.bus.core.lang.Charset.UTF_8, lineHandler, initReadLine, Fields.Units.SECOND.getUnit());
     }
 
@@ -99,7 +99,7 @@ public class Tailer implements Serializable {
      * @param charset     编码
      * @param lineHandler 行处理器
      */
-    public Tailer(final File file, final java.nio.charset.Charset charset, final XConsumer<String> lineHandler) {
+    public Tailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
         this(file, charset, lineHandler, 0, Fields.Units.SECOND.getUnit());
     }
 
@@ -112,7 +112,7 @@ public class Tailer implements Serializable {
      * @param initReadLine 启动时预读取的行数
      * @param period       检查间隔
      */
-    public Tailer(final File file, final Charset charset, final XConsumer<String> lineHandler, final int initReadLine, final long period) {
+    public Tailer(final File file, final Charset charset, final ConsumerX<String> lineHandler, final int initReadLine, final long period) {
         checkFile(file);
         this.charset = charset;
         this.lineHandler = lineHandler;
@@ -243,7 +243,7 @@ public class Tailer implements Serializable {
     /**
      * 命令行打印的行处理器
      */
-    public static class ConsoleLineHandler implements XConsumer<String> {
+    public static class ConsoleLineHandler implements ConsumerX<String> {
 
         private static final long serialVersionUID = 1L;
 

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.function.LambdaFactory;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -48,7 +48,7 @@ import java.util.function.Function;
  */
 public class LambdaKit {
 
-    private static final WeakMap<String, Info> CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<String, Info> CACHE = new WeakConcurrentMap<>();
 
     /**
      * 通过对象的方法或类的静态方法引用，获取lambda实现类

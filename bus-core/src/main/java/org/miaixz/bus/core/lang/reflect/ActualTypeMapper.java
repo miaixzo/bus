@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.reflect;
 
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.ParameterizedType;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class ActualTypeMapper {
 
-    private static final WeakMap<Type, Map<Type, Type>> CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
 
     /**
      * 获取泛型变量和泛型实际类型的对应关系Map

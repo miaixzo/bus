@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
 
@@ -818,7 +818,7 @@ public class PatternKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的文本
      */
-    public static String replaceAll(CharSequence text, String regex, XFunction<Matcher, String> replaceFun) {
+    public static String replaceAll(CharSequence text, String regex, FuncX<Matcher, String> replaceFun) {
         return replaceAll(text, Pattern.compile(regex), replaceFun);
     }
 
@@ -836,7 +836,7 @@ public class PatternKit {
      * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
      * @return 替换后的字符串
      */
-    public static String replaceAll(CharSequence text, Pattern pattern, XFunction<Matcher, String> replaceFun) {
+    public static String replaceAll(CharSequence text, Pattern pattern, FuncX<Matcher, String> replaceFun) {
         if (StringKit.isEmpty(text)) {
             return StringKit.toString(text);
         }

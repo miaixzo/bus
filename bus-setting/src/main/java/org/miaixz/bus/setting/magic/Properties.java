@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.FileType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.XFunction;
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.FuncX;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.*;
 import org.miaixz.bus.logger.Logger;
 
@@ -267,7 +267,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
      * @param <T>  返回值类型
      * @return 获取表达式对应属性和返回的对象
      */
-    public <P, T> T get(final XFunction<P, T> func) {
+    public <P, T> T get(final FuncX<P, T> func) {
         final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
         return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }
@@ -401,7 +401,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
      * @param fields lambda,不能为空
      * @return this
      */
-    public Properties setFields(final XSupplier<?>... fields) {
+    public Properties setFields(final SupplierX<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
         return this;
     }

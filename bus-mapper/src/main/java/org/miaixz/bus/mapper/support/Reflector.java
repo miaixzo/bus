@@ -31,7 +31,7 @@ import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.exception.MapperException;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
@@ -90,7 +90,7 @@ public class Reflector {
         return mapperClass;
     }
 
-    public static String fnToFieldName(XFunction fn) {
+    public static String fnToFieldName(FuncX fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(Boolean.TRUE);
@@ -107,9 +107,9 @@ public class Reflector {
         }
     }
 
-    public static String[] fnToFieldNames(XFunction... fns) {
+    public static String[] fnToFieldNames(FuncX... fns) {
         List<String> list = new ArrayList<>();
-        for (XFunction fn : fns) {
+        for (FuncX fn : fns) {
             list.add(fnToFieldName(fn));
         }
         return list.toArray(new String[0]);

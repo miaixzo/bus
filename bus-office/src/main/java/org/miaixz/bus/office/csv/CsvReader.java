@@ -28,7 +28,7 @@ package org.miaixz.bus.office.csv;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.function.XConsumer;
+import org.miaixz.bus.core.lang.function.ConsumerX;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
@@ -192,7 +192,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param text       CSV字符串
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    public void read(String text, XConsumer<CsvRow> rowHandler) {
+    public void read(String text, ConsumerX<CsvRow> rowHandler) {
         read(parse(new StringReader(text)), rowHandler);
     }
 
@@ -258,7 +258,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param reader     Reader
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    public void read(Reader reader, XConsumer<CsvRow> rowHandler) {
+    public void read(Reader reader, ConsumerX<CsvRow> rowHandler) {
         read(parse(reader), rowHandler);
     }
 
@@ -268,7 +268,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param csvParser  CSV解析器
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    private void read(CsvParser csvParser, XConsumer<CsvRow> rowHandler) {
+    private void read(CsvParser csvParser, ConsumerX<CsvRow> rowHandler) {
         try {
             while (csvParser.hasNext()) {
                 rowHandler.accept(csvParser.next());

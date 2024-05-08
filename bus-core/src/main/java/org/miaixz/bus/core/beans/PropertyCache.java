@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans;
 
-import org.miaixz.bus.core.lang.function.XSupplier;
-import org.miaixz.bus.core.map.ReferenceMap;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.lang.function.SupplierX;
+import org.miaixz.bus.core.map.reference.ReferenceConcurrentMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 
 import java.beans.PropertyDescriptor;
 import java.util.Map;
@@ -43,8 +43,8 @@ public enum PropertyCache {
 
     INSTANCE;
 
-    private final WeakMap<Class<?>, Map<String, PropertyDescriptor>> pdCache = new WeakMap<>();
-    private final WeakMap<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new WeakMap<>();
+    private final WeakConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> pdCache = new WeakConcurrentMap<>();
+    private final WeakConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new WeakConcurrentMap<>();
 
     /**
      * 获得属性名和{@link PropertyDescriptor}Map映射
@@ -68,7 +68,7 @@ public enum PropertyCache {
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
             Class<?> beanClass,
             boolean ignoreCase,
-            XSupplier<Map<String, PropertyDescriptor>> supplier) {
+            SupplierX<Map<String, PropertyDescriptor>> supplier) {
         return getCache(ignoreCase).computeIfAbsent(beanClass, (key) -> supplier.get());
     }
 
@@ -95,9 +95,9 @@ public enum PropertyCache {
      * 根据是否忽略字段名的大小写，返回不用Cache对象
      *
      * @param ignoreCase 是否忽略大小写
-     * @return {@link ReferenceMap}
+     * @return {@link ReferenceConcurrentMap}
      */
-    private ReferenceMap<Class<?>, Map<String, PropertyDescriptor>> getCache(boolean ignoreCase) {
+    private ReferenceConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> getCache(boolean ignoreCase) {
         return ignoreCase ? ignoreCasePdCache : pdCache;
     }
 

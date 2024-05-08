@@ -27,7 +27,7 @@ package org.miaixz.bus.core.beans.copier;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.Converter;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.LambdaKit;
@@ -197,7 +197,7 @@ public class CopyOptions implements Serializable {
      * @param funcs 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      * @return {@link CopyOptions}
      */
-    public <P, R> CopyOptions setIgnoreProperties(final XFunction<P, R>... funcs) {
+    public <P, R> CopyOptions setIgnoreProperties(final FuncX<P, R>... funcs) {
         final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
         return setPropertiesFilter((field, o) -> !ignoreProperties.contains(field.getName()));
     }

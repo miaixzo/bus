@@ -36,6 +36,8 @@ import java.util.function.BiFunction;
 
 /**
  * 无重复键的Map
+ * 通过键值单独建立List方式，使键值对一一对应，实现正向和反向两种查找
+ * 无论是正向还是反向，都是遍历列表查找过程，相比标准的HashMap要慢，数据越多越慢
  *
  * @param <K> 键类型
  * @param <V> 值类型

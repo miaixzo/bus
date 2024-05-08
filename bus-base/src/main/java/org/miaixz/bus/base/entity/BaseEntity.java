@@ -29,7 +29,7 @@ import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.miaixz.bus.base.normal.Consts;
-import org.miaixz.bus.core.key.ObjectID;
+import org.miaixz.bus.core.key.ObjectId;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.*;
 
@@ -167,7 +167,7 @@ public class BaseEntity extends Tracer {
      * @param entity 反射对象
      */
     public <T> void setCreateInfo(T entity) {
-        String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ObjectID.id() : (String) getValue(entity, "id");
+        String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ObjectId.id() : (String) getValue(entity, "id");
         String timestamp = StringKit.toString(DateKit.timestamp());
         String[] fields = {"id", "created"};
         Object[] value = new Object[]{id, timestamp};

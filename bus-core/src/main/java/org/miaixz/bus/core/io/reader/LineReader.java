@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.reader;
 
-import org.miaixz.bus.core.collection.ComputeIterator;
+import org.miaixz.bus.core.collection.Iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.CharsKit;
 import org.miaixz.bus.core.toolkit.IoKit;

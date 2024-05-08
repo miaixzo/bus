@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.codec.provider.Base16Provider;
+import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;

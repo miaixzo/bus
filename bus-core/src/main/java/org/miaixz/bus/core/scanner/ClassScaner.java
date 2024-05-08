@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.scanner;
 
-import org.miaixz.bus.core.collection.EnumerationIterator;
+import org.miaixz.bus.core.collection.Iterator.EnumerationIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.FileType;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.watcher;
 
 import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.function.XBiConsumer;
+import org.miaixz.bus.core.lang.function.BiConsumerX;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
@@ -148,7 +148,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
      * @param action      监听回调函数，实现此函数接口用于处理WatchEvent事件
      * @param watchFilter 监听过滤接口，通过实现此接口过滤掉不需要监听的情况，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤
      */
-    public void watch(final XBiConsumer<WatchEvent<?>, Path> action, final Predicate<WatchEvent<?>> watchFilter) {
+    public void watch(final BiConsumerX<WatchEvent<?>, Path> action, final Predicate<WatchEvent<?>> watchFilter) {
         final WatchKey wk;
         try {
             wk = watchService.take();

@@ -31,8 +31,8 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.getter.TypeGetter;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XFunction;
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.FuncX;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.BeanKit;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.LambdaKit;
@@ -368,7 +368,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param <T>  返回值类型
      * @return 获取表达式对应属性和返回的对象
      */
-    public <P, T> T get(final XFunction<P, T> func) {
+    public <P, T> T get(final FuncX<P, T> func) {
         final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
         return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }
@@ -463,7 +463,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param fields lambda,不能为空
      * @return this
      */
-    public Dictionary setFields(final XSupplier<?>... fields) {
+    public Dictionary setFields(final SupplierX<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
         return this;
     }

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.tuple;
 
 import org.miaixz.bus.core.clone.Cloning;
-import org.miaixz.bus.core.collection.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.CollKit;
 

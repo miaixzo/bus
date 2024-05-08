@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec.binary;
 
-import org.miaixz.bus.core.codec.provider.Base58Provider;
+import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
 import org.miaixz.bus.core.exception.ValidateException;
 import org.miaixz.bus.core.lang.Algorithm;
 

@@ -387,7 +387,7 @@ public class Ftp extends AbstractFtp {
         String pwd = null;
         if (StringKit.isNotBlank(path)) {
             pwd = pwd();
-            if (false == isDir(path)) {
+            if (false == cd(path)) {
                 throw new InternalException("Change dir to [{}] error, maybe path not exist!", path);
             }
         }

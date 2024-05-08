@@ -1,6 +1,6 @@
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.lang.function.XSupplier;
+import org.miaixz.bus.core.lang.function.SupplierX;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -118,7 +118,7 @@ public class Optional<T> {
      * @param <T>      类型
      * @return 操作执行后的值
      */
-    public static <T> Optional<T> ofTry(final XSupplier<T> supplier) {
+    public static <T> Optional<T> ofTry(final SupplierX<T> supplier) {
         try {
             return Optional.ofNullable(supplier.getting());
         } catch (final Throwable throwable) {
@@ -154,7 +154,7 @@ public class Optional<T> {
 
     /**
      * 获取异常
-     * 当调用 {@link #ofTry(XSupplier)}时，异常信息不会抛出，而是保存，调用此方法获取抛出的异常
+     * 当调用 {@link #ofTry(SupplierX)}时，异常信息不会抛出，而是保存，调用此方法获取抛出的异常
      *
      * @return 异常
      */
@@ -164,7 +164,7 @@ public class Optional<T> {
 
     /**
      * 是否失败
-     * 当调用 {@link #ofTry(XSupplier)}时，抛出异常则表示失败
+     * 当调用 {@link #ofTry(SupplierX)}时，抛出异常则表示失败
      *
      * @return 是否失败
      */

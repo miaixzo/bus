@@ -27,7 +27,7 @@ package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.text.ASCIICache;
 import org.miaixz.bus.core.text.NamingCase;
 import org.miaixz.bus.core.text.TextFormatter;
@@ -42,6 +42,7 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -2839,7 +2840,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, String regex, XFunction<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, String regex, FuncX<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, regex, replaceFun);
     }
 
@@ -2897,7 +2898,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, Pattern pattern, XFunction<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, Pattern pattern, FuncX<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 

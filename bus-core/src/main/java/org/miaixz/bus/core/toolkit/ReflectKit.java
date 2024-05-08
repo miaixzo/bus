@@ -27,13 +27,13 @@ package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.annotation.Alias;
 import org.miaixz.bus.core.beans.NullWrapper;
-import org.miaixz.bus.core.collection.UniqueKeySet;
+import org.miaixz.bus.core.collection.set.UniqueKeySet;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.map.WeakMap;
+import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -51,15 +51,15 @@ public class ReflectKit {
     /**
      * 构造对象缓存
      */
-    private static final WeakMap<Class<?>, Constructor<?>[]> CONSTRUCTORS_CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<Class<?>, Constructor<?>[]> CONSTRUCTORS_CACHE = new WeakConcurrentMap<>();
     /**
      * 字段缓存
      */
-    private static final WeakMap<Class<?>, Field[]> FIELDS_CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<Class<?>, Field[]> FIELDS_CACHE = new WeakConcurrentMap<>();
     /**
      * 方法缓存
      */
-    private static final WeakMap<Class<?>, Method[]> METHODS_CACHE = new WeakMap<>();
+    private static final WeakConcurrentMap<Class<?>, Method[]> METHODS_CACHE = new WeakConcurrentMap<>();
 
     /**
      * 调用Getter方法.

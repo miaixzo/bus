@@ -629,11 +629,12 @@ public class ThreadKit {
     }
 
     /**
-     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式
-     * 注意：此方法的延迟和周期的单位均为毫秒
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。<br>
+     * 注意：此方法的延迟和周期的单位均为毫秒。
+     *
      * <ul>
-     *     <li>fixedRate 模式：下一次任务等待上一次任务执行完毕后再启动</li>
-     *     <li>fixedDelay模式：下一次任务不等待上一次任务，到周期自动执行</li>
+     *     <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
+     *     <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
      * </ul>
      *
      * @param executor              定时任务线程池，{@code null}新建一个默认线程池
@@ -641,21 +642,23 @@ public class ThreadKit {
      * @param initialDelay          初始延迟，单位毫秒
      * @param period                执行周期，单位毫秒
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
-     * @return {@link ScheduledThreadPoolExecutor}
+     * @return {@link ScheduledExecutorService}
+     * @since 5.5.8
      */
-    public static ScheduledThreadPoolExecutor schedule(ScheduledThreadPoolExecutor executor,
-                                                       Runnable command,
-                                                       long initialDelay,
-                                                       long period,
-                                                       boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(final ScheduledExecutorService executor,
+                                                    final Runnable command,
+                                                    final long initialDelay,
+                                                    final long period,
+                                                    final boolean fixedRateOrFixedDelay) {
         return schedule(executor, command, initialDelay, period, TimeUnit.MILLISECONDS, fixedRateOrFixedDelay);
     }
 
     /**
-     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。
+     *
      * <ul>
-     *     <li>fixedRate 模式：下一次任务等待上一次任务执行完毕后再启动</li>
-     *     <li>fixedDelay模式：下一次任务不等待上一次任务，到周期自动执行</li>
+     *     <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
+     *     <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
      * </ul>
      *
      * @param executor              定时任务线程池，{@code null}新建一个默认线程池
@@ -664,14 +667,14 @@ public class ThreadKit {
      * @param period                执行周期
      * @param timeUnit              时间单位
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
-     * @return {@link ScheduledThreadPoolExecutor}
+     * @return {@link ScheduledExecutorService}
      */
-    public static ScheduledThreadPoolExecutor schedule(ScheduledThreadPoolExecutor executor,
-                                                       Runnable command,
-                                                       long initialDelay,
-                                                       long period,
-                                                       TimeUnit timeUnit,
-                                                       boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(ScheduledExecutorService executor,
+                                                    final Runnable command,
+                                                    final long initialDelay,
+                                                    final long period,
+                                                    final TimeUnit timeUnit,
+                                                    final boolean fixedRateOrFixedDelay) {
         if (null == executor) {
             executor = createScheduledExecutor(2);
         }
@@ -680,6 +683,7 @@ public class ThreadKit {
         } else {
             executor.scheduleWithFixedDelay(command, initialDelay, period, timeUnit);
         }
+
         return executor;
     }
 

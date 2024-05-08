@@ -26,7 +26,7 @@
 package org.miaixz.bus.office.excel.sax;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
     /**
      * 行数据转换函数
      */
-    protected XFunction<List<Object>, T> convertFunc;
+    protected FuncX<List<Object>, T> convertFunc;
 
     /**
      * 构造

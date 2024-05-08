@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.ArrayIterator;
-import org.miaixz.bus.core.collection.EnumerationIterator;
-import org.miaixz.bus.core.collection.FilterIterator;
-import org.miaixz.bus.core.collection.NodeListIterator;
+import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
+import org.miaixz.bus.core.collection.Iterator.EnumerationIterator;
+import org.miaixz.bus.core.collection.Iterator.FilterIterator;
+import org.miaixz.bus.core.collection.Iterator.NodeListIterator;
 import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.text.TextJoiner;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -835,7 +835,7 @@ public class IterKit {
      * @param keyFunc  生成key的函数
      * @return 生成的map
      */
-    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, XFunction<V, K> keyFunc) {
+    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, FuncX<V, K> keyFunc) {
         return toMap(iterator, map, keyFunc, (value) -> value);
     }
 
@@ -852,7 +852,7 @@ public class IterKit {
      * @param valueFunc 生成值的策略函数
      * @return 生成的map
      */
-    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, XFunction<E, K> keyFunc, XFunction<E, V> valueFunc) {
+    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, FuncX<E, K> keyFunc, FuncX<E, V> valueFunc) {
         if (null == iterator) {
             return map;
         }

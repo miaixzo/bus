@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec.binary;
 
-import org.miaixz.bus.core.codec.provider.Base62Provider;
+import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;

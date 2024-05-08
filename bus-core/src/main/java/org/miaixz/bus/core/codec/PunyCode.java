@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名
  * 从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码
- * <p>
  * 参考：https://blog.csdn.net/a19881029/article/details/18262671
  *
  * @author Kimi Liu
