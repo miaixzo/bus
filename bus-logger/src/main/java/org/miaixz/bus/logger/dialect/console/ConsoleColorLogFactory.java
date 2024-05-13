@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.LogFactory;
 public class ConsoleColorLogFactory extends LogFactory {
 
     public ConsoleColorLogFactory() {
-        super("Console Color Logging");
+        super("Console Ansi4BitColor Logging");
     }
 
     @Override

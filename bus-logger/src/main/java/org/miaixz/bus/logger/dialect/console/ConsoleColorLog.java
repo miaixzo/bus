@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.dialect.console;
 
-import org.miaixz.bus.core.lang.Ansi;
+import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
+import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -44,29 +45,29 @@ public class ConsoleColorLog extends ConsoleLog {
     /**
      * 控制台打印类名的颜色代码
      */
-    private static final Ansi.Color COLOR_CLASSNAME = Ansi.Color.CYAN;
+    private static final Ansi4BitColor COLOR_CLASSNAME = Ansi4BitColor.CYAN;
 
     /**
      * 控制台打印时间的颜色代码
      */
-    private static final Ansi.Color COLOR_TIME = Ansi.Color.WHITE;
+    private static final Ansi4BitColor COLOR_TIME = Ansi4BitColor.WHITE;
 
     /**
      * 控制台打印正常信息的颜色代码
      */
-    private static final Ansi.Color COLOR_NONE = Ansi.Color.DEFAULT;
+    private static final Ansi4BitColor COLOR_NONE = Ansi4BitColor.DEFAULT;
 
-    private static Function<Level, Ansi.Color> colorFactory = (level -> {
+    private static Function<Level, Ansi4BitColor> colorFactory = (level -> {
         switch (level) {
             case DEBUG:
             case INFO:
-                return Ansi.Color.GREEN;
+                return Ansi4BitColor.GREEN;
             case WARN:
-                return Ansi.Color.YELLOW;
+                return Ansi4BitColor.YELLOW;
             case ERROR:
-                return Ansi.Color.RED;
+                return Ansi4BitColor.RED;
             case TRACE:
-                return Ansi.Color.MAGENTA;
+                return Ansi4BitColor.MAGENTA;
             default:
                 return COLOR_NONE;
         }
@@ -95,7 +96,7 @@ public class ConsoleColorLog extends ConsoleLog {
      *
      * @param colorFactory 颜色工厂函数
      */
-    public static void setColorFactory(Function<Level, Ansi.Color> colorFactory) {
+    public static void setColorFactory(Function<Level, Ansi4BitColor> colorFactory) {
         ConsoleColorLog.colorFactory = colorFactory;
     }
 
@@ -105,7 +106,7 @@ public class ConsoleColorLog extends ConsoleLog {
             return;
         }
 
-        final String template = Ansi.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
+        final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
         System.out.format(template, DateKit.now(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, arguments));
     }
 

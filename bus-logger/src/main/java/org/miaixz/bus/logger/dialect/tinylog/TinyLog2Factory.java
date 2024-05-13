@@ -23,32 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.core.thread;
+package org.miaixz.bus.logger.dialect.tinylog;
+
+import org.miaixz.bus.logger.Log;
+import org.miaixz.bus.logger.LogFactory;
 
 /**
- * 带有Name标识的 {@link ThreadLocal},
- * 调用toString返回name
+ * <a href="http://www.tinylog.org/">TinyLog2</a> logger.
  *
- * @param <T> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NamedThreadLocal<T> extends ThreadLocal<T> {
-
-    private final String name;
+public class TinyLog2Factory extends LogFactory {
 
     /**
      * 构造
-     *
-     * @param name 名字
      */
-    public NamedThreadLocal(String name) {
-        this.name = name;
+    public TinyLog2Factory() {
+        super("TinyLog");
+        checkLogExist(org.tinylog.Logger.class);
     }
 
     @Override
-    public String toString() {
-        return this.name;
+    public Log createLog(String name) {
+        return new TinyLog2(name);
+    }
+
+    @Override
+    public Log createLog(Class<?> clazz) {
+        return new TinyLog2(clazz);
     }
 
 }

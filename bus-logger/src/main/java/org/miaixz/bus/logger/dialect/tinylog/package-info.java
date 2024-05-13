@@ -3,6 +3,6 @@
  * 封装包括TinyLog和TinyLog2
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 package org.miaixz.bus.logger.dialect.tinylog;

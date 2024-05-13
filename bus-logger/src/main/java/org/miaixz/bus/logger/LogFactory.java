@@ -26,7 +26,7 @@
 package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.toolkit.CallerKit;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.logger.dialect.console.ConsoleLogFactory;
 import org.miaixz.bus.logger.dialect.jdk.JdkLogFactory;
 
@@ -95,7 +95,7 @@ public abstract class LogFactory {
         }
 
         // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
-        final URL url = FileKit.getUrl("logging.properties");
+        final URL url = ResourceKit.getResourceUrl("logging.properties");
         return (null != url) ? new JdkLogFactory() : new ConsoleLogFactory();
     }
 

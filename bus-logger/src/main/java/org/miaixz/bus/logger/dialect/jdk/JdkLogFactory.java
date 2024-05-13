@@ -26,8 +26,8 @@
 package org.miaixz.bus.logger.dialect.jdk;
 
 import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.logger.Log;
 import org.miaixz.bus.logger.LogFactory;
 
@@ -62,7 +62,7 @@ public class JdkLogFactory extends LogFactory {
      * 读取ClassPath下的logging.properties配置文件
      */
     private void readConfig() {
-        InputStream in = FileKit.getStreamSafe("logging.properties");
+        InputStream in = ResourceKit.getStreamSafe("logging.properties");
         if (null == in) {
             System.err.println("[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");
             return;
@@ -78,7 +78,7 @@ public class JdkLogFactory extends LogFactory {
                 Console.error(e, "Read [logging.properties] from [%JRE_HOME%/lib/logging.properties] error!");
             }
         } finally {
-            IoKit.close(in);
+            IoKit.closeQuietly(in);
         }
     }
 

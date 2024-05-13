@@ -33,6 +33,9 @@ import org.miaixz.bus.logger.LogFactory;
  *
  * @author Kimi Liu
  * @since Java 17+
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class ConsoleLogFactory extends LogFactory {
 
