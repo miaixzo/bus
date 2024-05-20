@@ -32,6 +32,7 @@ import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -56,15 +57,6 @@ import java.io.InputStream;
  * @since Java 17+
  */
 public class ExcelSax {
-
-    /**
-     * 填充字符串
-     */
-    public static final char CELL_FILL_CHAR = '@';
-    /**
-     * 列的最大位数
-     */
-    public static final int MAX_CELL_BIT = 3;
 
     /**
      * 创建 {@link ExcelSaxReader}
@@ -169,13 +161,13 @@ public class ExcelSax {
     public static int countNullCell(final String preRef, final String ref) {
         // excel2007最大行数是1048576，最大列数是16384，最后一列列名是XFD
         // 数字代表列，去掉列信息
-        String preXfd = ObjectKit.defaultIfNull(preRef, "@").replaceAll("\\d+", "");
-        String xfd = ObjectKit.defaultIfNull(ref, "@").replaceAll("\\d+", "");
+        String preXfd = ObjectKit.defaultIfNull(preRef, Symbol.AT).replaceAll("\\d+", "");
+        String xfd = ObjectKit.defaultIfNull(ref, Symbol.AT).replaceAll("\\d+", "");
 
         // A表示65，@表示64，如果A算作1，那@代表0
         // 填充最大位数3
-        preXfd = StringKit.fillBefore(preXfd, CELL_FILL_CHAR, MAX_CELL_BIT);
-        xfd = StringKit.fillBefore(xfd, CELL_FILL_CHAR, MAX_CELL_BIT);
+        preXfd = StringKit.fillBefore(preXfd, Symbol.C_AT, Normal._3);
+        xfd = StringKit.fillBefore(xfd, Symbol.C_AT, Normal._3);
 
         final char[] preLetter = preXfd.toCharArray();
         final char[] letter = xfd.toCharArray();

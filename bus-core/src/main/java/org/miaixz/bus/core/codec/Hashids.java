@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -57,7 +59,9 @@ import java.util.stream.LongStream;
  */
 public class Hashids implements Encoder<long[], String>, Decoder<String, long[]> {
 
-    // 默认编解码字符串
+    /**
+     * 默认编解码字符串
+     */
     public static final char[] DEFAULT_ALPHABET = {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -68,23 +72,33 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     private static final int LOTTERY_MOD = 100;
     private static final double GUARD_THRESHOLD = 12;
     private static final double SEPARATOR_THRESHOLD = 3.5;
-    // 最小编解码字符串
+    /**
+     * 最小编解码字符串
+     */
     private static final int MIN_ALPHABET_LENGTH = 16;
     private static final Pattern HEX_VALUES_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
-    // 默认分隔符
+    /**
+     * 默认分隔符
+     */
     private static final char[] DEFAULT_SEPARATORS = {
             'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T', 'U'
     };
 
     // algorithm properties
     private final char[] alphabet;
-    // 多个数字编解码的分界符
+    /**
+     * 多个数字编解码的分界符
+     */
     private final char[] separators;
     private final Set<Character> separatorsSet;
     private final char[] salt;
-    // 补齐至 minLength 长度添加的字符列表
+    /**
+     * 补齐至 minLength 长度添加的字符列表
+     */
     private final char[] guards;
-    // 编码后最小的字符长度
+    /**
+     * 编码后最小的字符长度
+     */
     private final int minLength;
 
     /**
@@ -472,7 +486,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         // add to seen set (without duplicates)
         IntStream.range(0, alphabet.length)
                 .forEach(i -> {
-                    if (alphabet[i] == ' ') {
+                    if (alphabet[i] == Symbol.C_SPACE) {
                         throw new IllegalArgumentException(String.format("alphabet must not contain spaces: " +
                                 "index %d", i));
                     }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.escape;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
@@ -49,7 +50,7 @@ public class XmlEscape extends ReplacerChain {
     protected static final String[][] BASIC_ESCAPE = {
             // {"'", "&apos;"}, // " - single-quote
             {"\"", "&quot;"}, // " - double-quote
-            {"&", "&amp;"}, // & - ampersand
+            {Symbol.AND, "&amp;"}, // & - ampersand
             {"<", "&lt;"}, // < - less-than
             {">", "&gt;"}, // > - greater-than
     };

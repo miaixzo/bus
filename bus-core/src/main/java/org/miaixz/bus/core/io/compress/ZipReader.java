@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.compress;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
@@ -182,7 +183,7 @@ public class ZipReader implements Closeable {
         String path = zipEntry.getName();
         if (FileKit.isWindows()) {
             // Win系统下
-            path = StringKit.replace(path, "*", "_");
+            path = StringKit.replace(path, Symbol.STAR, Symbol.UNDERLINE);
         }
         // FileKit.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
         final File outItemFile = FileKit.file(outFile, path);

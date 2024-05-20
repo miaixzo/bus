@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.codec.binary.encoder;
 
 import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Bas32编码器
@@ -37,15 +38,15 @@ public class Base32Encoder implements Encoder<byte[], String> {
 
     public static final String DEFAULT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     public static final String HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
-    public static final Character DEFAULT_PAD = '=';
+
     /**
      * 编码器
      */
-    public static final Base32Encoder ENCODER = new Base32Encoder(DEFAULT_ALPHABET, DEFAULT_PAD);
+    public static final Base32Encoder ENCODER = new Base32Encoder(DEFAULT_ALPHABET, Symbol.C_EQUAL);
     /**
      * 16进制编码器
      */
-    public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, DEFAULT_PAD);
+    public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, Symbol.C_EQUAL);
     private static final int[] BASE32_FILL = {-1, 4, 1, 6, 3};
     private final char[] alphabet;
     private final Character pad;

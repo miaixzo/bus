@@ -43,7 +43,6 @@ import java.util.Map;
 public class RecordKit {
 
     private static volatile Class<?> RECORD_CLASS;
-
     private static volatile Method METHOD_GET_RECORD_COMPONENTS;
     private static volatile Method METHOD_COMPONENT_GET_NAME;
     private static volatile Method METHOD_COMPONENT_GET_GENERIC_TYPE;

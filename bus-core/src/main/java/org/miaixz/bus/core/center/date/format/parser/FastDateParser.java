@@ -29,6 +29,7 @@ import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
 import org.miaixz.bus.core.center.date.printer.SimpleDatePrinter;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 import java.io.IOException;
@@ -169,12 +170,12 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             switch (c) {
                 case '\\':
                 case '^':
-                case '$':
+                case Symbol.C_DOLLAR:
                 case '.':
                 case '|':
                 case '?':
-                case '*':
-                case '+':
+                case Symbol.C_STAR:
+                case Symbol.C_PLUS:
                 case '(':
                 case ')':
                 case '[':
@@ -668,7 +669,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
 
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            if (value.charAt(0) == '+' || value.charAt(0) == '-') {
+            if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_MINUS) {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {

@@ -3,6 +3,7 @@ package org.miaixz.bus.pay.metric.jdpay;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.core.toolkit.XmlKit;
@@ -250,7 +251,7 @@ public class JdPayKit {
             } else {
                 hs = hs + stmp;
             }
-            if (n < b.length - 1) hs = hs + ":";
+            if (n < b.length - 1) hs = hs + Symbol.COLON;
         }
         return hs.toUpperCase();
     }
@@ -474,12 +475,12 @@ public class JdPayKit {
             }
             String value = (String) entry.getValue();
             if (value.trim().length() > 0) {
-                sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+                sb.append(entry.getKey()).append(Symbol.EQUAL).append(entry.getValue()).append(Symbol.AND);
             }
         }
 
         String result = sb.toString();
-        if (result.endsWith("&")) {
+        if (result.endsWith(Symbol.AND)) {
             result = result.substring(0, result.length() - 1);
         }
         return result;
@@ -509,12 +510,12 @@ public class JdPayKit {
         Iterator iterator = signMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            sb.append(entry.getKey() + "=" + (
-                    (entry.getValue() == null) ? "" : entry.getValue()) + "&");
+            sb.append(entry.getKey() + Symbol.EQUAL + (
+                    (entry.getValue() == null) ? "" : entry.getValue()) + Symbol.AND);
         }
 
         String result = sb.toString();
-        if (result.endsWith("&")) {
+        if (result.endsWith(Symbol.AND)) {
             result = result.substring(0, result.length() - 1);
         }
         return result;
@@ -553,11 +554,11 @@ public class JdPayKit {
         Iterator iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            sb.append(entry.getKey() + "=" + ((entry.getValue() == null) ? "" : entry.getValue()) + "&");
+            sb.append(entry.getKey() + Symbol.EQUAL + ((entry.getValue() == null) ? "" : entry.getValue()) + Symbol.AND);
         }
 
         String result = sb.toString();
-        if (result.endsWith("&")) {
+        if (result.endsWith(Symbol.AND)) {
             result = result.substring(0, result.length() - 1);
         }
 

@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -62,7 +63,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             // Now of form tcpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split("=");
+                    String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "tcpCurrEstab":
@@ -121,7 +122,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             // Now of form udpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split("=");
+                    String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "udpOutDatagrams":

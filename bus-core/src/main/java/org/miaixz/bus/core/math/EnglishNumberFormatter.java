@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.MathKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -37,14 +38,9 @@ import org.miaixz.bus.core.toolkit.StringKit;
  */
 public class EnglishNumberFormatter {
 
-    private static final String[] NUMBER = new String[]{"", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN",
-            "EIGHT", "NINE"};
-    private static final String[] NUMBER_TEEN = new String[]{"TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN",
-            "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"};
-    private static final String[] NUMBER_TEN = new String[]{"TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY",
-            "SEVENTY", "EIGHTY", "NINETY"};
-    private static final String[] NUMBER_MORE = new String[]{"", "THOUSAND", "MILLION", "BILLION", "TRILLION"};
-
+    /**
+     * 简洁计数单位
+     */
     private static final String[] NUMBER_SUFFIX = new String[]{"k", "w", "", "m", "", "", "b", "", "", "t", "", "", "p", "", "", "e"};
 
     /**
@@ -133,7 +129,7 @@ public class EnglishNumberFormatter {
             if (!"000".equals(a[i])) { // 用来避免这种情况：1000000 = one million
                 // thousand only
                 if (i != 0) {
-                    lm.insert(0, transThree(a[i]) + " " + parseMore(i) + " "); // 加:
+                    lm.insert(0, transThree(a[i]) + Symbol.SPACE + parseMore(i) + Symbol.SPACE); // 加:
                     // thousand、million、billion
                 } else {
                     // 防止i=0时， 在多加两个空格.
@@ -144,24 +140,24 @@ public class EnglishNumberFormatter {
             }
         }
 
-        String xs = lm.length() == 0 ? "ZERO " : " "; // 用来存放转换后小数部分
+        String xs = lm.length() == 0 ? "ZERO " : Symbol.SPACE; // 用来存放转换后小数部分
         if (z > -1) {
-            xs += "AND CENTS " + transTwo(rstr) + " "; // 小数部分存在时转换小数
+            xs += "AND CENTS " + transTwo(rstr) + Symbol.SPACE; // 小数部分存在时转换小数
         }
 
         return lm.toString().trim() + xs + "ONLY";
     }
 
     private static String parseTeen(final String x) {
-        return NUMBER_TEEN[Integer.parseInt(x) - 10];
+        return Normal.EN_NUMBER_TEEN[Integer.parseInt(x) - 10];
     }
 
     private static String parseTen(final String x) {
-        return NUMBER_TEN[Integer.parseInt(x.substring(0, 1)) - 1];
+        return Normal.EN_NUMBER_TEN[Integer.parseInt(x.substring(0, 1)) - 1];
     }
 
     private static String parseMore(final int i) {
-        return NUMBER_MORE[i];
+        return Normal.EN_NUMBER_MORE[i];
     }
 
 
@@ -188,7 +184,7 @@ public class EnglishNumberFormatter {
         } else if (x.endsWith("0")) {// 是否在10与100之间的能被10整除的数
             value = parseTen(x);
         } else {
-            value = parseTen(x) + " " + parseLast(x);
+            value = parseTen(x) + Symbol.SPACE + parseLast(x);
         }
         return value;
     }
@@ -212,7 +208,7 @@ public class EnglishNumberFormatter {
     }
 
     private static String parseLast(final String s) {
-        return NUMBER[Integer.parseInt(s.substring(s.length() - 1))];
+        return Normal.EN_NUMBER[Integer.parseInt(s.substring(s.length() - 1))];
     }
 
 }

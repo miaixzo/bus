@@ -232,7 +232,7 @@ public class NumberParser {
         int pos = 0; // 数字字符串位置
         int radix = 10;
         boolean negate = false; // 负数与否
-        if (text.startsWith("-")) {
+        if (text.startsWith(Symbol.MINUS)) {
             negate = true;
             pos = 1;
         }
@@ -240,7 +240,7 @@ public class NumberParser {
             // hex
             radix = 16;
             pos += 2;
-        } else if (text.startsWith("#", pos)) {
+        } else if (text.startsWith(Symbol.SHAPE, pos)) {
             // alternative hex (allowed by Long/Integer)
             radix = 16;
             pos++;

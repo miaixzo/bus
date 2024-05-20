@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.Locale;
@@ -48,7 +49,7 @@ public class LocaleConverter extends AbstractConverter {
                 return null;
             }
 
-            final String[] items = text.split("_");
+            final String[] items = text.split(Symbol.UNDERLINE);
             if (items.length == 1) {
                 return new Locale(items[0]);
             }

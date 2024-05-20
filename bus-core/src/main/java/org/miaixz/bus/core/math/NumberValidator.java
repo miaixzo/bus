@@ -63,7 +63,7 @@ public class NumberValidator {
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        final int start = (chars[0] == '-' || chars[0] == '+') ? 1 : 0;
+        final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
         if (sz > start + 1 && chars[start] == '0' && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is a decimal number
             if (chars[start + 1] == 'x' || chars[start + 1] == 'X') { // leading 0x/0X
                 int i = start + 2;
@@ -116,7 +116,7 @@ public class NumberValidator {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == '+' || chars[i] == '-') {
+            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_MINUS) {
                 if (!allowSigns) {
                     return false;
                 }

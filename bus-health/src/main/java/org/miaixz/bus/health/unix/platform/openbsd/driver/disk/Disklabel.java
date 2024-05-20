@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.platform.openbsd.driver.disk;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
@@ -114,7 +115,7 @@ public final class Disklabel {
               l:        387166336        112937088  4.2BSD   4096 32768 26062 # /home
              Note size is in sectors
              */
-            if (line.trim().indexOf(':') == 1) {
+            if (line.trim().indexOf(Symbol.C_COLON) == 1) {
                 // partition table values have a single letter followed by a colon
                 String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 9);
                 String name = split[0].substring(0, 1);

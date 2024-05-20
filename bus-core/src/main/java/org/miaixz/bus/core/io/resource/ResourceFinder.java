@@ -152,9 +152,9 @@ public class ResourceFinder {
             // 去除子路径后重新获取jar文件
             final String urlFile = rootDirURL.getFile();
             try {
-                int separatorIndex = urlFile.indexOf(UrlKit.WAR_URL_SEPARATOR);
+                int separatorIndex = urlFile.indexOf(Normal.WAR_URL_SEPARATOR);
                 if (separatorIndex == -1) {
-                    separatorIndex = urlFile.indexOf(UrlKit.JAR_URL_SEPARATOR);
+                    separatorIndex = urlFile.indexOf(Normal.JAR_URL_SEPARATOR);
                 }
                 if (separatorIndex != -1) {
                     final String jarFileUrl = urlFile.substring(0, separatorIndex);
@@ -237,7 +237,7 @@ public class ResourceFinder {
      * @return root dir
      */
     protected String determineRootDir(final String location) {
-        final int prefixEnd = location.indexOf(':') + 1;
+        final int prefixEnd = location.indexOf(Symbol.C_COLON) + 1;
         int rootDirEnd = location.length();
         while (rootDirEnd > prefixEnd && pathMatcher.isPattern(location.substring(prefixEnd, rootDirEnd))) {
             rootDirEnd = location.lastIndexOf(Symbol.C_SLASH, rootDirEnd - 2) + 1;

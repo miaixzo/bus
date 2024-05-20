@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.toolkit;
 
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * 一些{@link Predicate}相关封装
@@ -111,6 +112,18 @@ public class PredicateKit {
     @SafeVarargs
     public static <T> Predicate<T> or(final Predicate<T>... components) {
         return StreamKit.of(components).reduce(Predicate::or).orElseGet(() -> o -> false);
+    }
+
+    /**
+     * 用于组合多个方法匹配器的方法匹配器，即所有条件都为false时，才返回true，也可理解为，任一条件为true时，返回false
+     *
+     * @param <T>        判断条件的对象类型
+     * @param components 多个条件
+     * @return 复合条件
+     */
+    @SafeVarargs
+    public static <T> Predicate<T> none(final Predicate<T>... components) {
+        return t -> Stream.of(components).noneMatch(matcher -> matcher.test(t));
     }
 
 }

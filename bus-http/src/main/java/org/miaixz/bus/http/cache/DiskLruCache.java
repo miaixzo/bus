@@ -72,7 +72,7 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     final File directory;
     final int valueCount;
-    final LinkedHashMap<String, Entry> lruEntries = new LinkedHashMap<>(0, 0.75f, true);
+    final LinkedHashMap<String, Entry> lruEntries = new LinkedHashMap<>(0, Normal.DEFAULT_LOAD_FACTOR, true);
     private final File journalFile;
     private final File journalFileTmp;
     private final File journalFileBackup;
@@ -118,7 +118,7 @@ public class DiskLruCache implements Closeable, Flushable {
     /**
      * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.
      *
-     * @param diskFile 文件系统
+     * @param diskFile   文件系统
      * @param directory  一个可写目录
      * @param appVersion 版本信息
      * @param valueCount 每个缓存条目的值数目.
@@ -487,7 +487,7 @@ public class DiskLruCache implements Closeable, Flushable {
         entry.currentEditor = null;
         if (entry.readable | success) {
             entry.readable = true;
-            journalWriter.writeUtf8(CLEAN).writeByte(' ');
+            journalWriter.writeUtf8(CLEAN).writeByte(Symbol.C_SPACE);
             journalWriter.writeUtf8(entry.key);
             entry.writeLengths(journalWriter);
             journalWriter.writeByte('\n');
@@ -496,7 +496,7 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         } else {
             lruEntries.remove(entry.key);
-            journalWriter.writeUtf8(REMOVE).writeByte(' ');
+            journalWriter.writeUtf8(REMOVE).writeByte(Symbol.C_SPACE);
             journalWriter.writeUtf8(entry.key);
             journalWriter.writeByte('\n');
         }
@@ -547,7 +547,7 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         redundantOpCount++;
-        journalWriter.writeUtf8(REMOVE).writeByte(' ').writeUtf8(entry.key).writeByte('\n');
+        journalWriter.writeUtf8(REMOVE).writeByte(Symbol.C_SPACE).writeUtf8(entry.key).writeByte('\n');
         lruEntries.remove(entry.key);
 
         if (journalRebuildRequired()) {
@@ -711,56 +711,6 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * 快照信息
-     */
-    public final class Snapshot implements Closeable {
-
-        private final String key;
-        private final long sequenceNumber;
-        private final Source[] sources;
-        private final long[] lengths;
-
-        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
-            this.key = key;
-            this.sequenceNumber = sequenceNumber;
-            this.sources = sources;
-            this.lengths = lengths;
-        }
-
-        public String key() {
-            return key;
-        }
-
-        /**
-         * Returns an editor for this snapshot's entry, or null if either the entry has changed since
-         * this snapshot was created or if another edit is in progress.
-         */
-        public Editor edit() throws IOException {
-            return DiskLruCache.this.edit(key, sequenceNumber);
-        }
-
-        /**
-         * Returns the unbuffered stream with the value for {@code index}.
-         */
-        public Source getSource(int index) {
-            return sources[index];
-        }
-
-        /**
-         * Returns the byte length of the value for {@code index}.
-         */
-        public long getLength(int index) {
-            return lengths[index];
-        }
-
-        public void close() {
-            for (Source in : sources) {
-                IoKit.close(in);
-            }
-        }
-    }
-
-    /**
      * Access to read and write files on a hierarchical data store. Most callers should use the {@link
      * #SYSTEM} implementation, which uses the host machine's local file system. Alternate
      * implementations may be used to inject faults (for testing) or to transform stored data (to add
@@ -897,6 +847,56 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
+     * 快照信息
+     */
+    public final class Snapshot implements Closeable {
+
+        private final String key;
+        private final long sequenceNumber;
+        private final Source[] sources;
+        private final long[] lengths;
+
+        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
+            this.key = key;
+            this.sequenceNumber = sequenceNumber;
+            this.sources = sources;
+            this.lengths = lengths;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        /**
+         * Returns an editor for this snapshot's entry, or null if either the entry has changed since
+         * this snapshot was created or if another edit is in progress.
+         */
+        public Editor edit() throws IOException {
+            return DiskLruCache.this.edit(key, sequenceNumber);
+        }
+
+        /**
+         * Returns the unbuffered stream with the value for {@code index}.
+         */
+        public Source getSource(int index) {
+            return sources[index];
+        }
+
+        /**
+         * Returns the byte length of the value for {@code index}.
+         */
+        public long getLength(int index) {
+            return lengths[index];
+        }
+
+        public void close() {
+            for (Source in : sources) {
+                IoKit.close(in);
+            }
+        }
+    }
+
+    /**
      * Edits the values for an entry.
      */
     public final class Editor {
@@ -1028,32 +1028,6 @@ public class DiskLruCache implements Closeable, Flushable {
         }
     }
 
-    private final Runnable cleanupRunnable = new Runnable() {
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
-                    return;
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
-            }
-        }
-    };
-
     private class Entry {
 
         final String key;
@@ -1159,4 +1133,32 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
+
+    private final Runnable cleanupRunnable = new Runnable() {
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized | closed) {
+                    return;
+                }
+
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
+        }
+    };
+
+
 }

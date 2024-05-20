@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 /**
  * 数据库表
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

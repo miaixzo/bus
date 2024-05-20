@@ -29,7 +29,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xml.*;
+import org.miaixz.bus.core.xml.DocumentBuilder;
+import org.miaixz.bus.core.xml.XmlMapper;
+import org.miaixz.bus.core.xml.XmlSaxReader;
+import org.miaixz.bus.core.xml.XmlWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,6 +44,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.beans.XMLEncoder;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * XML工具类
@@ -50,7 +54,16 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XmlKit extends XmlConsts {
+public class XmlKit {
+
+    /**
+     * 在XML中无效的字符 正则
+     */
+    public static final Pattern INVALID_PATTERN = Pattern.compile("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]");
+    /**
+     * 在XML中注释的内容 正则
+     */
+    public static final Pattern COMMENT_PATTERN = Pattern.compile("(?s)<!--.+?-->");
 
     /**
      * 读取解析XML文件
@@ -254,7 +267,7 @@ public class XmlKit extends XmlConsts {
      */
     public static String toString(final Node doc, final java.nio.charset.Charset charset, final boolean isPretty, final boolean omitXmlDeclaration) {
         final StringWriter writer = StringKit.getWriter();
-        write(doc, writer, charset, isPretty ? INDENT_DEFAULT : 0, omitXmlDeclaration);
+        write(doc, writer, charset, isPretty ? Normal._2 : 0, omitXmlDeclaration);
         return writer.toString();
     }
 
@@ -289,7 +302,7 @@ public class XmlKit extends XmlConsts {
     public static void write(final Document doc, final File file, final java.nio.charset.Charset charset) {
         XmlWriter.of(doc)
                 .setCharset(charset)
-                .setIndent(INDENT_DEFAULT)
+                .setIndent(Normal._2)
                 .setOmitXmlDeclaration(false)
                 .write(file);
     }

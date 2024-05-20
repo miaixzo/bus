@@ -62,6 +62,18 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
         super(context, complex, authorizeCache);
     }
 
+    /**
+     * 钉钉请求的签名
+     *
+     * @param secretKey 平台应用的授权密钥
+     * @param timestamp 时间戳
+     * @return Signature
+     */
+    public static String sign(String secretKey, String timestamp) {
+        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
+        return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
+    }
+
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
         return AccToken.builder().accessCode(authCallback.getCode()).build();
@@ -91,18 +103,6 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
                 .source(complex.toString())
                 .token(token)
                 .build();
-    }
-
-    /**
-     * 钉钉请求的签名
-     *
-     * @param secretKey 平台应用的授权密钥
-     * @param timestamp 时间戳
-     * @return Signature
-     */
-    public static String sign(String secretKey, String timestamp) {
-        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
-        return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
     }
 
     /**

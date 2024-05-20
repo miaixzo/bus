@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.center.map.*;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -44,15 +45,6 @@ import java.util.stream.Collectors;
  * @since Java 17+
  */
 public class MapKit extends MapGets {
-
-    /**
-     * 默认初始大小
-     */
-    public static final int DEFAULT_INITIAL_CAPACITY = 16;
-    /**
-     * 默认增长因子，当Map的size达到 容量*增长因子时，开始扩充Map
-     */
-    public static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     /**
      * Map是否为空
@@ -122,7 +114,7 @@ public class MapKit extends MapGets {
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(final int size, final boolean isLinked) {
-        final int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
+        final int initialCapacity = (int) (size / Normal.DEFAULT_LOAD_FACTOR) + 1;
         return isLinked ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
     }
 
@@ -147,7 +139,7 @@ public class MapKit extends MapGets {
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(final boolean isLinked) {
-        return newHashMap(DEFAULT_INITIAL_CAPACITY, isLinked);
+        return newHashMap(Normal._16, isLinked);
     }
 
     /**
@@ -192,26 +184,26 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 新建一个初始容量为{@link MapKit#DEFAULT_INITIAL_CAPACITY} 的{@link SafeConcurrentHashMap}
+     * 新建一个初始容量为{@link Normal#_16} 的{@link SafeConcurrentHashMap}
      *
      * @param <K> key的类型
      * @param <V> value的类型
      * @return {@link SafeConcurrentHashMap}
      */
     public static <K, V> ConcurrentHashMap<K, V> newSafeConcurrentHashMap() {
-        return new SafeConcurrentHashMap<>(DEFAULT_INITIAL_CAPACITY);
+        return new SafeConcurrentHashMap<>(Normal._16);
     }
 
     /**
      * 新建一个{@link SafeConcurrentHashMap}
      *
-     * @param size 初始容量，当传入的容量小于等于0时，容量为{@link MapKit#DEFAULT_INITIAL_CAPACITY}
+     * @param size 初始容量，当传入的容量小于等于0时，容量为{@link Normal#_16}
      * @param <K>  key的类型
      * @param <V>  value的类型
      * @return {@link SafeConcurrentHashMap}
      */
     public static <K, V> ConcurrentHashMap<K, V> newSafeConcurrentHashMap(final int size) {
-        final int initCapacity = size <= 0 ? DEFAULT_INITIAL_CAPACITY : size;
+        final int initCapacity = size <= 0 ? Normal._16 : size;
         return new SafeConcurrentHashMap<>(initCapacity);
     }
 
@@ -225,7 +217,7 @@ public class MapKit extends MapGets {
      */
     public static <K, V> ConcurrentHashMap<K, V> newSafeConcurrentHashMap(final Map<K, V> map) {
         if (isEmpty(map)) {
-            return new ConcurrentHashMap<>(DEFAULT_INITIAL_CAPACITY);
+            return new ConcurrentHashMap<>(Normal._16);
         }
         return new SafeConcurrentHashMap<>(map);
     }

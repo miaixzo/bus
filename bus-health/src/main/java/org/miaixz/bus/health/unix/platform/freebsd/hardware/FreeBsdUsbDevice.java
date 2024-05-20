@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
@@ -184,7 +185,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }

@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -102,7 +103,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
     @Override
     protected Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", accToken.getTokenType() + " " + accToken.getAccessToken());
+        header.put("Authorization", accToken.getTokenType() + Symbol.SPACE + accToken.getAccessToken());
 
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
@@ -150,7 +151,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .queryParam("response_mode", "query")
-                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(MicrosoftScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .build();
     }
 
@@ -168,7 +169,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(MicrosoftScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
@@ -198,7 +199,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
-                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(MicrosoftScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }

@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.gitlab;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -113,7 +114,7 @@ public class GitlabProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes("+", false, this.getDefaultScopes(GitlabScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.PLUS, false, this.getDefaultScopes(GitlabScope.values())))
                 .build();
     }
 

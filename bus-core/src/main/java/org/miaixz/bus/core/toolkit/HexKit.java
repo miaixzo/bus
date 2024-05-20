@@ -53,7 +53,7 @@ public class HexKit extends Hex {
      * @return Hex字符串
      */
     public static String encodeColor(final Color color) {
-        return encodeColor(color, "#");
+        return encodeColor(color, Symbol.SHAPE);
     }
 
     /**
@@ -103,13 +103,13 @@ public class HexKit extends Hex {
      * @return 是否为16进制
      */
     public static boolean isHexNumber(final String value) {
-        if (StringKit.startWith(value, '-')) {
+        if (StringKit.startWith(value, Symbol.C_MINUS)) {
             return false;
         }
         int index = 0;
         if (value.startsWith("0x", index) || value.startsWith("0X", index)) {
             index += 2;
-        } else if (value.startsWith("#", index)) {
+        } else if (value.startsWith(Symbol.SHAPE, index)) {
             index++;
         }
         try {

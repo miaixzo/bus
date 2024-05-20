@@ -42,26 +42,6 @@ package org.miaixz.bus.core.toolkit;
 public class RadixKit {
 
     /**
-     * 34进制字符串，不包含 IO 字符
-     * 对于需要补齐的，自己可以随机填充IO字符
-     * 26个字母：abcdefghijklmnopqrstuvwxyz
-     */
-    public static final String RADIXS_34 = "0123456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-    /**
-     * 打乱后的34进制
-     */
-    public static final String RADIXS_SHUFFLE_34 = "H3UM16TDFPSBZJ90CW28QYRE45AXKNGV7L";
-
-    /**
-     * 59进制字符串,不包含 IOl 字符
-     */
-    public static final String RADIXS_59 = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
-    /**
-     * 打乱后的59进制
-     */
-    public static final String RADIXS_SHUFFLE_59 = "vh9wGkfK8YmqbsoENP3764SeCX0dVzrgy1HRtpnTaLjJW2xQiZAcBMUFDu5";
-
-    /**
      * 把一个整型数值转换成自己定义的进制
      * 长度即进制
      * <ul>

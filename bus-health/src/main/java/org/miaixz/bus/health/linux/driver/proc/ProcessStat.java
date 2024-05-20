@@ -27,6 +27,7 @@ package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -58,7 +59,7 @@ public final class ProcessStat {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
         if (stat.contains(")")) {
             // add 3 to account for pid, process name in prarenthesis, and state
-            PROC_PID_STAT_LENGTH = Parsing.countStringToLongArray(stat, ' ') + 3;
+            PROC_PID_STAT_LENGTH = Parsing.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
         } else {
             // Default assuming recent kernel
             PROC_PID_STAT_LENGTH = 52;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.reflect.creator;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.reflect.method.MethodMatcher;
+import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.LookupKit;
 
@@ -83,7 +83,7 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
 
     @Override
     public T create() {
-        return MethodMatcher.invokeHandle(constructor, params);
+        return MethodInvoker.invokeHandle(constructor, params);
     }
 
 }

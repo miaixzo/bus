@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.common.BitMatrix;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ColorKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;
@@ -99,7 +100,7 @@ public class QrSVG {
             final Color back = new Color(backColor, true);
             result.append("style=\"background-color:").append(ColorKit.toCssRgba(back)).append("\"\n");
         }
-        result.append("viewBox=\"0 0 ").append(qrWidth).append(" ").append(qrHeight).append("\" \n");
+        result.append("viewBox=\"0 0 ").append(qrWidth).append(Symbol.SPACE).append(qrHeight).append("\" \n");
         result.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
         result.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
         result.append("<path d=\"").append(sb).append("\" ");

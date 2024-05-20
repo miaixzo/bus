@@ -108,8 +108,8 @@ public class TomlWriter {
         return (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
                 (c >= '0' && c <= '9') ||
-                c == '-' ||
-                c == '_';
+                c == Symbol.C_MINUS ||
+                c == Symbol.C_UNDERLINE;
     }
 
     static void addEscaped(final char c, final StringBuilder sb) {

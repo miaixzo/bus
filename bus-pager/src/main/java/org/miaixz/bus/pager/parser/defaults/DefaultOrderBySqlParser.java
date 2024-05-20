@@ -27,6 +27,7 @@ package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pager.Builder;
@@ -77,7 +78,7 @@ public class DefaultOrderBySqlParser implements OrderBySqlParser {
             // 处理body-去最外层order by
             List<OrderByElement> orderByElements = extraOrderBy(select);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
-            if (defaultOrderBy.indexOf('?') != -1) {
+            if (defaultOrderBy.indexOf(Symbol.C_QUESTION_MARK) != -1) {
                 throw new PageException("The order by in the original SQL[" + sql + "] contains parameters, so it cannot be modified using the OrderBy plugin!");
             }
             // 新的sql

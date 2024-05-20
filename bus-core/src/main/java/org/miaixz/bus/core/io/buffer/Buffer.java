@@ -1137,7 +1137,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 // surrogate. If not, the UTF-16 is invalid, in which case we emit a replacement character.
                 int low = i + 1 < endIndex ? string.charAt(i + 1) : 0;
                 if (c > 0xdbff || low < 0xdc00 || low > 0xdfff) {
-                    writeByte('?');
+                    writeByte(Symbol.C_QUESTION_MARK);
                     i++;
                     continue;
                 }
@@ -1173,7 +1173,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         } else if (codePoint < 0x10000) {
             if (codePoint >= 0xd800 && codePoint <= 0xdfff) {
                 // Emit a replacement character for a partial surrogate.
-                writeByte('?');
+                writeByte(Symbol.C_QUESTION_MARK);
             } else {
                 // Emit a 16-bit code point with 3 bytes.
                 writeByte(codePoint >> 12 | 0xe0); // 1110xxxx

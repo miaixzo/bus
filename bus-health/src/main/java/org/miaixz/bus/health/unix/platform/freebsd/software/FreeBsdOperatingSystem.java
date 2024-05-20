@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.software;
 import com.sun.jna.ptr.NativeLongByReference;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -84,7 +85,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
         String version = BsdSysctlKit.sysctl("kern.osrelease", Normal.EMPTY);
         String versionInfo = BsdSysctlKit.sysctl("kern.version", Normal.EMPTY);
-        String buildNumber = versionInfo.split(":")[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
+        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
 
         return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
@@ -148,7 +149,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
         Predicate<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
-                .map(proc -> Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
+                .map(proc -> Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE)).filter(hasKeywordArgs)
                 .map(psMap -> new FreeBsdOSProcess(
                         pid < 0 ? Parsing.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this))
                 .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());

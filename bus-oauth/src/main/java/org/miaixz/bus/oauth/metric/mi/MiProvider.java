@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
@@ -147,7 +148,7 @@ public class MiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("skip_confirm", "false")
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(MiScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(MiScope.values())))
                 .build();
     }
 

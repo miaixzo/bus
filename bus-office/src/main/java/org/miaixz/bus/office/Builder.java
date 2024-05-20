@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.office;
 
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
+import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 /**
  * 为office提供辅助功能.

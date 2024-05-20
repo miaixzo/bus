@@ -44,7 +44,7 @@ public class CronCrontab implements Crontab {
      *
      * @param id      ID
      * @param pattern 表达式
-     * @param crontab    作业
+     * @param crontab 作业
      */
     public CronCrontab(final String id, final CronPattern pattern, final Crontab crontab) {
         this.id = id;

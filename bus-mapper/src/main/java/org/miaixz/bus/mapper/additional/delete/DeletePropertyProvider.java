@@ -98,7 +98,7 @@ public class DeletePropertyProvider extends MapperTemplate {
         }
         sql.append("<where>\n");
         sql.append("<if test=\"false==");
-        sql.append("@");
+        sql.append(Symbol.AT);
         sql.append(propertyHelper);
         sql.append("@isNull(value, ");
         sql.append(getConfig().isSafeDelete());

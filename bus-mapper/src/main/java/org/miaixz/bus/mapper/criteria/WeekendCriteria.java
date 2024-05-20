@@ -35,8 +35,8 @@ import java.util.Map;
 /**
  * 条件语句函数
  *
- * @param <A>  泛型
- * @param <B>  泛型
+ * @param <A> 泛型
+ * @param <B> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

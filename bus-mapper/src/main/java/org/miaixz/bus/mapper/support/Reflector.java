@@ -47,10 +47,9 @@ import java.util.regex.Pattern;
  */
 public class Reflector {
 
+    public static final Cache CLASS_CACHE = new SoftCache(new PerpetualCache("MAPPER_CLASS_CACHE"));
     private static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
     private static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
-
-    public static final Cache CLASS_CACHE = new SoftCache(new PerpetualCache("MAPPER_CLASS_CACHE"));
 
     /**
      * 根据msId获取接口类

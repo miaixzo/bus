@@ -26,6 +26,7 @@
 package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.criteria.Sqls.Criteria;
 import org.miaixz.bus.mapper.criteria.Sqls.Criterion;
 import org.miaixz.bus.mapper.support.Reflector;
@@ -33,7 +34,7 @@ import org.miaixz.bus.mapper.support.Reflector;
 /**
  * 条件语句
  *
- * @param <T>  泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -68,7 +69,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
     }
 
     public WeekendSqlCriteria<T> andEqualTo(String property, Object value) {
-        this.criteria.getCriterions().add(new Criterion(property, value, "=", "and"));
+        this.criteria.getCriterions().add(new Criterion(property, value, Symbol.EQUAL, "and"));
         return this;
     }
 
@@ -194,7 +195,7 @@ public class WeekendSqlCriteria<T> implements SqlCriteria {
     }
 
     public WeekendSqlCriteria<T> orEqualTo(String property, Object value) {
-        this.criteria.getCriterions().add(new Criterion(property, value, "=", "or"));
+        this.criteria.getCriterions().add(new Criterion(property, value, Symbol.EQUAL, "or"));
         return this;
     }
 

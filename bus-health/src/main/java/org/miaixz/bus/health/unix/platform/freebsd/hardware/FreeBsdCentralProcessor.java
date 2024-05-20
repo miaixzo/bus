@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -285,16 +286,16 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         for (String checkLine : Executor.runNative("lscpu")) {
             if (checkLine.contains("L1d cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), CentralProcessor.ProcessorCache.Type.DATA));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.DATA));
             } else if (checkLine.contains("L1i cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.INSTRUCTION));
             } else if (checkLine.contains("L2 cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(2, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
             } else if (checkLine.contains("L3 cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(3, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
         }
         return orderedProcCaches(caches);

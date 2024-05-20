@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.annotation.resolve;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.MethodKit;
 
@@ -128,9 +129,9 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      * 预加载需要代理的方法
      */
     private void loadMethods() {
-        methods.put("equals", (method, args) -> proxyEquals(args[0]));
-        methods.put("toString", (method, args) -> proxyToString());
-        methods.put("hashCode", (method, args) -> proxyHashCode());
+        methods.put(Normal.EQUALS, (method, args) -> proxyEquals(args[0]));
+        methods.put(Normal.TOSTRING, (method, args) -> proxyToString());
+        methods.put(Normal.HASHCODE, (method, args) -> proxyHashCode());
         methods.put("annotationType", (method, args) -> proxyAnnotationType());
         methods.put("getMapping", (method, args) -> proxyGetMapping());
         for (final Method attribute : mapping.getAttributes()) {

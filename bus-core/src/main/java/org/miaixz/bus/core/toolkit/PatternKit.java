@@ -31,6 +31,7 @@ import org.miaixz.bus.core.compare.LengthCompare;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Validator;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
@@ -247,8 +248,6 @@ public class PatternKit {
      * result : year: 2021, month: 10, day: 11
      * </pre>
      *
-     * <p>jdk9+之后，因为此方法无效</p>
-     *
      * @param pattern 匹配的正则
      * @param content 被匹配的内容
      * @return 命名捕获组，key为分组名，value为对应值
@@ -293,7 +292,7 @@ public class PatternKit {
         final Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
             for (final Integer group : varNums) {
-                template = template.replace("$" + group, matcher.group(group));
+                template = template.replace(Symbol.DOLLAR + group, matcher.group(group));
             }
             return template;
         }
@@ -343,7 +342,7 @@ public class PatternKit {
         if (matcher.find()) {
             for (final String var : varNums) {
                 final int group = Integer.parseInt(var);
-                template = template.replace("$" + var, matcher.group(group));
+                template = template.replace(Symbol.DOLLAR + var, matcher.group(group));
             }
             contentHolder.set(StringKit.sub(content, matcher.end(), content.length()));
             return template;
@@ -823,8 +822,6 @@ public class PatternKit {
     /**
      * 正则替换指定值
      * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
-     *
-     * <p>
      * 例如：原字符串是：中文1234，我想把1234换成(1234)，则可以：
      *
      * <pre>
@@ -870,7 +867,7 @@ public class PatternKit {
                 String replacement = replacementTemplate;
                 for (final String var : varNums) {
                     final int group = Integer.parseInt(var);
-                    replacement = replacement.replace("$" + var, matcher.group(group));
+                    replacement = replacement.replace(Symbol.DOLLAR + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();

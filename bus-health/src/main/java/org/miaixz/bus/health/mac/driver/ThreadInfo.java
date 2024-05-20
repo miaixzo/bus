@@ -27,6 +27,7 @@ package org.miaixz.bus.health.mac.driver;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -50,7 +51,7 @@ public final class ThreadInfo {
             "\\D+(\\d+).+(\\d+\\.\\d)\\s+(\\w)\\s+(\\d+)\\D+(\\d+:\\d{2}\\.\\d{2})\\s+(\\d+:\\d{2}\\.\\d{2}).+");
 
     public static List<ThreadStats> queryTaskThreads(int pid) {
-        String pidStr = " " + pid + " ";
+        String pidStr = Symbol.SPACE + pid + Symbol.SPACE;
         List<ThreadStats> taskThreads = new ArrayList<>();
         // Only way to get thread info without root permissions
         // Using the M switch gives all threads with no possibility to filter

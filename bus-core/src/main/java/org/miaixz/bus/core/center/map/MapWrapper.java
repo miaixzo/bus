@@ -49,14 +49,6 @@ import java.util.function.Supplier;
  */
 public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
 
-    /**
-     * 默认增长因子
-     */
-    protected static final float DEFAULT_LOAD_FACTOR = 0.75f;
-    /**
-     * 默认初始大小
-     */
-    protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
     private static final long serialVersionUID = -1L;
     /**
      * 原始集合

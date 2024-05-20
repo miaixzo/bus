@@ -28,6 +28,7 @@ package org.miaixz.bus.health;
 import com.sun.jna.Platform;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.BufferedReader;
@@ -68,7 +69,7 @@ public final class Executor {
      * @return A list of Strings representing the result of the command, or empty string if the command failed
      */
     public static List<String> runNative(String cmdToRun) {
-        String[] cmd = cmdToRun.split(" ");
+        String[] cmd = cmdToRun.split(Symbol.SPACE);
         return runNative(cmd);
     }
 

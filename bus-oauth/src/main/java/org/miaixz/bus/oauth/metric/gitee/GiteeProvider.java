@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.gitee;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -109,7 +110,7 @@ public class GiteeProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(GiteeScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(GiteeScope.values())))
                 .build();
     }
 }

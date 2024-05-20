@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -67,7 +68,7 @@ public class OktaProvider extends DefaultProvider {
         header.put("accept", "application/json");
         header.put("content-type", "application/x-www-form-urlencoded");
 
-        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(":").concat(context.getAppSecret())));
+        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
         String response = Httpx.post(tokenUrl, null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
@@ -124,7 +125,7 @@ public class OktaProvider extends DefaultProvider {
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(":").concat(context.getAppSecret())));
+        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
         Httpx.post(revokeUrl(accToken), params, header);
         ErrorCode status = ErrorCode.SUCCESS;
         return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
@@ -143,7 +144,7 @@ public class OktaProvider extends DefaultProvider {
                 .queryParam("prompt", "consent")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(OktaScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(OktaScope.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

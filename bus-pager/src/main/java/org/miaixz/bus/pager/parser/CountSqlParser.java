@@ -152,7 +152,7 @@ public interface CountSqlParser {
     /**
      * 获取智能的countSql
      *
-     * @param sql    sql
+     * @param sql         sql
      * @param countColumn 列名,默认 0
      * @return the string
      */

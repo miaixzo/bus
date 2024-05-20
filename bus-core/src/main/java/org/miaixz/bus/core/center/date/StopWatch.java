@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -414,12 +415,12 @@ public class StopWatch {
                 final String taskTimeStr = nf.format(task.getTime(unit));
                 sb.append(taskTimeStr);
                 if (taskTimeStr.length() < 11) {
-                    sb.append(StringKit.repeat(' ', 11 - taskTimeStr.length()));
+                    sb.append(StringKit.repeat(Symbol.C_SPACE, 11 - taskTimeStr.length()));
                 }
 
                 final String percentStr = pf.format((double) task.getTimeNanos() / getTotalTimeNanos());
                 if (percentStr.length() < 4) {
-                    sb.append(StringKit.repeat(' ', 4 - percentStr.length()));
+                    sb.append(StringKit.repeat(Symbol.C_SPACE, 4 - percentStr.length()));
                 }
                 sb.append(percentStr).append("   ");
                 sb.append(task.getTaskName()).append(FileKit.getLineSeparator());
@@ -435,7 +436,7 @@ public class StopWatch {
             for (final TaskInfo task : this.taskList) {
                 sb.append("; [").append(task.getTaskName()).append("] took ").append(task.getTimeNanos()).append(" ns");
                 final long percent = Math.round(100.0 * task.getTimeNanos() / getTotalTimeNanos());
-                sb.append(" = ").append(percent).append("%");
+                sb.append(" = ").append(percent).append(Symbol.PERCENT);
             }
         } else {
             sb.append("; no task info kept");

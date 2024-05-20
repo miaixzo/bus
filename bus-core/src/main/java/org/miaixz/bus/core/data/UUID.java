@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.codec.No128;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.RandomKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -179,7 +180,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @throws IllegalArgumentException 如果 name 与 {@link #toString} 中描述的字符串表示形式不符抛出此异常
      */
     public static UUID fromString(final String name) {
-        final String[] components = name.split("-");
+        final String[] components = name.split(Symbol.MINUS);
         if (components.length != 5) {
             throw new IllegalArgumentException("Invalid UUID string: " + name);
         }
@@ -388,22 +389,22 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         // time_low
         builder.append(digits(mostSigBits >> 32, 8));
         if (!isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_MINUS);
         }
         // time_mid
         builder.append(digits(mostSigBits >> 16, 4));
         if (!isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_MINUS);
         }
         // time_high_and_version
         builder.append(digits(mostSigBits, 4));
         if (!isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_MINUS);
         }
         // variant_and_sequence
         builder.append(digits(leastSigBits >> 48, 4));
         if (!isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_MINUS);
         }
         // node
         builder.append(digits(leastSigBits, 12));

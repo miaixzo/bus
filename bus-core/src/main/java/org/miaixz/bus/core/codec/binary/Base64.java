@@ -357,11 +357,11 @@ public class Base64 {
         boolean hasPadding = false;
         for (final byte base64Byte : base64Bytes) {
             if (hasPadding) {
-                if ('=' != base64Byte) {
+                if (Symbol.C_EQUAL != base64Byte) {
                     // 前一个字符是'='，则后边的字符都必须是'='，即'='只能都位于结尾
                     return false;
                 }
-            } else if ('=' == base64Byte) {
+            } else if (Symbol.C_EQUAL == base64Byte) {
                 // 发现'=' 标记之
                 hasPadding = true;
             } else if (!(Base64Decoder.INSTANCE.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
@@ -373,7 +373,7 @@ public class Base64 {
 
     private static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
-            case ' ':
+            case Symbol.C_SPACE:
             case '\n':
             case '\r':
             case '\t':

@@ -49,7 +49,6 @@ public class PunyCode {
     private static final int INITIAL_BIAS = 72;
     private static final int DAMP = 700;
     private static final int SKEW = 38;
-    private static final char DELIMITER = '-';
     private static final String PUNY_CODE_PREFIX = "xn--";
 
     /**
@@ -114,7 +113,7 @@ public class PunyCode {
                 // 无需要编码的字符
                 return output.toString();
             }
-            output.append(DELIMITER);
+            output.append(Symbol.C_MINUS);
         }
         int h = b;
         while (h < length) {
@@ -209,7 +208,7 @@ public class PunyCode {
         int bias = INITIAL_BIAS;
         final int length = input.length();
         final StringBuilder output = new StringBuilder(length / 4 + 1);
-        int d = input.lastIndexOf(DELIMITER);
+        int d = input.lastIndexOf(Symbol.C_MINUS);
         if (d > 0) {
             for (int j = 0; j < d; j++) {
                 final char c = input.charAt(j);

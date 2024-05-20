@@ -35,6 +35,7 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 
@@ -300,7 +301,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
                     serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + ":" + productId),
+        return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(registryEntryId, Normal.EMPTY), vendorId, productId,
                 serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId), usbDevices);
     }

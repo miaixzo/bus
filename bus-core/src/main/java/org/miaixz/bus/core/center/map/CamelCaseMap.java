@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
@@ -49,7 +50,7 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      * 构造
      */
     public CamelCaseMap() {
-        this(DEFAULT_INITIAL_CAPACITY);
+        this(Normal._16);
     }
 
     /**
@@ -58,7 +59,7 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      * @param initialCapacity 初始大小
      */
     public CamelCaseMap(final int initialCapacity) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+        this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
@@ -67,7 +68,7 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      * @param m Map
      */
     public CamelCaseMap(final Map<? extends K, ? extends V> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
+        this(Normal.DEFAULT_LOAD_FACTOR, m);
     }
 
     /**

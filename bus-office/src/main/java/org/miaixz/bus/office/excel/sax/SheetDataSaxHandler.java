@@ -30,6 +30,7 @@ import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
@@ -249,7 +250,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
         final String tempCurCoordinate = AttributeName.r.getValue(attributes);
         // 前一列为null，则将其设置为"@",A为第一列，ascii码为65，前一列即为@，ascii码64
         if (preCoordinate == null) {
-            preCoordinate = String.valueOf(ExcelSax.CELL_FILL_CHAR);
+            preCoordinate = String.valueOf(Symbol.C_AT);
         } else {
             // 存在，则前一列要设置为上一列的坐标
             preCoordinate = curCoordinate;

@@ -373,7 +373,7 @@ public class ListKit {
      * @param list    List列表
      * @param index   位置
      * @param element 新元素
-     * @return 原List
+     * @return the list
      */
     public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element) {
         return setOrPadding(list, index, element, null);
@@ -387,16 +387,33 @@ public class ListKit {
      * @param index          位置，不能大于(list.size()+1) * 2
      * @param element        新元素
      * @param paddingElement 填充的值
-     * @return 原List
+     * @return the list
      */
     public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement) {
+        return setOrPadding(list, index, element, paddingElement, (list.size() + 1) * 10);
+    }
+
+    /**
+     * 在指定位置设置元素。当index小于List的长度时，替换指定位置的值，否则追加{@code paddingElement}直到到达index后，设置值
+     *
+     * @param <T>            元素类型
+     * @param list           List列表
+     * @param index          位置
+     * @param element        新元素
+     * @param paddingElement 填充的值
+     * @param indexLimit     最大索引限制
+     * @return the list
+     */
+    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement, final int indexLimit) {
         Assert.notNull(list, "List must be not null !");
         final int size = list.size();
         if (index < size) {
             list.set(index, element);
         } else {
-            // 增加安全检查，最多增加10倍
-            Validator.checkIndexLimit(index, size);
+            if (indexLimit > 0) {
+                // 增加安全检查
+                Validator.checkIndexLimit(index, indexLimit);
+            }
             for (int i = size; i < index; i++) {
                 list.add(paddingElement);
             }

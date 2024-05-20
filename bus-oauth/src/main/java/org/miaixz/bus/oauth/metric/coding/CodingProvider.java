@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.coding;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -112,7 +113,7 @@ public class CodingProvider extends DefaultProvider {
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(CodingScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(CodingScope.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

@@ -268,11 +268,11 @@ public class Builder {
     }
 
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
-        String host = url.host().contains(":")
+        String host = url.host().contains(Symbol.COLON)
                 ? "[" + url.host() + "]"
                 : url.host();
         return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
-                ? host + ":" + url.port()
+                ? host + Symbol.COLON + url.port()
                 : host;
     }
 
@@ -371,7 +371,7 @@ public class Builder {
      */
     public static String canonicalizeHost(String host) {
         // If the input contains a :, it’s an IPv6 address.
-        if (host.contains(":")) {
+        if (host.contains(Symbol.COLON)) {
             InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());

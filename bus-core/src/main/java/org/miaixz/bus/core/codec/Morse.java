@@ -90,20 +90,20 @@ public class Morse {
         registerMorse(',', "110011");
         registerMorse('?', "001100");
         registerMorse('\'', "011110");
-        registerMorse('!', "101011");
+        registerMorse(Symbol.C_NOT, "101011");
         registerMorse('/', "10010");
         registerMorse('(', "10110");
         registerMorse(')', "101101");
-        registerMorse('&', "01000");
-        registerMorse(':', "111000");
+        registerMorse(Symbol.C_AND, "01000");
+        registerMorse(Symbol.C_COLON, "111000");
         registerMorse(';', "101010");
-        registerMorse('=', "10001");
-        registerMorse('+', "01010");
-        registerMorse('-', "100001");
-        registerMorse('_', "001101");
+        registerMorse(Symbol.C_EQUAL, "10001");
+        registerMorse(Symbol.C_PLUS, "01010");
+        registerMorse(Symbol.C_MINUS, "100001");
+        registerMorse(Symbol.C_UNDERLINE, "001101");
         registerMorse('"', "010010");
-        registerMorse('$', "0001001");
-        registerMorse('@', "011010");
+        registerMorse(Symbol.C_DOLLAR, "0001001");
+        registerMorse(Symbol.C_AT, "011010");
     }
 
     private final char dit; // short mark or dot

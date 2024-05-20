@@ -181,7 +181,7 @@ public class Headers {
      * Returns true if a Vary header contains an asterisk. Such responses cannot be cached.
      */
     public static boolean hasVaryAll(Headers responseHeaders) {
-        return varyFields(responseHeaders).contains("*");
+        return varyFields(responseHeaders).contains(Symbol.STAR);
     }
 
     private static Set<String> varyFields(Response response) {
@@ -292,25 +292,25 @@ public class Headers {
                 return;
             }
 
-            int eqCount = skipAll(header, (byte) '=');
+            int eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
             boolean commaSuffixed = skipWhitespaceAndCommas(header);
 
             // It's a token68 because there isn't a value after it.
             if (!commaPrefixed && (commaSuffixed || header.exhausted())) {
                 result.add(new Challenge(schemeName, Collections.singletonMap(
-                        null, peek + repeat('=', eqCount))));
+                        null, peek + repeat(Symbol.C_EQUAL, eqCount))));
                 peek = null;
                 continue;
             }
 
             // It's a series of parameter names and values.
             Map<String, String> parameters = new LinkedHashMap<>();
-            eqCount += skipAll(header, (byte) '=');
+            eqCount += skipAll(header, (byte) Symbol.C_EQUAL);
             while (true) {
                 if (peek == null) {
                     peek = readToken(header);
                     if (skipWhitespaceAndCommas(header)) break; // We peeked a scheme name followed by ','.
-                    eqCount = skipAll(header, (byte) '=');
+                    eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
                 }
                 if (eqCount == 0) break; // We peeked a scheme name.
                 if (eqCount > 1) return; // Unexpected '=' characters.
@@ -339,7 +339,7 @@ public class Headers {
             if (b == ',') {
                 buffer.readByte(); // Consume ','.
                 commaFound = true;
-            } else if (b == ' ' || b == '\t') {
+            } else if (b == Symbol.C_SPACE || b == '\t') {
                 buffer.readByte(); // Consume space or tab.
             } else {
                 break;
@@ -459,7 +459,7 @@ public class Headers {
     public static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
             char c = input.charAt(pos);
-            if (c != ' ' && c != '\t') {
+            if (c != Symbol.C_SPACE && c != '\t') {
                 break;
             }
         }

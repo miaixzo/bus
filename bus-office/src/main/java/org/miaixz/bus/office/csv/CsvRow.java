@@ -27,6 +27,7 @@ package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.BeanKit;
 
 import java.util.*;
@@ -269,7 +270,7 @@ public final class CsvRow implements List<String> {
 
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());
-                sb.append('=');
+                sb.append(Symbol.C_EQUAL);
                 if (entry.getValue() != null) {
                     sb.append(entry.getValue());
                 }

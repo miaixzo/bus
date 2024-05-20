@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -114,9 +115,9 @@ public final class NetStat {
             } catch (UnknownHostException e) {
                 try {
                     // Try again with trailing ::
-                    if (ip.endsWith(":") && ip.contains("::")) {
+                    if (ip.endsWith(Symbol.COLON) && ip.contains(Symbol.COLON + Symbol.COLON)) {
                         ip = ip + "0";
-                    } else if (ip.endsWith(":") || ip.contains("::")) {
+                    } else if (ip.endsWith(Symbol.COLON) || ip.contains(Symbol.COLON + Symbol.COLON)) {
                         ip = ip + ":0";
                     } else {
                         ip = ip + "::0";
@@ -149,7 +150,7 @@ public final class NetStat {
         long outResets = 0;
         List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
-            String[] split = s.trim().split(" ", 2);
+            String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
                 switch (split[1]) {
                     case "connections established":
@@ -224,7 +225,7 @@ public final class NetStat {
         long datagramsReceivedErrors = 0;
         List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
-            String[] split = s.trim().split(" ", 2);
+            String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
                 switch (split[1]) {
                     case "packets sent":

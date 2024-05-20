@@ -1,9 +1,6 @@
 package org.miaixz.bus.notify.metric.huawei;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -85,7 +82,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
     private String buildWsseHeader() {
         try {
             String time = DateKit.format(new Date(), Fields.UTC);
-            String nonce = UUID.randomUUID().toString().replace("-", "");
+            String nonce = UUID.randomUUID().toString().replace(Symbol.MINUS, "");
             String text = nonce + time + context.getAppSecret();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(text.getBytes(Charset.UTF_8));

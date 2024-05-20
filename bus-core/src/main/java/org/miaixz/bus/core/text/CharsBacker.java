@@ -3024,7 +3024,7 @@ public class CharsBacker extends StringValidator {
      * @return 替换后的字符串
      */
     public static String hide(final CharSequence text, final int startInclude, final int endExclude) {
-        return replaceByCodePoint(text, startInclude, endExclude, '*');
+        return replaceByCodePoint(text, startInclude, endExclude, Symbol.C_STAR);
     }
 
     /**

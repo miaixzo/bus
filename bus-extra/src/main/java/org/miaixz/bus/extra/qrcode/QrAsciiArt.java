@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.common.BitMatrix;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.AnsiElement;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.toolkit.ColorKit;
@@ -68,7 +69,7 @@ public class QrAsciiArt {
                 final boolean tp = matrix.get(i, j);
                 final boolean bt = i + 1 >= height || matrix.get(i + 1, j);
                 if (tp && bt) {
-                    rowBuilder.append(' ');//'\u0020'
+                    rowBuilder.append(Symbol.C_SPACE);//'\u0020'
                 } else if (tp) {
                     rowBuilder.append('▄');//'\u2584'
                 } else if (bt) {

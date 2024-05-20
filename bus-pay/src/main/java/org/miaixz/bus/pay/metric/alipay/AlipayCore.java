@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayConstants;
 import com.alipay.api.internal.util.AlipaySignature;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.crypto.Builder;
 
 import java.util.*;
@@ -94,9 +95,9 @@ public class AlipayCore {
         for (String key : keys) {
             String value = params.get(key);
             // 拼接时，不包括最后一个&字符
-            content.append(key).append("=").append(value).append("&");
+            content.append(key).append(Symbol.EQUAL).append(value).append(Symbol.AND);
         }
-        if (content.lastIndexOf("&") == content.length() - 1) {
+        if (content.lastIndexOf(Symbol.AND) == content.length() - 1) {
             content.deleteCharAt(content.length() - 1);
         }
         return content.toString();

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.StringKit;

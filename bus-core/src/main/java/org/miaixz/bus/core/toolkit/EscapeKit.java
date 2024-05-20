@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.escape.Html4Escape;
 import org.miaixz.bus.core.text.escape.Html4Unescape;
 import org.miaixz.bus.core.text.escape.XmlEscape;
@@ -147,7 +148,7 @@ public class EscapeKit {
             if (!filter.test(c)) {
                 tmp.append(c);
             } else if (c < 256) {
-                tmp.append("%");
+                tmp.append(Symbol.PERCENT);
                 if (c < 16) {
                     tmp.append("0");
                 }
@@ -179,7 +180,7 @@ public class EscapeKit {
         int pos;
         char ch;
         while (lastPos < content.length()) {
-            pos = content.indexOf("%", lastPos);
+            pos = content.indexOf(Symbol.PERCENT, lastPos);
             if (pos == lastPos) {
                 if (content.charAt(pos + 1) == 'u') {
                     ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);

@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -123,12 +124,12 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                             Normal.UNKNOWN));
                 }
                 bankLabel = line.trim();
-                int colon = bankLabel.lastIndexOf(':');
+                int colon = bankLabel.lastIndexOf(Symbol.C_COLON);
                 if (colon > 0) {
                     bankLabel = bankLabel.substring(0, colon - 1);
                 }
             } else if (bank > 0) {
-                String[] split = line.trim().split(":");
+                String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
                         case "Size":

@@ -63,10 +63,6 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 注释符号（当有此符号在行首，表示此行为注释）
-     */
-    private static final String COMMENT_FLAG_PRE = "#";
-    /**
      * 分组行识别的环绕标记
      */
     private static final char[] GROUP_SURROUND = {'[', ']'};
@@ -229,10 +225,10 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
                 }
                 line = line.trim();
                 // 跳过注释行和空行
-                if (StringKit.isBlank(line) || line.startsWith(COMMENT_FLAG_PRE)) {
+                if (StringKit.isBlank(line) || line.startsWith(Symbol.SHAPE)) {
                     // 空行和注释忽略
                     continue;
-                } else if (line.startsWith(Symbol.BACKSLASH + COMMENT_FLAG_PRE)) {
+                } else if (line.startsWith(Symbol.BACKSLASH + Symbol.SHAPE)) {
                     // 对于值中出现开头为#的字符串，需要转义处理，在此做反转义
                     line = line.substring(1);
                 }

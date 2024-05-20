@@ -29,6 +29,7 @@ import org.miaixz.bus.core.center.queue.DiscardingQueue;
 import org.miaixz.bus.core.center.queue.Linked;
 import org.miaixz.bus.core.center.queue.LinkedDeque;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.RuntimeKit;
 
 import java.io.InvalidObjectException;
@@ -181,7 +182,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         // The data store and its maximum capacity
         concurrencyLevel = builder.concurrencyLevel;
         capacity = new AtomicLong(Math.min(builder.capacity, MAXIMUM_CAPACITY));
-        data = new SafeConcurrentHashMap<>(builder.initialCapacity, 0.75f, concurrencyLevel);
+        data = new SafeConcurrentHashMap<>(builder.initialCapacity, Normal.DEFAULT_LOAD_FACTOR, concurrencyLevel);
 
         // The eviction support
         weigher = builder.weigher;
@@ -1178,8 +1179,6 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * }</pre>
      */
     public static final class Builder<K, V> {
-        static final int DEFAULT_CONCURRENCY_LEVEL = 16;
-        static final int DEFAULT_INITIAL_CAPACITY = 16;
 
         BiConsumer<K, V> listener;
         EntryWeigher<? super K, ? super V> weigher;
@@ -1194,8 +1193,8 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         public Builder() {
             capacity = -1;
             weigher = Weighers.entrySingleton();
-            initialCapacity = DEFAULT_INITIAL_CAPACITY;
-            concurrencyLevel = DEFAULT_CONCURRENCY_LEVEL;
+            initialCapacity = Normal._16;
+            concurrencyLevel = Normal._16;
             listener = (BiConsumer<K, V>) DiscardingListener.INSTANCE;
         }
 

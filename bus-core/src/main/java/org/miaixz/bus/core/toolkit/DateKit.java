@@ -1594,12 +1594,12 @@ public class DateKit extends Calendars {
             sb.append("0");
         }
         sb.append(hour);
-        sb.append(":");
+        sb.append(Symbol.COLON);
         if (minute < 10) {
             sb.append("0");
         }
         sb.append(minute);
-        sb.append(":");
+        sb.append(Symbol.COLON);
         if (second < 10) {
             sb.append("0");
         }
@@ -1988,15 +1988,15 @@ public class DateKit extends Calendars {
         final StringBuilder builder = StringKit.builder();
 
         // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
-        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", "-");
+        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.MINUS);
         datePart = StringKit.removeSuffix(datePart, "日");
         builder.append(datePart);
 
         // 时间部分
         if (size == 2) {
-            builder.append(' ');
-            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", ":");
-            timePart = StringKit.removeSuffix(timePart, ":");
+            builder.append(Symbol.C_SPACE);
+            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
+            timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
             //将ISO8601中的逗号替换为.
             timePart = timePart.replace(',', '.');
             builder.append(timePart);

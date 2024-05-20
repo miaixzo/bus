@@ -33,6 +33,7 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -93,7 +94,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         String stat = Builder.getStringFromFile(ProcPath.DISKSTATS);
         int statLength = 11;
         if (!stat.isEmpty()) {
-            statLength = Parsing.countStringToLongArray(stat, ' ');
+            statLength = Parsing.countStringToLongArray(stat, Symbol.C_SPACE);
         }
         UDEV_STAT_LENGTH = statLength;
     }
@@ -237,7 +238,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
+        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes
@@ -254,7 +255,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static String getMountPointOfDmDevice(String vgName, String lvName) {
-        return DevPath.MAPPER + vgName + '-' + lvName;
+        return DevPath.MAPPER + vgName + Symbol.C_MINUS + lvName;
     }
 
     /**
@@ -270,7 +271,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         File holdersDir = new File(sysPath + "/holders");
         File[] holders = holdersDir.listFiles();
         if (holders != null) {
-            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
+            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(Symbol.SPACE));
         }
         return Normal.EMPTY;
     }

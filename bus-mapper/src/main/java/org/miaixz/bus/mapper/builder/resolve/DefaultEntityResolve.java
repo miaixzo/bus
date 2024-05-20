@@ -31,6 +31,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import org.miaixz.bus.core.annotation.Order;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -64,7 +65,7 @@ public class DefaultEntityResolve implements EntityResolve {
     /**
      * 根据指定的样式进行转换
      *
-     * @param text  字符串
+     * @param text   字符串
      * @param naming 样式
      * @return the string
      */
@@ -98,12 +99,12 @@ public class DefaultEntityResolve implements EntityResolve {
         for (int i = 0; i < size; i++) {
             c = chars[i];
             if (isUppercaseAlpha(c)) {
-                sb.append('_').append(toLowerAscii(c));
+                sb.append(Symbol.C_UNDERLINE).append(toLowerAscii(c));
             } else {
                 sb.append(c);
             }
         }
-        return sb.charAt(0) == '_' ? sb.substring(1) : sb.toString();
+        return sb.charAt(0) == Symbol.C_UNDERLINE ? sb.substring(1) : sb.toString();
     }
 
     public static boolean isUppercaseAlpha(char c) {
@@ -190,8 +191,8 @@ public class DefaultEntityResolve implements EntityResolve {
      *
      * @param entityTable 对象表
      * @param field       字段
-     * @param property      配置
-     * @param naming       样式
+     * @param property    配置
+     * @param naming      样式
      */
     protected void processField(EntityTable entityTable, EntityField field, Property property, EnumMap.Naming naming) {
         // 排除字段

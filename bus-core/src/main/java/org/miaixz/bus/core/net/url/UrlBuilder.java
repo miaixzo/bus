@@ -344,7 +344,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return authority部分
      */
     public String getAuthority() {
-        return (port < 0) ? host : host + ":" + port;
+        return (port < 0) ? host : host + Symbol.COLON + port;
     }
 
     /**
@@ -487,7 +487,7 @@ public final class UrlBuilder implements Builder<String> {
         if (StringKit.isEmpty(fragment)) {
             this.fragment = null;
         }
-        this.fragment = StringKit.removePrefix(fragment, "#");
+        this.fragment = StringKit.removePrefix(fragment, Symbol.SHAPE);
         return this;
     }
 
@@ -497,7 +497,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return 标识符，例如#后边的部分
      */
     public String getFragmentEncoded() {
-        final char[] safeChars = this.needEncodePercent ? null : new char[]{'%'};
+        final char[] safeChars = this.needEncodePercent ? null : new char[]{Symbol.C_PERCENT};
         return RFC3986.FRAGMENT.encode(this.fragment, this.charset, safeChars);
     }
 
@@ -555,12 +555,12 @@ public final class UrlBuilder implements Builder<String> {
         // query
         final String query = getQuerys();
         if (StringKit.isNotBlank(query)) {
-            fileBuilder.append('?').append(query);
+            fileBuilder.append(Symbol.C_QUESTION_MARK).append(query);
         }
 
         // fragment
         if (StringKit.isNotBlank(this.fragment)) {
-            fileBuilder.append('#').append(getFragmentEncoded());
+            fileBuilder.append(Symbol.C_SHAPE).append(getFragmentEncoded());
         }
 
         try {

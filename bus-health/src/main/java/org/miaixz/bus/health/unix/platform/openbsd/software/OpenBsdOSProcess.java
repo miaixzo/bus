@@ -32,6 +32,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -138,7 +139,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        String cl = String.join(" ", getArguments());
+        String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
     }
 
@@ -208,7 +209,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
                 long argAddr = Pointer.nativeValue(m.getPointer(offset));
                 while (argAddr > baseAddr && argAddr < maxAddr) {
                     String envStr = m.getString(argAddr - baseAddr);
-                    int idx = envStr.indexOf('=');
+                    int idx = envStr.indexOf(Symbol.C_EQUAL);
                     if (idx > 0) {
                         env.put(envStr.substring(0, idx), envStr.substring(idx + 1));
                     }
@@ -315,7 +316,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         // Sample output:
         // pid 8 mask: 0, 1
         // cpuset: getaffinity: No such process
-        String[] split = cpuset.split(":");
+        String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
             String[] bits = split[1].split(",");
             for (String bit : bits) {
@@ -364,7 +365,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         Predicate<Map<PsThreadColumns, String>> hasColumnsArgs = threadMap -> threadMap
                 .containsKey(PsThreadColumns.ARGS);
         return Executor.runNative(psCommand).stream().skip(1)
-                .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), ' '))
+                .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))
                 .filter(hasColumnsArgs).map(threadMap -> new OpenBsdOSThread(getProcessID(), threadMap))
                 .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
@@ -376,7 +377,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, procList.get(1).trim(), ' ');
+            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 updateThreadCount();

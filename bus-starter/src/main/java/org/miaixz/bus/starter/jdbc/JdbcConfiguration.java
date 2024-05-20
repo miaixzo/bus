@@ -27,9 +27,9 @@ package org.miaixz.bus.starter.jdbc;
 
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.crypto.Builder;

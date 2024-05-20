@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.plugin.BoundSqlHandler;
@@ -147,10 +148,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * @param rowBounds 分页对象
      * @param count     总数
-     *
-     * int[] rowBounds
-     * 0 : offset
-     * 1 : limit
+     *                  <p>
+     *                  int[] rowBounds
+     *                  0 : offset
+     *                  1 : limit
      */
     public Page(int[] rowBounds, boolean count) {
         super(0);
@@ -590,7 +591,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public void setCountColumn(String countColumn) {
-        if (!"0".equals(countColumn) && !"*".equals(countColumn) && Builder.check(countColumn)) {
+        if (!"0".equals(countColumn) && !Symbol.STAR.equals(countColumn) && Builder.check(countColumn)) {
             throw new PageException("count(" + countColumn + ") has a risk of SQL injection");
         }
         this.countColumn = countColumn;

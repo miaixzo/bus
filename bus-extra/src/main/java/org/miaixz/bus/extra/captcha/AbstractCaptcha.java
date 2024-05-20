@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.captcha;
 
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
@@ -111,7 +112,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      * @param interfereCount 验证码干扰元素个数
      */
     public AbstractCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount) {
-        this(width, height, generator, interfereCount, 0.75f);
+        this(width, height, generator, interfereCount, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**

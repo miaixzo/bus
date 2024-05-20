@@ -29,6 +29,7 @@ import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.codec.PercentCodec;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.nio.charset.Charset;
@@ -53,7 +54,7 @@ public class UrlQuery {
      * 这个类似于JDK提供的{@link java.net.URLEncoder}
      */
     public static final PercentCodec ALL = PercentCodec.Builder.of(RFC3986.UNRESERVED)
-            .removeSafe('~').addSafe('*').setEncodeSpaceAsPlus(true).build();
+            .removeSafe(Symbol.C_TILDE).addSafe(Symbol.C_STAR).setEncodeSpaceAsPlus(true).build();
 
     private final TableMap<CharSequence, CharSequence> query;
     /**
@@ -72,7 +73,7 @@ public class UrlQuery {
             query = new TableMap<>(queryMap.size());
             addAll(queryMap);
         } else {
-            query = new TableMap<>(MapKit.DEFAULT_INITIAL_CAPACITY);
+            query = new TableMap<>(Normal._16);
         }
         this.encodeMode = ObjectKit.defaultIfNull(encodeMode, EncodeMode.NORMAL);
     }
@@ -234,7 +235,7 @@ public class UrlQuery {
 
         if (autoRemovePath) {
             // 去掉Path部分
-            final int pathEndPos = queryStr.indexOf('?');
+            final int pathEndPos = queryStr.indexOf(Symbol.C_QUESTION_MARK);
             if (pathEndPos > -1) {
                 queryStr = StringKit.subSuf(queryStr, pathEndPos + 1);
                 if (StringKit.isBlank(queryStr)) {
@@ -343,7 +344,7 @@ public class UrlQuery {
             return Normal.EMPTY;
         }
 
-        final char[] safeChars = encodePercent ? null : new char[]{'%'};
+        final char[] safeChars = encodePercent ? null : new char[]{Symbol.C_PERCENT};
         final StringBuilder sb = new StringBuilder();
         CharSequence name;
         CharSequence value;
@@ -351,12 +352,12 @@ public class UrlQuery {
             name = entry.getKey();
             if (null != name) {
                 if (sb.length() > 0) {
-                    sb.append("&");
+                    sb.append(Symbol.AND);
                 }
                 sb.append(keyCoder.encode(name, charset, safeChars));
                 value = entry.getValue();
                 if (null != value) {
-                    sb.append("=").append(valueCoder.encode(value, charset, safeChars));
+                    sb.append(Symbol.EQUAL).append(valueCoder.encode(value, charset, safeChars));
                 }
             }
         }
@@ -391,7 +392,7 @@ public class UrlQuery {
         for (i = 0; i < len; i++) {
             c = queryStr.charAt(i);
             switch (c) {
-                case '='://键和值的分界符
+                case Symbol.C_EQUAL://键和值的分界符
                     if (null == name) {
                         // name可以是""
                         name = queryStr.substring(pos, i);
@@ -400,7 +401,7 @@ public class UrlQuery {
                     }
                     // 当=不作为分界符时，按照普通字符对待
                     break;
-                case '&'://键值对之间的分界符
+                case Symbol.C_AND: //键值对之间的分界符
                     addParam(name, queryStr.substring(pos, i), charset);
                     name = null;
                     if (i + 4 < len && "amp;".equals(queryStr.substring(i + 1, i + 5))) {

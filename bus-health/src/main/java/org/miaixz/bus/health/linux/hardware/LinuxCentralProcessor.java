@@ -33,6 +33,7 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -114,7 +115,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
                 cpuFiles.forEach(cpu -> {
                     String syspath = cpu.toString(); // /sys/devices/system/cpu/cpuX
-                    Map<String, String> uevent = Builder.getKeyValueMapFromFile(syspath + "/uevent", "=");
+                    Map<String, String> uevent = Builder.getKeyValueMapFromFile(syspath + "/uevent", Symbol.EQUAL);
                     String modAlias = uevent.get("MODALIAS");
                     // updates caches as a side-effect
                     logProcs.add(
@@ -222,7 +223,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 0,0
         // 1,0
         for (String line : lscpu) {
-            if (!line.startsWith("#")) {
+            if (!line.startsWith(Symbol.SHAPE)) {
                 int pos = line.indexOf(',');
                 if (pos > 0 && pos < line.length()) {
                     numaNodeMap.put(Parsing.parseIntOrDefault(line.substring(0, pos), 0),
@@ -415,7 +416,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     }
                     break;
                 case "flags":
-                    flags = splitLine[1].toLowerCase(Locale.ROOT).split(" ");
+                    flags = splitLine[1].toLowerCase(Locale.ROOT).split(Symbol.SPACE);
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;

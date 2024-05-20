@@ -26,7 +26,6 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.plugin.Interceptor;
-import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.ListKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.pager.plugin.ExplainSqlHandler;

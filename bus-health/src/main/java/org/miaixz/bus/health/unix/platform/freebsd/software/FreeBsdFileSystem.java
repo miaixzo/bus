@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.software;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -72,7 +73,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
         String device = Normal.EMPTY;
         for (String line : Executor.runNative("geom part list")) {
             if (line.contains("Name: ")) {
-                device = line.substring(line.lastIndexOf(' ') + 1);
+                device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we aren't working with a current partition, continue
             if (device.isEmpty()) {
@@ -80,7 +81,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             }
             line = line.trim();
             if (line.startsWith("rawuuid:")) {
-                uuidMap.put(device, line.substring(line.lastIndexOf(' ') + 1));
+                uuidMap.put(device, line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1));
                 device = Normal.EMPTY;
             }
         }

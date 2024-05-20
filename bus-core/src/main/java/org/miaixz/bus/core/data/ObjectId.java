@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.RandomKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -68,7 +69,7 @@ public class ObjectId {
         if (s == null) {
             return false;
         }
-        s = StringKit.removeAll(s, "-");
+        s = StringKit.removeAll(s, Symbol.MINUS);
         final int len = s.length();
         if (len != 24) {
             return false;
@@ -144,8 +145,8 @@ public class ObjectId {
             return next();
         }
         final char[] ids = new char[26];
-        ids[8] = '-';
-        ids[17] = '-';
+        ids[8] = Symbol.C_MINUS;
+        ids[17] = Symbol.C_MINUS;
         int epoch = (int) ((System.currentTimeMillis() / 1000));
         // 4位字节 ： 时间戳
         for (int i = 7; i >= 0; i--) {

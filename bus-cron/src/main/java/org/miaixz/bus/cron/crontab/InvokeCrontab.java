@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.crontab;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ClassKit;
@@ -53,7 +54,7 @@ public class InvokeCrontab implements Crontab {
      * @param classNameWithMethodName 类名与方法名的字符串表示，方法名和类名使用#隔开或者.隔开
      */
     public InvokeCrontab(final String classNameWithMethodName) {
-        int splitIndex = classNameWithMethodName.lastIndexOf('#');
+        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
         if (splitIndex <= 0) {
             splitIndex = classNameWithMethodName.lastIndexOf('.');
         }
@@ -77,7 +78,7 @@ public class InvokeCrontab implements Crontab {
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");
         }
-        this.method = MethodKit.getPublicMethod(clazz, methodName);
+        this.method = MethodKit.getPublicMethod(clazz, false, methodName);
         if (null == this.method) {
             throw new IllegalArgumentException("No method with name of [" + methodName + "] !");
         }

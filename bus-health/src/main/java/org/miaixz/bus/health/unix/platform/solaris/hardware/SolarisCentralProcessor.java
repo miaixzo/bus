@@ -29,6 +29,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -109,7 +110,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             if (line.startsWith("lgroup")) {
                 lgroup = Parsing.getFirstIntValue(line);
             } else if (line.contains("CPUs:") || line.contains("CPU:")) {
-                for (Integer cpu : Parsing.parseHyphenatedIntList(line.split(":")[1])) {
+                for (Integer cpu : Parsing.parseHyphenatedIntList(line.split(Symbol.COLON)[1])) {
                     numaNodeMap.put(cpu, lgroup);
                 }
             }
@@ -176,7 +177,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             if (line.startsWith("32-bit")) {
                 break;
             } else if (!line.startsWith("64-bit")) {
-                flags.append(' ').append(line.trim());
+                flags.append(Symbol.C_SPACE).append(line.trim());
             }
         }
         return createProcessorID(stepping, model, family,
@@ -343,7 +344,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 if (kc.read(ksp)) {
                     String suppFreq = KstatKit.dataLookupString(ksp, "supported_frequencies_Hz");
                     if (!suppFreq.isEmpty()) {
-                        for (String s : suppFreq.split(":")) {
+                        for (String s : suppFreq.split(Symbol.COLON)) {
                             long freq = Parsing.parseLongOrDefault(s, -1L);
                             if (max < freq) {
                                 max = freq;

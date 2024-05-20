@@ -27,6 +27,7 @@ package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 import java.util.Objects;
 
@@ -68,7 +69,6 @@ public class Crockford {
     private static final int BITS_PER_ENCODED_BYTE = 5;
     private static final int BYTES_PER_ENCODED_BLOCK = 8;
     private static final int BYTES_PER_UNENCODED_BLOCK = 5;
-    private static final byte PAD = '=';
     /**
      * This array is a lookup table that translates 5-bit positive integer index values into their "Base32 Alphabet"
      * equivalents as specified in Table 3 of RFC 2045.
@@ -146,7 +146,7 @@ public class Crockford {
      */
     protected static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
-            case ' ':
+            case Symbol.C_SPACE:
             case '\n':
             case '\r':
             case '\t':
@@ -181,7 +181,7 @@ public class Crockford {
     public static boolean isInAlphabet(final byte[] arrayOctet, final boolean allowWSPad) {
         for (final byte b : arrayOctet) {
             if (!isInAlphabet(b) &&
-                    (!allowWSPad || (b != PAD) && !isWhiteSpace(b))) {
+                    (!allowWSPad || (b != Symbol.C_EQUAL) && !isWhiteSpace(b))) {
                 return false;
             }
         }
@@ -577,7 +577,7 @@ public class Crockford {
         }
         for (int i = 0; i < inAvail; i++) {
             final byte b = in[inPos++];
-            if (b == PAD) {
+            if (b == Symbol.C_EQUAL) {
                 // We're done.
                 eof = true;
                 break;
@@ -667,12 +667,12 @@ public class Crockford {
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 2) & MASK_5BITS]; // 5-3=2
                     if (usePaddingCharacter) {
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
                     }
                     break;
 
@@ -682,10 +682,10 @@ public class Crockford {
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
                     if (usePaddingCharacter) {
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
                     }
                     break;
                 case 3: // 3 octets = 24 bits to use
@@ -695,9 +695,9 @@ public class Crockford {
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
                     if (usePaddingCharacter) {
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
-                        buffer[pos++] = PAD;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
+                        buffer[pos++] = Symbol.C_EQUAL;
                     }
                     break;
                 case 4: // 4 octets = 32 bits to use
@@ -709,7 +709,7 @@ public class Crockford {
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 =  2
                     buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
                     if (usePaddingCharacter) {
-                        buffer[pos++] = PAD;
+                        buffer[pos++] = Symbol.C_EQUAL;
                     }
                     break;
             }

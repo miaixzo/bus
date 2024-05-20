@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.placeholder.template;
 
-import org.miaixz.bus.core.beans.BeanDesc;
+import org.miaixz.bus.core.beans.StrictBeanDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -347,7 +347,7 @@ public class NamedStringTemplate extends StringTemplate {
         if (beanOrMap instanceof Map) {
             return format((Map<String, ?>) beanOrMap);
         } else if (BeanKit.isReadableBean(beanOrMap.getClass())) {
-            final BeanDesc beanDesc = BeanKit.getBeanDesc(beanOrMap.getClass());
+            final StrictBeanDesc beanDesc = BeanKit.getBeanDesc(beanOrMap.getClass());
             return format(fieldName -> {
                 final Method getterMethod = beanDesc.getGetter(fieldName);
                 if (getterMethod == null) {
@@ -544,7 +544,7 @@ public class NamedStringTemplate extends StringTemplate {
             final Map<String, String> map = (Map<String, String>) obj;
             matchesByKey(text, map::put);
         } else if (BeanKit.isReadableBean(obj.getClass())) {
-            final BeanDesc beanDesc = BeanKit.getBeanDesc(obj.getClass());
+            final StrictBeanDesc beanDesc = BeanKit.getBeanDesc(obj.getClass());
             matchesByKey(text, (key, value) -> {
                 final Field field = beanDesc.getField(key);
                 final Method setterMethod = beanDesc.getSetter(key);

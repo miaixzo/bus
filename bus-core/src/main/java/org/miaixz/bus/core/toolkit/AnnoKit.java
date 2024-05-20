@@ -31,6 +31,7 @@ import org.miaixz.bus.core.annotation.resolve.elements.CombinationAnnotatedEleme
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaInfo;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
 
@@ -256,8 +257,8 @@ public class AnnoKit {
                 // 只读取无参方法
                 final String name = t.getName();
                 // 跳过自有的几个方法
-                return (!"hashCode".equals(name)) //
-                        && (!"toString".equals(name)) //
+                return (!Normal.HASHCODE.equals(name))
+                        && (!Normal.TOSTRING.equals(name))
                         && (!"annotationType".equals(name));
             }
             return false;

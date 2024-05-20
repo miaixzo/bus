@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.pinterest;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -82,7 +83,7 @@ public class PinterestProvider extends DefaultProvider {
                 .uuid(userObj.getString("id"))
                 .avatar(getAvatarUrl(userObj))
                 .username(userObj.getString("username"))
-                .nickname(userObj.getString("first_name") + " " + userObj.getString("last_name"))
+                .nickname(userObj.getString("first_name") + Symbol.SPACE + userObj.getString("last_name"))
                 .gender(Gender.UNKNOWN)
                 .remark(userObj.getString("bio"))
                 .token(accToken)

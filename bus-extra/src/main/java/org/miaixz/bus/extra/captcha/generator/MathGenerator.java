@@ -71,11 +71,11 @@ public class MathGenerator implements CodeGenerator {
         number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
         number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
 
-        return StringKit.builder()//
-                .append(number1)//
-                .append(RandomKit.randomChar(operators))//
+        return StringKit.builder()
+                .append(number1)
+                .append(RandomKit.randomChar(operators))
                 .append(number2)//
-                .append('=').toString();
+                .append(Symbol.C_EQUAL).toString();
     }
 
     @Override

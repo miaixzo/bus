@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.placeholder;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -82,7 +83,7 @@ public class StringMatcher {
                     patterns.add(part.toString());
                     part.setLength(0);
                 }
-            } else if ('{' == c && '$' == pre) {
+            } else if ('{' == c && Symbol.C_DOLLAR == pre) {
                 // 变量开始
                 inVar = true;
                 final String preText = part.substring(0, part.length() - 1);

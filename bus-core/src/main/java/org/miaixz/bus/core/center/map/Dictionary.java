@@ -32,6 +32,7 @@ import org.miaixz.bus.core.center.function.LambdaInfo;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CloneException;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.toolkit.BeanKit;
@@ -50,8 +51,6 @@ import java.util.*;
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
-    static final float DEFAULT_LOAD_FACTOR = 0.75f;
-    static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
     private static final long serialVersionUID = -1L;
     /**
      * 是否大小写不敏感
@@ -71,7 +70,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param caseInsensitive 是否大小写不敏感
      */
     public Dictionary(final boolean caseInsensitive) {
-        this(DEFAULT_INITIAL_CAPACITY, caseInsensitive);
+        this(Normal._16, caseInsensitive);
     }
 
     /**
@@ -90,7 +89,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @param caseInsensitive 是否大小写不敏感
      */
     public Dictionary(final int initialCapacity, final boolean caseInsensitive) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR, caseInsensitive);
+        this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR, caseInsensitive);
     }
 
     /**

@@ -48,7 +48,7 @@ import java.util.function.Supplier;
 public class ObjectKit {
 
     /**
-     * <p>比较两个对象是否相等，满足下述任意条件即返回{@code true}：
+     * 比较两个对象是否相等，满足下述任意条件即返回{@code true}：
      * <ul>
      *     <li>若两对象皆为{@link BigDecimal}，且满足{@code 0 == obj1.compareTo(obj2)}</li>
      *     <li>若两对象都为数组，调用Arrays.equals完成判断</li>
@@ -82,7 +82,7 @@ public class ObjectKit {
     }
 
     /**
-     * <p>计算对象长度，支持类型包括：
+     * 计算对象长度，支持类型包括：
      * <ul>
      *     <li>{@code null}：默认返回{@code 0}；</li>
      *     <li>数组：返回数组长度；</li>
@@ -133,7 +133,7 @@ public class ObjectKit {
     }
 
     /**
-     * <p>检查{@code obj}中是否包含{@code element}，若{@code obj}为{@code null}，则直接返回{@code false}。
+     * 检查{@code obj}中是否包含{@code element}，若{@code obj}为{@code null}，则直接返回{@code false}。
      * 支持类型包括：
      * <ul>
      *     <li>{@code null}：默认返回{@code false}；</li>
@@ -275,7 +275,7 @@ public class ObjectKit {
     }
 
     /**
-     * <p>如果给定对象为{@code null}返回默认值
+     * 如果给定对象为{@code null}返回默认值
      * <pre>{@code
      * ObjectKit.defaultIfNull(null, null);      // = null
      * ObjectKit.defaultIfNull(null, "");        // = ""
@@ -354,7 +354,7 @@ public class ObjectKit {
     }
 
     /**
-     * <p>克隆对象
+     * 克隆对象
      * <ol>
      *     <li>如果对象是数组，则等同于{@link ArrayKit#clone(Object)}；</li>
      *     <li>如果对象实现了{@link Cloneable}接口，调用 {@link Object#clone()}方法；</li>
@@ -480,7 +480,7 @@ public class ObjectKit {
     }
 
     /**
-     * <p>将对象转为字符串
+     * 将对象转为字符串
      * <ul>
      *     <li>若对象为{@code null}，则返回“null”；</li>
      *     <li>若对象为{@link Map}，则返回{@code Map.toString()}；</li>

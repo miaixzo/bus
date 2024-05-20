@@ -30,6 +30,7 @@ import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
@@ -103,7 +104,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
                 String[] fields = Pattern.SPACES_PATTERN.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
-                    return fields[1].split("%")[0];
+                    return fields[1].split(Symbol.PERCENT)[0];
                 }
             } else if (line.startsWith(IPV6_ROUTE_HEADER)) {
                 v6Table = true;

@@ -29,7 +29,10 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.toolkit.CharKit;
+import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.PatternKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -365,12 +368,12 @@ public class FileName {
         }
 
         // 兼容Spring风格的ClassPath路径，去除前缀，不区分大小写
-        String pathToUse = StringKit.removePrefixIgnoreCase(path, UrlKit.CLASSPATH_URL_PREFIX);
+        String pathToUse = StringKit.removePrefixIgnoreCase(path, Normal.CLASSPATH);
         // 去除file:前缀
-        pathToUse = StringKit.removePrefixIgnoreCase(pathToUse, UrlKit.FILE_URL_PREFIX);
+        pathToUse = StringKit.removePrefixIgnoreCase(pathToUse, Normal.FILE_URL_PREFIX);
 
         // 识别home目录形式，并转换为绝对路径
-        if (StringKit.startWith(pathToUse, '~')) {
+        if (StringKit.startWith(pathToUse, Symbol.C_TILDE)) {
             pathToUse = Keys.getUserHomePath() + pathToUse.substring(1);
         }
 

@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.google;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -102,7 +103,7 @@ public class GoogleProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(GoogleScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(GoogleScope.values())))
                 .queryParam("prompt", "select_account")
                 .build();
     }
@@ -125,7 +126,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new AuthorizedException(object.containsKey("error") + ":" + object.getString("error_description"));
+            throw new AuthorizedException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

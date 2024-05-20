@@ -45,8 +45,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static org.miaixz.bus.core.text.placeholder.StringTemplate.Feature.*;
-
 /**
  * 字符串模板 格式化 和 反解析 抽象父类
  *
@@ -59,8 +57,12 @@ public abstract class StringTemplate {
      * 全局默认策略，一旦修改，对所有模板对象都生效
      * <p>该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象</p>
      */
-    protected static int globalFeatures = Feature.of(FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER, FORMAT_NULL_VALUE_TO_STR,
-            MATCH_KEEP_DEFAULT_VALUE, MATCH_EMPTY_VALUE_TO_NULL, MATCH_NULL_STR_TO_NULL);
+    protected static int globalFeatures = Feature.of(
+            StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
+            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR,
+            StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
+            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL,
+            StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
 
     /**
      * 全局默认值处理器，一旦修改，对所有模板对象都生效
@@ -353,17 +355,17 @@ public abstract class StringTemplate {
      */
     protected String formatMissingKey(final AbstractSegment segment) {
         final int features = getFeatures();
-        if (FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER.contains(features)) {
+        if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER.contains(features)) {
             return segment.getText();
-        } else if (FORMAT_MISSING_KEY_PRINT_DEFAULT_VALUE.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_DEFAULT_VALUE.contains(features)) {
             return getDefaultValue(segment);
-        } else if (FORMAT_MISSING_KEY_PRINT_NULL.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_NULL.contains(features)) {
             return "null";
-        } else if (FORMAT_MISSING_KEY_PRINT_EMPTY.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_EMPTY.contains(features)) {
             return "";
-        } else if (FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME.contains(features)) {
             return segment.getPlaceholder();
-        } else if (FORMAT_MISSING_KEY_THROWS.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_THROWS.contains(features)) {
             throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder() + "'");
         }
         throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder() +
@@ -378,13 +380,13 @@ public abstract class StringTemplate {
      */
     protected String formatNullValue(final AbstractSegment segment) {
         final int features = getFeatures();
-        if (FORMAT_NULL_VALUE_TO_STR.contains(features)) {
+        if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR.contains(features)) {
             return "null";
-        } else if (FORMAT_NULL_VALUE_TO_EMPTY.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_EMPTY.contains(features)) {
             return "";
-        } else if (FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER.contains(features)) {
             return segment.getText();
-        } else if (FORMAT_NULL_VALUE_TO_DEFAULT_VALUE.contains(features)) {
+        } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_DEFAULT_VALUE.contains(features)) {
             return getDefaultValue(segment);
         }
         throw new InternalException("There is a NULL value cannot resolve. You should define a Feature for null value when building or filter null value.");
@@ -518,13 +520,13 @@ public abstract class StringTemplate {
         // 存在默认值
         if (hasDefaultValue) {
             // 保留默认值，则跳过默认值策略处理，由后续策略决定 最终的值
-            if (!MATCH_KEEP_DEFAULT_VALUE.contains(features)) {
+            if (!StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE.contains(features)) {
                 // 解析到的参数值 是 默认值
                 if (value.equals(defaultValueSupplier.get())) {
                     // 校验 默认值策略
-                    if (MATCH_IGNORE_DEFAULT_VALUE.contains(features)) {
+                    if (StringTemplate.Feature.MATCH_IGNORE_DEFAULT_VALUE.contains(features)) {
                         return;
-                    } else if (MATCH_DEFAULT_VALUE_TO_NULL.contains(features)) {
+                    } else if (StringTemplate.Feature.MATCH_DEFAULT_VALUE_TO_NULL.contains(features)) {
                         keyValueConsumer.accept(key, null);
                         return;
                     }
@@ -534,13 +536,13 @@ public abstract class StringTemplate {
 
         // 解析到的参数值 是 空字符串
         if ("".equals(value)) {
-            if (MATCH_EMPTY_VALUE_TO_NULL.contains(features)) {
+            if (StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL.contains(features)) {
                 keyValueConsumer.accept(key, null);
-            } else if (MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE.contains(features)) {
+            } else if (StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE.contains(features)) {
                 keyValueConsumer.accept(key, defaultValueSupplier.get());
-            } else if (MATCH_IGNORE_EMPTY_VALUE.contains(features)) {
+            } else if (StringTemplate.Feature.MATCH_IGNORE_EMPTY_VALUE.contains(features)) {
                 return;
-            } else if (MATCH_KEEP_VALUE_EMPTY.contains(features)) {
+            } else if (StringTemplate.Feature.MATCH_KEEP_VALUE_EMPTY.contains(features)) {
                 keyValueConsumer.accept(key, value);
             }
             return;
@@ -548,11 +550,11 @@ public abstract class StringTemplate {
 
         // 解析到的参数值 是 null字符串
         if ("null".equals(value)) {
-            if (MATCH_NULL_STR_TO_NULL.contains(features)) {
+            if (StringTemplate.Feature.MATCH_NULL_STR_TO_NULL.contains(features)) {
                 keyValueConsumer.accept(key, null);
-            } else if (MATCH_KEEP_NULL_STR.contains(features)) {
+            } else if (StringTemplate.Feature.MATCH_KEEP_NULL_STR.contains(features)) {
                 keyValueConsumer.accept(key, value);
-            } else if (MATCH_IGNORE_NULL_STR.contains(features)) {
+            } else if (StringTemplate.Feature.MATCH_IGNORE_NULL_STR.contains(features)) {
                 return;
             }
             return;

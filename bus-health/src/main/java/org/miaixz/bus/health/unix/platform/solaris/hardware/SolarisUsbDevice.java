@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
@@ -185,7 +186,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId), Normal.EMPTY, vendorId, productId,
+        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), Normal.EMPTY, vendorId, productId,
                 Normal.EMPTY, devPath, usbDevices);
     }
 

@@ -140,7 +140,7 @@ public class UpdateByDifferProvider extends MapperTemplate {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn()).append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ")
+                            .append(Symbol.AT).append(versionClass).append("@class, ")
                             .append(NEWER).append('.').append(column.getProperty()).append(")},");
                 } else {
                     sql.append(getIfNotEqual(column, column.getColumnEqualsHolder(NEWER) + Symbol.COMMA));

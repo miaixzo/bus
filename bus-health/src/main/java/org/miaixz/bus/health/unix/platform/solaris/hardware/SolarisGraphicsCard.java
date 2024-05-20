@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
@@ -94,7 +95,7 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
                 classCode = Normal.EMPTY;
                 versionInfoList.clear();
             } else {
-                String[] split = line.trim().split(":", 2);
+                String[] split = line.trim().split(Symbol.COLON, 2);
                 if (split.length == 2) {
                     if (split[0].equals("model")) {
                         // This is preferred, always set it

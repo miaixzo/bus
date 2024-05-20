@@ -3,6 +3,7 @@ package org.miaixz.bus.pay.metric.paypal;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.Context;
@@ -39,7 +40,7 @@ public class PaypalProvider {
         Map<String, String> headers = new HashMap<>(3);
         headers.put("Accept", MediaType.APPLICATION_JSON);
         headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Basic ".concat(Base64.encode((context.getClientId().concat(":").concat(context.getSecret())).getBytes(Charset.UTF_8))));
+        headers.put("Authorization", "Basic ".concat(Base64.encode((context.getClientId().concat(Symbol.COLON).concat(context.getSecret())).getBytes(Charset.UTF_8))));
         Map<String, Object> params = new HashMap<>(1);
         params.put("grant_type", "client_credentials");
         return post(getReqUrl(PayPalApiUrl.GET_TOKEN, context.isSandBox()), params, headers);
@@ -201,7 +202,7 @@ public class PaypalProvider {
         }
         Map<String, String> headers = new HashMap<>(3);
         headers.put("Content-Type", MediaType.APPLICATION_JSON);
-        headers.put("Authorization", accessToken.getTokenType().concat(" ").concat(accessToken.getAccessToken()));
+        headers.put("Authorization", accessToken.getTokenType().concat(Symbol.SPACE).concat(accessToken.getAccessToken()));
         if (StringKit.isNotEmpty(payPalRequestId)) {
             headers.put("PayPal-Request-Id", payPalRequestId);
         }

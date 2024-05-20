@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.math;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.io.File;
@@ -37,8 +38,6 @@ import java.util.Currency;
  * 单币种货币类，处理货币算术、币种和取整。
  * 货币类中封装了货币金额和币种。目前金额在内部是long类型表示，
  * 单位是所属币种的最小货币单位（对人民币是分）。
- *
- * <p>
  * 目前，货币实现了以下主要功能：
  * <ul>
  *   <li>支持货币对象与double(float)/long(int)/String/BigDecimal之间相互转换。
@@ -68,21 +67,9 @@ import java.util.Currency;
  */
 public class Money implements Serializable, Comparable<Money> {
 
-    /**
-     * 缺省的币种代码，为CNY（人民币）。
-     */
-    public static final String DEFAULT_CURRENCY_CODE = "CNY";
-    /**
-     * 缺省的取整模式，为{@link RoundingMode#HALF_EVEN}
-     * （四舍五入，当小数为0.5时，则取最近的偶数）。
-     */
-    public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_EVEN;
-
     private static final long serialVersionUID = -1L;
     /**
      * 一组可能的元/分换算比例。
-     *
-     * <p>
      * 此处，“分”是指货币的最小单位，“元”是货币的最常用单位，
      * 不同的币种有不同的元/分换算比例，如人民币是100，而日元为1。
      */
@@ -105,22 +92,18 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code yuan}元{@code cent}分和缺省币种的货币对象。
      *
      * @param yuan 金额元数，0的情况下表示元的部分从分中截取
      * @param cent 金额分数。
      */
     public Money(final long yuan, final int cent) {
-        this(yuan, cent, Currency.getInstance(DEFAULT_CURRENCY_CODE));
+        this(yuan, cent, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code yuan}元{@code cent}分和指定币种的货币对象。
      *
      * @param yuan     金额元数，0的情况下表示元的部分从分中截取
@@ -138,21 +121,17 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}元和缺省币种的货币对象。
      *
      * @param amount 金额，以元为单位。
      */
     public Money(final String amount) {
-        this(amount, Currency.getInstance(DEFAULT_CURRENCY_CODE));
+        this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}元和指定币种{@code currency}的货币对象。
      *
      * @param amount   金额，以元为单位。
@@ -163,9 +142,7 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}元和指定币种{@code currency}的货币对象。
      * 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
      *
@@ -178,9 +155,7 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有参数{@code amount}指定金额和缺省币种的货币对象。
      * 如果金额不能转换为整数分，则使用四舍五入方式取整。
      *
@@ -200,17 +175,13 @@ public class Money implements Serializable, Comparable<Money> {
      * @param amount 金额，以元为单位。
      */
     public Money(final double amount) {
-        this(amount, Currency.getInstance(DEFAULT_CURRENCY_CODE));
+        this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}和指定币种的货币对象。
      * 如果金额不能转换为整数分，则使用四舍五入方式取整。
-     *
-     * <p>
      * 注意：由于double类型运算中存在误差，使用四舍五入方式取整的
      * 结果并不确定，因此，应尽量避免使用double类型创建货币类型。
      * 例：
@@ -232,22 +203,18 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}和缺省币种的货币对象。
      * 如果金额不能转换为整数分，则使用缺省取整模式{@code DEFAULT_ROUNDING_MODE}取整。
      *
      * @param amount 金额，以元为单位。
      */
     public Money(final BigDecimal amount) {
-        this(amount, Currency.getInstance(DEFAULT_CURRENCY_CODE));
+        this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有参数{@code amount}指定金额和缺省币种的货币对象。
      * 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
      *
@@ -255,13 +222,11 @@ public class Money implements Serializable, Comparable<Money> {
      * @param roundingMode 取整模式
      */
     public Money(final BigDecimal amount, final RoundingMode roundingMode) {
-        this(amount, Currency.getInstance(DEFAULT_CURRENCY_CODE), roundingMode);
+        this(amount, Currency.getInstance(Normal.CNY), roundingMode);
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}和指定币种的货币对象。
      * 如果金额不能转换为整数分，则使用缺省的取整模式{@code DEFAULT_ROUNDING_MODE}进行取整。
      *
@@ -269,13 +234,11 @@ public class Money implements Serializable, Comparable<Money> {
      * @param currency 币种
      */
     public Money(final BigDecimal amount, final Currency currency) {
-        this(amount, currency, DEFAULT_ROUNDING_MODE);
+        this(amount, currency, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 构造器。
-     *
-     * <p>
+     * 构造器
      * 创建一个具有金额{@code amount}和指定币种的货币对象。
      * 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
      *
@@ -305,7 +268,7 @@ public class Money implements Serializable, Comparable<Money> {
      */
     public void setAmount(final BigDecimal amount) {
         if (amount != null) {
-            cent = rounding(amount.movePointRight(2), DEFAULT_ROUNDING_MODE);
+            cent = rounding(amount.movePointRight(2), RoundingMode.HALF_EVEN);
         }
     }
 
@@ -548,7 +511,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @return 相乘后的结果。
      */
     public Money multiply(final BigDecimal val) {
-        return multiply(val, DEFAULT_ROUNDING_MODE);
+        return multiply(val, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -561,7 +524,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @return 累乘后的结果
      */
     public Money multiplyBy(final BigDecimal val) {
-        return multiplyBy(val, DEFAULT_ROUNDING_MODE);
+        return multiplyBy(val, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -634,7 +597,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @return 相除后的结果。
      */
     public Money divide(final BigDecimal val) {
-        return divide(val, DEFAULT_ROUNDING_MODE);
+        return divide(val, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -663,7 +626,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @return 累除后的结果。
      */
     public Money divideBy(final BigDecimal val) {
-        return divideBy(val, DEFAULT_ROUNDING_MODE);
+        return divideBy(val, RoundingMode.HALF_EVEN);
     }
 
     /**

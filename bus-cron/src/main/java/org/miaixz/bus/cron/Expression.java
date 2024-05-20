@@ -404,15 +404,15 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == '*' || c == Symbol.C_SLASH) {
-            if (c == '*' && (i + 1) >= s.length()) {
+        if (c == Symbol.C_STAR || c == Symbol.C_SLASH) {
+            if (c == Symbol.C_STAR && (i + 1) >= s.length()) {
                 addToSet(ALL_SPEC_INT, -1, incr, type);
                 return i + 1;
             } else if (c == Symbol.C_SLASH
                     && ((i + 1) >= s.length() || s.charAt(i + 1) == Symbol.C_SPACE || s
                     .charAt(i + 1) == Symbol.C_HT)) {
                 throw new ParseException("'/' must be followed by an integer.", i);
-            } else if (c == '*') {
+            } else if (c == Symbol.C_STAR) {
                 i++;
             }
             c = s.charAt(i);

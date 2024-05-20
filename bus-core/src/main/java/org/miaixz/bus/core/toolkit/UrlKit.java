@@ -63,27 +63,6 @@ import java.util.Map;
 public class UrlKit {
 
     /**
-     * URL 前缀表示文件: "file:"
-     */
-    public static final String FILE_URL_PREFIX = "file:";
-    /**
-     * URL 前缀表示jar: "jar:"
-     */
-    public static final String JAR_URL_PREFIX = "jar:";
-    /**
-     * URL 前缀表示war: "war:"
-     */
-    public static final String WAR_URL_PREFIX = "war:";
-    /**
-     * Jar路径以及内部文件路径的分界符: "!/"
-     */
-    public static final String JAR_URL_SEPARATOR = "!/";
-    /**
-     * WAR路径及内部文件路径分界符
-     */
-    public static final String WAR_URL_SEPARATOR = "*/";
-
-    /**
      * 将{@link URI}转换为{@link URL}
      *
      * @param uri {@link URI}
@@ -240,7 +219,7 @@ public class UrlKit {
      */
     public static URL getURL(final URL url, String relativePath) throws InternalException {
         // # 在文件路径中合法，但是在URL中非法，此处转义
-        relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), "#", "%23");
+        relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), Symbol.SHAPE, "%23");
         try {
             return new URL(url, relativePath);
         } catch (final MalformedURLException e) {
@@ -489,7 +468,7 @@ public class UrlKit {
             body = url;
         }
 
-        final int paramsSepIndex = StringKit.indexOf(body, '?');
+        final int paramsSepIndex = StringKit.indexOf(body, Symbol.C_QUESTION_MARK);
         String params = null;
         if (paramsSepIndex > 0) {
             params = StringKit.subSuf(body, paramsSepIndex);
@@ -719,7 +698,7 @@ public class UrlKit {
 
         String urlPart = null; // url部分，不包括问号
         String paramPart; // 参数部分
-        final int pathEndPos = urlWithParams.indexOf('?');
+        final int pathEndPos = urlWithParams.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEndPos > -1) {
             // url + 参数
             urlPart = StringKit.subPre(urlWithParams, pathEndPos);
@@ -728,7 +707,7 @@ public class UrlKit {
                 // 无参数，返回url
                 return urlPart;
             }
-        } else if (!StringKit.contains(urlWithParams, '=')) {
+        } else if (!StringKit.contains(urlWithParams, Symbol.C_EQUAL)) {
             // 无参数的URL
             return urlWithParams;
         } else {
@@ -762,21 +741,21 @@ public class UrlKit {
         int i; // 当前字符位置
         for (i = 0; i < len; i++) {
             c = queryPart.charAt(i);
-            if (c == '=') { // 键值对的分界点
+            if (c == Symbol.C_EQUAL) { // 键值对的分界点
                 if (null == name) {
                     // 只有=前未定义name时被当作键值分界符，否则做为普通字符
                     name = (pos == i) ? Normal.EMPTY : queryPart.substring(pos, i);
                     pos = i + 1;
                 }
-            } else if (c == '&') { // 参数对的分界点
+            } else if (c == Symbol.C_AND) { // 参数对的分界点
                 if (pos != i) {
                     if (null == name) {
                         // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
                         name = queryPart.substring(pos, i);
-                        builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append('=');
+                        builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL);
                     } else {
-                        builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append('=')
-                                .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset)).append('&');
+                        builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL)
+                                .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset)).append(Symbol.C_AND);
                     }
                     name = null;
                 }
@@ -786,18 +765,18 @@ public class UrlKit {
 
         // 结尾处理
         if (null != name) {
-            builder.append(UrlEncoder.encodeQuery(name, charset)).append('=');
+            builder.append(UrlEncoder.encodeQuery(name, charset)).append(Symbol.C_EQUAL);
         }
         if (pos != i) {
             if (null == name && pos > 0) {
-                builder.append('=');
+                builder.append(Symbol.C_EQUAL);
             }
             builder.append(UrlEncoder.encodeQuery(queryPart.substring(pos, i), charset));
         }
 
         // 以&结尾则去除之
         final int lastIndex = builder.length() - 1;
-        if ('&' == builder.charAt(lastIndex)) {
+        if (Symbol.C_AND == builder.charAt(lastIndex)) {
             builder.delete(lastIndex, builder.length());
         }
         return builder.toString();

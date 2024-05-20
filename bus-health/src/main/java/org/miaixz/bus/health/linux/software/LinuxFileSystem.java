@@ -30,6 +30,7 @@ import com.sun.jna.platform.linux.LibC;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -79,7 +80,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         // Parse /proc/mounts to get fs types
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
-            String[] split = mount.split(" ");
+            String[] split = mount.split(Symbol.SPACE);
             // As reported in fstab(5) manpage, struct is:
             // 1st field is volume name
             // 2nd field is path with spaces escaped as \040
@@ -92,9 +93,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
-            String volume = split[0].replace(UNICODE_SPACE, " ");
+            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
             String name = volume;
-            String path = split[1].replace(UNICODE_SPACE, " ");
+            String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
             if (path.equals("/")) {
                 name = "/";
             }

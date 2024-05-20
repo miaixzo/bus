@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Regex;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.logger.Logger;
@@ -620,7 +621,7 @@ public final class Parsing {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (indices[parsedIndex] != stringIndex || c == '+' || !numeric) {
+            } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
@@ -630,7 +631,7 @@ public final class Parsing {
                     parsed[parsedIndex] += (c - '0') * Parsing.POWERS_OF_TEN[power++];
                 }
                 delimCurrent = false;
-            } else if (c == '-') {
+            } else if (c == Symbol.C_MINUS) {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
                 dashSeen = true;
@@ -701,12 +702,12 @@ public final class Parsing {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (c == '+' || !numeric) {
+            } else if (c == Symbol.C_PLUS || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
                 delimCurrent = false;
-            } else if (c == '-') {
+            } else if (c == Symbol.C_MINUS) {
                 delimCurrent = false;
                 dashSeen = true;
             } else {
@@ -907,7 +908,7 @@ public final class Parsing {
             String vendorId = "0x" + m.group(1).toLowerCase(Locale.ROOT);
             String productId = "0x" + m.group(2).toLowerCase(Locale.ROOT);
             String serial = m.group(4);
-            return Triplet.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? Normal.EMPTY : serial);
+            return Triplet.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains(Symbol.AND) ? Normal.EMPTY : serial);
         }
         return null;
     }
@@ -926,7 +927,7 @@ public final class Parsing {
             // Remove prefix
             if (r.startsWith("memory:")) {
                 // Split to low and high
-                String[] mem = r.substring(7).split("-");
+                String[] mem = r.substring(7).split(Symbol.MINUS);
                 if (mem.length == 2) {
                     try {
                         // Parse the hex strings
@@ -963,7 +964,7 @@ public final class Parsing {
     public static long parseLspciMemorySize(String line) {
         Matcher matcher = LSPCI_MEMORY_SIZE.matcher(line);
         if (matcher.matches()) {
-            return parseDecimalMemorySizeToBinary(matcher.group(1) + " " + matcher.group(2) + "B");
+            return parseDecimalMemorySizeToBinary(matcher.group(1) + Symbol.SPACE + matcher.group(2) + "B");
         }
         return 0;
     }
@@ -982,7 +983,7 @@ public final class Parsing {
         for (String csvToken : csvTokens) {
             csvToken = csvToken.trim();
             for (String s : Regex.SPACES.split(csvToken)) {
-                if (s.contains("-")) {
+                if (s.contains(Symbol.MINUS)) {
                     int first = getFirstIntValue(s);
                     int last = getNthIntValue(s, 2);
                     for (int i = first; i <= last; i++) {
@@ -1191,7 +1192,7 @@ public final class Parsing {
                 strMap.put(key, new String(bytes, start, end - start, Charset.UTF_8));
                 key = null;
                 start = end + 1;
-            } else if (bytes[end] == '=' && key == null) {
+            } else if (bytes[end] == Symbol.C_EQUAL && key == null) {
                 key = new String(bytes, start, end - start, Charset.UTF_8);
                 start = end + 1;
             }
@@ -1226,7 +1227,7 @@ public final class Parsing {
                 strMap.put(key, new String(chars, start, end - start));
                 key = null;
                 start = end + 1;
-            } else if (chars[end] == '=' && key == null) {
+            } else if (chars[end] == Symbol.C_EQUAL && key == null) {
                 key = new String(chars, start, end - start);
                 start = end + 1;
             }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.socket;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.socket.buffers.BufferPool;
 import org.miaixz.bus.socket.buffers.VirtualBuffer;
@@ -41,7 +42,7 @@ import java.util.function.Consumer;
 
 public final class WorkerRegister implements Runnable {
 
-    private final static int MAX_READ_TIMES = 16;
+    private static final int MAX_READ_TIMES = 16;
     private static final Runnable SELECTOR_CHANNEL = () -> {
     };
     private static final Runnable SHUTDOWN_CHANNEL = () -> {
@@ -78,7 +79,7 @@ public final class WorkerRegister implements Runnable {
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "bus-socket:udp-" + WorkerRegister.this.hashCode() + "-" + (++i));
+                return new Thread(r, "bus-socket:udp-" + WorkerRegister.this.hashCode() + Symbol.MINUS + (++i));
             }
         });
         for (int i = 0; i < threadNum; i++) {

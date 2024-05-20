@@ -199,7 +199,8 @@ for a summary of the below steps
   and [release the deployment from OSSRH to the Central Repository](http://central.sonatype.org/pages/releasing-the-deployment.html)
   .
 
-* Add a title and release notes [to the tag](https://github.com/839128/bus/tags) on GitHub and publish the release to make
+* Add a title and release notes [to the tag](https://github.com/839128/bus/tags) on GitHub and publish the release to
+  make
   it current.
 
 * As development progresses, update version in [pom.xml](pom.xml) using -SNAPSHOT appended to the new version

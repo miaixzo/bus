@@ -50,6 +50,57 @@ import org.springframework.web.servlet.ModelAndView;
 public class GenieWrapperHandler implements HandlerInterceptor {
 
     /**
+     * 获取客户端IP
+     * 默认检测的Header:
+     *
+     * <pre>
+     * 1、X-Forwarded-For
+     * 2、X-Real-IP
+     * 3、Proxy-Client-IP
+     * 4、WL-Proxy-Client-IP
+     * </pre>
+     *
+     * <p>
+     * otherHeaderNames参数用于自定义检测的Header<br>
+     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * </p>
+     *
+     * @param request          请求对象{@link HttpServletRequest}
+     * @param otherHeaderNames 其他自定义头文件，通常在Http服务器（例如Nginx）中配置
+     * @return IP地址
+     */
+    public static String getClientIP(final HttpServletRequest request, final String... otherHeaderNames) {
+        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
+        if (ArrayKit.isNotEmpty(otherHeaderNames)) {
+            headers = ArrayKit.addAll(headers, otherHeaderNames);
+        }
+
+        return getClientIPByHeader(request, headers);
+    }
+
+    /**
+     * 获取客户端IP
+     * headerNames参数用于自定义检测的Header
+     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     *
+     * @param request     请求对象{@link HttpServletRequest}
+     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
+     * @return IP地址
+     */
+    public static String getClientIPByHeader(final HttpServletRequest request, final String... headerNames) {
+        String ip;
+        for (final String header : headerNames) {
+            ip = request.getHeader(header);
+            if (!NetKit.isUnknown(ip)) {
+                return NetKit.getMultistageReverseProxyIp(ip);
+            }
+        }
+
+        ip = request.getRemoteAddr();
+        return NetKit.getMultistageReverseProxyIp(ip);
+    }
+
+    /**
      * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
      * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
      * 这里可以加上登录校验,权限拦截、请求限流等
@@ -117,57 +168,6 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 
-    }
-
-    /**
-     * 获取客户端IP
-     * 默认检测的Header:
-     *
-     * <pre>
-     * 1、X-Forwarded-For
-     * 2、X-Real-IP
-     * 3、Proxy-Client-IP
-     * 4、WL-Proxy-Client-IP
-     * </pre>
-     *
-     * <p>
-     * otherHeaderNames参数用于自定义检测的Header<br>
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
-     * </p>
-     *
-     * @param request          请求对象{@link HttpServletRequest}
-     * @param otherHeaderNames 其他自定义头文件，通常在Http服务器（例如Nginx）中配置
-     * @return IP地址
-     */
-    public static String getClientIP(final HttpServletRequest request, final String... otherHeaderNames) {
-        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
-        if (ArrayKit.isNotEmpty(otherHeaderNames)) {
-            headers = ArrayKit.addAll(headers, otherHeaderNames);
-        }
-
-        return getClientIPByHeader(request, headers);
-    }
-
-    /**
-     * 获取客户端IP
-     * headerNames参数用于自定义检测的Header
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
-     *
-     * @param request     请求对象{@link HttpServletRequest}
-     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
-     * @return IP地址
-     */
-    public static String getClientIPByHeader(final HttpServletRequest request, final String... headerNames) {
-        String ip;
-        for (final String header : headerNames) {
-            ip = request.getHeader(header);
-            if (!NetKit.isUnknown(ip)) {
-                return NetKit.getMultistageReverseProxyIp(ip);
-            }
-        }
-
-        ip = request.getRemoteAddr();
-        return NetKit.getMultistageReverseProxyIp(ip);
     }
 
     /**

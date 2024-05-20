@@ -33,6 +33,7 @@ import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
@@ -113,7 +114,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                         // Byte array is null delimited
                         // Example value for M2: "apple,blizzard", "ARM,v8"
                         compatibleStrMap.put(procId,
-                                new String(data, Charset.UTF_8).replace('\0', ' ').trim());
+                                new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim());
                     }
                 }
                 cpu.release();

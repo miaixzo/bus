@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.net.ip;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.NetKit;
@@ -203,10 +204,10 @@ public class IPv6 {
      */
     public static InetAddress normalizeV6Address(final Inet6Address address) {
         final String addr = address.getHostAddress();
-        final int index = addr.lastIndexOf('%');
+        final int index = addr.lastIndexOf(Symbol.C_PERCENT);
         if (index > 0) {
             try {
-                return InetAddress.getByName(addr.substring(0, index) + '%' + address.getScopeId());
+                return InetAddress.getByName(addr.substring(0, index) + Symbol.C_PERCENT + address.getScopeId());
             } catch (final UnknownHostException e) {
                 throw new InternalException(e);
             }

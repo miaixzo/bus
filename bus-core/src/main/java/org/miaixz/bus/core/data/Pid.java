@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.data;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -61,7 +62,7 @@ public enum Pid {
         if (StringKit.isBlank(processName)) {
             throw new InternalException("Process name is blank!");
         }
-        final int atIndex = processName.indexOf('@');
+        final int atIndex = processName.indexOf(Symbol.C_AT);
         if (atIndex > 0) {
             return Integer.parseInt(processName.substring(0, atIndex));
         } else {

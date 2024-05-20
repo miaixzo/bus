@@ -34,6 +34,7 @@ import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.io.stream.LimitedInputStream;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
@@ -59,8 +60,6 @@ import java.util.zip.ZipOutputStream;
  * @since Java 17+
  */
 public class ZipKit {
-
-    private static final int DEFAULT_BYTE_ARRAY_LENGTH = 32;
 
     /**
      * 默认编码，使用平台相关编码
@@ -742,7 +741,7 @@ public class ZipKit {
      * @throws InternalException IO异常
      */
     public static byte[] gzip(final InputStream in) throws InternalException {
-        return gzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
+        return gzip(in, Normal._32);
     }
 
     /**
@@ -790,14 +789,14 @@ public class ZipKit {
      * @throws InternalException IO异常
      */
     public static byte[] unGzip(final InputStream in) throws InternalException {
-        return unGzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
+        return unGzip(in, Normal._32);
     }
 
     /**
      * Gzip解压处理
      *
      * @param in     Gzip数据
-     * @param length 估算长度，如果无法确定请传入{@link #DEFAULT_BYTE_ARRAY_LENGTH}
+     * @param length 估算长度，如果无法确定请传入{@link Normal#_32}
      * @return 解压后的数据
      * @throws InternalException IO异常
      */
@@ -855,7 +854,7 @@ public class ZipKit {
      * @return 压缩后的bytes
      */
     public static byte[] zlib(final InputStream in, final int level) {
-        return zlib(in, level, DEFAULT_BYTE_ARRAY_LENGTH);
+        return zlib(in, level, Normal._32);
     }
 
     /**
@@ -900,7 +899,7 @@ public class ZipKit {
      * @return 解压后的bytes
      */
     public static byte[] unZlib(final InputStream in) {
-        return unZlib(in, DEFAULT_BYTE_ARRAY_LENGTH);
+        return unZlib(in, Normal._32);
     }
 
     /**
@@ -956,11 +955,11 @@ public class ZipKit {
     public static JarFile ofJar(String jarFileUrl) throws InternalException {
         Assert.notBlank(jarFileUrl, "Jar file url is blank!");
 
-        if (jarFileUrl.startsWith(UrlKit.FILE_URL_PREFIX)) {
+        if (jarFileUrl.startsWith(Normal.FILE_URL_PREFIX)) {
             try {
                 jarFileUrl = UrlKit.toURI(jarFileUrl).getSchemeSpecificPart();
             } catch (final InternalException e) {
-                jarFileUrl = jarFileUrl.substring(UrlKit.FILE_URL_PREFIX.length());
+                jarFileUrl = jarFileUrl.substring(Normal.FILE_URL_PREFIX.length());
             }
         }
         try {

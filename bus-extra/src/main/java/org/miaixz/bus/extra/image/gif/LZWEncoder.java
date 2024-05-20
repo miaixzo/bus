@@ -1,5 +1,7 @@
 package org.miaixz.bus.extra.image.gif;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -11,7 +13,6 @@ class LZWEncoder {
 
     static final int BITS = 12;
     static final int HSIZE = 5003; // 80% occupancy
-    private static final int EOF = -1;
     int n_bits; // number of bits/code
     int maxbits = BITS; // user settable max # bits/code
     int maxcode; // maximum code, given n_bits
@@ -171,7 +172,7 @@ class LZWEncoder {
         output(ClearCode, outs);
 
         outer_loop:
-        while ((c = nextPixel()) != EOF) {
+        while ((c = nextPixel()) != Normal.__1) {
             fcode = (c << maxbits) + ent;
             i = (c << hshift) ^ ent; // xor hashing
 
@@ -236,7 +237,7 @@ class LZWEncoder {
     //----------------------------------------------------------------------------
     private int nextPixel() {
         if (remaining == 0)
-            return EOF;
+            return Normal.__1;
 
         --remaining;
 

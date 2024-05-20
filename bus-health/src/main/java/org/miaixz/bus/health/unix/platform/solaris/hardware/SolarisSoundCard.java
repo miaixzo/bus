@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
@@ -90,8 +91,8 @@ final class SolarisSoundCard extends AbstractSoundCard {
         }
         List<SoundCard> soundCards = new ArrayList<>();
         for (String s : sounds) {
-            soundCards.add(new SolarisSoundCard(productMap.get(s) + " " + DEFAULT_AUDIO_DRIVER,
-                    vendorMap.get(s) + " " + productMap.get(s), productMap.get(s)));
+            soundCards.add(new SolarisSoundCard(productMap.get(s) + Symbol.SPACE + DEFAULT_AUDIO_DRIVER,
+                    vendorMap.get(s) + Symbol.SPACE + productMap.get(s), productMap.get(s)));
         }
         return soundCards;
     }

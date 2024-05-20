@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 /**
  * 条件
  *
- * @param <T>  泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -9,7 +9,8 @@
 
 使用说明：
 
-1. 在spring容器中定义`AspectjProxyPoint`， 这是校验器的切面拦截功能，会默认拦截所有的标记有`@Valid`的方法或类上面有`@Valid`注解的内部所有方法。
+1. 在spring容器中定义`AspectjProxyPoint`， 这是校验器的切面拦截功能，会默认拦截所有的标记有`@Valid`
+   的方法或类上面有`@Valid`注解的内部所有方法。
 
 1) `@Valid` value 启用部分属性校验
 2) `@Valid` skip 忽略部分属性校验
@@ -70,7 +71,7 @@ public User create(@Valid(value = {"name"}) @NotNull User user){
 
 5. 框架内部可用校验器注解
     * 校验器注解的具体使用方法，可以阅读源代码的api注释文档。
-   * 注意该框架的校验器的包名为`org.miaixz.bus.validate.annotation`
+    * 注意该框架的校验器的包名为`org.miaixz.bus.validate.annotation`
     * 下列校验器注解，默认都**不会**产生校验对象内部字段的功能。如需校验对象内部字段，请使用后文提到的`@Inside`注解。
 
 ```text

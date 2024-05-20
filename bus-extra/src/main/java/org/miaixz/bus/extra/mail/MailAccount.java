@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.mail;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -628,11 +629,10 @@ public class MailAccount implements Serializable {
 
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空，默认使用smtp.<发件人邮箱后缀>
-            this.host = StringKit.format("smtp.{}", StringKit.subSuf(fromAddress, fromAddress.indexOf('@') + 1));
+            this.host = StringKit.format("smtp.{}", StringKit.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
             // 如果用户名为空，默认为发件人
-            //this.user = StringKit.subPre(fromAddress, fromAddress.indexOf('@'));
             this.user = fromAddress;
         }
         if (null == this.auth) {

@@ -73,7 +73,7 @@ public class AntPathMatcher {
 
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?}");
 
-    private static final char[] WILDCARD_CHARS = {'*', '?', '{'};
+    private static final char[] WILDCARD_CHARS = {Symbol.C_STAR, Symbol.C_QUESTION_MARK, '{'};
     private final Map<String, String[]> tokenizedPatternCache = new SafeConcurrentHashMap<>(256);
     private final Map<String, AntPathStringMatcher> stringMatcherCache = new SafeConcurrentHashMap<>(256);
     private String pathSeparator;
@@ -175,7 +175,7 @@ public class AntPathMatcher {
         for (int i = 0; i < length; i++) {
             c = path.charAt(i);
             // 含有通配符
-            if (c == '*' || c == '?') {
+            if (c == Symbol.C_STAR || c == Symbol.C_QUESTION_MARK) {
                 return true;
             }
             if (c == Symbol.C_BRACE_LEFT) {
@@ -257,7 +257,9 @@ public class AntPathMatcher {
             if (!fullMatch) {
                 return true;
             }
-            if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals("*") && path.endsWith(this.pathSeparator)) {
+            if (pattIdxStart == pattIdxEnd
+                    && pattDirs[pattIdxStart].equals(Symbol.STAR)
+                    && path.endsWith(this.pathSeparator)) {
                 return true;
             }
             for (int i = pattIdxStart; i <= pattIdxEnd; i++) {
@@ -509,7 +511,7 @@ public class AntPathMatcher {
 
         for (int segment = 0; segment < patternParts.length; segment++) {
             final String patternPart = patternParts[segment];
-            if (patternPart.indexOf('*') > -1 || patternPart.indexOf('?') > -1) {
+            if (patternPart.indexOf(Symbol.C_STAR) > -1 || patternPart.indexOf(Symbol.C_QUESTION_MARK) > -1) {
                 for (; segment < pathParts.length; segment++) {
                     if (pathStarted || (segment == 0 && !pattern.startsWith(this.pathSeparator))) {
                         builder.append(this.pathSeparator);
@@ -668,10 +670,10 @@ public class AntPathMatcher {
                 final String match = matcher.group();
                 if ("?".equals(match)) {
                     patternBuilder.append('.');
-                } else if ("*".equals(match)) {
+                } else if (Symbol.STAR.equals(match)) {
                     patternBuilder.append(".*");
                 } else if (match.startsWith("{") && match.endsWith("}")) {
-                    final int colonIdx = match.indexOf(':');
+                    final int colonIdx = match.indexOf(Symbol.C_COLON);
                     if (colonIdx == -1) {
                         patternBuilder.append(DEFAULT_VARIABLE_PATTERN);
                         this.variableNames.add(matcher.group(1));
@@ -727,7 +729,7 @@ public class AntPathMatcher {
                         }
                         for (int i = 1; i <= matcher.groupCount(); i++) {
                             final String name = this.variableNames.get(i - 1);
-                            if (name.startsWith("*")) {
+                            if (name.startsWith(Symbol.STAR)) {
                                 throw new IllegalArgumentException("Capturing patterns (" + name + ") are not " +
                                         "supported by the AntPathMatcher. Use the PathPatternParser instead.");
                             }
@@ -862,8 +864,8 @@ public class AntPathMatcher {
                         if (this.pattern.charAt(pos) == '{') {
                             this.uriVars++;
                             pos++;
-                        } else if (this.pattern.charAt(pos) == '*') {
-                            if (pos + 1 < this.pattern.length() && this.pattern.charAt(pos + 1) == '*') {
+                        } else if (this.pattern.charAt(pos) == Symbol.C_STAR) {
+                            if (pos + 1 < this.pattern.length() && this.pattern.charAt(pos + 1) == Symbol.C_STAR) {
                                 this.doubleWildcards++;
                                 pos += 2;
                             } else if (pos > 0 && !this.pattern.substring(pos - 1).equals(".*")) {
@@ -911,7 +913,7 @@ public class AntPathMatcher {
             public int getLength() {
                 if (this.length == null) {
                     this.length = (this.pattern != null ?
-                            VARIABLE_PATTERN.matcher(this.pattern).replaceAll("#").length() : 0);
+                            VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.SHAPE).length() : 0);
                 }
                 return this.length;
             }
@@ -929,8 +931,8 @@ public class AntPathMatcher {
         private final String endsOnDoubleWildCard;
 
         public PathSeparatorPatternCache(final String pathSeparator) {
-            this.endsOnWildCard = pathSeparator + "*";
-            this.endsOnDoubleWildCard = pathSeparator + "**";
+            this.endsOnWildCard = pathSeparator + Symbol.STAR;
+            this.endsOnDoubleWildCard = pathSeparator + Symbol.STAR + Symbol.STAR;
         }
 
         public String getEndsOnWildCard() {

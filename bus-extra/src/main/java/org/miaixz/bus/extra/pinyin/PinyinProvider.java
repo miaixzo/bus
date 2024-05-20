@@ -26,6 +26,7 @@
 package org.miaixz.bus.extra.pinyin;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -75,7 +76,7 @@ public interface PinyinProvider {
      * @return 汉字返回拼音，非汉字原样返回
      */
     default String getFirstLetter(final String text, final String separator) {
-        final String splitSeparator = StringKit.isEmpty(separator) ? "#" : separator;
+        final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
         final List<String> split = CharsBacker.split(getPinyin(text, splitSeparator), splitSeparator);
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
     }

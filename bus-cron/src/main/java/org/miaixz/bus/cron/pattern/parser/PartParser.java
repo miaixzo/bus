@@ -85,7 +85,7 @@ public class PartParser {
      * @return 是否为全匹配符
      */
     private static boolean isMatchAllString(final String value) {
-        return (1 == value.length()) && ("*".equals(value) || "?".equals(value));
+        return (1 == value.length()) && (Symbol.STAR.equals(value) || "?".equals(value));
     }
 
     /**

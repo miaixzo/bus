@@ -207,13 +207,13 @@ public class Imgcodecs {
 
     /**
      * Loads an image from a file.
-     *
-     *  imread
-     *
+     * <p>
+     * imread
+     * <p>
      * The function imread loads an image from the specified file and returns it. If the image cannot be
      * read (because of missing file, improper permissions, unsupported or invalid format), the function
      * returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * Currently, the following file formats are supported:
      *
      * <ul>
@@ -304,8 +304,8 @@ public class Imgcodecs {
      * </ul>
      *
      * @param filename Name of file to be loaded.
-     * @param tags Output parameter for returning the list of EXIF tags
-     * @param flags Flag that can take values of cv::ImreadModes
+     * @param tags     Output parameter for returning the list of EXIF tags
+     * @param flags    Flag that can take values of cv::ImreadModes
      * @return automatically generated
      */
     public static Mat imread(String filename, List<String> tags, int flags) {
@@ -314,13 +314,13 @@ public class Imgcodecs {
 
     /**
      * Loads an image from a file.
-     *
-     *  imread
-     *
+     * <p>
+     * imread
+     * <p>
      * The function imread loads an image from the specified file and returns it. If the image cannot be
      * read (because of missing file, improper permissions, unsupported or invalid format), the function
      * returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * Currently, the following file formats are supported:
      *
      * <ul>
@@ -411,7 +411,7 @@ public class Imgcodecs {
      * </ul>
      *
      * @param filename Name of file to be loaded.
-     * @param tags Output parameter for returning the list of EXIF tags
+     * @param tags     Output parameter for returning the list of EXIF tags
      * @return automatically generated
      */
     public static Mat imread(String filename, List<String> tags) {
@@ -425,13 +425,14 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * @param filename Name of file to be loaded.
+     *
+     * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength A vector of double holding the length of each fragment to read.
-     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @param flags Flag that can take values of cv::ImreadModes.
+     * @param seglength   A vector of double holding the length of each fragment to read.
+     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
+     * @param flags       Flag that can take values of cv::ImreadModes.
      * @return automatically generated
      */
     public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags, int flags) {
@@ -442,12 +443,13 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * @param filename Name of file to be loaded.
+     *
+     * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength A vector of double holding the length of each fragment to read.
-     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
+     * @param seglength   A vector of double holding the length of each fragment to read.
+     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
      * @return automatically generated
      */
     public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags) {
@@ -458,11 +460,12 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     * @param filename Name of file to be loaded.
+     *
+     * @param filename    Name of file to be loaded.
      * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength A vector of double holding the length of each fragment to read.
+     * @param seglength   A vector of double holding the length of each fragment to read.
      * @return automatically generated
      */
     public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength) {
@@ -478,11 +481,12 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     * @param buf the raw byte data of jpg image (1 raw, x column).
+     *
+     * @param buf        the raw byte data of jpg image (1 raw, x column).
      * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @param flags Flag that can take values of cv::ImreadModes.
+     * @param flags      Flag that can take values of cv::ImreadModes.
      * @return automatically generated
      */
     public static Mat dicomJpgMatRead(Mat buf, int dicomflags, int flags) {
@@ -491,9 +495,10 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     * @param buf the raw byte data of jpg image (1 raw, x column).
+     *
+     * @param buf        the raw byte data of jpg image (1 raw, x column).
      * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
      * @return automatically generated
      */
@@ -503,8 +508,9 @@ public class Imgcodecs {
 
     /**
      * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     *
+     * <p>
      * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
+     *
      * @param buf the raw byte data of jpg image (1 raw, x column).
      * @return automatically generated
      */
@@ -519,12 +525,13 @@ public class Imgcodecs {
 
     /**
      * Loads a raw image (include RLE compressed image) from file segments.
-     *
+     * <p>
      * The function dicomRawRead loads a DICOM image from the specified file into Mat.
-     * @param filename Name of file to be loaded.
+     *
+     * @param filename    Name of file to be loaded.
      * @param segposition The position of the image to read.
-     * @param seglength The length image to read.
-     * @param colormodel The image color model.
+     * @param seglength   The length image to read.
+     * @param colormodel  The image color model.
      * @param dicomparams automatically generated
      * @return automatically generated
      */
@@ -542,11 +549,12 @@ public class Imgcodecs {
 
     /**
      * Loads a raw image (include RLE compressed image) from Mat.
-     *
+     * <p>
      * The function dicomRawRead loads a DICOM image from a specified byte array into Mat.
-     * @param buf the raw byte data of jpg image (1 raw, x column).
-     * @param dicomParams  A vector of int containing the specific DICOM parameters. See DICOM_PARAM in grfmt_dcm_dicom.hpp.
-     * @param colormodel The image color model.
+     *
+     * @param buf         the raw byte data of jpg image (1 raw, x column).
+     * @param dicomParams A vector of int containing the specific DICOM parameters. See DICOM_PARAM in grfmt_dcm_dicom.hpp.
+     * @param colormodel  The image color model.
      * @return automatically generated
      */
     public static Mat dicomRawMatRead(Mat buf, MatOfInt dicomParams, String colormodel) {
@@ -562,8 +570,8 @@ public class Imgcodecs {
     /**
      * Encodes an DICOM image into a memory buffer.
      *
-     * @param colormodel The image color model.
-     * @param image automatically generated
+     * @param colormodel  The image color model.
+     * @param image       automatically generated
      * @param dicomParams automatically generated
      * @return automatically generated
      */
@@ -579,12 +587,13 @@ public class Imgcodecs {
 
     /**
      * Loads a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
+     *
      * @param filename Name of file to be loaded.
-     * @param mats A vector of Mat objects holding each page.
-     * @param flags Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
-     * SEE: cv::imread
+     * @param mats     A vector of Mat objects holding each page.
+     * @param flags    Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
+     *                 SEE: cv::imread
      * @return automatically generated
      */
     public static boolean imreadmulti(String filename, List<Mat> mats, int flags) {
@@ -597,11 +606,12 @@ public class Imgcodecs {
 
     /**
      * Loads a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
+     *
      * @param filename Name of file to be loaded.
-     * @param mats A vector of Mat objects holding each page.
-     * SEE: cv::imread
+     * @param mats     A vector of Mat objects holding each page.
+     *                 SEE: cv::imread
      * @return automatically generated
      */
     public static boolean imreadmulti(String filename, List<Mat> mats) {
@@ -619,14 +629,15 @@ public class Imgcodecs {
 
     /**
      * Loads a of images of a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of Mat objects.
+     *
      * @param filename Name of file to be loaded.
-     * @param mats A vector of Mat objects holding each page.
-     * @param start Start index of the image to load
-     * @param count Count number of images to load
-     * @param flags Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
-     * SEE: cv::imread
+     * @param mats     A vector of Mat objects holding each page.
+     * @param start    Start index of the image to load
+     * @param count    Count number of images to load
+     * @param flags    Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
+     *                 SEE: cv::imread
      * @return automatically generated
      */
     public static boolean imreadmulti(String filename, List<Mat> mats, int start, int count, int flags) {
@@ -639,13 +650,14 @@ public class Imgcodecs {
 
     /**
      * Loads a of images of a multi-page image from a file.
-     *
+     * <p>
      * The function imreadmulti loads a specified range from a multi-page image from the specified file into a vector of Mat objects.
+     *
      * @param filename Name of file to be loaded.
-     * @param mats A vector of Mat objects holding each page.
-     * @param start Start index of the image to load
-     * @param count Count number of images to load
-     * SEE: cv::imread
+     * @param mats     A vector of Mat objects holding each page.
+     * @param start    Start index of the image to load
+     * @param count    Count number of images to load
+     *                 SEE: cv::imread
      * @return automatically generated
      */
     public static boolean imreadmulti(String filename, List<Mat> mats, int start, int count) {
@@ -663,10 +675,11 @@ public class Imgcodecs {
 
     /**
      * Returns the number of images inside the give file
-     *
+     * <p>
      * The function imcount will return the number of pages in a multi-page image, or 1 for single-page images
+     *
      * @param filename Name of file to be loaded.
-     * @param flags Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
+     * @param flags    Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
      * @return automatically generated
      */
     public static long imcount(String filename, int flags) {
@@ -675,8 +688,9 @@ public class Imgcodecs {
 
     /**
      * Returns the number of images inside the give file
-     *
+     * <p>
      * The function imcount will return the number of pages in a multi-page image, or 1 for single-page images
+     *
      * @param filename Name of file to be loaded.
      * @return automatically generated
      */
@@ -691,7 +705,7 @@ public class Imgcodecs {
 
     /**
      * Saves an image to a specified file.
-     *
+     * <p>
      * The function imwrite saves the image to the specified file. The image format is chosen based on the
      * filename extension (see cv::imread for the list of extensions). In general, only 8-bit unsigned (CV_8U)
      * single-channel or 3-channel (with 'BGR' channel order) images
@@ -742,21 +756,22 @@ public class Imgcodecs {
      *     using the LogLuv high dynamic range encoding (4 bytes per pixel)
      *     </li>
      *   </ul>
-     *
+     * <p>
      * If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
      *   </li>
      * </ul>
-     *
+     * <p>
      * If the format, depth or channel order is different, use
      * Mat::convertTo and cv::cvtColor to convert it before saving. Or, use the universal FileStorage I/O
      * functions to save the image to XML or YAML format.
-     *
+     * <p>
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG file.
      * It also demonstrates how to save multiple images in a TIFF file:
      * INCLUDE: snippets/imgcodecs_imwrite.cpp
+     *
      * @param filename Name of the file.
-     * @param img (Mat or vector of Mat) Image or Images to be saved.
-     * @param params Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .) see cv::ImwriteFlags
+     * @param img      (Mat or vector of Mat) Image or Images to be saved.
+     * @param params   Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .) see cv::ImwriteFlags
      * @return automatically generated
      */
     public static boolean imwrite(String filename, Mat img, MatOfInt params) {
@@ -766,7 +781,7 @@ public class Imgcodecs {
 
     /**
      * Saves an image to a specified file.
-     *
+     * <p>
      * The function imwrite saves the image to the specified file. The image format is chosen based on the
      * filename extension (see cv::imread for the list of extensions). In general, only 8-bit unsigned (CV_8U)
      * single-channel or 3-channel (with 'BGR' channel order) images
@@ -817,20 +832,21 @@ public class Imgcodecs {
      *     using the LogLuv high dynamic range encoding (4 bytes per pixel)
      *     </li>
      *   </ul>
-     *
+     * <p>
      * If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
      *   </li>
      * </ul>
-     *
+     * <p>
      * If the format, depth or channel order is different, use
      * Mat::convertTo and cv::cvtColor to convert it before saving. Or, use the universal FileStorage I/O
      * functions to save the image to XML or YAML format.
-     *
+     * <p>
      * The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG file.
      * It also demonstrates how to save multiple images in a TIFF file:
      * INCLUDE: snippets/imgcodecs_imwrite.cpp
+     *
      * @param filename Name of the file.
-     * @param img (Mat or vector of Mat) Image or Images to be saved.
+     * @param img      (Mat or vector of Mat) Image or Images to be saved.
      * @return automatically generated
      */
     public static boolean imwrite(String filename, Mat img) {
@@ -860,14 +876,15 @@ public class Imgcodecs {
 
     /**
      * Reads an image from a buffer in memory.
-     *
+     * <p>
      * The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
      * contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
-     *
+     * <p>
      * See cv::imread for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * @param buf Input array or vector of bytes.
+     *
+     * @param buf   Input array or vector of bytes.
      * @param flags The same flags as in cv::imread, see cv::ImreadModes.
      * @return automatically generated
      */
@@ -882,16 +899,17 @@ public class Imgcodecs {
 
     /**
      * Reads a multi-page image from a buffer in memory.
-     *
+     * <p>
      * The function imdecodemulti reads a multi-page image from the specified buffer in the memory. If the buffer is too short or
      * contains invalid data, the function returns false.
-     *
+     * <p>
      * See cv::imreadmulti for the list of supported formats and flags description.
      *
      * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     * @param buf Input array or vector of bytes.
+     *
+     * @param buf   Input array or vector of bytes.
      * @param flags The same flags as in cv::imread, see cv::ImreadModes.
-     * @param mats A vector of Mat objects holding each page, if more than one.
+     * @param mats  A vector of Mat objects holding each page, if more than one.
      * @return automatically generated
      */
     public static boolean imdecodemulti(Mat buf, int flags, List<Mat> mats) {
@@ -909,13 +927,13 @@ public class Imgcodecs {
 
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
      * result. See cv::imwrite for the list of supported formats and flags description.
      *
-     * @param ext File extension that defines the output format. Must include a leading period.
-     * @param img Image to be written.
-     * @param buf Output buffer resized to fit the compressed image.
+     * @param ext    File extension that defines the output format. Must include a leading period.
+     * @param img    Image to be written.
+     * @param buf    Output buffer resized to fit the compressed image.
      * @param params Format-specific parameters. See cv::imwrite and cv::ImwriteFlags.
      * @return automatically generated
      */
@@ -927,7 +945,7 @@ public class Imgcodecs {
 
     /**
      * Encodes an image into a memory buffer.
-     *
+     * <p>
      * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
      * result. See cv::imwrite for the list of supported formats and flags description.
      *
@@ -964,7 +982,7 @@ public class Imgcodecs {
     /**
      * Returns true if an image with the specified filename can be encoded by OpenCV
      *
-     *  @param filename File name of the image
+     * @param filename File name of the image
      * @return automatically generated
      */
     public static boolean haveImageWriter(String filename) {
@@ -972,20 +990,23 @@ public class Imgcodecs {
     }
 
 
-
-
     // C++:  Mat cv::imread(String filename, vector_String& tags, int flags = IMREAD_UNCHANGED)
     private static native long imread_0(String filename, List<String> tags, int flags);
+
     private static native long imread_1(String filename, List<String> tags);
 
     // C++:  Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
     private static native long dicomJpgFileRead_0(String filename, long segposition_mat_nativeObj, long seglength_mat_nativeObj, int dicomflags, int flags);
+
     private static native long dicomJpgFileRead_1(String filename, long segposition_mat_nativeObj, long seglength_mat_nativeObj, int dicomflags);
+
     private static native long dicomJpgFileRead_2(String filename, long segposition_mat_nativeObj, long seglength_mat_nativeObj);
 
     // C++:  Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
     private static native long dicomJpgMatRead_0(long buf_nativeObj, int dicomflags, int flags);
+
     private static native long dicomJpgMatRead_1(long buf_nativeObj, int dicomflags);
+
     private static native long dicomJpgMatRead_2(long buf_nativeObj);
 
     // C++:  Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int dicomparams, String colormodel)
@@ -999,22 +1020,27 @@ public class Imgcodecs {
 
     // C++:  bool cv::imreadmulti(String filename, vector_Mat& mats, int flags = IMREAD_COLOR)
     private static native boolean imreadmulti_0(String filename, long mats_mat_nativeObj, int flags);
+
     private static native boolean imreadmulti_1(String filename, long mats_mat_nativeObj);
 
     // C++:  bool cv::imreadmulti(String filename, vector_Mat& mats, int start, int count, int flags = IMREAD_ANYCOLOR)
     private static native boolean imreadmulti_2(String filename, long mats_mat_nativeObj, int start, int count, int flags);
+
     private static native boolean imreadmulti_3(String filename, long mats_mat_nativeObj, int start, int count);
 
     // C++:  size_t cv::imcount(String filename, int flags = IMREAD_ANYCOLOR)
     private static native long imcount_0(String filename, int flags);
+
     private static native long imcount_1(String filename);
 
     // C++:  bool cv::imwrite(String filename, Mat img, vector_int params = std::vector<int>())
     private static native boolean imwrite_0(String filename, long img_nativeObj, long params_mat_nativeObj);
+
     private static native boolean imwrite_1(String filename, long img_nativeObj);
 
     // C++:  bool cv::imwritemulti(String filename, vector_Mat img, vector_int params = std::vector<int>())
     private static native boolean imwritemulti_0(String filename, long img_mat_nativeObj, long params_mat_nativeObj);
+
     private static native boolean imwritemulti_1(String filename, long img_mat_nativeObj);
 
     // C++:  Mat cv::imdecode(Mat buf, int flags)
@@ -1025,6 +1051,7 @@ public class Imgcodecs {
 
     // C++:  bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
     private static native boolean imencode_0(String ext, long img_nativeObj, long buf_mat_nativeObj, long params_mat_nativeObj);
+
     private static native boolean imencode_1(String ext, long img_nativeObj, long buf_mat_nativeObj);
 
     // C++:  bool cv::haveImageReader(String filename)

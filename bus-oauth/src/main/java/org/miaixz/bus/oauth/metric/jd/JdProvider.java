@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.jd;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
@@ -59,27 +60,6 @@ public class JdProvider extends DefaultProvider {
         super(context, Registry.JD, authorizeCache);
     }
 
-    @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
-        form.put("app_key", context.getAppKey());
-        form.put("app_secret", context.getAppSecret());
-        form.put("grant_type", "authorization_code");
-        form.put("code", authCallback.getCode());
-        String response = Httpx.post(complex.accessToken(), form);
-        JSONObject object = JSONObject.parseObject(response);
-
-        this.checkResponse(object);
-
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .refreshToken(object.getString("refresh_token"))
-                .scope(object.getString("scope"))
-                .openId(object.getString("open_id"))
-                .build();
-    }
-
     /**
      * 京东宙斯平台的签名字符串
      * 宙斯签名规则过程如下:
@@ -106,6 +86,27 @@ public class JdProvider extends DefaultProvider {
         }
         signBuilder.append(appSecret);
         return org.miaixz.bus.crypto.Builder.md5Hex(signBuilder.toString()).toUpperCase();
+    }
+
+    @Override
+    protected AccToken getAccessToken(Callback authCallback) {
+        Map<String, Object> form = new HashMap<>(7);
+        form.put("app_key", context.getAppKey());
+        form.put("app_secret", context.getAppSecret());
+        form.put("grant_type", "authorization_code");
+        form.put("code", authCallback.getCode());
+        String response = Httpx.post(complex.accessToken(), form);
+        JSONObject object = JSONObject.parseObject(response);
+
+        this.checkResponse(object);
+
+        return AccToken.builder()
+                .accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in"))
+                .refreshToken(object.getString("refresh_token"))
+                .scope(object.getString("scope"))
+                .openId(object.getString("open_id"))
+                .build();
     }
 
     /**
@@ -186,7 +187,7 @@ public class JdProvider extends DefaultProvider {
                 .queryParam("app_key", context.getAppKey())
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(JdScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(JdScope.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

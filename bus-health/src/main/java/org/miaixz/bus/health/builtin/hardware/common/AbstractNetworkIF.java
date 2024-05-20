@@ -27,6 +27,7 @@ package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Memoizer;
@@ -95,7 +96,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 for (byte b : hwmac) {
                     octets.add(String.format(Locale.ROOT, "%02x", b));
                 }
-                this.mac = String.join(":", octets);
+                this.mac = String.join(Symbol.COLON, octets);
             } else {
                 this.mac = Normal.UNKNOWN;
             }
@@ -108,8 +109,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();
                 if (address.getHostAddress().length() > 0) {
-                    if (address.getHostAddress().contains(":")) {
-                        ipv6list.add(address.getHostAddress().split("%")[0]);
+                    if (address.getHostAddress().contains(Symbol.COLON)) {
+                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
                         prefixLengthList.add(interfaceAddress.getNetworkPrefixLength());
                     } else {
                         ipv4list.add(address.getHostAddress());

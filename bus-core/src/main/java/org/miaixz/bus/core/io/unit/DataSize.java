@@ -26,6 +26,8 @@
 package org.miaixz.bus.core.io.unit;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.math.BigDecimal;
@@ -260,9 +262,9 @@ public final class DataSize implements Comparable<DataSize> {
         if (size <= 0) {
             return "0";
         }
-        final int digitGroups = Math.min(DataUnit.UNIT_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
+        final int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
         return new DecimalFormat("#,##0.##")
-                .format(size / Math.pow(1024, digitGroups)) + " " + DataUnit.UNIT_NAMES[digitGroups];
+                .format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**

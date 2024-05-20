@@ -30,6 +30,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -304,7 +305,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                     }
                     services.add(new OSService(name, 0, OSService.State.STOPPED));
                 }
-            } else if (line.startsWith(" ")) {
+            } else if (line.startsWith(Symbol.SPACE)) {
                 String[] split = Pattern.SPACES_PATTERN.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Parsing.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));

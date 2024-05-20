@@ -32,6 +32,7 @@ import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
@@ -202,7 +203,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                     List<String> psInfo = Builder.readFile(SysPath.POWER_SUPPLY + "/" + name + "/uevent", false);
                     Map<String, String> psMap = new HashMap<>();
                     for (String line : psInfo) {
-                        String[] split = line.split("=");
+                        String[] split = line.split(Symbol.EQUAL);
                         if (split.length > 1 && !split[1].isEmpty()) {
                             psMap.put(split[0], split[1]);
                         }

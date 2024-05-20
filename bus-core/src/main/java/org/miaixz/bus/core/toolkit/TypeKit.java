@@ -49,10 +49,7 @@ public class TypeKit {
     /**
      * 常见的基础对象类型
      */
-    private static final Class[] BASE_TYPE_CLASS = new Class[]{
-            String.class, Boolean.class, Character.class, Byte.class, Short.class,
-            Integer.class, Long.class, Float.class, Double.class, Void.class, Object.class, Class.class
-    };
+    private static final Class[] BASE_TYPE_CLASS = new Class[]{String.class, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class, Object.class, Class.class};
 
     /**
      * 是否为 map class 类型
@@ -131,8 +128,7 @@ public class TypeKit {
      * @return 是否
      */
     public static boolean isAbstractOrInterface(Class<?> clazz) {
-        return isAbstract(clazz)
-                || clazz.isInterface();
+        return isAbstract(clazz) || clazz.isInterface();
     }
 
     /**
@@ -156,16 +152,7 @@ public class TypeKit {
      * @return 是否为标准类
      */
     public static boolean isJavaBean(Class<?> clazz) {
-        return null != clazz
-                && !clazz.isInterface()
-                && !isAbstract(clazz)
-                && !clazz.isEnum()
-                && !clazz.isArray()
-                && !clazz.isAnnotation()
-                && !clazz.isSynthetic()
-                && !clazz.isPrimitive()
-                && !isIterable(clazz)
-                && !isMap(clazz);
+        return null != clazz && !clazz.isInterface() && !isAbstract(clazz) && !clazz.isEnum() && !clazz.isArray() && !clazz.isAnnotation() && !clazz.isSynthetic() && !clazz.isPrimitive() && !isIterable(clazz) && !isMap(clazz);
     }
 
     /**
@@ -200,8 +187,7 @@ public class TypeKit {
      * @param typeVarAssigns 类型变量赋值的可选映射
      * @return 如果{@code type}可赋值给{@code toType}，则{@code true}.
      */
-    private static boolean isAssignable(final Type type, final Type toType,
-                                        final Map<TypeVariable<?>, Type> typeVarAssigns) {
+    private static boolean isAssignable(final Type type, final Type toType, final Map<TypeVariable<?>, Type> typeVarAssigns) {
         if (null == toType || toType instanceof Class<?>) {
             return isAssignable(type, (Class<?>) toType);
         }
@@ -272,10 +258,7 @@ public class TypeKit {
 
         // 可以为泛型数组类型分配的类只有类对象和数组类
         if (type instanceof GenericArrayType) {
-            return toClass.equals(Object.class)
-                    || toClass.isArray()
-                    && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass
-                    .getComponentType());
+            return toClass.equals(Object.class) || toClass.isArray() && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());
         }
 
         if (type instanceof WildcardType) {
@@ -293,8 +276,7 @@ public class TypeKit {
      * @param typeVarAssigns      带有类型变量的映射
      * @return 如果{@code type}可分配给{@code toType}，则{@code true}
      */
-    private static boolean isAssignable(final Type type, final ParameterizedType toParameterizedType,
-                                        final Map<TypeVariable<?>, Type> typeVarAssigns) {
+    private static boolean isAssignable(final Type type, final ParameterizedType toParameterizedType, final Map<TypeVariable<?>, Type> typeVarAssigns) {
         if (null == type) {
             return true;
         }
@@ -314,8 +296,7 @@ public class TypeKit {
         if (fromTypeVarAssigns.isEmpty()) {
             return true;
         }
-        final Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType,
-                toClass, typeVarAssigns);
+        final Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass, typeVarAssigns);
 
         for (final TypeVariable<?> var : toTypeVarAssigns.keySet()) {
             final Type toTypeArg = unrollVariableAssignments(var, toTypeVarAssigns);
@@ -325,10 +306,7 @@ public class TypeKit {
                 continue;
             }
 
-            if (null != fromTypeArg
-                    && !toTypeArg.equals(fromTypeArg)
-                    && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg,
-                    typeVarAssigns))) {
+            if (null != fromTypeArg && !toTypeArg.equals(fromTypeArg) && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {
                 return false;
             }
         }
@@ -605,8 +583,7 @@ public class TypeKit {
             return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);
         }
         if (type instanceof GenericArrayType) {
-            return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass
-                    .isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);
+            return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);
         }
         if (type instanceof WildcardType) {
             for (final Type bound : getImplicitUpperBounds((WildcardType) type)) {
@@ -648,8 +625,7 @@ public class TypeKit {
             cls = ClassKit.primitiveToWrapper(cls);
         }
 
-        final HashMap<TypeVariable<?>, Type> typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>()
-                : new HashMap<>(subtypeVarAssigns);
+        final HashMap<TypeVariable<?>, Type> typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>() : new HashMap<>(subtypeVarAssigns);
 
         if (toClass.equals(cls)) {
             return typeVarAssigns;
@@ -678,11 +654,9 @@ public class TypeKit {
 
         if (ownerType instanceof ParameterizedType) {
             final ParameterizedType parameterizedOwnerType = (ParameterizedType) ownerType;
-            typeVarAssigns = getTypeArguments(parameterizedOwnerType,
-                    getRawType(parameterizedOwnerType), subtypeVarAssigns);
+            typeVarAssigns = getTypeArguments(parameterizedOwnerType, getRawType(parameterizedOwnerType), subtypeVarAssigns);
         } else {
-            typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>()
-                    : new HashMap<>(subtypeVarAssigns);
+            typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>() : new HashMap<>(subtypeVarAssigns);
         }
 
         final Type[] typeArgs = parameterizedType.getActualTypeArguments();
@@ -690,8 +664,7 @@ public class TypeKit {
 
         for (int i = 0; i < typeParams.length; i++) {
             final Type typeArg = typeArgs[i];
-            typeVarAssigns.put(typeParams[i], typeVarAssigns.containsKey(typeArg) ? typeVarAssigns
-                    .get(typeArg) : typeArg);
+            typeVarAssigns.put(typeParams[i], typeVarAssigns.containsKey(typeArg) ? typeVarAssigns.get(typeArg) : typeArg);
         }
 
         if (toClass.equals(cls)) {
@@ -721,12 +694,10 @@ public class TypeKit {
                 } else if (midType instanceof Class<?>) {
                     midClass = (Class<?>) midType;
                 } else {
-                    throw new IllegalStateException("Unexpected generic"
-                            + " interface type found: " + midType);
+                    throw new IllegalStateException("Unexpected generic" + " interface type found: " + midType);
                 }
 
-                if (isAssignable(midClass, superClass)
-                        && isAssignable(genericInterface, (Type) midClass)) {
+                if (isAssignable(midClass, superClass) && isAssignable(genericInterface, (Type) midClass)) {
                     genericInterface = midType;
                 }
             }

@@ -90,13 +90,13 @@ public class Keys {
      */
     public static final String USER_REGION = "user.region";
     /**
-     * 文件分隔符
-     * UNIX /
+     * 文件路径分隔符
+     * 在Unix和Linux下 是{@code '/'}; 在Windows下是 {@code '\'}
      */
     public static final String FILE_SEPARATOR = "file.separator";
     /**
-     * 路径分隔符
-     * Unix :
+     * 多个PATH之间的分隔符
+     * 在Unix和Linux下 是{@code ':'}; 在Windows下是 {@code ';'}
      */
     public static final String PATH_SEPARATOR = "path.separator";
     /**

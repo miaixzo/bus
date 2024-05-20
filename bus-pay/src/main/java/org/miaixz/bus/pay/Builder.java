@@ -10,6 +10,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.core.toolkit.XmlKit;
@@ -143,7 +144,7 @@ public class Builder {
      * @return 拼接后字符串
      */
     public static String createLinkString(Map<String, String> params, boolean encode) {
-        return createLinkString(params, "&", encode);
+        return createLinkString(params, Symbol.AND, encode);
     }
 
     /**
@@ -166,15 +167,15 @@ public class Builder {
             // 拼接时，不包括最后一个&字符
             if (i == keys.size() - 1) {
                 if (quotes) {
-                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"');
+                    content.append(key).append(Symbol.EQUAL).append('"').append(encode ? urlEncode(value) : value).append('"');
                 } else {
-                    content.append(key).append("=").append(encode ? urlEncode(value) : value);
+                    content.append(key).append(Symbol.EQUAL).append(encode ? urlEncode(value) : value);
                 }
             } else {
                 if (quotes) {
-                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"').append(connStr);
+                    content.append(key).append(Symbol.EQUAL).append('"').append(encode ? urlEncode(value) : value).append('"').append(connStr);
                 } else {
-                    content.append(key).append("=").append(encode ? urlEncode(value) : value).append(connStr);
+                    content.append(key).append(Symbol.EQUAL).append(encode ? urlEncode(value) : value).append(connStr);
                 }
             }
         }
@@ -189,7 +190,7 @@ public class Builder {
      * @return 编码后的字符串
      */
     public static String urlEncode(String src) {
-        return URLEncoder.encode(src, Charset.UTF_8).replace("+", "%20");
+        return URLEncoder.encode(src, Charset.UTF_8).replace(Symbol.PLUS, "%20");
     }
 
     /**
@@ -372,7 +373,7 @@ public class Builder {
         params.put("nonce_str", nonceStr);
         params.put("timestamp", timestamp);
         params.put("signature", signature);
-        return authType.concat(" ").concat(createLinkString(params, ",", false, true));
+        return authType.concat(Symbol.SPACE).concat(createLinkString(params, ",", false, true));
     }
 
     /**

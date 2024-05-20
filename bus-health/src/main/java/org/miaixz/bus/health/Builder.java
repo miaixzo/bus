@@ -95,10 +95,10 @@ public final class Builder {
      * @return True if the String matches or if the first character is ^ and the remainder of the String does not match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
             return !wildcardMatch(text, pattern.substring(1));
         }
-        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -209,11 +209,11 @@ public final class Builder {
     public static String getManufacturerID(byte[] edid) {
         // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
         String temp = String.format(Locale.ROOT, "%8s%8s", Integer.toBinaryString(edid[8] & 0xFF),
-                Integer.toBinaryString(edid[9] & 0xFF)).replace(' ', '0');
+                Integer.toBinaryString(edid[9] & 0xFF)).replace(Symbol.C_SPACE, '0');
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format(Locale.ROOT, "%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", Normal.EMPTY);
+                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
     }
 
     /**

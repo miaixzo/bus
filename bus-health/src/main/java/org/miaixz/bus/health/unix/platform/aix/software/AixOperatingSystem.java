@@ -30,6 +30,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
@@ -203,7 +204,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             releaseNumber = Executor.getFirstAnswer("oslevel -s");
         } else {
             // strip leading date
-            int idx = releaseNumber.lastIndexOf(' ');
+            int idx = releaseNumber.lastIndexOf(Symbol.C_SPACE);
             if (idx > 0 && idx < releaseNumber.length()) {
                 releaseNumber = releaseNumber.substring(idx + 1);
             }

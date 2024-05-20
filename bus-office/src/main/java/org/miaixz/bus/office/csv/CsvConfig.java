@@ -53,7 +53,7 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     /**
      * 注释符号，用于区分注释行，默认'#'
      */
-    protected Character commentCharacter = '#';
+    protected Character commentCharacter = Symbol.C_SHAPE;
     /**
      * 标题别名
      */

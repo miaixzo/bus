@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.dfa;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * 敏感词过滤处理器，默认按字符数替换成*
  *
@@ -43,7 +45,7 @@ public interface SensitiveProcessor {
         final int length = foundWord.getFoundWord().length();
         final StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append("*");
+            sb.append(Symbol.STAR);
         }
         return sb.toString();
     }

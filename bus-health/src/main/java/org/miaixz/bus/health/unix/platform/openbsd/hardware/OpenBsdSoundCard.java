@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
@@ -92,7 +93,7 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
                 // Codec is on the next line
                 int idx = line.indexOf("codec");
                 if (idx >= 0) {
-                    idx = line.indexOf(':');
+                    idx = line.indexOf(Symbol.C_COLON);
                     codecMap.put(key, line.substring(idx + 1).trim());
                 }
                 // clear key so we don't keep looking

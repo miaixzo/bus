@@ -18,6 +18,7 @@ package org.miaixz.bus.http.metric.suffix;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -35,11 +36,9 @@ public final class Suffixes {
 
     public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
-    private static final byte[] WILDCARD_LABEL = new byte[]{'*'};
+    private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
     private static final String[] EMPTY_RULE = new String[0];
-    private static final String[] PREVAILING_RULE = new String[]{"*"};
-
-    private static final byte EXCEPTION_MARKER = '!';
+    private static final String[] PREVAILING_RULE = new String[]{Symbol.STAR};
 
     private static final Suffixes instance = new Suffixes();
 
@@ -171,13 +170,13 @@ public final class Suffixes {
         String unicodeDomain = IDN.toUnicode(domain);
         String[] domainLabels = unicodeDomain.split("\\.");
         String[] rule = findMatchingRule(domainLabels);
-        if (domainLabels.length == rule.length && rule[0].charAt(0) != EXCEPTION_MARKER) {
+        if (domainLabels.length == rule.length && rule[0].charAt(0) != Symbol.C_NOT) {
             // The domain is a public suffix.
             return null;
         }
 
         int firstLabelOffset;
-        if (rule[0].charAt(0) == EXCEPTION_MARKER) {
+        if (rule[0].charAt(0) == Symbol.C_NOT) {
             // Exception rules hold the effective TLD plus one.
             firstLabelOffset = domainLabels.length - rule.length;
         } else {

@@ -29,6 +29,7 @@ import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.*;
 import org.miaixz.bus.health.builtin.software.OSThread;
@@ -80,10 +81,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
     private String path = Normal.EMPTY;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
-    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
     private String userID;
-    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
+    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
     private String groupID;
+    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
     private String name;
     private State state = State.INVALID;
     private int parentProcessID;
@@ -156,7 +157,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private String queryCommandLine() {
         return Arrays.stream(Builder
                         .getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(Symbol.SPACE));
     }
 
     @Override
@@ -378,9 +379,9 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // Fetch all the values here
         // check for terminated process race condition after last one.
         Map<String, String> io = Builder
-                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_IO, getProcessID()), ":");
+                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_IO, getProcessID()), Symbol.COLON);
         Map<String, String> status = Builder
-                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), ":");
+                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), Symbol.COLON);
         String stat = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, getProcessID()));
         if (stat.isEmpty()) {
             this.state = State.INVALID;
@@ -396,7 +397,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
         long[] statArray = Parsing.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, ' ');
+                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to

@@ -97,22 +97,22 @@ public class ISO8601DateParser extends DefaultDatePrinter implements PredicateDa
                 // 毫秒部分1-7位支持
                 return new DateTime(source, Formatter.UTC_MS_FORMAT);
             }
-        } else if (StringKit.contains(source, '+')) {
+        } else if (StringKit.contains(source, Symbol.C_PLUS)) {
             // 去除类似2019-06-01T19:45:43 +08:00加号前的空格
-            source = source.replace(" +", "+");
-            final String zoneOffset = StringKit.subAfter(source, '+', true);
+            source = source.replace(" +", Symbol.PLUS);
+            final String zoneOffset = StringKit.subAfter(source, Symbol.C_PLUS, true);
             if (StringKit.isBlank(zoneOffset)) {
                 throw new DateException("Invalid format: [{}]", source);
             }
-            if (!StringKit.contains(zoneOffset, ':')) {
+            if (!StringKit.contains(zoneOffset, Symbol.C_COLON)) {
                 // +0800转换为+08:00
-                final String pre = StringKit.subBefore(source, '+', true);
-                source = pre + "+" + zoneOffset.substring(0, 2) + ":" + "00";
+                final String pre = StringKit.subBefore(source, Symbol.C_PLUS, true);
+                source = pre + Symbol.PLUS + zoneOffset.substring(0, 2) + Symbol.COLON + "00";
             }
 
             if (StringKit.contains(source, Symbol.C_DOT)) {
                 // 带毫秒，格式类似：2018-09-13T05:34:31.999+08:00
-                source = normalizeMillSeconds(source, ".", "+");
+                source = normalizeMillSeconds(source, ".", Symbol.PLUS);
                 return new DateTime(source, Formatter.ISO8601_MS_WITH_XXX_OFFSET_FORMAT);
             } else {
                 // 格式类似：2018-09-13T05:34:31+08:00
@@ -122,14 +122,14 @@ public class ISO8601DateParser extends DefaultDatePrinter implements PredicateDa
             // 类似 2022-09-14T23:59:00-08:00 或者 2022-09-14T23:59:00-0800
 
             // 去除类似2019-06-01T19:45:43 -08:00加号前的空格
-            source = source.replace(" -", "-");
-            if (':' != source.charAt(source.length() - 3)) {
+            source = source.replace(" -", Symbol.MINUS);
+            if (Symbol.C_COLON != source.charAt(source.length() - 3)) {
                 source = source.substring(0, source.length() - 2) + ":00";
             }
 
             if (StringKit.contains(source, Symbol.C_DOT)) {
                 // 带毫秒，格式类似：2018-09-13T05:34:31.999-08:00
-                source = normalizeMillSeconds(source, ".", "-");
+                source = normalizeMillSeconds(source, ".", Symbol.MINUS);
                 return new DateTime(source, Formatter.ISO8601_MS_WITH_XXX_OFFSET_FORMAT);
             } else {
                 // 格式类似：2018-09-13T05:34:31-08:00

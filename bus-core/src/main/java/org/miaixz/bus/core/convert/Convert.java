@@ -831,7 +831,7 @@ public class Convert {
 
             if (c[i] == '\u3000' || c[i] == '\u00a0' || c[i] == '\u2007' || c[i] == '\u202F') {
                 // \u3000是中文全角空格，\u00a0、\u2007、\u202F是不间断空格
-                c[i] = ' ';
+                c[i] = Symbol.C_SPACE;
             } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
                 c[i] = (char) (c[i] - 65248);
             }

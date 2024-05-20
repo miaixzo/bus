@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.setting.metric.toml;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.time.LocalDate;
@@ -203,10 +204,10 @@ public class TomlReader {
     }
 
     private char nextUseful(final boolean skipComments) {
-        char c = ' ';
-        while (hasNext() && (c == ' ' || c == '\t' || c == '\r' || c == '\n' || (c == '#' && skipComments))) {
+        char c = Symbol.C_SPACE;
+        while (hasNext() && (c == Symbol.C_SPACE || c == '\t' || c == '\r' || c == '\n' || (c == Symbol.C_SHAPE && skipComments))) {
             c = next();
-            if (skipComments && c == '#') {
+            if (skipComments && c == Symbol.C_SHAPE) {
                 final int nextLinebreak = data.indexOf('\n', pos);
                 if (nextLinebreak == -1) {
                     pos = data.length();
@@ -222,8 +223,8 @@ public class TomlReader {
     }
 
     private char nextUsefulOrLinebreak() {
-        char c = ' ';
-        while (c == ' ' || c == '\t' || c == '\r') {
+        char c = Symbol.C_SPACE;
+        while (c == Symbol.C_SPACE || c == '\t' || c == '\r') {
             if (!hasNext())// fixes error when no '\n' at the end of the file
                 return '\n';
             c = next();
@@ -235,8 +236,8 @@ public class TomlReader {
 
     private Object nextValue(final char firstChar) {
         switch (firstChar) {
-            case '+':
-            case '-':
+            case Symbol.C_PLUS:
+            case Symbol.C_MINUS:
             case '0':
             case '1':
             case '2':
@@ -350,14 +351,14 @@ public class TomlReader {
                 }
                 default:
                     pos--;// to include the first (already read) non-space character
-                    name = nextBareKey(' ', '\t', '=');
+                    name = nextBareKey(Symbol.C_SPACE, '\t', Symbol.C_EQUAL);
                     if (name.isEmpty())
                         throw new InternalException("Invalid empty data at line " + line);
                     break;
             }
 
             final char separator = nextUsefulOrLinebreak();// tries to find the '=' sign
-            if (separator != '=')
+            if (separator != Symbol.C_EQUAL)
                 throw new InternalException("Invalid character '" + toString(separator) + "' at line " + line + ": expected '='");
 
             final char valueFirstChar = nextUsefulOrLinebreak();
@@ -412,13 +413,13 @@ public class TomlReader {
                 }
                 default:
                     pos--;// to include the first (already read) non-space character
-                    name = nextBareKey(' ', '\t', '=');
+                    name = nextBareKey(Symbol.C_SPACE, '\t', Symbol.C_EQUAL);
                     if (name.isEmpty())
                         throw new InternalException("Invalid empty data at line " + line);
                     break;
             }
             final char separator = nextUsefulOrLinebreak();// tries to find the '=' sign
-            if (separator != '=')// an other character
+            if (separator != Symbol.C_EQUAL)// an other character
                 throw new InternalException("Invalid character '" + toString(separator) + "' at line " + line + ": expected '='");
 
             final char valueFirstChar = nextUsefulOrLinebreak();
@@ -428,7 +429,7 @@ public class TomlReader {
             final Object value = nextValue(valueFirstChar);
 
             final char afterEntry = nextUsefulOrLinebreak();
-            if (afterEntry == '#') {
+            if (afterEntry == Symbol.C_SHAPE) {
                 pos--;// to make the next nextUseful() call read the # character
             } else if (afterEntry != '\n') {
                 throw new InternalException("Invalid character '" + toString(afterEntry) + "' after the value at line " + line);
@@ -449,7 +450,7 @@ public class TomlReader {
         while (hasNext()) {
             c = next();
             switch (c) {
-                case ':':
+                case Symbol.C_COLON:
                 case 'T':
                 case 'Z':
                     maybeInteger = maybeDouble = false;
@@ -461,12 +462,12 @@ public class TomlReader {
                 case '.':
                     maybeInteger = false;
                     break;
-                case '-':
+                case Symbol.C_MINUS:
                     if (pos != 0 && data.charAt(pos - 1) != 'e' && data.charAt(pos - 1) != 'E')
                         maybeInteger = maybeDouble = false;
                     break;
                 case ',':
-                case ' ':
+                case Symbol.C_SPACE:
                 case '\t':
                 case '\n':
                 case '\r':
@@ -475,7 +476,7 @@ public class TomlReader {
                     pos--;
                     break whileLoop;
             }
-            if (c == '_')
+            if (c == Symbol.C_UNDERLINE)
                 maybeDate = false;
             else
                 sb.append(c);
@@ -513,9 +514,9 @@ public class TomlReader {
                 }
             }
             if (strictAsciiBareKeys) {
-                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '-'))
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == Symbol.C_UNDERLINE || c == Symbol.C_MINUS))
                     throw new InternalException("Forbidden character '" + toString(c) + "' in strict bare-data at line " + line);
-            } else if (c <= ' ' || c == '#' || c == '=' || c == '.' || c == '[' || c == ']') {// lenient bare data
+            } else if (c <= Symbol.C_SPACE || c == Symbol.C_SHAPE || c == Symbol.C_EQUAL || c == '.' || c == '[' || c == ']') {// lenient bare data
                 throw new InternalException("Forbidden character '" + toString(c) + "' in lenient bare-data at line " + line);
             } // else continue reading
         }
@@ -594,7 +595,7 @@ public class TomlReader {
                 continue;
             }
             if (escape) {
-                if (c == '\r' || c == '\n' || c == ' ' || c == '\t') {
+                if (c == '\r' || c == '\n' || c == Symbol.C_SPACE || c == '\t') {
                     if (c == '\r' && hasNext() && data.charAt(pos) == '\n')// "\r\n"
                         pos++;
                     else if (c == '\n')

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.data;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 /**
@@ -135,7 +136,7 @@ public class Strength {
         }
 
         // decrease points
-        if ("abcdefghijklmnopqrstuvwxyz".indexOf(passwd) > 0 || "ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(passwd) > 0) {
+        if (Normal.ALPHABET.indexOf(passwd) > 0 || Normal.ALPHABET.indexOf(passwd) > 0) {
             level--;
         }
         if ("qwertyuiop".indexOf(passwd) > 0 || "asdfghjkl".indexOf(passwd) > 0 || "zxcvbnm".indexOf(passwd) > 0) {

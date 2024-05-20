@@ -62,7 +62,7 @@ public class OracleProvider extends MapperTemplate {
 
         String tableName = SqlBuilder.getDynamicTableName(entityClass, tableName(entityClass), "list[0]");
         String columns = SqlBuilder.insertColumns(entityClass, false, false, false);
-        sql.append(" INTO ").append(tableName).append(" ").append(columns).append("\n");
+        sql.append(" INTO ").append(tableName).append(Symbol.SPACE).append(columns).append("\n");
         sql.append(" VALUES ");
 
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");

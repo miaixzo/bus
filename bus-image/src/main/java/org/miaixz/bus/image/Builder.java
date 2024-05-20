@@ -75,10 +75,10 @@ public class Builder {
     public static final int AC_USER_IDENTITY = 0x59;
     public static final int MAGIC_LEN = 0xfbfb;
 
-    public final static int KNOWN_INCONSISTENCIES = 0xFFFF;
-    public final static int NO_KNOWN_INCONSISTENCIES = 0;
-    public final static int IN_USE = 0xFFFF;
-    public final static int IN_ACTIVE = 0;
+    public static final int KNOWN_INCONSISTENCIES = 0xFFFF;
+    public static final int NO_KNOWN_INCONSISTENCIES = 0;
+    public static final int IN_USE = 0xFFFF;
+    public static final int IN_ACTIVE = 0;
 
     public static final String FAILED = "FAILED";
     public static final String WARNING = "WARNING";

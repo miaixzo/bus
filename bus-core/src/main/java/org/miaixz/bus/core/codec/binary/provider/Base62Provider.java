@@ -45,9 +45,6 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
 
     public static final long serialVersionUID = -1L;
 
-    public static final int STANDARD_BASE = 256;
-    public static final int TARGET_BASE = 62;
-
     /**
      * 单例
      */

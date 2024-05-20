@@ -52,7 +52,7 @@ public class Context {
     /**
      * 交换内容
      */
-    private final static String $ = "_context";
+    private static final String $ = "_context";
 
     /**
      * 请求参数

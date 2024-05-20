@@ -93,7 +93,7 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn())
                             .append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ");
+                            .append(Symbol.AT).append(versionClass).append("@class, ");
                     // 虽然从函数调用上来看entityName必为"record"，但还是判断一下
                     if (StringKit.isNotEmpty(entityName)) {
                         sql.append(entityName).append('.');

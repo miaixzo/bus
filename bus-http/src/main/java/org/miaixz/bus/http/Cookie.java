@@ -322,7 +322,7 @@ public class Cookie {
                     || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                     || (c >= 'a' && c <= 'z')
                     || (c >= 'A' && c <= 'Z')
-                    || (c == ':');
+                    || (c == Symbol.C_COLON);
             if (dateCharacter == !invert) return i;
         }
         return limit;

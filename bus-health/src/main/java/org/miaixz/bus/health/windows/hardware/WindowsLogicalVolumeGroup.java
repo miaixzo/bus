@@ -29,6 +29,7 @@ import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
@@ -88,7 +89,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 String vdObjectId = WmiKit.getString(vds, VirtualDiskProperty.OBJECTID, i);
                 Matcher m = VD_OBJECT_ID.matcher(vdObjectId);
                 if (m.matches()) {
-                    vdObjectId = m.group(2) + " " + m.group(1);
+                    vdObjectId = m.group(2) + Symbol.SPACE + m.group(1);
                 }
                 // Store key with SP|VD
                 vdMap.put(vdObjectId, WmiKit.getString(vds, VirtualDiskProperty.FRIENDLYNAME, i));
@@ -125,7 +126,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 if (m.matches()) {
                     pdObjectId = m.group(1);
                 }
-                sppdMap.put(spObjectId + " " + pdObjectId, pdObjectId);
+                sppdMap.put(spObjectId + Symbol.SPACE + pdObjectId, pdObjectId);
             }
 
             // Finally process the storage pools
@@ -156,7 +157,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 for (Entry<String, String> entry : vdMap.entrySet()) {
                     if (entry.getKey().contains(spObjectId)) {
                         String vdObjectId = Pattern.SPACES_PATTERN.split(entry.getKey())[0];
-                        logicalVolumeMap.put(entry.getValue() + " " + vdObjectId, physicalVolumeSet);
+                        logicalVolumeMap.put(entry.getValue() + Symbol.SPACE + vdObjectId, physicalVolumeSet);
                     }
                 }
                 // Add to list

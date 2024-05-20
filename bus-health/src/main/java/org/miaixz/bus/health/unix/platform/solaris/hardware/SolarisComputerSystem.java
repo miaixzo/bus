@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -105,7 +106,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
                 break;
             }
             // Based on the smbTypeID we are processing for
-            Integer colonDelimiterIndex = checkLine.indexOf(":");
+            Integer colonDelimiterIndex = checkLine.indexOf(Symbol.COLON);
             if (smbTypeId != null && colonDelimiterIndex >= 0) {
                 String key = checkLine.substring(0, colonDelimiterIndex).trim();
                 String val = checkLine.substring(colonDelimiterIndex + 1).trim();

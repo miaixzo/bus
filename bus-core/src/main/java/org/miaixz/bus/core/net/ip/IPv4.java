@@ -537,7 +537,7 @@ public class IPv4 {
 
         final String targetHost;
         final int port;
-        final int index = host.indexOf(":");
+        final int index = host.indexOf(Symbol.COLON);
         if (index != -1) {
             // host:port形式
             targetHost = host.substring(0, index);
@@ -944,7 +944,7 @@ public class IPv4 {
         }
 
         for (int i = 0; i < wildcardSegments.length; i++) {
-            if (!"*".equals(wildcardSegments[i]) && !wildcardSegments[i].equals(ipSegments[i])) {
+            if (!Symbol.STAR.equals(wildcardSegments[i]) && !wildcardSegments[i].equals(ipSegments[i])) {
                 return false;
             }
         }

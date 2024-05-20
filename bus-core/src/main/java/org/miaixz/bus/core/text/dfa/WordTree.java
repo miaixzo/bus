@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.SetKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -78,7 +78,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param initialCapacity 初始容量，一般是关键词的数量
      */
     public WordTree(final int initialCapacity) {
-        super((int) (initialCapacity / MapKit.DEFAULT_LOAD_FACTOR) + 1);
+        super((int) (initialCapacity / Normal.DEFAULT_LOAD_FACTOR) + 1);
     }
 
     /**

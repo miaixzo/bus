@@ -26,16 +26,20 @@
 
 ```java
 // 创建授权request
-Provider provider=new GiteeProvider(Context.builder()
+Provider provider = new GiteeProvider(Context.builder()
         .clientId("clientId")
         .clientSecret("clientSecret")
         .redirectUri("redirectUri")
         .build());
 // 生成授权页面
-        provider.authorize("state");
+        provider.
+
+authorize("state");
 // 授权登录后会返回code(auth_code(仅限支付宝))、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-        provider.login(callback);
+        provider.
+
+login(callback);
 ```
 
 ### 获取授权链接

@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.math.*;
 
 import java.math.BigDecimal;
@@ -38,8 +39,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import static java.lang.Math.min;
 
 /**
  * 数字工具类
@@ -65,10 +64,6 @@ import static java.lang.Math.min;
  */
 public class MathKit extends NumberValidator {
 
-    /**
-     * 默认除法运算精度
-     */
-    private static final int DEFAULT_DIV_SCALE = 10;
     /**
      * 0-20对应的阶乘，超过20的阶乘会超过Long.MAX_VALUE
      */
@@ -240,7 +235,7 @@ public class MathKit extends NumberValidator {
      * @return 两个参数的商
      */
     public static BigDecimal div(final Number v1, final Number v2) {
-        return div(v1, v2, DEFAULT_DIV_SCALE);
+        return div(v1, v2, Normal._10);
     }
 
     /**
@@ -251,7 +246,7 @@ public class MathKit extends NumberValidator {
      * @return 两个参数的商
      */
     public static BigDecimal div(final String v1, final String v2) {
-        return div(v1, v2, DEFAULT_DIV_SCALE);
+        return div(v1, v2, Normal._10);
     }
 
     /**
@@ -1804,7 +1799,7 @@ public class MathKit extends NumberValidator {
             b += minDeltaOrZero; // sets b to min(old a, b)
             a >>= Integer.numberOfTrailingZeros(a); // divide out all 2s, since 2 doesn't divide b
         }
-        return a << min(aTwos, bTwos);
+        return a << Math.min(aTwos, bTwos);
     }
 
     /**

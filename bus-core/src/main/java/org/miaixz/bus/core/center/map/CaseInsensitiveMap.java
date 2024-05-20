@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * 构造
      */
     public CaseInsensitiveMap() {
-        this(DEFAULT_INITIAL_CAPACITY);
+        this(Normal._16);
     }
 
     /**
@@ -56,7 +58,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * @param initialCapacity 初始大小
      */
     public CaseInsensitiveMap(final int initialCapacity) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+        this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
@@ -66,7 +68,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * @param m 被包装的自定义Map创建器
      */
     public CaseInsensitiveMap(final Map<? extends K, ? extends V> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
+        this(Normal.DEFAULT_LOAD_FACTOR, m);
     }
 
     /**

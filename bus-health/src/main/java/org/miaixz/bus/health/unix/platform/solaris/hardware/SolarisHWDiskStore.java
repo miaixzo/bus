@@ -29,6 +29,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -100,7 +101,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
     private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
                                                   String serial, long size, String mount, int major) {
         SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
-                model.isEmpty() ? (vendor + " " + product).trim() : model, serial, size);
+                model.isEmpty() ? (vendor + Symbol.SPACE + product).trim() : model, serial, size);
         store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()
                 .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
         store.updateAttributes();

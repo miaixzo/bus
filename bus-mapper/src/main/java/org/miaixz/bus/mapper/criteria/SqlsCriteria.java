@@ -34,7 +34,7 @@ import java.util.Optional;
 /**
  * sql 条件语句
  *
- * @param <T>  泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -95,7 +95,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> andEqualTo(FunctionX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "=", "and"));
+            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "and"));
         } else {
             if (required) {
                 // null属性查询 转 is null
@@ -403,7 +403,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orEqualTo(FunctionX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "=", "or"));
+            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "or"));
         } else {
             if (required) {
                 //转 or null
@@ -577,7 +577,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orLike(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
-            value = "%" + value + "%";
+            value = Symbol.PERCENT + value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
         }
         return this;
@@ -593,7 +593,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orLikeLeft(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
-            value = "%" + value;
+            value = Symbol.PERCENT + value;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
         }
         return this;
@@ -609,7 +609,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orLikeRight(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
-            value = value + "%";
+            value = value + Symbol.PERCENT;
             this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "like", "or"));
         }
         return this;

@@ -38,6 +38,7 @@ import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -160,7 +161,7 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        return String.join(" ", getArguments());
+        return String.join(Symbol.SPACE, getArguments());
     }
 
     @Override
@@ -221,7 +222,7 @@ public class MacOSProcess extends AbstractOSProcess {
                             args.add(arg);
                         } else {
                             // otherwise it's an env
-                            int idx = arg.indexOf('=');
+                            int idx = arg.indexOf(Symbol.C_EQUAL);
                             if (idx > 0) {
                                 env.put(arg.substring(0, idx), arg.substring(idx + 1));
                             }

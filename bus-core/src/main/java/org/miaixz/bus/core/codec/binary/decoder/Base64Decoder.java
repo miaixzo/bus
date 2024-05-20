@@ -26,6 +26,8 @@
 package org.miaixz.bus.core.codec.binary.decoder;
 
 import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 
@@ -41,7 +43,7 @@ import java.io.Serializable;
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
     private static final long serialVersionUID = -1L;
-    private static final byte PADDING = -2;
+
     /**
      * 单例对象
      */
@@ -103,13 +105,13 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
             sestet2 = getNextValidDecodeByte(in, offset, maxPos);
             sestet3 = getNextValidDecodeByte(in, offset, maxPos);
 
-            if (PADDING != sestet1) {
+            if (Normal.__2 != sestet1) {
                 octet[octetId++] = (byte) ((sestet0 << 2) | (sestet1 >>> 4));
             }
-            if (PADDING != sestet2) {
+            if (Normal.__2 != sestet2) {
                 octet[octetId++] = (byte) (((sestet1 & 0xf) << 4) | (sestet2 >>> 2));
             }
-            if (PADDING != sestet3) {
+            if (Normal.__2 != sestet3) {
                 octet[octetId++] = (byte) (((sestet2 & 3) << 6) | sestet3);
             }
         }
@@ -129,7 +131,7 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
      * @return 是否为Base64字符
      */
     public boolean isBase64Code(final byte octet) {
-        return octet == '=' || (octet >= 0 && octet < DECODE_TABLE.length && DECODE_TABLE[octet] != -1);
+        return octet == Symbol.C_EQUAL || (octet >= 0 && octet < DECODE_TABLE.length && DECODE_TABLE[octet] != -1);
     }
 
     /**
@@ -154,7 +156,7 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
             }
         }
         // padding if reached max position
-        return PADDING;
+        return Normal.__2;
     }
 
 }

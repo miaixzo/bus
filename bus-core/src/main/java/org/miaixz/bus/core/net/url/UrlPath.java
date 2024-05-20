@@ -198,7 +198,7 @@ public class UrlPath {
             return withEngTag ? Symbol.SLASH : Normal.EMPTY;
         }
 
-        final char[] safeChars = encodePercent ? null : new char[]{'%'};
+        final char[] safeChars = encodePercent ? null : new char[]{Symbol.C_PERCENT};
         final StringBuilder builder = new StringBuilder();
         for (final String segment : segments) {
             if (builder.length() == 0) {

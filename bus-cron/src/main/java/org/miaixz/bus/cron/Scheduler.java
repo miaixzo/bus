@@ -51,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 任务调度器
- *
+ * <p>
  * 调度器启动流程：
  * <pre>启动Timer = 启动TaskLauncher = 启动TaskExecutor</pre>
  * 调度器关闭流程:
@@ -267,7 +267,7 @@ public class Scheduler implements Serializable {
      * 新增Task，使用随机UUID
      *
      * @param pattern {@link CronPattern}对应的String表达式
-     * @param crontab    {@link Crontab}
+     * @param crontab {@link Crontab}
      * @return ID
      */
     public String schedule(final String pattern, final Crontab crontab) {
@@ -293,7 +293,7 @@ public class Scheduler implements Serializable {
      *
      * @param id      ID，为每一个Task定义一个ID
      * @param pattern {@link CronPattern}对应的String表达式
-     * @param crontab    {@link Crontab}
+     * @param crontab {@link Crontab}
      * @return this
      */
     public Scheduler schedule(final String id, final String pattern, final Crontab crontab) {
@@ -305,7 +305,7 @@ public class Scheduler implements Serializable {
      *
      * @param id      ID，为每一个Task定义一个ID
      * @param pattern {@link CronPattern}
-     * @param crontab    {@link Crontab}
+     * @param crontab {@link Crontab}
      * @return this
      */
     public Scheduler schedule(final String id, final CronPattern pattern, final Crontab crontab) {

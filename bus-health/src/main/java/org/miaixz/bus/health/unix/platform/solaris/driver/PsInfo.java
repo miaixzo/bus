@@ -31,6 +31,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
@@ -203,7 +204,7 @@ public final class PsInfo {
                         bufStart = conditionallyReadBufferFromStartOfPage(fd, buffer, bufSize, bufStart, envPtr);
                         if (bufStart != 0) {
                             String envStr = buffer.getString(envPtr - bufStart);
-                            int idx = envStr.indexOf('=');
+                            int idx = envStr.indexOf(Symbol.C_EQUAL);
                             if (idx > 0) {
                                 env.put(envStr.substring(0, idx), envStr.substring(idx + 1));
                             }

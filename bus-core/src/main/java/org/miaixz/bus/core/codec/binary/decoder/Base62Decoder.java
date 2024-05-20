@@ -28,6 +28,7 @@ package org.miaixz.bus.core.codec.binary.decoder;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Base62解码器
@@ -64,7 +65,7 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
     @Override
     public byte[] decode(final byte[] encoded) {
         final byte[] prepared = Base62Provider.translate(encoded, lookupTable);
-        return Base62Provider.convert(prepared, Base62Provider.TARGET_BASE, Base62Provider.STANDARD_BASE);
+        return Base62Provider.convert(prepared, 62, Normal._256);
     }
 
 }

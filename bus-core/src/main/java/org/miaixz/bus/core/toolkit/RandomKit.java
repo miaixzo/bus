@@ -49,21 +49,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomKit {
 
     /**
-     * 用于随机选的数字
-     */
-    public static final String BASE_NUMBER = "0123456789";
-    /**
-     * 用于随机选的字符
-     */
-    public static final String BASE_CHAR = "abcdefghijklmnopqrstuvwxyz";
-    /**
-     * 用于随机选的字符和数字（小写）
-     */
-    public static final String BASE_CHAR_NUMBER_LOWER = BASE_CHAR + BASE_NUMBER;
-    /**
      * 用于随机选的字符和数字（包括大写和小写字母）
      */
-    public static final String BASE_CHAR_NUMBER = BASE_CHAR.toUpperCase() + BASE_CHAR_NUMBER_LOWER;
+    public static final String BASE_CHAR_NUMBER = Normal.ALPHABET.toUpperCase() + Normal.LOWER_ALPHABET_NUMBER;
 
     /**
      * 获取随机数生成器对象
@@ -96,6 +84,7 @@ public class RandomKit {
      *
      * <p>
      * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * </p>
      *
      * @return {@link SecureRandom}
      */
@@ -621,7 +610,7 @@ public class RandomKit {
      * @return 随机字符串
      */
     public static String randomStringLower(final int length) {
-        return randomString(BASE_CHAR_NUMBER_LOWER, length);
+        return randomString(Normal.LOWER_ALPHABET_NUMBER, length);
     }
 
     /**
@@ -631,7 +620,7 @@ public class RandomKit {
      * @return 随机字符串
      */
     public static String randomStringUpper(final int length) {
-        return randomString(BASE_CHAR_NUMBER_LOWER, length).toUpperCase();
+        return randomString(Normal.LOWER_ALPHABET_NUMBER, length).toUpperCase();
     }
 
     /**
@@ -655,7 +644,7 @@ public class RandomKit {
      * @return 随机字符串
      */
     public static String randomStringLowerWithoutString(final int length, final String elemData) {
-        String baseStr = BASE_CHAR_NUMBER_LOWER;
+        String baseStr = Normal.LOWER_ALPHABET_NUMBER;
         baseStr = StringKit.removeAll(baseStr, elemData.toLowerCase().toCharArray());
         return randomString(baseStr, length);
     }
@@ -667,7 +656,7 @@ public class RandomKit {
      * @return 随机字符串
      */
     public static String randomNumbers(final int length) {
-        return randomString(BASE_NUMBER, length);
+        return randomString(Normal.NUMBER, length);
     }
 
     /**
@@ -700,7 +689,7 @@ public class RandomKit {
      * @return 随机数字字符
      */
     public static char randomNumber() {
-        return randomChar(BASE_NUMBER);
+        return randomChar(Normal.NUMBER);
     }
 
     /**
@@ -709,7 +698,7 @@ public class RandomKit {
      * @return 随机字符
      */
     public static char randomChar() {
-        return randomChar(BASE_CHAR_NUMBER_LOWER);
+        return randomChar(Normal.LOWER_ALPHABET_NUMBER);
     }
 
     /**

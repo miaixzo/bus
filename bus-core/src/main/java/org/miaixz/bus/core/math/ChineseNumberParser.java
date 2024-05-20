@@ -27,6 +27,7 @@ package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.MathKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -46,7 +47,7 @@ public class ChineseNumberParser {
      * 汉字转阿拉伯数字的
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = {
-            new ChineseUnit(' ', 1, false),
+            new ChineseUnit(Symbol.C_SPACE, 1, false),
             new ChineseUnit('十', 10, false),
             new ChineseUnit('拾', 10, false),
             new ChineseUnit('百', 100, false),

@@ -28,21 +28,17 @@ package org.miaixz.bus.oauth.metric.huawei;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.oauth.magic.AccToken;
-import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Message;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.*;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.miaixz.bus.oauth.magic.ErrorCode.SUCCESS;
 
 /**
  * 华为 登录
@@ -129,7 +125,7 @@ public class HuaweiProvider extends DefaultProvider {
         form.put("grant_type", "refresh_token");
 
         String response = Httpx.post(complex.refresh(), form);
-        return Message.builder().errcode(SUCCESS.getCode()).data(getAuthToken(response)).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     private AccToken getAuthToken(String response) {
@@ -154,7 +150,7 @@ public class HuaweiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(HuaweiScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(HuaweiScope.values())))
                 .build();
     }
 
@@ -196,7 +192,7 @@ public class HuaweiProvider extends DefaultProvider {
             throw new AuthorizedException(object.getString("error"));
         }
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("sub_error") + ":" + object.getString("error_description"));
+            throw new AuthorizedException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 

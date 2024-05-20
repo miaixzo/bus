@@ -61,8 +61,8 @@ import java.util.Random;
  * @since Java 17+
  */
 public class ULID implements Comparable<ULID>, Serializable {
-    private static final long serialVersionUID = -1L;
 
+    private static final long serialVersionUID = -1L;
 
     /**
      * Timestamp component mask

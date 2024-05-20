@@ -80,7 +80,7 @@ public class Repertoire implements Serializable {
      *
      * @param id      ID
      * @param pattern {@link CronPattern}
-     * @param crontab    {@link Crontab}
+     * @param crontab {@link Crontab}
      * @return this
      */
     public Repertoire add(final String id, final CronPattern pattern, final Crontab crontab) {

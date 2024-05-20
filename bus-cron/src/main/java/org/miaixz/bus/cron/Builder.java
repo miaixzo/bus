@@ -92,7 +92,7 @@ public class Builder {
      * 加入定时任务
      *
      * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param crontab              任务
+     * @param crontab           任务
      * @return 定时任务ID
      */
     public static String schedule(final String schedulingPattern, final Crontab crontab) {
@@ -104,7 +104,7 @@ public class Builder {
      *
      * @param id                定时任务ID
      * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param crontab              任务
+     * @param crontab           任务
      * @return 定时任务ID
      */
     public static String schedule(final String id, final String schedulingPattern, final Crontab crontab) {

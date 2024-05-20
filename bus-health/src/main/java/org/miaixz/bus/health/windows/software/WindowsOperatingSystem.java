@@ -35,6 +35,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.LUID;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -490,7 +491,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if (versionInfo.getResultCount() > 0) {
             sp = WmiKit.getString(versionInfo, Win32OperatingSystem.OSVersionProperty.CSDVERSION, 0);
             if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
-                version = version + " " + sp.replace("Service Pack ", "SP");
+                version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
             }
             suiteMask = WmiKit.getUint32(versionInfo, Win32OperatingSystem.OSVersionProperty.SUITEMASK, 0);
             buildNumber = WmiKit.getString(versionInfo, Win32OperatingSystem.OSVersionProperty.BUILDNUMBER, 0);

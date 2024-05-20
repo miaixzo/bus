@@ -260,7 +260,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append(getAllColumns(entityClass));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -312,7 +312,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append(" FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -339,7 +339,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ");
         sql.append(getDynamicTableName(entityClass, defaultTableName, entityName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -354,7 +354,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -369,7 +369,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -385,7 +385,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(getDynamicTableName(entityClass, defaultTableName, parameterName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -491,7 +491,7 @@ public class SqlBuilder {
                     String versionClass = version.nextVersion().getName();
                     sql.append("<bind name=\"").append(column.getProperty()).append("Version\" value=\"");
                     sql.append("@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ");
+                            .append(Symbol.AT).append(versionClass).append("@class, ");
                     if (StringKit.isNotEmpty(entityName)) {
                         sql.append(entityName).append(".");
                     }

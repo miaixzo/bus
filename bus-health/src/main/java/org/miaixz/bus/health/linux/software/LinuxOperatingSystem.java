@@ -31,6 +31,7 @@ import com.sun.jna.platform.linux.Udev;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
@@ -102,7 +103,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         try {
             if (Config.get(Config._LINUX_ALLOWUDEV, true)) {
                 try {
-                    @SuppressWarnings("unused")
                     Udev lib = Udev.INSTANCE;
                     hasUdev = true;
                 } catch (UnsatisfiedLinkError e) {
@@ -185,7 +185,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return 0;
         }
         // Grab PPID
-        long[] statArray = Parsing.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, ' ');
+        long[] statArray = Parsing.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         return (int) statArray[0];
     }
 
@@ -247,7 +247,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
         String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", Normal.EMPTY)
-                .replace("version", Normal.EMPTY).replace("-", Normal.EMPTY).replace("_", Normal.EMPTY));
+                .replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
         return Triplet.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 
@@ -660,7 +660,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String text : systemctl) {
             String[] split = Pattern.SPACES_PATTERN.split(text);
-            if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
+            if (split.length >= 2 && split[0].endsWith(".service") && Normal.ENABLED.equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
                 int index = name.lastIndexOf('.');

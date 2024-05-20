@@ -460,9 +460,9 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
          *                               the built state
          *                               The default implementation behaves as if:
          *                               <pre>{@code
-         *                                                                                                                         										    accept(t)
-         *                                                                                                                         										    return this;
-         *                                                                                                                                                            }</pre>
+         *                                                                                                                                                       										    accept(t)
+         *                                                                                                                                                       										    return this;
+         *                                                                                                                                                                                          }</pre>
          */
         default Builder<T> add(final T t) {
             accept(t);

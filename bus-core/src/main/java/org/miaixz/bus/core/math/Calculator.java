@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.math;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.MathKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -67,22 +68,22 @@ public class Calculator {
      */
     private static String transform(String expression) {
         expression = StringKit.cleanBlank(expression);
-        expression = StringKit.removeSuffix(expression, "=");
+        expression = StringKit.removeSuffix(expression, Symbol.EQUAL);
         final char[] arr = expression.toCharArray();
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == '-') {
+            if (arr[i] == Symbol.C_MINUS) {
                 if (i == 0) {
-                    arr[i] = '~';
+                    arr[i] = Symbol.C_TILDE;
                 } else {
                     final char c = arr[i - 1];
-                    if (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == 'E' || c == 'e') {
-                        arr[i] = '~';
+                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == '(' || c == 'E' || c == 'e') {
+                        arr[i] = Symbol.C_TILDE;
                     }
                 }
             }
         }
-        if (arr[0] == '~' && (arr.length > 1 && arr[1] == '(')) {
-            arr[0] = '-';
+        if (arr[0] == Symbol.C_TILDE && (arr.length > 1 && arr[1] == '(')) {
+            arr[0] = Symbol.C_MINUS;
             return "0" + new String(arr);
         } else {
             return new String(arr);
@@ -104,15 +105,15 @@ public class Calculator {
         while (!postfixStack.isEmpty()) {
             currentOp = postfixStack.pop();
             if (!isOperator(currentOp.charAt(0))) {// 如果不是运算符则存入操作数栈中
-                currentOp = currentOp.replace("~", "-");
+                currentOp = currentOp.replace(Symbol.TILDE, Symbol.MINUS);
                 resultStack.push(currentOp);
             } else {// 如果是运算符则从操作数栈中取两个值和该数值一起参与运算
                 secondValue = resultStack.pop();
                 firstValue = resultStack.pop();
 
                 // 将负数标记符改为负号
-                firstValue = firstValue.replace("~", "-");
-                secondValue = secondValue.replace("~", "-");
+                firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
+                secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
 
                 final BigDecimal tempResult = calculate(firstValue, secondValue, currentOp.charAt(0));
                 resultStack.push(tempResult.toString());
@@ -176,7 +177,7 @@ public class Calculator {
      * @return 是否为算术符号
      */
     private boolean isOperator(final char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '%';
+        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == '(' || c == ')' || c == Symbol.C_PERCENT;
     }
 
     /**
@@ -188,11 +189,11 @@ public class Calculator {
      */
     private boolean compare(char cur, char peek) {// 如果是peek优先级高于cur，返回true，默认都是peek优先级要低
         final int offset = 40;
-        if (cur == '%') {
+        if (cur == Symbol.C_PERCENT) {
             // %优先级最高
             cur = 47;
         }
-        if (peek == '%') {
+        if (peek == Symbol.C_PERCENT) {
             // %优先级最高
             peek = 47;
         }
@@ -211,19 +212,19 @@ public class Calculator {
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
         final BigDecimal result;
         switch (currentOp) {
-            case '+':
+            case Symbol.C_PLUS:
                 result = MathKit.add(firstValue, secondValue);
                 break;
-            case '-':
+            case Symbol.C_MINUS:
                 result = MathKit.sub(firstValue, secondValue);
                 break;
-            case '*':
+            case Symbol.C_STAR:
                 result = MathKit.mul(firstValue, secondValue);
                 break;
             case '/':
                 result = MathKit.div(firstValue, secondValue);
                 break;
-            case '%':
+            case Symbol.C_PERCENT:
                 result = MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
                 break;
             default:

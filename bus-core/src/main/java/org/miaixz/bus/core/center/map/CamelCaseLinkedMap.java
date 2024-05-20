@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,7 +47,7 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
      * 构造
      */
     public CamelCaseLinkedMap() {
-        this(DEFAULT_INITIAL_CAPACITY);
+        this(Normal._16);
     }
 
     /**
@@ -54,7 +56,7 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
      * @param initialCapacity 初始大小
      */
     public CamelCaseLinkedMap(final int initialCapacity) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+        this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
@@ -63,7 +65,7 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
      * @param m Map
      */
     public CamelCaseLinkedMap(final Map<? extends K, ? extends V> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
+        this(Normal.DEFAULT_LOAD_FACTOR, m);
     }
 
     /**

@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.qq;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
@@ -110,7 +111,7 @@ public class QqProvider extends DefaultProvider {
         String openId = removeSuffix.trim();
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.get("error") + ":" + object.get("error_description"));
+            throw new AuthorizedException(object.get("error") + Symbol.COLON + object.get("error_description"));
         }
         accToken.setOpenId(object.getString("openid"));
         if (object.containsKey("unionid")) {

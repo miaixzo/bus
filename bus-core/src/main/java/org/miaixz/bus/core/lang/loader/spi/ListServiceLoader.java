@@ -29,6 +29,7 @@ import org.miaixz.bus.core.cache.SimpleCache;
 import org.miaixz.bus.core.io.resource.MultiResource;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.*;
 
@@ -234,7 +235,7 @@ public class ListServiceLoader<S> extends AbsServiceLoader<S> {
             // 结束
             return -1;
         }
-        final int ci = line.indexOf('#');
+        final int ci = line.indexOf(Symbol.C_SHAPE);
         if (ci >= 0) {
             // 截取去除注释部分
             // 当注释单独成行，则此行长度为0，跳过，读取下一行
@@ -287,7 +288,7 @@ public class ListServiceLoader<S> extends AbsServiceLoader<S> {
      * @param msg      消息
      */
     private void fail(final Resource resource, final int lineNo, final String msg) {
-        throw new InternalException(this.serviceClass + ":" + resource.getUrl() + ":" + lineNo + ": " + msg);
+        throw new InternalException(this.serviceClass + Symbol.COLON + resource.getUrl() + Symbol.COLON + lineNo + ": " + msg);
     }
 
     /**

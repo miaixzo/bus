@@ -27,6 +27,7 @@ package org.miaixz.bus.core.center.date.printer;
 
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 import java.io.IOException;
@@ -1069,17 +1070,17 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
 
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_MINUS);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
 
             final int hours = offset / (60 * 60 * 1000);
             appendDigits(buffer, hours);
 
             if (mColon) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
 
             final int minutes = offset / (60 * 1000) - 60 * hours;
@@ -1144,10 +1145,10 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
             }
 
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_MINUS);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
 
             final int hours = offset / (60 * 60 * 1000);
@@ -1158,7 +1159,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
             }
 
             if (length == 6) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
 
             final int minutes = offset / (60 * 1000) - 60 * hours;

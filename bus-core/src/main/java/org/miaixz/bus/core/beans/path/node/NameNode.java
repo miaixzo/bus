@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.beans.path.node;
 
 import org.miaixz.bus.core.beans.DynaBean;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.MathKit;
 
 /**
@@ -62,7 +63,7 @@ public class NameNode implements Node {
 
     @Override
     public Object getValue(final Object bean) {
-        if ("$".equals(name)) {
+        if (Symbol.DOLLAR.equals(name)) {
             return bean;
         }
         return DynaBean.of(bean).get(this.name);

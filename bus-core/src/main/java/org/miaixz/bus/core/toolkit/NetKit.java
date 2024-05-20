@@ -225,7 +225,7 @@ public class NetKit {
      * @return 隐藏部分后的IP
      */
     public static String hideIpPart(final String ip) {
-        return StringKit.builder(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append("*").toString();
+        return StringKit.builder(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append(Symbol.STAR).toString();
     }
 
     /**
@@ -659,7 +659,7 @@ public class NetKit {
      * @return MAC地址，用-分隔
      */
     public static String getMacAddress(final InetAddress inetAddress) {
-        return getMacAddress(inetAddress, "-");
+        return getMacAddress(inetAddress, Symbol.MINUS);
     }
 
     /**

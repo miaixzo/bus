@@ -28,6 +28,7 @@ package org.miaixz.bus.health.linux.software;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.health.Builder;
@@ -54,7 +55,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
-            if (s.indexOf(':') >= 0) {
+            if (s.indexOf(Symbol.C_COLON) >= 0) {
                 String[] split = Pattern.SPACES_PATTERN.split(s.trim());
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
@@ -71,7 +72,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<byte[], Integer> parseIpAddr(String s) {
-        int colon = s.indexOf(':');
+        int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
             byte[] first = ByteKit.hexStringToByteArray(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
@@ -90,7 +91,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<Integer, Integer> parseHexColonHex(String s) {
-        int colon = s.indexOf(':');
+        int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
             int first = Parsing.hexStringToInt(s.substring(0, colon), 0);
             int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);

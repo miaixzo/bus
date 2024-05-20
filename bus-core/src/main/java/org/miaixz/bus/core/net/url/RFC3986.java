@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.codec.PercentCodec;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * <a href="https://www.ietf.org/rfc/rfc3986.html">RFC3986</a> 编码实现
@@ -73,7 +74,7 @@ public class RFC3986 {
     /**
      * segment-nz-nc  = SEGMENT ; non-zero-length segment without any colon ":"
      */
-    public static final PercentCodec SEGMENT_NZ_NC = PercentCodec.Builder.of(SEGMENT).removeSafe(':').build();
+    public static final PercentCodec SEGMENT_NZ_NC = PercentCodec.Builder.of(SEGMENT).removeSafe(Symbol.C_COLON).build();
 
     /**
      * path = segment / "/"
@@ -94,12 +95,12 @@ public class RFC3986 {
      * query中的value
      * value不能包含"{@code &}"，可以包含 "="
      */
-    public static final PercentCodec QUERY_PARAM_VALUE = PercentCodec.Builder.of(QUERY).removeSafe('&').build();
+    public static final PercentCodec QUERY_PARAM_VALUE = PercentCodec.Builder.of(QUERY).removeSafe(Symbol.C_AND).build();
     /**
      * query中的key
      * key不能包含"{@code &}" 和 "="
      */
-    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe('=').build();
+    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe(Symbol.C_EQUAL).build();
     /**
      * query中的value编码器，严格模式，value中不能包含任何分隔符。
      */

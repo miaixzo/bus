@@ -59,24 +59,6 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
     }
 
     /**
-     * 绘制方向
-     */
-    enum Direction {
-        /**
-         * 左到右
-         */
-        LEFT_RIGHT,
-        /**
-         * 右到左
-         */
-        RIGHT_LEFT,
-        /**
-         * 中间到两边
-         */
-        CENTER_LEFT_RIGHT
-    }
-
-    /**
      * 渐变方向
      */
     enum Gradient {
@@ -168,7 +150,7 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
     }
 
     /**
-     * 修饰符枚举
+     * 修饰符
      */
     enum Modifier {
         /**
@@ -232,6 +214,34 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         }
 
         /**
+         * 多个修饰符做“或”操作，表示存在任意一个修饰符
+         *
+         * @param modifierTypes 修饰符列表，元素不能为空
+         * @return “或”之后的修饰符
+         */
+        public static int orToInt(final Modifier... modifierTypes) {
+            int modifier = modifierTypes[0].getValue();
+            for (int i = 1; i < modifierTypes.length; i++) {
+                modifier |= modifierTypes[i].getValue();
+            }
+            return modifier;
+        }
+
+        /**
+         * 多个修饰符做“或”操作，表示存在任意一个修饰符
+         *
+         * @param modifierTypes 修饰符列表，元素不能为空
+         * @return “或”之后的修饰符
+         */
+        public static int orToInt(final int... modifierTypes) {
+            int modifier = modifierTypes[0];
+            for (int i = 1; i < modifierTypes.length; i++) {
+                modifier |= modifierTypes[i];
+            }
+            return modifier;
+        }
+
+        /**
          * 获取修饰符枚举对应的int修饰符值，值见{@link java.lang.reflect.Modifier}
          *
          * @return 修饰符枚举对应的int修饰符值
@@ -242,7 +252,7 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
     }
 
     /**
-     * 支持的脱敏类型枚举
+     * 脱敏类型
      */
     enum Masking {
         /**
@@ -309,7 +319,6 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
 
     /**
      * FTP连接模式
-     * <p>
      * 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
      *
      * @author Kimi Liu
@@ -327,6 +336,9 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         Passive
     }
 
+    /**
+     * 命名模式
+     */
     enum Naming {
 
         /**
@@ -398,4 +410,5 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         }
 
     }
+
 }

@@ -58,21 +58,9 @@ import java.util.regex.Pattern;
 public class FileKit extends PathResolve {
 
     /**
-     * 文件路径分隔符
-     * 在Unix和Linux下 是{@code '/'}; 在Windows下是 {@code '\'}
-     */
-    public static final String FILE_SEPARATOR = File.separator;
-    /**
-     * 多个PATH之间的分隔符
-     * 在Unix和Linux下 是{@code ':'}; 在Windows下是 {@code ';'}
-     */
-    public static final String PATH_SEPARATOR = File.pathSeparator;
-
-    /**
      * 绝对路径判断正则
      */
     private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?");
-
 
     /**
      * 是否为Windows环境
@@ -529,18 +517,58 @@ public class FileKit extends PathResolve {
      * @return 该文件总行数
      */
     public static int getTotalLines(final File file) {
-        if (!isFile(file)) {
+        return getTotalLines(file, 1024);
+    }
+
+    /**
+     * 计算文件的总行数
+     * 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java
+     *
+     * @param file       文件
+     * @param bufferSize 缓存大小，小于1则使用默认的1024
+     * @return 该文件总行数
+     */
+    public static int getTotalLines(final File file, int bufferSize) {
+        if (false == isFile(file)) {
             throw new InternalException("Input must be a File");
         }
-        try (final LineNumberReader lineNumberReader = new LineNumberReader(new java.io.FileReader(file))) {
-            // 设置起始为1
-            lineNumberReader.setLineNumber(1);
-            // 跳过文件中内容
-            //noinspection ResultOfMethodCallIgnored
-            lineNumberReader.skip(Long.MAX_VALUE);
-            // 获取当前行号
-            return lineNumberReader.getLineNumber();
-        } catch (final IOException e) {
+        if (bufferSize < 1) {
+            bufferSize = 1024;
+        }
+        try (InputStream is = getInputStream(file)) {
+            byte[] c = new byte[bufferSize];
+            int readChars = is.read(c);
+            if (readChars == -1) {
+                // 空文件，返回0
+                return 0;
+            }
+
+            // 起始行为1
+            // 如果只有一行，无换行符，则读取结束后返回1
+            // 如果多行，最后一行无换行符，最后一行需要单独计数
+            // 如果多行，最后一行有换行符，则空行算作一行
+            int count = 1;
+            while (readChars == bufferSize) {
+                for (int i = 0; i < bufferSize; i++) {
+                    if (c[i] == Symbol.C_LF) {
+                        ++count;
+                    }
+                }
+                readChars = is.read(c);
+            }
+
+            // count remaining characters
+            while (readChars != -1) {
+                for (int i = 0; i < readChars; i++) {
+                    if (c[i] == Symbol.C_LF) {
+                        ++count;
+                    }
+                }
+                readChars = is.read(c);
+            }
+
+            return count;
+        } catch (IOException e) {
             throw new InternalException(e);
         }
     }

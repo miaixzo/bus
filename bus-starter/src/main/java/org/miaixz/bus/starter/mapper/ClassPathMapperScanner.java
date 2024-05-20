@@ -1,6 +1,7 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -254,7 +255,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         Properties props = new Properties();
         for (String property : properties) {
             property = property.trim();
-            int index = property.indexOf("=");
+            int index = property.indexOf(Symbol.EQUAL);
             if (index < 0) {
                 throw new InternalException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
                         + "请保证配置项按 properties 文件格式要求进行配置，例如：\n"

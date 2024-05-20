@@ -26,6 +26,7 @@
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.math.BigInteger;
 import java.util.Locale;
@@ -40,10 +41,6 @@ import java.util.concurrent.TimeUnit;
 @ThreadSafe
 public final class Formats {
 
-    /**
-     * Constant <code>HEX_ERROR="0x%08X"</code>
-     */
-    public static final String HEX_ERROR = "0x%08X";
     /**
      * Binary prefixes, used in IEC Standard for naming bytes.
      * Should be used for most representations of bytes
@@ -228,7 +225,7 @@ public final class Formats {
      * @return A string representing the error as 0x....
      */
     public static String formatError(int errorCode) {
-        return String.format(Locale.ROOT, HEX_ERROR, errorCode);
+        return String.format(Locale.ROOT, Normal.HEX_ERROR, errorCode);
     }
 
     /**

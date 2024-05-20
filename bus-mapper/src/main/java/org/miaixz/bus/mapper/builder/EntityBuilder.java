@@ -108,7 +108,7 @@ public class EntityBuilder {
             if (orderBy.length() != 0) {
                 orderBy.append(Symbol.COMMA);
             }
-            orderBy.append(column.getColumn()).append(" ").append(column.getOrderBy());
+            orderBy.append(column.getColumn()).append(Symbol.SPACE).append(column.getOrderBy());
         }
         table.setOrderByClause(orderBy.toString());
         return table.getOrderByClause();
@@ -169,7 +169,7 @@ public class EntityBuilder {
      * 初始化实体属性
      *
      * @param entityClass 实体Class对象
-     * @param property      配置
+     * @param property    配置
      */
     public static synchronized void initEntityNameMap(Class<?> entityClass, Property property) {
         if (entityTableMap.get(entityClass) != null) {

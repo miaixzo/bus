@@ -48,14 +48,14 @@ import java.util.Map;
 public class StringKit extends CharsBacker {
 
     /**
-     * <p>如果对象是字符串是否为空白，空白的定义如下：</p>
+     * 如果对象是字符串是否为空白，空白的定义如下：
      * <ol>
      *     <li>{@code null}</li>
      *     <li>空字符串：{@code ""}</li>
      *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
      * </ol>
      *
-     * <p>例：</p>
+     * 例：
      * <ul>
      *     <li>{@code StringKit.isBlankIfString(null)     // true}</li>
      *     <li>{@code StringKit.isBlankIfString("")       // true}</li>
@@ -63,8 +63,8 @@ public class StringKit extends CharsBacker {
      *     <li>{@code StringKit.isBlankIfString("abc")    // false}</li>
      * </ul>
      *
-     * <p>注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是：
-     * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。</p>
+     * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是：
+     * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
      *
      * @param obj 对象
      * @return 如果为字符串是否为空串
@@ -80,13 +80,13 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * <p>如果对象是字符串是否为空串，空的定义如下：</p>
+     * 如果对象是字符串是否为空串，空的定义如下：
      * <ol>
      *     <li>{@code null}</li>
      *     <li>空字符串：{@code ""}</li>
      * </ol>
      *
-     * <p>例：</p>
+     * 例：
      * <ul>
      *     <li>{@code StringKit.isEmptyIfString(null)     // true}</li>
      *     <li>{@code StringKit.isEmptyIfString("")       // true}</li>

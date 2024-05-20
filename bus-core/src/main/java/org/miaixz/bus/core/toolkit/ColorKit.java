@@ -163,11 +163,11 @@ public class ColorKit {
         }
 
         // 16进制
-        if (StringKit.startWith(colorName, '#')) {
+        if (StringKit.startWith(colorName, Symbol.C_SHAPE)) {
             return hexToColor(colorName);
-        } else if (StringKit.startWith(colorName, '$')) {
+        } else if (StringKit.startWith(colorName, Symbol.C_DOLLAR)) {
             // 由于#在URL传输中无法传输，因此用$代替#
-            return hexToColor("#" + colorName.substring(1));
+            return hexToColor(Symbol.SHAPE + colorName.substring(1));
         }
 
         // RGB值和RGBA
@@ -210,7 +210,7 @@ public class ColorKit {
      * @return {@link Color}
      */
     public static Color hexToColor(final String hex) {
-        return getColor(Integer.parseInt(StringKit.removePrefix(hex, "#"), 16));
+        return getColor(Integer.parseInt(StringKit.removePrefix(hex, Symbol.SHAPE), 16));
     }
 
     /**
@@ -318,7 +318,7 @@ public class ColorKit {
                 if (matchFilters(r, g, b, rgbFilters)) {
                     continue;
                 }
-                countMap.merge(r + "-" + g + "-" + b, 1L, Long::sum);
+                countMap.merge(r + Symbol.MINUS + g + Symbol.MINUS + b, 1L, Long::sum);
             }
         }
         String maxColor = null;
@@ -338,7 +338,7 @@ public class ColorKit {
         rHex = rHex.length() == 1 ? "0" + rHex : rHex;
         gHex = gHex.length() == 1 ? "0" + gHex : gHex;
         bHex = bHex.length() == 1 ? "0" + bHex : bHex;
-        return "#" + rHex + gHex + bHex;
+        return Symbol.SHAPE + rHex + gHex + bHex;
     }
 
     /**

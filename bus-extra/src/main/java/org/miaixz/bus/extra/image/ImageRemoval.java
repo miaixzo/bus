@@ -28,6 +28,7 @@ package org.miaixz.bus.extra.image;
 import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.ColorKit;
@@ -315,7 +316,7 @@ public class ImageRemoval {
         for (int y = bufferedImage.getMinY(); y < bufferedImage.getHeight(); y++) {
             for (int x = bufferedImage.getMinX(); x < bufferedImage.getWidth(); x++) {
                 final int pixel = bufferedImage.getRGB(x, y);
-                list.add(((pixel & 0xff0000) >> 16) + "-" + ((pixel & 0xff00) >> 8) + "-" + (pixel & 0xff));
+                list.add(((pixel & 0xff0000) >> 16) + Symbol.MINUS + ((pixel & 0xff00) >> 8) + Symbol.MINUS + (pixel & 0xff));
             }
         }
 
@@ -339,7 +340,7 @@ public class ImageRemoval {
                 num = temp;
             }
         }
-        final String[] strings = max.split("-");
+        final String[] strings = max.split(Symbol.MINUS);
         // rgb 的数量只有3个
         final int rgbLength = 3;
         if (strings.length == rgbLength) {

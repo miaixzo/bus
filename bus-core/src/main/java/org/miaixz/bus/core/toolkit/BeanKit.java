@@ -79,13 +79,13 @@ public class BeanKit {
     }
 
     /**
-     * 获取{@link BeanDesc} Bean描述信息
+     * 获取{@link StrictBeanDesc} Bean描述信息
      *
      * @param clazz Bean类
-     * @return {@link BeanDesc}
+     * @return {@link StrictBeanDesc}
      */
-    public static BeanDesc getBeanDesc(final Class<?> clazz) {
-        return BeanDescCache.INSTANCE.getBeanDesc(clazz, () -> new BeanDesc(clazz));
+    public static StrictBeanDesc getBeanDesc(final Class<?> clazz) {
+        return BeanDescCache.INSTANCE.getBeanDesc(clazz, () -> new StrictBeanDesc(clazz));
     }
 
     /**

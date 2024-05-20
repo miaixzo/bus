@@ -28,6 +28,7 @@ package org.miaixz.bus.health.builtin.software.common;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
 
@@ -64,7 +65,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
                 if (split.length < 2) {
                     return Normal.EMPTY;
                 }
-                return split[1].split("%")[0];
+                return split[1].split(Symbol.PERCENT)[0];
             }
         }
         return Normal.EMPTY;
@@ -107,7 +108,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
                 String value = line.substring(key.length()).replaceFirst("^[ \t]+", Normal.EMPTY);
-                if (value.length() != 0 && value.charAt(0) != '#' && value.charAt(0) != ';') {
+                if (value.length() != 0 && value.charAt(0) != Symbol.C_SHAPE && value.charAt(0) != ';') {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);
                 }

@@ -28,6 +28,7 @@ package org.miaixz.bus.health.builtin.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
@@ -593,6 +594,7 @@ public interface CentralProcessor {
         private final short lineSize;
         private final int cacheSize;
         private final Type type;
+
         public ProcessorCache(byte level, byte associativity, short lineSize, int cacheSize, Type type) {
             this.level = level;
             this.associativity = associativity;
@@ -652,7 +654,7 @@ public interface CentralProcessor {
 
         @Override
         public String toString() {
-            return "ProcessorCache [L" + level + " " + type + ", cacheSize=" + cacheSize + ", "
+            return "ProcessorCache [L" + level + Symbol.SPACE + type + ", cacheSize=" + cacheSize + ", "
                     + (associativity > 0 ? associativity + "-way" : "unknown") + " associativity, lineSize=" + lineSize
                     + "]";
         }

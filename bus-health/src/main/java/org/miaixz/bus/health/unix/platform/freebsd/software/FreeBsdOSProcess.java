@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -137,7 +138,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        String cl = String.join(" ", getArguments());
+        String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
     }
 
@@ -275,7 +276,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         // Sample output:
         // pid 8 mask: 0, 1
         // cpuset: getaffinity: No such process
-        String[] split = cpuset.split(":");
+        String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
             String[] bits = split[1].split(",");
             for (String bit : bits) {
@@ -323,7 +324,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         }
         Predicate<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap.containsKey(PsThreadColumns.PRI);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
-                .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), ' '))
+                .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))
                 .filter(hasColumnsPri).map(threadMap -> new FreeBsdOSThread(getProcessID(), threadMap))
                 .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
@@ -356,7 +357,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Parsing.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
+            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Parsing.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(FreeBsdOperatingSystem.PsKeywords.ARGS)) {
                 return updateAttributes(psMap);

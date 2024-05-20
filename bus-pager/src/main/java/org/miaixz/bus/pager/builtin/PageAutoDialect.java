@@ -26,6 +26,7 @@
 package org.miaixz.bus.pager.builtin;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.AutoDialect;
@@ -142,7 +143,7 @@ public class PageAutoDialect {
     public static String fromJdbcUrl(String jdbcUrl) {
         final String url = jdbcUrl.toLowerCase();
         for (String dialect : dialectAliasMap.keySet()) {
-            if (url.contains(":" + dialect.toLowerCase() + ":")) {
+            if (url.contains(Symbol.COLON + dialect.toLowerCase() + Symbol.COLON)) {
                 return dialect;
             }
         }
@@ -301,7 +302,7 @@ public class PageAutoDialect {
         if (StringKit.isNotEmpty(dialectAlias)) {
             String[] alias = dialectAlias.split(";");
             for (int i = 0; i < alias.length; i++) {
-                String[] kv = alias[i].split("=");
+                String[] kv = alias[i].split(Symbol.EQUAL);
                 if (kv.length != 2) {
                     throw new IllegalArgumentException("dialectAlias parameter misconfigured," +
                             "Please follow alias1=xx.dialectClass; alias2=dialectClass2!");

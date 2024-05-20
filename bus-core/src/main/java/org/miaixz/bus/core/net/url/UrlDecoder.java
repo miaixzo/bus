@@ -288,7 +288,7 @@ public class UrlDecoder implements Serializable {
         int b;
         for (int i = 0; i < bytes.length; i++) {
             b = bytes[i];
-            if (b == '+') {
+            if (b == Symbol.C_PLUS) {
                 buffer.write(isPlusToSpace ? Symbol.C_SPACE : b);
             } else if (b == Symbol.C_PERCENT) {
                 if (i + 1 < bytes.length) {

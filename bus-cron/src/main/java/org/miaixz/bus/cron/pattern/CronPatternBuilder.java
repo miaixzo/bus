@@ -100,7 +100,7 @@ public class CronPatternBuilder implements Builder<String> {
             // 从分到周，用户未设置使用默认值
             // 秒和年如果不设置，忽略之
             if (StringKit.isBlank(parts[i])) {
-                parts[i] = "*";
+                parts[i] = Symbol.STAR;
             }
         }
 

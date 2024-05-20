@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.BooleanKit;
@@ -154,9 +155,9 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
                 } else if (BooleanKit.isBoolean(returnType) && methodName.startsWith("is")) {
                     // 匹配isXXX
                     fieldName = StringKit.removePreAndLowerFirst(methodName, 2);
-                } else if ("hashCode".equals(methodName)) {
+                } else if (Normal.HASHCODE.equals(methodName)) {
                     return this.hashCode();
-                } else if ("toString".equals(methodName)) {
+                } else if (Normal.TOSTRING.equals(methodName)) {
                     return this.toString();
                 }
 
@@ -181,7 +182,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
                         return proxy;
                     }
                 }
-            } else if ("equals".equals(methodName)) {
+            } else if (Normal.EQUALS.equals(methodName)) {
                 return this.equals(args[0]);
             }
         }

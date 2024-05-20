@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.builtin.software.common;
 
 import com.sun.jna.Platform;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -193,7 +194,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ').append(getVersionInfo());
+        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE).append(getVersionInfo());
         return sb.toString();
     }
 

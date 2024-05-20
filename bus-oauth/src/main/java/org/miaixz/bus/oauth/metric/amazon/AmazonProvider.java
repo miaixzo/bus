@@ -31,6 +31,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.toolkit.RandomKit;
@@ -105,7 +106,7 @@ public class AmazonProvider extends DefaultProvider {
     public String authorize(String state) {
         Builder builder = Builder.fromUrl(complex.authorize())
                 .queryParam("client_id", context.getAppKey())
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(AmazonScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(AmazonScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
                 .queryParam("state", getRealState(state));
@@ -183,7 +184,7 @@ public class AmazonProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject jsonObject) {
         if (jsonObject.containsKey("error")) {
-            throw new AuthorizedException(jsonObject.getString("error_description").concat(" ") + jsonObject.getString("error_description"));
+            throw new AuthorizedException(jsonObject.getString("error_description").concat(Symbol.SPACE) + jsonObject.getString("error_description"));
         }
     }
 

@@ -75,11 +75,6 @@ import java.util.Objects;
 public class IoKit {
 
     /**
-     * 数据流末尾
-     */
-    public static final int EOF = -1;
-
-    /**
      * 将Reader中的内容复制到Writer中 使用默认缓存大小，拷贝后不关闭Reader
      *
      * @param reader Reader
@@ -1319,7 +1314,7 @@ public class IoKit {
 
         try {
             int ch = input1.read();
-            while (EOF != ch) {
+            while (Normal.__1 != ch) {
                 final int ch2 = input2.read();
                 if (ch != ch2) {
                     return false;
@@ -1328,7 +1323,7 @@ public class IoKit {
             }
 
             final int ch2 = input2.read();
-            return ch2 == EOF;
+            return ch2 == Normal.__1;
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -1349,7 +1344,7 @@ public class IoKit {
 
         try {
             int ch = input1.read();
-            while (EOF != ch) {
+            while (Normal.__1 != ch) {
                 final int ch2 = input2.read();
                 if (ch != ch2) {
                     return false;
@@ -1358,7 +1353,7 @@ public class IoKit {
             }
 
             final int ch2 = input2.read();
-            return ch2 == EOF;
+            return ch2 == Normal.__1;
         } catch (final IOException e) {
             throw new InternalException(e);
         }

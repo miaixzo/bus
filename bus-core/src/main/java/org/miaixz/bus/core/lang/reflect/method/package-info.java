@@ -1,5 +1,5 @@
 /**
- * 提供方法相关封装
+ * 提供 {@link java.lang.reflect.Method} 相关封装
  *
  * @author Kimi Liu
  * @since Java 17+

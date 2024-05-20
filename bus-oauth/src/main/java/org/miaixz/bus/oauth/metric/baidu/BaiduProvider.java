@@ -28,6 +28,7 @@ package org.miaixz.bus.oauth.metric.baidu;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
@@ -125,7 +126,7 @@ public class BaiduProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("display", "popup")
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(BaiduScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(BaiduScope.values())))
                 .build();
     }
 

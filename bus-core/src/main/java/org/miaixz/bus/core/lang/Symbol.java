@@ -34,12 +34,6 @@ package org.miaixz.bus.core.lang;
 public class Symbol {
 
     /**
-     * 符号: !
-     */
-    public static final char C_BANG = '!';
-    public static final String BANG = Normal.EMPTY + C_BANG;
-
-    /**
      * 符号: 0
      */
     public static final char C_ZERO = '0';

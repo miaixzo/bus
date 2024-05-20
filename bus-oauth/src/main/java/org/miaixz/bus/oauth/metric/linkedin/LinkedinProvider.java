@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONPath;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -119,7 +120,7 @@ public class LinkedinProvider extends DefaultProvider {
         } else {
             lastName = getUserName(userInfoObject, "lastName");
         }
-        return firstName + " " + lastName;
+        return firstName + Symbol.SPACE + lastName;
     }
 
     /**
@@ -178,7 +179,7 @@ public class LinkedinProvider extends DefaultProvider {
         JSONObject firstNameObj = userInfoObject.getJSONObject(nameKey);
         JSONObject localizedObj = firstNameObj.getJSONObject("localized");
         JSONObject preferredLocaleObj = firstNameObj.getJSONObject("preferredLocale");
-        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + "_" + preferredLocaleObj.getString("country"));
+        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
         return firstName;
     }
 
@@ -225,7 +226,7 @@ public class LinkedinProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(" ", false, this.getDefaultScopes(LinkedinScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(LinkedinScope.values())))
                 .build();
     }
 

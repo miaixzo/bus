@@ -26,6 +26,7 @@
 package org.miaixz.bus.core;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.CharKit;
 import org.miaixz.bus.core.toolkit.CompareKit;
 
@@ -93,7 +94,7 @@ public class Version implements Comparable<Version>, Serializable {
                 i++;
                 continue;
             }
-            if (c == '-' || c == '+') {
+            if (c == Symbol.C_MINUS || c == Symbol.C_PLUS) {
                 i++;
                 break;
             }
@@ -104,7 +105,7 @@ public class Version implements Comparable<Version>, Serializable {
             }
         }
 
-        if (c == '-' && i >= n) {
+        if (c == Symbol.C_MINUS && i >= n) {
             return;
         }
 
@@ -119,17 +120,17 @@ public class Version implements Comparable<Version>, Serializable {
                 break;
             }
             c = v.charAt(i);
-            if (c == '.' || c == '-') {
+            if (c == '.' || c == Symbol.C_MINUS) {
                 i++;
                 continue;
             }
-            if (c == '+') {
+            if (c == Symbol.C_PLUS) {
                 i++;
                 break;
             }
         }
 
-        if (c == '+' && i >= n) {
+        if (c == Symbol.C_PLUS && i >= n) {
             return;
         }
 
@@ -145,7 +146,7 @@ public class Version implements Comparable<Version>, Serializable {
                 break;
             }
             c = v.charAt(i);
-            if (c == '.' || c == '-' || c == '+') {
+            if (c == '.' || c == Symbol.C_MINUS || c == Symbol.C_PLUS) {
                 i++;
             }
         }
@@ -226,7 +227,7 @@ public class Version implements Comparable<Version>, Serializable {
         final int n = s.length();
         while (++i < n) {
             final char c = s.charAt(i);
-            if (c != '.' && c != '-' && c != '+' && !(c >= '0' && c <= '9')) {
+            if (c != '.' && c != Symbol.C_MINUS && c != Symbol.C_PLUS && !(c >= '0' && c <= '9')) {
                 continue;
             }
             break;

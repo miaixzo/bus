@@ -256,7 +256,7 @@ public class Masking {
         if (StringKit.isBlank(email)) {
             return Normal.EMPTY;
         }
-        final int index = StringKit.indexOf(email, '@');
+        final int index = StringKit.indexOf(email, Symbol.C_AT);
         if (index <= 1) {
             return email;
         }
@@ -273,7 +273,7 @@ public class Masking {
         if (StringKit.isBlank(password)) {
             return Normal.EMPTY;
         }
-        return StringKit.repeat('*', password.length());
+        return StringKit.repeat(Symbol.C_STAR, password.length());
     }
 
     /**
@@ -327,7 +327,7 @@ public class Masking {
             if (i % 4 == 0) {
                 buf.append(Symbol.C_SPACE);
             }
-            buf.append('*');
+            buf.append(Symbol.C_STAR);
         }
         buf.append(Symbol.C_SPACE).append(bankCardNo, length - endLength, length);
         return buf.toString();
@@ -350,7 +350,7 @@ public class Masking {
      * @return 脱敏后的地址
      */
     public static String ipv6(final String ipv6) {
-        return StringKit.subBefore(ipv6, ':', false) + ":*:*:*:*:*:*:*";
+        return StringKit.subBefore(ipv6, Symbol.C_COLON, false) + ":*:*:*:*:*:*:*";
     }
 
 }

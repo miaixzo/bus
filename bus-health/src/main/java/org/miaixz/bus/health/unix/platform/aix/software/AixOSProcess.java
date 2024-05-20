@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
@@ -151,7 +152,7 @@ public class AixOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        String cl = String.join(" ", getArguments());
+        String cl = String.join(Symbol.SPACE, getArguments());
         return cl.isEmpty() ? this.commandLineBackup : cl;
     }
 

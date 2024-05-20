@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
@@ -81,7 +82,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 if (s.startsWith("Manufacture ID")) {
                     vendor = Parsing.removeLeadingDots(s.substring(14));
                 } else if (s.contains("Level")) {
-                    versionInfo.add(s.replaceAll("\\.\\.+", "="));
+                    versionInfo.add(s.replaceAll("\\.\\.+", Symbol.EQUAL));
                 } else if (s.startsWith("Hardware Location Code")) {
                     cardList.add(new AixGraphicsCard(name, Normal.UNKNOWN,
                             StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,

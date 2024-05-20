@@ -34,7 +34,7 @@ import org.miaixz.bus.mapper.annotation.RegisterMapper;
 /**
  * 删除
  *
- * @param <T>   泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

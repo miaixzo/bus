@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
@@ -65,7 +66,7 @@ public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
 
     @Override
     public String toString() {
-        return getKey() + "=" + getValue();
+        return getKey() + Symbol.EQUAL + getValue();
     }
 
 }

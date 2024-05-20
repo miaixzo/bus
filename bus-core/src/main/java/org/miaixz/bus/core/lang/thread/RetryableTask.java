@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.ThreadKit;
 
 import java.time.Duration;
@@ -34,8 +35,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-
-import static java.util.Objects.nonNull;
 
 /**
  * 重试任务类
@@ -110,7 +109,7 @@ public class RetryableTask<T> {
         Assert.isTrue(ths.length != 0, "exs cannot be empty");
 
         final BiPredicate<T, Throwable> strategy = (t, e) -> {
-            if (nonNull(e)) {
+            if (ObjectKit.isNotNull(e)) {
                 return Arrays.stream(ths).anyMatch(ex -> ex.isAssignableFrom(e.getClass()));
             }
             return false;

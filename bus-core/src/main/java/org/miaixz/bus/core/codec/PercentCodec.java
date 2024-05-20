@@ -27,6 +27,7 @@ package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.HexKit;
@@ -63,8 +64,6 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private static final char DEFAULT_SIZE = 256;
-
     /**
      * 存放安全编码
      */
@@ -82,7 +81,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      * [a-zA-Z0-9]默认不被编码
      */
     public PercentCodec() {
-        this(new BitSet(DEFAULT_SIZE));
+        this(new BitSet(Normal._256));
     }
 
     /**
@@ -140,7 +139,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
                 rewrittenPath.append(c);
             } else if (encodeSpaceAsPlus && c == Symbol.C_SPACE) {
                 // 对于空格单独处理
-                rewrittenPath.append('+');
+                rewrittenPath.append(Symbol.C_PLUS);
             } else {
                 // convert to external encoding before hex conversion
                 try {

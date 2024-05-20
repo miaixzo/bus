@@ -26,24 +26,19 @@
 package org.miaixz.bus.core.lang.reflect.method;
 
 import org.miaixz.bus.core.annotation.resolve.AnnotatedElements;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 方法匹配器工具类，用于基于各种预设条件创建方法匹配器，用于配合{@link MethodScanner}从各种范围中寻找匹配的方法。
+ * 方法匹配器工具类，用于基于各种预设条件创建方法匹配器。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,7 +54,7 @@ public class MethodMatcher {
      */
     @SafeVarargs
     public static Predicate<Method> noneMatch(final Predicate<Method>... matchers) {
-        return method -> Stream.of(matchers).noneMatch(matcher -> matcher.test(method));
+        return PredicateKit.none(matchers);
     }
 
     /**
@@ -71,7 +66,7 @@ public class MethodMatcher {
      */
     @SafeVarargs
     public static Predicate<Method> anyMatch(final Predicate<Method>... matchers) {
-        return method -> Stream.of(matchers).anyMatch(matcher -> matcher.test(method));
+        return PredicateKit.or(matchers);
     }
 
     /**
@@ -83,7 +78,7 @@ public class MethodMatcher {
      */
     @SafeVarargs
     public static Predicate<Method> allMatch(final Predicate<Method>... matchers) {
-        return method -> Stream.of(matchers).allMatch(matcher -> matcher.test(method));
+        return PredicateKit.and(matchers);
     }
 
     /**
@@ -105,7 +100,7 @@ public class MethodMatcher {
     }
 
     /**
-     * 用于匹配公共静态方法的方法匹配器。
+     * <p>用于匹配公共静态方法的方法匹配器。
      *
      * @return 方法匹配器
      */
@@ -120,10 +115,7 @@ public class MethodMatcher {
      * @return 方法匹配器
      */
     public static Predicate<Method> forModifiers(final int... modifiers) {
-        return method -> {
-            final int methodModifiers = method.getModifiers();
-            return Arrays.stream(modifiers).allMatch(modifier -> (methodModifiers & modifier) != 0);
-        };
+        return method -> ModifierKit.hasAllModifier(method.getModifiers(), modifiers);
     }
 
     /**
@@ -204,12 +196,12 @@ public class MethodMatcher {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
         // 匹配方法名为 get + 首字母大写的属性名的无参数方法
-        Predicate<Method> nameMatcher = forName(CharsBacker.upperFirstAndAddPre(fieldName, "get"));
+        Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, "get"));
         // 查找方法名为属性名的无参数方法
         nameMatcher = nameMatcher.or(forName(fieldName));
         if (Objects.equals(boolean.class, fieldType) || Objects.equals(Boolean.class, fieldType)) {
             // 匹配方法名为 get + 首字母大写的属性名的无参数方法
-            nameMatcher = nameMatcher.or(forName(CharsBacker.upperFirstAndAddPre(fieldName, "is")));
+            nameMatcher = nameMatcher.or(forName(StringKit.upperFirstAndAddPre(fieldName, "is")));
         }
         return allMatch(nameMatcher, forReturnType(fieldType), forNoneParameter());
     }
@@ -244,7 +236,7 @@ public class MethodMatcher {
     public static Predicate<Method> forSetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
-        final Predicate<Method> nameMatcher = forName(CharsBacker.upperFirstAndAddPre(fieldName, "set"))
+        final Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, "set"))
                 .or(forName(fieldName));
         return allMatch(nameMatcher, forParameterTypes(fieldType));
     }
@@ -319,7 +311,7 @@ public class MethodMatcher {
     }
 
     /**
-     * <p>用于匹配方法签名的方法匹配器，检查的内容包括：
+     * 用于匹配方法签名的方法匹配器，检查的内容包括：
      * <ul>
      *     <li>方法名是否完全一致；</li>
      *     <li>返回值类型是否匹配，允许返回值类型为方法返回值类型的子类；</li>
@@ -413,7 +405,7 @@ public class MethodMatcher {
      * @return 方法匹配器
      */
     public static Predicate<Method> forNameIgnoreCase(final String methodName) {
-        return method -> CharsBacker.endWithIgnoreCase(method.getName(), methodName);
+        return method -> StringKit.endWithIgnoreCase(method.getName(), methodName);
     }
 
     /**
@@ -576,84 +568,6 @@ public class MethodMatcher {
             }
             return true;
         };
-    }
-
-    /**
-     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
-     *
-     * @param methodHandle {@link MethodHandle}
-     * @param args         方法参数值，支持子类转换和自动拆装箱
-     * @param <T>          返回值类型
-     * @return 方法返回值
-     */
-    public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
-        try {
-            return (T) methodHandle.invokeWithArguments(args);
-        } catch (final Throwable e) {
-            throw ExceptionKit.wrapRuntime(e);
-        }
-    }
-
-    /**
-     * 执行接口或对象中的方法
-     *
-     * <pre class="code">
-     *     interface Duck {
-     *         default String quack() {
-     *             return "Quack";
-     *         }
-     *     }
-     *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassKit.getClassLoader(),
-     *         new Class[] { Duck.class },
-     *         MethodKit::invoke);
-     * </pre>
-     *
-     * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
-     * @param method 方法
-     * @param args   参数，自动根据{@link Method}定义类型转换
-     * @return 结果
-     * @throws InternalException 执行异常包装
-     */
-    public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InternalException {
-        Assert.notNull(method, "Method must be not null!");
-        return invokeExact(obj, method, MethodKit.actualArgs(method, args));
-    }
-
-    /**
-     * 执行接口或对象中的方法，参数类型不做转换，必须与方法参数类型完全匹配
-     *
-     * <pre class="code">
-     *     interface Duck {
-     *         default String quack() {
-     *             return "Quack";
-     *         }
-     *     }
-     *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassKit.getClassLoader(),
-     *         new Class[] { Duck.class },
-     *         MethodKit::invoke);
-     * </pre>
-     *
-     * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
-     * @param method 方法
-     * @param args   参数
-     * @return 结果
-     * @throws InternalException 执行异常包装
-     */
-    public static <T> T invokeExact(final Object obj, final Method method, final Object... args) throws InternalException {
-        Assert.notNull(method, "Method must be not null!");
-        try {
-            MethodHandle handle = LookupKit.unreflectMethod(method);
-            if (null != obj) {
-                handle = handle.bindTo(obj);
-            }
-            return (T) handle.invokeWithArguments(args);
-        } catch (final Throwable e) {
-            throw ExceptionKit.wrapRuntime(e);
-        }
     }
 
 }

@@ -27,22 +27,22 @@ package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.beans.NullWrapperBean;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.center.set.UniqueKeySet;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.reflect.method.MethodMatcher;
+import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
+import org.miaixz.bus.core.lang.reflect.method.MethodReflect;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * 反射中{@link Method}相关工具类，包括方法获取和方法执行
@@ -55,11 +55,26 @@ public class MethodKit {
     /**
      * 方法缓存
      */
-    private static final WeakConcurrentMap<Class<?>, Method[]> METHODS_CACHE = new WeakConcurrentMap<>();
+    private static final WeakConcurrentMap<Class<?>, MethodReflect> METHODS_CACHE = new WeakConcurrentMap<>();
+
     /**
-     * 直接声明的方法缓存
+     * 清除方法缓存
      */
-    private static final WeakConcurrentMap<Class<?>, Method[]> DECLARED_METHODS_CACHE = new WeakConcurrentMap<>();
+    synchronized static void clearCache() {
+        METHODS_CACHE.clear();
+    }
+
+    /**
+     * 通过给定的条件（Predicate）从一个Method数组中查找第一个匹配的方法。
+     *
+     * @param methods   Method数组，是被搜索的目标对象。
+     * @param predicate 一个Predicate接口实例，用于定义查找方法的条件。
+     * @return 返回第一个满足predicate条件的Method对象，如果没有找到匹配的方法则返回null。
+     */
+    public static Method getMethod(final Method[] methods, final Predicate<Method> predicate) {
+        // 使用ArrayKit的get方法，通过predicate对methods数组进行搜索
+        return ArrayKit.get(methods, predicate);
+    }
 
     /**
      * 获得指定类本类及其父类中的Public方法名
@@ -69,85 +84,26 @@ public class MethodKit {
      * @return 方法名Set
      */
     public static Set<String> getPublicMethodNames(final Class<?> clazz) {
-        final HashSet<String> methodSet = new HashSet<>();
-        final Method[] methodArray = getPublicMethods(clazz);
-        if (ArrayKit.isNotEmpty(methodArray)) {
-            for (final Method method : methodArray) {
-                methodSet.add(method.getName());
-            }
-        }
-        return methodSet;
-    }
-
-    /**
-     * 获得本类及其父类所有Public方法
-     *
-     * @param clazz 查找方法的类
-     * @return 过滤后的方法列表
-     */
-    public static Method[] getPublicMethods(final Class<?> clazz) {
-        return null == clazz ? null : clazz.getMethods();
-    }
-
-    /**
-     * 获得指定类过滤后的Public方法列表
-     *
-     * @param clazz     查找方法的类
-     * @param predicate 过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
-     * @return 过滤后的方法数组
-     */
-    public static Method[] getPublicMethods(final Class<?> clazz, final Predicate<Method> predicate) {
-        if (null == clazz) {
-            return null;
-        }
-
-        final Method[] methods = getPublicMethods(clazz);
-        if (null == predicate) {
-            return methods;
-        }
-
-        return ArrayKit.filter(methods, predicate);
-    }
-
-    /**
-     * 获得指定类过滤后的Public方法列表
-     *
-     * @param clazz          查找方法的类
-     * @param excludeMethods 不包括的方法
-     * @return 过滤后的方法列表
-     */
-    public static Method[] getPublicMethods(final Class<?> clazz, final Method... excludeMethods) {
-        final HashSet<Method> excludeMethodSet = SetKit.of(excludeMethods);
-        return getPublicMethods(clazz, method -> !excludeMethodSet.contains(method));
-    }
-
-    /**
-     * 获得指定类过滤后的Public方法列表
-     *
-     * @param clazz              查找方法的类
-     * @param excludeMethodNames 不包括的方法名列表
-     * @return 过滤后的方法数组
-     */
-    public static Method[] getPublicMethods(final Class<?> clazz, final String... excludeMethodNames) {
-        final HashSet<String> excludeMethodNameSet = SetKit.of(excludeMethodNames);
-        return getPublicMethods(clazz, method -> !excludeMethodNameSet.contains(method.getName()));
+        return StreamKit.of(getPublicMethods(clazz))
+                .map(Method::getName)
+                .collect(Collectors.toSet());
     }
 
     /**
      * 查找指定Public方法 如果找不到对应的方法或方法不为public的则返回{@code null}
      *
      * @param clazz      类
+     * @param ignoreCase 是否忽略大小写
      * @param methodName 方法名
      * @param paramTypes 参数类型
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getPublicMethod(final Class<?> clazz, final String methodName, final Class<?>... paramTypes) throws SecurityException {
-        try {
-            return clazz.getMethod(methodName, paramTypes);
-        } catch (final NoSuchMethodException ex) {
+    public static Method getPublicMethod(final Class<?> clazz, final boolean ignoreCase, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+        if (null == clazz || StringKit.isBlank(methodName)) {
             return null;
         }
+        return getMethod(getPublicMethods(clazz), ignoreCase, methodName, paramTypes);
     }
 
     /**
@@ -220,16 +176,34 @@ public class MethodKit {
         if (null == clazz || StringKit.isBlank(methodName)) {
             return null;
         }
+        return getMethod(getMethods(clazz), ignoreCase, methodName, paramTypes);
+    }
+
+    /**
+     * 查找指定方法 如果找不到对应的方法则返回{@code null}<br>
+     * 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。<br>
+     * 如果查找的方法有多个同参数类型重载，查找最后一个非协变桥接方法
+     *
+     * @param methods    方法列表
+     * @param ignoreCase 是否忽略大小写
+     * @param methodName 方法名，如果为空字符串返回{@code null}
+     * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
+     * @return 方法
+     * @throws SecurityException 无权访问抛出异常
+     */
+    public static Method getMethod(final Method[] methods, final boolean ignoreCase, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+        if (ArrayKit.isEmpty(methods) || StringKit.isBlank(methodName)) {
+            return null;
+        }
 
         Method res = null;
-        final Method[] methods = getMethods(clazz);
         if (ArrayKit.isNotEmpty(methods)) {
             for (final Method method : methods) {
                 if (StringKit.equals(methodName, method.getName(), ignoreCase)
                         && ClassKit.isAllAssignableFrom(method.getParameterTypes(), paramTypes)
-                        //排除桥接方法，pr#1965@Github
-                        //排除协变桥接方法，pr#1965@Github
-                        && (res == null || res.getReturnType().isAssignableFrom(method.getReturnType()))) {
+                        // 排除协变桥接方法
+                        && (res == null
+                        || res.getReturnType().isAssignableFrom(method.getReturnType()))) {
                     res = method;
                 }
             }
@@ -287,18 +261,10 @@ public class MethodKit {
             return null;
         }
 
-        Method res = null;
-        final Method[] methods = getMethods(clazz);
-        if (ArrayKit.isNotEmpty(methods)) {
-            for (final Method method : methods) {
-                if (StringKit.equals(methodName, method.getName(), ignoreCase)
-                        //排除协变桥接方法，pr#1965@Github
-                        && (res == null || res.getReturnType().isAssignableFrom(method.getReturnType()))) {
-                    res = method;
-                }
-            }
-        }
-        return res;
+        final Method[] methods = getMethods(clazz, (method ->
+                StringKit.equals(methodName, method.getName(), ignoreCase) && (method.getReturnType().isAssignableFrom(method.getReturnType()))));
+
+        return ArrayKit.isEmpty(methods) ? null : methods[0];
     }
 
     /**
@@ -310,53 +276,76 @@ public class MethodKit {
      * @throws SecurityException 安全异常
      */
     public static Set<String> getMethodNames(final Class<?> clazz) throws SecurityException {
-        final HashSet<String> methodSet = new HashSet<>();
-        final Method[] methods = getMethods(clazz);
-        for (final Method method : methods) {
-            methodSet.add(method.getName());
-        }
-        return methodSet;
-    }
-
-    /**
-     * 获得指定类过滤后的方法列表
-     *
-     * @param clazz     查找方法的类
-     * @param predicate 过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留。
-     * @return 过滤后的方法列表
-     * @throws SecurityException 安全异常
-     */
-    public static Method[] getMethods(final Class<?> clazz, final Predicate<Method> predicate) throws SecurityException {
-        if (null == clazz) {
-            return null;
-        }
-        return ArrayKit.filter(getMethods(clazz), predicate);
+        return StreamKit.of(getMethods(clazz, null))
+                .map(Method::getName)
+                .collect(Collectors.toSet());
     }
 
     /**
      * 获得一个类中所有方法列表，包括其父类中的方法
      *
-     * @param beanClass 类，非{@code null}
+     * @param clazz 类，非{@code null}
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getMethods(final Class<?> beanClass) throws SecurityException {
-        Assert.notNull(beanClass);
-        return METHODS_CACHE.computeIfAbsent(beanClass,
-                (key) -> getMethodsDirectly(beanClass, true, true));
+    public static Method[] getMethods(final Class<?> clazz) throws SecurityException {
+        return getMethods(clazz, null);
+    }
+
+    /**
+     * 获得一个类中所有方法列表，包括其父类中的方法
+     *
+     * @param clazz     类，非{@code null}
+     * @param predicate 方法过滤器，{@code null}表示无过滤
+     * @return 方法列表
+     * @throws SecurityException 安全检查异常
+     */
+    public static Method[] getMethods(final Class<?> clazz, final Predicate<Method> predicate) throws SecurityException {
+        return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getAllMethods(predicate);
+    }
+
+    /**
+     * 获得本类及其父类所有Public方法
+     *
+     * @param clazz 查找方法的类
+     * @return 过滤后的方法列表
+     */
+    public static Method[] getPublicMethods(final Class<?> clazz) {
+        return getPublicMethods(clazz, null);
+    }
+
+    /**
+     * 获得本类及其父类所有Public方法
+     *
+     * @param clazz     查找方法的类
+     * @param predicate 方法过滤器，{@code null}表示无过滤
+     * @return 过滤后的方法列表
+     */
+    public static Method[] getPublicMethods(final Class<?> clazz, final Predicate<Method> predicate) {
+        return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getPublicMethods(predicate);
     }
 
     /**
      * 获得类中所有直接声明方法，不包括其父类中的方法
      *
-     * @param beanClass 类，非{@code null}
+     * @param clazz 类，非{@code null}
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getDeclaredMethods(final Class<?> beanClass) throws SecurityException {
-        Assert.notNull(beanClass);
-        return DECLARED_METHODS_CACHE.computeIfAbsent(beanClass,
-                key -> getMethodsDirectly(beanClass, false, Objects.equals(Object.class, beanClass)));
+    public static Method[] getDeclaredMethods(final Class<?> clazz) throws SecurityException {
+        return getDeclaredMethods(clazz, null);
+    }
+
+    /**
+     * 获得类中所有直接声明方法，不包括其父类中的方法
+     *
+     * @param clazz     类，非{@code null}
+     * @param predicate 方法过滤器，{@code null}表示无过滤
+     * @return 方法列表
+     * @throws SecurityException 安全检查异常
+     */
+    public static Method[] getDeclaredMethods(final Class<?> clazz, final Predicate<Method> predicate) throws SecurityException {
+        return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getDeclaredMethods(predicate);
     }
 
     /**
@@ -375,27 +364,7 @@ public class MethodKit {
      * @throws SecurityException 安全检查异常
      */
     public static Method[] getMethodsDirectly(final Class<?> beanClass, final boolean withSupers, final boolean withMethodFromObject) throws SecurityException {
-        Assert.notNull(beanClass);
-
-        if (beanClass.isInterface()) {
-            // 对于接口，直接调用Class.getMethods方法获取所有方法，因为接口都是public方法
-            return withSupers ? beanClass.getMethods() : beanClass.getDeclaredMethods();
-        }
-
-        final UniqueKeySet<String, Method> result = new UniqueKeySet<>(true, MethodKit::getUniqueKey);
-        Class<?> searchType = beanClass;
-        while (searchType != null) {
-            if (!withMethodFromObject && Object.class == searchType) {
-                break;
-            }
-            result.addAllIfAbsent(Arrays.asList(searchType.getDeclaredMethods()));
-            result.addAllIfAbsent(getDefaultMethodsFromInterface(searchType));
-
-
-            searchType = (withSupers && !searchType.isInterface()) ? searchType.getSuperclass() : null;
-        }
-
-        return result.toArray(new Method[0]);
+        return MethodReflect.of(Assert.notNull(beanClass)).getMethodsDirectly(withSupers, withMethodFromObject);
     }
 
     /**
@@ -407,7 +376,7 @@ public class MethodKit {
     public static boolean isEqualsMethod(final Method method) {
         if (method == null ||
                 1 != method.getParameterCount() ||
-                !"equals".equals(method.getName())) {
+                !Normal.EQUALS.equals(method.getName())) {
             return false;
         }
         return (method.getParameterTypes()[0] == Object.class);
@@ -420,8 +389,8 @@ public class MethodKit {
      * @return 是否为hashCode方法
      */
     public static boolean isHashCodeMethod(final Method method) {
-        return method != null//
-                && "hashCode".equals(method.getName())//
+        return method != null
+                && Normal.HASHCODE.equals(method.getName())
                 && isEmptyParam(method);
     }
 
@@ -432,8 +401,8 @@ public class MethodKit {
      * @return 是否为toString方法
      */
     public static boolean isToStringMethod(final Method method) {
-        return method != null//
-                && "toString".equals(method.getName())//
+        return method != null
+                && Normal.TOSTRING.equals(method.getName())
                 && isEmptyParam(method);
     }
 
@@ -593,20 +562,7 @@ public class MethodKit {
      * @throws InternalException 一些列异常的包装
      */
     public static <T> T invokeWithCheck(final Object obj, final Method method, final Object... args) throws InternalException {
-        final Class<?>[] types = method.getParameterTypes();
-        if (null != args) {
-            Assert.isTrue(args.length == types.length, "Params length [{}] is not fit for param length [{}] of method !", args.length, types.length);
-            Class<?> type;
-            for (int i = 0; i < args.length; i++) {
-                type = types[i];
-                if (type.isPrimitive() && null == args[i]) {
-                    // 参数是原始类型，而传入参数为null时赋予默认值
-                    args[i] = ClassKit.getDefaultValue(type);
-                }
-            }
-        }
-
-        return invoke(obj, method, args);
+        return MethodInvoker.of(method).setCheckArgs(true).invoke(obj, args);
     }
 
     /**
@@ -627,19 +583,10 @@ public class MethodKit {
      * @param args   参数对象
      * @return 结果
      * @throws InternalException 一些列异常的包装
-     * @see MethodMatcher#invoke(Object, Method, Object...)
+     * @see MethodInvoker#invoke(Object, Method, Object...)
      */
     public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InternalException {
-        try {
-            return MethodMatcher.invoke(obj, method, args);
-        } catch (final Exception e) {
-            // 传统反射方式执行方法
-            try {
-                return (T) method.invoke(ModifierKit.isStatic(method) ? null : obj, actualArgs(method, args));
-            } catch (final IllegalAccessException | InvocationTargetException ex) {
-                throw new InternalException(ex);
-            }
-        }
+        return MethodInvoker.of(method).invoke(obj, args);
     }
 
     /**
@@ -696,7 +643,7 @@ public class MethodKit {
             throw new InternalException("Blank classNameDotMethodName!");
         }
 
-        int splitIndex = classNameWithMethodName.lastIndexOf('#');
+        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
         if (splitIndex <= 0) {
             splitIndex = classNameWithMethodName.lastIndexOf('.');
         }
@@ -834,49 +781,6 @@ public class MethodKit {
         }
 
         return actualArgs;
-    }
-
-    /**
-     * 获取方法的唯一键，结构为:
-     * <pre>
-     *     返回类型#方法名:参数1类型,参数2类型...
-     * </pre>
-     *
-     * @param method 方法
-     * @return 方法唯一键
-     */
-    private static String getUniqueKey(final Method method) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(method.getReturnType().getName()).append('#');
-        sb.append(method.getName());
-        final Class<?>[] parameters = method.getParameterTypes();
-        for (int i = 0; i < parameters.length; i++) {
-            if (i == 0) {
-                sb.append(':');
-            } else {
-                sb.append(',');
-            }
-            sb.append(parameters[i].getName());
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 获取类对应接口中的非抽象方法（default方法）
-     *
-     * @param clazz 类
-     * @return 方法列表
-     */
-    private static List<Method> getDefaultMethodsFromInterface(final Class<?> clazz) {
-        final List<Method> result = new ArrayList<>();
-        for (final Class<?> ifc : clazz.getInterfaces()) {
-            for (final Method m : ifc.getMethods()) {
-                if (!ModifierKit.isAbstract(m)) {
-                    result.add(m);
-                }
-            }
-        }
-        return result;
     }
 
     /**

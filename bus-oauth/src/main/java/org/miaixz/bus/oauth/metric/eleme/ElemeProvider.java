@@ -33,6 +33,7 @@ import org.miaixz.bus.core.data.ID;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -64,6 +65,30 @@ public class ElemeProvider extends DefaultProvider {
         super(context, Registry.ELEME, authorizeCache);
     }
 
+    /**
+     * 生成饿了么请求的签名
+     *
+     * @param appKey     平台应用的授权key
+     * @param secret     平台应用的授权密钥
+     * @param timestamp  时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
+     * @param action     饿了么请求的api方法
+     * @param token      用户授权的token
+     * @param parameters 加密参数
+     * @return Signature
+     */
+    public static String sign(String appKey, String secret, long timestamp, String action, String token, Map<String, Object> parameters) {
+        final Map<String, Object> sorted = new TreeMap<>(parameters);
+        sorted.put("app_key", appKey);
+        sorted.put("timestamp", timestamp);
+        StringBuffer string = new StringBuffer();
+        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
+            string.append(entry.getKey()).append(Symbol.EQUAL).append(JSON.toJSONString(entry.getValue()));
+        }
+        String splice = String.format("%s%s%s%s", action, token, string, secret);
+        String calculatedSignature = org.miaixz.bus.crypto.Builder.md5Hex(splice);
+        return calculatedSignature.toUpperCase();
+    }
+
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
         Map<String, Object> form = new HashMap<>(7);
@@ -85,30 +110,6 @@ public class ElemeProvider extends DefaultProvider {
                 .tokenType(object.getString("token_type"))
                 .expireIn(object.getIntValue("expires_in"))
                 .build();
-    }
-
-    /**
-     * 生成饿了么请求的签名
-     *
-     * @param appKey     平台应用的授权key
-     * @param secret     平台应用的授权密钥
-     * @param timestamp  时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
-     * @param action     饿了么请求的api方法
-     * @param token      用户授权的token
-     * @param parameters 加密参数
-     * @return Signature
-     */
-    public static String sign(String appKey, String secret, long timestamp, String action, String token, Map<String, Object> parameters) {
-        final Map<String, Object> sorted = new TreeMap<>(parameters);
-        sorted.put("app_key", appKey);
-        sorted.put("timestamp", timestamp);
-        StringBuffer string = new StringBuffer();
-        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
-            string.append(entry.getKey()).append("=").append(JSON.toJSONString(entry.getValue()));
-        }
-        String splice = String.format("%s%s%s%s", action, token, string, secret);
-        String calculatedSignature = org.miaixz.bus.crypto.Builder.md5Hex(splice);
-        return calculatedSignature.toUpperCase();
     }
 
     @Override
@@ -188,8 +189,8 @@ public class ElemeProvider extends DefaultProvider {
 
     private String getBasic(String appKey, String appSecret) {
         StringBuilder sb = new StringBuilder();
-        String encodeToString = Base64.encode((appKey + ":" + appSecret).getBytes());
-        sb.append("Basic").append(" ").append(encodeToString);
+        String encodeToString = Base64.encode((appKey + Symbol.COLON + appSecret).getBytes());
+        sb.append("Basic").append(Symbol.SPACE).append(encodeToString);
         return sb.toString();
     }
 

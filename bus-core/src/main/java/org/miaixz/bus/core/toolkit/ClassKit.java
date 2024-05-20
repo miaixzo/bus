@@ -60,14 +60,6 @@ import java.util.function.Predicate;
 public class ClassKit {
 
     /**
-     * 包名分界符: '.'
-     */
-    private static final char PACKAGE_SEPARATOR = Symbol.C_DOT;
-    /**
-     * 内部类分界符: '$'
-     */
-    private static final char INNER_CLASS_SEPARATOR = '$';
-    /**
      * 原始类型名和其class对应表,例如：int = int.class
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
@@ -753,37 +745,6 @@ public class ClassKit {
     }
 
     /**
-     * 尝试转换并加载内部类，例如java.lang.Thread.State = java.lang.Thread$State
-     *
-     * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
-     * @return 类名对应的类，未找到返回{@code null}
-     */
-    private static Class<?> forNameInnerClass(String name, final boolean isInitialized, final ClassLoader classLoader) {
-        // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
-        int lastDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR);
-        Class<?> clazz = null;
-        while (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
-            if (!Character.isUpperCase(name.charAt(lastDotIndex + 1))) {
-                // 类名必须大写，非大写的类名跳过
-                break;
-            }
-            name = name.substring(0, lastDotIndex) + INNER_CLASS_SEPARATOR + name.substring(lastDotIndex + 1);
-            try {
-                clazz = Class.forName(name, isInitialized, classLoader);
-                break;
-            } catch (final ClassNotFoundException ignore) {
-                //ignore
-            }
-
-            // 继续向前替换.为$
-            lastDotIndex = name.lastIndexOf(PACKAGE_SEPARATOR);
-        }
-        return clazz;
-    }
-
-    /**
      * 获取指定类的所有父类，结果不包括指定类本身
      * 如果无父类，返回一个空的列表
      *
@@ -870,16 +831,6 @@ public class ClassKit {
             return getNextTypeHierarchies(t);
         };
         EasyStream.iterateHierarchies(root, function, filter).exec();
-    }
-
-    private static Set<Class<?>> getNextTypeHierarchies(final Class<?> t) {
-        final Set<Class<?>> next = new LinkedHashSet<>();
-        final Class<?> superclass = t.getSuperclass();
-        if (Objects.nonNull(superclass)) {
-            next.add(superclass);
-        }
-        next.addAll(Arrays.asList(t.getInterfaces()));
-        return next;
     }
 
     /**
@@ -1066,6 +1017,53 @@ public class ClassKit {
             convertedClass = PRIMITIVE_WRAPPER_MAP.get(cls);
         }
         return convertedClass;
+    }
+
+    /**
+     * 尝试转换并加载内部类，例如java.lang.Thread.State = java.lang.Thread$State
+     *
+     * @param name          类名
+     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
+     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @return 类名对应的类，未找到返回{@code null}
+     */
+    private static Class<?> forNameInnerClass(String name, final boolean isInitialized, final ClassLoader classLoader) {
+        // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
+        int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
+        Class<?> clazz = null;
+        while (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
+            if (!Character.isUpperCase(name.charAt(lastDotIndex + 1))) {
+                // 类名必须大写，非大写的类名跳过
+                break;
+            }
+            name = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
+            try {
+                clazz = Class.forName(name, isInitialized, classLoader);
+                break;
+            } catch (final ClassNotFoundException ignore) {
+                //ignore
+            }
+
+            // 继续向前替换.为$
+            lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
+        }
+        return clazz;
+    }
+
+    /**
+     * 获取指定类的父类和所有接口
+     *
+     * @param clazz 类
+     * @return 类的父类和所有接口
+     */
+    private static Set<Class<?>> getNextTypeHierarchies(final Class<?> clazz) {
+        final Set<Class<?>> next = new LinkedHashSet<>();
+        final Class<?> superclass = clazz.getSuperclass();
+        if (Objects.nonNull(superclass)) {
+            next.add(superclass);
+        }
+        next.addAll(Arrays.asList(clazz.getInterfaces()));
+        return next;
     }
 
 }

@@ -76,7 +76,7 @@ public class Regex {
     /**
      * 中文汉字
      */
-    public static final String CHINESES = CHINESE + "+";
+    public static final String CHINESES = CHINESE + Symbol.PLUS;
     /**
      * 分组
      */

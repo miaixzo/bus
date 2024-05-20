@@ -34,9 +34,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.System.err;
-import static java.lang.System.out;
-
 /**
  * 命令行（控制台）工具方法类
  * 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
@@ -46,13 +43,11 @@ import static java.lang.System.out;
  */
 public class Console {
 
-    private static final String TEMPLATE_VAR = "{}";
-
     /**
      * 同 System.out.println()方法，打印控制台日志
      */
     public static void log() {
-        out.println();
+        System.out.println();
     }
 
     /**
@@ -66,7 +61,7 @@ public class Console {
             final Throwable e = (Throwable) obj;
             log(e, e.getMessage());
         } else {
-            log(TEMPLATE_VAR, obj);
+            log(Symbol.DELIM, obj);
         }
     }
 
@@ -93,7 +88,7 @@ public class Console {
      * @param values   值
      */
     public static void log(final String template, final Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
             logInternal(template, values);
         } else {
             logInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
@@ -108,10 +103,10 @@ public class Console {
      * @param values   值
      */
     public static void log(final Throwable t, final String template, final Object... values) {
-        out.println(StringKit.format(template, values));
+        System.out.println(StringKit.format(template, values));
         if (null != t) {
-            t.printStackTrace(out);
-            out.flush();
+            t.printStackTrace(System.out);
+            System.out.flush();
         }
     }
 
@@ -140,7 +135,7 @@ public class Console {
      * @param obj 要打印的对象
      */
     public static void print(final Object obj) {
-        print(TEMPLATE_VAR, obj);
+        print(Symbol.DELIM, obj);
     }
 
     /**
@@ -165,7 +160,7 @@ public class Console {
      * @param values   值
      */
     public static void print(final String template, final Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
             printInternal(template, values);
         } else {
             printInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
@@ -201,14 +196,14 @@ public class Console {
      * @param values   值
      */
     private static void printInternal(final String template, final Object... values) {
-        out.print(StringKit.format(template, values));
+        System.out.print(StringKit.format(template, values));
     }
 
     /**
      * 同 System.err.println()方法，打印控制台日志
      */
     public static void error() {
-        err.println();
+        System.err.println();
     }
 
     /**
@@ -221,7 +216,7 @@ public class Console {
             final Throwable e = (Throwable) obj;
             error(e, e.getMessage());
         } else {
-            error(TEMPLATE_VAR, obj);
+            error(Symbol.DELIM, obj);
         }
     }
 
@@ -247,7 +242,7 @@ public class Console {
      * @param values   值
      */
     public static void error(final String template, final Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
             errorInternal(template, values);
         } else {
             errorInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
@@ -262,10 +257,10 @@ public class Console {
      * @param values   值
      */
     public static void error(final Throwable t, final String template, final Object... values) {
-        err.println(StringKit.format(template, values));
+        System.err.println(StringKit.format(template, values));
         if (null != t) {
-            t.printStackTrace(err);
-            err.flush();
+            t.printStackTrace(System.err);
+            System.err.flush();
         }
     }
 
@@ -327,7 +322,7 @@ public class Console {
      * @return 模板
      */
     private static String buildTemplateSplitBySpace(final int count) {
-        return StringKit.repeatAndJoin(TEMPLATE_VAR, count, Symbol.SPACE);
+        return StringKit.repeatAndJoin(Symbol.DELIM, count, Symbol.SPACE);
     }
 
     /**
@@ -337,7 +332,7 @@ public class Console {
 
         private static final char ROW_LINE = '－';
         private static final char COLUMN_LINE = '|';
-        private static final char CORNER = '+';
+
         private static final char SPACE = '\u3000';
         private static final char LF = Symbol.C_LF;
         /**
@@ -488,10 +483,10 @@ public class Console {
          * @param sb StringBuilder
          */
         private void fillBorder(final StringBuilder sb) {
-            sb.append(CORNER);
+            sb.append(Symbol.C_PLUS);
             for (final Integer width : columnCharNumber) {
                 sb.append(StringKit.repeat(ROW_LINE, width + 2));
-                sb.append(CORNER);
+                sb.append(Symbol.C_PLUS);
             }
             sb.append(LF);
         }

@@ -79,7 +79,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     String content = matcher.group(i);
                     if (i == 1) {
-                        if (StringKit.isNotBlank(content) && !content.equalsIgnoreCase("*")) {
+                        if (StringKit.isNotBlank(content) && !content.equalsIgnoreCase(Symbol.STAR)) {
                             String[] split = content.split(Symbol.COMMA);
                             terminals = new int[split.length];
                             for (int j = 0; j < split.length; j++) {
@@ -174,7 +174,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
             if (null != terminals && terminals.length != 0) {
                 builder.append(ArrayKit.join(terminals, Symbol.COMMA));
             } else {
-                builder.append("*");
+                builder.append(Symbol.STAR);
             }
             builder.append(operator.getCode());
             if (StringKit.isNotBlank(version)) {

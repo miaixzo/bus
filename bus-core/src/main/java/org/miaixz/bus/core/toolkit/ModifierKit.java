@@ -43,99 +43,128 @@ public class ModifierKit {
     /**
      * 是否同时存在一个或多个修饰符（可能有多个修饰符，如果有指定的修饰符则返回true）
      *
-     * @param clazz     类
-     * @param modifiers 修饰符枚举
+     * @param clazz         类，如果为{@code null}返回{@code false}
+     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
      * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
      */
-    public static boolean hasModifier(final Class<?> clazz, final EnumMap.Modifier... modifiers) {
-        if (null == clazz || ArrayKit.isEmpty(modifiers)) {
+    public static boolean hasModifier(final Class<?> clazz, final EnumMap.Modifier... modifierTypes) {
+        if (null == clazz || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
-        return 0 != (clazz.getModifiers() & modifiersToInt(modifiers));
+        return 0 != (clazz.getModifiers() & EnumMap.Modifier.orToInt(modifierTypes));
     }
 
     /**
      * 是否同时存在一个或多个修饰符（可能有多个修饰符，如果有指定的修饰符则返回true）
      *
-     * @param member    构造、字段或方法
-     * @param modifiers 修饰符枚举
+     * @param member        构造、字段或方法，如果为{@code null}返回{@code false}
+     * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
      * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
      */
-    public static boolean hasModifier(final Member member, final EnumMap.Modifier... modifiers) {
-        if (null == member || ArrayKit.isEmpty(modifiers)) {
+    public static boolean hasModifier(final Member member, final EnumMap.Modifier... modifierTypes) {
+        if (null == member || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
-        return 0 != (member.getModifiers() & modifiersToInt(modifiers));
+        return 0 != (member.getModifiers() & EnumMap.Modifier.orToInt(modifierTypes));
+    }
+
+    /**
+     * 是否同时存在一个或多个修饰符（可能有多个修饰符，如果有指定的修饰符则返回true）
+     *
+     * @param modifiers        类、构造、字段或方法的修饰符
+     * @param checkedModifiers 需要检查的修饰符，如果为空返回{@code false}
+     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     */
+    public static boolean hasModifier(final int modifiers, final int... checkedModifiers) {
+        if (ArrayKit.isEmpty(checkedModifiers)) {
+            return false;
+        }
+        return 0 != (modifiers & EnumMap.Modifier.orToInt(checkedModifiers));
+    }
+
+    /**
+     * 是否同时存在一个或多个修饰符（可能有多个修饰符，如果有指定的修饰符则返回true）
+     *
+     * @param modifiers        类、构造、字段或方法的修饰符
+     * @param checkedModifiers 需要检查的修饰符，如果为空返回{@code false}
+     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
+     */
+    public static boolean hasAllModifier(final int modifiers, final int... checkedModifiers) {
+        if (ArrayKit.isEmpty(checkedModifiers)) {
+            return false;
+        }
+        final int checkedModifiersInt = EnumMap.Modifier.orToInt(checkedModifiers);
+        return checkedModifiersInt == (modifiers & checkedModifiersInt);
     }
 
     /**
      * 提供的方法是否为default方法
      *
-     * @param method 方法
+     * @param method 方法，如果为{@code null}返回{@code false}
      * @return 是否为default方法
      */
     public static boolean isDefault(final Method method) {
-        return method.isDefault();
+        return null != method && method.isDefault();
     }
 
     /**
      * 是否是public成员，可检测包括构造、字段和方法
      *
-     * @param member 构造、字段或方法
+     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
      * @return 是否是public
      */
     public static boolean isPublic(final Member member) {
-        return java.lang.reflect.Modifier.isPublic(member.getModifiers());
+        return null != member && java.lang.reflect.Modifier.isPublic(member.getModifiers());
     }
 
     /**
      * 是否是public类
      *
-     * @param clazz 类
+     * @param clazz 类，如果为{@code null}返回{@code false}
      * @return 是否是public
      */
     public static boolean isPublic(final Class<?> clazz) {
-        return java.lang.reflect.Modifier.isPublic(clazz.getModifiers());
+        return null != clazz && java.lang.reflect.Modifier.isPublic(clazz.getModifiers());
     }
 
     /**
      * 是否是private成员，可检测包括构造、字段和方法
      *
-     * @param member 构造、字段或方法
+     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
      * @return 是否是private
      */
     public static boolean isPrivate(final Member member) {
-        return java.lang.reflect.Modifier.isPrivate(member.getModifiers());
+        return null != member && java.lang.reflect.Modifier.isPrivate(member.getModifiers());
     }
 
     /**
      * 是否是private类
      *
-     * @param clazz 类
+     * @param clazz 类，如果为{@code null}返回{@code false}
      * @return 是否是private类
      */
     public static boolean isPrivate(final Class<?> clazz) {
-        return java.lang.reflect.Modifier.isPrivate(clazz.getModifiers());
+        return null != clazz && java.lang.reflect.Modifier.isPrivate(clazz.getModifiers());
     }
 
     /**
      * 是否是static成员，包括构造、字段或方法
      *
-     * @param member 构造、字段或方法
+     * @param member 构造、字段或方法，如果为{@code null}返回{@code false}
      * @return 是否是static
      */
     public static boolean isStatic(final Member member) {
-        return java.lang.reflect.Modifier.isStatic(member.getModifiers());
+        return null != member && java.lang.reflect.Modifier.isStatic(member.getModifiers());
     }
 
     /**
      * 是否是static类
      *
-     * @param clazz 类
+     * @param clazz 类，如果为{@code null}返回{@code false}
      * @return 是否是static
      */
     public static boolean isStatic(final Class<?> clazz) {
-        return java.lang.reflect.Modifier.isStatic(clazz.getModifiers());
+        return null != clazz && java.lang.reflect.Modifier.isStatic(clazz.getModifiers());
     }
 
     /**
@@ -145,7 +174,7 @@ public class ModifierKit {
      * @return 是否是合成字段
      */
     public static boolean isSynthetic(final Member member) {
-        return member.isSynthetic();
+        return null != member && member.isSynthetic();
     }
 
     /**
@@ -155,7 +184,7 @@ public class ModifierKit {
      * @return 是否是合成
      */
     public static boolean isSynthetic(final Class<?> clazz) {
-        return clazz.isSynthetic();
+        return null != clazz && clazz.isSynthetic();
     }
 
     /**
@@ -165,7 +194,7 @@ public class ModifierKit {
      * @return 是否抽象方法
      */
     public static boolean isAbstract(final Member member) {
-        return java.lang.reflect.Modifier.isAbstract(member.getModifiers());
+        return null != member && java.lang.reflect.Modifier.isAbstract(member.getModifiers());
     }
 
     /**
@@ -175,7 +204,7 @@ public class ModifierKit {
      * @return 是否抽象类
      */
     public static boolean isAbstract(final Class<?> clazz) {
-        return java.lang.reflect.Modifier.isAbstract(clazz.getModifiers());
+        return null != clazz && java.lang.reflect.Modifier.isAbstract(clazz.getModifiers());
     }
 
     /**
@@ -222,10 +251,10 @@ public class ModifierKit {
             return;
         }
 
-        //将字段的访问权限设为true：即去除private修饰符的影响
+        // 将字段的访问权限设为true：即去除private修饰符的影响
         ReflectKit.setAccessible(field);
 
-        //去除final修饰符的影响，将字段设为可修改的
+        // 去除final修饰符的影响，将字段设为可修改的
         final Field modifiersField;
         try {
             modifiersField = Field.class.getDeclaredField("modifiers");
@@ -236,27 +265,13 @@ public class ModifierKit {
         try {
             //Field 的 modifiers 是私有的
             modifiersField.setAccessible(true);
-            //& ：位与运算符，按位与；  运算规则：两个数都转为二进制，然后从高位开始比较，如果两个数都为1则为1，否则为0。
-            //~ ：位非运算符，按位取反；运算规则：转成二进制，如果位为0，结果是1，如果位为1，结果是0.
+            // & ：位与运算符，按位与；  运算规则：两个数都转为二进制，然后从高位开始比较，如果两个数都为1则为1，否则为0。
+            // ~ ：位非运算符，按位取反；运算规则：转成二进制，如果位为0，结果是1，如果位为1，结果是0.
             modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
         } catch (final IllegalAccessException e) {
-            //内部，工具类，基本不抛出异常
+            // 内部，工具类，基本不抛出异常
             throw new InternalException(e, "IllegalAccess for [{}.{}]", field.getDeclaringClass(), field.getName());
         }
-    }
-
-    /**
-     * 多个修饰符做“与”操作，表示同时存在多个修饰符
-     *
-     * @param modifiers 修饰符列表，元素不能为空
-     * @return “与”之后的修饰符
-     */
-    private static int modifiersToInt(final EnumMap.Modifier... modifiers) {
-        int modifier = modifiers[0].getValue();
-        for (int i = 1; i < modifiers.length; i++) {
-            modifier |= modifiers[i].getValue();
-        }
-        return modifier;
     }
 
 }

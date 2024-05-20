@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.core.toolkit.PatternKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -58,10 +59,10 @@ public class TimeParser extends DefaultDatePrinter implements PredicateDateParse
 
     @Override
     public DateTime parse(String source) {
-        source = StringKit.replaceChars(source, "时分秒", ":");
+        source = StringKit.replaceChars(source, "时分秒", Symbol.COLON);
 
         source = StringKit.format("{} {}", DateKit.formatToday(), source);
-        if (1 == StringKit.count(source, ':')) {
+        if (1 == StringKit.count(source, Symbol.C_COLON)) {
             // 时间格式为 HH:mm
             return new DateTime(source, Fields.NORM_DATETIME_MINUTE);
         } else {

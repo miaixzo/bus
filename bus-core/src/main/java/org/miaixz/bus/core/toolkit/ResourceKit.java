@@ -238,7 +238,7 @@ public class ResourceKit {
      */
     public static Resource getResource(final String path) {
         if (StringKit.isNotBlank(path)) {
-            if (path.startsWith(UrlKit.FILE_URL_PREFIX) || FileKit.isAbsolutePath(path)) {
+            if (path.startsWith(Normal.FILE_URL_PREFIX) || FileKit.isAbsolutePath(path)) {
                 return new FileResource(path);
             }
         }

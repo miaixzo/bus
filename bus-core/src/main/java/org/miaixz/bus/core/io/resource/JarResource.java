@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.UrlKit;
 import org.miaixz.bus.core.toolkit.ZipKit;
 
 import java.io.IOException;
@@ -103,9 +103,9 @@ public class JarResource extends UrlResource {
             return jarCon.getJarFile();
         } else {
             final String urlFile = getUrl().getFile();
-            int separatorIndex = urlFile.indexOf(UrlKit.WAR_URL_SEPARATOR);
+            int separatorIndex = urlFile.indexOf(Normal.WAR_URL_SEPARATOR);
             if (separatorIndex == -1) {
-                separatorIndex = urlFile.indexOf(UrlKit.JAR_URL_SEPARATOR);
+                separatorIndex = urlFile.indexOf(Normal.JAR_URL_SEPARATOR);
             }
             if (separatorIndex != -1) {
                 return ZipKit.ofJar(urlFile.substring(0, separatorIndex));

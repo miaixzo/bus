@@ -13,23 +13,25 @@ SNI, ALPN)初始化新的连接，当握手失败时会回退到TLS 1.0。
 
 ```java
     String url = "http://wwww.baidu.com";
-    Httpd httpd = new Httpd();
-    final Request request = new Request.Builder()
-            .url(url)
-            .get()//默认就是GET请求，可以不写
-            .build();
-    NewCall call = httpd.newCall(request);
-    call.enqueue(new Callback() {
-        @Override
-        public void onFailure(NewCall call, IOException e) {
-            Logger.info("onFailure: ");
-        }
+Httpd httpd = new Httpd();
+final Request request = new Request.Builder()
+        .url(url)
+        .get()//默认就是GET请求，可以不写
+        .build();
+NewCall call = httpd.newCall(request);
+    call.
 
-        @Override
-        public void onResponse(NewCall call, Response delegate) throws IOException {
-            Logger.info("onResponse: " + delegate.body().string());
-        }
-    });
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: ");
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info("onResponse: " + delegate.body().string());
+    }
+});
 ```
 
 1.2. 同步GET请求 前面几个步骤和异步方式一样，只是最后一部是通过 NewCall#execute()
@@ -38,22 +40,26 @@ SNI, ALPN)初始化新的连接，当握手失败时会回退到TLS 1.0。
 
 ```java
     String url = "http://wwww.baidu.com";
-    Httpd httpd = new Httpd();
-    final Request request = new Request.Builder()
-            .url(url)
-            .build();
-    final NewCall call = httpd.newCall(request);
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                Response delegate = call.execute();
-                Logger.info("run: " + delegate.body().string());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+Httpd httpd = new Httpd();
+final Request request = new Request.Builder()
+        .url(url)
+        .build();
+final NewCall call = httpd.newCall(request);
+    new
+
+Thread(new Runnable() {
+    @Override
+    public void run () {
+        try {
+            Response delegate = call.execute();
+            Logger.info("run: " + delegate.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }).start();
+    }
+}).
+
+start();
 ``` 
 
 2.1. POST方式提交String 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造
@@ -61,29 +67,33 @@ RequestBody 需要指定MediaType，用于描述请求/响应
 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
 
 ```java
-    MediaType mediaType=MediaType.valueOf("text/x-markdown; charsets=utf-8");
-        String requestBody="I am Jdqm.";
-    Request request = new Request.Builder()
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
+String requestBody = "I am Jdqm.";
+Request request = new Request.Builder()
         .url("https://api.github.com/markdown/raw")
-        .post(RequestBody.create(mediaType,requestBody))
+        .post(RequestBody.create(mediaType, requestBody))
         .build();
-    Httpd httpd = new Httpd();
-    httpd.newCall(request).enqueue(new Callback() {
-       @Override
-       public void onFailure(NewCall call, IOException e) {
-           Logger.info("onFailure: " + e.getMessage());
-       }
-    
-       @Override
-       public void onResponse(NewCall call, Response delegate) throws IOException {
-           Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
-           Headers headers = delegate.headers();
-           for (int i = 0; i < headers.size(); i++) {
-               Logger.info(headers.name(i) + ":" + headers.value(i));
-           }
-           Logger.info("onResponse: " + delegate.body().string());
-       }
-    });
+Httpd httpd = new Httpd();
+    httpd.
+
+newCall(request).
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+        Headers headers = delegate.headers();
+        for (int i = 0; i < headers.size(); i++) {
+            Logger.info(headers.name(i) + ":" + headers.value(i));
+        }
+        Logger.info("onResponse: " + delegate.body().string());
+    }
+});
 ``` 
 
 响应内容
@@ -117,97 +127,109 @@ body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，R
 
 ```java
     RequestBody requestBody = new RequestBody() {
-    
-        @Override
-        public MediaType mediaType() {
-            return MediaType.valueOf("text/x-markdown; charsets=utf-8");
+
+    @Override
+    public MediaType mediaType() {
+        return MediaType.valueOf("text/x-markdown; charsets=utf-8");
+    }
+
+    @Override
+    public void writeTo(BufferSink sink) throws IOException {
+        sink.writeUtf8("I am Jdqm.");
+    }
+};
+
+Request request = new Request.Builder()
+        .url("https://api.github.com/markdown/raw")
+        .post(requestBody)
+        .build();
+Httpd httpd = new Httpd();
+    httpd.
+
+newCall(request).
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+        Headers headers = delegate.headers();
+        for (int i = 0; i < headers.size(); i++) {
+            Logger.info(headers.name(i) + ":" + headers.value(i));
         }
-    
-        @Override
-        public void writeTo(BufferSink sink) throws IOException {
-            sink.writeUtf8("I am Jdqm.");
-        }
-    };
-    
-    Request request = new Request.Builder()
-            .url("https://api.github.com/markdown/raw")
-            .post(requestBody)
-            .build();
-    Httpd httpd = new Httpd();
-    httpd.newCall(request).enqueue(new Callback() {
-        @Override
-        public void onFailure(NewCall call, IOException e) {
-            Logger.info("onFailure: " + e.getMessage());
-        }
-    
-        @Override
-        public void onResponse(NewCall call, Response delegate) throws IOException {
-            Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
-            Headers headers = delegate.headers();
-            for (int i = 0; i < headers.size(); i++) {
-                Logger.info(headers.name(i) + ":" + headers.value(i));
-            }
-            Logger.info("onResponse: " + delegate.body().string());
-        }
-    });
+        Logger.info("onResponse: " + delegate.body().string());
+    }
+});
 ```
 
 2.3. POST提交文件
 
 ```java
-    MediaType mediaType=MediaType.valueOf("text/x-markdown; charsets=utf-8");
-        Httpd httpd=new Httpd();
-    File file = new File("test.md");
-    Request request = new Request.Builder()
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
+Httpd httpd = new Httpd();
+File file = new File("test.md");
+Request request = new Request.Builder()
         .url("https://api.github.com/markdown/raw")
-        .post(RequestBody.create(mediaType,file))
+        .post(RequestBody.create(mediaType, file))
         .build();
-    httpd.newCall(request).enqueue(new Callback() {
-       @Override
-       public void onFailure(NewCall call, IOException e) {
-           Logger.info("onFailure: " + e.getMessage());
-       }
-    
-       @Override
-       public void onResponse(NewCall call, Response delegate) throws IOException {
-           Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
-           Headers headers = delegate.headers();
-           for (int i = 0; i < headers.size(); i++) {
-               Logger.info(headers.name(i) + ":" + headers.value(i));
-           }
-           Logger.info("onResponse: " + delegate.body().string());
-       }
-    });
+    httpd.
+
+newCall(request).
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+        Headers headers = delegate.headers();
+        for (int i = 0; i < headers.size(); i++) {
+            Logger.info(headers.name(i) + ":" + headers.value(i));
+        }
+        Logger.info("onResponse: " + delegate.body().string());
+    }
+});
 ```
 
 2.4. POST方式提交表单
 
 ```java
     Httpd httpd = new Httpd();
-    RequestBody requestBody = new FormBody.Builder()
-            .add("search", "Jurassic Park")
-            .build();
-    Request request = new Request.Builder()
-            .url("https://en.wikipedia.org/w/index.php")
-            .post(requestBody)
-            .build();
+RequestBody requestBody = new FormBody.Builder()
+        .add("search", "Jurassic Park")
+        .build();
+Request request = new Request.Builder()
+        .url("https://en.wikipedia.org/w/index.php")
+        .post(requestBody)
+        .build();
     
-    httpd.newCall(request).enqueue(new Callback() {
-        @Override
-        public void onFailure(NewCall call, IOException e) {
-            Logger.info("onFailure: " + e.getMessage());
+    httpd.
+
+newCall(request).
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+        Headers headers = delegate.headers();
+        for (int i = 0; i < headers.size(); i++) {
+            Logger.info(headers.name(i) + ":" + headers.value(i));
         }
-    
-        @Override
-        public void onResponse(NewCall call, Response delegate) throws IOException {
-            Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
-            Headers headers = delegate.headers();
-            for (int i = 0; i < headers.size(); i++) {
-                Logger.info(headers.name(i) + ":" + headers.value(i));
-            }
-            Logger.info("onResponse: " + delegate.body().string());
-        }
-    });
+        Logger.info("onResponse: " + delegate.body().string());
+    }
+});
 ```
 
 2.5. POST方式提交分块请求 MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容。多块请求体中每块请求都是一个请求体，可以定义自己的请求头。这些请求头可以用来描述这块请求，例如它的
@@ -215,36 +237,38 @@ Content-Disposition 。如果 Content-Length 和 Content-Type 可用的话，他
 
 ```java
     Httpd client = new Httpd();
-    MultipartBody body = new MultipartBody.Builder("AaB03x")
-            .setType(MediaType.MULTIPART_FORM_DATA_TYPE)
-            .addPart(
-                    Headers.of("Content-Disposition", "form-data; name=\"title\""),
-                    RequestBody.create(null, "Square Logo"))
-            .addPart(
-                    Headers.of("Content-Disposition", "form-data; name=\"image\""),
-                    RequestBody.create( MediaType.valueOf("image/png"), new File("website/static/logo-square.png")))
-            .build();
-    
-    Request request = new Request.Builder()
-            .header("Authorization", "Client-ID " + "...")
-            .url("https://api.imgur.com/3/image")
-            .post(body)
-            .build();
-    
-    NewCall call = client.newCall(request);
-    call.enqueue(new Callback() {
-        @Override
-        public void onFailure(NewCall call, IOException e) {
-    
-        }
-    
-        @Override
-        public void onResponse(NewCall call, Response delegate) throws IOException {
-            Logger.info(delegate.body().string());
-    
-        }
-    
-    });
+MultipartBody body = new MultipartBody.Builder("AaB03x")
+        .setType(MediaType.MULTIPART_FORM_DATA_TYPE)
+        .addPart(
+                Headers.of("Content-Disposition", "form-data; name=\"title\""),
+                RequestBody.create(null, "Square Logo"))
+        .addPart(
+                Headers.of("Content-Disposition", "form-data; name=\"image\""),
+                RequestBody.create(MediaType.valueOf("image/png"), new File("website/static/logo-square.png")))
+        .build();
+
+Request request = new Request.Builder()
+        .header("Authorization", "Client-ID " + "...")
+        .url("https://api.imgur.com/3/image")
+        .post(body)
+        .build();
+
+NewCall call = client.newCall(request);
+    call.
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        Logger.info(delegate.body().string());
+
+    }
+
+});
 ```
 
 3.1. 拦截器 Httpd的拦截器链可谓是其整个框架的精髓，用户可传入的 interceptor 分为两类： ①一类是全局的 interceptor，该类
@@ -261,48 +285,52 @@ interceptor 在拦截器链头去做。
 ```java
     public class LoggingInterceptor implements Interceptor {
 
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
 
-            long startTime = System.nanoTime();
-            Logger.info(String.format("Sending request %s on %s%n%s",
-                    request.url(), chain.connection(), request.headers()));
+        long startTime = System.nanoTime();
+        Logger.info(String.format("Sending request %s on %s%n%s",
+                request.url(), chain.connection(), request.headers()));
 
-            Response delegate = chain.proceed(request);
+        Response delegate = chain.proceed(request);
 
-            long endTime = System.nanoTime();
-            Logger.info(String.format("Received delegate for %s in %.1fms%n%s",
-                    delegate.request().url(), (endTime - startTime) / 1e6d, delegate.headers()));
+        long endTime = System.nanoTime();
+        Logger.info(String.format("Received delegate for %s in %.1fms%n%s",
+                delegate.request().url(), (endTime - startTime) / 1e6d, delegate.headers()));
 
-            return delegate;
-        }
+        return delegate;
     }
+}
 ```
 
 ```java
     Httpd httpd = new Httpd.Builder()
-            .addInterceptor(new LoggingInterceptor())
-            .build();
-    Request request = new Request.Builder()
-            .url("http://www.publicobject.com/helloworld.txt")
-            .header("User-Agent", "Httpd Example")
-            .build();
-    httpd.newCall(request).enqueue(new Callback() {
-        @Override
-        public void onFailure(NewCall call, IOException e) {
-            Logger.info("onFailure: " + e.getMessage());
+        .addInterceptor(new LoggingInterceptor())
+        .build();
+Request request = new Request.Builder()
+        .url("http://www.publicobject.com/helloworld.txt")
+        .header("User-Agent", "Httpd Example")
+        .build();
+    httpd.
+
+newCall(request).
+
+enqueue(new Callback() {
+    @Override
+    public void onFailure (NewCall call, IOException e){
+        Logger.info("onFailure: " + e.getMessage());
+    }
+
+    @Override
+    public void onResponse (NewCall call, Response delegate) throws IOException {
+        ResponseBody body = delegate.body();
+        if (null != body) {
+            Logger.info("onResponse: " + delegate.body().string());
+            body.close();
         }
-    
-        @Override
-        public void onResponse(NewCall call, Response delegate) throws IOException {
-            ResponseBody body = delegate.body();
-            if (null != body) {
-                Logger.info("onResponse: " + delegate.body().string());
-                body.close();
-            }
-        }
-    });
+    }
+});
 ```
 
 针对这个请求，打印出来的结果
@@ -334,10 +362,10 @@ interceptor的使用以及它们各自的优缺点
    实例，显然就是一种资源的浪费。当然，也可以使用如下的方式来创建一个新的 Httpd 实例，它们共享连接池、线程池和配置信息。
 
 ```java
-    Httpd client=Httpd.newBuilder()
-        .readTimeout(500,TimeUnit.MILLISECONDS)
+    Httpd client = Httpd.newBuilder()
+        .readTimeout(500, TimeUnit.MILLISECONDS)
         .build();
-        Response delegate=client.newCall(request).execute();
+Response delegate = client.newCall(request).execute();
 ```
 
 2. 每一个Call(其实现是RealCall)只能执行一次，否则会报异常，具体参见 RealCall#execute()
@@ -365,7 +393,7 @@ interceptor的使用以及它们各自的优缺点
 * `newBuilder()`       用于重新构建一个 Httpv 实例
 
 ```java
-Httpv http=Httpv.builder()
+Httpv http = Httpv.builder()
         .baseUrl("http://api.example.com")
         .addMsgConvertor(new GsonMsgConvertor())
         .build();
@@ -376,7 +404,7 @@ Httpv http=Httpv.builder()
 使用方法`sync(String url)`开始一个同步请求：
 
 ```java
-List<User> users=http.sync("/users") // http://api.example.com/users
+List<User> users = http.sync("/users") // http://api.example.com/users
         .get()                         // GET请求
         .getBody()                     // 获取响应报文体
         .toList(User.class);           // 得到目标数据
@@ -390,11 +418,15 @@ List<User> users=http.sync("/users") // http://api.example.com/users
 
 ```java
 http.async("/users/1")                //  http://api.miaixz.org/users/1
-        .setOnResponse((HttpResult result)->{
-        // 得到目标数据
-        User user=result.getBody().toBean(User.class);
+        .
+
+setOnResponse((HttpResult result)->{
+// 得到目标数据
+User user = result.getBody().toBean(User.class);
         })
-        .get();                       // GET请求
+                .
+
+get();                       // GET请求
 ```
 
 方法`async`返回一个异步`CoverHttp`，可链式使用。
@@ -405,16 +437,26 @@ http.async("/users/1")                //  http://api.miaixz.org/users/1
 
 ```java
 http.webSocket("/chat")
-        .setOnOpen((WebSocket ws,HttpResult res)->{
-        ws.send("向服务器问好");
+        .
+
+setOnOpen((WebSocket ws, HttpResult res)->{
+        ws.
+
+send("向服务器问好");
         })
-        .setOnMessage((WebSocket ws，Message msg)->{
-        // 从服务器接收消息（自动反序列化）
-        Chat chat=msg.toBean(Chat.class);
-        // 相同的消息发送给服务器（自动序列化 Chat 对象）
-        ws.send(chat);
+                .
+
+setOnMessage((WebSocket ws，Message msg)->{
+// 从服务器接收消息（自动反序列化）
+Chat chat = msg.toBean(Chat.class);
+// 相同的消息发送给服务器（自动序列化 Chat 对象）
+        ws.
+
+send(chat);
         })
-        .listen();                     // 启动监听
+                .
+
+listen();                     // 启动监听
 ```
 
 方法`webSocket`返回一个支持 WebSocket 的`CoverHttp`，也可链式使用。
@@ -456,15 +498,23 @@ Websocket 方法：
 
 ```java
 http.async("https://api.miaixz.org/auth/login")
-        .addBodyPara("username","jack")
-        .addBodyPara("password","xxxx")
-        .setOnResponse((HttpResult result)->{
-        // 得到返回数据，使用 Mapper 可省去定义一个实体类
-        Mapper mapper=result.getBody().toMapper();
-        // 登录是否成功
-        boolean success=mapper.getBool("success");
+        .
+
+addBodyPara("username","jack")
+        .
+
+addBodyPara("password","xxxx")
+        .
+
+setOnResponse((HttpResult result)->{
+// 得到返回数据，使用 Mapper 可省去定义一个实体类
+Mapper mapper = result.getBody().toMapper();
+// 登录是否成功
+boolean success = mapper.getBool("success");
         })
-        .post();
+                .
+
+post();
 ```
 
 ### 配置`Httpv`
@@ -498,24 +548,52 @@ Httpv 并没有把文件的下载排除在常规的请求之外，同一套API�
 
 ```java
 http.sync("bus-http/test.zip")
-        .get()                           // 使用 GET 方法（其它方法也可以，看服务器支持）
-        .getBody()                       // 得到报文体
-        .toFile("bus-http/test.zip")     // 下载到指定的路径
-        .start();                        // 启动下载
+        .
 
-        http.sync("/download/test.zip").get().getBody()
-        .toFolder("bus-http")            // 下载到指定的目录，文件名将根据下载信息自动生成
-        .start();
+get()                           // 使用 GET 方法（其它方法也可以，看服务器支持）
+        .
+
+getBody()                       // 得到报文体
+        .
+
+toFile("bus-http/test.zip")     // 下载到指定的路径
+        .
+
+start();                        // 启动下载
+
+        http.
+
+sync("/download/test.zip").
+
+get().
+
+getBody()
+        .
+
+toFolder("bus-http")            // 下载到指定的目录，文件名将根据下载信息自动生成
+        .
+
+start();
 ```
 
 或使用异步连接方式：
 
 ```java
 http.async("bus-http/test.zip")
-        .setOnResponse((HttpResult result)->{
-        result.getBody().toFolder("bus-http").start();
+        .
+
+setOnResponse((HttpResult result)->{
+        result.
+
+getBody().
+
+toFolder("bus-http").
+
+start();
         })
-        .get();
+                .
+
+get();
 ```
 
 这里要说明一下：`sync`与`async`
@@ -527,22 +605,36 @@ http.async("bus-http/test.zip")
 
 ```java
 http.sync("/download/test.zip")
-        .get()
-        .getBody()
-        .stepBytes(1024)   // 设置每接收 1024 个字节执行一次进度回调（不设置默认为 8192）  
-        //     .stepRate(0.01)    // 设置每接收 1% 执行一次进度回调（不设置以 StepBytes 为准）  
-        .setOnProcess((Process process)->{           // 下载进度回调
-        long doneBytes=process.getDoneBytes();   // 已下载字节数
-        long totalBytes=process.getTotalBytes(); // 总共的字节数
-        double rate=process.getRate();           // 已下载的比例
-        boolean isDone=process.isDone();         // 是否下载完成
+        .
+
+get()
+        .
+
+getBody()
+        .
+
+stepBytes(1024)   // 设置每接收 1024 个字节执行一次进度回调（不设置默认为 8192）  
+//     .stepRate(0.01)    // 设置每接收 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+        .
+
+setOnProcess((Process process)->{           // 下载进度回调
+long doneBytes = process.getDoneBytes();   // 已下载字节数
+long totalBytes = process.getTotalBytes(); // 总共的字节数
+double rate = process.getRate();           // 已下载的比例
+boolean isDone = process.isDone();         // 是否下载完成
         })
-        .toFolder("bus-http/")        // 指定下载的目录，文件名将根据下载信息自动生成
-        //     .toFile("bus-http/test.zip")  // 指定下载的路径，若文件已存在则覆盖
-        .setOnSuccess((File file)->{   // 下载成功回调
+                .
+
+toFolder("bus-http/")        // 指定下载的目录，文件名将根据下载信息自动生成
+//     .toFile("bus-http/test.zip")  // 指定下载的路径，若文件已存在则覆盖
+        .
+
+setOnSuccess((File file)->{   // 下载成功回调
 
         })
-        .start();
+        .
+
+start();
 ```
 
 值得一提的是：由于 Httpv
@@ -550,12 +642,12 @@ http.sync("/download/test.zip")
 头），例如：
 
 ```java
-List<User> users=http.sync("/users")
+List<User> users = http.sync("/users")
         .get()
         .getBody()
         .stepBytes(2)
-        .setOnProcess((Process process)->{
-        System.out.println(process.getRate());
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
         })
         .toList(User.class);
 ```
@@ -565,30 +657,42 @@ List<User> users=http.sync("/users")
 过于简单：还是直接上代码：
 
 ```java
-Ctrl ctrl=http.sync("bus-http/test.zip")
+Ctrl ctrl = http.sync("bus-http/test.zip")
         .get()
         .getBody()
-        .setOnProcess((Process process)->{
-        System.out.println(process.getRate());
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
         })
         .toFolder("bus-http/")
         .start();   // 该方法返回一个下载过程控制器
 
-        ctrl.status();      // 下载状态
-        ctrl.pause();       // 暂停下载
-        ctrl.resume();      // 恢复下载
-        ctrl.cancel();      // 取消下载（同时会删除文件，不可恢复）
+        ctrl.
+
+status();      // 下载状态
+        ctrl.
+
+pause();       // 暂停下载
+        ctrl.
+
+resume();      // 恢复下载
+        ctrl.
+
+cancel();      // 取消下载（同时会删除文件，不可恢复）
 ```
 
 无论是同步还是异步发起的下载请求，都可以做以上的控制：
 
 ```java
 http.async("bus-http/test.zip")
-        .setOnResponse((HttpResult result)->{
-        // 拿到下载控制器
-        Ctrl ctrl=result.getBody().toFolder("bus-http/").start();
+        .
+
+setOnResponse((HttpResult result)->{
+// 拿到下载控制器
+Ctrl ctrl = result.getBody().toFolder("bus-http/").start();
         })
-        .get();
+                .
+
+get();
 ```
 
 ### 实现断点续传
@@ -598,36 +702,64 @@ Httpv 对断点续传并没有再做更高层次的封装，因为这是app该�
 
 ```java
 http.sync("bus-http/test.zip")
-        .get()
-        .getBody()
-        .toFolder("bus-http/")
-        .setOnFailure((Failure failure)->{         // 下载失败回调，以便接收诸如网络错误等失败信息
-        IOException e=failure.getException();  // 具体的异常信息
-        long doneBytes=failure.getDoneBytes(); // 已下载的字节数（断点），需要保存，用于断点续传
-        File file=failure.getFile();           // 下载生成的文件，需要保存 ，用于断点续传（只保存路径也可以）
+        .
+
+get()
+        .
+
+getBody()
+        .
+
+toFolder("bus-http/")
+        .
+
+setOnFailure((Failure failure)->{         // 下载失败回调，以便接收诸如网络错误等失败信息
+IOException e = failure.getException();  // 具体的异常信息
+long doneBytes = failure.getDoneBytes(); // 已下载的字节数（断点），需要保存，用于断点续传
+File file = failure.getFile();           // 下载生成的文件，需要保存 ，用于断点续传（只保存路径也可以）
         })
-        .start();
+                .
+
+start();
 ```
 
 下面代码实现续传：
 
 ```java
-long doneBytes=...    // 拿到保存的断点
-        File file=...        // 待续传的文件
+long doneBytes =...    // 拿到保存的断点
+File file =...        // 待续传的文件
 
-        http.sync("bus-http/test.zip")
-        .setRange(doneBytes)                         // 设置断点（已下载的字节数）
-        .get()
-        .getBody()
-        .toFile(file)                                // 下载到同一个文件里
-        .setAppended()                               // 开启文件追加模式
-        .setOnSuccess((File file)->{
+        http.
+
+sync("bus-http/test.zip")
+        .
+
+setRange(doneBytes)                         // 设置断点（已下载的字节数）
+        .
+
+get()
+        .
+
+getBody()
+        .
+
+toFile(file)                                // 下载到同一个文件里
+        .
+
+setAppended()                               // 开启文件追加模式
+        .
+
+setOnSuccess((File file)->{
 
         })
-        .setOnFailure((Failure failure)->{
+        .
+
+setOnFailure((Failure failure)->{
 
         })
-        .start();
+        .
+
+start();
 ```
 
 ### 实现分块下载
@@ -635,39 +767,39 @@ long doneBytes=...    // 拿到保存的断点
 当文件很大时，有时候我们会考虑分块下载，与断点续传的思路是一样的，示例代码：
 
 ```java
-    private static String url="https://www.miaixz.org/dl/test.zip";
+    private static String url = "https://www.miaixz.org/dl/test.zip";
 private static Httpv httpv;
 
-public static void httpv(){
-        Httpv.Builder builder=Httpv.builder();
-        ConvertProvider.inject(builder);
-        Config.config(builder);
-        httpv=builder.build();
-        long totalSize=httpv.sync(url).get().getBody()
-        .close()                   // 因为这次请求只是为了获得文件大小，不消费报文体，所以直接关闭
-        .getLength();              // 获得待下载文件的大小（由于未消费报文体，所以该请求不会消耗下载报文体的时间和网络流量）
-        downloads(totalSize,0);      // 从第 0 块开始下载
-        sleep(50000);                // 等待下载完成（不然本例的主线程就结束啦）
-        }
+public static void httpv() {
+    Httpv.Builder builder = Httpv.builder();
+    ConvertProvider.inject(builder);
+    Config.config(builder);
+    httpv = builder.build();
+    long totalSize = httpv.sync(url).get().getBody()
+            .close()                   // 因为这次请求只是为了获得文件大小，不消费报文体，所以直接关闭
+            .getLength();              // 获得待下载文件的大小（由于未消费报文体，所以该请求不会消耗下载报文体的时间和网络流量）
+    downloads(totalSize, 0);      // 从第 0 块开始下载
+    sleep(50000);                // 等待下载完成（不然本例的主线程就结束啦）
+}
 
-static void downloads(long totalSize,int index){
-        long size=3*1024*1024;                 // 每块下载 3M
-        long start=index*size;
-        long end=Math.min(start+size,totalSize);
-        httpv.sync(url)
-        .setRange(start,end)                // 设置本次下载的范围
-        .get().getBody()
-        .toFile("bus-http/test.zip")         // 下载到同一个文件里
-        .setAppended()                       // 开启文件追加模式
-        .setOnSuccess((File file)->{
-        if(end<totalSize){           // 若未下载完，则继续下载下一块
-        downloads(totalSize,index+1);
-        }else{
-        System.out.println("下载完成");
-        }
-        })
-        .start();
-        }
+static void downloads(long totalSize, int index) {
+    long size = 3 * 1024 * 1024;                 // 每块下载 3M
+    long start = index * size;
+    long end = Math.min(start + size, totalSize);
+    httpv.sync(url)
+            .setRange(start, end)                // 设置本次下载的范围
+            .get().getBody()
+            .toFile("bus-http/test.zip")         // 下载到同一个文件里
+            .setAppended()                       // 开启文件追加模式
+            .setOnSuccess((File file) -> {
+                if (end < totalSize) {           // 若未下载完，则继续下载下一块
+                    downloads(totalSize, index + 1);
+                } else {
+                    System.out.println("下载完成");
+                }
+            })
+            .start();
+}
 ```
 
 ## 文件上传
@@ -676,23 +808,37 @@ static void downloads(long totalSize,int index){
 
 ```java
 http.sync("/upload")
-        .addFilePara("test","bus-http/test.zip")
-        .post();     // 上传发法一般使用 POST 或 PUT，看服务器支持
+        .
+
+addFilePara("test","bus-http/test.zip")
+        .
+
+post();     // 上传发法一般使用 POST 或 PUT，看服务器支持
 ```
 
 异步上传也是完全一样：
 
 ```java
 http.async("/upload")
-        .addFilePara("test","bus-http/test.zip")
-        .post();
+        .
+
+addFilePara("test","bus-http/test.zip")
+        .
+
+post();
 ```
 
 ```java
 http.async("/upload")
-        .bodyType("multipart/form")
-        .addFilePara("test","bus-http/test.zip")
-        .post();
+        .
+
+bodyType("multipart/form")
+        .
+
+addFilePara("test","bus-http/test.zip")
+        .
+
+post();
 ```
 
 ### 上传进度监听
@@ -701,18 +847,30 @@ Httpv 的上传进度监听，监听的是所有请求报文体的发送进度�
 
 ```java
 http.sync("/upload")
-        .addBodyPara("name","Jack")
-        .addBodyPara("age",20)
-        .addFilePara("avatar","bus-http/avatar.jpg")
-        .stepBytes(1024)   // 设置每发送 1024 个字节执行一次进度回调（不设置默认为 8192）  
-        //     .stepRate(0.01)    // 设置每发送 1% 执行一次进度回调（不设置以 StepBytes 为准）  
-        .setOnProcess((Process process)->{           // 上传进度回调
-        long doneBytes=process.getDoneBytes();   // 已发送字节数
-        long totalBytes=process.getTotalBytes(); // 总共的字节数
-        double rate=process.getRate();           // 已发送的比例
-        boolean isDone=process.isDone();         // 是否发送完成
+        .
+
+addBodyPara("name","Jack")
+        .
+
+addBodyPara("age",20)
+        .
+
+addFilePara("avatar","bus-http/avatar.jpg")
+        .
+
+stepBytes(1024)   // 设置每发送 1024 个字节执行一次进度回调（不设置默认为 8192）  
+//     .stepRate(0.01)    // 设置每发送 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+        .
+
+setOnProcess((Process process)->{           // 上传进度回调
+long doneBytes = process.getDoneBytes();   // 已发送字节数
+long totalBytes = process.getTotalBytes(); // 总共的字节数
+double rate = process.getRate();           // 已发送的比例
+boolean isDone = process.isDone();         // 是否发送完成
         })
-        .post();
+                .
+
+post();
 ```
 
 咦！怎么感觉和下载的进度回调的一样？没错！Httpv 还是使用同一套API处理上传和下载的进度回调，区别只在于上传是在`get/post`
@@ -724,14 +882,16 @@ http.sync("/upload")
 上传文件的过程控制就很简单，和常规请求一样，只有异步发起的上传可以取消：
 
 ```java
-HttpCall call=http.async("/upload")
-        .addFilePara("test","bus-http/test.zip")
-        .setOnProcess((Process process)->{
-        System.out.println(process.getRate());
+HttpCall call = http.async("/upload")
+        .addFilePara("test", "bus-http/test.zip")
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
         })
         .post();
 
-        call.cancel();  // 取消上传
+        call.
+
+cancel();  // 取消上传
 ```
 
 ### Httpx 使用
@@ -753,69 +913,90 @@ HttpCall call=http.async("/upload")
 
 ```java
     String url = "https://www.baidu.com";
-    String resp = Httpz.get().url(url).build().execute().string();
+String resp = Httpz.get().url(url).build().execute().string();
 ```
 
 2.异步Get请求(访问百度首页)
 
 ```java
-    Httpz.get().url("https://www.baidu.com").build().
-            executeAsync(new StringCallback() {
-                @Override
-                public void onFailure(NewCall call, Exception e, int id) {
-                    Logger.error(e.getMessage(), e);
-                }
-    
-                @Override
-                public void onSuccess(NewCall call, String delegate, int id) {
-                    Logger.info("delegate:{}", delegate);
-                }
-            });
+    Httpz.get().
+
+url("https://www.baidu.com").
+
+build().
+
+executeAsync(new StringCallback() {
+    @Override
+    public void onFailure (NewCall call, Exception e,int id){
+        Logger.error(e.getMessage(), e);
+    }
+
+    @Override
+    public void onSuccess (NewCall call, String delegate,int id){
+        Logger.info("delegate:{}", delegate);
+    }
+});
 ```
 
 3.百度搜索关键字'微信机器人'
 
 ```java
     Httpz.get().
-            url("http://www.baidu.com/s").
-            addParams("wd", "微信机器人").
-            addParams("tn", "baidu").
-            build().
-            execute().
-            string();
+
+url("http://www.baidu.com/s").
+
+addParams("wd","微信机器人").
+
+addParams("tn","baidu").
+
+build().
+
+execute().
+
+string();
 ```
 
 4.异步下载一张百度图片，有下载进度,保存为/tmp/tmp.jpg
 
 ```java
     String savePath = "tmp.jpg";
-    String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
-    Httpz.newBuilder().addNetworkInterceptor(new FileInterceptor() {
-        @Override
-        public void updateProgress(long downloadLenth, long totalLength, boolean isFinish) {
-            Logger.info("updateProgress downloadLenth:" + downloadLenth +
-                    ",totalLength:" + totalLength + ",isFinish:" + isFinish);
-        }
-    }).build().
-            get().
-            url(imageUrl).
-            build().
-            executeAsync(new FileCallback(savePath) {//save file to /tmp/tmp.jpg
-                @Override
-                public void onFailure(NewCall call, Exception e, int id) {
-                    Logger.error(e.getMessage(), e);
-                }
-    
-                @Override
-                public void onSuccess(NewCall call, File file, int id) {
-                    Logger.info("filePath:" + file.getAbsolutePath());
-                }
-    
-                @Override
-                public void onSuccess(NewCall call, InputStream fileStream, int id) {
-                    Logger.info("onSuccessWithInputStream");
-                }
-            });
+String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
+    Httpz.
+
+newBuilder().
+
+addNetworkInterceptor(new FileInterceptor() {
+    @Override
+    public void updateProgress ( long downloadLenth, long totalLength, boolean isFinish){
+        Logger.info("updateProgress downloadLenth:" + downloadLenth +
+                ",totalLength:" + totalLength + ",isFinish:" + isFinish);
+    }
+}).
+
+build().
+
+get().
+
+url(imageUrl).
+
+build().
+
+executeAsync(new FileCallback(savePath) {//save file to /tmp/tmp.jpg
+    @Override
+    public void onFailure (NewCall call, Exception e,int id){
+        Logger.error(e.getMessage(), e);
+    }
+
+    @Override
+    public void onSuccess (NewCall call, File file,int id){
+        Logger.info("filePath:" + file.getAbsolutePath());
+    }
+
+    @Override
+    public void onSuccess (NewCall call, InputStream fileStream,int id){
+        Logger.info("onSuccessWithInputStream");
+    }
+});
 
 ```
 
@@ -823,8 +1004,8 @@ HttpCall call=http.async("/upload")
 
 ```java
     String savePath = "tmp.jpg";
-    String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
-    InputStream is = Httpz.get().url(imageUrl).build().execute().byteStream();
+String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
+InputStream is = Httpz.get().url(imageUrl).build().execute().byteStream();
     ...
 ```
 
@@ -832,78 +1013,94 @@ HttpCall call=http.async("/upload")
 
 ```java
     String url = "https://www.xxx.com";
-        byte[]imageContent=FileKit.readBytes("/tmp/test.png");
-        Response delegate=Httpz.post()
+byte[] imageContent = FileKit.readBytes("/tmp/test.png");
+Response delegate = Httpz.post()
         .url(url)
-            .addFile("file", "b.jpg", imageContent)
-            .build()
-            .execute();
-    System.out.println(delegate.body().string());
+        .addFile("file", "b.jpg", imageContent)
+        .build()
+        .execute();
+    System.out.
+
+println(delegate.body().
+
+string());
 ```
 
 7.上传文件(通过文件流)
 
 ```java
-    InputStream is=new FileInputStream("/tmp/logo.jpg");
-        Response delegate=Httpz.newBuilder()
-        .connectTimeout(10,TimeUnit.SECONDS)
-            .build()
-            .post()
-            .url("上传地址")
-            .addFile("file", "logo.jpg", is)
-            .build()
-            .execute();
-    Logger.info(delegate.body().string());
+    InputStream is = new FileInputStream("/tmp/logo.jpg");
+Response delegate = Httpz.newBuilder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .build()
+        .post()
+        .url("上传地址")
+        .addFile("file", "logo.jpg", is)
+        .build()
+        .execute();
+    Logger.
+
+info(delegate.body().
+
+string());
 ```
 
 8.设置网络代理
 
 ```java
     Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1088));
-    Authenticator.setDefault(new Authenticator(){//如果没有设置账号密码，则可以注释掉这块
-        private PasswordAuthentication authentication =
-                new PasswordAuthentication("username","password".toCharArray());
-        @Override
-        protected PasswordAuthentication getPasswordAuthentication(){
-            return authentication;
-        }
-        });
-        Response delegate=Httpz.
+    Authenticator.
+
+setDefault(new Authenticator() {//如果没有设置账号密码，则可以注释掉这块
+    private PasswordAuthentication authentication =
+            new PasswordAuthentication("username", "password".toCharArray());
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication () {
+        return authentication;
+    }
+});
+Response delegate = Httpz.
         newBuilder().
-            proxy(proxy).
-            build().
-            get().
-            url("http://ip111.cn/").
-            build().
-            execute();
-    Logger.info(delegate.string());
+        proxy(proxy).
+        build().
+        get().
+        url("http://ip111.cn/").
+        build().
+        execute();
+    Logger.
+
+info(delegate.string());
 ```
 
 9.设置Http头部信息
 
 ```java
-    String url="https://www.baidu.com";
-        Response delegate=Httpz.
+    String url = "https://www.baidu.com";
+Response delegate = Httpz.
         get().
-        addHeader("Referer","http://news.baidu.com/").
-        addHeader("cookie","uin=test;skey=111111;").
+        addHeader("Referer", "http://news.baidu.com/").
+        addHeader("cookie", "uin=test;skey=111111;").
         url(url).
         build().
         execute();
-        System.out.println(delegate.string());
+        System.out.
+
+println(delegate.string());
 ```
 
 9.设置https证书
 
 ```java
     SSLContext sslContext = getxxx();
-    Response delegate = Httpz
-            .get()
-            .sslContext(sslContext)
-            .url(url)
-            .build()
-            .execute();
-    System.out.println(delegate.toString());
+Response delegate = Httpz
+        .get()
+        .sslContext(sslContext)
+        .url(url)
+        .build()
+        .execute();
+    System.out.
+
+println(delegate.toString());
 ```
 
 10.自动携带Cookie进行请求
@@ -911,44 +1108,56 @@ HttpCall call=http.async("/upload")
 ```java
     private static class LocalCookieJar implements CookieJar {
 
-       List<Cookie> cookies;
-   
-       @Override
-       public List<Cookie> loadForRequest(UnoUrl arg0) {
-           if (null != cookies) {
-               return cookies;
-           }
-           return new ArrayList<>();
-       }
-   
-       @Override
-       public void saveFromResponse(UnoUrl arg0, List<Cookie> cookies) {
-           this.cookies = cookies;
-       }
-   }
+    List<Cookie> cookies;
+
+    @Override
+    public List<Cookie> loadForRequest(UnoUrl arg0) {
+        if (null != cookies) {
+            return cookies;
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void saveFromResponse(UnoUrl arg0, List<Cookie> cookies) {
+        this.cookies = cookies;
+    }
+}
 
 
-    LocalCookieJar cookie = new LocalCookieJar();
-    Httpz.Client client = Httpz.newBuilder()
-            .followRedirects(false) //禁制Httpd的重定向操作，我们自己处理重定向
-            .followSslRedirects(false)
-            .cookieJar(cookie)   //为Httpd设置自动携带Cookie的功能
-            .build();
+LocalCookieJar cookie = new LocalCookieJar();
+Httpz.Client client = Httpz.newBuilder()
+        .followRedirects(false) //禁制Httpd的重定向操作，我们自己处理重定向
+        .followSslRedirects(false)
+        .cookieJar(cookie)   //为Httpd设置自动携带Cookie的功能
+        .build();
 
 
-    String url = "https://www.baidu.com/";
-    client.get().addHeader("Referer","https://www.baidu.com/").url(url)
-            .build()
-            .execute();
-            System.out.println(cookie.cookies);
+String url = "https://www.baidu.com/";
+    client.
+
+get().
+
+addHeader("Referer","https://www.baidu.com/").
+
+url(url)
+            .
+
+build()
+            .
+
+execute();
+            System.out.
+
+println(cookie.cookies);
 ```
 
 11.设置Content-Type为application/json
 
 ```java
-    String url="https://wx.qq.com";
-        Response delegate=Httpz.post().
-        addHeader("Content-Type","application/json").
+    String url = "https://wx.qq.com";
+Response delegate = Httpz.post().
+        addHeader("Content-Type", "application/json").
         body("{\"username\":\"test\",\"password\":\"111111\"}").
         url(url).
         build().
@@ -959,11 +1168,15 @@ HttpCall call=http.async("/upload")
 
 ```java
     RequestCall call = Httpz.get().
-            url("https://www.baidu.com").
+        url("https://www.baidu.com").
         build();
-        Response delegate=call.execute();
-        call.cancel();
-    System.out.println(delegate.string());
+Response delegate = call.execute();
+        call.
+
+cancel();
+    System.out.
+
+println(delegate.string());
 ```
 
 13.取消所有请求

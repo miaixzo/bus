@@ -30,6 +30,7 @@ import com.sun.jna.platform.linux.Udev.UdevContext;
 import com.sun.jna.platform.linux.Udev.UdevDevice;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
@@ -88,7 +89,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
                         String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
                         if (!StringKit.isBlank(devModel)) {
                             if (!StringKit.isBlank(devVendor)) {
-                                return devVendor + " " + devModel;
+                                return devVendor + Symbol.SPACE + devModel;
                             }
                             return devModel;
                         }
@@ -104,12 +105,12 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     }
 
     private static String queryIfModelFromSysfs(String name) {
-        Map<String, String> uevent = Builder.getKeyValueMapFromFile(SysPath.NET + name + "/uevent", "=");
+        Map<String, String> uevent = Builder.getKeyValueMapFromFile(SysPath.NET + name + "/uevent", Symbol.EQUAL);
         String devVendor = uevent.get("ID_VENDOR_FROM_DATABASE");
         String devModel = uevent.get("ID_MODEL_FROM_DATABASE");
         if (!StringKit.isBlank(devModel)) {
             if (!StringKit.isBlank(devVendor)) {
-                return devVendor + " " + devModel;
+                return devVendor + Symbol.SPACE + devModel;
             }
             return devModel;
         }

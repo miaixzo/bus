@@ -28,6 +28,7 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.Guid.GUID;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Parsing;
@@ -146,7 +147,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         if (nameMap.containsKey(device)) {
             String name = nameMap.get(device);
             if (name.isEmpty()) {
-                name = vendorId + ":" + productId;
+                name = vendorId + Symbol.COLON + productId;
             }
             String deviceId = deviceIdMap.get(device);
             String mfg = mfgMap.get(device);

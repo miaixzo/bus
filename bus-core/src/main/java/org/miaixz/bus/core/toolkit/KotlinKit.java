@@ -44,7 +44,6 @@ import java.util.Map;
  */
 public class KotlinKit {
 
-
     private static final Class<? extends Annotation> META_DATA_CLASS =
             (Class<? extends Annotation>) Optional.ofTry(() -> Class.forName("kotlin.Metadata")).get();
 

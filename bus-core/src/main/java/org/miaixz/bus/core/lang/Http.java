@@ -454,6 +454,7 @@ public class Http {
         }
         return isHttps(url) || isLocalHost(url);
     }
+
     /**
      * WebDAV
      *

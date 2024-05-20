@@ -29,6 +29,7 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.ReflectKit;
@@ -266,7 +267,7 @@ public final class Instances {
         if (ArrayKit.isEmpty(params)) {
             return className;
         }
-        return StringKit.format("{}#{}", className, ArrayKit.join(params, "_"));
+        return StringKit.format("{}#{}", className, ArrayKit.join(params, Symbol.UNDERLINE));
     }
 
 }

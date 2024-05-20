@@ -181,7 +181,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
 
         boolean isFirst = true;
         int preReadSize = 0;
-        for (int readSize; (readSize = in.read(buffer)) != IoKit.EOF; ) {
+        for (int readSize; (readSize = in.read(buffer)) != Normal.__1; ) {
             if (isFirst) {
                 isFirst = false;
             } else {
