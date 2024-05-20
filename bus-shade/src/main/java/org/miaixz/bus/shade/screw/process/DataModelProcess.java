@@ -161,7 +161,7 @@ public class DataModelProcess extends AbstractProcess {
         columnSchema.setColumnSize(column.getColumnSize());
         // 小数位
         columnSchema.setDecimalDigits(
-                ObjectKit.defaultIfEmpty(column.getDecimalDigits(), Builder.ZERO_DECIMAL_DIGITS));
+                ObjectKit.defaultIfNull(column.getDecimalDigits(), Builder.ZERO_DECIMAL_DIGITS));
         // 可为空
         columnSchema.setNullable(Builder.ZERO.equals(column.getNullable()) ? Builder.N : Builder.Y);
         // 是否主键

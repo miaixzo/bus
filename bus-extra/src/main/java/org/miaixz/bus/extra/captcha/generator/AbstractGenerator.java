@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.captcha.generator;
 
-import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 随机字符验证码生成器
@@ -53,7 +53,7 @@ public abstract class AbstractGenerator implements CodeGenerator {
      * @param count 生成验证码长度
      */
     public AbstractGenerator(final int count) {
-        this(RandomKit.BASE_CHAR_NUMBER_LOWER, count);
+        this(Normal.LOWER_ALPHABET_NUMBER, count);
     }
 
     /**
