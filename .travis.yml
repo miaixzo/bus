@@ -37,3 +37,4 @@ script:
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true
   - cd ../bus-starter && mvn install -DskipTests=true
+  - cd ../bus-goalie && mvn install -DskipTests=true
