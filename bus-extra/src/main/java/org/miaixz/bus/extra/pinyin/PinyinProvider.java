@@ -26,12 +26,14 @@
 package org.miaixz.bus.extra.pinyin;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
+import java.util.List;
+
 /**
- * 拼音服务提供者
+ * 拼音引擎接口，具体的拼音实现通过实现此接口，完成具体实现功能
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,7 +63,7 @@ public interface PinyinProvider {
      * @param c 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    default char getFirstLetter(char c) {
+    default char getFirstLetter(final char c) {
         return getPinyin(c).charAt(0);
     }
 
@@ -72,10 +74,10 @@ public interface PinyinProvider {
      * @param separator 分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    default String getFirstLetter(String text, String separator) {
-        final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
-        final String[] split = StringKit.splitToArray(getPinyin(text, splitSeparator), splitSeparator);
-        return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : Normal.EMPTY));
+    default String getFirstLetter(final String text, final String separator) {
+        final String splitSeparator = StringKit.isEmpty(separator) ? "#" : separator;
+        final List<String> split = CharsBacker.split(getPinyin(text, splitSeparator), splitSeparator);
+        return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
     }
 
 }

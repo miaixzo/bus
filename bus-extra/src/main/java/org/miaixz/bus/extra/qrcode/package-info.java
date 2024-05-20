@@ -1,5 +1,5 @@
 /**
- * 二维码封装，基于zxing库
+ * 二维码封装，基于zxing库，入口为QrCodeUtil
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -1,5 +1,5 @@
 /**
- * 拼音工具封装
+ * 拼音相关封装
  *
  * @author Kimi Liu
  * @since Java 17+

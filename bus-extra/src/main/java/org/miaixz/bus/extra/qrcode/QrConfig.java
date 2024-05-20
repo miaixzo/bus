@@ -31,12 +31,11 @@ import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.ImageKit;
+import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 二维码设置
@@ -46,58 +45,67 @@ import java.util.Map;
  */
 public class QrConfig {
 
-
     private static final int BLACK = 0xFF000000;
     private static final int WHITE = 0xFFFFFFFF;
 
     /**
-     * 宽
+     * 宽度
      */
-    public int width;
+    protected int width;
     /**
-     * 长
+     * 高度
      */
-    public int height;
+    protected int height;
     /**
-     * 前景色(二维码颜色)
+     * 前景色（二维码颜色）
      */
-    public Integer foreColor = BLACK;
+    protected Integer foreColor = BLACK;
     /**
      * 背景色，默认白色，null表示透明
      */
-    public Integer backColor = WHITE;
+    protected Integer backColor = WHITE;
     /**
-     * 边距1~4
+     * 边距0~4
      */
-    public Integer margin = 2;
+    protected Integer margin = 2;
+    /**
+     * 设置二维码中的信息量，可设置0-40的整数
+     */
+    protected Integer qrVersion;
     /**
      * 纠错级别
      */
-    public ErrorCorrectionLevel errorCorrection = ErrorCorrectionLevel.M;
+    protected ErrorCorrectionLevel errorCorrection = ErrorCorrectionLevel.M;
+
     /**
      * 编码
      */
-    public java.nio.charset.Charset charset = Charset.UTF_8;
+    protected java.nio.charset.Charset charset = Charset.UTF_8;
     /**
      * 二维码中的Logo
      */
-    public Image img;
-    /**
-     * 二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
-     */
-    public int ratio = 6;
-    /**
-     * 设置二维码中的信息量，可设置1-40的整数
-     */
-    protected Integer qrVersion;
+    protected Image img;
 
+    /**
+     * 二维码logo圆角弧度，0~1，为长宽占比
+     */
+    protected double imgRound = 0.3;
+    /**
+     * 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     */
+    protected int ratio = 6;
     /**
      * DATA_MATRIX的符号形状
      */
     protected SymbolShapeHint shapeHint = SymbolShapeHint.FORCE_NONE;
 
     /**
-     * 构造,默认长宽为300
+     * 生成码的格式，默认为二维码
+     */
+    protected BarcodeFormat format = BarcodeFormat.QR_CODE;
+
+    /**
+     * 构造，默认长宽为300
      */
     public QrConfig() {
         this(300, 300);
@@ -107,9 +115,9 @@ public class QrConfig {
      * 构造
      *
      * @param width  宽
-     * @param height 长
+     * @param height 高
      */
-    public QrConfig(int width, int height) {
+    public QrConfig(final int width, final int height) {
         this.width = width;
         this.height = height;
     }
@@ -119,8 +127,19 @@ public class QrConfig {
      *
      * @return QrConfig
      */
-    public static QrConfig create() {
+    public static QrConfig of() {
         return new QrConfig();
+    }
+
+    /**
+     * 创建QrConfig
+     *
+     * @param width  宽
+     * @param height 高
+     * @return QrConfig
+     */
+    public static QrConfig of(final int width, final int height) {
+        return new QrConfig(width, height);
     }
 
     /**
@@ -138,7 +157,7 @@ public class QrConfig {
      * @param width 宽度
      * @return this
      */
-    public QrConfig setWidth(int width) {
+    public QrConfig setWidth(final int width) {
         this.width = width;
         return this;
     }
@@ -158,7 +177,7 @@ public class QrConfig {
      * @param height 高度
      * @return this;
      */
-    public QrConfig setHeight(int height) {
+    public QrConfig setHeight(final int height) {
         this.height = height;
         return this;
     }
@@ -173,12 +192,12 @@ public class QrConfig {
     }
 
     /**
-     * 设置前景色，例如：Color.BLUE.getRGB()
+     * 设置前景色，例如：Ansi4BitColor.BLUE.getRGB()
      *
      * @param foreColor 前景色
      * @return this
      */
-    public QrConfig setForeColor(Color foreColor) {
+    public QrConfig setForeColor(final Color foreColor) {
         if (null == foreColor) {
             this.foreColor = null;
         } else {
@@ -197,12 +216,12 @@ public class QrConfig {
     }
 
     /**
-     * 设置背景色，例如：Color.BLUE
+     * 设置背景色，例如：Ansi4BitColor.BLUE
      *
      * @param backColor 背景色,null表示透明背景
      * @return this
      */
-    public QrConfig setBackColor(Color backColor) {
+    public QrConfig setBackColor(final Color backColor) {
         if (null == backColor) {
             this.backColor = null;
         } else {
@@ -226,8 +245,28 @@ public class QrConfig {
      * @param margin 边距
      * @return this
      */
-    public QrConfig setMargin(Integer margin) {
+    public QrConfig setMargin(final Integer margin) {
         this.margin = margin;
+        return this;
+    }
+
+    /**
+     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     *
+     * @return 二维码中的信息量
+     */
+    public Integer getQrVersion() {
+        return qrVersion;
+    }
+
+    /**
+     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     *
+     * @param qrVersion 二维码中的信息量
+     * @return this
+     */
+    public QrConfig setQrVersion(final Integer qrVersion) {
+        this.qrVersion = qrVersion;
         return this;
     }
 
@@ -246,9 +285,46 @@ public class QrConfig {
      * @param errorCorrection 纠错级别
      * @return this
      */
-    public QrConfig setErrorCorrection(ErrorCorrectionLevel errorCorrection) {
+    public QrConfig setErrorCorrection(final ErrorCorrectionLevel errorCorrection) {
         this.errorCorrection = errorCorrection;
         return this;
+    }
+
+    /**
+     * 是否开启ECI编码
+     * 如果enableEci=false,则二维码中不包含ECI信息，即：{@link #charset}字符编码设置为{@code null}, 二维码为英文字符，保持false最佳
+     * 如果enableEci=true,则二维码中包含ECI信息，即：按照{@link #charset}编码进行设置, 二维码为包含中文，保持true最佳，否则会中文乱码
+     *
+     * <ul>
+     *     <li>参考1：<a href="https://github.com/nutzam/nutz-qrcode/issues/6">关于\000026的问题</a></li>
+     *     <li>参考2：<a href="https://en.wikipedia.org/wiki/Extended_Channel_Interpretation">ECI（Extended_Channel_Interpretation）模式</a></li>
+     *     <li>参考3：<a href="https://www.51cto.com/article/414082.html">二维码的生成细节和原理</a></li>
+     * </ul>
+     *
+     * <p>
+     * 二维码编码有ECI模式和非ECI模式的情况之分，在ECI模式下第一个字节是用作编码标识，而非ECI模式下直接就是数据流。
+     * ECI模式其实是更好的方案，这样子解码的时候可以根据标识采用不同的编码方式。而非ECI模式只能按照一种统一的方式处理了。
+     * 但是由于部分设备不支持ECI模式，所以就出现了无法识别的情况。
+     * 使用扫码桩/扫码枪，可能会出现\000026的字符。使用手机扫描、其他二维码解析软件扫描，则不会出现。
+     * </p>
+     *
+     * <p>
+     * ECI编码表可以看出UTF-8就是对应"\000026"（对应数字22）
+     * </p>
+     *
+     * <p> 总结建议：如果二维码内容全是字符，没有中文，就不用使用UTF-8等格式进行编码，只有使用中文等特殊符号才需要编码 </p>
+     *
+     * @param enableEci 是否开启ECI
+     * @see EncodeHintType#PDF417_AUTO_ECI
+     */
+    public void setEnableEci(final boolean enableEci) {
+        if (enableEci) {
+            if (null == this.charset) {
+                this.charset = Charset.UTF_8;
+            }
+        } else {
+            this.charset = null;
+        }
     }
 
     /**
@@ -266,7 +342,7 @@ public class QrConfig {
      * @param charset 编码
      * @return this
      */
-    public QrConfig setCharset(java.nio.charset.Charset charset) {
+    public QrConfig setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
     }
@@ -286,8 +362,18 @@ public class QrConfig {
      * @param imgPath 二维码中的Logo路径
      * @return this;
      */
-    public QrConfig setImg(String imgPath) {
+    public QrConfig setImg(final String imgPath) {
         return setImg(FileKit.file(imgPath));
+    }
+
+    /**
+     * 设置二维码中的Logo文件
+     *
+     * @param imageBytes 二维码中的Logo图片bytes表示形式
+     * @return this;
+     */
+    public QrConfig setImg(final byte[] imageBytes) {
+        return setImg(ImageKit.toImage(imageBytes));
     }
 
     /**
@@ -296,7 +382,7 @@ public class QrConfig {
      * @param imgFile 二维码中的Logo
      * @return this;
      */
-    public QrConfig setImg(File imgFile) {
+    public QrConfig setImg(final File imgFile) {
         return setImg(ImageKit.read(imgFile));
     }
 
@@ -306,27 +392,47 @@ public class QrConfig {
      * @param img 二维码中的Logo
      * @return this;
      */
-    public QrConfig setImg(Image img) {
+    public QrConfig setImg(final Image img) {
         this.img = img;
         return this;
     }
 
     /**
-     * 获取二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
+     * 获取二维码logo圆角弧度，0~1，为长宽占比
      *
-     * @return 二维码中的Logo缩放的比例系数, 如5表示长宽最小值的1/5
+     * @return 二维码logo圆角弧度，0~1，为长宽占比
+     */
+    public double getImgRound() {
+        return imgRound;
+    }
+
+    /**
+     * 设置二维码logo圆角弧度，0~1，为长宽占比
+     *
+     * @param imgRound 二维码logo圆角弧度，0~1，为长宽占比
+     * @return this
+     */
+    public QrConfig setImgRound(final double imgRound) {
+        this.imgRound = imgRound;
+        return this;
+    }
+
+    /**
+     * 获取二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     *
+     * @return 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
      */
     public int getRatio() {
         return this.ratio;
     }
 
     /**
-     * 设置二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
+     * 设置二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
      *
-     * @param ratio 二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
+     * @param ratio 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
      * @return this;
      */
-    public QrConfig setRatio(int ratio) {
+    public QrConfig setRatio(final int ratio) {
         this.ratio = ratio;
         return this;
     }
@@ -335,56 +441,49 @@ public class QrConfig {
      * 设置DATA_MATRIX的符号形状
      *
      * @param shapeHint DATA_MATRIX的符号形状
-     * @return this;
+     * @return this
      */
-    public QrConfig setShapeHint(SymbolShapeHint shapeHint) {
+    public QrConfig setShapeHint(final SymbolShapeHint shapeHint) {
         this.shapeHint = shapeHint;
         return this;
     }
 
     /**
-     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     * 获取码格式
      *
-     * @return 二维码中的信息量
+     * @return 码格式，默认为二维码
      */
-    public Integer getQrVersion() {
-        return qrVersion;
+    public BarcodeFormat getFormat() {
+        return format;
     }
 
     /**
-     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     * 设置码格式，默认二维码
      *
-     * @param qrVersion 二维码中的信息量
+     * @param format 码格式
      * @return this
      */
-    public QrConfig setQrVersion(Integer qrVersion) {
-        this.qrVersion = qrVersion;
+    public QrConfig setFormat(final BarcodeFormat format) {
+        this.format = format;
         return this;
     }
 
-    /**
-     * 转换为Zxing的二维码配置
-     *
-     * @return 配置
-     */
-    public Map<EncodeHintType, Object> toHints() {
-        return toHints(BarcodeFormat.QR_CODE);
-    }
 
     /**
      * 转换为Zxing的二维码配置
      *
-     * @param format 格式，根据格式不同，{@link #errorCorrection}的值类型有所不同
      * @return 配置
      */
-    public HashMap<EncodeHintType, Object> toHints(BarcodeFormat format) {
+    public HashMap<EncodeHintType, Object> toHints() {
         // 配置
         final HashMap<EncodeHintType, Object> hints = new HashMap<>();
+        // 只有不禁用（即开启）ECI编码功能，才使用自定义的字符编码
+        // 二维码内容就是英文字符，建议不设置编码，没有任何问题；对于中文来说，会乱码
         if (null != this.charset) {
             hints.put(EncodeHintType.CHARACTER_SET, charset.toString().toLowerCase());
         }
         if (null != this.errorCorrection) {
-            Object value;
+            final Object value;
             if (BarcodeFormat.AZTEC == format || BarcodeFormat.PDF_417 == format) {
                 value = this.errorCorrection.getBits();
             } else {
@@ -402,5 +501,4 @@ public class QrConfig {
         }
         return hints;
     }
-
 }

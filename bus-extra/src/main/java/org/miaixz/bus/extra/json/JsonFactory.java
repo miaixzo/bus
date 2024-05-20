@@ -25,11 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.json;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.SPIKit;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.extra.pinyin.PinyinProvider;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -54,10 +53,10 @@ public class JsonFactory {
      * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
      * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
-     * @return {@link PinyinProvider}
+     * @return {@link JsonProvider}
      */
     public static JsonProvider create() {
-        final JsonProvider engine = ClassKit.loadFirstAvailable(JsonProvider.class);
+        final JsonProvider engine = SPIKit.loadFirstAvailable(JsonProvider.class);
         if (null == engine) {
             throw new InternalException("No json jar found ! Please add one of it to your project !");
         }

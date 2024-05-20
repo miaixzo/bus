@@ -25,18 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.pinyin;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.PatternKit;
 
 /**
- * 拼音工具类，通过SPI自动识别
- * 1. TinyPinyin
- * 2. JPinyin
- * 3. Pinyin4j
+ * 拼音工具类，用于快速获取拼音
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,12 +38,22 @@ import org.miaixz.bus.core.toolkit.StringKit;
 public class PinyinKit {
 
     /**
+     * 创建拼音引擎
+     *
+     * @param engineName 引擎名称
+     * @return {@link PinyinProvider}
+     */
+    public static PinyinProvider createEngine(final String engineName) {
+        return PinyinFactory.createEngine(engineName);
+    }
+
+    /**
      * 获得全局单例的拼音引擎
      *
      * @return 全局单例的拼音引擎
      */
-    public static PinyinProvider getProvider() {
-        return PinyinFactory.get();
+    public static PinyinProvider getEngine() {
+        return PinyinFactory.getEngine();
     }
 
     /**
@@ -58,8 +62,8 @@ public class PinyinKit {
      * @param c 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getPinyin(char c) {
-        return getProvider().getPinyin(c);
+    public static String getPinyin(final char c) {
+        return getEngine().getPinyin(c);
     }
 
     /**
@@ -68,7 +72,7 @@ public class PinyinKit {
      * @param text 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getPinyin(String text) {
+    public static String getPinyin(final String text) {
         return getPinyin(text, Symbol.SPACE);
     }
 
@@ -79,8 +83,8 @@ public class PinyinKit {
      * @param separator 每个字拼音之间的分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getPinyin(String text, String separator) {
-        return getProvider().getPinyin(text, separator);
+    public static String getPinyin(final String text, final String separator) {
+        return getEngine().getPinyin(text, separator);
     }
 
     /**
@@ -89,8 +93,8 @@ public class PinyinKit {
      * @param c 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static char getFirstLetter(char c) {
-        return getProvider().getFirstLetter(c);
+    public static char getFirstLetter(final char c) {
+        return getEngine().getFirstLetter(c);
     }
 
     /**
@@ -100,34 +104,8 @@ public class PinyinKit {
      * @param separator 分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getFirstLetter(String text, String separator) {
-        return getProvider().getFirstLetter(text, separator);
-    }
-
-    /**
-     * 获取汉字对应的ascii码
-     *
-     * @param chs 汉字
-     * @return ascii码
-     */
-    private static int getChsAscii(String chs) {
-        int asc;
-        byte[] bytes = chs.getBytes(Charset.GBK);
-        switch (bytes.length) {
-            case 1:
-                // 英文字符
-                asc = bytes[0];
-                break;
-            case 2:
-                // 中文字符
-                int hightByte = Normal._256 + bytes[0];
-                int lowByte = Normal._256 + bytes[1];
-                asc = (Normal._256 * hightByte + lowByte) - Normal._256 * Normal._256;
-                break;
-            default:
-                throw new InternalException("Illegal resource string");
-        }
-        return asc;
+    public static String getFirstLetter(final String text, final String separator) {
+        return getEngine().getFirstLetter(text, separator);
     }
 
     /**
@@ -136,21 +114,8 @@ public class PinyinKit {
      * @param c 字符
      * @return 是否为中文字符
      */
-    public static boolean isChinese(char c) {
-        return '〇' == c || String.valueOf(c).matches(RegEx.CHINESE_PATTERN);
-    }
-
-    /**
-     * 判断某个字符是否为汉字
-     *
-     * @param c 需要判断的字符
-     * @return 是汉字返回true, 否则返回false
-     */
-    public static boolean isChinese(String c) {
-        if (StringKit.isEmpty(c)) {
-            return false;
-        }
-        return c.matches(RegEx.CHINESE_PATTERN);
+    public static boolean isChinese(final char c) {
+        return '〇' == c || PatternKit.isMatch(Pattern.CHINESE_PATTERN, String.valueOf(c));
     }
 
 }
