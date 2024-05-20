@@ -27,8 +27,8 @@ package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base32Provider;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Base32 - encodes and decodes RFC4648 Base32

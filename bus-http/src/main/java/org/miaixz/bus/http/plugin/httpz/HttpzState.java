@@ -27,7 +27,7 @@ package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.DateKit;
 
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingDeque;

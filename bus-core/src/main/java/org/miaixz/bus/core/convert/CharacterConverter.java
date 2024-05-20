@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.BooleanKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.BooleanKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 字符转换器

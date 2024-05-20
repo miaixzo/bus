@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.Registry;

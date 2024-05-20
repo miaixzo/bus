@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.toolkit.RuntimeKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.RuntimeKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

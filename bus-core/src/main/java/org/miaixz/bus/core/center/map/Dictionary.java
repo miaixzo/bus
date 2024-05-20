@@ -35,10 +35,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CloneException;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.LambdaKit;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.SetKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.LambdaKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.SetKit;
 
 import java.lang.reflect.Type;
 import java.util.*;

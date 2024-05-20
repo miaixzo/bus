@@ -26,7 +26,7 @@
 package org.miaixz.bus.goalie.support;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.XmlKit;
+import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Provider;
 

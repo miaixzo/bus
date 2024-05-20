@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.util.Objects;
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
  * 类转换器

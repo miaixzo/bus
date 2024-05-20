@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;

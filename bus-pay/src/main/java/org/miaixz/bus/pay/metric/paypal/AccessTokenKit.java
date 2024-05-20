@@ -1,6 +1,6 @@
 package org.miaixz.bus.pay.metric.paypal;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.magic.Results;
 import org.miaixz.bus.pay.metric.PayCache;

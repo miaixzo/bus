@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.reflect.field;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.lang.reflect.Field;
 import java.util.function.Predicate;

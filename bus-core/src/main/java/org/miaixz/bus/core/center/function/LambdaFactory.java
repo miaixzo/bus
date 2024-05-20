@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.invoke.*;
 import java.lang.reflect.Executable;

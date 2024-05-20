@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.tree.parser;
 
-import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.tree.MapTree;
 import org.miaixz.bus.core.tree.TreeNode;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.Map;
 

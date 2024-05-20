@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.unit;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 数据单位封装

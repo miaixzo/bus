@@ -28,7 +28,7 @@ package org.miaixz.bus.extra.nlp.provider.analysis;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 

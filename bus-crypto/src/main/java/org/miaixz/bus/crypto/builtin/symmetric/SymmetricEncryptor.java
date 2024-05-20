@@ -28,9 +28,9 @@ package org.miaixz.bus.crypto.builtin.symmetric;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.HexKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.InputStream;
 import java.io.OutputStream;

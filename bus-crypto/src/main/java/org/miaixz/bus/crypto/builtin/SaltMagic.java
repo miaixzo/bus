@@ -27,9 +27,9 @@ package org.miaixz.bus.crypto.builtin;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.IOException;
 import java.io.InputStream;

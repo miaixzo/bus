@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Memoizer;

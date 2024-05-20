@@ -26,7 +26,7 @@
 package org.miaixz.bus.tracer.config;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tracer.Builder;
 

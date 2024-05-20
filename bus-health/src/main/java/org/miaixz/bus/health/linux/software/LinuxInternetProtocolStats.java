@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;

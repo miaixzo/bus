@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;

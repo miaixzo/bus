@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.BooleanKit;
+import org.miaixz.bus.core.xyz.BooleanKit;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

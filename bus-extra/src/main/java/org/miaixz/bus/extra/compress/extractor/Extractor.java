@@ -26,7 +26,7 @@
 package org.miaixz.bus.extra.compress.extractor;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Closeable;
 import java.io.File;

@@ -27,9 +27,9 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.CharKit;
+import org.miaixz.bus.core.xyz.CharKit;
 
 /**
  * 字符查找器

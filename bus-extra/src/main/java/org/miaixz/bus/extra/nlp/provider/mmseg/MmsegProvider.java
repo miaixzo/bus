@@ -29,7 +29,7 @@ import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
 import com.chenlb.mmseg4j.MMSeg;
 import com.chenlb.mmseg4j.Seg;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 

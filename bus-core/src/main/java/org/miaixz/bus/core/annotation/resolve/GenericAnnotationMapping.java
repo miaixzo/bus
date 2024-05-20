@@ -26,9 +26,9 @@
 package org.miaixz.bus.core.annotation.resolve;
 
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

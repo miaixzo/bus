@@ -28,7 +28,7 @@ package org.miaixz.bus.extra.nlp.provider.mynlp;
 import com.mayabot.nlp.Mynlp;
 import com.mayabot.nlp.segment.Lexer;
 import com.mayabot.nlp.segment.Sentence;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 

@@ -28,7 +28,7 @@ package org.miaixz.bus.core.lang;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.data.CreditCode;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.net.MalformedURLException;
 import java.util.Date;

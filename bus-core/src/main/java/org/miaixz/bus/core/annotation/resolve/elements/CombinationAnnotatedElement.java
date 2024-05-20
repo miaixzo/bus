@@ -26,9 +26,9 @@
 package org.miaixz.bus.core.annotation.resolve.elements;
 
 import org.miaixz.bus.core.center.map.TableMap;
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.SetKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.SetKit;
 
 import java.io.Serializable;
 import java.lang.annotation.*;

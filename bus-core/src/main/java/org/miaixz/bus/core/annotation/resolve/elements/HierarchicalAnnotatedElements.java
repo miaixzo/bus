@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.annotation.resolve.elements;
 
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

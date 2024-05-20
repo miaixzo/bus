@@ -27,7 +27,7 @@ package org.miaixz.bus.oauth.metric.wechat;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.Complex;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.metric.DefaultProvider;

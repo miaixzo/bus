@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.toolkit.BeanKit;
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.http.Httpd;
 
 import java.util.LinkedHashMap;

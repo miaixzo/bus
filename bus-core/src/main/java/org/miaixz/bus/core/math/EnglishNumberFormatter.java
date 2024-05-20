@@ -27,8 +27,8 @@ package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.MathKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 将浮点数类型的number转换成英语的表达方式

@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.map;
 
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.Map;
 import java.util.function.Supplier;

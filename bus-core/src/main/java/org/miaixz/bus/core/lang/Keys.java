@@ -27,10 +27,10 @@ package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.BooleanKit;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.BooleanKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

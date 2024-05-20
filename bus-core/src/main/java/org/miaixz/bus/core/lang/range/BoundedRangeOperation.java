@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.CompareKit;
+import org.miaixz.bus.core.xyz.CompareKit;
 
 import java.util.Objects;
 

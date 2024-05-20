@@ -28,9 +28,9 @@ package org.miaixz.bus.core.io;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.IOException;
 import java.io.InputStream;

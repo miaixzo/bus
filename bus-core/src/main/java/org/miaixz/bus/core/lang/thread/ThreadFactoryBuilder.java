@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;

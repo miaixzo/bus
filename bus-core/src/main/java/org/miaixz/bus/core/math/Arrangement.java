@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.math;
 
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.MathKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

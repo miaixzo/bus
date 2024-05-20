@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
 import org.miaixz.bus.base.normal.Consts;
 import org.miaixz.bus.core.data.ObjectId;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.util.List;
 import java.util.Objects;

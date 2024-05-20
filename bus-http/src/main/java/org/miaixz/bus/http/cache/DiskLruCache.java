@@ -32,7 +32,7 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.logger.Logger;
 

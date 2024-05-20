@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.intercept;
 
-import org.miaixz.bus.core.toolkit.ModifierKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ModifierKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.proxy.aspects.Aspectj;
 
 import java.io.Serializable;

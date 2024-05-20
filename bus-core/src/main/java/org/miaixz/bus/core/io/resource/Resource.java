@@ -27,7 +27,7 @@ package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.BufferedReader;
 import java.io.IOException;

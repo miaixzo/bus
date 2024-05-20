@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.validate.metric;
 
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.NotNull;

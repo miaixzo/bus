@@ -34,7 +34,7 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;

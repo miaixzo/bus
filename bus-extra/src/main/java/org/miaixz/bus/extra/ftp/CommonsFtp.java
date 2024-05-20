@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.ssh.Connector;
 
 import java.io.File;

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;

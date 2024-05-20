@@ -28,7 +28,7 @@ package org.miaixz.bus.extra.pinyin.provider.jpinyin;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
 /**

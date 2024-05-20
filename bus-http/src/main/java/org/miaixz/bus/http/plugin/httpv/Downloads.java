@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 
 import java.io.*;

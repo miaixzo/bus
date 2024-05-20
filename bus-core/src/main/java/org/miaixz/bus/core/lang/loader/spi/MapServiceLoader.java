@@ -27,7 +27,7 @@ package org.miaixz.bus.core.lang.loader.spi;
 
 import org.miaixz.bus.core.cache.SimpleCache;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;

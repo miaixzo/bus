@@ -27,7 +27,7 @@ package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.AuthorizeProvider;
 import org.miaixz.bus.oauth.metric.DefaultProvider;

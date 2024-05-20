@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.setting.magic;
 
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.*;
 import java.util.Map.Entry;

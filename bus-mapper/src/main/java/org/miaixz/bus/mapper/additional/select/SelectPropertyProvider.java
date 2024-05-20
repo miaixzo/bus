@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.additional.select;
 
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;

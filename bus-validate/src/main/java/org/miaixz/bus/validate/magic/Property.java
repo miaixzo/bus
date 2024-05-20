@@ -28,8 +28,8 @@ package org.miaixz.bus.validate.magic;
 import lombok.Data;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

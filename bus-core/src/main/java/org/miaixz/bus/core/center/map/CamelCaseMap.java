@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.util.HashMap;

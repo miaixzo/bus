@@ -27,7 +27,7 @@ package org.miaixz.bus.starter.storage;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;

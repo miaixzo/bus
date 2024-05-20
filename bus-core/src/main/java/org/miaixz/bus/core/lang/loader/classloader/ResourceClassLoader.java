@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.lang.loader.classloader;
 
 import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.security.SecureClassLoader;
 import java.util.HashMap;

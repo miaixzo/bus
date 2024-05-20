@@ -28,8 +28,8 @@ package org.miaixz.bus.core.io.watch;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Closeable;
 import java.io.Serializable;

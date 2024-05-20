@@ -27,7 +27,7 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.accord.ConnectInterceptor;
 import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.cache.CacheInterceptor;

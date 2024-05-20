@@ -27,9 +27,9 @@ package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.toolkit.PatternKit;
-import org.miaixz.bus.core.toolkit.RandomKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Map;
 

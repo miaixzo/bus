@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec.hash;
 
-import org.miaixz.bus.core.toolkit.HashKit;
+import org.miaixz.bus.core.xyz.HashKit;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.logger;
 
-import org.miaixz.bus.core.toolkit.CallerKit;
-import org.miaixz.bus.core.toolkit.ResourceKit;
+import org.miaixz.bus.core.xyz.CallerKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.logger.magic.Log;
 import org.miaixz.bus.logger.metric.console.ConsoleFactory;
 import org.miaixz.bus.logger.metric.jdk.JdkFactory;

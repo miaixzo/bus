@@ -38,7 +38,7 @@ import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.builder.resolve.EntityResolve;

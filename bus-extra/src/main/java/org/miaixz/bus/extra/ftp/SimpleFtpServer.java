@@ -39,7 +39,7 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.NetKit;
+import org.miaixz.bus.core.xyz.NetKit;
 
 import java.io.File;
 import java.util.ArrayList;

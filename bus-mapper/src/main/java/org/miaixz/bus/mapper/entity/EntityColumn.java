@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.entity;
 
 import org.apache.ibatis.type.JdbcType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.support.GenId;
 

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.exception.CloneException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -51,7 +51,7 @@ import org.miaixz.bus.core.codec.binary.Hex;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.crypto.builtin.digest.Digester;
 import org.miaixz.bus.crypto.builtin.digest.mac.BCHMacEngine;
 import org.miaixz.bus.crypto.builtin.digest.mac.MacEngine;

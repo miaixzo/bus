@@ -27,8 +27,8 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;

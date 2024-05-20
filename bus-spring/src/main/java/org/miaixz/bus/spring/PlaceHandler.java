@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.ip.IPv4;
-import org.miaixz.bus.core.toolkit.RuntimeKit;
+import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
  * ID生成器工具类，此工具类中主要封装：

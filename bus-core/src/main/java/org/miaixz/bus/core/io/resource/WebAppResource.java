@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.xyz.FileKit;
 
 import java.io.File;
 

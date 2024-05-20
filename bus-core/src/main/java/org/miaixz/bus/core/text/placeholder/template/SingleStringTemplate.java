@@ -31,7 +31,7 @@ import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.text.placeholder.segment.LiteralSegment;
 import org.miaixz.bus.core.text.placeholder.segment.SingleSegment;
 import org.miaixz.bus.core.text.placeholder.segment.StringSegment;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;

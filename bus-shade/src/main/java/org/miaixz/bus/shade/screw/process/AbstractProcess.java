@@ -26,8 +26,8 @@
 package org.miaixz.bus.shade.screw.process;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.shade.screw.Config;
 import org.miaixz.bus.shade.screw.engine.EngineFileType;
 import org.miaixz.bus.shade.screw.metadata.*;

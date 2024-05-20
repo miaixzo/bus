@@ -30,7 +30,7 @@ import com.google.zxing.DecodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;

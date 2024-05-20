@@ -42,7 +42,7 @@ import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
-import org.miaixz.bus.core.toolkit.HexKit;
+import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.asymmetric.AbstractAsymmetricCrypto;

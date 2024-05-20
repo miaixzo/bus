@@ -27,9 +27,9 @@ package org.miaixz.bus.core.beans.path.node;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Collection;
 import java.util.List;

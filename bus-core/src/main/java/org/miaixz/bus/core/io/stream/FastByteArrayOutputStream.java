@@ -28,7 +28,7 @@ package org.miaixz.bus.core.io.stream;
 import org.miaixz.bus.core.io.buffer.FastByteBuffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.IOException;
 import java.io.OutputStream;

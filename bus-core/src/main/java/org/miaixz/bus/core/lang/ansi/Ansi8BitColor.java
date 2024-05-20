@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.ansi;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * ANSI 8-bit前景或背景色（即8位编码，共256种颜色（2^8） ）

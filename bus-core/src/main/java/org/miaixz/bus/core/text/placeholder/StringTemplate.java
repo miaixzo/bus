@@ -33,10 +33,10 @@ import org.miaixz.bus.core.text.placeholder.segment.LiteralSegment;
 import org.miaixz.bus.core.text.placeholder.segment.StringSegment;
 import org.miaixz.bus.core.text.placeholder.template.NamedStringTemplate;
 import org.miaixz.bus.core.text.placeholder.template.SingleStringTemplate;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ListKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.*;
 import java.util.function.BiConsumer;

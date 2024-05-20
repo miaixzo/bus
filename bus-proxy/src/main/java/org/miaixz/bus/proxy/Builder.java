@@ -27,7 +27,7 @@ package org.miaixz.bus.proxy;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.proxy.aspects.Aspectj;
 import org.miaixz.bus.proxy.factory.AbstractFactory;
 import org.miaixz.bus.proxy.invoker.NullInvoker;

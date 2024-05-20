@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.ansi;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * ANSI标准颜色

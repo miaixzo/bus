@@ -28,7 +28,7 @@ package org.miaixz.bus.core.codec;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +96,7 @@ public class Morse {
         registerMorse(')', "101101");
         registerMorse(Symbol.C_AND, "01000");
         registerMorse(Symbol.C_COLON, "111000");
-        registerMorse(';', "101010");
+        registerMorse(Symbol.C_SEMICOLON, "101010");
         registerMorse(Symbol.C_EQUAL, "10001");
         registerMorse(Symbol.C_PLUS, "01010");
         registerMorse(Symbol.C_MINUS, "100001");

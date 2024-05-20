@@ -29,10 +29,10 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.PatternKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.File;
 import java.util.LinkedList;

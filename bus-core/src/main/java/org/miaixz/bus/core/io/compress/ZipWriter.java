@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.*;
 import java.nio.charset.Charset;

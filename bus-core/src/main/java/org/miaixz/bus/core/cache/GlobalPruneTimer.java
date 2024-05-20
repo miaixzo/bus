@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.cache;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;

@@ -28,7 +28,7 @@ package org.miaixz.bus.shade.screw.dialect;
 import lombok.Getter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;

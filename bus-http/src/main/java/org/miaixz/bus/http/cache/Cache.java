@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.bodys.ResponseBody;

@@ -30,9 +30,9 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.Converter;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.LambdaKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.LambdaKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

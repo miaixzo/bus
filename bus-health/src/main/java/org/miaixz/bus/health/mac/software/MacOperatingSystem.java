@@ -29,7 +29,7 @@ import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;

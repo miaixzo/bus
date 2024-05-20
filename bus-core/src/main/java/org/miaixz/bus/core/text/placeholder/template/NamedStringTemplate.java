@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.text.placeholder.segment.*;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

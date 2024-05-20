@@ -26,7 +26,7 @@
 package org.miaixz.bus.starter.limiter;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.limiter.Handler;
 import org.miaixz.bus.limiter.Parser;
 import org.miaixz.bus.limiter.Resolver;

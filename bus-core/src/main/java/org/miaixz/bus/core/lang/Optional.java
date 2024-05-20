@@ -27,8 +27,8 @@ package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;

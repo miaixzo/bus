@@ -31,7 +31,7 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;

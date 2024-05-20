@@ -27,9 +27,9 @@ package org.miaixz.bus.limiter.execute;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.limiter.Injector;
 import org.miaixz.bus.limiter.expression.LimiterOperationExpressionEvaluator;
 import org.miaixz.bus.limiter.metadata.LimitedResourceMetadata;

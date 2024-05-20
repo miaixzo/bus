@@ -30,7 +30,7 @@ import com.obs.services.model.DownloadFileRequest;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.Message;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.pager.parser;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -1,6 +1,6 @@
 package org.miaixz.bus.pay.metric.jdpay.models;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.magic.Property;
 import org.miaixz.bus.pay.metric.jdpay.JdPayKit;
 

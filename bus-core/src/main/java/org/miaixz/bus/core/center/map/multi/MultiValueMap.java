@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map.multi;
 
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.util.*;
 import java.util.function.*;

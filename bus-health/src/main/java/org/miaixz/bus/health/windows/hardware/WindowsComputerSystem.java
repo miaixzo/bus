@@ -29,7 +29,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;

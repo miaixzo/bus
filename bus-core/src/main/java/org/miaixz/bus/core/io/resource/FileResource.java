@@ -27,9 +27,9 @@ package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.UrlKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 
 import java.io.File;
 import java.io.InputStream;

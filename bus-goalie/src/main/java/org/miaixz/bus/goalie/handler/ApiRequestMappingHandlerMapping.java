@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.goalie.handler;
 
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.annotation.ApiVersion;
 import org.miaixz.bus.goalie.annotation.ClientVersion;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;

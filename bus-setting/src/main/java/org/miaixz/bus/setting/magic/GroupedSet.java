@@ -28,7 +28,7 @@ package org.miaixz.bus.setting.magic;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.BufferedReader;
 import java.io.File;

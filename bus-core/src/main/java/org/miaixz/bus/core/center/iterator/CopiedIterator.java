@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.toolkit.ListKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.Serializable;
 import java.util.Collections;

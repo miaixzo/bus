@@ -75,7 +75,7 @@ public class ExplainSqlHandler extends SqlParserHandler implements Interceptor {
                         for (Statement statement : statements.getStatements()) {
                             if (null != statement) {
                                 if (i++ > 0) {
-                                    sqlStringBuilder.append(';');
+                                    sqlStringBuilder.append(Symbol.C_SEMICOLON);
                                 }
                                 sqlStringBuilder.append(this.processParser(statement));
                             }

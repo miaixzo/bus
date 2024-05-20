@@ -27,7 +27,7 @@ package org.miaixz.bus.logger.metric.jboss;
 
 import org.jboss.logging.Logger;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.AbstractAware;
 import org.miaixz.bus.logger.Level;
 

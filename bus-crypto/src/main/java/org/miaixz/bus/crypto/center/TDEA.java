@@ -26,7 +26,7 @@
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;

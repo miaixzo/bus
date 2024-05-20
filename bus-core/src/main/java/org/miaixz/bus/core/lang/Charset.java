@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.io.CharsetDetector;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.File;
 import java.io.InputStream;

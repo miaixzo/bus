@@ -34,7 +34,7 @@ import org.miaixz.bus.cache.magic.AbstractReader;
 import org.miaixz.bus.cache.magic.MultiCacheReader;
 import org.miaixz.bus.cache.magic.SingleCacheReader;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -28,9 +28,9 @@ package org.miaixz.bus.core.annotation.resolve.elements;
 import org.miaixz.bus.core.annotation.resolve.AnnotationMapping;
 import org.miaixz.bus.core.annotation.resolve.RepeatableAnnotationCollector;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

@@ -27,8 +27,8 @@ package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Closeable;
 import java.io.IOException;

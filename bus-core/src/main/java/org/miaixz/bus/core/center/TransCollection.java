@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.IteratorKit;
+import org.miaixz.bus.core.xyz.IteratorKit;
 
 import java.util.AbstractCollection;
 import java.util.Collection;

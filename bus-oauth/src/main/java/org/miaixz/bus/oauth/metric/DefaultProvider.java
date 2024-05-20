@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;

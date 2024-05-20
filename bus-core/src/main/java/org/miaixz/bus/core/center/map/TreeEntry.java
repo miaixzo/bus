@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.util.Map;
 import java.util.function.Consumer;

@@ -26,8 +26,8 @@
 package org.miaixz.bus.limiter.resource;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.limiter.Parser;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodClassKey;

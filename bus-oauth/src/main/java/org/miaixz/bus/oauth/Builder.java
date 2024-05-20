@@ -31,9 +31,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

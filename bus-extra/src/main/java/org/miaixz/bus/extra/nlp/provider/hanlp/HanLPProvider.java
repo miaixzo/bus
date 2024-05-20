@@ -27,7 +27,7 @@ package org.miaixz.bus.extra.nlp.provider.hanlp;
 
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 

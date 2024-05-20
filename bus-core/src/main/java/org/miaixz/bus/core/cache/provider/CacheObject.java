@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.cache.provider;
 
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.DateKit;
 
 import java.io.Serializable;
 import java.util.Date;

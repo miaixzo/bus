@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 
 import java.text.DecimalFormat;

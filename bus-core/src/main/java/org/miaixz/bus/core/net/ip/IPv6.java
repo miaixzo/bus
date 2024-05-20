@@ -28,8 +28,8 @@ package org.miaixz.bus.core.net.ip;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.NetKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.NetKit;
 
 import java.math.BigInteger;
 import java.net.Inet6Address;

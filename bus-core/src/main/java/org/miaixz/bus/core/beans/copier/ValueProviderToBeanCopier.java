@@ -28,8 +28,8 @@ package org.miaixz.bus.core.beans.copier;
 import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
 import java.util.Map;

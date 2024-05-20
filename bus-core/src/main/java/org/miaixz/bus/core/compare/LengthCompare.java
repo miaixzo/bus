@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.toolkit.CompareKit;
+import org.miaixz.bus.core.xyz.CompareKit;
 
 import java.util.Comparator;
 

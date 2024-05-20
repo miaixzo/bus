@@ -27,7 +27,7 @@ package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.MathKit;
 
 import java.lang.reflect.Type;
 

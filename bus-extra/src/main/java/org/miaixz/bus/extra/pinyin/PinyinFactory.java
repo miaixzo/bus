@@ -28,8 +28,8 @@ package org.miaixz.bus.extra.pinyin;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
-import org.miaixz.bus.core.toolkit.SPIKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**

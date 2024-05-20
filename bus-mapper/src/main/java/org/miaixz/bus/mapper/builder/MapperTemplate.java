@@ -33,7 +33,7 @@ import org.apache.ibatis.scripting.xmltags.SqlNode;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
 import org.miaixz.bus.mapper.entity.Property;

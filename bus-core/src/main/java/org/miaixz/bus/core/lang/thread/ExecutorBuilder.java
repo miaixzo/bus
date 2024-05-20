@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.util.concurrent.*;
 

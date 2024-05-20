@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.check.crc16;
 
-import org.miaixz.bus.core.toolkit.HexKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.util.zip.Checksum;

@@ -29,7 +29,7 @@ import com.google.zxing.common.BitMatrix;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.AnsiElement;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
-import org.miaixz.bus.core.toolkit.ColorKit;
+import org.miaixz.bus.core.xyz.ColorKit;
 
 /**
  * 二维码的AsciiArt表示

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.replacer;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 区间字符串替换，指定区间，将区间中的所有字符去除，替换为指定的字符，字符重复次数为区间长度，即替换后字符串长度不变

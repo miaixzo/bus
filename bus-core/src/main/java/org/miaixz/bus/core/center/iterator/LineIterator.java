@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.*;
 import java.nio.charset.Charset;

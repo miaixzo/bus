@@ -28,10 +28,10 @@ package org.miaixz.bus.core.center.map;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.BooleanKit;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.BooleanKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;

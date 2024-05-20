@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.xyz.ListKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

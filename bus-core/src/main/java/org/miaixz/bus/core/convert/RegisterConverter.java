@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;

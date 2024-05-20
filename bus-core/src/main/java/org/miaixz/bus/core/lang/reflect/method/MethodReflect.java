@@ -28,8 +28,8 @@ package org.miaixz.bus.core.lang.reflect.method;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ModifierKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ModifierKit;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.captcha.generator;
 
-import org.miaixz.bus.core.toolkit.RandomKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 随机字符验证码生成器

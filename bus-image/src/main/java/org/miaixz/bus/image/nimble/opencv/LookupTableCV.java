@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 

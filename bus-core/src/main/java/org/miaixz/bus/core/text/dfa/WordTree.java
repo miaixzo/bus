@@ -27,9 +27,9 @@ package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.SetKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.*;
 import java.util.function.Predicate;

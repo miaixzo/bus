@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Holder;
 

@@ -30,9 +30,9 @@ import org.miaixz.bus.core.beans.copier.provider.BeanValueProvider;
 import org.miaixz.bus.core.beans.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.KotlinKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.KotlinKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

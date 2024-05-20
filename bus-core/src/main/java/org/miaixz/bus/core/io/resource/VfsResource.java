@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.io.File;
 import java.io.InputStream;

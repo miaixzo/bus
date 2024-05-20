@@ -32,7 +32,7 @@ import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;

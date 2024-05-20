@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.io.*;
 import java.util.HashSet;

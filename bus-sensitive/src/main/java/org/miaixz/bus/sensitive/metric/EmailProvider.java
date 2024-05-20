@@ -27,8 +27,8 @@ package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 

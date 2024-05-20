@@ -32,7 +32,7 @@ import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;

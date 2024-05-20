@@ -28,7 +28,7 @@ package org.miaixz.bus.health.unix.platform.aix.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;

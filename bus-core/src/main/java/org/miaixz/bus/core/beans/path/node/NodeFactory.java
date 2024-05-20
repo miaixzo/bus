@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.beans.path.node;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 节点简单工厂

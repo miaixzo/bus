@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.toolkit.CompareKit;
+import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
  * 可变 {@code byte} 类型

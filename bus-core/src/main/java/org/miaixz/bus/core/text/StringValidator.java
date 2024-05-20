@@ -26,9 +26,9 @@
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.util.function.Predicate;
 

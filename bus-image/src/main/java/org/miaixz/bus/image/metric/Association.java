@@ -28,7 +28,7 @@ package org.miaixz.bus.image.metric;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.Capacity;
 import org.miaixz.bus.image.galaxy.data.Attributes;

@@ -28,7 +28,7 @@ package org.miaixz.bus.core.codec.binary.provider;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 

@@ -31,7 +31,7 @@ import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.util.net.SshdSocketAddress;
 import org.apache.sshd.server.forward.AcceptAllForwardingFilter;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.ssh.Connector;
 import org.miaixz.bus.extra.ssh.MinaKit;
 import org.miaixz.bus.extra.ssh.Session;

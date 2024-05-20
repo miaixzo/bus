@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto.center;
 
-import org.miaixz.bus.core.toolkit.HexKit;
+import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Keeper;
 
 import javax.crypto.SecretKey;

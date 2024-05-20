@@ -29,7 +29,7 @@ import jakarta.annotation.PostConstruct;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
 import org.miaixz.bus.crypto.center.AES;

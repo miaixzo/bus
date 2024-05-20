@@ -29,7 +29,7 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 import org.miaixz.bus.pager.dialect.ReplaceSql;

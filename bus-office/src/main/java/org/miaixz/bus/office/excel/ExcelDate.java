@@ -28,8 +28,8 @@ package org.miaixz.bus.office.excel;
 import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Excel中日期判断、读取、处理等补充工具类

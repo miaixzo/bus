@@ -30,7 +30,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.builtin.PageMethod;
 import org.miaixz.bus.pager.builtin.PageParams;

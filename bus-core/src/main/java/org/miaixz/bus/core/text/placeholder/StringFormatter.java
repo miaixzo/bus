@@ -30,8 +30,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.text.placeholder.template.NamedStringTemplate;
 import org.miaixz.bus.core.text.placeholder.template.SingleStringTemplate;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Map;
 

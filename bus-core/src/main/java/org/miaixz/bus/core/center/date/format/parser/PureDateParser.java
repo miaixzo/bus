@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.MathKit;
 
 /**
  * 纯数字的日期字符串解析，支持格式包括；

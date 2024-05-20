@@ -27,8 +27,8 @@ package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.RandomKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -27,8 +27,8 @@ package org.miaixz.bus.core.lang.tuple;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.lang.exception.CloneException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ListKit;
 
 import java.io.Serializable;
 import java.util.*;

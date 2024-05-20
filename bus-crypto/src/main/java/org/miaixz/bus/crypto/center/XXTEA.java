@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto.center;
 
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.crypto.builtin.symmetric.SymmetricDecryptor;
 import org.miaixz.bus.crypto.builtin.symmetric.SymmetricEncryptor;
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.util.Map;
 import java.util.function.Supplier;

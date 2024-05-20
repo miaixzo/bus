@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 命名规则封装，主要是针对驼峰风格命名、连接符命名等的封装

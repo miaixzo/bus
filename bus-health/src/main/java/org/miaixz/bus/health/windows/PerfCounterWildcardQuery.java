@@ -33,7 +33,7 @@ import com.sun.jna.platform.win32.PdhUtil.PdhEnumObjectItems;
 import com.sun.jna.platform.win32.PdhUtil.PdhException;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.logger.Logger;
 

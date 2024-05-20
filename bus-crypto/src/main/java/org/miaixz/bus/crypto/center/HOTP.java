@@ -27,7 +27,7 @@ package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.codec.binary.Base32;
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
  * HMAC-based one-time passwords (HOTP) 基于HMAC算法一次性密码生成器，

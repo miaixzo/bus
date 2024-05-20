@@ -37,7 +37,7 @@ import jakarta.mail.internet.MimeUtility;
 import jakarta.mail.util.ByteArrayDataSource;
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.File;
 import java.io.IOException;

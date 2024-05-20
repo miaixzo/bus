@@ -30,7 +30,7 @@ import org.miaixz.bus.core.codec.PercentCodec;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;

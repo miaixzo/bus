@@ -29,8 +29,8 @@ import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.center.iterator.TransIterator;
 import org.miaixz.bus.core.center.map.AbstractEntry;
-import org.miaixz.bus.core.toolkit.IteratorKit;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.IteratorKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.*;
 

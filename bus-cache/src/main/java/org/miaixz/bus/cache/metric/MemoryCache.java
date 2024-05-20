@@ -28,7 +28,7 @@ package org.miaixz.bus.cache.metric;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.io.Serializable;
 import java.util.Collection;

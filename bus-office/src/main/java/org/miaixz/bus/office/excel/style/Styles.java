@@ -26,7 +26,7 @@
 package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.ss.usermodel.*;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Excel样式工具类

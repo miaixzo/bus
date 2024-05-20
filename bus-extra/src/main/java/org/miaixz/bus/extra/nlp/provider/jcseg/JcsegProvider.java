@@ -30,7 +30,7 @@ import org.lionsoul.jcseg.dic.ADictionary;
 import org.lionsoul.jcseg.dic.DictionaryFactory;
 import org.lionsoul.jcseg.segmenter.SegmenterConfig;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 

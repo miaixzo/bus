@@ -30,7 +30,7 @@ import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -440,8 +440,8 @@ public class MailKit {
         final List<String> result;
         if (StringKit.contains(addresses, Symbol.C_COMMA)) {
             result = CharsBacker.splitTrim(addresses, Symbol.COMMA);
-        } else if (StringKit.contains(addresses, ';')) {
-            result = CharsBacker.splitTrim(addresses, ";");
+        } else if (StringKit.contains(addresses, Symbol.C_SEMICOLON)) {
+            result = CharsBacker.splitTrim(addresses, Symbol.SEMICOLON);
         } else {
             result = ListKit.of(addresses);
         }

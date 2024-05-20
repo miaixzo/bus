@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;

@@ -26,10 +26,10 @@
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.HexKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.File;
 import java.io.IOException;

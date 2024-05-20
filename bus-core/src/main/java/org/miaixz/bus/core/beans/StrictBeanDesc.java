@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.beans;
 
 import org.miaixz.bus.core.beans.path.AbstractBeanDesc;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

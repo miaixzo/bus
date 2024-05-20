@@ -33,7 +33,7 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;

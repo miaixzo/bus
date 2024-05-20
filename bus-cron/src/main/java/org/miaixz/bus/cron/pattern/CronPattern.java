@@ -28,8 +28,8 @@ package org.miaixz.bus.cron.pattern;
 import org.miaixz.bus.core.center.date.Calendars;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.toolkit.CompareKit;
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.CompareKit;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
 import org.miaixz.bus.cron.pattern.parser.PatternParser;
 

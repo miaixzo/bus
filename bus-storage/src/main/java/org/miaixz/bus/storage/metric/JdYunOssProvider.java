@@ -37,7 +37,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.Message;

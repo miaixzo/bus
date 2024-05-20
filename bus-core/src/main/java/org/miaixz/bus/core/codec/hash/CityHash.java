@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.codec.hash;
 
 import org.miaixz.bus.core.codec.No128;
-import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.xyz.ByteKit;
 
 import java.util.Arrays;
 

@@ -19,7 +19,7 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.entity;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.criteria.SqlCriteria;
 import org.miaixz.bus.mapper.criteria.Sqls;

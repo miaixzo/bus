@@ -33,7 +33,7 @@ import org.miaixz.bus.core.io.resource.PropertySource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FieldKit;
+import org.miaixz.bus.core.xyz.FieldKit;
 
 import java.lang.reflect.Field;
 import java.util.*;

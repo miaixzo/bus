@@ -28,8 +28,8 @@ package org.miaixz.bus.sensitive;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.dfa.WordTree;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
 import java.lang.annotation.Annotation;

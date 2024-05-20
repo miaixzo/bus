@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.file.visitor.CopyVisitor;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.copier.SrcToDestCopier;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.IOException;
 import java.nio.file.*;

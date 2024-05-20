@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern.matcher;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 所有值匹配，始终返回{@code true}

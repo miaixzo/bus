@@ -27,8 +27,8 @@ package org.miaixz.bus.core.center.date.chinese;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.DateKit;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.MathKit;
 
 import java.time.LocalDate;
 import java.util.Date;

@@ -2,7 +2,7 @@ package org.miaixz.bus.pay.metric.paypal;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.pay.metric.RetryKit;
 

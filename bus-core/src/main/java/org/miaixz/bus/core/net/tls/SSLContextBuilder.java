@@ -29,8 +29,8 @@ import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.net.ssl.*;
 import java.security.*;

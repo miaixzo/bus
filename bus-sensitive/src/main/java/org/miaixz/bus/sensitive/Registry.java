@@ -26,8 +26,8 @@
 package org.miaixz.bus.sensitive;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.sensitive.magic.annotation.Strategy;
 import org.miaixz.bus.sensitive.metric.*;
 

@@ -27,8 +27,8 @@ package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.function.SerConsumer3;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.ListKit;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.*;
 

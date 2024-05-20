@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.beans.copier;
 
 import org.miaixz.bus.core.lang.copier.Copier;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 抽象的对象拷贝封装，提供来源对象、目标对象持有

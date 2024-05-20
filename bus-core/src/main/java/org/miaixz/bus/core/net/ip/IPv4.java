@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MaskBit;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

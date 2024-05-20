@@ -28,7 +28,7 @@ package org.miaixz.bus.core.lang.reflect.method;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.Invoker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;

@@ -28,8 +28,8 @@ package org.miaixz.bus.core.data;
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.codec.binary.Crockford;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 
 import java.io.Serializable;
 import java.nio.ByteOrder;

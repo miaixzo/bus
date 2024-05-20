@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.toolkit.SPIKit;
+import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 
 /**

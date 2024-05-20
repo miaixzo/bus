@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;

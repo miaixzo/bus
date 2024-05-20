@@ -28,7 +28,7 @@ package org.miaixz.bus.office.csv;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.BeanKit;
+import org.miaixz.bus.core.xyz.BeanKit;
 
 import java.util.*;
 

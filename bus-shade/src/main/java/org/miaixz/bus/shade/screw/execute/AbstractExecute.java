@@ -27,7 +27,7 @@ package org.miaixz.bus.shade.screw.execute;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.Config;
 

@@ -28,9 +28,9 @@ package org.miaixz.bus.core.io;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.File;
 import java.io.IOException;

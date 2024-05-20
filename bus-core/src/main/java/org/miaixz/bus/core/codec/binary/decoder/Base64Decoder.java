@@ -29,7 +29,7 @@ import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.io.Serializable;
 

@@ -29,9 +29,9 @@ import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ExceptionKit;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.*;
 import java.nio.file.Files;

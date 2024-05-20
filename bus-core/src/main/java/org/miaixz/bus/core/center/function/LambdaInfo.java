@@ -27,8 +27,8 @@ package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.ClassKit;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Constructor;
@@ -99,19 +99,19 @@ public class LambdaInfo {
      * 根据lambda对象的方法签名信息，解析获得实际的参数类型
      */
     private static Type[] getInstantiatedMethodParamTypes(final String className) {
-        final String[] instantiatedTypeNames = className.split(";");
+        final String[] instantiatedTypeNames = className.split(Symbol.SEMICOLON);
         final Type[] types = new Type[instantiatedTypeNames.length];
         for (int i = 0; i < instantiatedTypeNames.length; i++) {
             final boolean isArray = instantiatedTypeNames[i].startsWith(Symbol.BRACKET_LEFT);
-            if (isArray && !instantiatedTypeNames[i].endsWith(";")) {
+            if (isArray && !instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
                 // 如果是数组，需要以 ";" 结尾才能加载
-                instantiatedTypeNames[i] += ";";
+                instantiatedTypeNames[i] += Symbol.SEMICOLON;
             } else {
                 if (instantiatedTypeNames[i].startsWith("L")) {
                     // 如果以 "L" 开头，删除 L
                     instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(1);
                 }
-                if (instantiatedTypeNames[i].endsWith(";")) {
+                if (instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
                     // 如果以 ";" 结尾，删除 ";"
                     instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(0, instantiatedTypeNames[i].length() - 1);
                 }

@@ -1,6 +1,6 @@
 package org.miaixz.bus.pay.metric.alipay;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Context;
 
 import java.util.Map;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.spring.banner;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.InputStream;
 

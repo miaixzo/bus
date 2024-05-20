@@ -40,7 +40,7 @@ import org.miaixz.bus.core.data.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.logger.Logger;
 
 import java.text.DateFormat;

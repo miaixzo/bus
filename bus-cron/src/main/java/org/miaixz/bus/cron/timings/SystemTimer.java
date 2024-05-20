@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.timings;
 
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.cron.crontab.TimerCrontab;
 
 import java.util.concurrent.DelayQueue;

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;

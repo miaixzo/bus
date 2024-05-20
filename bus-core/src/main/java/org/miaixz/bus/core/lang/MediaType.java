@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.lang;
 
 import lombok.Data;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.*;
 import java.util.Map.Entry;

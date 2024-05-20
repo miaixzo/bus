@@ -27,7 +27,7 @@ package org.miaixz.bus.sensitive;
 
 import com.alibaba.fastjson.serializer.BeanContext;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.sensitive.magic.annotation.Condition;
 import org.miaixz.bus.sensitive.magic.annotation.Entry;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;

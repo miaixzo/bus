@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.queue.Linked;
 import org.miaixz.bus.core.center.queue.LinkedDeque;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.RuntimeKit;
+import org.miaixz.bus.core.xyz.RuntimeKit;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;

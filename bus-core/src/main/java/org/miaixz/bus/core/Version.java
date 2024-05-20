@@ -27,8 +27,8 @@ package org.miaixz.bus.core;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.CompareKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.CompareKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

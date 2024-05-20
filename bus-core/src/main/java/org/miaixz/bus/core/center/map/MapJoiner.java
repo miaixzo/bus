@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.text.StringJoiner;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Iterator;
 import java.util.Map;

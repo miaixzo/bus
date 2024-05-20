@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.compress;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.IOException;
 import java.nio.file.*;

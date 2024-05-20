@@ -28,10 +28,10 @@ package org.miaixz.bus.core.convert;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.ListKit;
-import org.miaixz.bus.core.toolkit.SerializeKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.SerializeKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;

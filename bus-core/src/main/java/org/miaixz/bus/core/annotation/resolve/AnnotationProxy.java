@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.annotation.resolve;
 
 import org.miaixz.bus.core.annotation.Alias;
-import org.miaixz.bus.core.toolkit.MethodKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;

@@ -28,7 +28,7 @@ package org.miaixz.bus.setting.metric.setting;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Map;
 

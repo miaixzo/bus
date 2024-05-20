@@ -33,10 +33,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.math.ChineseNumberFormatter;
-import org.miaixz.bus.core.toolkit.CompareKit;
-import org.miaixz.bus.core.toolkit.DateKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CompareKit;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParsePosition;

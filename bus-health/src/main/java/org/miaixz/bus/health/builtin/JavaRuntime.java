@@ -50,7 +50,7 @@
 package org.miaixz.bus.health.builtin;
 
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Platform;
 

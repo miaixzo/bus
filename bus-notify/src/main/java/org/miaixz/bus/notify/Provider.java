@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.notify;
 
-import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.magic.Property;
 

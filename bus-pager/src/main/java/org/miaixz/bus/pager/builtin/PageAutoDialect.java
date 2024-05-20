@@ -28,7 +28,7 @@ package org.miaixz.bus.pager.builtin;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.AutoDialect;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.Dialect;
@@ -300,7 +300,7 @@ public class PageAutoDialect {
     private void initDialectAlias(Properties properties) {
         String dialectAlias = properties.getProperty("dialectAlias");
         if (StringKit.isNotEmpty(dialectAlias)) {
-            String[] alias = dialectAlias.split(";");
+            String[] alias = dialectAlias.split(Symbol.SEMICOLON);
             for (int i = 0; i < alias.length; i++) {
                 String[] kv = alias[i].split(Symbol.EQUAL);
                 if (kv.length != 2) {

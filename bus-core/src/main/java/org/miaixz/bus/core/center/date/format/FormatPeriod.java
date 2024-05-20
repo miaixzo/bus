@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 

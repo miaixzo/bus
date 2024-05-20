@@ -30,8 +30,8 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.*;
 import java.nio.file.*;

@@ -30,9 +30,9 @@ import org.miaixz.bus.core.annotation.resolve.elements.HierarchicalAnnotatedElem
 import org.miaixz.bus.core.annotation.resolve.elements.MetaAnnotatedElement;
 import org.miaixz.bus.core.annotation.resolve.elements.RepeatableMetaAnnotatedElement;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;

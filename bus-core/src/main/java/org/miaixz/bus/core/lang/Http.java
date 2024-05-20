@@ -1,7 +1,7 @@
 package org.miaixz.bus.core.lang;
 
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * HTTP 相关常量

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base62Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;

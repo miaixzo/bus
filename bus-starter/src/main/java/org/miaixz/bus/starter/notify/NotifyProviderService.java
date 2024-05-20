@@ -26,7 +26,7 @@
 package org.miaixz.bus.starter.notify;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;

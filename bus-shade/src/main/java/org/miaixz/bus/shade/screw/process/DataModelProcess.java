@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.process;
 
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.Config;

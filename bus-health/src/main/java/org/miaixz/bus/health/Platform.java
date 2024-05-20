@@ -29,7 +29,7 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;

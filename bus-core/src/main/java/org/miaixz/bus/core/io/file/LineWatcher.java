@@ -28,7 +28,7 @@ package org.miaixz.bus.core.io.file;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.xyz.FileKit;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

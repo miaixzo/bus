@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.template;
 
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.*;
 import java.util.Map;

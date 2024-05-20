@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;

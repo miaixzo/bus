@@ -27,7 +27,7 @@ package org.miaixz.bus.core.beans.path.node;
 
 import org.miaixz.bus.core.beans.DynaBean;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.MathKit;
 
 /**
  * 处理名称节点或序号节点，如：

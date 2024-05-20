@@ -26,7 +26,7 @@
 package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.lang.exception.NoSuchException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.Provider;
 import org.miaixz.bus.validate.Registry;

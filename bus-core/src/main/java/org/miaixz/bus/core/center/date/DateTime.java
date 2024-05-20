@@ -35,10 +35,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.toolkit.DateKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.ZoneKit;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ZoneKit;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

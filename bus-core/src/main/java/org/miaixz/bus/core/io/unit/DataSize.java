@@ -28,7 +28,7 @@ package org.miaixz.bus.core.io.unit;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

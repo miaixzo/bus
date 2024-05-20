@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.xyz.FileKit;
 
 import java.io.File;
 import java.io.OutputStream;

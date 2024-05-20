@@ -27,8 +27,8 @@ package org.miaixz.bus.extra.captcha.generator;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.math.Calculator;
-import org.miaixz.bus.core.toolkit.RandomKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 数字计算验证码生成器

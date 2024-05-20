@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.banner.BusBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.ansi.AnsiOutput;

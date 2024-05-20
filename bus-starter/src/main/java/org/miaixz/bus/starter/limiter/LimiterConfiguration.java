@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.limiter;
 
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.starter.annotation.EnableLimiter;
 import org.springframework.context.annotation.AdviceMode;

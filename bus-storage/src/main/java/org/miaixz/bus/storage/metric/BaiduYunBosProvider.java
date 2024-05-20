@@ -32,7 +32,7 @@ import com.baidubce.services.bos.model.GetObjectRequest;
 import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.Message;

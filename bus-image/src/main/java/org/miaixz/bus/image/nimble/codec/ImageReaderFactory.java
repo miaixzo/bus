@@ -27,7 +27,7 @@ package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ResourceKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;

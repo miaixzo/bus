@@ -28,9 +28,9 @@ package org.miaixz.bus.core.convert;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Resolver;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
-import org.miaixz.bus.core.toolkit.DateKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.time.*;
 import java.time.chrono.Era;

@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.queue;
 
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.thread.SimpleScheduler;
-import org.miaixz.bus.core.toolkit.RuntimeKit;
+import org.miaixz.bus.core.xyz.RuntimeKit;
 
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;

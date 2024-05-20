@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.toolkit.MathKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 文本相似度计算

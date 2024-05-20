@@ -29,8 +29,8 @@ import org.miaixz.bus.core.beans.copier.ValueProvider;
 import org.miaixz.bus.core.beans.copier.provider.BeanValueProvider;
 import org.miaixz.bus.core.beans.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.RecordKit;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.RecordKit;
 
 import java.util.Map;
 

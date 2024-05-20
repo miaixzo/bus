@@ -27,7 +27,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ResourceKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.Property;
 import org.xml.sax.Locator;

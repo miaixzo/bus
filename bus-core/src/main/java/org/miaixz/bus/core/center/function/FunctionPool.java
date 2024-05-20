@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 
 import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;

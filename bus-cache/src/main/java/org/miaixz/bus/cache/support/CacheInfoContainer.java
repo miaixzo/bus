@@ -34,7 +34,7 @@ import org.miaixz.bus.cache.magic.annotation.Cached;
 import org.miaixz.bus.cache.magic.annotation.CachedGet;
 import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 import java.lang.annotation.Annotation;

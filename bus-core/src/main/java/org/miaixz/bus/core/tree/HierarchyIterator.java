@@ -27,8 +27,8 @@ package org.miaixz.bus.core.tree;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StreamKit;
-import org.miaixz.bus.core.toolkit.TreeKit;
+import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.TreeKit;
 
 import java.util.*;
 import java.util.function.Function;

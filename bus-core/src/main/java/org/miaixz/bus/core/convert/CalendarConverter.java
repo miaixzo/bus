@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.DateKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;

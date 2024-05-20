@@ -4,7 +4,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.magic.Results;

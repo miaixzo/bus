@@ -2,7 +2,7 @@ package org.miaixz.bus.pay;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;

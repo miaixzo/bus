@@ -31,8 +31,8 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ListKit;
 
 import java.util.ArrayList;
 import java.util.List;

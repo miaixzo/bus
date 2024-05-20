@@ -28,7 +28,7 @@ package org.miaixz.bus.core.data;
 import org.miaixz.bus.core.center.date.NonClock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 
 import java.io.Serializable;
 import java.util.Date;

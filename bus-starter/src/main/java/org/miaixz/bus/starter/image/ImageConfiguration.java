@@ -26,8 +26,8 @@
 package org.miaixz.bus.starter.image;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.toolkit.ResourceKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Args;
 import org.miaixz.bus.image.Centre;
 import org.miaixz.bus.image.Efforts;

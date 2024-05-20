@@ -29,8 +29,8 @@ import org.miaixz.bus.core.beans.path.node.NameNode;
 import org.miaixz.bus.core.beans.path.node.Node;
 import org.miaixz.bus.core.beans.path.node.NodeFactory;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

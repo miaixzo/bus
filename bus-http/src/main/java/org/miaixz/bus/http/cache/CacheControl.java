@@ -27,6 +27,7 @@ package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Headers;
 
 import java.util.concurrent.TimeUnit;
@@ -170,7 +171,7 @@ public class CacheControl {
                 String directive = value.substring(tokenStart, pos).trim();
                 String parameter;
 
-                if (pos == value.length() || value.charAt(pos) == ',' || value.charAt(pos) == ';') {
+                if (pos == value.length() || value.charAt(pos) == ',' || value.charAt(pos) == Symbol.C_SEMICOLON) {
                     pos++; // consume ',' or ';' (if necessary)
                     parameter = null;
                 } else {

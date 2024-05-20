@@ -28,7 +28,7 @@ package org.miaixz.bus.core.text;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.finder.TextFinder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

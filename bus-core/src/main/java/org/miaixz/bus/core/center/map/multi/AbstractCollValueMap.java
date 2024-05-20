@@ -27,8 +27,8 @@ package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.util.Collection;
 import java.util.HashMap;

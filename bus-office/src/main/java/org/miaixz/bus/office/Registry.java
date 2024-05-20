@@ -27,8 +27,8 @@ package org.miaixz.bus.office;
 
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

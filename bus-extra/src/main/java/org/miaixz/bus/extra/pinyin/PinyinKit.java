@@ -27,7 +27,7 @@ package org.miaixz.bus.extra.pinyin;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.PatternKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 
 /**
  * 拼音工具类，用于快速获取拼音

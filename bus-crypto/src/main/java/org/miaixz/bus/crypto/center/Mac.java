@@ -29,10 +29,10 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CryptoException;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.HexKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.crypto.builtin.digest.mac.MacEngine;
 
 import java.io.ByteArrayInputStream;

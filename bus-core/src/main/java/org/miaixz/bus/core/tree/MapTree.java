@@ -27,7 +27,7 @@ package org.miaixz.bus.core.tree;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

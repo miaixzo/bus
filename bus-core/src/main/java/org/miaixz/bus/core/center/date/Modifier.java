@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.DateKit;
 
 import java.util.Calendar;
 

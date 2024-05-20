@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.range;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 片段默认实现

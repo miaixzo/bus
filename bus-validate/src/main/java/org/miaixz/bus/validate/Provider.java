@@ -27,7 +27,7 @@ package org.miaixz.bus.validate;
 
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.magic.Property;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 

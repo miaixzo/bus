@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
-import org.miaixz.bus.core.toolkit.PatternKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.regex.Pattern;
 

@@ -30,10 +30,10 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Set;
 import java.util.stream.Collectors;

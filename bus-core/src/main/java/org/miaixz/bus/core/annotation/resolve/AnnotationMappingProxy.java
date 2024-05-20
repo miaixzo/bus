@@ -28,7 +28,7 @@ package org.miaixz.bus.core.annotation.resolve;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;

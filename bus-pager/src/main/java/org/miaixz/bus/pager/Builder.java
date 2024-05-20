@@ -4,7 +4,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.statement.Statement;
 import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.parser.SqlParser;
 
 import java.io.PrintWriter;
@@ -24,15 +24,11 @@ public class Builder {
 
     /**
      * SQL语法检查正则：符合两个关键字（有先后顺序）才算匹配
-     * <p>
-     * 参考: mybatis-plus-core/src/main/java/com/baomidou/mybatisplus/core/toolkit/sql/SqlInjectionUtils.java
      */
     private static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile("(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)" +
             "\\s+.*(into|from|set|where|table|database|view|index|on|cursor|procedure|trigger|for|password|union|and|or)|(select\\s*\\*\\s*from\\s+)", Pattern.CASE_INSENSITIVE);
     /**
      * 使用'、;或注释截断SQL检查正则
-     * <p>
-     * 参考: mybatis-plus-core/src/main/java/com/baomidou/mybatisplus/core/toolkit/sql/SqlInjectionUtils.java
      */
     private static final Pattern SQL_COMMENT_PATTERN = Pattern.compile("'.*(or|union|--|#|/*|;)", Pattern.CASE_INSENSITIVE);
 

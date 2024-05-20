@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.iterator.TransIterator;
-import org.miaixz.bus.core.toolkit.IteratorKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.IteratorKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.Serializable;
 import java.util.*;

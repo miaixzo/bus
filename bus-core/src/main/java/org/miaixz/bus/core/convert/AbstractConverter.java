@@ -27,9 +27,9 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

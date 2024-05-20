@@ -27,10 +27,10 @@ package org.miaixz.bus.core.lang.loader.classloader;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.MethodKit;
-import org.miaixz.bus.core.toolkit.UrlKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 
 import java.io.File;
 import java.io.IOException;

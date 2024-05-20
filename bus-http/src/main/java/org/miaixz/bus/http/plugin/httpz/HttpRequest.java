@@ -28,7 +28,7 @@ package org.miaixz.bus.http.plugin.httpz;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Httpd;

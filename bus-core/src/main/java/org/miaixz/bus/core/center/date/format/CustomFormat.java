@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.DateKit;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;

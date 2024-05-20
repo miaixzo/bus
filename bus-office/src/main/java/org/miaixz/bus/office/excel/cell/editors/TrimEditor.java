@@ -26,7 +26,7 @@
 package org.miaixz.bus.office.excel.cell.editors;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 
 /**

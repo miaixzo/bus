@@ -34,9 +34,9 @@ import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.WatchKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.WatchKit;
 
 import java.io.File;
 import java.io.IOException;

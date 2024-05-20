@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell;
 
-import org.miaixz.bus.core.toolkit.PatternKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 单元格位置工具类，提供包括行号转行名称、列号转列名称等功能。

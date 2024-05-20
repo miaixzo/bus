@@ -27,9 +27,9 @@ package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.ansi;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * ANSI文本样式风格
  *
@@ -33,7 +35,6 @@ package org.miaixz.bus.core.lang.ansi;
  */
 public class AnsiEncoder {
 
-    private static final String ENCODE_JOIN = ";";
     private static final String ENCODE_START = "\033[";
     private static final String ENCODE_END = "m";
     private static final String RESET = "0;" + Ansi4BitColor.DEFAULT;
@@ -66,7 +67,7 @@ public class AnsiEncoder {
             if (element instanceof AnsiElement) {
                 containsEncoding = true;
                 if (writingAnsi) {
-                    sb.append(ENCODE_JOIN);
+                    sb.append(Symbol.SEMICOLON);
                 } else {
                     sb.append(ENCODE_START);
                     writingAnsi = true;
@@ -82,7 +83,7 @@ public class AnsiEncoder {
 
         // 恢复默认
         if (containsEncoding) {
-            sb.append(writingAnsi ? ENCODE_JOIN : ENCODE_START);
+            sb.append(writingAnsi ? Symbol.SEMICOLON : ENCODE_START);
             sb.append(RESET);
             sb.append(ENCODE_END);
         }

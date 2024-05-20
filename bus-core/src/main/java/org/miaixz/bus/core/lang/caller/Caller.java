@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.caller;
 
-import org.miaixz.bus.core.toolkit.CallerKit;
+import org.miaixz.bus.core.xyz.CallerKit;
 
 /**
  * 调用者接口

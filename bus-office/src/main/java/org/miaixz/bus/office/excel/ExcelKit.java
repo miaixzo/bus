@@ -26,9 +26,9 @@
 package org.miaixz.bus.office.excel;
 
 import org.miaixz.bus.core.lang.exception.DependencyException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.office.Registry;
 import org.miaixz.bus.office.excel.cell.CellLocation;
 import org.miaixz.bus.office.excel.cell.CellLocationKit;

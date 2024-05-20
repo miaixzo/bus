@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.toolkit.ResourceKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;

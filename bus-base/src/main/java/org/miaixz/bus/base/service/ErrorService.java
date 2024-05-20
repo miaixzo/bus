@@ -26,7 +26,7 @@
 package org.miaixz.bus.base.service;
 
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.toolkit.ExceptionKit;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.logger.Logger;
 
 /**

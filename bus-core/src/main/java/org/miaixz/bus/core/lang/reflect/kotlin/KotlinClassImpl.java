@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.reflect.kotlin;
 
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.MethodKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 
 import java.lang.reflect.Method;
 import java.util.List;

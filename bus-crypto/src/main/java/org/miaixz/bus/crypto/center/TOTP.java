@@ -26,7 +26,7 @@
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.time.Duration;
 import java.time.Instant;

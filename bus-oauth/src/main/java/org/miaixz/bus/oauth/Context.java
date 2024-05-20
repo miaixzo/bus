@@ -27,7 +27,7 @@ package org.miaixz.bus.oauth;
 
 import lombok.Builder;
 import lombok.*;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.annotation.resolve.elements.MetaAnnotatedElement;
 import org.miaixz.bus.core.center.map.multi.Graph;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

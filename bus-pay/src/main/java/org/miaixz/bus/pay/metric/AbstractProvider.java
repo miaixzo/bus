@@ -2,7 +2,7 @@ package org.miaixz.bus.pay.metric;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;

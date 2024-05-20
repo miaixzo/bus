@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.reflect;
 
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;

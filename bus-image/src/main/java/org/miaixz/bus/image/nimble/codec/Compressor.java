@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.galaxy.data.*;

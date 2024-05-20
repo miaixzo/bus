@@ -28,7 +28,7 @@ package org.miaixz.bus.core.lang.loader;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.File;
 import java.io.FileNotFoundException;

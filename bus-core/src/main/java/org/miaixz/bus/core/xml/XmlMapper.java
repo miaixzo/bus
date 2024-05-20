@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.xml;
 
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

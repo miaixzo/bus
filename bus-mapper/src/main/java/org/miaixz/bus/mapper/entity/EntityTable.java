@@ -34,7 +34,7 @@ import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.reflect.Constructor;
 import java.util.*;

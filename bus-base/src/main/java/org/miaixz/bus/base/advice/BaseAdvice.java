@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;

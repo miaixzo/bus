@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.stream;
 
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

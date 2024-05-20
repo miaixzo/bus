@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;

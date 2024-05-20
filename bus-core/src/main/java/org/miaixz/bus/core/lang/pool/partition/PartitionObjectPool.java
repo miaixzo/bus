@@ -28,8 +28,8 @@ package org.miaixz.bus.core.lang.pool.partition;
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
 import org.miaixz.bus.core.lang.pool.ObjectPool;
 import org.miaixz.bus.core.lang.pool.Poolable;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;

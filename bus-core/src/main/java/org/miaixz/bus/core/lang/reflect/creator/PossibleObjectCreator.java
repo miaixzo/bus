@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.lang.reflect.creator;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

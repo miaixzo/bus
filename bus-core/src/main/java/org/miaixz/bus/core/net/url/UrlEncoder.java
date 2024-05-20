@@ -27,7 +27,7 @@ package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CharKit;
+import org.miaixz.bus.core.xyz.CharKit;
 
 /**
  * URL编码器，提供百分号编码实现

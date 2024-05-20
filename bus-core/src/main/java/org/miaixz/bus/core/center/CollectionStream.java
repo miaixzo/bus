@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.util.*;
 import java.util.function.BiFunction;

@@ -27,7 +27,7 @@ package org.miaixz.bus.core.text.escape;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.replacer.StringReplacer;
-import org.miaixz.bus.core.toolkit.CharKit;
+import org.miaixz.bus.core.xyz.CharKit;
 
 /**
  * 形如&#39;的反转义器
@@ -61,7 +61,7 @@ public class NumericEntityUnescaper extends StringReplacer {
             while (end < len && CharKit.isHexChar(text.charAt(end))) {
                 end++;
             }
-            final boolean isSemiNext = (end != len) && (text.charAt(end) == ';');
+            final boolean isSemiNext = (end != len) && (text.charAt(end) == Symbol.C_SEMICOLON);
             if (isSemiNext) {
                 final int entityValue;
                 try {

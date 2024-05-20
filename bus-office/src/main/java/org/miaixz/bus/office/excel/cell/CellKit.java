@@ -30,7 +30,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.util.SheetUtil;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.office.excel.ExcelKit;
 import org.miaixz.bus.office.excel.StyleSet;
 import org.miaixz.bus.office.excel.cell.editors.TrimEditor;

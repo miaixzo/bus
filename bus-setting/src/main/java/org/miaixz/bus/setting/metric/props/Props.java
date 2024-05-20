@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 

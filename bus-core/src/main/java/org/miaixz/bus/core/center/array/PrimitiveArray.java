@@ -27,9 +27,9 @@ package org.miaixz.bus.core.center.array;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.MathKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.MathKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.math.BigDecimal;
 import java.util.Collections;

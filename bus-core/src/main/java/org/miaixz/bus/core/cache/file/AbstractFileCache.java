@@ -27,7 +27,7 @@ package org.miaixz.bus.core.cache.file;
 
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.xyz.FileKit;
 
 import java.io.File;
 import java.io.Serializable;

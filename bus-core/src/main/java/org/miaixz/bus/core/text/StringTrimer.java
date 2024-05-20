@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.toolkit.CharKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.util.function.Predicate;

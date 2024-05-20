@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.convert.stringer;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.Reader;
 import java.sql.Clob;

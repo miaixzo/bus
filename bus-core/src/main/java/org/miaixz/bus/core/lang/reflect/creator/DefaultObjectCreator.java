@@ -27,8 +27,8 @@ package org.miaixz.bus.core.lang.reflect.creator;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.LookupKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.LookupKit;
 
 import java.lang.invoke.MethodHandle;
 

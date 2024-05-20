@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.placeholder.StringFormatter;
 import org.miaixz.bus.core.text.replacer.CharRangeReplacer;
 import org.miaixz.bus.core.text.replacer.SearchReplacer;
 import org.miaixz.bus.core.text.replacer.StringRangeReplacer;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.map.concurrent;
 
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -27,7 +27,7 @@ package org.miaixz.bus.cron;
 
 import org.miaixz.bus.core.center.map.TripleTable;
 import org.miaixz.bus.core.lang.exception.CrontabException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cron.crontab.CronCrontab;
 import org.miaixz.bus.cron.crontab.Crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;

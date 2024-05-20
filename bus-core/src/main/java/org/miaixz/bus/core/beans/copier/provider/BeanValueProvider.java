@@ -29,7 +29,7 @@ import org.miaixz.bus.core.beans.BeanDesc;
 import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.toolkit.BeanKit;
+import org.miaixz.bus.core.xyz.BeanKit;
 
 import java.lang.reflect.Type;
 

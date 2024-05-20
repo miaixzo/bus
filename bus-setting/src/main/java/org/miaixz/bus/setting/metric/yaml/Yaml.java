@@ -28,9 +28,9 @@ package org.miaixz.bus.setting.metric.yaml;
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.ResourceKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.yaml.snakeyaml.DumperOptions;
 
 import java.io.InputStream;

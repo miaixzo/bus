@@ -27,7 +27,7 @@ package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Wrapper;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

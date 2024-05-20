@@ -27,7 +27,7 @@ package org.miaixz.bus.shade.screw.dialect.postgresql;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery;
 import org.miaixz.bus.shade.screw.mapping.Mapping;

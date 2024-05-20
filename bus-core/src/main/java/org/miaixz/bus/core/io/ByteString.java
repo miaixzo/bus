@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

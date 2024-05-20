@@ -28,8 +28,8 @@ package org.miaixz.bus.core.io.stream;
 import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.*;
 

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
-import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.util.Arrays;
 import java.util.Iterator;

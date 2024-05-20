@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.data;
 
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 
 import java.security.SecureRandom;
 import java.util.Random;

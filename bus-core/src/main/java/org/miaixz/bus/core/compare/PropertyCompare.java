@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.toolkit.BeanKit;
+import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
  * Bean属性排序器

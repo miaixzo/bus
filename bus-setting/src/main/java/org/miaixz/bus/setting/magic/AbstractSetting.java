@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.getter.GroupedTypeGetter;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

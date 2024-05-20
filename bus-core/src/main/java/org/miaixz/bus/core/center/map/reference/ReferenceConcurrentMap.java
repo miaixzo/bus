@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.center.map.reference;
 
 import org.miaixz.bus.core.lang.ref.Ref;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.ReferKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ReferKit;
 
 import java.io.Serializable;
 import java.lang.ref.Reference;

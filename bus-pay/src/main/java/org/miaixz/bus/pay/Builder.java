@@ -11,9 +11,9 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.XmlKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.XmlKit;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

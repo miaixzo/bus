@@ -28,7 +28,7 @@ package org.miaixz.bus.core.io.source;
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;

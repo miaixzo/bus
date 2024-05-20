@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.logger;
 
-import org.miaixz.bus.core.toolkit.CallerKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CallerKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.magic.Log;
 
 /**

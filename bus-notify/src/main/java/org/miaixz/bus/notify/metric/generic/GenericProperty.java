@@ -29,7 +29,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.notify.magic.Property;
 
 import java.io.File;

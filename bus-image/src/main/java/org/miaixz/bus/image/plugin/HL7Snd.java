@@ -27,8 +27,8 @@ package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.internal.hl7.MLLPConnection;

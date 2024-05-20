@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.sensitive.metric;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.sensitive.Builder;
 
 /**

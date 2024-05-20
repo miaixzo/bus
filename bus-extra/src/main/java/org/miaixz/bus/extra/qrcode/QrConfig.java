@@ -30,7 +30,7 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;

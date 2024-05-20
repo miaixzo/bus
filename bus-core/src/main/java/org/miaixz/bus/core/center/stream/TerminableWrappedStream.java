@@ -28,8 +28,8 @@ package org.miaixz.bus.core.center.stream;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollectorKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollectorKit;
 
 import java.util.*;
 import java.util.function.*;

@@ -27,7 +27,7 @@ package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.thread.lock.Lock;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.File;
 import java.io.PrintWriter;

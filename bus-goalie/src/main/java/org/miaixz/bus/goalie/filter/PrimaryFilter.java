@@ -28,7 +28,7 @@ package org.miaixz.bus.goalie.filter;
 import org.miaixz.bus.base.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.BusinessException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;

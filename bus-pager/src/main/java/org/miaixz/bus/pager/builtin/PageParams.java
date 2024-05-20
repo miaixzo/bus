@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.builtin;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
 import org.miaixz.bus.pager.Paging;

@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Locale;
 

@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.FieldKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.reflect.Field;
 

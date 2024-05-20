@@ -26,8 +26,8 @@
 package org.miaixz.bus.logger.metric.tinylog;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.AbstractAware;
 import org.tinylog.Level;
 import org.tinylog.configuration.Configuration;

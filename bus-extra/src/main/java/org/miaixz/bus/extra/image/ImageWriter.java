@@ -27,8 +27,8 @@ package org.miaixz.bus.extra.image;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageTypeSpecifier;

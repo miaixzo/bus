@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

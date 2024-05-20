@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.captcha;
 
-import org.miaixz.bus.core.toolkit.ColorKit;
-import org.miaixz.bus.core.toolkit.RandomKit;
+import org.miaixz.bus.core.xyz.ColorKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.generator.CodeGenerator;
 import org.miaixz.bus.extra.captcha.generator.RandomGenerator;
 import org.miaixz.bus.extra.image.ImageKit;
