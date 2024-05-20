@@ -35,7 +35,6 @@ import java.util.Set;
 
 /**
  * 基于https://github.com/vdurmont/emoji-java的Emoji表情工具类
- * <p>
  * emoji-java文档以及别名列表见：<a href="https://github.com/vdurmont/emoji-java">...</a>
  *
  * @author Kimi Liu
