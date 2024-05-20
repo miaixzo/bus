@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.Blending;
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
+import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.timout.Timeout;
@@ -78,7 +78,7 @@ public class RealSource implements BufferSource {
         }
 
         if (buffer.size == 0) {
-            long read = source.read(buffer, Segment.SIZE);
+            long read = source.read(buffer, SectionBuffer.SIZE);
             if (read == -1) return -1;
         }
 
@@ -91,7 +91,7 @@ public class RealSource implements BufferSource {
         if (closed) {
             throw new IllegalStateException("closed");
         }
-        return buffer.exhausted() && source.read(buffer, Segment.SIZE) == -1;
+        return buffer.exhausted() && source.read(buffer, SectionBuffer.SIZE) == -1;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class RealSource implements BufferSource {
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed) throw new IllegalStateException("closed");
         while (buffer.size < byteCount) {
-            if (source.read(buffer, Segment.SIZE) == -1) return false;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1) return false;
         }
         return true;
     }
@@ -130,18 +130,18 @@ public class RealSource implements BufferSource {
     }
 
     @Override
-    public int select(Blending blending) throws IOException {
+    public int select(SegmentBuffer segmentBuffer) throws IOException {
         if (closed) throw new IllegalStateException("closed");
 
         while (true) {
-            int index = buffer.selectPrefix(blending, true);
+            int index = buffer.selectPrefix(segmentBuffer, true);
             if (index == -1) return -1;
             if (index == -2) {
                 // We need to grow the buffer. Do that, then try it all again.
-                if (source.read(buffer, Segment.SIZE) == -1L) return -1;
+                if (source.read(buffer, SectionBuffer.SIZE) == -1L) return -1;
             } else {
                 // We matched a full byte string: consume it and return it.
-                int selectedSize = blending.byteStrings[index].size();
+                int selectedSize = segmentBuffer.byteStrings[index].size();
                 buffer.skip(selectedSize);
                 return index;
             }
@@ -187,7 +187,7 @@ public class RealSource implements BufferSource {
         IoKit.checkOffsetAndCount(sink.length, offset, byteCount);
 
         if (buffer.size == 0) {
-            long read = source.read(buffer, Segment.SIZE);
+            long read = source.read(buffer, SectionBuffer.SIZE);
             if (read == -1) return -1;
         }
 
@@ -198,7 +198,7 @@ public class RealSource implements BufferSource {
     @Override
     public int read(ByteBuffer sink) throws IOException {
         if (buffer.size == 0) {
-            long read = source.read(buffer, Segment.SIZE);
+            long read = source.read(buffer, SectionBuffer.SIZE);
             if (read == -1) return -1;
         }
 
@@ -224,7 +224,7 @@ public class RealSource implements BufferSource {
         }
 
         long totalBytesWritten = 0;
-        while (source.read(buffer, Segment.SIZE) != -1) {
+        while (source.read(buffer, SectionBuffer.SIZE) != -1) {
             long emitByteCount = buffer.completeSegmentByteCount();
             if (emitByteCount > 0) {
                 totalBytesWritten += emitByteCount;
@@ -396,7 +396,7 @@ public class RealSource implements BufferSource {
     public void skip(long byteCount) throws IOException {
         if (closed) throw new IllegalStateException("closed");
         while (byteCount > 0) {
-            if (buffer.size == 0 && source.read(buffer, Segment.SIZE) == -1) {
+            if (buffer.size == 0 && source.read(buffer, SectionBuffer.SIZE) == -1) {
                 throw new EOFException();
             }
             long toSkip = Math.min(byteCount, buffer.size());
@@ -430,7 +430,7 @@ public class RealSource implements BufferSource {
             // The byte wasn't in the buffer. Give up if we've already reached our target size or if the
             // underlying stream is exhausted.
             long lastBufferSize = buffer.size;
-            if (lastBufferSize >= toIndex || source.read(buffer, Segment.SIZE) == -1) return -1L;
+            if (lastBufferSize >= toIndex || source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
 
             // Continue the search from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
@@ -452,7 +452,7 @@ public class RealSource implements BufferSource {
             if (result != -1) return result;
 
             long lastBufferSize = buffer.size;
-            if (source.read(buffer, Segment.SIZE) == -1) return -1L;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
 
             // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize - bytes.size() + 1);
@@ -473,7 +473,7 @@ public class RealSource implements BufferSource {
             if (result != -1) return result;
 
             long lastBufferSize = buffer.size;
-            if (source.read(buffer, Segment.SIZE) == -1) return -1L;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
 
             // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
@@ -516,7 +516,7 @@ public class RealSource implements BufferSource {
             public int read() throws IOException {
                 if (closed) throw new IOException("closed");
                 if (buffer.size == 0) {
-                    long count = source.read(buffer, Segment.SIZE);
+                    long count = source.read(buffer, SectionBuffer.SIZE);
                     if (count == -1) return -1;
                 }
                 return buffer.readByte() & 0xff;
@@ -528,7 +528,7 @@ public class RealSource implements BufferSource {
                 IoKit.checkOffsetAndCount(data.length, offset, byteCount);
 
                 if (buffer.size == 0) {
-                    long count = source.read(buffer, Segment.SIZE);
+                    long count = source.read(buffer, SectionBuffer.SIZE);
                     if (count == -1) return -1;
                 }
 

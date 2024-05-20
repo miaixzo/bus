@@ -30,8 +30,12 @@ import java.util.*;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * Simhash是一种局部敏感hash，用于海量文本去重
+ * Simhash是一种局部敏感hash，用于海量文本去重。
+ *
+ * <p>
  * 算法实现来自：<a href="https://github.com/xlturing/Simhash4J">https://github.com/xlturing/Simhash4J</a>
+ * </p>
+ *
  * <p>
  * 局部敏感hash定义：假定两个字符串具有一定的相似性，在hash之后，仍然能保持这种相似性，就称之为局部敏感hash。
  * </p>
@@ -40,7 +44,6 @@ import java.util.concurrent.locks.StampedLock;
  * @since Java 17+
  */
 public class Simhash implements Hash64<Collection<? extends CharSequence>> {
-
 
     private final int bitNum = 64;
     /**
@@ -95,7 +98,7 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
         final int[] weight = new int[bitNum];
         long wordHash;
         for (final CharSequence seg : segList) {
-            wordHash = Murmur.INSTANCE.hash64(seg);
+            wordHash = MurmurHash.INSTANCE.hash64(seg);
             for (int i = 0; i < bitNum; i++) {
                 if (((wordHash >> i) & 1) == 1)
                     weight[i] += 1;
@@ -147,7 +150,7 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 按照(frac, 《simhash, content》)索引进行存储
+     * 按照(frac, simhash, content)索引进行存储
      *
      * @param simhash Simhash值
      */

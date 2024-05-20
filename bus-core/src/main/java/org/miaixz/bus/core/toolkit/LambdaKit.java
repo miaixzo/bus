@@ -25,20 +25,19 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import lombok.Getter;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.center.function.LambdaFactory;
+import org.miaixz.bus.core.center.function.LambdaInfo;
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.LambdaFactory;
-import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.*;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.function.*;
 
 /**
  * Lambda相关工具类
@@ -48,10 +47,36 @@ import java.util.function.Function;
  */
 public class LambdaKit {
 
-    private static final WeakConcurrentMap<String, Info> CACHE = new WeakConcurrentMap<>();
+    private static final WeakConcurrentMap<Object, LambdaInfo> CACHE = new WeakConcurrentMap<>();
 
     /**
      * 通过对象的方法或类的静态方法引用，获取lambda实现类
+     * 传入lambda无参数但含有返回值的情况能够匹配到此方法：
+     * <ul>
+     * 		<li>引用特定对象的实例方法：<pre>{@code
+     * 			MyTeacher myTeacher = new MyTeacher();
+     * 			Class<MyTeacher> supplierClass = LambdaKit.getRealClass(myTeacher::getAge);
+     * 			Assert.assertEquals(MyTeacher.class, supplierClass);
+     *            }</pre>
+     * 		</li>
+     * 		<li>引用静态无参方法：<pre>{@code
+     * 			Class<MyTeacher> staticSupplierClass = LambdaKit.getRealClass(MyTeacher::takeAge);
+     * 			Assert.assertEquals(MyTeacher.class, staticSupplierClass);
+     *            }</pre>
+     * 		</li>
+     * </ul>
+     * 在以下场景无法获取到正确类型
+     * <pre>{@code
+     * 		// 枚举测试，只能获取到枚举类型
+     * 		Class<Enum<?>> enumSupplierClass = LambdaKit.getRealClass(LambdaKit.LambdaKindEnum.REF_NONE::ordinal);
+     * 		Assert.assertEquals(Enum.class, enumSupplierClass);
+     * 		// 调用父类方法，只能获取到父类类型
+     * 		Class<Entity<?>> superSupplierClass = LambdaKit.getRealClass(myTeacher::getId);
+     * 		Assert.assertEquals(Entity.class, superSupplierClass);
+     * 		// 引用父类静态带参方法，只能获取到父类类型
+     * 		Class<Entity<?>> staticSuperFunctionClass = LambdaKit.getRealClass(MyTeacher::takeId);
+     * 		Assert.assertEquals(Entity.class, staticSuperFunctionClass);
+     * }</pre>
      *
      * @param func lambda
      * @param <R>  类型
@@ -59,9 +84,9 @@ public class LambdaKit {
      * @return lambda实现类
      */
     public static <R, T extends Serializable> Class<R> getRealClass(final T func) {
-        final Info lambdaInfo = resolve(func);
+        final LambdaInfo lambdaInfo = resolve(func);
         return (Class<R>) Optional.of(lambdaInfo)
-                .map(Info::getInstantiatedMethodParameterTypes)
+                .map(LambdaInfo::getInstantiatedMethodParameterTypes)
                 .filter(types -> types.length != 0).map(types -> types[types.length - 1])
                 .orElseGet(lambdaInfo::getClazz);
     }
@@ -74,29 +99,23 @@ public class LambdaKit {
      * @param <T>  lambda的类型
      * @return 返回解析后的结果
      */
-    public static <T extends Serializable> Info resolve(final T func) {
-        return CACHE.computeIfAbsent(func.getClass().getName(), (key) -> {
+    public static <T extends Serializable> LambdaInfo resolve(final T func) {
+        return CACHE.computeIfAbsent(func, (key) -> {
             final SerializedLambda serializedLambda = _resolve(func);
             final String methodName = serializedLambda.getImplMethodName();
-            final Class<?> implClass;
-            ClassKit.loadClass(serializedLambda.getImplClass().replace("/", "."), true);
-            try {
-                implClass = Class.forName(serializedLambda.getImplClass().replace("/", "."), true, Thread.currentThread().getContextClassLoader());
-            } catch (final ClassNotFoundException e) {
-                throw new InternalException(e);
-            }
+            final Class<?> implClass = ClassKit.loadClass(serializedLambda.getImplClass(), true);
             if ("<init>".equals(methodName)) {
                 for (final Constructor<?> constructor : implClass.getDeclaredConstructors()) {
-                    if (ReflectKit.getDescriptor(constructor).equals(serializedLambda.getImplMethodSignature())) {
-                        return new Info(constructor, serializedLambda);
+                    if (ReflectKit.getDesc(constructor, false).equals(serializedLambda.getImplMethodSignature())) {
+                        return new LambdaInfo(constructor, serializedLambda);
                     }
                 }
             } else {
-                final Method[] methods = ReflectKit.getMethods(implClass);
+                final Method[] methods = MethodKit.getMethods(implClass);
                 for (final Method method : methods) {
                     if (method.getName().equals(methodName)
-                            && ReflectKit.getDescriptor(method).equals(serializedLambda.getImplMethodSignature())) {
-                        return new Info(method, serializedLambda);
+                            && ReflectKit.getDesc(method, false).equals(serializedLambda.getImplMethodSignature())) {
+                        return new LambdaInfo(method, serializedLambda);
                     }
                 }
             }
@@ -134,36 +153,6 @@ public class LambdaKit {
     }
 
     /**
-     * 解析lambda表达式,没加缓存
-     *
-     * <p>
-     * 通过反射调用实现序列化接口函数对象的writeReplace方法，从而拿到{@link SerializedLambda}<br>
-     * 该对象中包含了lambda表达式的大部分信息。
-     * </p>
-     *
-     * @param func 需要解析的 lambda 对象
-     * @param <T>  lambda的类型
-     * @return 返回解析后的结果
-     */
-    private static <T extends Serializable> SerializedLambda _resolve(final T func) {
-        if (func instanceof SerializedLambda) {
-            return (SerializedLambda) func;
-        }
-        if (func instanceof Proxy) {
-            throw new IllegalArgumentException("not support proxy, just for now");
-        }
-        final Class<? extends Serializable> clazz = func.getClass();
-        if (!clazz.isSynthetic()) {
-            throw new IllegalArgumentException("Not a lambda expression: " + clazz.getName());
-        }
-        final Object serLambda = ReflectKit.invoke(func, "writeReplace");
-        if (Objects.nonNull(serLambda) && serLambda instanceof SerializedLambda) {
-            return (SerializedLambda) serLambda;
-        }
-        throw new InternalException("writeReplace result value is not java.lang.invoke.SerializedLambda");
-    }
-
-    /**
      * 等效于 Obj::getXxx
      *
      * @param getMethod getter方法
@@ -197,7 +186,14 @@ public class LambdaKit {
      * @return Obj::setXxx
      */
     public static <T, P> BiConsumer<T, P> buildSetter(final Method setMethod) {
-        return LambdaFactory.build(BiConsumer.class, setMethod);
+        final Class<?> returnType = setMethod.getReturnType();
+        if (Void.TYPE == returnType) {
+            return LambdaFactory.build(BiConsumer.class, setMethod);
+        }
+
+        // 返回this的setter
+        final BiFunction<T, P, ?> biFunction = LambdaFactory.build(BiFunction.class, setMethod);
+        return biFunction::apply;
     }
 
     /**
@@ -223,152 +219,92 @@ public class LambdaKit {
      * @param <F>         函数式接口类型
      * @return Obj::method
      */
-    public static <F> F lambda(final Class<F> lambdaType, Class<?> clazz, String methodName, Class... paramsTypes) {
+    public static <F> F build(final Class<F> lambdaType, final Class<?> clazz, final String methodName, final Class<?>... paramsTypes) {
         return LambdaFactory.build(lambdaType, clazz, methodName, paramsTypes);
     }
 
-    @Getter
-    public static class Info {
+    /**
+     * 通过自定义固定参数，将{@link BiFunction}转换为{@link Function}
+     *
+     * @param biFunction {@link BiFunction}
+     * @param param      参数
+     * @param <T>        参数类型
+     * @param <U>        参数2类型
+     * @param <R>        返回值类型
+     * @return {@link Function}
+     */
+    public static <T, U, R> Function<T, R> toFunction(final BiFunction<T, U, R> biFunction, final U param) {
+        return (t) -> biFunction.apply(t, param);
+    }
 
-        private static final Type[] EMPTY_TYPE = new Type[0];
-        // 实例对象的方法参数类型
-        private final Type[] instantiatedMethodParameterTypes;
-        // 方法或构造的参数类型
-        private final Type[] parameterTypes;
-        private final Type returnType;
-        // 方法名或构造名称
-        private final String name;
-        private final Executable executable;
-        private final Class<?> clazz;
-        private final SerializedLambda lambda;
+    /**
+     * 通过自定义固定参数，将{@link BiPredicate}转换为{@link Predicate}
+     *
+     * @param biPredicate {@link BiFunction}
+     * @param param       参数
+     * @param <T>         参数类型
+     * @param <U>         参数2类型
+     * @return {@link Predicate}
+     */
+    public static <T, U> Predicate<T> toPredicate(final BiPredicate<T, U> biPredicate, final U param) {
+        return (t) -> biPredicate.test(t, param);
+    }
 
-        /**
-         * 构造
-         *
-         * @param executable 构造对象{@link Constructor}或方法对象{@link Method}
-         * @param lambda     实现了序列化接口的lambda表达式
-         */
-        public Info(final Executable executable, final SerializedLambda lambda) {
-            Assert.notNull(executable, "executable must be not null!");
-            // return type
-            final boolean isMethod = executable instanceof Method;
-            final boolean isConstructor = executable instanceof Constructor;
-            Assert.isTrue(isMethod || isConstructor, "Unsupported executable type: " + executable.getClass());
-            this.returnType = isMethod ?
-                    ((Method) executable).getGenericReturnType() : ((Constructor<?>) executable).getDeclaringClass();
+    /**
+     * 通过自定义固定参数，将{@link BiConsumer}转换为{@link Consumer}
+     *
+     * @param biConsumer {@link BiConsumer}
+     * @param param      参数
+     * @param <T>        参数类型
+     * @param <U>        参数2类型
+     * @return {@link Consumer}
+     */
+    public static <T, U> Consumer<T> toPredicate(final BiConsumer<T, U> biConsumer, final U param) {
+        return (t) -> biConsumer.accept(t, param);
+    }
 
-            // lambda info
-            this.parameterTypes = executable.getGenericParameterTypes();
-            this.name = executable.getName();
-            this.clazz = executable.getDeclaringClass();
-            this.executable = executable;
-            this.lambda = lambda;
+    /**
+     * 获取函数的执行方法
+     *
+     * @param funcType 函数接口类
+     * @return {@link Method}
+     */
+    public static Method getInvokeMethod(final Class<?> funcType) {
+        // 获取Lambda函数
+        final Method[] abstractMethods = MethodKit.getPublicMethods(funcType, ModifierKit::isAbstract);
+        Assert.equals(abstractMethods.length, 1, "Not a function class: " + funcType.getName());
 
-            // types
-            final String instantiatedMethodType = lambda.getInstantiatedMethodType();
-            final int index = instantiatedMethodType.indexOf(";)");
-            this.instantiatedMethodParameterTypes = (index > -1) ?
-                    getInstantiatedMethodParamTypes(instantiatedMethodType.substring(1, index + 1)) : EMPTY_TYPE;
+        return abstractMethods[0];
+    }
+
+    /**
+     * 解析lambda表达式,没加缓存
+     *
+     * <p>
+     * 通过反射调用实现序列化接口函数对象的writeReplace方法，从而拿到{@link SerializedLambda}
+     * 该对象中包含了lambda表达式的大部分信息。
+     * </p>
+     *
+     * @param func 需要解析的 lambda 对象
+     * @param <T>  lambda的类型
+     * @return 返回解析后的结果
+     */
+    private static <T extends Serializable> SerializedLambda _resolve(final T func) {
+        if (func instanceof SerializedLambda) {
+            return (SerializedLambda) func;
         }
-
-        /**
-         * 根据lambda对象的方法签名信息，解析获得实际的参数类型
-         */
-        private static Type[] getInstantiatedMethodParamTypes(final String className) {
-            final String[] instantiatedTypeNames = className.split(";");
-            final Type[] types = new Type[instantiatedTypeNames.length];
-            for (int i = 0; i < instantiatedTypeNames.length; i++) {
-                final boolean isArray = instantiatedTypeNames[i].startsWith(Symbol.BRACKET_LEFT);
-                if (isArray && !instantiatedTypeNames[i].endsWith(";")) {
-                    // 如果是数组，需要以 ";" 结尾才能加载
-                    instantiatedTypeNames[i] += ";";
-                } else {
-                    if (instantiatedTypeNames[i].startsWith("L")) {
-                        // 如果以 "L" 开头，删除 L
-                        instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(1);
-                    }
-                    if (instantiatedTypeNames[i].endsWith(";")) {
-                        // 如果以 ";" 结尾，删除 ";"
-                        instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(0, instantiatedTypeNames[i].length() - 1);
-                    }
-                }
-                types[i] = ClassKit.loadClass(instantiatedTypeNames[i]);
-            }
-            return types;
+        if (func instanceof Proxy) {
+            throw new IllegalArgumentException("not support proxy, just for now");
         }
-
-        /**
-         * 实例方法参数类型
-         *
-         * @return 实例方法参数类型
-         */
-        public Type[] getInstantiatedMethodParameterTypes() {
-            return instantiatedMethodParameterTypes;
+        final Class<? extends Serializable> clazz = func.getClass();
+        if (!clazz.isSynthetic()) {
+            throw new IllegalArgumentException("Not a lambda expression: " + clazz.getName());
         }
-
-        /**
-         * 获得构造或方法参数类型列表
-         *
-         * @return 参数类型列表
-         */
-        public Type[] getParameterTypes() {
-            return parameterTypes;
+        final Object serLambda = MethodKit.invoke(func, "writeReplace");
+        if (serLambda instanceof SerializedLambda) {
+            return (SerializedLambda) serLambda;
         }
-
-        /**
-         * 获取返回值类型（方法引用）
-         *
-         * @return 返回值类型
-         */
-        public Type getReturnType() {
-            return returnType;
-        }
-
-        /**
-         * 方法或构造名称
-         *
-         * @return 方法或构造名称
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * 字段名称，主要用于方法名称截取，方法名称必须为getXXX、isXXX、setXXX
-         *
-         * @return getter或setter对应的字段名称
-         */
-        public String getFieldName() {
-            return BeanKit.getFieldName(getName());
-        }
-
-        /**
-         * 方法或构造对象
-         *
-         * @return 方法或构造对象
-         */
-        public Executable getExecutable() {
-            return executable;
-        }
-
-        /**
-         * 方法或构造所在类
-         *
-         * @return 方法或构造所在类
-         */
-        public Class<?> getClazz() {
-            return clazz;
-        }
-
-        /**
-         * 获得Lambda表达式对象
-         *
-         * @return 获得Lambda表达式对象
-         */
-        public SerializedLambda getLambda() {
-            return lambda;
-        }
-
+        throw new InternalException("writeReplace result value is not java.lang.invoke.SerializedLambda");
     }
 
 }

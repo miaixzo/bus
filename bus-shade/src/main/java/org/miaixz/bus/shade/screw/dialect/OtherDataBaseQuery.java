@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.dialect;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.Database;

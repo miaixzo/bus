@@ -36,25 +36,25 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class LengthFinder extends TextFinder {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final int length;
 
     /**
      * 构造
      *
-     * @param length 长度
+     * @param length 长度，必须大于0
      */
-    public LengthFinder(int length) {
+    public LengthFinder(final int length) {
         Assert.isTrue(length > 0, "Length must be great than 0");
         this.length = length;
     }
 
     @Override
-    public int start(int from) {
+    public int start(final int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
         final int limit = getValidEndIndex();
-        int result;
+        final int result;
         if (negative) {
             result = from - length;
             if (result > limit) {
@@ -70,7 +70,7 @@ public class LengthFinder extends TextFinder {
     }
 
     @Override
-    public int end(int start) {
+    public int end(final int start) {
         return start;
     }
 

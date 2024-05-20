@@ -33,7 +33,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Kimi Liu
  * @since Java 17+
  */

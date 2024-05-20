@@ -69,6 +69,37 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
         this.diskStats = diskStats;
     }
 
+    /**
+     * Gets the disks on this machine
+     *
+     * @param diskStats Memoized supplier of disk statistics
+     * @return a list of {@link HWDiskStore} objects representing the disks
+     */
+    public static List<HWDiskStore> getDisks(Supplier<perfstat_disk_t[]> diskStats) {
+        Map<String, Pair<Integer, Integer>> majMinMap = Ls.queryDeviceMajorMinor();
+        List<AixHWDiskStore> storeList = new ArrayList<>();
+        for (perfstat_disk_t disk : diskStats.get()) {
+            String storeName = Native.toString(disk.name);
+            Pair<String, String> ms = Lscfg.queryModelSerial(storeName);
+            String model = ms.getLeft() == null ? Native.toString(disk.description) : ms.getLeft();
+            String serial = ms.getRight() == null ? Normal.UNKNOWN : ms.getRight();
+            storeList.add(createStore(storeName, model, serial, disk.size << 20, diskStats, majMinMap));
+        }
+        return storeList.stream()
+                .sorted(Comparator.comparingInt(
+                        s -> s.getPartitions().isEmpty() ? Integer.MAX_VALUE : s.getPartitions().get(0).getMajor()))
+                .collect(Collectors.toList());
+    }
+
+    private static AixHWDiskStore createStore(String diskName, String model, String serial, long size,
+                                              Supplier<perfstat_disk_t[]> diskStats, Map<String, Pair<Integer, Integer>> majMinMap) {
+        AixHWDiskStore store = new AixHWDiskStore(diskName, model.isEmpty() ? Normal.UNKNOWN : model, serial, size,
+                diskStats);
+        store.partitionList = Lspv.queryLogicalVolumes(diskName, majMinMap);
+        store.updateAttributes();
+        return store;
+    }
+
     @Override
     public synchronized long getReads() {
         return reads;
@@ -140,36 +171,5 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
             }
         }
         return false;
-    }
-
-    /**
-     * Gets the disks on this machine
-     *
-     * @param diskStats Memoized supplier of disk statistics
-     * @return a list of {@link HWDiskStore} objects representing the disks
-     */
-    public static List<HWDiskStore> getDisks(Supplier<perfstat_disk_t[]> diskStats) {
-        Map<String, Pair<Integer, Integer>> majMinMap = Ls.queryDeviceMajorMinor();
-        List<AixHWDiskStore> storeList = new ArrayList<>();
-        for (perfstat_disk_t disk : diskStats.get()) {
-            String storeName = Native.toString(disk.name);
-            Pair<String, String> ms = Lscfg.queryModelSerial(storeName);
-            String model = ms.getLeft() == null ? Native.toString(disk.description) : ms.getLeft();
-            String serial = ms.getRight() == null ? Normal.UNKNOWN : ms.getRight();
-            storeList.add(createStore(storeName, model, serial, disk.size << 20, diskStats, majMinMap));
-        }
-        return storeList.stream()
-                .sorted(Comparator.comparingInt(
-                        s -> s.getPartitions().isEmpty() ? Integer.MAX_VALUE : s.getPartitions().get(0).getMajor()))
-                .collect(Collectors.toList());
-    }
-
-    private static AixHWDiskStore createStore(String diskName, String model, String serial, long size,
-                                              Supplier<perfstat_disk_t[]> diskStats, Map<String, Pair<Integer, Integer>> majMinMap) {
-        AixHWDiskStore store = new AixHWDiskStore(diskName, model.isEmpty() ? Normal.UNKNOWN : model, serial, size,
-                diskStats);
-        store.partitionList = Lspv.queryLogicalVolumes(diskName, majMinMap);
-        store.updateAttributes();
-        return store;
     }
 }

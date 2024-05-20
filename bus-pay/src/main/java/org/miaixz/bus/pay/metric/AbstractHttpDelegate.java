@@ -1,7 +1,7 @@
 package org.miaixz.bus.pay.metric;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.http.Httpz;
 import org.miaixz.bus.http.Response;

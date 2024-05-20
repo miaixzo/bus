@@ -39,6 +39,7 @@ import java.util.*;
 
 /**
  * Utility to read thread data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

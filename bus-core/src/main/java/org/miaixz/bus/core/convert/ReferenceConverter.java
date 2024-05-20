@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
  */
 public class ReferenceConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static ReferenceConverter INSTANCE = new ReferenceConverter();
 
@@ -50,7 +50,7 @@ public class ReferenceConverter extends AbstractConverter {
         // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(targetClass);
-        if (false == TypeKit.isUnknown(paramType)) {
+        if (!TypeKit.isUnknown(paramType)) {
             targetValue = CompositeConverter.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {

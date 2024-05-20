@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.buffer;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ByteBuffer extends ByteString {
 
         int offset = 0;
         int segmentCount = 0;
-        for (Segment s = buffer.head; offset < byteCount; s = s.next) {
+        for (SectionBuffer s = buffer.head; offset < byteCount; s = s.next) {
             if (s.limit == s.pos) {
                 throw new AssertionError("s.limit == s.pos");
             }
@@ -66,7 +66,7 @@ public class ByteBuffer extends ByteString {
         this.directory = new int[segmentCount * 2];
         offset = 0;
         segmentCount = 0;
-        for (Segment s = buffer.head; offset < byteCount; s = s.next) {
+        for (SectionBuffer s = buffer.head; offset < byteCount; s = s.next) {
             segments[segmentCount] = s.data;
             offset += s.limit - s.pos;
             if (offset > byteCount) {
@@ -207,7 +207,7 @@ public class ByteBuffer extends ByteString {
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
             int nextSegmentOffset = directory[s];
-            Segment segment = new Segment(segments[s], segmentPos,
+            SectionBuffer segment = new SectionBuffer(segments[s], segmentPos,
                     segmentPos + nextSegmentOffset - segmentOffset, true, false);
             if (null == buffer.head) {
                 buffer.head = segment.next = segment.prev = segment;

@@ -52,6 +52,57 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer.memoize(this::queryFamilyVersionInfo);
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
 
+    /**
+     * Utility method for subclasses to take a full process list as input and return the children or descendants of a
+     * particular process. The process itself is also returned to more efficiently extract its start time for filtering
+     *
+     * @param allProcs       A collection of all processes
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
+     * @return Set of children or descendants of parentPid
+     */
+    protected static Set<Integer> getChildrenOrDescendants(Collection<OSProcess> allProcs, int parentPid,
+                                                           boolean allDescendants) {
+        Map<Integer, Integer> parentPidMap = allProcs.stream()
+                .collect(Collectors.toMap(OSProcess::getProcessID, OSProcess::getParentProcessID));
+        return getChildrenOrDescendants(parentPidMap, parentPid, allDescendants);
+    }
+
+    /**
+     * Utility method for subclasses to take a map of pid to parent as input and return the children or descendants of a
+     * particular process.
+     *
+     * @param parentPidMap   a map of all processes with processID as key and parentProcessID as value
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
+     * @return Set of children or descendants of parentPid, including the parent
+     */
+    protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
+                                                           boolean allDescendants) {
+        // Set to hold results
+        Set<Integer> descendantPids = new HashSet<>();
+        descendantPids.add(parentPid);
+        // Queue for BFS algorithm
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(parentPid);
+        // Add children, repeating if recursive
+        do {
+            for (int pid : getChildren(parentPidMap, queue.poll())) {
+                if (!descendantPids.contains(pid)) {
+                    descendantPids.add(pid);
+                    queue.add(pid);
+                }
+            }
+        } while (allDescendants && !queue.isEmpty());
+        return descendantPids;
+    }
+
+    private static Set<Integer> getChildren(Map<Integer, Integer> parentPidMap, int parentPid) {
+        return parentPidMap.entrySet().stream()
+                .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
     @Override
     public String getManufacturer() {
         return manufacturer.get();
@@ -138,57 +189,6 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     }
 
     protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
-
-    /**
-     * Utility method for subclasses to take a full process list as input and return the children or descendants of a
-     * particular process. The process itself is also returned to more efficiently extract its start time for filtering
-     *
-     * @param allProcs       A collection of all processes
-     * @param parentPid      The process ID whose children or descendants to return
-     * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
-     * @return Set of children or descendants of parentPid
-     */
-    protected static Set<Integer> getChildrenOrDescendants(Collection<OSProcess> allProcs, int parentPid,
-                                                           boolean allDescendants) {
-        Map<Integer, Integer> parentPidMap = allProcs.stream()
-                .collect(Collectors.toMap(OSProcess::getProcessID, OSProcess::getParentProcessID));
-        return getChildrenOrDescendants(parentPidMap, parentPid, allDescendants);
-    }
-
-    /**
-     * Utility method for subclasses to take a map of pid to parent as input and return the children or descendants of a
-     * particular process.
-     *
-     * @param parentPidMap   a map of all processes with processID as key and parentProcessID as value
-     * @param parentPid      The process ID whose children or descendants to return
-     * @param allDescendants If false, only gets immediate children of this process. If true, gets all descendants.
-     * @return Set of children or descendants of parentPid, including the parent
-     */
-    protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
-                                                           boolean allDescendants) {
-        // Set to hold results
-        Set<Integer> descendantPids = new HashSet<>();
-        descendantPids.add(parentPid);
-        // Queue for BFS algorithm
-        Queue<Integer> queue = new ArrayDeque<>();
-        queue.add(parentPid);
-        // Add children, repeating if recursive
-        do {
-            for (int pid : getChildren(parentPidMap, queue.poll())) {
-                if (!descendantPids.contains(pid)) {
-                    descendantPids.add(pid);
-                    queue.add(pid);
-                }
-            }
-        } while (allDescendants && !queue.isEmpty());
-        return descendantPids;
-    }
-
-    private static Set<Integer> getChildren(Map<Integer, Integer> parentPidMap, int parentPid) {
-        return parentPidMap.entrySet().stream()
-                .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Entry::getKey)
-                .collect(Collectors.toSet());
-    }
 
     @Override
     public String toString() {

@@ -53,6 +53,23 @@ public interface SolarisLibc extends CLibrary {
     int PRARGSZ = 80;
 
     /**
+     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
+     * fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link SolarisUtmpx} on success, and NULL on failure (which includes the "record not found" case)
+     */
+    SolarisUtmpx getutxent();
+
+    /**
+     * Returns the thread ID of the calling thread.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int thr_self();
+
+    /**
      * Connection info
      */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
@@ -88,23 +105,6 @@ public interface SolarisLibc extends CLibrary {
         public NativeLong tv_sec; // seconds
         public NativeLong tv_usec; // microseconds
     }
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
-     * fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link SolarisUtmpx} on success, and NULL on failure (which includes the "record not found" case)
-     */
-    SolarisUtmpx getutxent();
-
-    /**
-     * Returns the thread ID of the calling thread.
-     *
-     * @return the thread ID of the calling thread.
-     */
-    int thr_self();
 
     /**
      * Structure for psinfo file

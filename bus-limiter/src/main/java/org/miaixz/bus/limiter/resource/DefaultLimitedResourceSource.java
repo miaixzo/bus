@@ -26,8 +26,8 @@
 package org.miaixz.bus.limiter.resource;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.MethodKit;
 import org.miaixz.bus.limiter.Parser;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodClassKey;
@@ -85,7 +85,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
         }
         // 代理前class对象
         reDef = findLimitedResource(specificMethod.getDeclaringClass());
-        if (!CollKit.isEmpty(reDef) && ClassKit.isUserLevelMethod(specificMethod)) {
+        if (!CollKit.isEmpty(reDef) && MethodKit.isUserLevelMethod(specificMethod)) {
             return reDef;
         }
         if (specificMethod != method) {
@@ -96,7 +96,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
             }
             // 代理后的class对象
             reDef = findLimitedResource(method.getDeclaringClass());
-            if (!CollKit.isEmpty(reDef) && ClassKit.isUserLevelMethod(method)) {
+            if (!CollKit.isEmpty(reDef) && MethodKit.isUserLevelMethod(method)) {
                 return reDef;
             }
         }

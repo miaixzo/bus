@@ -25,9 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.builder.Builder;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.lang.Protocol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -40,7 +41,7 @@ import java.util.Arrays;
  * <ul>
  *     <li>协议（protocol），默认TLS</li>
  *     <li>{@link KeyManager}，默认空</li>
- *     <li>{@link TrustManager}，默认{@link DefaultTrustManager}，即信任全部</li>
+ *     <li>{@link TrustManager}，默认{@link TrustAnyTrustManager}，即信任全部</li>
  *     <li>{@link SecureRandom}</li>
  * </ul>
  * <p>
@@ -51,12 +52,13 @@ import java.util.Arrays;
  */
 public class SSLContextBuilder implements Builder<SSLContext> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    private String protocol = Http.TLS;
+    private String protocol = Protocol.TLS;
     private KeyManager[] keyManagers;
-    private TrustManager[] trustManagers = {DefaultTrustManager.INSTANCE};
+    private TrustManager[] trustManagers = TrustAnyTrustManager.TRUST_ANYS;
     private SecureRandom secureRandom = new SecureRandom();
+
 
     /**
      * 创建 SSLContextBuilder
@@ -68,26 +70,53 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     }
 
     /**
-     * 创建{@link SSLContext}，默认新人全部
+     * 获取默认的{@link SSLContext}
      *
-     * @param protocol SSL协议，例如TLS等
+     * @return {@link SSLContext}
+     */
+    public static SSLContext getDefault() {
+        try {
+            return SSLContext.getDefault();
+        } catch (final NoSuchAlgorithmException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 创建{@link SSLContext}，信任全部，协议为TLS
+     *
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(String protocol) throws InternalException {
-        return of().setProtocol(protocol).build();
+    public static SSLContext createTrustAnySSLContext() throws InternalException {
+        return createTrustAnySSLContext(null);
+    }
+
+    /**
+     * 创建{@link SSLContext}，信任全部
+     *
+     * @param protocol SSL协议，例如TLS等，{@code null}表示默认TLS
+     * @return {@link SSLContext}
+     * @throws InternalException 包装 GeneralSecurityException异常
+     */
+    public static SSLContext createTrustAnySSLContext(final String protocol) throws InternalException {
+        return of()
+                .setProtocol(protocol)
+                // 信任所有服务端
+                .setTrustManagers(TrustAnyTrustManager.TRUST_ANYS)
+                .build();
     }
 
     /**
      * 创建{@link SSLContext}
      *
      * @param protocol     SSL协议，例如TLS等
-     * @param keyManager   密钥管理器,{@code null}表示无
-     * @param trustManager 信任管理器, {@code null}表示无
+     * @param keyManager   密钥管理器,{@code null}表示默认
+     * @param trustManager 信任管理器, {@code null}表示默认
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(String protocol, KeyManager keyManager, TrustManager trustManager)
+    public static SSLContext createSSLContext(final String protocol, final KeyManager keyManager, final TrustManager trustManager)
             throws InternalException {
         return createSSLContext(protocol,
                 keyManager == null ? null : new KeyManager[]{keyManager},
@@ -98,13 +127,13 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * 创建和初始化{@link SSLContext}
      *
      * @param protocol      SSL协议，例如TLS等
-     * @param keyManagers   密钥管理器,{@code null}表示无
-     * @param trustManagers 信任管理器, {@code null}表示无
+     * @param keyManagers   密钥管理器,{@code null}表示默认
+     * @param trustManagers 信任管理器, {@code null}表示默认
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers, TrustManager[] trustManagers) throws InternalException {
-        return SSLContextBuilder.of()
+    public static SSLContext createSSLContext(final String protocol, final KeyManager[] keyManagers, final TrustManager[] trustManagers) throws InternalException {
+        return of()
                 .setProtocol(protocol)
                 .setKeyManagers(keyManagers)
                 .setTrustManagers(trustManagers).build();
@@ -126,18 +155,6 @@ public class SSLContextBuilder implements Builder<SSLContext> {
         }
     }
 
-    public static SSLContext getSSLContext() {
-        try {
-            return SSLContext.getInstance(Http.TLS_V_13);
-        } catch (NoSuchAlgorithmException e) {
-            try {
-                return SSLContext.getInstance(Http.TLS);
-            } catch (NoSuchAlgorithmException e2) {
-                throw new IllegalStateException("No TLS provider", e);
-            }
-        }
-    }
-
     public static X509TrustManager newTrustManager() {
         try {
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
@@ -154,13 +171,25 @@ public class SSLContextBuilder implements Builder<SSLContext> {
         }
     }
 
+    public static SSLContext getSSLContext() {
+        try {
+            return SSLContext.getInstance(Http.TLS_V_13);
+        } catch (NoSuchAlgorithmException e) {
+            try {
+                return SSLContext.getInstance(Http.TLS);
+            } catch (NoSuchAlgorithmException e2) {
+                throw new IllegalStateException("No TLS provider", e);
+            }
+        }
+    }
+
     /**
      * 设置协议。例如TLS等
      *
      * @param protocol 协议
      * @return 自身
      */
-    public SSLContextBuilder setProtocol(String protocol) {
+    public SSLContextBuilder setProtocol(final String protocol) {
         if (StringKit.isNotBlank(protocol)) {
             this.protocol = protocol;
         }
@@ -173,7 +202,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @param trustManagers TrustManager列表
      * @return 自身
      */
-    public SSLContextBuilder setTrustManagers(TrustManager... trustManagers) {
+    public SSLContextBuilder setTrustManagers(final TrustManager... trustManagers) {
         if (ArrayKit.isNotEmpty(trustManagers)) {
             this.trustManagers = trustManagers;
         }
@@ -181,12 +210,12 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     }
 
     /**
-     * 设置 JSSE key managers
+     * 设置 JSSE data managers
      *
-     * @param keyManagers JSSE key managers
+     * @param keyManagers JSSE data managers
      * @return 自身
      */
-    public SSLContextBuilder setKeyManagers(KeyManager... keyManagers) {
+    public SSLContextBuilder setKeyManagers(final KeyManager... keyManagers) {
         if (ArrayKit.isNotEmpty(keyManagers)) {
             this.keyManagers = keyManagers;
         }
@@ -199,7 +228,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @param secureRandom SecureRandom
      * @return 自己
      */
-    public SSLContextBuilder setSecureRandom(SecureRandom secureRandom) {
+    public SSLContextBuilder setSecureRandom(final SecureRandom secureRandom) {
         if (null != secureRandom) {
             this.secureRandom = secureRandom;
         }
@@ -224,7 +253,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws KeyManagementException   密钥管理异常
      */
     public SSLContext buildChecked() throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sslContext = SSLContext.getInstance(protocol);
+        final SSLContext sslContext = SSLContext.getInstance(protocol);
         sslContext.init(this.keyManagers, this.trustManagers, this.secureRandom);
         return sslContext;
     }
@@ -238,7 +267,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     public SSLContext buildQuietly() throws InternalException {
         try {
             return buildChecked();
-        } catch (GeneralSecurityException e) {
+        } catch (final GeneralSecurityException e) {
             throw new InternalException(e);
         }
     }

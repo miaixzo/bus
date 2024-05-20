@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 
 /**
  * 强转转换器
@@ -36,10 +36,11 @@ import org.miaixz.bus.core.exception.ConvertException;
  */
 public class CastConverter<T> extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected T convertInternal(final Class<?> targetClass, final Object value) {
+        // 由于在AbstractConverter中已经有类型判断并强制转换，因此当在上一步强制转换失败时直接抛出异常
         throw new ConvertException("Can not cast value to [{}]", targetClass);
     }
 

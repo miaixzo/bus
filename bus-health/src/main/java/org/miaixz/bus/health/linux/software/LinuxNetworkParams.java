@@ -29,8 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -103,7 +103,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
-            String[] fields = RegEx.SPACES.split(routes.get(i));
+            String[] fields = Pattern.SPACES_PATTERN.split(routes.get(i));
             if (fields.length > 4 && fields[0].equals(IPV4_DEFAULT_DEST)) {
                 boolean isGateway = fields[3].indexOf('G') != -1;
                 int metric = Parsing.parseIntOrDefault(fields[4], Integer.MAX_VALUE);
@@ -127,7 +127,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
-            String[] fields = RegEx.SPACES.split(routes.get(i));
+            String[] fields = Pattern.SPACES_PATTERN.split(routes.get(i));
             if (fields.length > 3 && fields[0].equals(IPV6_DEFAULT_DEST)) {
                 boolean isGateway = fields[2].indexOf('G') != -1;
                 int metric = Parsing.parseIntOrDefault(fields[3], Integer.MAX_VALUE);

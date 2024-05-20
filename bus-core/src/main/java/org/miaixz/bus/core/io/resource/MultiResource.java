@@ -25,11 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.ListKit;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -39,12 +40,14 @@ import java.util.List;
 
 /**
  * 多资源组合资源
- * 此资源为一个利用游标自循环资源,只有调用{@link #next()} 方法才会获取下一个资源,使用完毕后调用{@link #reset()}方法重置游标
+ * 此资源为一个利用游标自循环资源，只有调用{@link #next()} 方法才会获取下一个资源，使用完毕后调用{@link #reset()}方法重置游标
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource> {
+public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource>, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private final List<Resource> resources;
     private int cursor;
@@ -54,8 +57,8 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      *
      * @param resources 资源数组
      */
-    public MultiResource(Resource... resources) {
-        this(CollKit.newArrayList(resources));
+    public MultiResource(final Resource... resources) {
+        this(ListKit.of(resources));
     }
 
     /**
@@ -63,11 +66,11 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      *
      * @param resources 资源列表
      */
-    public MultiResource(Collection<Resource> resources) {
+    public MultiResource(final Collection<Resource> resources) {
         if (resources instanceof List) {
             this.resources = (List<Resource>) resources;
         } else {
-            this.resources = CollKit.newArrayList(resources);
+            this.resources = ListKit.of(resources);
         }
     }
 
@@ -82,6 +85,11 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
+    public long size() {
+        return resources.get(cursor).size();
+    }
+
+    @Override
     public InputStream getStream() {
         return resources.get(cursor).getStream();
     }
@@ -92,13 +100,18 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public BufferedReader getReader(Charset charset) {
+    public BufferedReader getReader(final Charset charset) {
         return resources.get(cursor).getReader(charset);
     }
 
     @Override
-    public String readString(Charset charset) throws InternalException {
+    public String readString(final Charset charset) throws InternalException {
         return resources.get(cursor).readString(charset);
+    }
+
+    @Override
+    public String readString() throws InternalException {
+        return resources.get(cursor).readString();
     }
 
     @Override
@@ -133,7 +146,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     /**
      * 重置游标
      */
-    public void reset() {
+    public synchronized void reset() {
         this.cursor = 0;
     }
 
@@ -143,8 +156,19 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      * @param resource 资源
      * @return this
      */
-    public MultiResource add(Resource resource) {
+    public MultiResource add(final Resource resource) {
         this.resources.add(resource);
+        return this;
+    }
+
+    /**
+     * 增加多个资源
+     *
+     * @param iterable 资源列表
+     * @return this
+     */
+    public MultiResource addAll(final Iterable<? extends Resource> iterable) {
+        iterable.forEach((this::add));
         return this;
     }
 

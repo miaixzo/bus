@@ -26,9 +26,10 @@
 package org.miaixz.bus.health.linux.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -54,7 +55,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
             if (s.indexOf(':') >= 0) {
-                String[] split = RegEx.SPACES.split(s.trim());
+                String[] split = Pattern.SPACES_PATTERN.split(s.trim());
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
                     Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
@@ -72,7 +73,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static Pair<byte[], Integer> parseIpAddr(String s) {
         int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
-            byte[] first = Parsing.hexStringToByteArray(s.substring(0, colon));
+            byte[] first = ByteKit.hexStringToByteArray(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
             for (int i = 0; i + 3 < first.length; i += 4) {
                 byte tmp = first[i];

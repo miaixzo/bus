@@ -140,6 +140,17 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         return serialNumber;
     }
 
+    private static SmbType getSmbType(String checkLine) {
+        for (SmbType smbType : SmbType.values()) {
+            if (checkLine.contains(smbType.name())) {
+                return smbType;
+            }
+        }
+        // First 3 SMB_TYPEs are what we need. After that no need to
+        // continue processing the output
+        return null;
+    }
+
     @Override
     public String getManufacturer() {
         return smbiosStrings.get().manufacturer;
@@ -170,17 +181,6 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
     public Baseboard createBaseboard() {
         return new UnixBaseboard(smbiosStrings.get().boardManufacturer, smbiosStrings.get().boardModel,
                 smbiosStrings.get().boardSerialNumber, smbiosStrings.get().boardVersion);
-    }
-
-    private static SmbType getSmbType(String checkLine) {
-        for (SmbType smbType : SmbType.values()) {
-            if (checkLine.contains(smbType.name())) {
-                return smbType;
-            }
-        }
-        // First 3 SMB_TYPEs are what we need. After that no need to
-        // continue processing the output
-        return null;
     }
 
     public enum SmbType {

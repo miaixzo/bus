@@ -74,7 +74,7 @@ public class PostRequest extends HttpRequest {
                 } else if (null != fileInfo.fileInputStream) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMediaType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
+                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
                             fileInfo.fileContent);
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);

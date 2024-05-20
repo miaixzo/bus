@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.timings;
 
+import org.miaixz.bus.cron.crontab.TimerCrontab;
+
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,7 +48,7 @@ public class TimerTaskList implements Delayed {
     /**
      * 根节点
      */
-    private final TimerTask root;
+    private final TimerCrontab root;
 
     /**
      * 构造
@@ -54,7 +56,7 @@ public class TimerTaskList implements Delayed {
     public TimerTaskList() {
         expire = new AtomicLong(-1L);
 
-        root = new TimerTask(null, -1L);
+        root = new TimerCrontab(null, -1L);
         root.prev = root;
         root.next = root;
     }
@@ -65,7 +67,7 @@ public class TimerTaskList implements Delayed {
      * @param expire 过期时间，单位毫秒
      * @return 是否设置成功
      */
-    public boolean setExpiration(long expire) {
+    public boolean setExpiration(final long expire) {
         return this.expire.getAndSet(expire) != expire;
     }
 
@@ -81,17 +83,17 @@ public class TimerTaskList implements Delayed {
     /**
      * 新增任务，将任务加入到双向链表的头部
      *
-     * @param timerTask 延迟任务
+     * @param timerCrontab 延迟任务
      */
-    public void addTask(TimerTask timerTask) {
+    public void addTask(final TimerCrontab timerCrontab) {
         synchronized (this) {
-            if (timerTask.timerTaskList == null) {
-                timerTask.timerTaskList = this;
-                TimerTask tail = root.prev;
-                timerTask.next = root;
-                timerTask.prev = tail;
-                tail.next = timerTask;
-                root.prev = timerTask;
+            if (timerCrontab.timerTaskList == null) {
+                timerCrontab.timerTaskList = this;
+                final TimerCrontab tail = root.prev;
+                timerCrontab.next = root;
+                timerCrontab.prev = tail;
+                tail.next = timerCrontab;
+                root.prev = timerCrontab;
             }
         }
     }
@@ -99,16 +101,16 @@ public class TimerTaskList implements Delayed {
     /**
      * 移除任务
      *
-     * @param timerTask 任务
+     * @param timerCrontab 任务
      */
-    public void removeTask(TimerTask timerTask) {
+    public void removeTask(final TimerCrontab timerCrontab) {
         synchronized (this) {
-            if (this.equals(timerTask.timerTaskList)) {
-                timerTask.next.prev = timerTask.prev;
-                timerTask.prev.next = timerTask.next;
-                timerTask.timerTaskList = null;
-                timerTask.next = null;
-                timerTask.prev = null;
+            if (this.equals(timerCrontab.timerTaskList)) {
+                timerCrontab.next.prev = timerCrontab.prev;
+                timerCrontab.prev.next = timerCrontab.next;
+                timerCrontab.timerTaskList = null;
+                timerCrontab.next = null;
+                timerCrontab.prev = null;
             }
         }
     }
@@ -118,23 +120,23 @@ public class TimerTaskList implements Delayed {
      *
      * @param flush 任务处理函数
      */
-    public synchronized void flush(Consumer<TimerTask> flush) {
-        TimerTask timerTask = root.next;
-        while (false == timerTask.equals(root)) {
-            this.removeTask(timerTask);
-            flush.accept(timerTask);
-            timerTask = root.next;
+    public synchronized void flush(final Consumer<TimerCrontab> flush) {
+        TimerCrontab timerCrontab = root.next;
+        while (!timerCrontab.equals(root)) {
+            this.removeTask(timerCrontab);
+            flush.accept(timerCrontab);
+            timerCrontab = root.next;
         }
         expire.set(-1L);
     }
 
     @Override
-    public long getDelay(TimeUnit unit) {
+    public long getDelay(final TimeUnit unit) {
         return Math.max(0, unit.convert(expire.get() - System.currentTimeMillis(), TimeUnit.MILLISECONDS));
     }
 
     @Override
-    public int compareTo(Delayed o) {
+    public int compareTo(final Delayed o) {
         if (o instanceof TimerTaskList) {
             return Long.compare(expire.get(), ((TimerTaskList) o).expire.get());
         }

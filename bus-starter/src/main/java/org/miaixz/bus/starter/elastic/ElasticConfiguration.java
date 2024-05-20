@@ -31,7 +31,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.miaixz.bus.base.normal.Consts;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -92,7 +92,6 @@ public class ElasticConfiguration {
                 httpAsyncClientBuilder
                         .setMaxConnTotal(this.elasticProperties.getMaxConnectTotal())
                         .setMaxConnPerRoute(this.elasticProperties.getMaxConnectPerRoute()));
-        // TODO 此处可做其它操作
         return new RestHighLevelClient(restClientBuilder);
     }
 }

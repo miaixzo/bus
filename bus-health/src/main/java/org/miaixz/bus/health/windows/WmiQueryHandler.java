@@ -57,21 +57,20 @@ public class WmiQueryHandler {
     // Factory to create this or a subclass
     private static Class<? extends WmiQueryHandler> customClass = null;
 
-    // Timeout for WMI queries
-    private int wmiTimeout = globalTimeout;
-    // Preferred threading model
-    private int comThreading = Ole32.COINIT_MULTITHREADED;
-
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
             throw new Config.PropertyException(Config._UTIL_WMI_TIMEOUT);
         }
     }
-    // Track initialization of Security
-    private boolean securityInitialized = false;
 
     // Cache failed wmi classes
     private final Set<String> failedWmiClassNames = new HashSet<>();
+    // Timeout for WMI queries
+    private int wmiTimeout = globalTimeout;
+    // Preferred threading model
+    private int comThreading = Ole32.COINIT_MULTITHREADED;
+    // Track initialization of Security
+    private boolean securityInitialized = false;
 
     /**
      * Factory method to create an instance of this class. To override this class, use {@link #setInstanceClass(Class)}

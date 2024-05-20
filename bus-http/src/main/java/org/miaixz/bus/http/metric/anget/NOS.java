@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 import org.miaixz.bus.core.toolkit.PatternKit;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class NOS extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<NOS> OSES = CollKit.newArrayList(
+    public static final List<NOS> OSES = ListKit.of(
             new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0", "windows nt (10\\.0)"),
             new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3", "windows nt (6\\.3)"),
             new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2", "windows nt (6\\.2)"),

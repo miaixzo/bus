@@ -28,8 +28,8 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.Guid.GUID;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quintet;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
@@ -92,16 +92,16 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
     }
 
     private static List<UsbDevice> queryUsbDevices() {
-        Quintet<Set<Integer>, Map<Integer, Integer>, Map<Integer, String>, Map<Integer, String>, Map<Integer, String>> controllerDevices = DeviceTree
+        Tuple controllerDevices = DeviceTree
                 .queryDeviceTree(GUID_DEVINTERFACE_USB_HOST_CONTROLLER);
-        Map<Integer, Integer> parentMap = controllerDevices.getB();
-        Map<Integer, String> nameMap = controllerDevices.getC();
-        Map<Integer, String> deviceIdMap = controllerDevices.getD();
-        Map<Integer, String> mfgMap = controllerDevices.getE();
+        Map<Integer, Integer> parentMap = controllerDevices.get(1);
+        Map<Integer, String> nameMap = controllerDevices.get(2);
+        Map<Integer, String> deviceIdMap = controllerDevices.get(3);
+        Map<Integer, String> mfgMap = controllerDevices.get(4);
 
         List<UsbDevice> usbDevices = new ArrayList<>();
         // recursively build results
-        for (Integer controllerDevice : controllerDevices.getA()) {
+        for (Integer controllerDevice : (Set<Integer>) controllerDevices.get(0)) {
             WindowsUsbDevice deviceAndChildren = queryDeviceAndChildren(controllerDevice, parentMap, nameMap,
                     deviceIdMap, mfgMap, "0000", "0000", Normal.EMPTY);
             if (deviceAndChildren != null) {

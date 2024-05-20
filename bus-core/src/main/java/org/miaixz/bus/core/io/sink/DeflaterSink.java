@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.toolkit.IoKit;
@@ -68,7 +68,7 @@ public class DeflaterSink implements Sink {
         IoKit.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
             // Share bytes from the head segment of 'source' with the deflater.
-            Segment head = source.head;
+            SectionBuffer head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
             deflater.setInput(head.data, head.pos, toDeflate);
 
@@ -90,15 +90,15 @@ public class DeflaterSink implements Sink {
     private void deflate(boolean syncFlush) throws IOException {
         Buffer buffer = sink.buffer();
         while (true) {
-            Segment s = buffer.writableSegment(1);
+            SectionBuffer s = buffer.writableSegment(1);
 
             // The 4-parameter overload of deflate() doesn't exist in the RI until
             // Java 1.7, and is public (although with @hide) on Android since 2.3.
             // The @hide tag means that this code won't compile against the Android
             // 2.3 SDK, but it will run fine there.
             int deflated = syncFlush
-                    ? deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit, Deflater.SYNC_FLUSH)
-                    : deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit);
+                    ? deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit, Deflater.SYNC_FLUSH)
+                    : deflater.deflate(s.data, s.limit, SectionBuffer.SIZE - s.limit);
 
             if (deflated > 0) {
                 s.limit += deflated;

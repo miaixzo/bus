@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.tracer.monitor;
 
-import org.miaixz.bus.core.lang.System;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.FileKit;
@@ -270,7 +269,7 @@ public class ExecCmd {
         String rootPath = Normal.EMPTY;
 
         //获取项目的根路径
-        String classPath = System.getProperty(System.USER_DIR);
+        String classPath = System.getProperty(Keys.USER_DIR);
 
         //windows下
         if (Symbol.BACKSLASH.equals(File.separator)) {
@@ -300,8 +299,8 @@ public class ExecCmd {
         String s = ExecCmd.execute(strings);
         assert null != s;
         BufferedReader reader = new BufferedReader(new StringReader(s));
-        String[] keys = ArrayKit.toStringArray(reader.readLine().split("\\s+|\t"));
-        String[] values = ArrayKit.toStringArray(reader.readLine().split("\\s+|\t"));
+        String[] keys = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"));
+        String[] values = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"));
         // 特殊情况
         if (strings[1].equals("-compiler")) {
             for (int i = 0; i < 4; i++) {

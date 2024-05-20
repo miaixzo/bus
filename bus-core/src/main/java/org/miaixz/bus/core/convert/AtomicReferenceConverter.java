@@ -38,19 +38,21 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class AtomicReferenceConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected AtomicReference<?> convertInternal(final Class<?> targetClass, final Object value) {
+
         // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
-        if (false == TypeKit.isUnknown(paramType)) {
+        if (!TypeKit.isUnknown(paramType)) {
             targetValue = CompositeConverter.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
             targetValue = value;
         }
+
         return new AtomicReference<>(targetValue);
     }
 

@@ -28,9 +28,9 @@ package org.miaixz.bus.oauth.metric.renren;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -101,8 +101,8 @@ public class RenrenProvider extends DefaultProvider {
         return AccToken.builder()
                 .tokenType(jsonObject.getString("token_type"))
                 .expireIn(jsonObject.getIntValue("expires_in"))
-                .accessToken(UriKit.encode(jsonObject.getString("access_token")))
-                .refreshToken(UriKit.encode(jsonObject.getString("refresh_token")))
+                .accessToken(UrlEncoder.encodeAll(jsonObject.getString("access_token")))
+                .refreshToken(UrlEncoder.encodeAll(jsonObject.getString("refresh_token")))
                 .openId(jsonObject.getJSONObject("user").getString("id"))
                 .build();
     }

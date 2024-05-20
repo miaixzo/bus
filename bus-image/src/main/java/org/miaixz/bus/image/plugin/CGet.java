@@ -168,7 +168,7 @@ public class CGet {
     }
 
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = StringKit.splitToArray(tsuids, Symbol.C_SEMICOLON);
+        String[] ts = StringKit.splitToArray(tsuids, Symbol.SEMICOLON);
         for (int i = 0; i < ts.length; i++) {
             ts[i] = Builder.toUID(ts[i]);
         }

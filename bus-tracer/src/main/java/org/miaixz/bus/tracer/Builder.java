@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Builder {
 
     public static final String TRACE_PROPERTIES_FILE = "/tracer.properties";
-    public static final String TRACE_DEFAULT_PROPERTIES_FILE = Normal.META_DATA_INF + "/tracer/tracer.default.properties";
+    public static final String TRACE_DEFAULT_PROPERTIES_FILE = Normal.META_INF + "/tracer/tracer.default.properties";
 
     public static final String TPIC_HEADER = "TPIC";
 

@@ -26,28 +26,27 @@
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.thread.lock.Lock;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.ThreadKit;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 /**
  * 文件追加器
- * 持有一个文件,在内存中积累一定量的数据后统一追加到文件
- * 此类只有在写入文件时打开文件,并在写入结束后关闭之 因此此类不需要关闭
- * 在调用append方法后会缓存于内存,只有超过容量后才会一次性写入文件,因此内存中随时有剩余未写入文件的内容,在最后必须调用flush方法将剩余内容刷入文件
+ * 持有一个文件，在内存中积累一定量的数据后统一追加到文件
+ * 此类只有在写入文件时打开文件，并在写入结束后关闭之。因此此类不需要关闭
+ * 在调用append方法后会缓存于内存，只有超过容量后才会一次性写入文件，因此内存中随时有剩余未写入文件的内容，在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FileAppender implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final FileWriter writer;
     /**
@@ -65,7 +64,7 @@ public class FileAppender implements Serializable {
     /**
      * 写出锁，用于保护写出线程安全
      */
-    private final Lock lock;
+    private final java.util.concurrent.locks.Lock lock;
 
     /**
      * 构造
@@ -74,7 +73,7 @@ public class FileAppender implements Serializable {
      * @param capacity      当行数积累多少条时刷入到文件
      * @param isNewLineMode 追加内容是否为新行
      */
-    public FileAppender(File destFile, int capacity, boolean isNewLineMode) {
+    public FileAppender(final File destFile, final int capacity, final boolean isNewLineMode) {
         this(destFile, Charset.UTF_8, capacity, isNewLineMode);
     }
 
@@ -86,7 +85,7 @@ public class FileAppender implements Serializable {
      * @param capacity      当行数积累多少条时刷入到文件
      * @param isNewLineMode 追加内容是否为新行
      */
-    public FileAppender(File destFile, java.nio.charset.Charset charset, int capacity, boolean isNewLineMode) {
+    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity, final boolean isNewLineMode) {
         this(destFile, charset, capacity, isNewLineMode, null);
     }
 
@@ -99,12 +98,12 @@ public class FileAppender implements Serializable {
      * @param isNewLineMode 追加内容是否为新行
      * @param lock          是否加锁，添加则使用给定锁保护写出，保证线程安全，{@code null}则表示无锁
      */
-    public FileAppender(File destFile, java.nio.charset.Charset charset, int capacity, boolean isNewLineMode, Lock lock) {
+    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity, final boolean isNewLineMode, final java.util.concurrent.locks.Lock lock) {
         this.capacity = capacity;
         this.list = new ArrayList<>(capacity);
         this.isNewLineMode = isNewLineMode;
-        this.writer = FileWriter.create(destFile, charset);
-        this.lock = ObjectKit.defaultIfNull(lock, ThreadKit::getNoLock);
+        this.writer = FileWriter.of(destFile, charset);
+        this.lock = ObjectKit.defaultIfNull(lock, Lock::getNoLock);
     }
 
     /**
@@ -113,7 +112,7 @@ public class FileAppender implements Serializable {
      * @param line 行
      * @return this
      */
-    public FileAppender append(String line) {
+    public FileAppender append(final String line) {
         if (list.size() >= capacity) {
             flush();
         }
@@ -135,8 +134,8 @@ public class FileAppender implements Serializable {
     public FileAppender flush() {
         this.lock.lock();
         try {
-            try (PrintWriter pw = writer.getPrintWriter(true)) {
-                for (String text : list) {
+            try (final PrintWriter pw = writer.getPrintWriter(true)) {
+                for (final String text : list) {
                     pw.print(text);
                     if (isNewLineMode) {
                         pw.println();

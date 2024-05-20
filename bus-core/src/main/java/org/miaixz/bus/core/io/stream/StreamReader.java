@@ -22,34 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  *                                                                               *
- ********************************************************************************//*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
  ********************************************************************************/
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.IoKit;
 
 import java.io.FileInputStream;
@@ -111,7 +89,7 @@ public class StreamReader {
         if (null == in || length == 0) {
             return new byte[0];
         }
-        return read(length).toByteArray();
+        return read(length).toByteArrayZeroCopyIfPossible();
     }
 
     /**
@@ -120,7 +98,7 @@ public class StreamReader {
      * @return 输出流
      * @throws InternalException IO异常
      */
-    public FastByteOutputStream read() throws InternalException {
+    public FastByteArrayOutputStream read() throws InternalException {
         return read(-1);
     }
 
@@ -131,9 +109,9 @@ public class StreamReader {
      * @return 输出流
      * @throws InternalException IO异常
      */
-    public FastByteOutputStream read(final int limit) throws InternalException {
+    public FastByteArrayOutputStream read(final int limit) throws InternalException {
         final InputStream in = this.in;
-        final FastByteOutputStream out;
+        final FastByteArrayOutputStream out;
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             try {
@@ -141,15 +119,15 @@ public class StreamReader {
                 if (limit > 0 && limit < length) {
                     length = limit;
                 }
-                out = new FastByteOutputStream(length);
+                out = new FastByteArrayOutputStream(length);
             } catch (final IOException e) {
                 throw new InternalException(e);
             }
         } else {
-            out = new FastByteOutputStream();
+            out = new FastByteArrayOutputStream();
         }
         try {
-            IoKit.copy(in, out, IoKit.DEFAULT_BUFFER_SIZE, limit, null);
+            IoKit.copy(in, out, Normal.DEFAULT_BUFFER_SIZE, limit, (StreamProgress) null);
         } finally {
             if (closeAfterRead) {
                 IoKit.close(in);
@@ -164,15 +142,16 @@ public class StreamReader {
      * <p>注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！</p>
      *
      * <p>
-     * 此方法使用了{@link ObjectInputStream}中的黑白名单方式过滤类，用于避免反序列化漏洞<br>
-     * 通过构造{@link ObjectInputStream}，调用{@link ObjectInputStream#accept(Class[])}
-     * 或者{@link ObjectInputStream#refuse(Class[])}方法添加可以被序列化的类或者禁止序列化的类。
+     * 此方法使用了{@link ValidateObjectInputStream}中的黑白名单方式过滤类，用于避免反序列化漏洞
+     * 通过构造{@link ValidateObjectInputStream}，调用{@link ValidateObjectInputStream#accept(Class[])}
+     * 或者{@link ValidateObjectInputStream#refuse(Class[])}方法添加可以被序列化的类或者禁止序列化的类。
      * </p>
      *
      * @param <T>           读取对象的类型
      * @param acceptClasses 读取对象类型
      * @return 输出流
      * @throws InternalException IO异常
+     * @throws InternalException ClassNotFoundException包装
      */
     public <T> T readObject(final Class<?>... acceptClasses) throws InternalException {
         final InputStream in = this.in;
@@ -181,13 +160,13 @@ public class StreamReader {
         }
 
         // 转换
-        final ObjectInputStream validateIn;
-        if (in instanceof ObjectInputStream) {
-            validateIn = (ObjectInputStream) in;
+        final ValidateObjectInputStream validateIn;
+        if (in instanceof ValidateObjectInputStream) {
+            validateIn = (ValidateObjectInputStream) in;
             validateIn.accept(acceptClasses);
         } else {
             try {
-                validateIn = new ObjectInputStream(in, acceptClasses);
+                validateIn = new ValidateObjectInputStream(in, acceptClasses);
             } catch (final IOException e) {
                 throw new InternalException(e);
             }
@@ -196,7 +175,9 @@ public class StreamReader {
         // 读取
         try {
             return (T) validateIn.readObject();
-        } catch (final ClassNotFoundException | IOException e) {
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        } catch (final ClassNotFoundException e) {
             throw new InternalException(e);
         }
     }

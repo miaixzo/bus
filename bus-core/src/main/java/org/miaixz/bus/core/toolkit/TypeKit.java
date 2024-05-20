@@ -26,9 +26,8 @@
 package org.miaixz.bus.core.toolkit;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Typed;
-import org.miaixz.bus.core.lang.reflect.ActualTypeMapper;
-import org.miaixz.bus.core.map.TableMap;
+import org.miaixz.bus.core.lang.reflect.ActualTypeMapperPool;
+import org.miaixz.bus.core.lang.reflect.ParameterizedTypeImpl;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -38,8 +37,8 @@ import java.util.*;
  * 最主要功能包括：
  *
  * <pre>
- * 1. 获取方法的参数和返回值类型(包括Type和Class)
- * 2. 获取泛型参数类型(包括对象的泛型参数或集合元素的泛型类型)
+ * 1. 获取方法的参数和返回值类型（包括Type和Class）
+ * 2. 获取泛型参数类型（包括对象的泛型参数或集合元素的泛型类型）
  * </pre>
  *
  * @author Kimi Liu
@@ -361,16 +360,19 @@ public class TypeKit {
      * 获得Type对应的原始类
      *
      * @param type {@link Type}
-     * @return 原始类, 如果无法获取原始类, 返回{@code null}
+     * @return 原始类，如果无法获取原始类，返回{@code null}
      */
-    public static Class<?> getClass(Type type) {
+    public static Class<?> getClass(final Type type) {
         if (null != type) {
             if (type instanceof Class) {
                 return (Class<?>) type;
             } else if (type instanceof ParameterizedType) {
                 return (Class<?>) ((ParameterizedType) type).getRawType();
             } else if (type instanceof TypeVariable) {
-                return (Class<?>) ((TypeVariable<?>) type).getBounds()[0];
+                final Type[] bounds = ((TypeVariable<?>) type).getBounds();
+                if (bounds.length == 1) {
+                    return getClass(bounds[0]);
+                }
             } else if (type instanceof WildcardType) {
                 final Type[] upperBounds = ((WildcardType) type).getUpperBounds();
                 if (upperBounds.length == 1) {
@@ -382,23 +384,13 @@ public class TypeKit {
     }
 
     /**
-     * 获得Field对应的原始类
-     *
-     * @param field {@link Field}
-     * @return 原始类，如果无法获取原始类，返回{@code null}
-     */
-    public static Class<?> getClass(Field field) {
-        return null == field ? null : field.getType();
-    }
-
-    /**
      * 获取字段对应的Type类型
      * 方法优先获取GenericType，获取不到则获取Type
      *
      * @param field 字段
      * @return {@link Type}，可能为{@code null}
      */
-    public static Type getType(Field field) {
+    public static Type getType(final Field field) {
         if (null == field) {
             return null;
         }
@@ -412,18 +404,28 @@ public class TypeKit {
      * @param fieldName 字段名
      * @return 字段的泛型类型
      */
-    public static Type getFieldType(Class<?> clazz, String fieldName) {
-        return getType(ReflectKit.getField(clazz, fieldName));
+    public static Type getFieldType(final Class<?> clazz, final String fieldName) {
+        return getType(FieldKit.getField(clazz, fieldName));
+    }
+
+    /**
+     * 获得Field对应的原始类
+     *
+     * @param field {@link Field}
+     * @return 原始类，如果无法获取原始类，返回{@code null}
+     */
+    public static Class<?> getClass(final Field field) {
+        return null == field ? null : field.getType();
     }
 
     /**
      * 获取方法的第一个参数类型
-     * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
+     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
-     * @return {@link Type},可能为{@code null}
+     * @return {@link Type}，可能为{@code null}
      */
-    public static Type getFirstParamType(Method method) {
+    public static Type getFirstParamType(final Method method) {
         return getParamType(method, 0);
     }
 
@@ -431,22 +433,22 @@ public class TypeKit {
      * 获取方法的第一个参数类
      *
      * @param method 方法
-     * @return 第一个参数类型, 可能为{@code null}
+     * @return 第一个参数类型，可能为{@code null}
      */
-    public static Class<?> getFirstParamClass(Method method) {
+    public static Class<?> getFirstParamClass(final Method method) {
         return getParamClass(method, 0);
     }
 
     /**
      * 获取方法的参数类型
-     * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
+     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
-     * @param index  第几个参数的索引,从0开始计数
-     * @return {@link Type},可能为{@code null}
+     * @param index  第几个参数的索引，从0开始计数
+     * @return {@link Type}，可能为{@code null}
      */
-    public static Type getParamType(Method method, int index) {
-        Type[] types = getParamTypes(method);
+    public static Type getParamType(final Method method, final int index) {
+        final Type[] types = getParamTypes(method);
         if (null != types && types.length > index) {
             return types[index];
         }
@@ -457,11 +459,11 @@ public class TypeKit {
      * 获取方法的参数类
      *
      * @param method 方法
-     * @param index  第几个参数的索引,从0开始计数
-     * @return 参数类, 可能为{@code null}
+     * @param index  第几个参数的索引，从0开始计数
+     * @return 参数类，可能为{@code null}
      */
-    public static Class<?> getParamClass(Method method, int index) {
-        Class<?>[] classes = getParamClasses(method);
+    public static Class<?> getParamClass(final Method method, final int index) {
+        final Class<?>[] classes = getParamClasses(method);
         if (null != classes && classes.length > index) {
             return classes[index];
         }
@@ -477,7 +479,7 @@ public class TypeKit {
      * @see Method#getGenericParameterTypes()
      * @see Method#getParameterTypes()
      */
-    public static Type[] getParamTypes(Method method) {
+    public static Type[] getParamTypes(final Method method) {
         return null == method ? null : method.getGenericParameterTypes();
     }
 
@@ -490,7 +492,7 @@ public class TypeKit {
      * @see Method#getGenericParameterTypes
      * @see Method#getParameterTypes
      */
-    public static Class<?>[] getParamClasses(Method method) {
+    public static Class<?>[] getParamClasses(final Method method) {
         return null == method ? null : method.getParameterTypes();
     }
 
@@ -503,7 +505,7 @@ public class TypeKit {
      * @see Method#getGenericReturnType()
      * @see Method#getReturnType()
      */
-    public static Type getReturnType(Method method) {
+    public static Type getReturnType(final Method method) {
         return null == method ? null : method.getGenericReturnType();
     }
 
@@ -515,28 +517,28 @@ public class TypeKit {
      * @see Method#getGenericReturnType
      * @see Method#getReturnType
      */
-    public static Class<?> getReturnClass(Method method) {
+    public static Class<?> getReturnClass(final Method method) {
         return null == method ? null : method.getReturnType();
     }
 
     /**
      * 获得给定类的第一个泛型参数
      *
-     * @param type 被检查的类型,必须是已经确定泛型类型的类型
-     * @return {@link Type},可能为{@code null}
+     * @param type 被检查的类型，必须是已经确定泛型类型的类型
+     * @return {@link Type}，可能为{@code null}
      */
-    public static Type getTypeArgument(Type type) {
+    public static Type getTypeArgument(final Type type) {
         return getTypeArgument(type, 0);
     }
 
     /**
      * 获得给定类的泛型参数
      *
-     * @param type  被检查的类型,必须是已经确定泛型类型的类
-     * @param index 泛型类型的索引号,既第几个泛型类型
+     * @param type  被检查的类型，必须是已经确定泛型类型的类
+     * @param index 泛型类型的索引号，即第几个泛型类型
      * @return {@link Type}
      */
-    public static Type getTypeArgument(Type type, int index) {
+    public static Type getTypeArgument(final Type type, final int index) {
         final Type[] typeArguments = getTypeArguments(type);
         if (null != typeArguments && typeArguments.length > index) {
             return typeArguments[index];
@@ -738,118 +740,115 @@ public class TypeKit {
     }
 
     /**
-     * 获取指定泛型变量对应的真实类型
-     * 由于子类中泛型参数实现和父类(接口)中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型
-     * 使用此方法注意：
-     *
-     * <pre>
-     * 1. superClass必须是clazz的父类或者clazz实现的接口
-     * 2. typeVariable必须在superClass中声明
-     * </pre>
-     *
-     * @param actualType      真实类型所在类,此类中记录了泛型参数对应的实际类型
-     * @param typeDefineClass 泛型变量声明所在类或接口,此类中定义了泛型类型
-     * @param typeVariables   泛型变量,需要的实际类型对应的泛型参数
-     * @return 给定泛型参数对应的实际类型, 如果无对应类型, 返回null
-     */
-    public static Type[] getActualTypes(Type actualType, Class<?> typeDefineClass, Type... typeVariables) {
-        if (false == typeDefineClass.isAssignableFrom(getClass(actualType))) {
-            throw new IllegalArgumentException("Parameter [superClass] must be assignable from [clazz]");
-        }
-
-        // 泛型参数标识符列表
-        final TypeVariable<?>[] typeVars = typeDefineClass.getTypeParameters();
-        if (ArrayKit.isEmpty(typeVars)) {
-            return null;
-        }
-        // 实际类型列表
-        final Type[] actualTypeArguments = getTypeArguments(actualType);
-        if (ArrayKit.isEmpty(actualTypeArguments)) {
-            return null;
-        }
-
-        int size = Math.min(actualTypeArguments.length, typeVars.length);
-        final Map<TypeVariable<?>, Type> tableMap = new TableMap<>(typeVars, actualTypeArguments);
-
-        // 查找方法定义所在类或接口中此泛型参数的位置
-        final Type[] result = new Type[size];
-        for (int i = 0; i < typeVariables.length; i++) {
-            result[i] = (typeVariables[i] instanceof TypeVariable) ? tableMap.get(typeVariables[i]) : typeVariables[i];
-        }
-        return result;
-    }
-
-    /**
-     * 获取指定泛型变量对应的真实类型
-     * 由于子类中泛型参数实现和父类(接口)中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型
-     * 使用此方法注意：
-     *
-     * <pre>
-     * 1. superClass必须是clazz的父类或者clazz实现的接口
-     * 2. typeVariable必须在superClass中声明
-     * </pre>
-     *
-     * @param actualType      真实类型所在类,此类中记录了泛型参数对应的实际类型
-     * @param typeDefineClass 泛型变量声明所在类或接口,此类中定义了泛型类型
-     * @param typeVariable    泛型变量,需要的实际类型对应的泛型参数
-     * @return 给定泛型参数对应的实际类型
-     */
-    public static Type getActualType(Type actualType, Class<?> typeDefineClass, Type typeVariable) {
-        Type[] types = getActualTypes(actualType, typeDefineClass, typeVariable);
-        if (ArrayKit.isNotEmpty(types)) {
-            return types[0];
-        }
-        return null;
-    }
-
-    /**
      * 将{@link Type} 转换为{@link ParameterizedType}
      * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
-     * 一般用于获取泛型参数具体的参数类型,例如：
+     * 一般用于获取泛型参数具体的参数类型，例如：
      *
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
      * <p>
-     * 通过此方法,传入B.class即可得到B{@link ParameterizedType},从而获取到String
+     * 通过此方法，传入B.class即可得到B{@link ParameterizedType}，从而获取到String
      *
      * @param type {@link Type}
      * @return {@link ParameterizedType}
      */
-    public static ParameterizedType toParameterizedType(Type type) {
-        ParameterizedType result = null;
+    public static ParameterizedType toParameterizedType(final Type type) {
+        return toParameterizedType(type, 0);
+    }
+
+    /**
+     * 将{@link Type} 转换为{@link ParameterizedType}
+     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
+     * 一般用于获取泛型参数具体的参数类型，例如：
+     *
+     * <pre>{@code
+     *   class A<T>
+     *   class B extends A<String>;
+     * }</pre>
+     * 通过此方法，传入B.class即可得到B对应的{@link ParameterizedType}，从而获取到String
+     *
+     * @param type           {@link Type}
+     * @param interfaceIndex 实现的第几个接口
+     * @return {@link ParameterizedType}
+     */
+    public static ParameterizedType toParameterizedType(final Type type, final int interfaceIndex) {
         if (type instanceof ParameterizedType) {
-            result = (ParameterizedType) type;
-        } else if (type instanceof Class) {
-            final Class<?> clazz = (Class<?>) type;
-            Type genericSuper = clazz.getGenericSuperclass();
-            if (null == genericSuper || Object.class.equals(genericSuper)) {
-                // 如果类没有父类，而是实现一些定义好的泛型接口，则取接口的Type
-                final Type[] genericInterfaces = clazz.getGenericInterfaces();
-                if (ArrayKit.isNotEmpty(genericInterfaces)) {
-                    // 默认取第一个实现接口的泛型Type
-                    genericSuper = genericInterfaces[0];
+            return (ParameterizedType) type;
+        }
+
+        if (type instanceof Class) {
+            final ParameterizedType[] generics = getGenerics((Class<?>) type);
+            if (generics.length > interfaceIndex) {
+                return generics[interfaceIndex];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取指定类所有泛型父类和泛型接口
+     * <ul>
+     *     <li>指定类及其所有的泛型父类</li>
+     *     <li>指定类实现的直接泛型接口</li>
+     * </ul>
+     *
+     * @param clazz 类
+     * @return 泛型父类或接口数组
+     */
+    public static ParameterizedType[] getGenerics(final Class<?> clazz) {
+        final List<ParameterizedType> result = ListKit.of(false);
+        // 泛型父类（父类及祖类优先级高）
+        final Type genericSuper = clazz.getGenericSuperclass();
+        if (null != genericSuper && !Object.class.equals(genericSuper)) {
+            final ParameterizedType parameterizedType = toParameterizedType(genericSuper);
+            if (null != parameterizedType) {
+                result.add(parameterizedType);
+            }
+        }
+
+        // 泛型接口
+        final Type[] genericInterfaces = clazz.getGenericInterfaces();
+        if (ArrayKit.isNotEmpty(genericInterfaces)) {
+            for (final Type genericInterface : genericInterfaces) {
+                final ParameterizedType parameterizedType = toParameterizedType(genericInterface);
+                if (null != parameterizedType) {
+                    result.add(parameterizedType);
                 }
             }
-            result = toParameterizedType(genericSuper);
         }
-        return result;
+        return result.toArray(new ParameterizedType[0]);
+    }
+
+    /**
+     * 指定泛型数组中是否含有泛型变量
+     *
+     * @param types 泛型数组
+     * @return 是否含有泛型变量
+     */
+    public static boolean hasTypeVariable(final Type... types) {
+        for (final Type type : types) {
+            if (type instanceof TypeVariable) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * 获取泛型变量和泛型实际类型的对应关系Map
-     *
+     * 例如：
      * <pre>
-     *     T    org.miaixz.core.Version
      *     E    java.lang.Integer
      * </pre>
      *
      * @param clazz 被解析的包含泛型参数的类
      * @return 泛型对应关系Map
      */
-    public static Map<Type, Type> getTypeMap(Class<?> clazz) {
-        return ActualTypeMapper.get(clazz);
+    public static Map<Type, Type> getTypeMap(final Class<?> clazz) {
+        return ActualTypeMapperPool.get(clazz);
     }
 
     /**
@@ -859,7 +858,7 @@ public class TypeKit {
      * @param field 字段
      * @return 实际类型，可能为Class等
      */
-    public static Type getActualType(Type type, Field field) {
+    public static Type getActualType(final Type type, final Field field) {
         if (null == field) {
             return null;
         }
@@ -879,13 +878,13 @@ public class TypeKit {
      * @param typeVariable 泛型变量，例如T等
      * @return 实际类型，可能为Class等
      */
-    public static Type getActualType(Type type, Type typeVariable) {
+    public static Type getActualType(final Type type, final Type typeVariable) {
         if (typeVariable instanceof ParameterizedType) {
             return getActualType(type, (ParameterizedType) typeVariable);
         }
 
         if (typeVariable instanceof TypeVariable) {
-            return ActualTypeMapper.getActualType(type, (TypeVariable<?>) typeVariable);
+            return ActualTypeMapperPool.getActualType(type, (TypeVariable<?>) typeVariable);
         }
 
         // 没有需要替换的泛型变量，原样输出
@@ -900,16 +899,16 @@ public class TypeKit {
      * @param parameterizedType 泛型变量，例如List&lt;T&gt;等
      * @return 实际类型，可能为Class等
      */
-    public static Type getActualType(Type type, ParameterizedType parameterizedType) {
+    public static Type getActualType(final Type type, ParameterizedType parameterizedType) {
         // 字段类型为泛型参数类型，解析对应泛型类型为真实类型，类似于List<T> a
         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
         // 泛型对象中含有未被转换的泛型变量
-        if (hasTypeVariable(actualTypeArguments)) {
+        if (TypeKit.hasTypeVariable(actualTypeArguments)) {
             actualTypeArguments = getActualTypes(type, parameterizedType.getActualTypeArguments());
             if (ArrayKit.isNotEmpty(actualTypeArguments)) {
                 // 替换泛型变量为实际类型，例如List<T>变为List<String>
-                parameterizedType = new Typed(actualTypeArguments, parameterizedType.getOwnerType(), parameterizedType.getRawType());
+                parameterizedType = new ParameterizedTypeImpl(actualTypeArguments, parameterizedType.getOwnerType(), parameterizedType.getRawType());
             }
         }
 
@@ -923,87 +922,9 @@ public class TypeKit {
      * @param typeVariables 泛型变量数组，例如T等
      * @return 实际类型数组，可能为Class等
      */
-    public static Type[] getActualTypes(Type type, Type... typeVariables) {
-        return ActualTypeMapper.getActualTypes(type, typeVariables);
+    public static Type[] getActualTypes(final Type type, final Type... typeVariables) {
+        return ActualTypeMapperPool.getActualTypes(type, typeVariables);
     }
-
-    /**
-     * 将传入的类型转换为{@link Class}对象方便的类型检查方法.
-     *
-     * @param parameterizedType 要转换的类型
-     * @return 对应的{@code Class}对象
-     */
-    private static Class<?> getRawType(final ParameterizedType parameterizedType) {
-        final Type rawType = parameterizedType.getRawType();
-        if (!(rawType instanceof Class<?>)) {
-            throw new IllegalStateException("Wait... What!? Type of rawType: " + rawType);
-        }
-        return (Class<?>) rawType;
-    }
-
-    /**
-     * 根据上下文获取Java类型的原始类型
-     * 主要用于{@link TypeVariable}s和{@link GenericArrayType}
-     *
-     * @param type          类型
-     * @param assigningType 要解析的类型
-     * @return 如果不能解析类型，则解析{@link Class}对象或{@code null}
-     */
-    public static Class<?> getRawType(final Type type, final Type assigningType) {
-        if (type instanceof Class<?>) {
-            return (Class<?>) type;
-        }
-
-        if (type instanceof ParameterizedType) {
-            return getRawType((ParameterizedType) type);
-        }
-
-        if (type instanceof TypeVariable<?>) {
-            if (null == assigningType) {
-                return null;
-            }
-
-            final Object genericDeclaration = ((TypeVariable<?>) type).getGenericDeclaration();
-
-            if (!(genericDeclaration instanceof Class<?>)) {
-                return null;
-            }
-
-            final Map<TypeVariable<?>, Type> typeVarAssigns = getTypeArguments(assigningType,
-                    (Class<?>) genericDeclaration);
-
-            if (null == typeVarAssigns) {
-                return null;
-            }
-
-            // 获取分配给该类型变量的参数
-            final Type typeArgument = typeVarAssigns.get(type);
-
-            if (null == typeArgument) {
-                return null;
-            }
-
-            // 获取此类型变量的参数
-            return getRawType(typeArgument, assigningType);
-        }
-
-        if (type instanceof GenericArrayType) {
-            // 获取原始组件类型
-            final Class<?> rawComponentType = getRawType(((GenericArrayType) type)
-                    .getGenericComponentType(), assigningType);
-
-            // 从原始组件类型创建数组类型并返回其类
-            return Array.newInstance(rawComponentType, 0).getClass();
-        }
-
-        // 这不是要找的方法
-        if (type instanceof WildcardType) {
-            return null;
-        }
-
-        throw new IllegalArgumentException("unknown type: " + type);
-    }
-
 
     /**
      * 如果{@link TypeVariable#getBounds()}返回一个空数组,
@@ -1034,21 +955,6 @@ public class TypeKit {
         Assert.notNull(wildcardType, "wildcardType is null");
         final Type[] bounds = wildcardType.getUpperBounds();
         return bounds.length == 0 ? new Type[]{Object.class} : normalizeUpperBounds(bounds);
-    }
-
-    /**
-     * 如果{@link WildcardType#getLowerBounds()}返回一个空数组，
-     * 则返回一个包含单个值{@code null}的数组否则，
-     * 它将返回{@link WildcardType#getLowerBounds()}的结果.
-     *
-     * @param wildcardType 通配符类型
-     * @return 包含通配符类型下界的非空数组.
-     */
-    public static Type[] getImplicitLowerBounds(final WildcardType wildcardType) {
-        Assert.notNull(wildcardType, "wildcardType is null");
-        final Type[] bounds = wildcardType.getLowerBounds();
-
-        return bounds.length == 0 ? new Type[]{null} : bounds;
     }
 
     /**
@@ -1085,18 +991,17 @@ public class TypeKit {
     }
 
     /**
-     * 指定泛型数组中是否含有泛型变量
+     * 将传入的类型转换为{@link Class}对象方便的类型检查方法.
      *
-     * @param types 泛型数组
-     * @return 是否含有泛型变量
+     * @param parameterizedType 要转换的类型
+     * @return 对应的{@code Class}对象
      */
-    public static boolean hasTypeVariable(Type... types) {
-        for (Type type : types) {
-            if (type instanceof TypeVariable) {
-                return true;
-            }
+    private static Class<?> getRawType(final ParameterizedType parameterizedType) {
+        final Type rawType = parameterizedType.getRawType();
+        if (!(rawType instanceof Class<?>)) {
+            throw new IllegalStateException("Wait... What!? Type of rawType: " + rawType);
         }
-        return false;
+        return (Class<?>) rawType;
     }
 
     /**

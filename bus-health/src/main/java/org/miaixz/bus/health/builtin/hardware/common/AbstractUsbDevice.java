@@ -61,6 +61,30 @@ public abstract class AbstractUsbDevice implements UsbDevice {
         this.connectedDevices = Collections.unmodifiableList(connectedDevices);
     }
 
+    /**
+     * Helper method for indenting chained USB devices
+     *
+     * @param usbDevice A USB device to print
+     * @param indent    number of spaces to indent
+     * @return The device toString, indented
+     */
+    private static String indentUsb(UsbDevice usbDevice, int indent) {
+        String indentFmt = indent > 4 ? String.format(Locale.ROOT, "%%%ds|-- ", indent - 4)
+                : String.format(Locale.ROOT, "%%%ds", indent);
+        StringBuilder sb = new StringBuilder(String.format(Locale.ROOT, indentFmt, Normal.EMPTY));
+        sb.append(usbDevice.getName());
+        if (!usbDevice.getVendor().isEmpty()) {
+            sb.append(" (").append(usbDevice.getVendor()).append(')');
+        }
+        if (!usbDevice.getSerialNumber().isEmpty()) {
+            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');
+        }
+        for (UsbDevice connected : usbDevice.getConnectedDevices()) {
+            sb.append('\n').append(indentUsb(connected, indent + 4));
+        }
+        return sb.toString();
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -94,30 +118,6 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     @Override
     public List<UsbDevice> getConnectedDevices() {
         return this.connectedDevices;
-    }
-
-    /**
-     * Helper method for indenting chained USB devices
-     *
-     * @param usbDevice A USB device to print
-     * @param indent    number of spaces to indent
-     * @return The device toString, indented
-     */
-    private static String indentUsb(UsbDevice usbDevice, int indent) {
-        String indentFmt = indent > 4 ? String.format(Locale.ROOT, "%%%ds|-- ", indent - 4)
-                : String.format(Locale.ROOT, "%%%ds", indent);
-        StringBuilder sb = new StringBuilder(String.format(Locale.ROOT, indentFmt, Normal.EMPTY));
-        sb.append(usbDevice.getName());
-        if (!usbDevice.getVendor().isEmpty()) {
-            sb.append(" (").append(usbDevice.getVendor()).append(')');
-        }
-        if (!usbDevice.getSerialNumber().isEmpty()) {
-            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');
-        }
-        for (UsbDevice connected : usbDevice.getConnectedDevices()) {
-            sb.append('\n').append(indentUsb(connected, indent + 4));
-        }
-        return sb.toString();
     }
 
     @Override

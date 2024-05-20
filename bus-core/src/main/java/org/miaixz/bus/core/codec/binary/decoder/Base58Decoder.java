@@ -41,12 +41,10 @@ import java.util.Arrays;
 public class Base58Decoder implements Decoder<CharSequence, byte[]> {
 
     /**
-     * 默认解码器
+     * 解码器
      */
     public static Base58Decoder DECODER = new Base58Decoder(Base58Encoder.DEFAULT_ALPHABET);
-    /**
-     * 查找表
-     */
+
     private final byte[] lookupTable;
 
     /**
@@ -101,4 +99,5 @@ public class Base58Decoder implements Decoder<CharSequence, byte[]> {
         // Return decoded data (including original number of leading zeros).
         return Arrays.copyOfRange(decoded, outputStart - zeros, decoded.length);
     }
+
 }

@@ -33,7 +33,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.parser.SqlServerSqlParser;
 

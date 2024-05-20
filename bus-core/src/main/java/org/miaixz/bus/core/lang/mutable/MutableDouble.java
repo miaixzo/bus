@@ -25,11 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
 
 /**
- * 可变 <code>double</code> 类型
+ * 可变 {@code double} 类型
  *
  * @author Kimi Liu
  * @see Double
@@ -37,15 +36,14 @@ import org.miaixz.bus.core.toolkit.MathKit;
  */
 public class MutableDouble extends Number implements Comparable<MutableDouble>, Mutable<Number> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private double value;
 
     /**
-     * 构造,默认值0
+     * 构造，默认值0
      */
     public MutableDouble() {
-
     }
 
     /**
@@ -129,7 +127,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * 增加值
      *
-     * @param operand 被增加的值,非空
+     * @param operand 被增加的值，非空
      * @return this
      */
     public MutableDouble add(final Number operand) {
@@ -151,7 +149,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * 减去值
      *
-     * @param operand 被减的值,非空
+     * @param operand 被减的值，非空
      * @return this
      */
     public MutableDouble subtract(final Number operand) {
@@ -182,37 +180,36 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@link MutableDouble}</li>
-     * <li>值相等</li>
+     * 	<li>非空</li>
+     * 	<li>类型为 {@code MutableDouble}</li>
+     * 	<li>值相等</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>,否则 <code>false</code>
+     * @param obj 比对的对象
+     * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object object) {
-        if (object instanceof MutableDouble) {
-            return (Double.doubleToLongBits(((MutableDouble) object).value) == Double.doubleToLongBits(value));
+    public boolean equals(final Object obj) {
+        if (obj instanceof MutableDouble) {
+            return (Double.doubleToLongBits(((MutableDouble) obj).value) == Double.doubleToLongBits(value));
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        final long bits = Double.doubleToLongBits(value);
-        return (int) (bits ^ bits >>> Normal._32);
+        return Double.hashCode(value);
     }
 
     /**
      * 比较
      *
-     * @param other 其它 {@link MutableDouble} 对象
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @param other 其它 {@code MutableDouble} 对象
+     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableDouble other) {
-        return MathKit.compare(this.value, other.value);
+        return CompareKit.compare(this.value, other.value);
     }
 
     @Override

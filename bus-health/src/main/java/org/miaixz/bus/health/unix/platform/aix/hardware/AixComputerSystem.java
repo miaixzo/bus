@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -86,7 +86,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
                     fwVendor = fwVersion.substring(0, comma);
                     fwVersion = fwVersion.substring(comma + 1);
                 }
-                fwVersion = RegEx.SPACES.split(fwVersion)[0];
+                fwVersion = Pattern.SPACES_PATTERN.split(fwVersion)[0];
             } else if (checkLine.startsWith(modelMarker)) {
                 model = checkLine.split(modelMarker)[1].trim();
                 int comma = model.indexOf(',');
@@ -94,13 +94,13 @@ final class AixComputerSystem extends AbstractComputerSystem {
                     manufacturer = model.substring(0, comma);
                     model = model.substring(comma + 1);
                 }
-                model = RegEx.SPACES.split(model)[0];
+                model = Pattern.SPACES_PATTERN.split(model)[0];
             } else if (checkLine.startsWith(systemIdMarker)) {
                 serialNumber = checkLine.split(systemIdMarker)[1].trim();
-                serialNumber = RegEx.SPACES.split(serialNumber)[0];
+                serialNumber = Pattern.SPACES_PATTERN.split(serialNumber)[0];
             } else if (checkLine.startsWith(uuidMarker)) {
                 uuid = checkLine.split(uuidMarker)[1].trim();
-                uuid = RegEx.SPACES.split(uuid)[0];
+                uuid = Pattern.SPACES_PATTERN.split(uuid)[0];
             }
         }
         for (final String checkLine : Executor.runNative("lsmcode -c")) {

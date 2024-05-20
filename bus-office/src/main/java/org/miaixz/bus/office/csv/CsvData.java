@@ -25,18 +25,21 @@
  ********************************************************************************/
 package org.miaixz.bus.office.csv;
 
+import org.miaixz.bus.core.toolkit.ListKit;
+
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * CSV数据,包括头部信息和行数据
+ * CSV数据，包括头部信息和行数据，参考：FastCSV
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CsvData implements Iterable<CsvRow>, Serializable {
+public class CsvData implements Iterable<CsvRow>, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private final List<String> header;
     private final List<CsvRow> rows;
@@ -58,19 +61,16 @@ public final class CsvData implements Iterable<CsvRow>, Serializable {
      * @return 总行数
      */
     public int getRowCount() {
-        return rows.size();
+        return this.rows.size();
     }
 
     /**
      * 获取头信息列表，如果无头信息为{@code Null}，返回列表为只读列表
      *
-     * @return 标题行-如果不存在标题，可能是{@code null}
+     * @return the header row - might be {@code null} if no header exists
      */
     public List<String> getHeader() {
-        if (null == this.header) {
-            return null;
-        }
-        return Collections.unmodifiableList(this.header);
+        return ListKit.unmodifiable(this.header);
     }
 
     /**
@@ -78,9 +78,10 @@ public final class CsvData implements Iterable<CsvRow>, Serializable {
      *
      * @param index 行号
      * @return 行数据
+     * @throws IndexOutOfBoundsException if index is out of range
      */
     public CsvRow getRow(final int index) {
-        return rows.get(index);
+        return this.rows.get(index);
     }
 
     /**
@@ -89,7 +90,7 @@ public final class CsvData implements Iterable<CsvRow>, Serializable {
      * @return 所有行
      */
     public List<CsvRow> getRows() {
-        return Collections.unmodifiableList(rows);
+        return this.rows;
     }
 
     @Override

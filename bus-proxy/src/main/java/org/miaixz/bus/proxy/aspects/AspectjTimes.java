@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.aspects;
 
-import org.miaixz.bus.core.date.NonTimer;
+import org.miaixz.bus.core.center.date.StopWatch;
 import org.miaixz.bus.logger.Logger;
 
 import java.lang.reflect.Method;
@@ -40,11 +40,11 @@ public class AspectjTimes extends AspectjSimple {
 
     private static final long serialVersionUID = 1L;
 
-    private NonTimer nonTimer = new NonTimer();
+    private StopWatch interval = new StopWatch();
 
     @Override
     public boolean before(Object target, Method method, Object[] args) {
-        nonTimer.start();
+        interval.start();
         return true;
     }
 
@@ -53,7 +53,7 @@ public class AspectjTimes extends AspectjSimple {
         Logger.info("Method [{}.{}] execute spend [{}]ms return value [{}]",
                 target.getClass().getName(),
                 method.getName(),
-                nonTimer.intervalMs(),
+                interval.getLastTaskTimeMillis(),
                 returnVal);
         return true;
     }

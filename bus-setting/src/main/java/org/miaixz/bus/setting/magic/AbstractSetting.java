@@ -27,11 +27,13 @@ package org.miaixz.bus.setting.magic;
 
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
-import org.miaixz.bus.core.getter.GroupedGetter;
-import org.miaixz.bus.core.getter.TypeGetter;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.LambdaInfo;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.function.FuncX;
+import org.miaixz.bus.core.lang.getter.GroupedTypeGetter;
+import org.miaixz.bus.core.lang.getter.TypeGetter;
+import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.io.Serializable;
@@ -44,11 +46,21 @@ import java.lang.reflect.Type;
  * @since Java 17+
  */
 public abstract class AbstractSetting implements TypeGetter<CharSequence>,
-        GroupedGetter<CharSequence, CharSequence>, Serializable {
+        GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
+
+    /**
+     * 数组类型值默认分隔符
+     */
+    public static final String DEFAULT_DELIMITER = Symbol.COMMA;
+    /**
+     * 默认分组
+     */
+    public static final String DEFAULT_GROUP = Normal.EMPTY;
+    private static final long serialVersionUID = -1L;
 
     @Override
     public Object getObject(final CharSequence key, final Object defaultValue) {
-        return ObjectKit.defaultIfNull(getObjectByGroup(key, Normal.EMPTY), defaultValue);
+        return ObjectKit.defaultIfNull(getObjByGroup(key, DEFAULT_GROUP), defaultValue);
     }
 
     /**
@@ -59,8 +71,8 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @param <T>  返回值类型
      * @return 获取表达式对应属性和返回的对象
      */
-    public <P, T> T get(final FuncX<P, T> func) {
-        final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
+    public <P, T> T get(final FunctionX<P, T> func) {
+        final LambdaInfo lambdaInfo = LambdaKit.resolve(func);
         return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }
 
@@ -73,8 +85,8 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @return 值，如果字符串为{@code null}或者""返回默认值
      */
     public String getByGroupNotEmpty(final String key, final String group, final String defaultValue) {
-        final String value = getStringByGroup(key, group);
-        return ObjectKit.defaultIfEmpty(value, defaultValue);
+        final String value = getStrByGroup(key, group);
+        return StringKit.defaultIfEmpty(value, defaultValue);
     }
 
     /**
@@ -116,7 +128,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @return 属性值
      */
     public String[] getStrsByGroup(final CharSequence key, final CharSequence group) {
-        return getStrsByGroup(key, group, Symbol.COMMA);
+        return getStrsByGroup(key, group, DEFAULT_DELIMITER);
     }
 
     /**
@@ -133,11 +145,11 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @return 属性值
      */
     public String[] getStrsByGroup(final CharSequence key, final CharSequence group, final CharSequence delimiter) {
-        final String value = getStringByGroup(key, group);
+        final String value = getStrByGroup(key, group);
         if (StringKit.isBlank(value)) {
             return null;
         }
-        return StringKit.splitToArray(value, delimiter);
+        return CharsBacker.splitToArray(value, delimiter);
     }
 
     /**
@@ -150,16 +162,16 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @return Bean
      */
     public <T> T toBean(final CharSequence group, final T bean) {
-        return BeanKit.fillBean(bean, new ValueProvider<>() {
+        return BeanKit.fillBean(bean, new ValueProvider<String>() {
 
             @Override
             public Object value(final String key, final Type valueType) {
-                return getObjectByGroup(key, group);
+                return getObjByGroup(key, group);
             }
 
             @Override
             public boolean containsKey(final String key) {
-                return null != getObjectByGroup(key, group);
+                return null != getObjByGroup(key, group);
             }
         }, CopyOptions.of());
     }

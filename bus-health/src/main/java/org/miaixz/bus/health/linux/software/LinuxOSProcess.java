@@ -27,8 +27,8 @@ package org.miaixz.bus.health.linux.software;
 
 import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.*;
 import org.miaixz.bus.health.builtin.software.OSThread;
@@ -78,14 +78,13 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
     private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
-    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
-    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
     private String path = Normal.EMPTY;
-
-    private String name;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
     private String userID;
+    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
     private String groupID;
+    private String name;
     private State state = State.INVALID;
     private int parentProcessID;
     private int threadCount;
@@ -354,7 +353,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // Output:
         // pid 3283's current affinity mask: 3
         // pid 9726's current affinity mask: f
-        String[] split = RegEx.SPACES.split(mask);
+        String[] split = Pattern.SPACES_PATTERN.split(mask);
         try {
             return new BigInteger(split[split.length - 1], 16).longValue();
         } catch (NumberFormatException e) {
@@ -431,9 +430,9 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
         // Don't set open files or bitness or currentWorkingDirectory; fetch on demand.
 
-        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", Normal.EMPTY))[0];
+        this.userID = Pattern.SPACES_PATTERN.split(status.getOrDefault("Uid", Normal.EMPTY))[0];
         // defer user lookup until asked
-        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", Normal.EMPTY))[0];
+        this.groupID = Pattern.SPACES_PATTERN.split(status.getOrDefault("Gid", Normal.EMPTY))[0];
         // defer group lookup until asked
         this.name = status.getOrDefault("Name", Normal.EMPTY);
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));

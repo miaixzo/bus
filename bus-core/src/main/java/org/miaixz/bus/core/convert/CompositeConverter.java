@@ -25,27 +25,31 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
-import org.miaixz.bus.core.lang.Types;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.reflect.TypeReference;
+import org.miaixz.bus.core.toolkit.*;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * 复合转换器，融合了所有支持类型和自定义类型的转换规则
- * 将各种类型Convert对象放入符合转换器，通过convert方法查找目标类型对应的转换器，将被转换对象转换之
- * 在此类中，存放着默认转换器和自定义转换器，默认转换器是bus中预定义的一些转换器，自定义转换器存放用户自定的转换器
+ * <p>
+ * 将各种类型Convert对象放入符合转换器，通过convert方法查找目标类型对应的转换器，将被转换对象转换之。
+ * </p>
+ * <p>
+ * 在此类中，存放着默认转换器和自定义转换器，默认转换器是预定义的一些转换器，自定义转换器存放用户自定的转换器。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompositeConverter extends RegistryConverter {
+public class CompositeConverter extends RegisterConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 构造
@@ -55,9 +59,9 @@ public class CompositeConverter extends RegistryConverter {
     }
 
     /**
-     * 获得单例的 RegistryConverter
+     * 获得单例的 ConverterRegistry
      *
-     * @return RegistryConverter
+     * @return ConverterRegistry
      */
     public static CompositeConverter getInstance() {
         return SingletonHolder.INSTANCE;
@@ -77,7 +81,7 @@ public class CompositeConverter extends RegistryConverter {
     }
 
     /**
-     * 转换值为指定类型<br>
+     * 转换值为指定类型
      * 自定义转换器优先
      *
      * @param <T>          转换的目标类型（转换器转换到的类型）
@@ -103,7 +107,7 @@ public class CompositeConverter extends RegistryConverter {
      * @return 转换后的值
      * @throws ConvertException 转换器不存在
      */
-    public <T> T convert(Type type, final Object value, final T defaultValue, final boolean isCustomFirst) throws ConvertException {
+    public <T> T convert(Type type, Object value, final T defaultValue, final boolean isCustomFirst) throws ConvertException {
         if (ObjectKit.isNull(value)) {
             return defaultValue;
         }
@@ -115,13 +119,27 @@ public class CompositeConverter extends RegistryConverter {
             type = defaultValue.getClass();
         }
 
+        // Optional处理
+        if (value instanceof Optional) {
+            value = ((Optional<T>) value).get();
+            if (ObjectKit.isNull(value)) {
+                return defaultValue;
+            }
+        }
+        if (value instanceof java.util.Optional) {
+            value = ((java.util.Optional<T>) value).orElse(null);
+            if (ObjectKit.isNull(value)) {
+                return defaultValue;
+            }
+        }
+
         // value本身实现了Converter接口，直接调用
         if (value instanceof Converter) {
             return ((Converter) value).convert(type, value, defaultValue);
         }
 
-        if (type instanceof Types) {
-            type = ((Types<?>) type).getType();
+        if (type instanceof TypeReference) {
+            type = ((TypeReference<?>) type).getType();
         }
 
         // 标准转换器
@@ -146,7 +164,7 @@ public class CompositeConverter extends RegistryConverter {
         }
 
         // 尝试转Bean
-        if (BeanKit.isBean(rowType)) {
+        if (BeanKit.isWritableBean(rowType)) {
             return (T) BeanConverter.INSTANCE.convert(type, value);
         }
 
@@ -155,7 +173,7 @@ public class CompositeConverter extends RegistryConverter {
     }
 
     /**
-     * 特殊类型转换<br>
+     * 特殊类型转换
      * 包括：
      *
      * <pre>
@@ -176,6 +194,11 @@ public class CompositeConverter extends RegistryConverter {
             return null;
         }
 
+        // 日期、java.sql中的日期以及自定义日期统一处理
+        if (Date.class.isAssignableFrom(rowType)) {
+            return DateConverter.INSTANCE.convert(type, value, defaultValue);
+        }
+
         // 集合转换（含有泛型参数，不可以默认强转）
         if (Collection.class.isAssignableFrom(rowType)) {
             return (T) CollectionConverter.INSTANCE.convert(type, value, (Collection<?>) defaultValue);
@@ -184,6 +207,11 @@ public class CompositeConverter extends RegistryConverter {
         // Map类型（含有泛型参数，不可以默认强转）
         if (Map.class.isAssignableFrom(rowType)) {
             return (T) MapConverter.INSTANCE.convert(type, value, (Map<?, ?>) defaultValue);
+        }
+
+        // Entry类（含有泛型参数，不可以默认强转）
+        if (Map.Entry.class.isAssignableFrom(rowType)) {
+            return (T) EntryConverter.INSTANCE.convert(type, value);
         }
 
         // 默认强转
@@ -209,6 +237,21 @@ public class CompositeConverter extends RegistryConverter {
         // 数组转换
         if (rowType.isArray()) {
             return ArrayConverter.INSTANCE.convert(type, value, defaultValue);
+        }
+
+        // Record
+        if (RecordKit.isRecord(rowType)) {
+            return (T) RecordConverter.INSTANCE.convert(type, value);
+        }
+
+        // Kotlin Bean
+        if (KotlinKit.isKotlinClass(rowType)) {
+            return (T) KotlinBeanConverter.INSTANCE.convert(type, value);
+        }
+
+        // Class
+        if ("java.lang.Class".equals(rowType.getName())) {
+            return (T) ClassConverter.INSTANCE.convert(type, value);
         }
 
         // 表示非需要特殊转换的对象

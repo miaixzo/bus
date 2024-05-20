@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.io.FileSystem;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.FaultHideSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -67,7 +66,7 @@ public class DiskLruCache implements Closeable, Flushable {
     private static final String DIRTY = "DIRTY";
     private static final String REMOVE = "REMOVE";
     private static final String READ = "READ";
-    final FileSystem fileSystem;
+    final DiskFile diskFile;
     /**
      * 缓存存储其数据的目录
      */
@@ -103,9 +102,9 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private long nextSequenceNumber = 0;
 
-    DiskLruCache(FileSystem fileSystem, File directory, int appVersion, int valueCount, long maxSize,
+    DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize,
                  Executor executor) {
-        this.fileSystem = fileSystem;
+        this.diskFile = diskFile;
         this.directory = directory;
         this.appVersion = appVersion;
         this.journalFile = new File(directory, JOURNAL_FILE);
@@ -119,14 +118,14 @@ public class DiskLruCache implements Closeable, Flushable {
     /**
      * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.
      *
-     * @param fileSystem 文件系统
+     * @param diskFile 文件系统
      * @param directory  一个可写目录
      * @param appVersion 版本信息
      * @param valueCount 每个缓存条目的值数目.
      * @param maxSize    此缓存应用于存储的最大字节数
      * @return the disk cache
      */
-    public static DiskLruCache create(FileSystem fileSystem, File directory, int appVersion,
+    public static DiskLruCache create(DiskFile diskFile, File directory, int appVersion,
                                       int valueCount, long maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
@@ -138,7 +137,7 @@ public class DiskLruCache implements Closeable, Flushable {
         Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
 
-        return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
+        return new DiskLruCache(diskFile, directory, appVersion, valueCount, maxSize, executor);
     }
 
     public synchronized void initialize() throws IOException {
@@ -149,16 +148,16 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         // 如果存在bkp文件，就使用它
-        if (fileSystem.exists(journalFileBackup)) {
+        if (diskFile.exists(journalFileBackup)) {
             // 如果日志文件也存在，删除备份文件
-            if (fileSystem.exists(journalFile)) {
-                fileSystem.delete(journalFileBackup);
+            if (diskFile.exists(journalFile)) {
+                diskFile.delete(journalFileBackup);
             } else {
-                fileSystem.rename(journalFileBackup, journalFile);
+                diskFile.rename(journalFileBackup, journalFile);
             }
         }
 
-        if (fileSystem.exists(journalFile)) {
+        if (diskFile.exists(journalFile)) {
             try {
                 readJournal();
                 processJournal();
@@ -184,7 +183,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private void readJournal() throws IOException {
-        try (BufferSource source = IoKit.buffer(fileSystem.source(journalFile))) {
+        try (BufferSource source = IoKit.buffer(diskFile.source(journalFile))) {
             String magic = source.readUtf8LineStrict();
             String version = source.readUtf8LineStrict();
             String appVersionString = source.readUtf8LineStrict();
@@ -259,7 +258,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     private BufferSink newJournalWriter() throws FileNotFoundException {
-        Sink fileSink = fileSystem.appendingSink(journalFile);
+        Sink fileSink = diskFile.appendingSink(journalFile);
         Sink faultHidingSink = new FaultHideSink(fileSink) {
             @Override
             protected void onException(IOException e) {
@@ -276,7 +275,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * @throws IOException 异常
      */
     private void processJournal() throws IOException {
-        fileSystem.delete(journalFileTmp);
+        diskFile.delete(journalFileTmp);
         for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
             Entry entry = i.next();
             if (entry.currentEditor == null) {
@@ -286,8 +285,8 @@ public class DiskLruCache implements Closeable, Flushable {
             } else {
                 entry.currentEditor = null;
                 for (int t = 0; t < valueCount; t++) {
-                    fileSystem.delete(entry.cleanFiles[t]);
-                    fileSystem.delete(entry.dirtyFiles[t]);
+                    diskFile.delete(entry.cleanFiles[t]);
+                    diskFile.delete(entry.dirtyFiles[t]);
                 }
                 i.remove();
             }
@@ -325,11 +324,11 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
 
-        if (fileSystem.exists(journalFile)) {
-            fileSystem.rename(journalFile, journalFileBackup);
+        if (diskFile.exists(journalFile)) {
+            diskFile.rename(journalFile, journalFileBackup);
         }
-        fileSystem.rename(journalFileTmp, journalFile);
-        fileSystem.delete(journalFileBackup);
+        diskFile.rename(journalFileTmp, journalFile);
+        diskFile.delete(journalFileBackup);
 
         journalWriter = newJournalWriter();
         hasJournalErrors = false;
@@ -461,7 +460,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     editor.abort();
                     throw new IllegalStateException("Newly created entry didn't create value for index " + i);
                 }
-                if (!fileSystem.exists(entry.dirtyFiles[i])) {
+                if (!diskFile.exists(entry.dirtyFiles[i])) {
                     editor.abort();
                     return;
                 }
@@ -471,16 +470,16 @@ public class DiskLruCache implements Closeable, Flushable {
         for (int i = 0; i < valueCount; i++) {
             File dirty = entry.dirtyFiles[i];
             if (success) {
-                if (fileSystem.exists(dirty)) {
+                if (diskFile.exists(dirty)) {
                     File clean = entry.cleanFiles[i];
-                    fileSystem.rename(dirty, clean);
+                    diskFile.rename(dirty, clean);
                     long oldLength = entry.lengths[i];
-                    long newLength = fileSystem.size(clean);
+                    long newLength = diskFile.size(clean);
                     entry.lengths[i] = newLength;
                     size = size - oldLength + newLength;
                 }
             } else {
-                fileSystem.delete(dirty);
+                diskFile.delete(dirty);
             }
         }
 
@@ -542,7 +541,7 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         for (int i = 0; i < valueCount; i++) {
-            fileSystem.delete(entry.cleanFiles[i]);
+            diskFile.delete(entry.cleanFiles[i]);
             size -= entry.lengths[i];
             entry.lengths[i] = 0;
         }
@@ -618,7 +617,7 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     public void delete() throws IOException {
         close();
-        fileSystem.deleteContents(directory);
+        diskFile.deleteContents(directory);
     }
 
     /**
@@ -762,6 +761,142 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
+     * Access to read and write files on a hierarchical data store. Most callers should use the {@link
+     * #SYSTEM} implementation, which uses the host machine's local file system. Alternate
+     * implementations may be used to inject faults (for testing) or to transform stored data (to add
+     * encryption, for example).
+     *
+     * <p>All operations on a file system are racy. For example, guarding a call to {@link #source} with
+     * {@link #exists} does not guarantee that {@link FileNotFoundException} will not be thrown. The
+     * file may be moved between the two calls!
+     *
+     * <p>This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7.
+     * It lacks important features like file watching, metadata, permissions, and disk space
+     * information. In exchange for these limitations, this interface is easier to implement and works
+     * on all versions of Java and Android.
+     */
+    public static interface DiskFile {
+
+        /**
+         * The host machine's local file system.
+         */
+        DiskFile SYSTEM = new DiskFile() {
+            @Override
+            public Source source(File file) throws FileNotFoundException {
+                return IoKit.source(file);
+            }
+
+            @Override
+            public Sink sink(File file) throws FileNotFoundException {
+                try {
+                    return IoKit.sink(file);
+                } catch (FileNotFoundException e) {
+                    // Maybe the parent directory doesn't exist? Try creating it first.
+                    file.getParentFile().mkdirs();
+                    return IoKit.sink(file);
+                }
+            }
+
+            @Override
+            public Sink appendingSink(File file) throws FileNotFoundException {
+                try {
+                    return IoKit.appendingSink(file);
+                } catch (FileNotFoundException e) {
+                    // Maybe the parent directory doesn't exist? Try creating it first.
+                    file.getParentFile().mkdirs();
+                    return IoKit.appendingSink(file);
+                }
+            }
+
+            @Override
+            public void delete(File file) throws IOException {
+                // If delete() fails, make sure it's because the file didn't exist!
+                if (!file.delete() && file.exists()) {
+                    throw new IOException("failed to delete " + file);
+                }
+            }
+
+            @Override
+            public boolean exists(File file) {
+                return file.exists();
+            }
+
+            @Override
+            public long size(File file) {
+                return file.length();
+            }
+
+            @Override
+            public void rename(File from, File to) throws IOException {
+                delete(to);
+                if (!from.renameTo(to)) {
+                    throw new IOException("failed to rename " + from + " to " + to);
+                }
+            }
+
+            @Override
+            public void deleteContents(File directory) throws IOException {
+                File[] files = directory.listFiles();
+                if (files == null) {
+                    throw new IOException("not a readable directory: " + directory);
+                }
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteContents(file);
+                    }
+                    if (!file.delete()) {
+                        throw new IOException("failed to delete " + file);
+                    }
+                }
+            }
+        };
+
+        /**
+         * Reads from {@code file}.
+         */
+        Source source(File file) throws FileNotFoundException;
+
+        /**
+         * Writes to {@code file}, discarding any data already present. Creates parent directories if
+         * necessary.
+         */
+        Sink sink(File file) throws FileNotFoundException;
+
+        /**
+         * Writes to {@code file}, appending if data is already present. Creates parent directories if
+         * necessary.
+         */
+        Sink appendingSink(File file) throws FileNotFoundException;
+
+        /**
+         * Deletes {@code file} if it exists. Throws if the file exists and cannot be deleted.
+         */
+        void delete(File file) throws IOException;
+
+        /**
+         * Returns true if {@code file} exists on the file system.
+         */
+        boolean exists(File file);
+
+        /**
+         * Returns the number of bytes stored in {@code file}, or 0 if it does not exist.
+         */
+        long size(File file);
+
+        /**
+         * Renames {@code from} to {@code to}. Throws if the file cannot be renamed.
+         */
+        void rename(File from, File to) throws IOException;
+
+        /**
+         * Recursively delete the contents of {@code directory}. Throws an IOException if any file could
+         * not be deleted, or if {@code dir} is not a readable directory.
+         */
+        void deleteContents(File directory) throws IOException;
+
+    }
+
+    /**
      * Edits the values for an entry.
      */
     public final class Editor {
@@ -785,7 +920,7 @@ public class DiskLruCache implements Closeable, Flushable {
             if (entry.currentEditor == this) {
                 for (int i = 0; i < valueCount; i++) {
                     try {
-                        fileSystem.delete(entry.dirtyFiles[i]);
+                        diskFile.delete(entry.dirtyFiles[i]);
                     } catch (IOException e) {
                         // This file is potentially leaked. Not much we can do about that.
                     }
@@ -807,7 +942,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     return null;
                 }
                 try {
-                    return fileSystem.source(entry.cleanFiles[index]);
+                    return diskFile.source(entry.cleanFiles[index]);
                 } catch (FileNotFoundException e) {
                     return null;
                 }
@@ -833,7 +968,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 File dirtyFile = entry.dirtyFiles[index];
                 Sink sink;
                 try {
-                    sink = fileSystem.sink(dirtyFile);
+                    sink = diskFile.sink(dirtyFile);
                 } catch (FileNotFoundException e) {
                     return IoKit.blackhole();
                 }
@@ -892,6 +1027,32 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
+
+    private final Runnable cleanupRunnable = new Runnable() {
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized | closed) {
+                    return;
+                }
+
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
+        }
+    };
 
     private class Entry {
 
@@ -979,7 +1140,7 @@ public class DiskLruCache implements Closeable, Flushable {
             long[] lengths = this.lengths.clone();
             try {
                 for (int i = 0; i < valueCount; i++) {
-                    sources[i] = fileSystem.source(cleanFiles[i]);
+                    sources[i] = diskFile.source(cleanFiles[i]);
                 }
                 return new Snapshot(key, sequenceNumber, sources, lengths);
             } catch (FileNotFoundException e) {
@@ -998,31 +1159,4 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
-
-    private final Runnable cleanupRunnable = new Runnable() {
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
-                    return;
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
-            }
-        }
-    };
-
 }

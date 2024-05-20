@@ -27,8 +27,8 @@ package org.miaixz.bus.limiter.execute;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.limiter.Injector;
 import org.miaixz.bus.limiter.expression.LimiterOperationExpressionEvaluator;
@@ -115,7 +115,7 @@ public class LimiterExecutionContext {
         if (!method.isVarArgs()) {
             return args;
         } else {
-            Object[] varArgs = ObjectKit.toObjectArray(args[args.length - 1]);
+            Object[] varArgs = ArrayKit.ofArray(args[args.length - 1]);
             Object[] combinedArgs = new Object[args.length - 1 + varArgs.length];
             System.arraycopy(args, 0, combinedArgs, 0, args.length - 1);
             System.arraycopy(varArgs, 0, combinedArgs, args.length - 1, varArgs.length);

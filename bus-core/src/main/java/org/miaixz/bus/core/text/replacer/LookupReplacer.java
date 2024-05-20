@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.replacer;
 
-import org.miaixz.bus.core.text.TextBuilder;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,32 +36,32 @@ import java.util.Set;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LookupReplacer extends TextReplacer {
+public class LookupReplacer extends StringReplacer {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final Map<String, String> lookupMap;
-    private final Set<Character> prefixSet;
+    private final Set<Character> keyPrefixSkeyet;
     private final int minLength;
     private final int maxLength;
 
     /**
      * 构造
      *
-     * @param lookup 被查找的键值对
+     * @param lookup 被查找的键值对，每个String[]表示一个键值对
      */
-    public LookupReplacer(String[]... lookup) {
-        this.lookupMap = new HashMap<>();
-        this.prefixSet = new HashSet<>();
+    public LookupReplacer(final String[]... lookup) {
+        this.lookupMap = new HashMap<>(lookup.length, 1);
+        this.keyPrefixSkeyet = new HashSet<>(lookup.length, 1);
 
         int minLength = Integer.MAX_VALUE;
         int maxLength = 0;
         String key;
         int keySize;
-        for (String[] pair : lookup) {
+        for (final String[] pair : lookup) {
             key = pair[0];
             lookupMap.put(key, pair[1]);
-            this.prefixSet.add(key.charAt(0));
+            this.keyPrefixSkeyet.add(key.charAt(0));
             keySize = key.length();
             if (keySize > maxLength) {
                 maxLength = keySize;
@@ -77,19 +75,19 @@ public class LookupReplacer extends TextReplacer {
     }
 
     @Override
-    protected int replace(CharSequence text, int indexes, TextBuilder builder) {
-        if (prefixSet.contains(text.charAt(indexes))) {
+    protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
+        if (keyPrefixSkeyet.contains(text.charAt(pos))) {
             int max = this.maxLength;
-            if (indexes + this.maxLength > text.length()) {
-                max = text.length() - indexes;
+            if (pos + this.maxLength > text.length()) {
+                max = text.length() - pos;
             }
             CharSequence subSeq;
             String result;
             for (int i = max; i >= this.minLength; i--) {
-                subSeq = text.subSequence(indexes, indexes + i);
+                subSeq = text.subSequence(pos, pos + i);
                 result = lookupMap.get(subSeq.toString());
                 if (null != result) {
-                    builder.append(result);
+                    out.append(result);
                     return i;
                 }
             }

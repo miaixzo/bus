@@ -26,7 +26,6 @@
 package org.miaixz.bus.core.text.replacer;
 
 import org.miaixz.bus.core.lang.Chain;
-import org.miaixz.bus.core.text.TextBuilder;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,39 +37,39 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ReplacerChain extends TextReplacer implements Chain<TextReplacer, ReplacerChain> {
+public class ReplacerChain extends StringReplacer implements Chain<StringReplacer, ReplacerChain> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    private final List<TextReplacer> replacers = new LinkedList<>();
+    private final List<StringReplacer> replacers = new LinkedList<>();
 
     /**
      * 构造
      *
-     * @param replacers 字符串替换器
+     * @param stringReplacers 字符串替换器
      */
-    public ReplacerChain(TextReplacer... replacers) {
-        for (TextReplacer replacer : replacers) {
-            addChain(replacer);
+    public ReplacerChain(final StringReplacer... stringReplacers) {
+        for (final StringReplacer stringReplacer : stringReplacers) {
+            addChain(stringReplacer);
         }
     }
 
     @Override
-    public Iterator<TextReplacer> iterator() {
+    public Iterator<StringReplacer> iterator() {
         return replacers.iterator();
     }
 
     @Override
-    public ReplacerChain addChain(TextReplacer element) {
+    public ReplacerChain addChain(final StringReplacer element) {
         replacers.add(element);
         return this;
     }
 
     @Override
-    protected int replace(CharSequence text, int indexes, TextBuilder builder) {
+    protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         int consumed = 0;
-        for (TextReplacer replacer : replacers) {
-            consumed = replacer.replace(text, indexes, builder);
+        for (final StringReplacer stringReplacer : replacers) {
+            consumed = stringReplacer.replace(text, pos, out);
             if (0 != consumed) {
                 return consumed;
             }

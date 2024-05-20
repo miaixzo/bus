@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.codec.hash;
 
 import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.codec.No128;
 
 /**
  * Hash计算接口

@@ -46,6 +46,15 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 
     int PROCESS_BASIC_INFORMATION = 0;
 
+    /**
+     * Windows API docs say NtQueryInformationProcess may be altered or unavailable in future versions of Windows.
+     * Applications should use the alternate functions listed in this topic. However, there is no other way to get this
+     * information, it's been officially non-API for over a decade, and many many programs including windows sysinternal
+     * tools rely on this behavior, so the odds of it going away are small.
+     */
+    int NtQueryInformationProcess(HANDLE ProcessHandle, int ProcessInformationClass, Pointer ProcessInformation,
+                                  int ProcessInformationLength, IntByReference ReturnLength);
+
     @FieldOrder({"Reserved1", "PebBaseAddress", "Reserved2"})
     class PROCESS_BASIC_INFORMATION extends Structure {
         public Pointer Reserved1;
@@ -134,14 +143,5 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public int TimeStamp;
         public STRING DosPath;
     }
-
-    /**
-     * Windows API docs say NtQueryInformationProcess may be altered or unavailable in future versions of Windows.
-     * Applications should use the alternate functions listed in this topic. However, there is no other way to get this
-     * information, it's been officially non-API for over a decade, and many many programs including windows sysinternal
-     * tools rely on this behavior, so the odds of it going away are small.
-     */
-    int NtQueryInformationProcess(HANDLE ProcessHandle, int ProcessInformationClass, Pointer ProcessInformation,
-                                  int ProcessInformationLength, IntByReference ReturnLength);
 
 }

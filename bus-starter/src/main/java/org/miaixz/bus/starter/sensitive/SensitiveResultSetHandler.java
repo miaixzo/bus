@@ -39,8 +39,8 @@ import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.sensitive.Builder;
-import org.miaixz.bus.sensitive.annotation.Privacy;
-import org.miaixz.bus.sensitive.annotation.Sensitive;
+import org.miaixz.bus.sensitive.magic.annotation.Privacy;
+import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

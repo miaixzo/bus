@@ -30,10 +30,13 @@ import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base32Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 
+import java.io.Serializable;
+
 /**
- * Base32 - encodes and decodes RFC4648 Base32 (see https://datatracker.ietf.org/doc/html/rfc4648#section-6 )
- * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码
- * 所以，5个ASCII字符经过base32编码后会变为8个字符（公约数为40），长度增加3/5.不足8n用“=”补足
+ * Base32 - encodes and decodes RFC4648 Base32
+ * (see <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">https://datatracker.ietf.org/doc/html/rfc4648#section-6</a> )
+ * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码。
+ * 所以，5个ASCII字符经过base32编码后会变为8个字符（公约数为40），长度增加3/5.不足8n用“=”补足。
  * 根据RFC4648 Base32规范，支持两种模式：
  * <ul>
  *     <li>Base 32 Alphabet                 (ABCDEFGHIJKLMNOPQRSTUVWXYZ234567)</li>
@@ -43,10 +46,12 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]> {
+public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 实例
+     * 单例对象
      */
     public static Base32Provider INSTANCE = new Base32Provider();
 

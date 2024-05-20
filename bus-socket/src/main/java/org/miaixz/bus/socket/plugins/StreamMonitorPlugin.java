@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.socket.plugins;
 
+import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.channel.AsynchronousSocketChannelProxy;
@@ -51,14 +53,14 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_HEX_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.BLUE + Fields.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length + " bytes ]" + StringKit.byteArrayToHex(bytes) + ConsoleColors.RESET);
+            Logger.info(ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
     };
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_HEX_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.RED + Fields.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length + " bytes ]" + StringKit.byteArrayToHex(bytes) + ConsoleColors.RESET);
+            Logger.info(ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length + " bytes ]" + ByteKit.byteArrayToHexString(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,14 +68,14 @@ public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {
 
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> BLUE_TEXT_INPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.BLUE + Fields.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(ConsoleColors.BLUE + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getRemoteAddress() + " --> " + channel.getLocalAddress() + " ] [ read: " + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }
     };
     public static final BiConsumer<AsynchronousSocketChannel, byte[]> RED_TEXT_OUTPUT_STREAM = (channel, bytes) -> {
         try {
-            Logger.info(ConsoleColors.RED + Fields.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
+            Logger.info(ConsoleColors.RED + Formatter.NORM_DATETIME_MS_FORMAT.format(new Date()) + " [ " + channel.getLocalAddress() + " --> " + channel.getRemoteAddress() + " ] [ write: " + bytes.length + " bytes ]\r\n" + new String(bytes) + ConsoleColors.RESET);
         } catch (IOException e) {
             e.printStackTrace();
         }

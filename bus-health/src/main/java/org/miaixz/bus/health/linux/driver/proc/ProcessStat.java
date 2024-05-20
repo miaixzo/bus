@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -36,7 +36,6 @@ import org.miaixz.bus.health.linux.ProcPath;
 import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -48,13 +47,12 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public final class ProcessStat {
 
-    private static final Pattern SOCKET = Pattern.compile("socket:\\[(\\d+)\\]");
-
     /**
      * Constant defining the number of integer values in {@code /proc/pid/stat}. 2.6 Kernel has 44 elements, 3.3 has 47,
      * and 3.5 has 52.
      */
     public static final int PROC_PID_STAT_LENGTH;
+    private static final java.util.regex.Pattern SOCKET = java.util.regex.Pattern.compile("socket:\\[(\\d+)\\]");
 
     static {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
@@ -92,7 +90,7 @@ public final class ProcessStat {
         String name = stat.substring(nameStart, nameEnd);
         Character state = stat.charAt(nameEnd + 2);
         // Split everything after the state
-        String[] split = RegEx.SPACES.split(stat.substring(nameEnd + 4).trim());
+        String[] split = Pattern.SPACES_PATTERN.split(stat.substring(nameEnd + 4).trim());
 
         Map<PidStat, Long> statMap = new EnumMap<>(PidStat.class);
         PidStat[] enumArray = PidStat.class.getEnumConstants();
@@ -117,7 +115,7 @@ public final class ProcessStat {
             return null;
         }
         // Split the fields
-        String[] split = RegEx.SPACES.split(statm);
+        String[] split = Pattern.SPACES_PATTERN.split(statm);
 
         Map<PidStatM, Long> statmMap = new EnumMap<>(PidStatM.class);
         PidStatM[] enumArray = PidStatM.class.getEnumConstants();
@@ -184,7 +182,7 @@ public final class ProcessStat {
 
     private static File[] listNumericFiles(String path) {
         File directory = new File(path);
-        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        File[] numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());
         return numericFiles == null ? new File[0] : numericFiles;
     }
 

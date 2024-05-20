@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.map.AbstractEntry;
+import org.miaixz.bus.core.center.map.AbstractEntry;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<Map.Entry<K, V>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     protected K key;
     protected V value;
@@ -54,6 +54,19 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     public MutableEntry(final K key, final V value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * 创建{@code MutableEntry}
+     *
+     * @param key   键
+     * @param value 值
+     * @param <K>   键类型
+     * @param <V>   值类型
+     * @return {@code MutableEntry}
+     */
+    public static <K, V> MutableEntry<K, V> of(final K key, final V value) {
+        return new MutableEntry<>(key, value);
     }
 
     /**
@@ -80,7 +93,7 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
      * 设置键
      *
      * @param key 新键
-     * @return old key
+     * @return old data
      */
     public K setKey(final K key) {
         final K oldKey = this.key;

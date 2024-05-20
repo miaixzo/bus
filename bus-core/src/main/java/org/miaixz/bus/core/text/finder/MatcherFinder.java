@@ -38,7 +38,7 @@ import java.util.function.Predicate;
  */
 public class MatcherFinder extends TextFinder {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final Predicate<Character> matcher;
 
@@ -47,7 +47,7 @@ public class MatcherFinder extends TextFinder {
      *
      * @param matcher 被查找的字符匹配器
      */
-    public MatcherFinder(Predicate<Character> matcher) {
+    public MatcherFinder(final Predicate<Character> matcher) {
         this.matcher = matcher;
     }
 

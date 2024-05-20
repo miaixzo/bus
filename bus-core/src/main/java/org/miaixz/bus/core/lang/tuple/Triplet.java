@@ -25,89 +25,85 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.tuple;
 
-import lombok.Getter;
-import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.builder.CompareBuilder;
-import org.miaixz.bus.core.lang.Symbol;
-
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * 由三个元素组成的三元组
- * 这个类是一个定义基本API的抽象实现
- * 表示元素为'left'、'middle'和'right'.
- * 子类实现可以是可变的,也可以是不可变的
- * 但是,对可能存储的存储对象的类型没有限制
- * 如果可变对象存储在三元组中,那么三元组本身就会变成可变的
+ * 不可变三元组对象
  *
- * @param <L> 左元素类型
- * @param <M> 中间元素类型
- * @param <R> 右元素类型
+ * @param <L> 左值类型
+ * @param <M> 中值类型
+ * @param <R> 右值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@ThreadSafe
-public abstract class Triplet<L, M, R> implements Comparable<Triplet<L, M, R>>, Serializable {
+public class Triplet<L, M, R> extends Pair<L, R> {
+
+    private static final long serialVersionUID = -1L;
+    protected M middle;
 
     /**
-     * 获取由三个推断泛型类型的对象组成的不可变三元组
+     * 构造
      *
-     * @param <L>    左元素类型
-     * @param <M>    中间元素类型
-     * @param <R>    右元素类型
-     * @param left   左值可以为null
-     * @param middle 中间可以为null
-     * @param right  右值可以为null
-     * @return 由三个参数组成的三元组，不为空
+     * @param left   左值
+     * @param middle 中值
+     * @param right  右值
+     */
+    public Triplet(final L left, final M middle, final R right) {
+        super(left, right);
+        this.middle = middle;
+    }
+
+    /**
+     * 构建Triple对象
+     *
+     * @param <L>    左值类型
+     * @param <M>    中值类型
+     * @param <R>    右值类型
+     * @param left   左值
+     * @param middle 中值
+     * @param right  右值
+     * @return Triplet
      */
     public static <L, M, R> Triplet<L, M, R> of(final L left, final M middle, final R right) {
-        return new ImmutableTriplet<>(left, middle, right);
+        return new Triplet<>(left, middle, right);
     }
 
-    public abstract L getLeft();
-
-    public abstract M getMiddle();
-
-    public abstract R getRight();
-
-    @Override
-    public int compareTo(final Triplet<L, M, R> other) {
-        return new CompareBuilder().append(getLeft(), other.getLeft())
-                .append(getMiddle(), other.getMiddle())
-                .append(getRight(), other.getRight()).toComparison();
+    /**
+     * 获取中值
+     *
+     * @return 中值
+     */
+    public M getMiddle() {
+        return this.middle;
     }
 
     @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (object instanceof Triplet<?, ?, ?>) {
-            final Triplet<?, ?, ?> other = (Triplet<?, ?, ?>) object;
-            return Objects.equals(getLeft(), other.getLeft())
-                    && Objects.equals(getMiddle(), other.getMiddle())
-                    && Objects.equals(getRight(), other.getRight());
+        if (o instanceof Triplet) {
+            final Triplet<?, ?, ?> triplet = (Triplet<?, ?, ?>) o;
+            return Objects.equals(getLeft(), triplet.getLeft()) &&
+                    Objects.equals(getMiddle(), triplet.getMiddle()) &&
+                    Objects.equals(getRight(), triplet.getRight());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return (null == getLeft() ? 0 : getLeft().hashCode()) ^
-                (null == getMiddle() ? 0 : getMiddle().hashCode()) ^
-                (null == getRight() ? 0 : getRight().hashCode());
+        return Objects.hash(this.left, this.middle, this.right);
     }
 
     @Override
     public String toString() {
-        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.COMMA + getMiddle() + Symbol.COMMA + getRight() + Symbol.PARENTHESE_RIGHT;
+        return "Triplet{" + "left=" + getLeft() + ", middle=" + getMiddle() + ", right=" + getRight() + '}';
     }
 
-    public String toString(final String format) {
-        return String.format(format, getLeft(), getMiddle(), getRight());
+    @Override
+    public Triplet<L, M, R> clone() {
+        return (Triplet<L, M, R>) super.clone();
     }
 
 }
-

@@ -58,12 +58,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
 
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
-
+    private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
     private long writes = 0L;
     private long writeBytes = 0L;
-    private final long currentQueueLength = 0L;
     private long transferTime = 0L;
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.source;
 
 import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.toolkit.IoKit;
@@ -39,6 +39,9 @@ import java.util.zip.Inflater;
 /**
  * A source that uses <a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a>
  * to decompress data read from another source.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public final class InflaterSource implements Source {
 
@@ -81,8 +84,8 @@ public final class InflaterSource implements Source {
 
             // Decompress the inflater's compressed data into the sink.
             try {
-                Segment tail = sink.writableSegment(1);
-                int toRead = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
+                SectionBuffer tail = sink.writableSegment(1);
+                int toRead = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
                 int bytesInflated = inflater.inflate(tail.data, tail.limit, toRead);
                 if (bytesInflated > 0) {
                     tail.limit += bytesInflated;
@@ -120,7 +123,7 @@ public final class InflaterSource implements Source {
         if (source.exhausted()) return true;
 
         // Assign buffer bytes to the inflater.
-        Segment head = source.getBuffer().head;
+        SectionBuffer head = source.getBuffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);
         return false;

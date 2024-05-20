@@ -28,6 +28,7 @@ package org.miaixz.bus.health;
 import org.miaixz.bus.core.annotation.NotThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.setting.metric.props.Props;
 
 import java.util.Properties;
 
@@ -242,7 +243,7 @@ public final class Config {
      * @return A {@link java.util.Properties} object containing the properties.
      */
     public static Properties readProperties(String fileName) {
-        return new org.miaixz.bus.setting.magic.Properties(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName);
+        return new Props(Symbol.SLASH + Normal.META_INF + "/health/" + fileName);
     }
 
     /**

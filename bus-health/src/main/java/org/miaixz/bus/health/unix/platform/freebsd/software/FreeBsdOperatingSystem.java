@@ -55,10 +55,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
-
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
+    private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {
         FreeBsdLibc.Timeval tv = new FreeBsdLibc.Timeval();

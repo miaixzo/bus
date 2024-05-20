@@ -25,14 +25,14 @@
  ********************************************************************************/
 package org.miaixz.bus.cache.support;
 
-import org.miaixz.bus.cache.annotation.CacheKey;
-import org.miaixz.bus.cache.annotation.Cached;
-import org.miaixz.bus.cache.annotation.CachedGet;
-import org.miaixz.bus.cache.annotation.Invalid;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.cache.magic.MethodHolder;
+import org.miaixz.bus.cache.magic.annotation.CacheKey;
+import org.miaixz.bus.cache.magic.annotation.Cached;
+import org.miaixz.bus.cache.magic.annotation.CachedGet;
+import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;

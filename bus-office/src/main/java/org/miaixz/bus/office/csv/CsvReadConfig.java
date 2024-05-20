@@ -35,14 +35,18 @@ import java.io.Serializable;
  */
 public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 是否跳过空白行,默认true
+     * 指定标题行号，-1表示无标题行
+     */
+    protected long headerLineNo = -1;
+    /**
+     * 是否跳过空白行，默认true
      */
     protected boolean skipEmptyRows = true;
     /**
-     * 每行字段个数不同时是否抛出异常,默认false
+     * 每行字段个数不同时是否抛出异常，默认false
      */
     protected boolean errorOnDifferentFieldCount;
     /**
@@ -57,10 +61,6 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * 每个字段是否去除两边空白符
      */
     protected boolean trimField;
-    /**
-     * 指定标题行号，-1表示无标题行
-     */
-    protected long headerLineNo = -1;
 
     /**
      * 默认配置
@@ -72,14 +72,14 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置是否首行做为标题行,默认false
+     * 设置是否首行做为标题行，默认false
      * 当设置为{@code true}时，默认标题行号是{@link #beginLineNo}，{@code false}为-1，表示无行号
      *
-     * @param containsHeader 是否首行做为标题行,默认false
+     * @param containsHeader 是否首行做为标题行，默认false
      * @return this
      * @see #setHeaderLineNo(long)
      */
-    public CsvReadConfig setContainsHeader(boolean containsHeader) {
+    public CsvReadConfig setContainsHeader(final boolean containsHeader) {
         return setHeaderLineNo(containsHeader ? beginLineNo : -1);
     }
 
@@ -89,29 +89,29 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * @param headerLineNo 标题行行号，-1表示无标题行
      * @return this
      */
-    public CsvReadConfig setHeaderLineNo(long headerLineNo) {
+    public CsvReadConfig setHeaderLineNo(final long headerLineNo) {
         this.headerLineNo = headerLineNo;
         return this;
     }
 
     /**
-     * 设置是否跳过空白行,默认true
+     * 设置是否跳过空白行，默认true
      *
-     * @param skipEmptyRows 是否跳过空白行,默认true
+     * @param skipEmptyRows 是否跳过空白行，默认true
      * @return this
      */
-    public CsvReadConfig setSkipEmptyRows(boolean skipEmptyRows) {
+    public CsvReadConfig setSkipEmptyRows(final boolean skipEmptyRows) {
         this.skipEmptyRows = skipEmptyRows;
         return this;
     }
 
     /**
-     * 设置每行字段个数不同时是否抛出异常,默认false
+     * 设置每行字段个数不同时是否抛出异常，默认false
      *
-     * @param errorOnDifferentFieldCount 每行字段个数不同时是否抛出异常,默认false
+     * @param errorOnDifferentFieldCount 每行字段个数不同时是否抛出异常，默认false
      * @return this
      */
-    public CsvReadConfig setErrorOnDifferentFieldCount(boolean errorOnDifferentFieldCount) {
+    public CsvReadConfig setErrorOnDifferentFieldCount(final boolean errorOnDifferentFieldCount) {
         this.errorOnDifferentFieldCount = errorOnDifferentFieldCount;
         return this;
     }
@@ -122,7 +122,7 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * @param beginLineNo 开始的行号（包括）
      * @return this
      */
-    public CsvReadConfig setBeginLineNo(long beginLineNo) {
+    public CsvReadConfig setBeginLineNo(final long beginLineNo) {
         this.beginLineNo = beginLineNo;
         return this;
     }
@@ -133,7 +133,7 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * @param endLineNo 结束的行号（包括）
      * @return this
      */
-    public CsvReadConfig setEndLineNo(long endLineNo) {
+    public CsvReadConfig setEndLineNo(final long endLineNo) {
         this.endLineNo = endLineNo;
         return this;
     }
@@ -145,7 +145,7 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * @param trimField 去除两边空白符
      * @return this
      */
-    public CsvReadConfig setTrimField(boolean trimField) {
+    public CsvReadConfig setTrimField(final boolean trimField) {
         this.trimField = trimField;
         return this;
     }

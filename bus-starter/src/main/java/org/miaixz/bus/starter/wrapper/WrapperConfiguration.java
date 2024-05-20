@@ -116,7 +116,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                     String packName = handlerType.getPackageName();
                     if (antPathMatcher.matchStart(packName, basePackage)
                             || antPathMatcher.matchStart(basePackage, packName)) {
-                        String[] arrays = StringKit.splitToArray(basePackage, Symbol.C_DOT);
+                        String[] arrays = StringKit.splitToArray(basePackage, Symbol.DOT);
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
                         Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
                                 + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());

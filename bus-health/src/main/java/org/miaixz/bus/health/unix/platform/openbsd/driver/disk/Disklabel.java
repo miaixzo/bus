@@ -26,10 +26,10 @@
 package org.miaixz.bus.health.unix.platform.openbsd.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -52,7 +52,7 @@ public final class Disklabel {
      * @param diskName The disk to fetch partition information from
      * @return A quartet containing the disk's name/label, DUID, size, and a list of partitions
      */
-    public static Quartet<String, String, Long, List<HWPartition>> getDiskParams(String diskName) {
+    public static Tuple getDiskParams(String diskName) {
         // disklabel (requires root) supports 15 configurable partitions, `a' through
         // `p', excluding `c'.
         // The `c' partition describes the entire physical disk.
@@ -116,7 +116,7 @@ public final class Disklabel {
              */
             if (line.trim().indexOf(':') == 1) {
                 // partition table values have a single letter followed by a colon
-                String[] split = RegEx.SPACES.split(line.trim(), 9);
+                String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 9);
                 String name = split[0].substring(0, 1);
                 // get major and minor from stat
                 Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
@@ -131,14 +131,14 @@ public final class Disklabel {
         if (partitions.isEmpty()) {
             return getDiskParamsNoRoot(diskName);
         }
-        return new Quartet<>(label, duid, totalSectors * bytesPerSector, partitions);
+        return new Tuple(label, duid, totalSectors * bytesPerSector, partitions);
     }
 
-    private static Quartet<String, String, Long, List<HWPartition>> getDiskParamsNoRoot(String diskName) {
+    private static Tuple getDiskParamsNoRoot(String diskName) {
         List<HWPartition> partitions = new ArrayList<>();
         for (String line : Executor.runNative("df")) {
             if (line.startsWith("/dev/" + diskName)) {
-                String[] split = RegEx.SPACES.split(line);
+                String[] split = Pattern.SPACES_PATTERN.split(line);
                 String name = split[0].substring(5 + diskName.length());
                 Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                 if (split.length > 5) {
@@ -148,7 +148,7 @@ public final class Disklabel {
                 }
             }
         }
-        return new Quartet<>(Normal.UNKNOWN, Normal.UNKNOWN, 0L, partitions);
+        return new Tuple(Normal.UNKNOWN, Normal.UNKNOWN, 0L, partitions);
     }
 
     private static Pair<Integer, Integer> getMajorMinor(String diskName, String name) {

@@ -39,19 +39,14 @@ import java.util.Arrays;
  */
 public class Base58Encoder implements Encoder<byte[], String> {
 
-    public static final String DEFAULT_ALPHABET = Normal.UPPER_NUMBER + "012345";
+    public static final String DEFAULT_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
     /**
-     * 默认编码器
+     * 编码器
      */
     public static final Base58Encoder ENCODER = new Base58Encoder(DEFAULT_ALPHABET.toCharArray());
-    /**
-     * 编码字母表
-     */
+
     private final char[] alphabet;
-    /**
-     * 编码字符0
-     */
     private final char alphabetZero;
 
     /**
@@ -78,8 +73,8 @@ public class Base58Encoder implements Encoder<byte[], String> {
             ++zeroCount;
         }
         // 将256位编码转换为58位编码
-        data = Arrays.copyOf(data, data.length); // since we modify it in-place
-        final char[] encoded = new char[data.length * 2]; // upper bound
+        data = Arrays.copyOf(data, data.length);
+        final char[] encoded = new char[data.length * 2];
         int outputStart = encoded.length;
         for (int inputStart = zeroCount; inputStart < data.length; ) {
             encoded[--outputStart] = alphabet[Base58Provider.divmod(data, inputStart, 256, 58)];
@@ -97,4 +92,5 @@ public class Base58Encoder implements Encoder<byte[], String> {
         // Return encoded string (including encoded leading zeros).
         return new String(encoded, outputStart, encoded.length - outputStart);
     }
+
 }

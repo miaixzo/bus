@@ -25,18 +25,81 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.date.DateTime;
-import org.miaixz.bus.core.key.CIN;
+import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.data.CIN;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 身份证相关工具类
+ * 身份证相关工具类，参考标准：GB 11643-1999
+ * 标准描述见：<a href="http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E">http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E</a>
+ *
+ * <p>
+ * 本工具并没有对行政区划代码做校验，如有需求，请参阅（2020年12月）：
+ * <a href="http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html">http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html</a>
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CitizenIdKit {
+
+    /**
+     * 台湾身份首字母对应数字
+     */
+    private static final Map<Character, Integer> TW_FIRST_CODE = new HashMap<>();
+
+    static {
+        TW_FIRST_CODE.put('A', 10);
+        TW_FIRST_CODE.put('B', 11);
+        TW_FIRST_CODE.put('C', 12);
+        TW_FIRST_CODE.put('D', 13);
+        TW_FIRST_CODE.put('E', 14);
+        TW_FIRST_CODE.put('F', 15);
+        TW_FIRST_CODE.put('G', 16);
+        TW_FIRST_CODE.put('H', 17);
+        TW_FIRST_CODE.put('J', 18);
+        TW_FIRST_CODE.put('K', 19);
+        TW_FIRST_CODE.put('L', 20);
+        TW_FIRST_CODE.put('M', 21);
+        TW_FIRST_CODE.put('N', 22);
+        TW_FIRST_CODE.put('P', 23);
+        TW_FIRST_CODE.put('Q', 24);
+        TW_FIRST_CODE.put('R', 25);
+        TW_FIRST_CODE.put('S', 26);
+        TW_FIRST_CODE.put('T', 27);
+        TW_FIRST_CODE.put('U', 28);
+        TW_FIRST_CODE.put('V', 29);
+        TW_FIRST_CODE.put('X', 30);
+        TW_FIRST_CODE.put('Y', 31);
+        TW_FIRST_CODE.put('W', 32);
+        TW_FIRST_CODE.put('Z', 33);
+        TW_FIRST_CODE.put('I', 34);
+        TW_FIRST_CODE.put('O', 35);
+    }
+
+    /**
+     * 将15位身份证号码转换为18位
+     * 15位身份证号码遵循GB 11643-1989标准。
+     *
+     * @param idCard 15位身份编码
+     * @return 18位身份编码
+     */
+    public static String convert15To18(final String idCard) {
+        return CIN.convert15To18(idCard);
+    }
+
+    /**
+     * 将18位身份证号码转换为15位
+     *
+     * @param idCard 18位身份编码
+     * @return 15位身份编码
+     */
+    public static String convert18To15(final String idCard) {
+        return CIN.convert18To15(idCard);
+    }
 
     /**
      * 是否有效身份证号，忽略X的大小写
@@ -50,6 +113,7 @@ public class CitizenIdKit {
             return false;
         }
 
+        //idCard = idCard.trim();
         final int length = idCard.length();
         switch (length) {
             case 18:// 18位身份证
@@ -70,7 +134,9 @@ public class CitizenIdKit {
     }
 
     /**
+     * <p>
      * 判断18位身份证的合法性
+     * </p>
      * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。
      * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。
      * <p>
@@ -208,7 +274,7 @@ public class CitizenIdKit {
         if (null == idcard || idcard.length() != 10) {
             return false;
         }
-        final Integer iStart = CIN.AREA_TW_CODE.get(idcard.charAt(0));
+        final Integer iStart = TW_FIRST_CODE.get(idcard.charAt(0));
         if (null == iStart) {
             return false;
         }
@@ -295,18 +361,18 @@ public class CitizenIdKit {
      * @return 年龄
      */
     public static int getAge(final String idcard) {
-        return getAge(idcard, DateKit.date());
+        return getAge(idcard, DateKit.now());
     }
 
     /**
      * 根据身份编号获取指定日期当时的年龄年龄，只支持15或18位身份证号码
      *
      * @param idcard        身份编号
-     * @param dateToCompare 以此日期为界，计算年龄
+     * @param dateToCompare 以此日期为界，计算年龄。
      * @return 年龄
      */
     public static int getAge(final String idcard, final Date dateToCompare) {
-        return DateKit.getAge(getBirthDate(idcard), dateToCompare);
+        return DateKit.age(getBirthDate(idcard), dateToCompare);
     }
 
     /**
@@ -387,7 +453,7 @@ public class CitizenIdKit {
      * @param idcard 身份编码
      * @return 地市级编码
      */
-    public static String getDistrict(final String idcard) {
+    public static String getDistrictCode(final String idcard) {
         return getCIN(idcard).getDistrictCode();
     }
 
@@ -417,7 +483,7 @@ public class CitizenIdKit {
     /**
      * 港澳居民来往内地通行证，俗称：回乡证，通行证号码组成规则：
      * <ul>
-     *     <li>通行证证件号码共11位。第1位为字母，“H”字头签发给香港居民，“M”字头签发给澳门居民</li>
+     *     <li>通行证证件号码共11位。第1位为字母，“H”字头签发给香港居民，“M”字头签发给澳门居民。</li>
      *     <li>第2位至第11位为数字，前8位数字为通行证持有人的终身号，后2位数字表示换证次数，首次发证为00，此后依次递增。</li>
      * </ul>
      * 示例：H12345678、M1234567801
@@ -430,7 +496,7 @@ public class CitizenIdKit {
      * @param idCard 身份证号码
      * @return 是否有效
      */
-    public static boolean isValidHMO(final String idCard) {
+    public static boolean isValidHkMoHomeReturn(final String idCard) {
         if (StringKit.isEmpty(idCard)) {
             return false;
         }

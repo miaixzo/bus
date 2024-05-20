@@ -25,15 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.file;
 
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.io.File;
 import java.io.Serializable;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
- * 文件包装器,扩展文件对象
+ * 文件包装器，扩展文件对象
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,19 +46,20 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     /**
      * 默认编码：UTF-8
      */
-    public static final Charset DEFAULT_CHARSET = org.miaixz.bus.core.lang.Charset.UTF_8;
+    public static final java.nio.charset.Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private static final long serialVersionUID = -1L;
     protected File file;
-    protected Charset charset;
+    protected java.nio.charset.Charset charset;
 
     /**
      * 构造
      *
-     * @param file    文件
-     * @param charset 编码
+     * @param file    文件（非{@code null}）
+     * @param charset 编码，使用 {@link Charset}，传入{@code null}则使用默认编码{@link #DEFAULT_CHARSET}
      */
-    public FileWrapper(File file, Charset charset) {
-        this.file = file;
-        this.charset = charset;
+    public FileWrapper(final File file, final java.nio.charset.Charset charset) {
+        this.file = Assert.notNull(file);
+        this.charset = ObjectKit.defaultIfNull(charset, DEFAULT_CHARSET);
     }
 
     /**
@@ -74,7 +78,7 @@ public class FileWrapper implements Wrapper<File>, Serializable {
      * @param file 文件
      * @return 自身
      */
-    public FileWrapper setFile(File file) {
+    public FileWrapper setFile(final File file) {
         this.file = file;
         return this;
     }
@@ -84,7 +88,7 @@ public class FileWrapper implements Wrapper<File>, Serializable {
      *
      * @return 编码
      */
-    public Charset getCharset() {
+    public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
@@ -94,7 +98,7 @@ public class FileWrapper implements Wrapper<File>, Serializable {
      * @param charset 编码
      * @return 自身
      */
-    public FileWrapper setCharset(Charset charset) {
+    public FileWrapper setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
     }

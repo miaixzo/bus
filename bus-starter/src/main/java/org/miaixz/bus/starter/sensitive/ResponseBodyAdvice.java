@@ -29,16 +29,13 @@ import jakarta.annotation.Resource;
 import org.miaixz.bus.base.advice.BaseAdvice;
 import org.miaixz.bus.base.entity.Message;
 import org.miaixz.bus.base.entity.Result;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.Builder;
-import org.miaixz.bus.sensitive.annotation.Privacy;
-import org.miaixz.bus.sensitive.annotation.Sensitive;
+import org.miaixz.bus.sensitive.magic.annotation.Privacy;
+import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -76,8 +73,8 @@ public class ResponseBodyAdvice extends BaseAdvice
     private static <T> void setValue(T entity, String[] fields, Object[] value) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
-            if (ReflectKit.hasField(entity, field)) {
-                ReflectKit.invokeSetter(entity, field, value[i]);
+            if (FieldKit.hasField(entity.getClass(), field)) {
+                MethodKit.invokeSetter(entity, field, value[i]);
             }
         }
     }
@@ -90,8 +87,8 @@ public class ResponseBodyAdvice extends BaseAdvice
      * @param field  属性数组
      */
     private static <T> Object getValue(T entity, String field) {
-        if (ReflectKit.hasField(entity, field)) {
-            Object object = ReflectKit.invokeGetter(entity, field);
+        if (FieldKit.hasField(entity.getClass(), field)) {
+            Object object = MethodKit.invokeGetter(entity, field);
             return null != object ? object.toString() : null;
         }
         return null;

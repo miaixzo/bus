@@ -28,8 +28,9 @@ package org.miaixz.bus.oauth.metric.slack;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -118,12 +119,9 @@ public class SlackProvider extends DefaultProvider {
             if (object.containsKey("response_metadata")) {
                 JSONArray array = object.getJSONObject("response_metadata").getJSONArray("messages");
                 if (null != array && array.size() > 0) {
-                    // TODO
-
-                    // errorMsg += "; " + String.join(',', array.toArray(new String[0]));
+                    errorMsg += "; " + StringKit.join(",", array.toArray(new String[0]));
                 }
             }
-
             throw new AuthorizedException(errorMsg);
         }
     }

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.entity;
 
-import org.miaixz.bus.core.exception.MapperException;
-import org.miaixz.bus.core.lang.Ansi;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.builder.resolve.EntityResolve;
@@ -74,7 +74,7 @@ public class Property {
     /**
      * 字段转换风格，默认驼峰转下划线
      */
-    private Ansi.Mode mode;
+    private EnumMap.Naming naming;
     /**
      * 处理关键字，默认空，mysql可以设置为 `{0}`, sqlserver 为 [{0}]，{0} 代表的列名
      */
@@ -187,12 +187,12 @@ public class Property {
         this.seqFormat = seqFormat;
     }
 
-    public Ansi.Mode getStyle() {
-        return this.mode == null ? Ansi.Mode.CAMEL : this.mode;
+    public EnumMap.Naming getStyle() {
+        return this.naming == null ? EnumMap.Naming.CAMEL : this.naming;
     }
 
-    public void setStyle(Ansi.Mode mode) {
-        this.mode = mode;
+    public void setStyle(EnumMap.Naming naming) {
+        this.naming = naming;
     }
 
     public String getWrapKeyword() {
@@ -329,7 +329,7 @@ public class Property {
     public void setProperties(Properties properties) {
         if (properties == null) {
             // 默认驼峰
-            this.mode = Ansi.Mode.CAMEL;
+            this.naming = EnumMap.Naming.CAMEL;
             return;
         }
         String IDENTITY = properties.getProperty("IDENTITY");
@@ -385,13 +385,13 @@ public class Property {
         String styleStr = properties.getProperty("mode");
         if (StringKit.isNotEmpty(styleStr)) {
             try {
-                this.mode = Ansi.Mode.valueOf(styleStr);
+                this.naming = EnumMap.Naming.valueOf(styleStr);
             } catch (IllegalArgumentException e) {
                 throw new MapperException(styleStr + "不是合法的Style值!");
             }
         } else {
             // 默认驼峰
-            this.mode = Ansi.Mode.CAMEL;
+            this.naming = EnumMap.Naming.CAMEL;
         }
         // 处理关键字
         String wrapKeyword = properties.getProperty("wrapKeyword");

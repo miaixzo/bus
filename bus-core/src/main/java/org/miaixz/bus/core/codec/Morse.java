@@ -27,6 +27,7 @@ package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.HashMap;
@@ -34,24 +35,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 莫尔斯电码的编码和解码
+ * 莫尔斯电码的编码和解码实现
+ * 参考：<a href="https://github.com/TakWolf/Java-MorseCoder">https://github.com/TakWolf/Java-MorseCoder</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Morse {
 
-    /**
-     * code point -> morse
-     */
-    private static final Map<Integer, String> ALPHABETS = new HashMap<>();
-    /**
-     * morse -> code point
-     */
-    private static final Map<String, Integer> DICTIONARIES = new HashMap<>();
+    private static final Map<Integer, String> ALPHABETS = new HashMap<>(); // code point -> morse
+    private static final Map<String, Integer> DICTIONARIES = new HashMap<>(); // morse -> code point
 
     static {
-        // 字母
+        // Letters
         registerMorse('A', "01");
         registerMorse('B', "1000");
         registerMorse('C', "1010");
@@ -78,49 +74,40 @@ public class Morse {
         registerMorse('X', "1001");
         registerMorse('Y', "1011");
         registerMorse('Z', "1100");
-        // 数字
-        registerMorse(Symbol.C_ZERO, "11111");
-        registerMorse(Symbol.C_ONE, "01111");
-        registerMorse(Symbol.C_TWO, "00111");
-        registerMorse(Symbol.C_THREE, "00011");
-        registerMorse(Symbol.C_FOUR, "00001");
-        registerMorse(Symbol.C_FIVE, "00000");
-        registerMorse(Symbol.C_SIX, "10000");
-        registerMorse(Symbol.C_SEVEN, "11000");
-        registerMorse(Symbol.C_EIGHT, "11100");
-        registerMorse(Symbol.C_NINE, "11110");
-        // 符号
-        registerMorse(Symbol.C_DOT, "010101");
-        registerMorse(Symbol.C_COMMA, "110011");
-        registerMorse(Symbol.C_QUESTION_MARK, "001100");
-        registerMorse(Symbol.C_SINGLE_QUOTE, "011110");
-        registerMorse(Symbol.C_NOT, "101011");
-        registerMorse(Symbol.C_SLASH, "10010");
-        registerMorse(Symbol.C_PARENTHESE_LEFT, "10110");
-        registerMorse(Symbol.C_PARENTHESE_RIGHT, "101101");
-        registerMorse(Symbol.C_AND, "01000");
-        registerMorse(Symbol.C_COLON, "111000");
-        registerMorse(Symbol.C_SEMICOLON, "101010");
-        registerMorse(Symbol.C_EQUAL, "10001");
-        registerMorse(Symbol.C_PLUS, "01010");
-        registerMorse(Symbol.C_MINUS, "100001");
-        registerMorse(Symbol.C_UNDERLINE, "001101");
-        registerMorse(Symbol.C_DOUBLE_QUOTES, "010010");
-        registerMorse(Symbol.C_DOLLAR, "0001001");
-        registerMorse(Symbol.C_AT, "011010");
+        // Numbers
+        registerMorse('0', "11111");
+        registerMorse('1', "01111");
+        registerMorse('2', "00111");
+        registerMorse('3', "00011");
+        registerMorse('4', "00001");
+        registerMorse('5', "00000");
+        registerMorse('6', "10000");
+        registerMorse('7', "11000");
+        registerMorse('8', "11100");
+        registerMorse('9', "11110");
+        // Punctuation
+        registerMorse('.', "010101");
+        registerMorse(',', "110011");
+        registerMorse('?', "001100");
+        registerMorse('\'', "011110");
+        registerMorse('!', "101011");
+        registerMorse('/', "10010");
+        registerMorse('(', "10110");
+        registerMorse(')', "101101");
+        registerMorse('&', "01000");
+        registerMorse(':', "111000");
+        registerMorse(';', "101010");
+        registerMorse('=', "10001");
+        registerMorse('+', "01010");
+        registerMorse('-', "100001");
+        registerMorse('_', "001101");
+        registerMorse('"', "010010");
+        registerMorse('$', "0001001");
+        registerMorse('@', "011010");
     }
 
-    /**
-     * 短标记或小点
-     */
-    private final char dit;
-    /**
-     * 较长的标记或破折号
-     */
-    private final char dah;
-    /**
-     * 分割符号
-     */
+    private final char dit; // short mark or dot
+    private final char dah; // longer mark or dash
     private final char split;
 
     /**
@@ -149,7 +136,7 @@ public class Morse {
      * @param abc  字母和字符
      * @param dict 二进制
      */
-    private static void registerMorse(Character abc, String dict) {
+    private static void registerMorse(final Character abc, final String dict) {
         ALPHABETS.put((int) abc, dict);
         DICTIONARIES.put(dict, (int) abc);
     }
@@ -169,10 +156,10 @@ public class Morse {
         for (int i = 0; i < len; i++) {
             final int codePoint = text.codePointAt(i);
             String word = ALPHABETS.get(codePoint);
-            if (null == word) {
+            if (word == null) {
                 word = Integer.toBinaryString(codePoint);
             }
-            morseBuilder.append(word.replace(Symbol.C_ZERO, dit).replace(Symbol.C_ONE, dah)).append(split);
+            morseBuilder.append(word.replace('0', dit).replace('1', dah)).append(split);
         }
         return morseBuilder.toString();
     }
@@ -189,19 +176,19 @@ public class Morse {
         final char dit = this.dit;
         final char dah = this.dah;
         final char split = this.split;
-        if (false == StringKit.containsOnly(morse, dit, dah, split)) {
+        if (!StringKit.containsOnly(morse, dit, dah, split)) {
             throw new IllegalArgumentException("Incorrect morse.");
         }
-        final List<String> words = StringKit.split(morse, split);
+        final List<String> words = CharsBacker.split(morse, String.valueOf(split));
         final StringBuilder textBuilder = new StringBuilder();
         Integer codePoint;
         for (String word : words) {
             if (StringKit.isEmpty(word)) {
                 continue;
             }
-            word = word.replace(dit, Symbol.C_ZERO).replace(dah, Symbol.C_ONE);
+            word = word.replace(dit, '0').replace(dah, '1');
             codePoint = DICTIONARIES.get(word);
-            if (null == codePoint) {
+            if (codePoint == null) {
                 codePoint = Integer.valueOf(word, 2);
             }
             textBuilder.appendCodePoint(codePoint);

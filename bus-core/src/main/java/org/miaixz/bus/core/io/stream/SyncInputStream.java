@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.io.Progress;
+import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -48,26 +49,26 @@ public class SyncInputStream extends FilterInputStream {
     private volatile boolean asyncFlag = true;
 
     /**
-     * 构造<br>
+     * 构造
      * 如果isAsync为{@code true}，则直接持有原有流，{@code false}，则将流中内容，按照给定length读到{@link ByteArrayInputStream}中备用
      *
      * @param in               数据流
      * @param length           限定长度，-1表示未知长度
      * @param isAsync          是否异步
-     * @param isIgnoreEOFError 是否忽略EOF错误，在Http协议中，对于Transfer-Encoding: Chunked在正常情况下末尾会写入一个Length为0的的chunk标识完整结束<br>
-     *                         如果服务端未遵循这个规范或响应没有正常结束，会报EOF异常，此选项用于是否忽略这个异常。<br>
+     * @param isIgnoreEOFError 是否忽略EOF错误，在Http协议中，对于Transfer-Encoding: Chunked在正常情况下末尾会写入一个Length为0的的chunk标识完整结束
+     *                         如果服务端未遵循这个规范或响应没有正常结束，会报EOF异常，此选项用于是否忽略这个异常。
      */
     public SyncInputStream(final InputStream in, final long length, final boolean isAsync, final boolean isIgnoreEOFError) {
         super(in);
         this.length = length;
         this.isIgnoreEOFError = isIgnoreEOFError;
-        if (false == isAsync) {
+        if (!isAsync) {
             sync();
         }
     }
 
     /**
-     * 是否为EOF异常，包括<br>
+     * 是否为EOF异常，包括
      * <ul>
      *     <li>FileNotFoundException：服务端无返回内容</li>
      *     <li>EOFException：EOF异常</li>
@@ -86,15 +87,16 @@ public class SyncInputStream extends FilterInputStream {
 
     /**
      * 同步数据到内存
+     *
+     * @return this
      */
-    public void sync() {
-        if (false == asyncFlag) {
-            // 已经是同步模式
-            return;
+    public SyncInputStream sync() {
+        if (asyncFlag) {
+            this.in = new ByteArrayInputStream(readBytes());
+            this.asyncFlag = false;
         }
 
-        this.in = new ByteArrayInputStream(readBytes());
-        this.asyncFlag = false;
+        return this;
     }
 
     /**
@@ -103,7 +105,7 @@ public class SyncInputStream extends FilterInputStream {
      * @return bytes
      */
     public byte[] readBytes() {
-        final FastByteOutputStream bytesOut = new FastByteOutputStream(length > 0 ? (int) length : 1024);
+        final FastByteArrayOutputStream bytesOut = new FastByteArrayOutputStream(length > 0 ? (int) length : 1024);
         final long length = copyTo(bytesOut, null);
         return length > 0 ? bytesOut.toByteArray() : new byte[0];
     }
@@ -115,18 +117,18 @@ public class SyncInputStream extends FilterInputStream {
      * @param streamProgress 进度条
      * @return 拷贝长度
      */
-    public long copyTo(final OutputStream out, final Progress streamProgress) {
+    public long copyTo(final OutputStream out, final StreamProgress streamProgress) {
         long copyLength = -1;
         try {
-            copyLength = IoKit.copy(this.in, out, IoKit.DEFAULT_BUFFER_SIZE, this.length, streamProgress);
+            copyLength = IoKit.copy(this.in, out, Normal.DEFAULT_BUFFER_SIZE, this.length, streamProgress);
         } catch (final InternalException e) {
-            if (false == (isIgnoreEOFError && isEOFException(e.getCause()))) {
+            if (!(isIgnoreEOFError && isEOFException(e.getCause()))) {
                 throw e;
             }
             // 忽略读取流中的EOF错误
         } finally {
             // 读取结束
-            IoKit.close(in);
+            IoKit.closeQuietly(in);
         }
         return copyLength;
     }

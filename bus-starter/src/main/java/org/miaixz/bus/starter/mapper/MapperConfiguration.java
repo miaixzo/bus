@@ -95,13 +95,13 @@ public class MapperConfiguration implements InitializingBean {
         } else {
             factory.setPlugins(MybatisPluginBuilder.build(environment));
         }
-        if (StringKit.hasLength(this.properties.getTypeAliasesPackage())) {
+        if (StringKit.isEmptyIfString(this.properties.getTypeAliasesPackage())) {
             factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
         }
         if (this.properties.getTypeAliasesSuperType() != null) {
             factory.setTypeAliasesSuperType(this.properties.getTypeAliasesSuperType());
         }
-        if (StringKit.hasLength(this.properties.getTypeHandlersPackage())) {
+        if (StringKit.isEmptyIfString(this.properties.getTypeHandlersPackage())) {
             factory.setTypeHandlersPackage(this.properties.getTypeHandlersPackage());
         }
         if (!ObjectKit.isEmpty(this.properties.resolveMapperLocations())) {

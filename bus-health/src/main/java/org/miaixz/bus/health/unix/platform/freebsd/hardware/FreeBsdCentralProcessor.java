@@ -29,9 +29,9 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
 
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A CPU
@@ -56,7 +55,7 @@ import java.util.regex.Pattern;
 final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     // Capture the CSV of hex values as group(1), clients should split on ','
-    private static final Pattern CPUMASK = Pattern
+    private static final java.util.regex.Pattern CPUMASK = java.util.regex.Pattern
             .compile(".*<cpu\\s.*mask=\"(\\p{XDigit}+(,\\p{XDigit}+)*)\".*>.*</cpu>.*");
 
     private static final long CPTIME_SIZE;
@@ -190,9 +189,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        final Pattern identifierPattern = Pattern
+        final java.util.regex.Pattern identifierPattern = java.util.regex.Pattern
                 .compile("Origin=\"([^\"]*)\".*Id=(\\S+).*Family=(\\S+).*Model=(\\S+).*Stepping=(\\S+).*");
-        final Pattern featuresPattern = Pattern.compile("Features=(\\S+)<.*");
+        final java.util.regex.Pattern featuresPattern = java.util.regex.Pattern.compile("Features=(\\S+)<.*");
 
         String cpuVendor = Normal.EMPTY;
         String cpuName = BsdSysctlKit.sysctl("hw.model", Normal.EMPTY);
@@ -239,7 +238,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs = parseTopology();
         // Force at least one processor
         if (logProcs.isEmpty()) {
@@ -247,9 +246,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
         Map<Integer, String> dmesg = new HashMap<>();
         // cpu0: <Open Firmware CPU> on cpulist0
-        Pattern normal = Pattern.compile("cpu(\\\\d+): (.+) on .*");
+        java.util.regex.Pattern normal = java.util.regex.Pattern.compile("cpu(\\\\d+): (.+) on .*");
         // CPU 0: ARM Cortex-A53 r0p4 affinity: 0 0
-        Pattern hybrid = Pattern.compile("CPU\\\\s*(\\\\d+): (.+) affinity:.*");
+        java.util.regex.Pattern hybrid = java.util.regex.Pattern.compile("CPU\\\\s*(\\\\d+): (.+) affinity:.*");
         List<String> featureFlags = new ArrayList<>();
         boolean readingFlags = false;
         for (String s : Builder.readFile("/var/run/dmesg.boot")) {
@@ -278,7 +277,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
         List<CentralProcessor.PhysicalProcessor> physProcs = dmesg.isEmpty() ? null : createProcListFromDmesg(logProcs, dmesg);
         List<CentralProcessor.ProcessorCache> caches = getCacheInfoFromLscpu();
-        return new Quartet<>(logProcs, physProcs, caches, featureFlags);
+        return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
     private List<CentralProcessor.ProcessorCache> getCacheInfoFromLscpu() {
@@ -348,7 +347,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         long max = -1L;
         String freqLevels = BsdSysctlKit.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
         // MHz/Watts pairs like: 2501/32000 2187/27125 2000/24000
-        for (String s : RegEx.SPACES.split(freqLevels)) {
+        for (String s : Pattern.SPACES_PATTERN.split(freqLevels)) {
             long freq = Parsing.parseLongOrDefault(s.split("/")[0], -1L);
             if (max < freq) {
                 max = freq;

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.metric.internal.hl7.HL7Charset;
 import org.miaixz.bus.image.metric.internal.hl7.HL7Parser;
 import org.miaixz.bus.image.metric.internal.hl7.HL7Segment;

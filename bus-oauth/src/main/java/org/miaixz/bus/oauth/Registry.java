@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth;
 
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 import org.miaixz.bus.oauth.metric.alipay.AlipayProvider;

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
 
 /**
- * 可变 <code>int</code> 类型
+ * 可变 {@code int} 类型
  *
  * @author Kimi Liu
  * @see Integer
@@ -36,12 +36,12 @@ import org.miaixz.bus.core.toolkit.MathKit;
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private int value;
 
     /**
-     * 构造,默认值0
+     * 构造，默认值0
      */
     public MutableInt() {
 
@@ -115,6 +115,42 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     }
 
     /**
+     * 先加1, 再获取值
+     *
+     * @return +1后的值
+     */
+    public int incrementAndGet() {
+        return ++value;
+    }
+
+    /**
+     * 先获取原来的值, 再加1
+     *
+     * @return 原始值
+     */
+    public int getAndIncrement() {
+        return value++;
+    }
+
+    /**
+     * 先减1, 再获取值
+     *
+     * @return -1后的值
+     */
+    public int decrementAndGet() {
+        return --value;
+    }
+
+    /**
+     * 先获取原来的值, 再减1
+     *
+     * @return 原始值
+     */
+    public int getAndDecrement() {
+        return value--;
+    }
+
+    /**
      * 增加值
      *
      * @param operand 被增加的值
@@ -128,7 +164,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     /**
      * 增加值
      *
-     * @param operand 被增加的值,非空
+     * @param operand 被增加的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -151,7 +187,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     /**
      * 减去值
      *
-     * @param operand 被减的值,非空
+     * @param operand 被减的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -183,18 +219,18 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@link MutableInt}</li>
-     * <li>值相等</li>
+     * 	<li>非空</li>
+     * 	<li>类型为 MutableInt</li>
+     * 	<li>值相等</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>,否则 <code>false</code>
+     * @param obj 比对的对象
+     * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object object) {
-        if (object instanceof MutableInt) {
-            return value == ((MutableInt) object).intValue();
+    public boolean equals(final Object obj) {
+        if (obj instanceof MutableInt) {
+            return value == ((MutableInt) obj).intValue();
         }
         return false;
     }
@@ -207,12 +243,12 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
     /**
      * 比较
      *
-     * @param other 其它 {@link MutableInt} 对象
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @param other 其它 MutableInt 对象
+     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableInt other) {
-        return MathKit.compare(this.value, other.value);
+        return CompareKit.compare(this.value, other.value);
     }
 
     @Override

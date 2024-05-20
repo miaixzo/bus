@@ -29,7 +29,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
@@ -83,18 +83,28 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
 
         // Create map of model, vendor, product, serial, size
         // We'll use Model if available, otherwise Vendor+Product
-        Map<String, Quintet<String, String, String, String, Long>> deviceStringMap = Iostat
+        Map<String, Tuple> deviceStringMap = Iostat
                 .queryDeviceStrings(deviceMap.keySet());
 
         List<HWDiskStore> storeList = new ArrayList<>();
-        for (Entry<String, Quintet<String, String, String, String, Long>> entry : deviceStringMap.entrySet()) {
+        for (Entry<String, Tuple> entry : deviceStringMap.entrySet()) {
             String storeName = entry.getKey();
-            Quintet<String, String, String, String, Long> val = entry.getValue();
-            storeList.add(createStore(storeName, val.getA(), val.getB(), val.getC(), val.getD(), val.getE(),
+            Tuple val = entry.getValue();
+            storeList.add(createStore(storeName, val.get(0), val.get(1), val.get(2), val.get(3), val.get(4),
                     deviceMap.getOrDefault(storeName, Normal.EMPTY), majorMap.getOrDefault(storeName, 0)));
         }
 
         return storeList;
+    }
+
+    private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
+                                                  String serial, long size, String mount, int major) {
+        SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
+                model.isEmpty() ? (vendor + " " + product).trim() : model, serial, size);
+        store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()
+                .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
+        store.updateAttributes();
+        return store;
     }
 
     @Override
@@ -135,16 +145,6 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
-    }
-
-    private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
-                                                  String serial, long size, String mount, int major) {
-        SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
-                model.isEmpty() ? (vendor + " " + product).trim() : model, serial, size);
-        store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()
-                .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
-        store.updateAttributes();
-        return store;
     }
 
     @Override

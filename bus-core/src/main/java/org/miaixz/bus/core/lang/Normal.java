@@ -25,6 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
+import org.miaixz.bus.core.io.file.FileName;
+
+import java.net.URL;
+
 /**
  * 默认常量
  *
@@ -39,7 +43,6 @@ public class Normal {
      * 2.广大程序员的共同节日
      */
     public static final int _1024 = 1024;
-
     /**
      * The number 512
      */
@@ -78,7 +81,7 @@ public class Normal {
     /**
      * The number 8
      */
-    public static final int _8 = 9;
+    public static final int _8 = 8;
 
     /**
      * The number 7
@@ -114,6 +117,11 @@ public class Normal {
      * The number 1
      */
     public static final int _1 = 1;
+
+    /**
+     * The number 0
+     */
+    public static final int _0 = 0;
 
     /**
      * The number -1
@@ -164,6 +172,276 @@ public class Normal {
      * The number -10
      */
     public static final int __10 = -10;
+    /**
+     * The number 65535
+     */
+    public static final int _65535 = 0xFFFF;
+    /**
+     * Reusable Long constant for zero.
+     */
+    public static final Long LONG_ZERO = Long.valueOf(0L);
+
+    /**
+     * Reusable Long constant for one.
+     */
+    public static final Long LONG_ONE = Long.valueOf(1L);
+
+    /**
+     * Reusable Long constant for minus one.
+     */
+    public static final Long LONG_MINUS_ONE = Long.valueOf(-1L);
+
+    /**
+     * Reusable Integer constant for zero.
+     */
+    public static final Integer INTEGER_ZERO = Integer.valueOf(0);
+
+    /**
+     * Reusable Integer constant for one.
+     */
+    public static final Integer INTEGER_ONE = Integer.valueOf(1);
+
+    /**
+     * Reusable Integer constant for two
+     */
+    public static final Integer INTEGER_TWO = Integer.valueOf(2);
+
+    /**
+     * Reusable Integer constant for minus one.
+     */
+    public static final Integer INTEGER_MINUS_ONE = Integer.valueOf(-1);
+
+    /**
+     * Reusable Short constant for zero.
+     */
+    public static final Short SHORT_ZERO = Short.valueOf((short) 0);
+
+    /**
+     * Reusable Short constant for one.
+     */
+    public static final Short SHORT_ONE = Short.valueOf((short) 1);
+
+    /**
+     * Reusable Short constant for minus one.
+     */
+    public static final Short SHORT_MINUS_ONE = Short.valueOf((short) -1);
+
+    /**
+     * Reusable Byte constant for zero.
+     */
+    public static final Byte BYTE_ZERO = Byte.valueOf((byte) 0);
+
+    /**
+     * Reusable Byte constant for one.
+     */
+    public static final Byte BYTE_ONE = Byte.valueOf((byte) 1);
+
+    /**
+     * Reusable Byte constant for minus one.
+     */
+    public static final Byte BYTE_MINUS_ONE = Byte.valueOf((byte) -1);
+
+    /**
+     * Reusable Double constant for zero.
+     */
+    public static final Double DOUBLE_ZERO = Double.valueOf(0.0d);
+
+    /**
+     * Reusable Double constant for one.
+     */
+    public static final Double DOUBLE_ONE = Double.valueOf(1.0d);
+
+    /**
+     * Reusable Double constant for minus one.
+     */
+    public static final Double DOUBLE_MINUS_ONE = Double.valueOf(-1.0d);
+
+    /**
+     * Reusable Float constant for zero.
+     */
+    public static final Float FLOAT_ZERO = Float.valueOf(0.0f);
+
+    /**
+     * Reusable Float constant for one.
+     */
+    public static final Float FLOAT_ONE = Float.valueOf(1.0f);
+
+    /**
+     * Reusable Float constant for minus one.
+     */
+    public static final Float FLOAT_MINUS_ONE = Float.valueOf(-1.0f);
+
+    /**
+     * {@code Object} array.
+     */
+    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+    /**
+     * {@code Class} array.
+     */
+    public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
+
+    /**
+     * {@code String} array.
+     */
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    /**
+     * {@code long} array.
+     */
+    public static final long[] EMPTY_LONG_ARRAY = new long[0];
+
+    /**
+     * {@code Long} array.
+     */
+    public static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
+
+    /**
+     * {@code int} array.
+     */
+    public static final int[] EMPTY_INT_ARRAY = new int[0];
+
+    /**
+     * {@code Integer} array.
+     */
+    public static final Integer[] EMPTY_INTEGER_OBJECT_ARRAY = new Integer[0];
+
+    /**
+     * {@code short} array.
+     */
+    public static final short[] EMPTY_SHORT_ARRAY = new short[0];
+
+    /**
+     * {@code Short} array.
+     */
+    public static final Short[] EMPTY_SHORT_OBJECT_ARRAY = new Short[0];
+
+    /**
+     * {@code byte} array.
+     */
+    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+    /**
+     * {@code Byte} array.
+     */
+    public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
+
+    /**
+     * {@code double} array.
+     */
+    public static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
+
+    /**
+     * {@code Double} array.
+     */
+    public static final Double[] EMPTY_DOUBLE_OBJECT_ARRAY = new Double[0];
+
+    /**
+     * {@code float} array.
+     */
+    public static final float[] EMPTY_FLOAT_ARRAY = new float[0];
+
+    /**
+     * {@code Float} array.
+     */
+    public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];
+
+    /**
+     * {@code boolean} array.
+     */
+    public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
+
+    /**
+     * {@code Boolean} array.
+     */
+    public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
+
+    /**
+     * {@code char} array.
+     */
+    public static final char[] EMPTY_CHAR_ARRAY = new char[0];
+
+    /**
+     * {@code Character} array.
+     */
+    public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
+
+    /**
+     * Bytes per Kilobyte(KB).
+     */
+    public static final long BYTES_PER_KB = _1024;
+
+    /**
+     * Bytes per Megabyte(MB).
+     */
+    public static final long BYTES_PER_MB = BYTES_PER_KB * _1024;
+
+    /**
+     * Bytes per Gigabyte(GB).
+     */
+    public static final long BYTES_PER_GB = BYTES_PER_MB * _1024;
+
+    /**
+     * Bytes per Terabyte(TB).
+     */
+    public static final long BYTES_PER_TB = BYTES_PER_GB * _1024;
+
+    /**
+     * 默认缓存大小 8192
+     */
+    public static final int DEFAULT_BUFFER_SIZE = 2 << 12;
+    /**
+     * 默认中等缓存大小 16384
+     */
+    public static final int DEFAULT_MIDDLE_BUFFER_SIZE = 2 << 13;
+    /**
+     * 默认大缓存大小 32768
+     */
+    public static final int DEFAULT_LARGE_BUFFER_SIZE = 2 << 14;
+
+    /**
+     * 字符串: 数字
+     */
+    public static final String NUMBER = "0123456789";
+
+    /**
+     * 字符串: 大字母
+     */
+    public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    /**
+     * 字符串: 小字母
+     */
+    public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+
+    /**
+     * 字符串: 大字母数字
+     */
+    public static final String UPPER_NUMBER = UPPER + NUMBER;
+
+    /**
+     * 字符串: 小字母数字
+     */
+    public static final String LOWER_NUMBER = LOWER + NUMBER;
+
+    /**
+     * 字符串: 大写字母 + 小写字母
+     */
+    public static final String UPPER_LOWER = UPPER + LOWER;
+
+    /**
+     * 字符串: 小字母数字
+     */
+    public static final String UPPER_LOWER_NUMBER = UPPER_LOWER + NUMBER;
+    /**
+     * 字符串: 小写字母 + 大写字母
+     */
+    public static final String LOWER_UPPER = LOWER + UPPER;
+
+    /**
+     * 字符串: 大字母数字
+     */
+    public static final String LOWER_UPPER_NUMBER = LOWER_UPPER + NUMBER;
 
     /**
      * 字符串:空
@@ -258,7 +536,12 @@ public class Normal {
     /**
      * 元数据: "META-INF"
      */
-    public static final String META_DATA_INF = "META-INF";
+    public static final String META_INF = "META-INF";
+
+    /**
+     * 元数据: "META-INF/services"
+     */
+    public static final String META_INF_SERVICES = "META-INF/services";
 
     /**
      * URL 协议表示文件: "file"
@@ -328,54 +611,37 @@ public class Normal {
     };
 
     /**
-     * 字符串: 数字
+     * <pre>
+     *     byte        1B     1
+     *     kilobyte    1KB    1,024
+     *     megabyte    1MB    1,048,576
+     *     gigabyte    1GB    1,073,741,824
+     *     terabyte    1TB    1,099,511,627,776
+     * </pre>
      */
-    public static final String NUMBER = "0123456789";
-
-    /**
-     * 字符串: 大字母
-     */
-    public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    /**
-     * 字符串: 小字母
-     */
-    public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
-
-    /**
-     * 字符串: 大字母数字
-     */
-    public static final String UPPER_NUMBER = UPPER + NUMBER;
-
-    /**
-     * 字符串: 小字母数字
-     */
-    public static final String LOWER_NUMBER = LOWER + NUMBER;
-
-    /**
-     * 字符串: 大写字母 + 小写字母
-     */
-    public static final String UPPER_LOWER = UPPER + LOWER;
-
-    /**
-     * 字符串: 小字母数字
-     */
-    public static final String UPPER_LOWER_NUMBER = UPPER_LOWER + NUMBER;
-    /**
-     * 字符串: 小写字母 + 大写字母
-     */
-    public static final String LOWER_UPPER = LOWER + UPPER;
-
-    /**
-     * 字符串: 大字母数字
-     */
-    public static final String LOWER_UPPER_NUMBER = LOWER_UPPER + NUMBER;
+    public static final String[] CAPACITY_NAMES = new String[]{
+            "B", "KB", "MB", "GB", "TB", "PB", "EB"
+    };
 
     /**
      * 七色
      */
     public static final String[] COLOR = {
             "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫"
+    };
+
+    /**
+     * 简体中文单位
+     */
+    public static final String[] SIMPLE_UNITS = {
+            "", "十", "百", "千"
+    };
+
+    /**
+     * 繁体中文单位
+     */
+    public static final String[] TRADITIONAL_UNITS = {
+            "", "拾", "佰", "仟"
     };
 
     /**
@@ -397,20 +663,6 @@ public class Normal {
      */
     public static final String[] TRADITIONAL_DIGITS = {
             "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"
-    };
-
-    /**
-     * 简体中文单位
-     */
-    public static final String[] SIMPLE_UNITS = {
-            "", "十", "百", "千"
-    };
-
-    /**
-     * 繁体中文单位
-     */
-    public static final String[] TRADITIONAL_UNITS = {
-            "", "拾", "佰", "仟"
     };
 
     /**
@@ -456,14 +708,16 @@ public class Normal {
      * 表示为真的字符串
      */
     public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對", "√"
+            "true", "t", "yes", "y", "ok", "1", "on", "是", "真", "正确",
+            "对", "對", "√"
     };
 
     /**
      * 表示为假的字符串
      */
     public static final String[] FALSE_ARRAY = {
-            "false", "no", "n", "f", "0", "off", "否", "错", "假", "錯", "×"
+            "false", "no", "n", "f", "0", "off", "否", "错", "錯", "假",
+            "×"
     };
 
     /**
@@ -1059,227 +1313,71 @@ public class Normal {
             {255, 255, 0}, {255, 255, 51}, {255, 255, 102}, {255, 255, 153}, {255, 255, 204}, {255, 255, 255}
     };
 
-    /**
-     * Reusable Long constant for zero.
-     */
-    public static final Long LONG_ZERO = Long.valueOf(0L);
 
     /**
-     * Reusable Long constant for one.
+     * 提供的URL是否为文件
+     * 文件协议包括"file", "vfsfile" 或 "vfs".
+     *
+     * @param url {@link URL}
+     * @return 是否为文件
      */
-    public static final Long LONG_ONE = Long.valueOf(1L);
+    public static boolean isFileOrVfsURL(final URL url) {
+        Assert.notNull(url, "URL must be not null");
+        return isFileURL(url) || isVfsURL(url);
+    }
 
     /**
-     * Reusable Long constant for minus one.
+     * 提供的URL是否为文件
+     * 文件协议包括"file".
+     *
+     * @param url {@link URL}
+     * @return 是否为文件
      */
-    public static final Long LONG_MINUS_ONE = Long.valueOf(-1L);
+    public static boolean isFileURL(final URL url) {
+        Assert.notNull(url, "URL must be not null");
+        final String protocol = url.getProtocol();
+        return URL_PROTOCOL_FILE.equals(protocol);
+    }
 
     /**
-     * Reusable Integer constant for zero.
+     * 提供的URL是否为文件
+     * 文件协议包括"vfsfile" 或 "vfs".
+     *
+     * @param url {@link URL}
+     * @return 是否为文件
      */
-    public static final Integer INTEGER_ZERO = Integer.valueOf(0);
+    public static boolean isVfsURL(final URL url) {
+        Assert.notNull(url, "URL must be not null");
+        final String protocol = url.getProtocol();
+        return (URL_PROTOCOL_VFSFILE.equals(protocol) ||
+                URL_PROTOCOL_VFS.equals(protocol));
+    }
 
     /**
-     * Reusable Integer constant for one.
+     * 提供的URL是否为jar包URL 协议包括： "jar", "zip", "vfszip" 或 "wsjar".
+     *
+     * @param url {@link URL}
+     * @return 是否为jar包URL
      */
-    public static final Integer INTEGER_ONE = Integer.valueOf(1);
+    public static boolean isJarURL(final URL url) {
+        Assert.notNull(url, "URL must be not null");
+        final String protocol = url.getProtocol();
+        return (URL_PROTOCOL_JAR.equals(protocol) ||
+                URL_PROTOCOL_ZIP.equals(protocol) ||
+                URL_PROTOCOL_VFSZIP.equals(protocol) ||
+                URL_PROTOCOL_WSJAR.equals(protocol));
+    }
 
     /**
-     * Reusable Integer constant for two
+     * 提供的URL是否为Jar文件URL 判断依据为file协议且扩展名为.jar
+     *
+     * @param url the URL to check
+     * @return whether the URL has been identified as a JAR file URL
      */
-    public static final Integer INTEGER_TWO = Integer.valueOf(2);
-
-    /**
-     * Reusable Integer constant for minus one.
-     */
-    public static final Integer INTEGER_MINUS_ONE = Integer.valueOf(-1);
-
-    /**
-     * Reusable Short constant for zero.
-     */
-    public static final Short SHORT_ZERO = Short.valueOf((short) 0);
-
-    /**
-     * Reusable Short constant for one.
-     */
-    public static final Short SHORT_ONE = Short.valueOf((short) 1);
-
-    /**
-     * Reusable Short constant for minus one.
-     */
-    public static final Short SHORT_MINUS_ONE = Short.valueOf((short) -1);
-
-    /**
-     * Reusable Byte constant for zero.
-     */
-    public static final Byte BYTE_ZERO = Byte.valueOf((byte) 0);
-
-    /**
-     * Reusable Byte constant for one.
-     */
-    public static final Byte BYTE_ONE = Byte.valueOf((byte) 1);
-
-    /**
-     * Reusable Byte constant for minus one.
-     */
-    public static final Byte BYTE_MINUS_ONE = Byte.valueOf((byte) -1);
-
-    /**
-     * Reusable Double constant for zero.
-     */
-    public static final Double DOUBLE_ZERO = Double.valueOf(0.0d);
-
-    /**
-     * Reusable Double constant for one.
-     */
-    public static final Double DOUBLE_ONE = Double.valueOf(1.0d);
-
-    /**
-     * Reusable Double constant for minus one.
-     */
-    public static final Double DOUBLE_MINUS_ONE = Double.valueOf(-1.0d);
-
-    /**
-     * Reusable Float constant for zero.
-     */
-    public static final Float FLOAT_ZERO = Float.valueOf(0.0f);
-
-    /**
-     * Reusable Float constant for one.
-     */
-    public static final Float FLOAT_ONE = Float.valueOf(1.0f);
-
-    /**
-     * Reusable Float constant for minus one.
-     */
-    public static final Float FLOAT_MINUS_ONE = Float.valueOf(-1.0f);
-
-    /**
-     * {@code Object} array.
-     */
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-
-    /**
-     * {@code Class} array.
-     */
-    public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
-
-    /**
-     * {@code String} array.
-     */
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-    /**
-     * {@code long} array.
-     */
-    public static final long[] EMPTY_LONG_ARRAY = new long[0];
-
-    /**
-     * {@code Long} array.
-     */
-    public static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
-
-    /**
-     * {@code int} array.
-     */
-    public static final int[] EMPTY_INT_ARRAY = new int[0];
-
-    /**
-     * {@code Integer} array.
-     */
-    public static final Integer[] EMPTY_INTEGER_OBJECT_ARRAY = new Integer[0];
-
-    /**
-     * {@code short} array.
-     */
-    public static final short[] EMPTY_SHORT_ARRAY = new short[0];
-
-    /**
-     * {@code Short} array.
-     */
-    public static final Short[] EMPTY_SHORT_OBJECT_ARRAY = new Short[0];
-
-    /**
-     * {@code byte} array.
-     */
-    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-
-    /**
-     * {@code Byte} array.
-     */
-    public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
-
-    /**
-     * {@code double} array.
-     */
-    public static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
-
-    /**
-     * {@code Double} array.
-     */
-    public static final Double[] EMPTY_DOUBLE_OBJECT_ARRAY = new Double[0];
-
-    /**
-     * {@code float} array.
-     */
-    public static final float[] EMPTY_FLOAT_ARRAY = new float[0];
-
-    /**
-     * {@code Float} array.
-     */
-    public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];
-
-    /**
-     * {@code boolean} array.
-     */
-    public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
-
-    /**
-     * {@code Boolean} array.
-     */
-    public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
-
-    /**
-     * {@code char} array.
-     */
-    public static final char[] EMPTY_CHAR_ARRAY = new char[0];
-
-    /**
-     * {@code Character} array.
-     */
-    public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
-
-    /**
-     * Bytes per Kilobyte(KB).
-     */
-    public static final long BYTES_PER_KB = _1024;
-
-    /**
-     * Bytes per Megabyte(MB).
-     */
-    public static final long BYTES_PER_MB = BYTES_PER_KB * _1024;
-
-    /**
-     * Bytes per Gigabyte(GB).
-     */
-    public static final long BYTES_PER_GB = BYTES_PER_MB * _1024;
-
-    /**
-     * Bytes per Terabyte(TB).
-     */
-    public static final long BYTES_PER_TB = BYTES_PER_GB * _1024;
-
-    /**
-     * <pre>
-     *     byte        1B     1
-     *     kilobyte    1KB    1,024
-     *     megabyte    1MB    1,048,576
-     *     gigabyte    1GB    1,073,741,824
-     *     terabyte    1TB    1,099,511,627,776
-     * </pre>
-     */
-    public static final String[] CAPACITY_NAMES = new String[]{
-            "B", "KB", "MB", "GB", "TB", "PB", "EB"
-    };
+    public static boolean isJarFileURL(final URL url) {
+        Assert.notNull(url, "URL must be not null");
+        return (URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
+                url.getPath().toLowerCase().endsWith(FileName.EXT_JAR));
+    }
 
 }

@@ -27,6 +27,7 @@ package org.miaixz.bus.sensitive;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.dfa.WordTree;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.core.toolkit.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -182,7 +183,7 @@ public final class Builder {
      * @param isAsync        是否异步初始化
      * @param separator      分隔符
      */
-    public static void init(String sensitiveWords, char separator, boolean isAsync) {
+    public static void init(String sensitiveWords, String separator, boolean isAsync) {
         if (StringKit.isNotBlank(sensitiveWords)) {
             init(StringKit.split(sensitiveWords, separator), isAsync);
         }
@@ -195,7 +196,7 @@ public final class Builder {
      * @param isAsync        是否异步初始化
      */
     public static void init(String sensitiveWords, boolean isAsync) {
-        init(sensitiveWords, Symbol.C_COMMA, isAsync);
+        init(sensitiveWords, Symbol.COMMA, isAsync);
     }
 
     /**

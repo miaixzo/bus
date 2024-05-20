@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Engine extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<Engine> ENGINES = CollKit.newArrayList(
+    public static final List<Engine> ENGINES = ListKit.of(
             new Engine("Trident", "trident"),
             new Engine("Webkit", "webkit"),
             new Engine("Chrome", "chrome"),

@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -79,13 +79,13 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         Map<String, Triplet<String, String, Long>> diskInfoMap = GeomDiskList.queryDisks();
 
         // Get list of disks from sysctl
-        List<String> devices = Arrays.asList(RegEx.SPACES.split(BsdSysctlKit.sysctl("kern.disks", Normal.EMPTY)));
+        List<String> devices = Arrays.asList(Pattern.SPACES_PATTERN.split(BsdSysctlKit.sysctl("kern.disks", Normal.EMPTY)));
 
         // Run iostat -Ix to enumerate disks by name and get kb r/w
         List<String> iostat = Executor.runNative("iostat -Ix");
         long now = System.currentTimeMillis();
         for (String line : iostat) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length > 6 && devices.contains(split[0])) {
                 Triplet<String, String, Long> storeInfo = diskInfoMap.get(split[0]);
                 FreeBsdHWDiskStore store = (storeInfo == null)
@@ -156,7 +156,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         long now = System.currentTimeMillis();
         boolean diskFound = false;
         for (String line : output) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length < 7 || !split[0].equals(getName())) {
                 continue;
             }

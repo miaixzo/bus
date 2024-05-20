@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropertyDesc;
+import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.map.CaseInsensitiveMap;
-import org.miaixz.bus.core.map.MapWrapper;
 import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
@@ -59,9 +58,8 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public MapToBeanCopier(Map<?, ?> source, T target, Type targetType, CopyOptions copyOptions) {
+    public MapToBeanCopier(final Map<?, ?> source, final T target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
-
         // 针对MapWrapper特殊处理，提供的Map包装了忽略大小写的Map，则默认转Bean的时候也忽略大小写，如JSONObject
         if (source instanceof MapWrapper) {
             final Map<?, ?> raw = ((MapWrapper<?, ?>) source).getRaw();
@@ -82,7 +80,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropertyDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
         this.source.forEach((sKey, sValue) -> {
             if (null == sKey) {
@@ -102,15 +100,15 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
 
             // 检查目标字段可写性
             // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
-            final PropertyDesc tDesc = findPropDesc(targetPropDescMap, sFieldName);
-            if (null == tDesc || false == tDesc.isWritable(this.copyOptions.transientSupport)) {
+            final PropDesc tDesc = this.copyOptions.findPropDesc(targetPropDescMap, sFieldName);
+            if (null == tDesc || !tDesc.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;
             }
 
             Object newValue = entry.getValue();
             // 检查目标是否过滤属性
-            if (false == copyOptions.testPropertyFilter(tDesc.getField(), newValue)) {
+            if (!copyOptions.testPropertyFilter(tDesc.getField(), newValue)) {
                 return;
             }
 
@@ -122,26 +120,6 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
             tDesc.setValue(this.target, newValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
         });
         return this.target;
-    }
-
-    /**
-     * 查找Map对应Bean的名称
-     * 尝试原名称、转驼峰名称、isXxx去掉is的名称
-     *
-     * @param map 目标bean的属性描述Map
-     * @param key 键或字段名
-     * @return {@link PropertyDesc}
-     */
-    private PropertyDesc findPropDesc(final Map<String, PropertyDesc> map, String key) {
-        PropertyDesc propDesc = map.get(key);
-        if (null != propDesc) {
-            return propDesc;
-        }
-
-        // 转驼峰尝试查找
-        key = StringKit.toCamelCase(key);
-        propDesc = map.get(key);
-        return propDesc;
     }
 
 }

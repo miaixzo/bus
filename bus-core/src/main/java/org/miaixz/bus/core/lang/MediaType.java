@@ -28,7 +28,6 @@ package org.miaixz.bus.core.lang;
 import lombok.Data;
 import org.miaixz.bus.core.toolkit.MapKit;
 
-import java.util.Locale;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -293,15 +292,15 @@ public class MediaType {
     /**
      * "multipart/related;type=application/dicom"
      */
-    public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
+    public static final String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
     public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE =
             new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
 
     /**
      * "multipart/related;type=\"application/dicom+xml\""
      */
-    public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
-    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
+    public static final String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
+    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
             new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
 
     /**

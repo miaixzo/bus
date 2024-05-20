@@ -45,6 +45,11 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
      */
     PowrProf INSTANCE = Native.load("PowrProf", PowrProf.class);
 
+    enum BATTERY_QUERY_INFORMATION_LEVEL {
+        BatteryInformation, BatteryGranularityInformation, BatteryTemperature, BatteryEstimatedTime, BatteryDeviceName,
+        BatteryManufactureDate, BatteryManufactureName, BatteryUniqueID, BatterySerialNumber
+    }
+
     /**
      * Contains information about the current state of the system battery.
      */
@@ -112,11 +117,6 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         public void close() {
             Builder.freeMemory(getPointer());
         }
-    }
-
-    enum BATTERY_QUERY_INFORMATION_LEVEL {
-        BatteryInformation, BatteryGranularityInformation, BatteryTemperature, BatteryEstimatedTime, BatteryDeviceName,
-        BatteryManufactureDate, BatteryManufactureName, BatteryUniqueID, BatterySerialNumber
     }
 
     @FieldOrder({"Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",

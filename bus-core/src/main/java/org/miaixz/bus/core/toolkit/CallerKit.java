@@ -25,13 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.caller.Caller;
-import org.miaixz.bus.core.lang.caller.SecurityCaller;
 import org.miaixz.bus.core.lang.caller.StackTraceCaller;
 
 /**
- * 调用者 可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
+ * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,24 +57,24 @@ public class CallerKit {
      * @return 调用者的调用者
      */
     public static Class<?> getCallers() {
-        return INSTANCE.getCallers();
+        return INSTANCE.getCallerCaller();
     }
 
     /**
-     * 获得调用者,指定第几级调用者
+     * 获得调用者，指定第几级调用者
      * 调用者层级关系：
      *
      * <pre>
-     * 0 {@link CallerKit}
-     * 1 调用{@link CallerKit}中方法的类
+     * 0 CallerKit
+     * 1 调用CallerKit中方法的类
      * 2 调用者的调用者
      * ...
      * </pre>
      *
-     * @param depth 层级 0表示{@link CallerKit}本身,1表示调用{@link CallerKit}的类,2表示调用者的调用者,依次类推
+     * @param depth 层级。0表示本身，1表示调用CallerKit的类，2表示调用者的调用者，依次类推
      * @return 第几级调用者
      */
-    public static Class<?> getCaller(int depth) {
+    public static Class<?> getCaller(final int depth) {
         return INSTANCE.getCaller(depth);
     }
 
@@ -86,7 +84,7 @@ public class CallerKit {
      * @param clazz 调用者类
      * @return 是否被调用
      */
-    public static boolean isCalledBy(Class<?> clazz) {
+    public static boolean isCalledBy(final Class<?> clazz) {
         return INSTANCE.isCalledBy(clazz);
     }
 
@@ -96,14 +94,14 @@ public class CallerKit {
      * @param isFullName 是否返回全名，全名包括方法所在类的全路径名
      * @return 调用此方法的方法名
      */
-    public static String getCallerMethodName(boolean isFullName) {
+    public static String getCallerMethodName(final boolean isFullName) {
         final StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[2];
         final String methodName = stackTraceElement.getMethodName();
-        if (false == isFullName) {
+        if (!isFullName) {
             return methodName;
         }
 
-        return stackTraceElement.getClassName() + Symbol.DOT + methodName;
+        return stackTraceElement.getClassName() + "." + methodName;
     }
 
     /**
@@ -112,11 +110,7 @@ public class CallerKit {
      * @return {@link Caller}实现
      */
     private static Caller tryCreateCaller() {
-        try {
-            return new SecurityCaller();
-        } catch (Throwable e) {
-            return new StackTraceCaller();
-        }
+        return new StackTraceCaller();
     }
 
 }

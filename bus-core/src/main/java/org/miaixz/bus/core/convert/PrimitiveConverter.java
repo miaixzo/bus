@@ -25,15 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.function.Function;
 
 /**
- * 原始类型转换器<br>
- * 支持类型为：<br>
+ * 原始类型转换器
+ * 支持类型为：
  * <ul>
  * 		<li>{@code byte}</li>
  * 		<li>{@code short}</li>
@@ -54,29 +54,38 @@ public class PrimitiveConverter extends AbstractConverter {
      * 单例对象
      */
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * 构造
+     *
+     * @throws IllegalArgumentException 传入的转换类型非原始类型时抛出
+     */
+    public PrimitiveConverter() {
+
+    }
 
     /**
      * 将指定值转换为原始类型的值
      *
      * @param value          值
      * @param primitiveClass 原始类型
-     * @param func           当无法直接转换时，转为字符串后再转换的函数
+     * @param toStringFunc   当无法直接转换时，转为字符串后再转换的函数
      * @return 转换结果
      */
-    protected static Object convert(final Object value, final Class<?> primitiveClass, final Function<Object, String> func) {
+    protected static Object convert(final Object value, final Class<?> primitiveClass, final Function<Object, String> toStringFunc) {
         if (byte.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Byte.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Byte.class, toStringFunc), 0);
         } else if (short.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Short.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Short.class, toStringFunc), 0);
         } else if (int.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Integer.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Integer.class, toStringFunc), 0);
         } else if (long.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Long.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Long.class, toStringFunc), 0);
         } else if (float.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Float.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Float.class, toStringFunc), 0);
         } else if (double.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Double.class, func), 0);
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Double.class, toStringFunc), 0);
         } else if (char.class == primitiveClass) {
             return Convert.convert(Character.class, value);
         } else if (boolean.class == primitiveClass) {

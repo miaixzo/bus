@@ -27,19 +27,20 @@ package org.miaixz.bus.core.codec.binary.provider;
 
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
+
+import java.io.Serializable;
 
 /**
  * Base16（Hex）编码解码器
- * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）
- * 例如十进制数57，在二进制写作111001，在16进制写作39
+ * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。
+ * 例如十进制数57，在二进制写作111001，在16进制写作39。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]> {
+public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]>, Serializable {
 
     /**
      * 编码解码器：小写
@@ -49,7 +50,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * 编码解码器：大写
      */
     public static final Base16Provider CODEC_UPPER = new Base16Provider(false);
-
+    private static final long serialVersionUID = -1L;
     private final char[] alphabets;
 
     /**
@@ -58,7 +59,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param lowerCase 是否小写
      */
     public Base16Provider(final boolean lowerCase) {
-        this.alphabets = lowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER;
+        this.alphabets = (lowerCase ? "0123456789abcdef" : "0123456789ABCDEF").toCharArray();
     }
 
     /**
@@ -80,7 +81,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     @Override
     public char[] encode(final byte[] data) {
         final int len = data.length;
-        final char[] out = new char[len << 1];// len*2
+        final char[] out = new char[len << 1];//len*2
         // two characters from the hex value.
         for (int i = 0, j = 0; i < len; i++) {
             out[j++] = hexDigit(data[i] >> 4);// 高位
@@ -123,7 +124,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * 转换的字符串如果u后不足4位，则前面用0填充，例如：
      *
      * <pre>
-     * '你' =》'\u4f60'
+     * 你 = &#92;u4f60
      * </pre>
      *
      * @param ch char值
@@ -144,9 +145,9 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param b       byte
      */
     public void appendHex(final StringBuilder builder, final byte b) {
-        // 高位
+        //高位
         builder.append(hexDigit(b >> 4));
-        // 低位
+        //低位
         builder.append(hexDigit(b));
     }
 
@@ -154,7 +155,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * 将byte值转为16进制
      *
      * @param b byte
-     * @return the char
+     * @return hex char
      */
     public char hexDigit(final int b) {
         return alphabets[b & 0x0f];

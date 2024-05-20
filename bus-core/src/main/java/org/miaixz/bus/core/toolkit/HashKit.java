@@ -25,7 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.codec.No128;
+import org.miaixz.bus.core.codec.hash.CityHash;
+import org.miaixz.bus.core.codec.hash.MurmurHash;
+import org.miaixz.bus.core.codec.hash.metro.MetroHash128;
+import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 
 /**
  * Hash算法大全
@@ -43,7 +47,7 @@ public class HashKit {
      * @param prime 一个质数
      * @return hash结果
      */
-    public static int additiveHash(String key, int prime) {
+    public static int additiveHash(final String key, final int prime) {
         int hash, i;
         for (hash = key.length(), i = 0; i < key.length(); i++) {
             hash += key.charAt(i);
@@ -58,7 +62,7 @@ public class HashKit {
      * @param prime 质数
      * @return hash值
      */
-    public static int rotatingHash(String key, int prime) {
+    public static int rotatingHash(final String key, final int prime) {
         int hash, i;
         for (hash = key.length(), i = 0; i < key.length(); ++i) {
             hash = (hash << 4) ^ (hash >> 28) ^ key.charAt(i);
@@ -76,7 +80,7 @@ public class HashKit {
      * @param key 输入字符串
      * @return 输出hash值
      */
-    public static int oneByOneHash(String key) {
+    public static int oneByOneHash(final String key) {
         int hash, i;
         for (hash = 0, i = 0; i < key.length(); ++i) {
             hash += key.charAt(i);
@@ -96,7 +100,7 @@ public class HashKit {
      * @param key 输入字节数组
      * @return 结果hash
      */
-    public static int bernstein(String key) {
+    public static int bernstein(final String key) {
         int hash = 0;
         int i;
         for (i = 0; i < key.length(); ++i) {
@@ -113,12 +117,14 @@ public class HashKit {
      * @param tab  tab
      * @return hash值
      */
-    public static int universal(char[] key, int mask, int[] tab) {
-        int hash = key.length, i, len = key.length;
+    public static int universal(final char[] key, final int mask, final int[] tab) {
+        int hash = key.length;
+        int i;
+        final int len = key.length;
         for (i = 0; i < (len << 3); i += 8) {
-            char k = key[i >> 3];
+            final char k = key[i >> 3];
             if ((k & 0x01) == 0) {
-                hash ^= tab[i + 0];
+                hash ^= tab[i];
             }
             if ((k & 0x02) == 0) {
                 hash ^= tab[i + 1];
@@ -153,7 +159,7 @@ public class HashKit {
      * @param tab  tab
      * @return hash值
      */
-    public static int zobrist(char[] key, int mask, int[][] tab) {
+    public static int zobrist(final char[] key, final int mask, final int[][] tab) {
         int hash, i;
         for (hash = key.length, i = 0; i < key.length; ++i) {
             hash ^= tab[i][key[i]];
@@ -167,10 +173,10 @@ public class HashKit {
      * @param data 数组
      * @return hash结果
      */
-    public static int fnvHash(byte[] data) {
+    public static int fnvHash(final byte[] data) {
         final int p = 16777619;
         int hash = (int) 2166136261L;
-        for (byte b : data) {
+        for (final byte b : data) {
             hash = (hash ^ b) * p;
         }
         hash += hash << 13;
@@ -178,7 +184,7 @@ public class HashKit {
         hash += hash << 3;
         hash ^= hash >> 17;
         hash += hash << 5;
-        return hash;
+        return Math.abs(hash);
     }
 
     /**
@@ -187,7 +193,7 @@ public class HashKit {
      * @param data 字符串
      * @return hash结果
      */
-    public static int fnvHash(String data) {
+    public static int fnvHash(final String data) {
         final int p = 16777619;
         int hash = (int) 2166136261L;
         for (int i = 0; i < data.length(); i++) {
@@ -198,11 +204,11 @@ public class HashKit {
         hash += hash << 3;
         hash ^= hash >> 17;
         hash += hash << 5;
-        return hash;
+        return Math.abs(hash);
     }
 
     /**
-     * Thomas Wang的算法,整数hash
+     * Thomas Wang的算法，整数hash
      *
      * @param key 整数
      * @return hash值
@@ -213,7 +219,7 @@ public class HashKit {
         key += (key << 3);
         key ^= (key >>> 6);
         key += ~(key << 11);
-        key ^= (key >>> Normal._16);
+        key ^= (key >>> 16);
         return key;
     }
 
@@ -223,8 +229,8 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int rsHash(String text) {
-        int b = 378551;
+    public static int rsHash(final String text) {
+        final int b = 378551;
         int a = 63689;
         int hash = 0;
 
@@ -242,7 +248,7 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int jsHash(String text) {
+    public static int jsHash(final String text) {
         int hash = 1315423911;
 
         for (int i = 0; i < text.length(); i++) {
@@ -258,13 +264,13 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int pjwHash(String text) {
-        int bitsInUnsignedInt = Normal._32;
-        int threeQuarters = (bitsInUnsignedInt * 3) / 4;
-        int oneEighth = bitsInUnsignedInt / 8;
-        int highBits = 0xFFFFFFFF << (bitsInUnsignedInt - oneEighth);
+    public static int pjwHash(final String text) {
+        final int bitsInUnsignedInt = 32;
+        final int threeQuarters = (bitsInUnsignedInt * 3) / 4;
+        final int oneEighth = bitsInUnsignedInt / 8;
+        final int highBits = 0xFFFFFFFF << (bitsInUnsignedInt - oneEighth);
         int hash = 0;
-        int test = 0;
+        int test;
 
         for (int i = 0; i < text.length(); i++) {
             hash = (hash << oneEighth) + text.charAt(i);
@@ -283,9 +289,9 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int elfHash(String text) {
+    public static int elfHash(final String text) {
         int hash = 0;
-        int x = 0;
+        int x;
 
         for (int i = 0; i < text.length(); i++) {
             hash = (hash << 4) + text.charAt(i);
@@ -304,8 +310,8 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int bkdrHash(String text) {
-        int seed = 131; // 31 131 1313 13131 131313 etc..
+    public static int bkdrHash(final String text) {
+        final int seed = 131; // 31 131 1313 13131 131313 etc..
         int hash = 0;
 
         for (int i = 0; i < text.length(); i++) {
@@ -321,11 +327,11 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int sdbmHash(String text) {
+    public static int sdbmHash(final String text) {
         int hash = 0;
 
         for (int i = 0; i < text.length(); i++) {
-            hash = text.charAt(i) + (hash << 6) + (hash << Normal._16) - hash;
+            hash = text.charAt(i) + (hash << 6) + (hash << 16) - hash;
         }
 
         return hash & 0x7FFFFFFF;
@@ -337,7 +343,7 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int djbHash(String text) {
+    public static int djbHash(final String text) {
         int hash = 5381;
 
         for (int i = 0; i < text.length(); i++) {
@@ -353,7 +359,7 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int dekHash(String text) {
+    public static int dekHash(final String text) {
         int hash = text.length();
 
         for (int i = 0; i < text.length(); i++) {
@@ -369,14 +375,13 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int apHash(String text) {
+    public static int apHash(final String text) {
         int hash = 0;
 
         for (int i = 0; i < text.length(); i++) {
             hash ^= ((i & 1) == 0) ? ((hash << 7) ^ text.charAt(i) ^ (hash >> 3)) : (~((hash << 11) ^ text.charAt(i) ^ (hash >> 5)));
         }
 
-        // return (hash & 0x7FFFFFFF);
         return hash;
     }
 
@@ -386,15 +391,15 @@ public class HashKit {
      * @param text 字符串
      * @return Hash值
      */
-    public static long tianlHash(String text) {
-        long hash = 0;
+    public static long tianlHash(final String text) {
+        long hash;
 
-        int iLength = text.length();
+        final int iLength = text.length();
         if (iLength == 0) {
             return 0;
         }
 
-        if (iLength <= Normal._256) {
+        if (iLength <= 256) {
             hash = 16777216L * (iLength - 1);
         } else {
             hash = 4278190080L;
@@ -408,7 +413,7 @@ public class HashKit {
             for (i = 1; i <= iLength; i++) {
                 ucChar = text.charAt(i - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
-                    ucChar = (char) (ucChar + Normal._32);
+                    ucChar = (char) (ucChar + 32);
                 }
                 hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
@@ -416,7 +421,7 @@ public class HashKit {
             for (i = 1; i <= 96; i++) {
                 ucChar = text.charAt(i + iLength - 96 - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
-                    ucChar = (char) (ucChar + Normal._32);
+                    ucChar = (char) (ucChar + 32);
                 }
                 hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
@@ -433,10 +438,10 @@ public class HashKit {
      * @param text 字符串
      * @return hash值
      */
-    public static int javaDefaultHash(String text) {
+    public static int javaDefaultHash(final String text) {
         int h = 0;
         int off = 0;
-        int len = text.length();
+        final int len = text.length();
         for (int i = 0; i < len; i++) {
             h = 31 * h + text.charAt(off++);
         }
@@ -444,16 +449,142 @@ public class HashKit {
     }
 
     /**
-     * 混合hash算法,输出64位的值
+     * 混合hash算法，输出64位的值
      *
      * @param text 字符串
      * @return hash值
      */
-    public static long mixHash(String text) {
+    public static long mixHash(final String text) {
         long hash = text.hashCode();
-        hash <<= Normal._32;
+        hash <<= 32;
         hash |= fnvHash(text);
         return hash;
+    }
+
+    /**
+     * 根据对象的内存地址生成相应的Hash值
+     *
+     * @param obj 对象
+     * @return hash值
+     */
+    public static int identityHashCode(final Object obj) {
+        return System.identityHashCode(obj);
+    }
+
+    /**
+     * MurmurHash算法32-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static int murmur32(final byte[] data) {
+        return MurmurHash.INSTANCE.hash32(data);
+    }
+
+    /**
+     * MurmurHash算法64-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static long murmur64(final byte[] data) {
+        return MurmurHash.INSTANCE.hash64(data);
+    }
+
+    /**
+     * MurmurHash算法128-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static No128 murmur128(final byte[] data) {
+        return MurmurHash.INSTANCE.hash128(data);
+    }
+
+    /**
+     * CityHash算法32-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static int cityHash32(final byte[] data) {
+        return CityHash.INSTANCE.hash32(data);
+    }
+
+    /**
+     * CityHash算法64-bit实现，种子1使用默认的CityHash#k2
+     *
+     * @param data 数据
+     * @param seed 种子2
+     * @return hash值
+     */
+    public static long cityHash64(final byte[] data, final long seed) {
+        return CityHash.INSTANCE.hash64(data, seed);
+    }
+
+    /**
+     * CityHash算法64-bit实现，种子1使用默认的CityHash#k2
+     *
+     * @param data  数据
+     * @param seed0 种子1
+     * @param seed1 种子2
+     * @return hash值
+     */
+    public static long cityHash64(final byte[] data, final long seed0, final long seed1) {
+        return CityHash.INSTANCE.hash64(data, seed0, seed1);
+    }
+
+    /**
+     * CityHash算法64-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static long cityHash64(final byte[] data) {
+        return CityHash.INSTANCE.hash64(data);
+    }
+
+    /**
+     * CityHash算法128-bit实现
+     *
+     * @param data 数据
+     * @return hash值
+     */
+    public static No128 cityHash128(final byte[] data) {
+        return CityHash.INSTANCE.hash128(data);
+    }
+
+    /**
+     * CityHash算法128-bit实现
+     *
+     * @param data 数据
+     * @param seed 种子
+     * @return hash值
+     */
+    public static No128 cityHash128(final byte[] data, final No128 seed) {
+        return CityHash.INSTANCE.hash128(data, seed);
+    }
+
+    /**
+     * MetroHash 算法64-bit实现
+     *
+     * @param data 数据
+     * @param seed 种子
+     * @return hash值
+     */
+    public static long metroHash64(final byte[] data, final long seed) {
+        return MetroHash64.of(seed).hash64(data);
+    }
+
+    /**
+     * MetroHash 算法128-bit实现
+     *
+     * @param data 数据
+     * @param seed 种子
+     * @return hash值
+     */
+    public static No128 metroHash128(final byte[] data, final long seed) {
+        return MetroHash128.of(seed).hash128(data);
     }
 
     /**
@@ -462,8 +593,8 @@ public class HashKit {
      * @param data 字符串
      * @return hash结果
      */
-    public static long hfHash(String data) {
-        int length = data.length();
+    public static long hfHash(final String data) {
+        final int length = data.length();
         long hash = 0;
 
         for (int i = 0; i < length; i++) {
@@ -483,8 +614,8 @@ public class HashKit {
      * @param data 字符串
      * @return hash结果
      */
-    public static long hfIpHash(String data) {
-        int length = data.length();
+    public static long hfIpHash(final String data) {
+        final int length = data.length();
         long hash = 0;
         for (int i = 0; i < length; i++) {
             hash += data.charAt(i % 4) ^ data.charAt(i);

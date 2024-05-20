@@ -27,7 +27,7 @@ package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.toolkit.CallerKit;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.logger.level.Level;
+import org.miaixz.bus.logger.magic.Log;
 
 /**
  * 静态日志类,用于在不引入日志对象的情况下打印日志
@@ -51,7 +51,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void trace(String format, Object... arguments) {
-        trace(LogFactory.get(CallerKit.getCallers()), format, arguments);
+        trace(Factory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void debug(String format, Object... arguments) {
-        debug(LogFactory.get(CallerKit.getCallers()), format, arguments);
+        debug(Factory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void info(String format, Object... arguments) {
-        info(LogFactory.get(CallerKit.getCallers()), format, arguments);
+        info(Factory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -117,7 +117,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void warn(String format, Object... arguments) {
-        warn(LogFactory.get(CallerKit.getCallers()), format, arguments);
+        warn(Factory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -129,7 +129,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void warn(Throwable e, String format, Object... arguments) {
-        warn(LogFactory.get(CallerKit.getCallers()), e, StringKit.format(format, arguments));
+        warn(Factory.get(CallerKit.getCallers()), e, StringKit.format(format, arguments));
     }
 
     /**
@@ -162,7 +162,7 @@ public final class Logger {
      * @param e 需在日志中堆栈打印的异常
      */
     public static void error(Throwable e) {
-        error(LogFactory.get(CallerKit.getCallers()), e);
+        error(Factory.get(CallerKit.getCallers()), e);
     }
 
     /**
@@ -173,7 +173,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void error(String format, Object... arguments) {
-        error(LogFactory.get(CallerKit.getCallers()), format, arguments);
+        error(Factory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -185,7 +185,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void error(Throwable e, String format, Object... arguments) {
-        error(LogFactory.get(CallerKit.getCallers()), e, format, arguments);
+        error(Factory.get(CallerKit.getCallers()), e, format, arguments);
     }
 
     /**
@@ -230,7 +230,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void log(Level level, Throwable t, String format, Object... arguments) {
-        LogFactory.get(CallerKit.getCallers()).log(FQCN, level, t, format, arguments);
+        Factory.get(CallerKit.getCallers()).log(FQCN, level, t, format, arguments);
     }
 
     /**
@@ -240,7 +240,7 @@ public final class Logger {
      * @return Log
      */
     public static Log get(Class<?> clazz) {
-        return LogFactory.get(clazz);
+        return Factory.get(clazz);
     }
 
     /**
@@ -250,7 +250,7 @@ public final class Logger {
      * @return Log
      */
     public static Log get(String name) {
-        return LogFactory.get(name);
+        return Factory.get(name);
     }
 
     /**

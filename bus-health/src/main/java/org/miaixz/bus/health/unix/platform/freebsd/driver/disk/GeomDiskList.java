@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -80,7 +80,7 @@ public final class GeomDiskList {
             if (diskName != null) {
                 line = line.trim();
                 if (line.startsWith("Mediasize:")) {
-                    String[] split = RegEx.SPACES.split(line);
+                    String[] split = Pattern.SPACES_PATTERN.split(line);
                     if (split.length > 1) {
                         mediaSize = Parsing.parseLongOrDefault(split[1], 0L);
                     }

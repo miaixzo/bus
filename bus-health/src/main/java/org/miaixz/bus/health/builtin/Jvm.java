@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.lang.System;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Platform;
 
@@ -75,7 +75,7 @@ public class Jvm implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getName() {
-        return Platform.get(System.VM_NAME, false);
+        return Platform.get(Keys.JAVA_VM_NAME, false);
     }
 
     /**
@@ -88,7 +88,7 @@ public class Jvm implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getVersion() {
-        return Platform.get(System.VM_VERSION, false);
+        return Platform.get(Keys.JAVA_VM_VERSION, false);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Jvm implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getVendor() {
-        return Platform.get(System.VM_VENDOR, false);
+        return Platform.get(Keys.JAVA_VM_VENDOR, false);
     }
 
     /**
@@ -114,7 +114,7 @@ public class Jvm implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getInfo() {
-        return Platform.get(System.VM_INFO, false);
+        return Platform.get(Keys.JAVA_VM_INFO, false);
     }
 
     /**

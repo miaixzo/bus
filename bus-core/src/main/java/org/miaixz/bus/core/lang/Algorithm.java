@@ -25,8 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
+import javax.crypto.Cipher;
+
 /**
- * 加解密算法类型
+ * 签名算法类型
+ * see: https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -268,7 +271,7 @@ public enum Algorithm {
      *
      * @param value 算法字符表示，区分大小写
      */
-    Algorithm(String value) {
+    Algorithm(final String value) {
         this.value = value;
     }
 
@@ -279,6 +282,95 @@ public enum Algorithm {
      */
     public String getValue() {
         return this.value;
+    }
+
+    /**
+     * 模式
+     * 加密算法模式，是用来描述加密算法（此处特指分组密码，不包括流密码）在加密时对明文分组的模式，它代表了不同的分组方式
+     *
+     * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher章节</a>
+     */
+    public enum Mode {
+        /**
+         * 无模式
+         */
+        NONE,
+        /**
+         * 密码分组连接模式（Ciphers Block Chaining）
+         */
+        CBC,
+        /**
+         * 密文反馈模式（Ciphers Feedback）
+         */
+        CFB,
+        /**
+         * 计数器模式（A simplification of OFB）
+         */
+        CTR,
+        /**
+         * Ciphers Text Stealing
+         */
+        CTS,
+        /**
+         * 电子密码本模式（Electronic CodeBook）
+         */
+        ECB,
+        /**
+         * 输出反馈模式（Output Feedback）
+         */
+        OFB,
+        /**
+         * Propagating Ciphers Block
+         */
+        PCBC,
+        /**
+         * GCM 全称为 Galois/Counter AnsiStyle。G是指GMAC，C是指CTR。
+         * 它在 CTR 加密的基础上增加 GMAC 的特性，解决了 CTR 不能对加密消息进行完整性校验的问题。
+         */
+        GCM
+    }
+
+    /**
+     * Cipher模式的枚举封装
+     */
+    public enum Type {
+        /**
+         * 加密模式
+         */
+        ENCRYPT(javax.crypto.Cipher.ENCRYPT_MODE),
+        /**
+         * 解密模式
+         */
+        DECRYPT(javax.crypto.Cipher.DECRYPT_MODE),
+        /**
+         * 包装模式
+         */
+        WRAP(javax.crypto.Cipher.WRAP_MODE),
+        /**
+         * 拆包模式
+         */
+        UNWRAP(javax.crypto.Cipher.UNWRAP_MODE);
+
+
+        private final int value;
+
+        /**
+         * 构造
+         *
+         * @param value 见{@link Cipher}
+         */
+        Type(final int value) {
+            this.value = value;
+        }
+
+        /**
+         * 获取枚举值对应的int表示
+         *
+         * @return 枚举值对应的int表示
+         */
+        public int getValue() {
+            return this.value;
+        }
     }
 
 }

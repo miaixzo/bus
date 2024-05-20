@@ -35,7 +35,7 @@ import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.Builder;
-import org.miaixz.bus.sensitive.annotation.Sensitive;
+import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -44,6 +44,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
 
 /**
  * 请求请求处理类(目前仅仅对requestbody有效)
@@ -171,7 +172,10 @@ public class RequestBodyAdvice extends BaseAdvice
             }
 
             this.headers = inputMessage.getHeaders();
-            String content = IoKit.toString(inputMessage.getBody(), charset);
+
+            String content = IoKit.toUtf8Reader(inputMessage.getBody())
+                    .lines()
+                    .collect(Collectors.joining(System.lineSeparator()));
 
             String decryptBody;
             if (content.startsWith(Symbol.BRACE_LEFT)) {
@@ -189,7 +193,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 }
                 decryptBody = json.toString();
             }
-            this.body = IoKit.toInputStream(decryptBody, charset);
+            this.body = IoKit.toStream(decryptBody, Charset.parse(charset));
         }
 
         @Override
@@ -202,5 +206,6 @@ public class RequestBodyAdvice extends BaseAdvice
             return headers;
         }
     }
+
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.toolkit.IoKit;
@@ -209,7 +209,7 @@ public class GzipSource implements Source {
      */
     private void updateCrc(Buffer buffer, long offset, long byteCount) {
         // Skip segments that we aren't checksumming.
-        Segment s = buffer.head;
+        SectionBuffer s = buffer.head;
         for (; offset >= (s.limit - s.pos); s = s.next) {
             offset -= (s.limit - s.pos);
         }

@@ -28,7 +28,7 @@ package org.miaixz.bus.core.codec;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * RotateN（rotate by N places），回转N位密码，是一种简易的替换式密码，也是过去在古罗马开发的凯撒加密的一种变体
+ * RotN（rotate by N places），回转N位密码，是一种简易的替换式密码，也是过去在古罗马开发的凯撒加密的一种变体。
  * 代码来自：<a href="https://github.com/orclight/jencrypt">https://github.com/orclight/jencrypt</a>
  *
  * @author Kimi Liu
@@ -44,7 +44,7 @@ public class RotateN {
     private static final char CHAR9 = '9';
 
     /**
-     * Rot-13编码，同时编码数字
+     * RotateN-13编码，同时编码数字
      *
      * @param message 被编码的消息
      * @return 编码后的字符串
@@ -54,7 +54,7 @@ public class RotateN {
     }
 
     /**
-     * Rot-13编码
+     * RotateN-13编码
      *
      * @param message        被编码的消息
      * @param isEncodeNumber 是否编码数字
@@ -83,7 +83,7 @@ public class RotateN {
     }
 
     /**
-     * Rot-13解码，同时解码数字
+     * RotateN-13解码，同时解码数字
      *
      * @param rot 被解码的消息密文
      * @return 解码后的字符串
@@ -93,7 +93,7 @@ public class RotateN {
     }
 
     /**
-     * Rot-13解码
+     * RotateN-13解码
      *
      * @param rot            被解码的消息密文
      * @param isDecodeNumber 是否解码数字

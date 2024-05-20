@@ -33,14 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 监听调度器,统一管理监听
+ * 监听调度器，统一管理监听
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TaskListenerManager implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final List<TaskListener> listeners = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class TaskListenerManager implements Serializable {
      * @param listener {@link TaskListener}
      * @return this
      */
-    public TaskListenerManager addListener(TaskListener listener) {
+    public TaskListenerManager addListener(final TaskListener listener) {
         synchronized (listeners) {
             this.listeners.add(listener);
         }
@@ -63,7 +63,7 @@ public class TaskListenerManager implements Serializable {
      * @param listener {@link TaskListener}
      * @return this
      */
-    public TaskListenerManager removeListener(TaskListener listener) {
+    public TaskListenerManager removeListener(final TaskListener listener) {
         synchronized (listeners) {
             this.listeners.remove(listener);
         }
@@ -75,10 +75,10 @@ public class TaskListenerManager implements Serializable {
      *
      * @param executor {@link Executor}
      */
-    public void notifyTaskStart(Executor executor) {
+    public void notifyTaskStart(final Executor executor) {
         synchronized (listeners) {
             TaskListener listener;
-            for (TaskListener taskListener : listeners) {
+            for (final TaskListener taskListener : listeners) {
                 listener = taskListener;
                 if (null != listener) {
                     listener.onStart(executor);
@@ -92,9 +92,9 @@ public class TaskListenerManager implements Serializable {
      *
      * @param executor {@link Executor}
      */
-    public void notifyTaskSucceeded(Executor executor) {
+    public void notifyTaskSucceeded(final Executor executor) {
         synchronized (listeners) {
-            for (TaskListener listener : listeners) {
+            for (final TaskListener listener : listeners) {
                 listener.onSucceeded(executor);
             }
         }
@@ -107,11 +107,11 @@ public class TaskListenerManager implements Serializable {
      * @param executor  {@link Executor}
      * @param exception 失败原因
      */
-    public void notifyTaskFailed(Executor executor, Throwable exception) {
+    public void notifyTaskFailed(final Executor executor, final Throwable exception) {
         synchronized (listeners) {
-            int size = listeners.size();
+            final int size = listeners.size();
             if (size > 0) {
-                for (TaskListener listener : listeners) {
+                for (final TaskListener listener : listeners) {
                     listener.onFailed(executor, exception);
                 }
             } else {

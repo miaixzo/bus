@@ -26,7 +26,7 @@
 package org.miaixz.bus.base.service;
 
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.toolkit.RuntimeKit;
+import org.miaixz.bus.core.toolkit.ExceptionKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -52,7 +52,7 @@ public class ErrorService {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     public boolean before(Exception ex) {
-        Logger.error(RuntimeKit.getStackTrace(ex));
+        Logger.error(ExceptionKit.stacktraceToString(ex));
         return true;
     }
 

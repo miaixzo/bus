@@ -27,7 +27,7 @@ package org.miaixz.bus.validate;
 
 import lombok.Data;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.validate.validators.Property;
+import org.miaixz.bus.validate.magic.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class Collector {
     /**
      * 被校验对象
      */
-    private Validated target;
+    private Verified target;
 
     /**
      * 校验结果
@@ -56,7 +56,7 @@ public class Collector {
     private boolean pass;
 
 
-    public Collector(Validated target) {
+    public Collector(Verified target) {
         this.target = target;
         this.result = new ArrayList<>();
     }
@@ -67,7 +67,7 @@ public class Collector {
         this.result.add(collector);
     }
 
-    public Collector(Validated target, Property property, boolean pass) {
+    public Collector(Verified target, Property property, boolean pass) {
         this.target = target;
         this.property = property;
         this.pass = pass;
@@ -99,7 +99,7 @@ public class Collector {
         return list;
     }
 
-    public Validated getTarget() {
+    public Verified getTarget() {
         return target;
     }
 

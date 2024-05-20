@@ -25,47 +25,56 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto;
 
-import java.security.Provider;
+import org.miaixz.bus.core.toolkit.SPIKit;
+import org.miaixz.bus.crypto.metric.BouncyCastleProvider;
 
 /**
- * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
+ * 全局单例的{@link java.security.Provider}对象
+ * 在此类加载时，通过SPI方式查找用户引入的加密库，查找对应的{@link java.security.Provider}实现，然后全局创建唯一的{@link BouncyCastleProvider}对象
+ * 用户依旧可以通过{@link #setUseCustomProvider(boolean)} 方法选择是否使用自定义的Provider。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Holder {
 
-    private static boolean useBouncyCastle = true;
+    private static final java.security.Provider provider = _createProvider();
+    private static boolean useCustomProvider = true;
 
     /**
-     * 设置是否使用Bouncy Castle库
-     * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
+     * 获取{@link java.security.Provider}，无提供方，返回{@code null}表示使用JDK默认
      *
-     * @param isUseBouncyCastle 是否使用BouncyCastle库
+     * @return {@link java.security.Provider} or {@code null}
      */
-    public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
-        useBouncyCastle = isUseBouncyCastle;
+    public static java.security.Provider getProvider() {
+        return useCustomProvider ? provider : null;
     }
 
     /**
-     * 创建Bouncy Castle 提供者
-     * 如果用户未引入bouncycastle库,则此方法抛出{@link NoClassDefFoundError} 异常
+     * 设置是否使用自定义的{@link java.security.Provider}
+     * 如果设置为false，表示使用JDK默认的Provider
      *
-     * @return {@link  Provider}
+     * @param isUseCustomProvider 是否使用自定义{@link java.security.Provider}
      */
-    public Provider createBouncyCastleProvider() {
-        final org.bouncycastle.jce.provider.BouncyCastleProvider provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
+    public static void setUseCustomProvider(final boolean isUseCustomProvider) {
+        useCustomProvider = isUseCustomProvider;
+    }
+
+    /**
+     * 通过SPI方式，创建{@link java.security.Provider}，无提供的返回{@code null}
+     *
+     * @return {@link java.security.Provider} or {@code null}
+     */
+    private static java.security.Provider _createProvider() {
+        final BouncyCastleProvider factory = SPIKit.loadFirstAvailable(BouncyCastleProvider.class);
+        if (null == factory) {
+            // 默认JCE
+            return null;
+        }
+
+        final java.security.Provider provider = factory.create();
         Builder.addProvider(provider);
         return provider;
-    }
-
-    /**
-     * 获取{@link Provider}
-     *
-     * @return {@link Provider}
-     */
-    public Provider getProvider() {
-        return useBouncyCastle ? createBouncyCastleProvider() : null;
     }
 
 }

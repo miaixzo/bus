@@ -47,7 +47,6 @@ import java.util.Objects;
  */
 public class SegmentedImageStream extends ImageInputStreamImpl {
 
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
     private final ImageInputStream stream;
     private final List<Object> fragments;
     private int curSegment = 0;
@@ -285,9 +284,9 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
     public long transferTo(OutputStream out) throws IOException {
         Objects.requireNonNull(out, "out");
         long transferred = 0;
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        byte[] buffer = new byte[Normal.DEFAULT_BUFFER_SIZE];
         int read;
-        while ((read = this.read(buffer, 0, DEFAULT_BUFFER_SIZE)) > 0) {
+        while ((read = this.read(buffer, 0, Normal.DEFAULT_BUFFER_SIZE)) > 0) {
             out.write(buffer, 0, read);
             transferred += read;
         }

@@ -26,8 +26,7 @@
 package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.toolkit.CharKit;
 
 /**
  * 字符查找器
@@ -38,53 +37,53 @@ import org.miaixz.bus.core.toolkit.MathKit;
  */
 public class CharFinder extends TextFinder {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    private final char word;
+    private final char c;
     private final boolean caseInsensitive;
 
     /**
      * 构造，不忽略字符大小写
      *
-     * @param word 被查找的字符
+     * @param c 被查找的字符
      */
-    public CharFinder(char word) {
-        this(word, false);
+    public CharFinder(final char c) {
+        this(c, false);
     }
 
     /**
      * 构造
      *
-     * @param word            被查找的字符
+     * @param c               被查找的字符
      * @param caseInsensitive 是否忽略大小写
      */
-    public CharFinder(char word, boolean caseInsensitive) {
-        this.word = word;
+    public CharFinder(final char c, final boolean caseInsensitive) {
+        this.c = c;
         this.caseInsensitive = caseInsensitive;
     }
 
     @Override
-    public int start(int from) {
+    public int start(final int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
         final int limit = getValidEndIndex();
         if (negative) {
             for (int i = from; i > limit; i--) {
-                if (MathKit.equals(this.word, text.charAt(i), caseInsensitive)) {
+                if (CharKit.equals(c, text.charAt(i), caseInsensitive)) {
                     return i;
                 }
             }
         } else {
             for (int i = from; i < limit; i++) {
-                if (MathKit.equals(this.word, text.charAt(i), caseInsensitive)) {
+                if (CharKit.equals(c, text.charAt(i), caseInsensitive)) {
                     return i;
                 }
             }
         }
-        return Normal.__1;
+        return -1;
     }
 
     @Override
-    public int end(int start) {
+    public int end(final int start) {
         if (start < 0) {
             return -1;
         }

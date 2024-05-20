@@ -26,9 +26,9 @@
 package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
@@ -104,8 +104,8 @@ public final class Iostat {
      * @param diskSet A set of valid disk names; others will be ignored
      * @return A map with disk name as the key and a quintet of model, vendor, product, serial, size as the value
      */
-    public static Map<String, Quintet<String, String, String, String, Long>> queryDeviceStrings(Set<String> diskSet) {
-        Map<String, Quintet<String, String, String, String, Long>> deviceParamMap = new HashMap<>();
+    public static Map<String, Tuple> queryDeviceStrings(Set<String> diskSet) {
+        Map<String, Tuple> deviceParamMap = new HashMap<>();
         // Run iostat -Er to get model, etc.
         List<String> iostat = Executor.runNative(IOSTAT_ER_DETAIL);
         // We'll use Model if available, otherwise Vendor+Product
@@ -128,7 +128,7 @@ public final class Iostat {
                     // First, if we have existing output from previous,
                     // update
                     if (diskName != null) {
-                        deviceParamMap.put(diskName, new Quintet<>(model, vendor, product, serial, size));
+                        deviceParamMap.put(diskName, new Tuple(model, vendor, product, serial, size));
                     }
                     // Reset values for next iteration
                     diskName = keyValue;
@@ -152,14 +152,14 @@ public final class Iostat {
                     // Size: 1.23GB <1227563008 bytes>
                     String[] bytes = keyValue.split("<");
                     if (bytes.length > 1) {
-                        bytes = RegEx.SPACES.split(bytes[1]);
+                        bytes = Pattern.SPACES_PATTERN.split(bytes[1]);
                         size = Parsing.parseLongOrDefault(bytes[0], 0L);
                     }
                 }
             }
             // At end of output update last entry
             if (diskName != null) {
-                deviceParamMap.put(diskName, new Quintet<>(model, vendor, product, serial, size));
+                deviceParamMap.put(diskName, new Tuple(model, vendor, product, serial, size));
             }
         }
         return deviceParamMap;

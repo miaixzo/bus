@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
 
 /**
- * 可变 <code>float</code> 类型
+ * 可变 {@code float} 类型
  *
  * @author Kimi Liu
  * @see Float
@@ -36,12 +36,12 @@ import org.miaixz.bus.core.toolkit.MathKit;
  */
 public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private float value;
 
     /**
-     * 构造,默认值0
+     * 构造，默认值0
      */
     public MutableFloat() {
 
@@ -128,7 +128,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     /**
      * 增加值
      *
-     * @param operand 被增加的值,非空
+     * @param operand 被增加的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -151,7 +151,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     /**
      * 减去值
      *
-     * @param operand 被减的值,非空
+     * @param operand 被减的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -183,18 +183,18 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@link MutableFloat}</li>
-     * <li>值相等</li>
+     * 	<li>非空</li>
+     * 	<li>类型为 {@code MutableFloat}</li>
+     * 	<li>值相等</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>,否则 <code>false</code>
+     * @param obj 比对的对象
+     * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object object) {
-        if (object instanceof MutableFloat) {
-            return (Float.floatToIntBits(((MutableFloat) object).value) == Float.floatToIntBits(value));
+    public boolean equals(final Object obj) {
+        if (obj instanceof MutableFloat) {
+            return (Float.floatToIntBits(((MutableFloat) obj).value) == Float.floatToIntBits(value));
         }
         return false;
     }
@@ -207,12 +207,12 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     /**
      * 比较
      *
-     * @param other 其它 {@link MutableFloat} 对象
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @param other 其它 {@code MutableFloat} 对象
+     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableFloat other) {
-        return MathKit.compare(this.value, other.value);
+        return CompareKit.compare(this.value, other.value);
     }
 
     @Override

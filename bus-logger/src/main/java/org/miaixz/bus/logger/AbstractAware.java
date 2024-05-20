@@ -27,7 +27,7 @@ package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.logger.level.Level;
+import org.miaixz.bus.logger.magic.Log;
 
 import java.io.Serializable;
 

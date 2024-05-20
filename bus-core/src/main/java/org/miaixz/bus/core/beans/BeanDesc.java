@@ -25,13 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans;
 
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.map.CaseInsensitiveMap;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.BooleanKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -41,14 +37,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Bean信息描述做为BeanInfo替代方案
- * 此对象持有Bean中的setters和getters等相关信息描述
+ * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述
  * 查找Getter和Setter方法时会：
+ *
  * <pre>
  * 1. 忽略字段和方法名的大小写
  * 2. Getter查找getXXX、isXXX、getIsXXX
  * 3. Setter查找setXXX、setIsXXX
- * 4. Setter忽略参数值与字段值不匹配的情况,因此有多个参数类型的重载时,会调用首次匹配的
+ * 4. Setter忽略参数值与字段值不匹配的情况，因此有多个参数类型的重载时，会调用首次匹配的
  * </pre>
  *
  * @author Kimi Liu
@@ -56,7 +52,7 @@ import java.util.Map;
  */
 public class BeanDesc implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Bean类
@@ -65,14 +61,14 @@ public class BeanDesc implements Serializable {
     /**
      * 属性Map
      */
-    private final Map<String, PropertyDesc> propMap = new LinkedHashMap<>();
+    private final Map<String, PropDesc> propMap = new LinkedHashMap<>();
 
     /**
      * 构造
      *
      * @param beanClass Bean类
      */
-    public BeanDesc(Class<?> beanClass) {
+    public BeanDesc(final Class<?> beanClass) {
         Assert.notNull(beanClass);
         this.beanClass = beanClass;
         init();
@@ -99,105 +95,132 @@ public class BeanDesc implements Serializable {
     /**
      * 获取字段名-字段属性Map
      *
-     * @param ignoreCase 是否忽略大小写,true为忽略,false不忽略
+     * @param ignoreCase 是否忽略大小写，true为忽略，false不忽略
      * @return 字段名-字段属性Map
      */
-    public Map<String, PropertyDesc> getPropMap(boolean ignoreCase) {
+    public Map<String, PropDesc> getPropMap(final boolean ignoreCase) {
         return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;
     }
 
     /**
      * 获取字段属性列表
      *
-     * @return {@link PropertyDesc} 列表
+     * @return {@link PropDesc} 列表
      */
-    public Collection<PropertyDesc> getProps() {
+    public Collection<PropDesc> getProps() {
         return this.propMap.values();
     }
 
     /**
-     * 获取属性,如果不存在返回null
+     * 获取属性，如果不存在返回null
      *
      * @param fieldName 字段名
-     * @return {@link PropertyDesc}
+     * @return {@link PropDesc}
      */
-    public PropertyDesc getProp(String fieldName) {
+    public PropDesc getProp(final String fieldName) {
         return this.propMap.get(fieldName);
     }
 
     /**
-     * 获得字段名对应的字段对象,如果不存在返回null
+     * 获得字段名对应的字段对象，如果不存在返回null
      *
      * @param fieldName 字段名
      * @return 字段值
      */
-    public Field getField(String fieldName) {
-        final PropertyDesc desc = this.propMap.get(fieldName);
+    public Field getField(final String fieldName) {
+        final PropDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getField();
     }
 
     /**
-     * 获取Getter方法,如果不存在返回null
+     * 获取Getter方法，如果不存在返回null
      *
      * @param fieldName 字段名
      * @return Getter方法
      */
-    public Method getGetter(String fieldName) {
-        final PropertyDesc desc = this.propMap.get(fieldName);
+    public Method getGetter(final String fieldName) {
+        final PropDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getGetter();
     }
 
     /**
-     * 获取Setter方法,如果不存在返回null
+     * 获取Setter方法，如果不存在返回null
      *
      * @param fieldName 字段名
      * @return Setter方法
      */
-    public Method getSetter(String fieldName) {
-        final PropertyDesc desc = this.propMap.get(fieldName);
+    public Method getSetter(final String fieldName) {
+        final PropDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getSetter();
     }
 
     /**
      * 初始化
-     * 只有与属性关联的相关Getter和Setter方法才会被读取,无关的getXXX和setXXX都被忽略
-     *
-     * @return this
+     * 只有与属性关联的相关Getter和Setter方法才会被读取，无关的getXXX和setXXX都被忽略
      */
-    private BeanDesc init() {
-        final Method[] gettersAndSetters = ReflectKit.getMethods(this.beanClass, ReflectKit::isGetterOrSetterIgnoreCase);
-        PropertyDesc prop;
-        for (Field field : ReflectKit.getFields(this.beanClass)) {
+    private void init() {
+        if (RecordKit.isRecord(this.beanClass)) {
+            initForRecord();
+        } else {
+            initForBean();
+        }
+    }
+
+    /**
+     * 针对Record类的反射初始化
+     */
+    private void initForRecord() {
+        final Method[] getters = MethodKit.getPublicMethods(this.beanClass, method -> 0 == method.getParameterCount());
+        for (final Field field : FieldKit.getFields(this.beanClass)) {
             // 排除静态属性和对象子类
-            if (false == BeanKit.isStatic(field) && false == ReflectKit.isOuterClassField(field)) {
+            if (!ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field)) {
+                for (final Method getter : getters) {
+                    if (field.getName().equals(getter.getName())) {
+                        //record对象，getter方法与字段同名
+                        final PropDesc prop = new PropDesc(field, getter, null);
+                        this.propMap.putIfAbsent(prop.getFieldName(), prop);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 普通Bean初始化
+     */
+    private void initForBean() {
+        final Method[] gettersAndSetters = MethodKit.getPublicMethods(this.beanClass, MethodKit::isGetterOrSetterIgnoreCase);
+        PropDesc prop;
+        for (final Field field : FieldKit.getFields(this.beanClass)) {
+            // 排除静态属性和对象子类
+            if (!ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field)) {
                 prop = createProp(field, gettersAndSetters);
                 // 只有不存在时才放入，防止父类属性覆盖子类属性
                 this.propMap.putIfAbsent(prop.getFieldName(), prop);
             }
         }
-        return this;
     }
 
     /**
      * 根据字段创建属性描述
-     * 查找Getter和Setter方法
+     * 查找Getter和Setter方法时会：
      *
      * <pre>
      * 1. 忽略字段和方法名的大小写
      * 2. Getter查找getXXX、isXXX、getIsXXX
      * 3. Setter查找setXXX、setIsXXX
-     * 4. Setter忽略参数值与字段值不匹配的情况,因此有多个参数类型的重载时,会调用首次匹配的
+     * 4. Setter忽略参数值与字段值不匹配的情况，因此有多个参数类型的重载时，会调用首次匹配的
      * </pre>
      *
      * @param field   字段
      * @param methods 类中所有的方法
-     * @return {@link PropertyDesc}
+     * @return {@link PropDesc}
      */
-    private PropertyDesc createProp(Field field, Method[] methods) {
-        final PropertyDesc prop = findProp(field, methods, false);
+    private PropDesc createProp(final Field field, final Method[] methods) {
+        final PropDesc prop = findProp(field, methods, false);
         // 忽略大小写重新匹配一次
         if (null == prop.getter || null == prop.setter) {
-            final PropertyDesc propIgnoreCase = findProp(field, methods, true);
+            final PropDesc propIgnoreCase = findProp(field, methods, true);
             if (null == prop.getter) {
                 prop.getter = propIgnoreCase.getter;
             }
@@ -212,32 +235,67 @@ public class BeanDesc implements Serializable {
     /**
      * 查找字段对应的Getter和Setter方法
      *
-     * @param field      字段
-     * @param methods    类中所有的Getter或Setter方法
-     * @param ignoreCase 是否忽略大小写匹配
-     * @return this
+     * @param field            字段
+     * @param gettersOrSetters 类中所有的Getter或Setter方法
+     * @param ignoreCase       是否忽略大小写匹配
+     * @return PropDesc
      */
-    private PropertyDesc findProp(Field field, Method[] methods, boolean ignoreCase) {
+    private PropDesc findProp(final Field field, final Method[] gettersOrSetters, final boolean ignoreCase) {
         final String fieldName = field.getName();
         final Class<?> fieldType = field.getType();
         final boolean isBooleanField = BooleanKit.isBoolean(fieldType);
 
+        // Getter: name -> getName, Setter: name -> setName
+        final Method[] getterAndSetter = findGetterAndSetter(fieldName, fieldType, gettersOrSetters, ignoreCase);
+
+        if (isBooleanField) {
+            if (null == getterAndSetter[0]) {
+                // isName -> isName or isIsName
+                // name -> isName
+                getterAndSetter[0] = findGetterForBoolean(fieldName, gettersOrSetters, ignoreCase);
+            }
+            if (null == getterAndSetter[1]) {
+                // isName -> setName
+                getterAndSetter[1] = findSetterForBoolean(fieldName, gettersOrSetters, ignoreCase);
+            }
+        }
+
+        return new PropDesc(field, getterAndSetter[0], getterAndSetter[1]);
+    }
+
+    /**
+     * 查找字段对应的Getter和Setter方法
+     * 此方法不区分是否为boolean字段，查找规则为：
+     * <ul>
+     *     <li>Getter要求无参数且返回值是字段类型或字段的父类</li>
+     *     <li>Getter中，如果字段为name，匹配getName</li>
+     *     <li>Setter要求一个参数且参数必须为字段类型或字段的子类</li>
+     *     <li>Setter中，如果字段为name，匹配setName</li>
+     * </ul>
+     *
+     * @param fieldName        字段名
+     * @param fieldType        字段类型
+     * @param gettersOrSetters 类中所有的Getter或Setter方法
+     * @return PropDesc
+     */
+    private Method[] findGetterAndSetter(final String fieldName, final Class<?> fieldType,
+                                         final Method[] gettersOrSetters, final boolean ignoreCase) {
         Method getter = null;
         Method setter = null;
         String methodName;
-        for (Method method : methods) {
+        for (final Method method : gettersOrSetters) {
             methodName = method.getName();
-            if (method.getParameterCount() == 0) {
+            if (0 == method.getParameterCount()) {
                 // 无参数，可能为Getter方法
-                if (isMatchGetter(methodName, fieldName, isBooleanField, ignoreCase)) {
-                    // 方法名与字段名匹配，则为Getter方法
+                if (StringKit.equals(methodName, StringKit.genGetter(fieldName), ignoreCase) &&
+                        method.getReturnType().isAssignableFrom(fieldType)) {
+                    // getter的返回类型必须为字段类型或字段的父类
                     getter = method;
                 }
-            } else if (isMatchSetter(methodName, fieldName, isBooleanField, ignoreCase)) {
-                // setter方法的参数类型和字段类型必须一致，或参数类型是字段类型的子类
-                if (fieldType.isAssignableFrom(method.getParameterTypes()[0])) {
-                    setter = method;
-                }
+            } else if (StringKit.equals(methodName, StringKit.genSetter(fieldName), ignoreCase) &&
+                    fieldType.isAssignableFrom(method.getParameterTypes()[0])) {
+                // setter方法的参数必须为字段类型或字段的子类
+                setter = method;
             }
             if (null != getter && null != setter) {
                 // 如果Getter和Setter方法都找到了，不再继续寻找
@@ -245,104 +303,83 @@ public class BeanDesc implements Serializable {
             }
         }
 
-        return new PropertyDesc(field, getter, setter);
+        return new Method[]{getter, setter};
     }
 
     /**
-     * 方法是否为Getter方法
-     * 匹配规则如下（忽略大小写
+     * 针对Boolean或boolean类型字段，查找其对应的Getter方法，规则为：
+     * <ul>
+     *     <li>方法必须无参数且返回boolean或Boolean</li>
+     *     <li>如果字段为isName, 匹配isName、isIsName方法，两个方法均存在，则按照提供的方法数组优先匹配。</li>
+     *     <li>如果字段为name, 匹配isName方法</li>
+     * </ul>
+     * <p>
+     * 需要注意的是，以下两种格式不匹配，由{@link #findGetterAndSetter(String, Class, Method[], boolean)}完成：
+     * <ul>
+     *     <li>如果字段为name, 匹配getName</li>
+     *     <li>如果字段为isName, 匹配getIsName</li>
+     * </ul>
      *
-     * <pre>
-     * 字段名     方法名
-     * isName  - isName
-     * isName  - isIsName
-     * isName  - getIsName
-     * name    - isName
-     * name    - getName
-     * </pre>
-     *
-     * @param methodName     方法名
-     * @param fieldName      字段名
-     * @param isBooleanField 是否为Boolean类型字段
-     * @param ignoreCase     匹配是否忽略大小写
-     * @return 是否匹配
+     * @param fieldName        字段名
+     * @param gettersOrSetters 所有方法
+     * @param ignoreCase       是否忽略大小写
+     * @return 查找到的方法，{@code null}表示未找到
      */
-    private boolean isMatchGetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
-        final String handledFieldName;
-        if (ignoreCase) {
-            // 全部转为小写，忽略大小写比较
-            methodName = methodName.toLowerCase();
-            handledFieldName = fieldName.toLowerCase();
-            fieldName = handledFieldName;
-        } else {
-            handledFieldName = StringKit.upperFirst(fieldName);
-        }
+    private Method findGetterForBoolean(final String fieldName, final Method[] gettersOrSetters, final boolean ignoreCase) {
+        return ArrayKit.get(gettersOrSetters, m -> {
+            if (0 != m.getParameterCount() || false == BooleanKit.isBoolean(m.getReturnType())) {
+                // getter方法要求无参数且返回boolean或Boolean
+                return false;
+            }
 
-        // 针对Boolean类型特殊检查
-        if (isBooleanField) {
-            if (fieldName.startsWith(Normal.IS)) {
-                // 字段已经是is开头
-                if (methodName.equals(fieldName) // isName - isName
-                        || methodName.equals(Normal.GET + handledFieldName)// isName - getIsName
-                        || methodName.equals(Normal.IS + handledFieldName)// isName - isIsName
-                ) {
+            if (StringKit.startWith(fieldName, "is", ignoreCase)) {
+                // isName - isName
+                if (StringKit.equals(fieldName, m.getName(), ignoreCase)) {
                     return true;
                 }
-            } else if (methodName.equals(Normal.IS + handledFieldName)) {
-                // 字段非is开头, name -> isName
-                return true;
             }
-        }
 
-        // 包括boolean的任何类型只有一种匹配情况：name - getName
-        return methodName.equals(Normal.GET + handledFieldName);
+            // name   - isName
+            // isName - isIsName
+            return StringKit.equals(StringKit.upperFirstAndAddPre(fieldName, "is"), m.getName(), ignoreCase);
+        });
     }
 
     /**
-     * 方法是否为Setter方法
-     * 匹配规则如下(忽略大小写)：
+     * 针对Boolean或boolean类型字段，查找其对应的Setter方法，规则为：
+     * <ul>
+     *     <li>方法必须为1个boolean或Boolean参数</li>
+     *     <li>如果字段为isName，匹配setName</li>
+     * </ul>
+     * <p>
+     * 需要注意的是，以下两种格式不匹配，由{@link #findGetterAndSetter(String, Class, Method[], boolean)}完成：
+     * <ul>
+     *     <li>如果字段为name, 匹配setName</li>
+     *     <li>如果字段为isName, 匹配setIsName</li>
+     * </ul>
      *
-     * <pre>
-     * 字段名   - 方法名
-     * isName  - setName
-     * isName  - setIsName
-     * name    - setName
-     * </pre>
-     *
-     * @param methodName     方法名
-     * @param fieldName      字段名
-     * @param isBooleanField 是否为Boolean类型字段
-     * @param ignoreCase     匹配是否忽略大小写
-     * @return 是否匹配
+     * @param fieldName        字段名
+     * @param gettersOrSetters 所有方法
+     * @param ignoreCase       是否忽略大小写
+     * @return 查找到的方法，{@code null}表示未找到
      */
-    private boolean isMatchSetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
-        final String handledFieldName;
-        if (ignoreCase) {
-            // 全部转为小写，忽略大小写比较
-            methodName = methodName.toLowerCase();
-            handledFieldName = fieldName.toLowerCase();
-            fieldName = handledFieldName;
-        } else {
-            handledFieldName = StringKit.upperFirst(fieldName);
-        }
-
-        // 非标准Setter方法跳过
-        if (false == methodName.startsWith(Normal.SET)) {
-            return false;
-        }
-
-        // 针对Boolean类型特殊检查
-        if (isBooleanField && fieldName.startsWith(Normal.IS)) {
-            // 字段是is开头
-            if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName - setName
-                    || methodName.equals(Normal.SET + handledFieldName)// isName - setIsName
-            ) {
-                return true;
+    private Method findSetterForBoolean(final String fieldName, final Method[] gettersOrSetters, final boolean ignoreCase) {
+        return ArrayKit.get(gettersOrSetters, m -> {
+            if (1 != m.getParameterCount() || false == BooleanKit.isBoolean(m.getParameterTypes()[0])) {
+                // setter方法要求1个boolean或Boolean参数
+                return false;
             }
-        }
 
-        // 包括boolean的任何类型只有一种匹配情况：name - setName
-        return methodName.equals(Normal.SET + fieldName);
+            if (StringKit.startWith(fieldName, "is", ignoreCase)) {
+                // isName - setName
+                return StringKit.equals(
+                        "set" + StringKit.removePrefix(fieldName, "is", ignoreCase),
+                        m.getName(), ignoreCase);
+            }
+
+            // 其它不匹配
+            return false;
+        });
     }
 
 }

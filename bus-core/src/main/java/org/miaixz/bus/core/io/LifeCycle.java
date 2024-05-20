@@ -37,18 +37,17 @@ import org.miaixz.bus.core.lang.Normal;
 public final class LifeCycle {
 
     /**
-     * The maximum number of bytes to pool
-     * 64 KiB
+     * 池的最大字节数 64 KiB
      */
     public static final long MAX_SIZE = Normal._64 * Normal._1024;
 
     /**
-     * Singly-linked list of segments
+     * 段的单链表
      */
-    public static Segment next;
+    public static SectionBuffer next;
 
     /**
-     * Total bytes in this pool
+     * 该池中的总字节数
      */
     public static long byteCount;
 
@@ -56,25 +55,25 @@ public final class LifeCycle {
 
     }
 
-    public static Segment take() {
+    public static SectionBuffer take() {
         synchronized (LifeCycle.class) {
             if (null != next) {
-                Segment result = next;
+                SectionBuffer result = next;
                 next = result.next;
                 result.next = null;
-                byteCount -= Segment.SIZE;
+                byteCount -= SectionBuffer.SIZE;
                 return result;
             }
         }
-        return new Segment(); // Pool is empty. Don't zero-fill while holding a lock.
+        return new SectionBuffer(); // Pool is empty. Don't zero-fill while holding a lock.
     }
 
-    public static void recycle(Segment segment) {
+    public static void recycle(SectionBuffer segment) {
         if (segment.next != null || segment.prev != null) throw new IllegalArgumentException();
         if (segment.shared) return; // This segment cannot be recycled.
         synchronized (LifeCycle.class) {
-            if (byteCount + Segment.SIZE > MAX_SIZE) return; // Pool is full.
-            byteCount += Segment.SIZE;
+            if (byteCount + SectionBuffer.SIZE > MAX_SIZE) return; // Pool is full.
+            byteCount += SectionBuffer.SIZE;
             segment.next = next;
             segment.pos = segment.limit = 0;
             next = segment;

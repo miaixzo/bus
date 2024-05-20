@@ -25,15 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.io.ByteOrderMark;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 
 /**
- * 读取带BOM头的流内容,<code>getCharset()</code>方法调用后会得到BOM头的编码,且会去除BOM头
+ * 读取带BOM头的流内容，{@code getCharset()}方法调用后会得到BOM头的编码，且会去除BOM头
+ * BOM定义：<a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
  * <ul>
  * <li>00 00 FE FF = UTF-32, big-endian</li>
  * <li>FF FE 00 00 = UTF-32, little-endian</li>
@@ -48,6 +50,9 @@ import java.io.PushbackInputStream;
  * BOMInputStream uin = new BOMInputStream(fis, enc);
  * enc = uin.getCharset(); // check and skip possible BOM bytes
  * </code>
+ * <p>
+ * 参考： <a href="http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt">http://www.unicode.org/unicode/faq/utf_bom.html</a>
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -95,7 +100,7 @@ public class BOMInputStream extends InputStream {
      * @return 编码
      */
     public String getCharset() {
-        if (false == isInited) {
+        if (!isInited) {
             try {
                 init();
             } catch (final IOException ex) {
@@ -118,8 +123,8 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * 预读四个字节并检查BOM标记
-     * 额外的字节未读回流，只有BOM字节被跳过
+     * Read-ahead four bytes and check for BOM marks.
+     * Extra bytes are unread back to the stream, only BOM bytes are skipped.
      *
      * @throws IOException 读取引起的异常
      */
@@ -130,25 +135,18 @@ public class BOMInputStream extends InputStream {
 
         final byte[] bom = new byte[BOM_SIZE];
         final int n;
-        final int unread;
+        int unread = 0;
         n = in.read(bom, 0, bom.length);
 
-        if ((bom[0] == (byte) 0x00) && (bom[1] == (byte) 0x00) && (bom[2] == (byte) 0xFE) && (bom[3] == (byte) 0xFF)) {
-            charset = Charset.DEFAULT_UTF_32_BE;
-            unread = n - 4;
-        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE) && (bom[2] == (byte) 0x00) && (bom[3] == (byte) 0x00)) {
-            charset = Charset.DEFAULT_UTF_32_LE;
-            unread = n - 4;
-        } else if ((bom[0] == (byte) 0xEF) && (bom[1] == (byte) 0xBB) && (bom[2] == (byte) 0xBF)) {
-            charset = Charset.DEFAULT_UTF_8;
-            unread = n - 3;
-        } else if ((bom[0] == (byte) 0xFE) && (bom[1] == (byte) 0xFF)) {
-            charset = Charset.DEFAULT_UTF_16_BE;
-            unread = n - 2;
-        } else if ((bom[0] == (byte) 0xFF) && (bom[1] == (byte) 0xFE)) {
-            charset = Charset.DEFAULT_UTF_16_LE;
-            unread = n - 2;
-        } else {
+        for (final ByteOrderMark byteOrderMark : ByteOrderMark.ALL) {
+            if (byteOrderMark.test(bom)) {
+                charset = byteOrderMark.getCharsetName();
+                unread = n - byteOrderMark.length();
+                break;
+            }
+        }
+        if (0 == unread) {
+            // Unicode BOM mark not found, unread all bytes
             charset = defaultCharset;
             unread = n;
         }

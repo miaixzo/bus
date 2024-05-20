@@ -28,8 +28,8 @@ package org.miaixz.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -187,7 +187,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
     private static Map<String, String> queryLabelMap() {
         Map<String, String> labelMap = new HashMap<>();
         for (String line : Executor.runNative("lsblk -o mountpoint,label")) {
-            String[] split = RegEx.SPACES.split(line, 2);
+            String[] split = Pattern.SPACES_PATTERN.split(line, 2);
             if (split.length == 2) {
                 labelMap.put(split[0], split[1]);
             }

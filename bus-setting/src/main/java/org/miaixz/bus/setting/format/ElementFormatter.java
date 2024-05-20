@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.setting.format;
 
-import org.miaixz.bus.setting.magic.IniElement;
+import org.miaixz.bus.setting.metric.ini.IniElement;
 
 /**
  * 将字符串值格式设置为{@link IniElement}

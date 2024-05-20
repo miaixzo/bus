@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class Divice extends UserAgent {
     /**
      * 支持的移动平台类型
      */
-    public static final List<Divice> MOBILE_DIVICES = CollKit.newArrayList(
+    public static final List<Divice> MOBILE_DIVICES = ListKit.of(
             WINDOWS_PHONE,
             IPAD,
             IPOD,
@@ -90,7 +90,7 @@ public class Divice extends UserAgent {
     /**
      * 支持的桌面平台类型
      */
-    public static final List<Divice> DESKTOP_DIVICES = CollKit.newArrayList(
+    public static final List<Divice> DESKTOP_DIVICES = ListKit.of(
             new Divice("Windows", "windows"),
             new Divice("Mac", "(macintosh|darwin)"),
             new Divice("Linux", "linux"),

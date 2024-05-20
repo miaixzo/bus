@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 import org.miaixz.bus.core.toolkit.PatternKit;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class Browser extends UserAgent {
     /**
      * 支持的浏览器类型
      */
-    public static final List<Browser> BROWERS = CollKit.newArrayList(
+    public static final List<Browser> BROWERS = ListKit.of(
             // 部分特殊浏览器是基于安卓、Iphone等的，需要优先判断
             // 企业微信 企业微信使用微信浏览器内核,会包含 MicroMessenger 所以要放在前面
             new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),

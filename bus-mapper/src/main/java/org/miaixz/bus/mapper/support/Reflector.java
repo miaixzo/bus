@@ -29,9 +29,8 @@ import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.exception.MapperException;
-import org.miaixz.bus.core.lang.function.FuncX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.exception.MapperException;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
@@ -90,7 +89,7 @@ public class Reflector {
         return mapperClass;
     }
 
-    public static String fnToFieldName(FuncX fn) {
+    public static String fnToFieldName(FunctionX fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(Boolean.TRUE);
@@ -103,13 +102,13 @@ public class Reflector {
             }
             return Introspector.decapitalize(getter);
         } catch (ReflectiveOperationException e) {
-            throw new InternalException(e);
+            throw new MapperException(e);
         }
     }
 
-    public static String[] fnToFieldNames(FuncX... fns) {
+    public static String[] fnToFieldNames(FunctionX... fns) {
         List<String> list = new ArrayList<>();
-        for (FuncX fn : fns) {
+        for (FunctionX fn : fns) {
             list.add(fnToFieldName(fn));
         }
         return list.toArray(new String[0]);

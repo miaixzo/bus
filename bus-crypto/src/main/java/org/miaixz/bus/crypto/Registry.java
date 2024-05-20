@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.crypto.provider.*;
+import org.miaixz.bus.crypto.metric.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

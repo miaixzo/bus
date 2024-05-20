@@ -60,7 +60,7 @@ public class AspectjValidateProxy {
             "||@annotation(org.springframework.web.bind.annotation.GetMapping)" +
             "||@annotation(org.springframework.web.bind.annotation.DeleteMapping)" +
             "||@annotation(org.springframework.web.bind.annotation.CrossOrigin)" +
-            "||execution(* *(@org.miaixz.bus.validate.annotation.Valid (*), ..))")
+            "||execution(* *(@org.miaixz.bus.validate.magic.annotation.Valid (*), ..))")
     public void match() {
 
     }

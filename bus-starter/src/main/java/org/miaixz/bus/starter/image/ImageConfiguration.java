@@ -26,7 +26,7 @@
 package org.miaixz.bus.starter.image;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.image.Args;
 import org.miaixz.bus.image.Centre;
@@ -67,16 +67,16 @@ public class ImageConfiguration {
             }
             Args args = new Args(true);
             if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
-                args.setExtendSopClassesURL(FileKit.getUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+                args.setExtendSopClassesURL(ResourceKit.getResourceUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
-                args.setExtendSopClassesURL(FileKit.getUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+                args.setExtendSopClassesURL(ResourceKit.getResourceUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getSopClass())) {
-                args.setTransferCapabilityFile(FileKit.getUrl(this.properties.getNode().getSopClass(), ImageConfiguration.class));
+                args.setTransferCapabilityFile(ResourceKit.getResourceUrl(this.properties.getNode().getSopClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getTcsClass())) {
-                args.setExtendStorageSOPClass(FileKit.getUrl(this.properties.getNode().getTcsClass(), ImageConfiguration.class));
+                args.setExtendStorageSOPClass(ResourceKit.getResourceUrl(this.properties.getNode().getTcsClass(), ImageConfiguration.class));
             }
             return Centre.builder().args(args).efforts(efforts)
                     .node(new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(), Integer.valueOf(this.properties.getNode().getPort())))

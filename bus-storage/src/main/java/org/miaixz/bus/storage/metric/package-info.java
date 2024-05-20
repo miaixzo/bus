@@ -1,5 +1,5 @@
 /**
- * OSS存储缓存机制
+ * OSS存储服务具体实现
  *
  * @author Kimi Liu
  * @since Java 17+

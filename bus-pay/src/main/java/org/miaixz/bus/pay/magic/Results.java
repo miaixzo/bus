@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 

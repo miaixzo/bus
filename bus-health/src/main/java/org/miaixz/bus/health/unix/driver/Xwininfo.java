@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility to query X11 windows
@@ -49,9 +48,9 @@ import java.util.regex.Pattern;
 @ThreadSafe
 public final class Xwininfo {
 
-    private static final String[] NET_CLIENT_LIST_STACKING = RegEx.SPACES.split("xprop -root _NET_CLIENT_LIST_STACKING");
-    private static final String[] XWININFO_ROOT_TREE = RegEx.SPACES.split("xwininfo -root -tree");
-    private static final String[] XPROP_NET_WM_PID_ID = RegEx.SPACES.split("xprop _NET_WM_PID -id");
+    private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN.split("xprop -root _NET_CLIENT_LIST_STACKING");
+    private static final String[] XWININFO_ROOT_TREE = Pattern.SPACES_PATTERN.split("xwininfo -root -tree");
+    private static final String[] XPROP_NET_WM_PID_ID = Pattern.SPACES_PATTERN.split("xprop _NET_WM_PID -id");
 
     /**
      * Gets windows on the operating system's GUI desktop.
@@ -82,7 +81,7 @@ public final class Xwininfo {
             }
         }
         // Get all windows along with title and path info
-        Pattern windowPattern = Pattern.compile(
+        java.util.regex.Pattern windowPattern = java.util.regex.Pattern.compile(
                 "(0x\\S+) (?:\"(.+)\")?.*: \\((?:\"(.+)\" \".+\")?\\)  (\\d+)x(\\d+)\\+.+  \\+(-?\\d+)\\+(-?\\d+)");
         Map<String, String> windowNameMap = new HashMap<>();
         Map<String, String> windowPathMap = new HashMap<>();

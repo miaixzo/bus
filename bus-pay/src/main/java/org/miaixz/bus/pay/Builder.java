@@ -3,10 +3,10 @@ package org.miaixz.bus.pay;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.Snowflake;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
 import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.key.ID;
-import org.miaixz.bus.core.key.Snowflake;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Http;
@@ -394,7 +394,7 @@ public class Builder {
      * @throws Exception 异常信息
      */
     public static PrivateKey getPrivateKey(String keyPath) throws Exception {
-        String originalKey = FileKit.readString(keyPath);
+        String originalKey = FileKit.readString(keyPath, Charset.UTF_8);
         return getPrivateKeyByKeyContent(originalKey);
     }
 

@@ -26,9 +26,9 @@
 package org.miaixz.bus.mapper.additional.update.differ;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.VersionException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.VersionException;
 import org.miaixz.bus.mapper.annotation.Version;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;

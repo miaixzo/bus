@@ -37,11 +37,11 @@ import java.io.Serializable;
  */
 public abstract class TextFinder implements Finder, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     protected CharSequence text;
-    protected boolean negative;
     protected int endIndex = -1;
+    protected boolean negative;
 
     /**
      * 设置被查找的文本
@@ -49,19 +49,8 @@ public abstract class TextFinder implements Finder, Serializable {
      * @param text 文本
      * @return this
      */
-    public TextFinder setText(CharSequence text) {
+    public TextFinder setText(final CharSequence text) {
         this.text = Assert.notNull(text, "Text must be not null!");
-        return this;
-    }
-
-    /**
-     * 设置是否反向查找，{@code true}表示从后向前查找
-     *
-     * @param negative 结束位置（不包括）
-     * @return this
-     */
-    public TextFinder setNegative(boolean negative) {
-        this.negative = negative;
         return this;
     }
 
@@ -73,8 +62,19 @@ public abstract class TextFinder implements Finder, Serializable {
      * @param endIndex 结束位置（不包括）
      * @return this
      */
-    public TextFinder setEndIndex(int endIndex) {
+    public TextFinder setEndIndex(final int endIndex) {
         this.endIndex = endIndex;
+        return this;
+    }
+
+    /**
+     * 设置是否反向查找，{@code true}表示从后向前查找
+     *
+     * @param negative 结束位置（不包括）
+     * @return this
+     */
+    public TextFinder setNegative(final boolean negative) {
+        this.negative = negative;
         return this;
     }
 

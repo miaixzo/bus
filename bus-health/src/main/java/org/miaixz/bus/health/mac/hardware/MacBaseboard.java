@@ -31,7 +31,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
@@ -47,10 +47,10 @@ import java.util.function.Supplier;
 @Immutable
 final class MacBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoizer.memoize(
+    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(
             MacBaseboard::queryPlatform);
 
-    private static Quartet<String, String, String, String> queryPlatform() {
+    private static Tuple queryPlatform() {
         String manufacturer = null;
         String model = null;
         String version = null;
@@ -85,29 +85,29 @@ final class MacBaseboard extends AbstractBaseboard {
             }
             platformExpert.release();
         }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
     @Override
     public String getManufacturer() {
-        return manufModelVersSerial.get().getA();
+        return manufModelVersSerial.get().get(0);
     }
 
     @Override
     public String getModel() {
-        return manufModelVersSerial.get().getB();
+        return manufModelVersSerial.get().get(1);
     }
 
     @Override
     public String getVersion() {
-        return manufModelVersSerial.get().getC();
+        return manufModelVersSerial.get().get(2);
     }
 
     @Override
     public String getSerialNumber() {
-        return manufModelVersSerial.get().getD();
+        return manufModelVersSerial.get().get(3);
     }
 
 }

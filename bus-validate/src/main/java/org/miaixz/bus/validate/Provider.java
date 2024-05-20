@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.validate;
 
-import org.miaixz.bus.core.exception.NoSuchException;
-import org.miaixz.bus.core.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.NoSuchException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.validate.annotation.Complex;
-import org.miaixz.bus.validate.validators.Property;
+import org.miaixz.bus.validate.magic.Property;
+import org.miaixz.bus.validate.magic.annotation.Complex;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -59,7 +59,7 @@ public class Provider {
      * @return the object
      */
     public static <T> T on(Object object) {
-        return (T) new Validated(object).access();
+        return (T) new Verified(object).access();
     }
 
     /**
@@ -74,7 +74,7 @@ public class Provider {
      * @return the object
      */
     public static <T> T on(Object object, Context context) {
-        return (T) new Validated(object, context).access();
+        return (T) new Verified(object, context).access();
     }
 
     /**
@@ -89,7 +89,7 @@ public class Provider {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations) {
-        return (T) new Validated(object, annotations).access();
+        return (T) new Verified(object, annotations).access();
     }
 
     /**
@@ -105,7 +105,7 @@ public class Provider {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
-        return (T) new Validated(object, annotations, context).access();
+        return (T) new Verified(object, annotations, context).access();
     }
 
     /**
@@ -122,7 +122,7 @@ public class Provider {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
-        return (T) new Validated(object, annotations, context, field).access();
+        return (T) new Verified(object, annotations, context, field).access();
     }
 
     /**

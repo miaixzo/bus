@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern.parser;
 
-import org.miaixz.bus.core.exception.CrontabException;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.lang.exception.CrontabException;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.toolkit.ListKit;
 import org.miaixz.bus.core.toolkit.MathKit;
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.cron.pattern.Part;
 import org.miaixz.bus.cron.pattern.matcher.*;
 
@@ -63,7 +63,7 @@ public class PartParser {
      *
      * @param part 对应解析的部分枚举
      */
-    public PartParser(Part part) {
+    public PartParser(final Part part) {
         this.part = part;
     }
 
@@ -73,7 +73,7 @@ public class PartParser {
      * @param part 对应解析的部分枚举
      * @return 解析器
      */
-    public static PartParser of(Part part) {
+    public static PartParser of(final Part part) {
         return new PartParser(part);
     }
 
@@ -84,7 +84,7 @@ public class PartParser {
      * @param value 被检查的值
      * @return 是否为全匹配符
      */
-    private static boolean isMatchAllString(String value) {
+    private static boolean isMatchAllString(final String value) {
         return (1 == value.length()) && ("*".equals(value) || "?".equals(value));
     }
 
@@ -100,14 +100,14 @@ public class PartParser {
      * @param value 表达式
      * @return {@link PartMatcher}
      */
-    public PartMatcher parse(String value) {
+    public PartMatcher parse(final String value) {
         if (isMatchAllString(value)) {
             //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
             return new AlwaysTrueMatcher();
         }
 
         final List<Integer> values = parseArray(value);
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             throw new CrontabException("Invalid part value: [{}]", value);
         }
 
@@ -132,12 +132,12 @@ public class PartParser {
      * @param value 子表达式值
      * @return 值列表
      */
-    private List<Integer> parseArray(String value) {
+    private List<Integer> parseArray(final String value) {
         final List<Integer> values = new ArrayList<>();
 
-        final List<String> parts = StringKit.split(value, Symbol.C_COMMA);
-        for (String part : parts) {
-            CollKit.addAllIfNotContains(values, parseStep(part));
+        final List<String> parts = CharsBacker.split(value, Symbol.COMMA);
+        for (final String part : parts) {
+            ListKit.addAllIfNotContains(values, parseStep(part));
         }
         return values;
     }
@@ -154,15 +154,16 @@ public class PartParser {
      * @param value 表达式值
      * @return List
      */
-    private List<Integer> parseStep(String value) {
-        final List<String> parts = StringKit.split(value, Symbol.C_SLASH);
-        int size = parts.size();
+    private List<Integer> parseStep(final String value) {
+        final List<String> parts = CharsBacker.split(value, Symbol.SLASH);
+        final int size = parts.size();
 
-        List<Integer> results;
+        final List<Integer> results;
         if (size == 1) {// 普通形式
             results = parseRange(value, -1);
         } else if (size == 2) {// 间隔形式
-            final int step = parseNumber(parts.get(1));
+            // 步进不检查范围
+            final int step = parseNumber(parts.get(1), false);
             if (step < 1) {
                 throw new CrontabException("Non positive divisor for field: [{}]", value);
             }
@@ -187,15 +188,15 @@ public class PartParser {
      * @param step  步进
      * @return List
      */
-    private List<Integer> parseRange(String value, int step) {
+    private List<Integer> parseRange(final String value, int step) {
         final List<Integer> results = new ArrayList<>();
 
         // 全部匹配形式
         if (value.length() <= 2) {
             //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
             int minValue = part.getMin();
-            if (false == isMatchAllString(value)) {
-                minValue = Math.max(minValue, parseNumber(value));
+            if (!isMatchAllString(value)) {
+                minValue = Math.max(minValue, parseNumber(value, true));
             } else {
                 //在全匹配模式下，如果步进不存在，表示步进为1
                 if (step < 1) {
@@ -219,29 +220,28 @@ public class PartParser {
         }
 
         //Range模式
-        List<String> parts = StringKit.split(value, '-');
-        int size = parts.size();
+        final List<String> parts = CharsBacker.split(value, Symbol.MINUS);
+        final int size = parts.size();
         if (size == 1) {// 普通值
-            final int v1 = parseNumber(value);
+            final int v1 = parseNumber(value, true);
             if (step > 0) {//类似 20/2的形式
                 MathKit.appendRange(v1, part.getMax(), step, results);
             } else {
                 results.add(v1);
             }
         } else if (size == 2) {// range值
-            final int v1 = parseNumber(parts.get(0));
-            final int v2 = parseNumber(parts.get(1));
+            final int v1 = parseNumber(parts.get(0), true);
+            final int v2 = parseNumber(parts.get(1), true);
             if (step < 1) {
                 //在range模式下，如果步进不存在，表示步进为1
                 step = 1;
             }
-            if (v1 < v2) {// 正常范围，例如：2-5
+            if (v1 <= v2) {// 正常范围，例如：2-5
+                // 对于类似3-3这种形式，忽略step，即3-3/2与单值3一致
                 MathKit.appendRange(v1, v2, step, results);
-            } else if (v1 > v2) {// 逆向范围，反选模式，例如：5-2
+            } else {// 逆向范围，反选模式，例如：5-2
                 MathKit.appendRange(v1, part.getMax(), step, results);
                 MathKit.appendRange(part.getMin(), v2, step, results);
-            } else {// v1 == v2，此时与单值模式一致
-                MathKit.appendRange(v1, part.getMax(), step, results);
             }
         } else {
             throw new CrontabException("Invalid syntax of field: [{}]", value);
@@ -252,15 +252,16 @@ public class PartParser {
     /**
      * 解析单个int值，支持别名
      *
-     * @param value 被解析的值
+     * @param value      被解析的值
+     * @param checkValue 是否检查值在有效范围内
      * @return 解析结果
      * @throws CrontabException 当无效数字或无效别名时抛出
      */
-    private int parseNumber(String value) throws CrontabException {
+    private int parseNumber(final String value, final boolean checkValue) throws CrontabException {
         int i;
         try {
             i = Integer.parseInt(value);
-        } catch (NumberFormatException ignore) {
+        } catch (final NumberFormatException ignore) {
             i = parseAlias(value);
         }
 
@@ -270,11 +271,11 @@ public class PartParser {
         }
 
         // 周日可以用0或7表示，统一转换为0
-        if (Part.DAY_OF_WEEK.equals(this.part) && Fields.Week.Sun.getKey() == i) {
-            i = Fields.Week.Sun.ordinal();
+        if (Part.DAY_OF_WEEK.equals(this.part) && Fields.Week.SUNDAY.getIso8601Value() == i) {
+            i = Fields.Week.SUNDAY.ordinal();
         }
 
-        return part.checkValue(i);
+        return checkValue ? part.checkValue(i) : i;
     }
 
     /**
@@ -288,7 +289,7 @@ public class PartParser {
      * @return 解析int值
      * @throws CrontabException 无匹配别名时抛出异常
      */
-    private int parseAlias(String name) throws CrontabException {
+    private int parseAlias(final String name) throws CrontabException {
         if ("L".equalsIgnoreCase(name)) {
             // L表示最大值
             return part.getMax();
@@ -297,10 +298,10 @@ public class PartParser {
         switch (this.part) {
             case MONTH:
                 // 月份从1开始
-                return Fields.Month.valueOf(name).ordinal();
+                return Fields.Month.of(name).getValueBaseOne();
             case DAY_OF_WEEK:
                 // 周从0开始，0表示周日
-                return Fields.Month.valueOf(name).ordinal();
+                return Fields.Week.of(name).ordinal();
         }
 
         throw new CrontabException("Invalid alias value: [{}]", name);

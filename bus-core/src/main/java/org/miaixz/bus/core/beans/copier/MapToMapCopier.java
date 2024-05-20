@@ -50,9 +50,9 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
      * @param source      来源Map
      * @param target      目标Bean对象
      * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项
+     * @param copyOptions 拷贝选项，{@code null}使用默认配置
      */
-    public MapToMapCopier(Map source, Map target, Type targetType, CopyOptions copyOptions) {
+    public MapToMapCopier(final Map source, final Map target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }
@@ -82,7 +82,7 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
 
             final Object targetValue = target.get(sKey);
             // 非覆盖模式下，如果目标值存在，则跳过
-            if (false == copyOptions.override && null != targetValue) {
+            if (!copyOptions.override && null != targetValue) {
                 return;
             }
 

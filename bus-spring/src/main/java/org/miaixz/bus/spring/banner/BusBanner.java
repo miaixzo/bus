@@ -54,7 +54,7 @@ public class BusBanner implements Banner {
         printStream.println();
         printStream.println(AnsiOutput.toString(
                 AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
+                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.all())));
         printStream.println();
     }
 

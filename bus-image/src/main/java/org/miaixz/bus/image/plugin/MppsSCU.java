@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;

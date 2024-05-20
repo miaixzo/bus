@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Parsing;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public final class Xrandr {
                     continue;
                 }
                 String edidStr = sb.toString();
-                byte[] edid = Parsing.hexStringToByteArray(edidStr);
+                byte[] edid = ByteKit.hexStringToByteArray(edidStr);
                 if (edid.length >= 128) {
                     displays.add(edid);
                 }

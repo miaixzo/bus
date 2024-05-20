@@ -26,7 +26,7 @@
 package org.miaixz.bus.starter.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;

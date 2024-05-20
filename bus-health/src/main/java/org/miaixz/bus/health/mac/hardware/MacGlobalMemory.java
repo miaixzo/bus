@@ -58,6 +58,20 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
+    private static long queryPhysMem() {
+        return SysctlKit.sysctl("hw.memsize", 0L);
+    }
+
+    private static long queryPageSize() {
+        try (ByRef.CloseableLongByReference pPageSize = new ByRef.CloseableLongByReference()) {
+            if (0 == SystemB.INSTANCE.host_page_size(SystemB.INSTANCE.mach_host_self(), pPageSize)) {
+                return pPageSize.getValue();
+            }
+        }
+        Logger.error("Failed to get host page size. Error code: {}", Native.getLastError());
+        return 4098L;
+    }
+
     @Override
     public long getAvailable() {
         return available.get();
@@ -76,20 +90,6 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
-    }
-
-    private static long queryPhysMem() {
-        return SysctlKit.sysctl("hw.memsize", 0L);
-    }
-
-    private static long queryPageSize() {
-        try (ByRef.CloseableLongByReference pPageSize = new ByRef.CloseableLongByReference()) {
-            if (0 == SystemB.INSTANCE.host_page_size(SystemB.INSTANCE.mach_host_self(), pPageSize)) {
-                return pPageSize.getValue();
-            }
-        }
-        Logger.error("Failed to get host page size. Error code: {}", Native.getLastError());
-        return 4098L;
     }
 
     private long queryVmStats() {

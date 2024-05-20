@@ -31,8 +31,8 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -96,7 +96,7 @@ public class TwitterProvider extends DefaultProvider {
     public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
         TreeMap<String, Object> map = new TreeMap<>(params);
         String str = Builder.parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + "&" + UriKit.encode(baseUrl) + "&" + UriKit.encode(str);
+        String baseStr = method.toUpperCase() + "&" + UrlEncoder.encodeAll(baseUrl) + "&" + UrlEncoder.encodeAll(str);
         String signKey = apiSecret + "&" + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
         byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
 
@@ -222,7 +222,7 @@ public class TwitterProvider extends DefaultProvider {
         final StringBuilder sb = new StringBuilder(PREAMBLE + " ");
 
         for (Map.Entry<String, String> param : oauthParams.entrySet()) {
-            sb.append(param.getKey()).append("=\"").append(UriKit.encode(param.getValue())).append('"').append(", ");
+            sb.append(param.getKey()).append("=\"").append(UrlEncoder.encodeAll(param.getValue())).append('"').append(", ");
         }
 
         return sb.deleteCharAt(sb.length() - 2).toString();

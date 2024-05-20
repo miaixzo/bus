@@ -27,8 +27,8 @@ package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;

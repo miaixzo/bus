@@ -28,7 +28,7 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
@@ -47,35 +47,10 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoizer.memoize(
+    private final Supplier<Tuple> manufNameDescVersRelease = Memoizer.memoize(
             WindowsFirmware::queryManufNameDescVersRelease);
 
-    @Override
-    public String getManufacturer() {
-        return manufNameDescVersRelease.get().getA();
-    }
-
-    @Override
-    public String getName() {
-        return manufNameDescVersRelease.get().getB();
-    }
-
-    @Override
-    public String getDescription() {
-        return manufNameDescVersRelease.get().getC();
-    }
-
-    @Override
-    public String getVersion() {
-        return manufNameDescVersRelease.get().getD();
-    }
-
-    @Override
-    public String getReleaseDate() {
-        return manufNameDescVersRelease.get().getE();
-    }
-
-    private static Quintet<String, String, String, String, String> queryManufNameDescVersRelease() {
+    private static Tuple queryManufNameDescVersRelease() {
         String manufacturer = null;
         String name = null;
         String description = null;
@@ -89,11 +64,36 @@ final class WindowsFirmware extends AbstractFirmware {
             version = WmiKit.getString(win32BIOS, BiosProperty.VERSION, 0);
             releaseDate = WmiKit.getDateString(win32BIOS, BiosProperty.RELEASEDATE, 0);
         }
-        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                 StringKit.isBlank(description) ? Normal.UNKNOWN : description,
                 StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return manufNameDescVersRelease.get().get(0);
+    }
+
+    @Override
+    public String getName() {
+        return manufNameDescVersRelease.get().get(1);
+    }
+
+    @Override
+    public String getDescription() {
+        return manufNameDescVersRelease.get().get(2);
+    }
+
+    @Override
+    public String getVersion() {
+        return manufNameDescVersRelease.get().get(3);
+    }
+
+    @Override
+    public String getReleaseDate() {
+        return manufNameDescVersRelease.get().get(4);
     }
 
 }

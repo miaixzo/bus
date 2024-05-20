@@ -26,8 +26,8 @@
 package org.miaixz.bus.sensitive;
 
 import lombok.Data;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.sensitive.annotation.Shield;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

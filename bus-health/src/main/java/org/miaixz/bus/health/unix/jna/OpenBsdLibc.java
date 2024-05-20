@@ -80,6 +80,14 @@ public interface OpenBsdLibc extends CLibrary {
     int INT_SIZE = Native.getNativeSize(int.class);
 
     /**
+     * Returns the thread ID of the calling thread. This is used in the implementation of the thread library (-lpthread)
+     * and can appear in the output of system utilities such as ps and kdump.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int getthrid();
+
+    /**
      * OpenBSD Cache stats for memory
      */
     @FieldOrder({"numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
@@ -119,12 +127,4 @@ public interface OpenBsdLibc extends CLibrary {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }
-
-    /**
-     * Returns the thread ID of the calling thread. This is used in the implementation of the thread library (-lpthread)
-     * and can appear in the output of system utilities such as ps and kdump.
-     *
-     * @return the thread ID of the calling thread.
-     */
-    int getthrid();
 }

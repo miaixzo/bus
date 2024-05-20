@@ -26,9 +26,10 @@
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.toolkit.UrlKit;
 
 import java.io.File;
 import java.io.InputStream;
@@ -37,25 +38,34 @@ import java.net.URL;
 import java.nio.file.Path;
 
 /**
- * 文件资源访问对象
+ * 文件资源访问对象，支持{@link Path} 和 {@link File} 访问
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FileResource implements Resource, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final File file;
-    private final String name;
     private final long lastModified;
+    private final String name;
+
+    /**
+     * 构造
+     *
+     * @param path 文件绝对路径或相对ClassPath路径，但是这个路径不能指向一个jar包中的文件
+     */
+    public FileResource(final String path) {
+        this(FileKit.file(path));
+    }
 
     /**
      * 构造，文件名使用文件本身的名字，带扩展名
      *
      * @param path 文件
      */
-    public FileResource(Path path) {
+    public FileResource(final Path path) {
         this(path.toFile());
     }
 
@@ -64,30 +74,21 @@ public class FileResource implements Resource, Serializable {
      *
      * @param file 文件
      */
-    public FileResource(File file) {
-        this(file, file.getName());
+    public FileResource(final File file) {
+        this(file, null);
     }
 
     /**
      * 构造
      *
      * @param file     文件
-     * @param fileName 文件名，如果为null获取文件本身的文件名
+     * @param fileName 文件名，带扩展名，如果为null获取文件本身的文件名
      */
-    public FileResource(File file, String fileName) {
+    public FileResource(final File file, final String fileName) {
         Assert.notNull(file, "File must be not null !");
         this.file = file;
-        this.name = ObjectKit.defaultIfNull(fileName, file::getName);
         this.lastModified = file.lastModified();
-    }
-
-    /**
-     * 构造
-     *
-     * @param path 文件绝对路径或相对ClassPath路径，但是这个路径不能指向一个jar包中的文件
-     */
-    public FileResource(String path) {
-        this(FileKit.file(path));
+        this.name = ObjectKit.defaultIfNull(fileName, file::getName);
     }
 
     @Override
@@ -97,12 +98,26 @@ public class FileResource implements Resource, Serializable {
 
     @Override
     public URL getUrl() {
-        return UriKit.getURL(this.file);
+        return UrlKit.getURL(this.file);
     }
 
     @Override
-    public InputStream getStream() {
+    public long size() {
+        return this.file.length();
+    }
+
+    @Override
+    public InputStream getStream() throws InternalException {
         return FileKit.getInputStream(this.file);
+    }
+
+    /**
+     * 获取文件
+     *
+     * @return 文件
+     */
+    public File getFile() {
+        return this.file;
     }
 
     @Override
@@ -118,15 +133,6 @@ public class FileResource implements Resource, Serializable {
     @Override
     public String toString() {
         return this.file.toString();
-    }
-
-    /**
-     * 获取文件
-     *
-     * @return 文件
-     */
-    public File getFile() {
-        return this.file;
     }
 
 }

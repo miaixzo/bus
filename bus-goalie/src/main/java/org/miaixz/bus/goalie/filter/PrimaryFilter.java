@@ -26,8 +26,8 @@
 package org.miaixz.bus.goalie.filter;
 
 import org.miaixz.bus.base.normal.ErrorCode;
-import org.miaixz.bus.core.exception.BusinessException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Config;
@@ -120,8 +120,8 @@ public class PrimaryFilter implements WebFilter {
 
         // 过滤无效参数及值- undefined
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            if (Normal.UNDEFINED.equals(StringKit.lowerCase(entry.getKey()))
-                    || Normal.UNDEFINED.equals(StringKit.lowerCase(entry.getValue()))) {
+            if (Normal.UNDEFINED.equals(entry.getKey().toLowerCase())
+                    || Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
                 throw new BusinessException(ErrorCode.EM_100101);
             }
         }

@@ -28,8 +28,8 @@ package org.miaixz.bus.health.unix.platform.solaris.software;
 import com.sun.jna.platform.unix.solaris.Kstat2;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -60,20 +60,19 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
-    private static final String VERSION;
-    private static final String BUILD_NUMBER;
-
     /**
      * This static field identifies if the kstat2 library (available in Solaris 11.4 or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;
+    private static final String VERSION;
+    private static final String BUILD_NUMBER;
     private static final boolean ALLOW_KSTAT2 = Config.get(Config._UNIX_SOLARIS_ALLOWKSTAT2, true);
     private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoizer
             .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoizer.defaultExpiration());
     private static final long BOOTTIME = querySystemBootTime();
 
     static {
-        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
+        String[] split = Pattern.SPACES_PATTERN.split(Executor.getFirstAnswer("uname -rv"));
         VERSION = split[0];
         BUILD_NUMBER = split.length > 1 ? split[1] : Normal.EMPTY;
     }
@@ -241,7 +240,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         if (pid < 0) {
             // If no pid, get process files in proc
             File directory = new File("/proc");
-            numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+            numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());
         } else {
             // If pid specified just find that file
             File pidFile = new File("/proc/" + pid);
@@ -306,7 +305,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                     services.add(new OSService(name, 0, OSService.State.STOPPED));
                 }
             } else if (line.startsWith(" ")) {
-                String[] split = RegEx.SPACES.split(line.trim());
+                String[] split = Pattern.SPACES_PATTERN.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Parsing.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));
                 }

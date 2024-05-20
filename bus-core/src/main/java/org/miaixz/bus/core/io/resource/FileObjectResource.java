@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.UrlKit;
 
 import javax.tools.FileObject;
 import java.io.BufferedReader;
@@ -51,7 +52,7 @@ public class FileObjectResource implements Resource {
      *
      * @param fileObject {@link FileObject}
      */
-    public FileObjectResource(FileObject fileObject) {
+    public FileObjectResource(final FileObject fileObject) {
         this.fileObject = fileObject;
     }
 
@@ -73,25 +74,30 @@ public class FileObjectResource implements Resource {
     public URL getUrl() {
         try {
             return this.fileObject.toUri().toURL();
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             return null;
         }
+    }
+
+    @Override
+    public long size() {
+        return UrlKit.size(getUrl());
     }
 
     @Override
     public InputStream getStream() {
         try {
             return this.fileObject.openInputStream();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
 
     @Override
-    public BufferedReader getReader(Charset charset) {
+    public BufferedReader getReader(final Charset charset) {
         try {
-            return IoKit.getReader(this.fileObject.openReader(false));
-        } catch (IOException e) {
+            return IoKit.toBuffered(this.fileObject.openReader(false));
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }

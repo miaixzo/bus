@@ -26,7 +26,7 @@
 package org.miaixz.bus.proxy.provider;
 
 import com.caucho.burlap.client.BurlapProxyFactory;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.proxy.Provider;
 
 import java.net.MalformedURLException;

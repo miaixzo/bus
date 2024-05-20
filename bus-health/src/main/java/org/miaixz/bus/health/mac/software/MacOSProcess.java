@@ -106,12 +106,11 @@ public class MacOSProcess extends AbstractOSProcess {
         TICKS_PER_MS = ticksPerSec / 1000L;
     }
 
-    private int majorVersion;
-    private int minorVersion;
-
     private final MacOperatingSystem os;
     private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer.memoize(this::queryArgsAndEnvironment);
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private int majorVersion;
+    private int minorVersion;
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
     private String currentWorkingDirectory;

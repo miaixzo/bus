@@ -58,11 +58,8 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class OpenBsdOSProcess extends AbstractOSProcess {
 
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
-
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
-
     private static final int ARGMAX;
 
     static {
@@ -81,6 +78,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         }
     }
 
+    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
     private final OpenBsdOperatingSystem os;
     private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
     private final int bitness;
@@ -93,6 +91,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private String group;
     private String groupID;
     private String commandLineBackup;
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private int parentProcessID;
     private int threadCount;
     private int priority;
@@ -107,7 +106,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     public OpenBsdOSProcess(int pid, Map<PsKeywords, String> psMap, OpenBsdOperatingSystem os) {
         super(pid);
@@ -456,13 +454,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return true;
     }
 
-    /**
-     * Package-private for use by OpenBsdOSThread
-     */
-    enum PsThreadColumns {
-        TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS
-    }
-
     private void updateThreadCount() {
         List<String> threadList = Executor.runNative("ps -axHo tid -p " + getProcessID());
         if (!threadList.isEmpty()) {
@@ -470,5 +461,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             this.threadCount = threadList.size() - 1;
         }
         this.threadCount = 1;
+    }
+
+    /**
+     * Package-private for use by OpenBsdOSThread
+     */
+    enum PsThreadColumns {
+        TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS
     }
 }

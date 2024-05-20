@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.codec.binary.decoder;
 
 import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
-import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Base62解码器
@@ -38,16 +38,14 @@ import org.miaixz.bus.core.lang.Normal;
 public class Base62Decoder implements Decoder<byte[], byte[]> {
 
     /**
-     * GMP 解码器
+     * GMP风格解码器
      */
-    public static Base62Decoder GMP_DECODER = new Base62Decoder(Normal.UPPER_LOWER_NUMBER.getBytes());
+    public static Base62Decoder GMP_DECODER = new Base62Decoder(Base62Encoder.GMP);
     /**
-     * INVERTED 解码器
+     * 反转风格，即将GMP风格中的大小写做转换解码器
      */
-    public static Base62Decoder INVERTED_DECODER = new Base62Decoder(Normal.LOWER_UPPER_NUMBER.getBytes());
-    /**
-     * 查找表
-     */
+    public static Base62Decoder INVERTED_DECODER = new Base62Decoder(Base62Encoder.INVERTED);
+
     private final byte[] lookupTable;
 
     /**
@@ -68,4 +66,5 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
         final byte[] prepared = Base62Provider.translate(encoded, lookupTable);
         return Base62Provider.convert(prepared, Base62Provider.TARGET_BASE, Base62Provider.STANDARD_BASE);
     }
+
 }

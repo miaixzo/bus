@@ -35,10 +35,11 @@ import java.util.BitSet;
  */
 public abstract class AbstractFilter implements BloomFilter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final BitSet bitSet;
     protected int size;
+
 
     /**
      * 构造
@@ -70,7 +71,7 @@ public abstract class AbstractFilter implements BloomFilter {
      * 自定义Hash方法
      *
      * @param text 字符串
-     * @return HashCode
+     * @return the int
      */
     public abstract int hash(String text);
 

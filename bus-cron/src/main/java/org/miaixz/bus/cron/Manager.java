@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.cron.factory.CronTask;
-import org.miaixz.bus.cron.factory.Task;
+import org.miaixz.bus.cron.crontab.CronCrontab;
+import org.miaixz.bus.cron.crontab.Crontab;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,19 +37,29 @@ import java.util.List;
  * 作业执行管理器
  * 负责管理作业的启动、停止等
  *
+ * <p>
+ * 此类用于管理正在运行的作业情况，作业启动后加入任务列表，任务结束移除
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Manager implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
+
     /**
      * 执行器列表
      */
     private final List<Executor> executors = new ArrayList<>();
     protected Scheduler scheduler;
 
-    public Manager(Scheduler scheduler) {
+    /**
+     * 构造
+     *
+     * @param scheduler {@link Scheduler}
+     */
+    public Manager(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -65,10 +75,10 @@ public class Manager implements Serializable {
     /**
      * 启动 执行器TaskExecutor，即启动作业
      *
-     * @param task {@link Task}
+     * @param task {@link Crontab}
      * @return {@link Executor}
      */
-    public Executor spawnExecutor(CronTask task) {
+    public Executor spawnExecutor(final CronCrontab task) {
         final Executor executor = new Executor(this.scheduler, task);
         synchronized (this.executors) {
             this.executors.add(executor);
@@ -78,12 +88,12 @@ public class Manager implements Serializable {
     }
 
     /**
-     * 执行器执行完毕调用此方法,将执行器从执行器列表移除
+     * 执行器执行完毕调用此方法，将执行器从执行器列表移除，此方法由{@link Executor}对象调用，用于通知管理器自身已完成执行
      *
      * @param executor 执行器 {@link Executor}
      * @return this
      */
-    public Manager notifyExecutorCompleted(Executor executor) {
+    public Manager notifyExecutorCompleted(final Executor executor) {
         synchronized (executors) {
             executors.remove(executor);
         }

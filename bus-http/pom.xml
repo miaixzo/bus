@@ -44,6 +44,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.32</lombok.version>
+        <servlet.version>6.1.0-M2</servlet.version>
     </properties>
 
     <dependencies>
@@ -56,6 +57,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${servlet.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

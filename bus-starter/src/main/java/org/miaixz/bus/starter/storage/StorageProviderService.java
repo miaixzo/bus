@@ -26,14 +26,14 @@
 package org.miaixz.bus.starter.storage;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
 import org.miaixz.bus.storage.Registry;
-import org.miaixz.bus.storage.metric.StorageCache;
-import org.miaixz.bus.storage.provider.*;
+import org.miaixz.bus.storage.cache.StorageCache;
+import org.miaixz.bus.storage.metric.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

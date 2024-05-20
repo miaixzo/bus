@@ -77,7 +77,8 @@ public interface OSProcess {
      * will be frequently called for multiple processes, see the configuration file to enable a batch query mode
      * leveraging {@link Win32ProcessCached#getCommandLine} to improve performance, or setting that parameter via
      * {@link Config#set(String, Object)} before instantiating any {@link OSProcess} object.
-     *</p>
+     * </p>
+     *
      * @return the process command line.
      */
     String getCommandLine();

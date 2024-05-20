@@ -26,8 +26,8 @@
 package org.miaixz.bus.shade.screw.engine;
 
 import lombok.Data;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.shade.screw.Builder;
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.socket;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.socket.buffers.BufferPool;
 import org.miaixz.bus.socket.buffers.VirtualBuffer;
 

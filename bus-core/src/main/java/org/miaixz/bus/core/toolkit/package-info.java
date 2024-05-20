@@ -1,5 +1,6 @@
 /**
- * 工具包，提供各种工具方法，按照归类入口为XXXKit，如数组工具ArrayKit等
+ * 提供各种工具封装
+ * xyz:做好一切必要准备,可以行动了
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -29,7 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
@@ -59,16 +59,10 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
+    private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
     private final Supplier<perfstat_process_t[]> procCpu = Memoizer.memoize(PerfstatProcess::queryProcesses,
             Memoizer.defaultExpiration());
-
-    private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
-
-    @Override
-    public String queryManufacturer() {
-        return "IBM";
-    }
 
     private static long querySystemBootTimeMillis() {
         long bootTime = Who.queryBootTime();
@@ -76,6 +70,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return bootTime;
         }
         return System.currentTimeMillis() - Uptime.queryUpTime();
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "IBM";
     }
 
     @Override
@@ -238,7 +237,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         if (systemServicesInfoList.size() > 1) {
             systemServicesInfoList.remove(0); // remove header
             for (String systemService : systemServicesInfoList) {
-                String[] serviceSplit = RegEx.SPACES.split(systemService.trim());
+                String[] serviceSplit = Pattern.SPACES_PATTERN.split(systemService.trim());
                 if (systemService.contains("active")) {
                     if (serviceSplit.length == 4) {
                         services.add(new OSService(serviceSplit[0], Parsing.parseIntOrDefault(serviceSplit[2], 0),

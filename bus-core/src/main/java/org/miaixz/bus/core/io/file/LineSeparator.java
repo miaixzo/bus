@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 /**
  * 换行符枚举
  * 换行符包括：
@@ -43,28 +41,26 @@ import org.miaixz.bus.core.lang.Symbol;
  * @since Java 17+
  */
 public enum LineSeparator {
-
     /**
      * Mac系统换行符："\r"
      */
-    MAC(Symbol.CR),
+    MAC("\r"),
     /**
      * Linux系统换行符："\n"
      */
-    LINUX(Symbol.LF),
+    LINUX("\n"),
     /**
      * Windows系统换行符："\r\n"
      */
-    WINDOWS(Symbol.CRLF);
+    WINDOWS("\r\n");
 
     private final String value;
 
-    LineSeparator(String lineSeparator) {
+    LineSeparator(final String lineSeparator) {
         this.value = lineSeparator;
     }
 
     public String getValue() {
         return this.value;
     }
-
 }

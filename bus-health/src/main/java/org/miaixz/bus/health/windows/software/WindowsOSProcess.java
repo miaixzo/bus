@@ -77,17 +77,13 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     // track the OperatingSystem object that created this
     private final WindowsOperatingSystem os;
-
-    private final Supplier<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
     private final Supplier<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
     private final Supplier<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer.memoize(
             this::queryCwdCommandlineEnvironment);
     private final Supplier<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
-    private final Supplier<List<String>> args = Memoizer.memoize(this::queryArguments);
     private Map<Integer, ThreadPerformanceData.PerfCounterBlock> tcb;
-
     private String name;
+    private final Supplier<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
     private String path;
     private OSProcess.State state = OSProcess.State.INVALID;
     private int parentProcessID;
@@ -98,6 +94,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final Supplier<List<String>> args = Memoizer.memoize(this::queryArguments);
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
@@ -116,6 +114,24 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // Initialize thread counters
         this.tcb = threadMap;
         updateAttributes(processMap.get(pid), processWtsMap.get(pid));
+    }
+
+    private static Triplet<String, String, Map<String, String>> defaultCwdCommandlineEnvironment() {
+        return Triplet.of(Normal.EMPTY, Normal.EMPTY, Collections.emptyMap());
+    }
+
+    private static String readUnicodeString(HANDLE h, org.miaixz.bus.health.windows.jna.NtDll.UNICODE_STRING s) {
+        if (s.Length > 0) {
+            // Add space for null terminator
+            try (Memory m = new Memory(s.Length + 2L); ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
+                m.clear(); // really only need null in last 2 bytes but this is easier
+                Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
+                if (nRead.getValue() > 0) {
+                    return m.getWideString(0);
+                }
+            }
+        }
+        return Normal.EMPTY;
     }
 
     @Override
@@ -166,10 +182,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
     @Override
     public String getGroupID() {
         return groupInfo.get().getRight();
-    }
-
-    private static Triplet<String, String, Map<String, String>> defaultCwdCommandlineEnvironment() {
-        return Triplet.of(Normal.EMPTY, Normal.EMPTY, Collections.emptyMap());
     }
 
     @Override
@@ -266,20 +278,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
     @Override
     public long getMinorFaults() {
         return this.pageFaults;
-    }
-
-    private static String readUnicodeString(HANDLE h, org.miaixz.bus.health.windows.jna.NtDll.UNICODE_STRING s) {
-        if (s.Length > 0) {
-            // Add space for null terminator
-            try (Memory m = new Memory(s.Length + 2L); ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
-                m.clear(); // really only need null in last 2 bytes but this is easier
-                Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
-                if (nRead.getValue() > 0) {
-                    return m.getWideString(0);
-                }
-            }
-        }
-        return Normal.EMPTY;
     }
 
     @Override

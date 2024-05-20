@@ -25,446 +25,301 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.center.stream.spliterators.DropWhileSpliterator;
+import org.miaixz.bus.core.center.stream.spliterators.IterateSpliterator;
+import org.miaixz.bus.core.center.stream.spliterators.TakeWhileSpliterator;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.tree.HierarchyIterator;
 
-import java.io.*;
-import java.net.URL;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Spliterators;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * 集合的stream操作封装
+ * {@link Stream} 工具类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StreamKit {
 
-    private static final int COPY_BUFFER_SIZE = 2048;
-
-    private static final int BUF_SIZE = 8192;
-    private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+    /**
+     * @param array 数组
+     * @param <T>   元素类型
+     * @return {@link Stream}，如果提供的array为{@code null}，返回{@link Stream#empty()}
+     */
+    @SafeVarargs
+    public static <T> Stream<T> of(final T... array) {
+        return null == array ? Stream.empty() : Stream.of(array);
+    }
 
     /**
-     * 判断两个输入流是否严格相等
+     * {@link Iterable}转换为{@link Stream}，默认非并行
      *
-     * @param ina 输入流
-     * @param inb 输入流
-     * @return the boolean
-     * @throws IOException 异常
+     * @param iterable 集合
+     * @param <T>      集合元素类型
+     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
      */
-    public static boolean equals(InputStream ina, InputStream inb) throws IOException {
-        int dA;
-        while ((dA = ina.read()) != -1) {
-            int dB = inb.read();
-            if (dA != dB)
-                return false;
+    public static <T> Stream<T> of(final Iterable<T> iterable) {
+        return of(iterable, false);
+    }
+
+    /**
+     * {@link Iterable}转换为{@link Stream}
+     *
+     * @param iterable 集合
+     * @param parallel 是否并行
+     * @param <T>      集合元素类型
+     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
+     */
+    public static <T> Stream<T> of(final Iterable<T> iterable, final boolean parallel) {
+        if (null == iterable) {
+            return Stream.empty();
         }
-        return inb.read() == -1;
+        return iterable instanceof Collection ?
+                parallel ? ((Collection<T>) iterable).parallelStream() : ((Collection<T>) iterable).stream() :
+                StreamSupport.stream(iterable.spliterator(), parallel);
     }
 
     /**
-     * 从一个文本流中读取全部内容并返回
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输出流
+     * {@link Iterator} 转换为 {@link Stream}
      *
-     * @param reader 文本输出流
-     * @return 文本内容
-     * @throws IOException 异常
+     * @param iterator 迭代器
+     * @param <T>      集合元素类型
+     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
      */
-    public static StringBuilder read(Reader reader) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        read(reader, sb);
-        return sb;
+    public static <T> Stream<T> ofIter(final Iterator<T> iterator) {
+        return ofIter(iterator, false);
     }
 
     /**
-     * 读取一个输入流中所有的字节
+     * {@link Iterator} 转换为 {@link Stream}
      *
-     * @param ins 输入流,必须支持 available()
-     * @return 一个字节数组
-     * @throws IOException 异常
+     * @param iterator 迭代器
+     * @param parallel 是否并行
+     * @param <T>      集合元素类型
+     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
      */
-    public static byte[] read(InputStream ins) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        write(out, ins);
-        return out.toByteArray();
-    }
-
-    /**
-     * 从一个文本流中读取全部内容并写入缓冲
-     *
-     * @param reader 文本输出流
-     * @param sb     输出的文本缓冲
-     * @return 读取的字符数量
-     * @throws IOException 异常
-     */
-    public static int read(Reader reader, StringBuilder sb) throws IOException {
-        char[] cbuf = new char[BUF_SIZE];
-        int count = 0;
-        int len;
-        while (-1 != (len = reader.read(cbuf))) {
-            sb.append(cbuf, 0, len);
-            count += len;
+    public static <T> Stream<T> ofIter(final Iterator<T> iterator, final boolean parallel) {
+        if (null == iterator) {
+            return Stream.empty();
         }
-        return count;
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), parallel);
     }
 
     /**
-     * 从一个文本输入流读取所有内容,并将该流关闭
+     * 按行读取文件为{@link Stream}
      *
-     * @param reader 文本输入流
-     * @return 输入流所有内容
+     * @param file 文件
+     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
      */
-    public static String readAll(Reader reader) {
-        if (!(reader instanceof BufferedReader))
-            reader = new BufferedReader(reader);
+    public static Stream<String> of(final File file) {
+        return of(file, Charset.UTF_8);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param path 路径
+     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
+     */
+    public static Stream<String> of(final Path path) {
+        return of(path, Charset.UTF_8);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param file    文件
+     * @param charset 编码
+     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
+     */
+    public static Stream<String> of(final File file, final java.nio.charset.Charset charset) {
+        if (null == file) {
+            return Stream.empty();
+        }
+        return of(file.toPath(), charset);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param path    路径
+     * @param charset 编码
+     * @return {@link Stream}，如果提供的path为{@code null}，返回{@link Stream#empty()}
+     */
+    public static Stream<String> of(final Path path, final java.nio.charset.Charset charset) {
+        if (null == path) {
+            return Stream.empty();
+        }
         try {
-            StringBuilder sb = new StringBuilder();
-
-            char[] data = new char[Normal._64];
-            int len;
-            while (true) {
-                if ((len = reader.read(data)) == -1)
-                    break;
-                sb.append(data, 0, len);
-            }
-            return sb.toString();
-        } catch (IOException e) {
+            return Files.lines(path, charset);
+        } catch (final IOException e) {
             throw new InternalException(e);
-        } finally {
-            safeClose(reader);
-        }
-    }
-
-    public static String readText(InputStream in) throws IOException {
-        return readText(in, null, -1);
-    }
-
-    public static String readText(InputStream in, String encoding) throws IOException {
-        return readText(in, encoding, -1);
-    }
-
-    public static String readText(InputStream in, String encoding, int bufferSize)
-            throws IOException {
-        Reader reader = null == encoding ? new InputStreamReader(in) : new InputStreamReader(in,
-                encoding);
-
-        return readText(reader, bufferSize);
-    }
-
-    public static String readText(Reader reader) throws IOException {
-        return readText(reader, -1);
-    }
-
-    public static String readText(Reader reader, int bufferSize) throws IOException {
-        StringWriter writer = new StringWriter();
-
-        io(reader, writer, bufferSize);
-        return writer.toString();
-    }
-
-    /**
-     * 将一段文本全部写入一个writer
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输出流
-     *
-     * @param writer 操作器
-     * @param cs     文本
-     * @throws IOException 异常
-     */
-    public static void write(Writer writer, CharSequence cs) throws IOException {
-        if (null != cs && null != writer) {
-            writer.write(cs.toString());
-            writer.flush();
         }
     }
 
     /**
-     * 将输入流写入一个输出流 块大小为 8192
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输入/出流
+     * 通过函数创建Stream
      *
-     * @param ops 输出流
-     * @param ins 输入流
-     * @return 写入的字节数
-     * @throws IOException 异常
+     * @param seed           初始值
+     * @param elementCreator 递进函数，每次调用此函数获取下一个值
+     * @param limit          限制个数
+     * @param <T>            创建元素类型
+     * @return {@link Stream}
      */
-    public static long write(OutputStream ops, InputStream ins) throws IOException {
-        return write(ops, ins, BUF_SIZE);
+    public static <T> Stream<T> of(final T seed, final UnaryOperator<T> elementCreator, final int limit) {
+        return Stream.iterate(seed, elementCreator).limit(limit);
     }
 
     /**
-     * 将输入流写入一个输出流
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输入/出流
+     * 将Stream中所有元素以指定分隔符，合并为一个字符串，对象默认调用toString方法
      *
-     * @param ops        输出流
-     * @param ins        输入流
-     * @param bufferSize 缓冲块大小
-     * @return 写入的字节数
-     * @throws IOException 异常
+     * @param stream    {@link Stream}
+     * @param delimiter 分隔符
+     * @param <T>       元素类型
+     * @return 字符串，如果stream为{@code null}，返回{@code null}
      */
-    public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
-        if (null == ops || null == ins)
-            return 0;
-
-        byte[] buf = new byte[bufferSize];
-        int len;
-        long bytesCount = 0;
-        while (-1 != (len = ins.read(buf))) {
-            bytesCount += len;
-            ops.write(buf, 0, len);
+    public static <T> String join(final Stream<T> stream, final CharSequence delimiter) {
+        if (null == stream) {
+            return null;
         }
-        if (0 == bytesCount) {
-            ops.write(buf, 0, 0);
+        return stream.collect(CollectorKit.joining(delimiter));
+    }
+
+    /**
+     * 将Stream中所有元素以指定分隔符，合并为一个字符串
+     *
+     * @param stream       {@link Stream}
+     * @param delimiter    分隔符
+     * @param toStringFunc 元素转换为字符串的函数
+     * @param <T>          元素类型
+     * @return 字符串，如果stream为{@code null}，返回{@code null}
+     */
+    public static <T> String join(final Stream<T> stream, final CharSequence delimiter,
+                                  final Function<T, ? extends CharSequence> toStringFunc) {
+        if (null == stream) {
+            return null;
         }
-        ops.flush();
-        return bytesCount;
+        return stream.collect(CollectorKit.joining(delimiter, toStringFunc));
+    }
+
+
+    /**
+     * 返回无限有序流
+     * 该流由 初始值 然后判断条件 以及执行 迭代函数 进行迭代获取到元素
+     *
+     * @param <T>     元素类型
+     * @param seed    初始值
+     * @param hasNext 条件值
+     * @param next    用上一个元素作为参数执行并返回一个新的元素
+     * @return 无限有序流
+     */
+    public static <T> Stream<T> iterate(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        return StreamSupport.stream(IterateSpliterator.create(seed, hasNext, next), false);
     }
 
     /**
-     * 将文本输入流写入一个文本输出流 块大小为 8192
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输入/出流
+     * <p>指定一个层级结构的根节点（通常是树或图），
+     * 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。
+     * 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
      *
-     * @param writer 输出流
-     * @param reader 输入流
-     * @return the long
-     * @throws IOException 异常
+     * <p>eg:
+     * <pre>{@code
+     * Tree root = // 构建树结构
+     * // 搜索树结构中所有级别为3的节点，并按权重排序
+     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
+     * 	.filter(node -> node.getLevel() == 3)
+     * 	.sorted(Comparator.comparing(Tree::getWeight))
+     * 	.toList();
+     * }</pre>
+     *
+     * @param root       根节点，根节点不允许被{@code filter}过滤
+     * @param discoverer 下一层级节点的获取方法
+     * @param filter     节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
+     * @param <T>        元素类型
+     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @see HierarchyIterator
      */
-    public static long write(Writer writer, Reader reader) throws IOException {
-        if (null == writer || null == reader)
-            return 0;
+    public static <T> Stream<T> iterateHierarchies(
+            final T root, final Function<T, Collection<T>> discoverer, final Predicate<T> filter) {
+        return ofIter(HierarchyIterator.breadthFirst(root, discoverer, filter));
+    }
 
-        char[] cbuf = new char[BUF_SIZE];
-        int len, count = 0;
-        while (true) {
-            len = reader.read(cbuf);
-            if (len == -1)
-                break;
-            writer.write(cbuf, 0, len);
-            count += len;
+    /**
+     * <p>指定一个层级结构的根节点（通常是树或图），
+     * 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。
+     * 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
+     *
+     * <p>eg:
+     * <pre>{@code
+     * Tree root = // 构建树结构
+     * // 搜索树结构中所有级别为3的节点，并按权重排序
+     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
+     * 	.filter(node -> node.getLevel() == 3)
+     * 	.sorted(Comparator.comparing(Tree::getWeight))
+     * 	.toList();
+     * }</pre>
+     *
+     * @param root       根节点，根节点不允许被{@code filter}过滤
+     * @param discoverer 下一层级节点的获取方法
+     * @param <T>        元素类型
+     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @see HierarchyIterator
+     */
+    public static <T> Stream<T> iterateHierarchies(
+            final T root, final Function<T, Collection<T>> discoverer) {
+        return ofIter(HierarchyIterator.breadthFirst(root, discoverer));
+    }
+
+    /**
+     * 保留 与指定断言 匹配时的元素, 在第一次不匹配时终止, 抛弃当前(第一个不匹配元素)及后续所有元素
+     * <p>与 jdk9 中的 takeWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作</p>
+     * <p>本环节中是顺序执行的, 但是后续操作可以支持并行流</p>
+     * <p>但是不建议在并行流中使用, 除非你确定 takeWhile 之后的操作能在并行流中受益很多</p>
+     *
+     * @param source    源流
+     * @param <T>       元素类型
+     * @param predicate 断言
+     * @return 与指定断言匹配的元素组成的流
+     */
+    public static <T> Stream<T> takeWhile(final Stream<T> source, final Predicate<? super T> predicate) {
+        if (null == source) {
+            return Stream.empty();
         }
-        return count;
+        Objects.requireNonNull(predicate);
+        return createStatefulNewStream(source, TakeWhileSpliterator.create(source.spliterator(), predicate));
     }
 
     /**
-     * 将一个字节数组写入一个输出流
-     * <p>
-     * <b style=color:red>注意</b>,它并不会关闭输出流
+     * 删除 与指定断言 匹配的元素, 在第一次不匹配时终止, 返回当前(第一个不匹配元素)及剩余元素组成的新流
+     * <p>与 jdk9 中的 dropWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作</p>
+     * <p>本环节中是顺序执行的, 但是后续操作可以支持并行流</p>
+     * <p>但是不建议在并行流中使用, 除非你确定 dropWhile 之后的操作能在并行流中受益很多</p>
      *
-     * @param ops   输出流
-     * @param bytes 字节数组
-     * @throws IOException 异常
+     * @param source    源流
+     * @param <T>       元素类型
+     * @param predicate 断言
+     * @return 剩余元素组成的流
      */
-    public static void write(OutputStream ops, byte[] bytes) throws IOException {
-        if (null == ops || null == bytes || bytes.length == 0)
-            return;
-        ops.write(bytes);
-    }
-
-
-    /**
-     * 从一个文本流中读取全部内容并返回
-     *
-     * @param reader 文本输入流
-     * @return 文本内容
-     */
-    public static String readAndClose(Reader reader) {
-        try {
-            return read(reader).toString();
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(reader);
+    public static <T> Stream<T> dropWhile(final Stream<T> source, final Predicate<? super T> predicate) {
+        if (null == source) {
+            return Stream.empty();
         }
-    }
-
-    /**
-     * 读取一个输入流中所有的字节,并关闭输入流
-     *
-     * @param ins 输入流,必须支持 available()
-     * @return 一个字节数组
-     */
-    public static byte[] readAndClose(InputStream ins) {
-        byte[] bytes;
-        try {
-            bytes = read(ins);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            StreamKit.safeClose(ins);
-        }
-        return bytes;
-    }
-
-    /**
-     * 从一个文本流中读取全部内容并写入缓冲
-     * <p>
-     * <b style=color:red>注意</b>,它会关闭输出流
-     *
-     * @param reader 文本输出流
-     * @param sb     输出的文本缓冲
-     * @return 读取的字符数量
-     */
-    public static int readAndClose(InputStreamReader reader, StringBuilder sb) {
-        try {
-            return read(reader, sb);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(reader);
-        }
-    }
-
-    /**
-     * 将一段文本全部写入一个writer
-     * <p>
-     * <b style=color:red>注意</b>,它会关闭输出流
-     *
-     * @param writer 输出流
-     * @param cs     文本
-     */
-    public static void writeAndClose(Writer writer, CharSequence cs) {
-        try {
-            write(writer, cs);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(writer);
-        }
-    }
-
-    /**
-     * 将输入流写入一个输出流 块大小为 8192
-     * <p>
-     * <b style=color:red>注意</b>,它会关闭输入/出流
-     *
-     * @param ops 输出流
-     * @param ins 输入流
-     * @return 写入的字节数
-     */
-    public static long writeAndClose(OutputStream ops, InputStream ins) {
-        try {
-            return write(ops, ins);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(ops);
-            safeClose(ins);
-        }
-    }
-
-    /**
-     * 将文本输入流写入一个文本输出流 块大小为 8192
-     * <p>
-     * <b style=color:red>注意</b>,它会关闭输入/出流
-     *
-     * @param writer 输出流
-     * @param reader 输入流
-     * @return the long
-     */
-    public static long writeAndClose(Writer writer, Reader reader) {
-        try {
-            return write(writer, reader);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(writer);
-            safeClose(reader);
-        }
-    }
-
-    /**
-     * 将一个字节数组写入一个输出流
-     * <p>
-     * <b style=color:red>注意</b>,它会关闭输出流
-     *
-     * @param ops   输出流
-     * @param bytes 字节数组
-     */
-    public static void writeAndClose(OutputStream ops, byte[] bytes) {
-        try {
-            write(ops, bytes);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(ops);
-        }
-    }
-
-    public static long writeAndClose(OutputStream ops, InputStream ins, int buf) {
-        try {
-            return write(ops, ins, buf);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(ops);
-            safeClose(ins);
-        }
-    }
-
-    /**
-     * 为一个文本输入流包裹一个缓冲流 如果这个输入流本身就是缓冲流,则直接返回
-     *
-     * @param reader 文本输入流
-     * @return 缓冲文本输入流
-     */
-    public static BufferedReader buff(Reader reader) {
-        if (reader instanceof BufferedReader)
-            return (BufferedReader) reader;
-        return new BufferedReader(reader);
-    }
-
-    /**
-     * 为一个文本输出流包裹一个缓冲流 如果这个文本输出流本身就是缓冲流,则直接返回
-     *
-     * @param writer 文本输出流
-     * @return 缓冲文本输出流
-     */
-    public static BufferedWriter buff(Writer writer) {
-        if (writer instanceof BufferedWriter)
-            return (BufferedWriter) writer;
-        return new BufferedWriter(writer);
-    }
-
-    /**
-     * 为一个输入流包裹一个缓冲流 如果这个输入流本身就是缓冲流,则直接返回
-     *
-     * @param ins 输入流
-     * @return 缓冲输入流
-     */
-    public static BufferedInputStream buff(InputStream ins) {
-        if (null == ins)
-            throw new NullPointerException("ins is null!");
-        if (ins instanceof BufferedInputStream)
-            return (BufferedInputStream) ins;
-        // BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
-        return new BufferedInputStream(ins);
-    }
-
-    /**
-     * 为一个输出流包裹一个缓冲流 如果这个输出流本身就是缓冲流,则直接返回
-     *
-     * @param ops 输出流
-     * @return 缓冲输出流
-     */
-    public static BufferedOutputStream buff(OutputStream ops) {
-        if (null == ops)
-            throw new NullPointerException("ops is null!");
-        if (ops instanceof BufferedOutputStream)
-            return (BufferedOutputStream) ops;
-        return new BufferedOutputStream(ops);
+        Objects.requireNonNull(predicate);
+        return createStatefulNewStream(source, DropWhileSpliterator.create(source.spliterator(), predicate));
     }
 
     public static void readFully(InputStream in, byte[] b, int off, int len)
@@ -486,124 +341,6 @@ public class StreamKit {
         }
     }
 
-    /**
-     * 关闭一个可关闭对象,可以接受 null 如果成功关闭,返回 true,发生异常 返回 false
-     *
-     * @param cb 可关闭对象
-     * @return 是否成功关闭
-     */
-    public static boolean safeClose(Closeable cb) {
-        if (null != cb)
-            try {
-                cb.close();
-            } catch (IOException e) {
-                return false;
-            }
-        return true;
-    }
-
-    /**
-     * 安全刷新一个可刷新的对象,可接受 null
-     *
-     * @param fa 可刷新对象
-     */
-    public static void safeFlush(Flushable fa) {
-        if (null != fa) {
-            try {
-                fa.flush();
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    public static Reader utf8r(InputStream is) {
-        return new InputStreamReader(utf8filte(is), Charset.UTF_8);
-    }
-
-    public static Writer utf8w(OutputStream os) {
-        return new OutputStreamWriter(os, Charset.UTF_8);
-    }
-
-    /**
-     * 判断并移除UTF-8的BOM头
-     *
-     * @param in 输入流
-     * @return 输入流
-     */
-    public static InputStream utf8filte(InputStream in) {
-        try {
-            if (in.available() == -1)
-                return in;
-            PushbackInputStream pis = new PushbackInputStream(in, 3);
-            byte[] header = new byte[3];
-            int len = pis.read(header, 0, 3);
-            if (len < 1)
-                return in;
-            if (header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
-                pis.unread(header, 0, len);
-            }
-            return pis;
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 根据一个文件建立一个输出流
-     *
-     * @param file 文件
-     * @return 输出流
-     */
-    public static OutputStream fileOut(File file) {
-        try {
-            return buff(new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    public static InputStream wrap(byte[] bytes) {
-        return new ByteArrayInputStream(bytes);
-    }
-
-    public static void appendWriteAndClose(File f, String text) {
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(f, true);
-            fw.write(text);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            safeClose(fw);
-        }
-    }
-
-    /**
-     * 获取输出流
-     *
-     * @param path  文件路径
-     * @param klass 参考的类, -- 会用这个类的 ClassLoader
-     * @param enc   文件路径编码
-     * @return 输出流
-     */
-    public static InputStream findFileAsStream(String path, Class<?> klass, String enc) {
-        File f = new File(path);
-        if (f.exists())
-            try {
-                return new FileInputStream(f);
-            } catch (FileNotFoundException e1) {
-                return null;
-            }
-        if (null != klass) {
-            InputStream ins = klass.getClassLoader().getResourceAsStream(path);
-            if (null == ins)
-                ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-            if (null != ins)
-                return ins;
-        }
-        return ClassLoader.getSystemResourceAsStream(path);
-    }
-
     public static int readAvailable(InputStream in, byte[] b, int off, int len)
             throws IOException {
         if (off < 0 || len < 0 || off + len > b.length)
@@ -619,220 +356,26 @@ public class StreamKit {
         return wpos - off;
     }
 
-
-    public static String nextLineTrim(BufferedReader br) throws IOException {
-        String line = null;
-        while (br.ready()) {
-            line = br.readLine();
-            if (null == line)
-                break;
-            if (StringKit.isBlank(line))
-                continue;
-            return line.trim();
-        }
-        return line;
-    }
-
-    public static void copy(InputStream in, OutputStream out, byte[] buf)
-            throws IOException {
-        int count;
-        while ((count = in.read(buf, 0, buf.length)) > 0)
-            if (null != out) {
-                out.write(buf, 0, count);
-            }
-    }
-
-    public static void copy(InputStream in, OutputStream out)
-            throws IOException {
-        copy(in, out, new byte[COPY_BUFFER_SIZE]);
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            byte[] buf) throws IOException {
-        if (len < 0)
-            throw new IndexOutOfBoundsException();
-        while (len > 0) {
-            int count = in.read(buf, 0, Math.min(len, buf.length));
-            if (count < 0)
-                throw new EOFException();
-            out.write(buf, 0, count);
-            len -= count;
-        }
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len)
-            throws IOException {
-        copy(in, out, len, new byte[Math.min(len, COPY_BUFFER_SIZE)]);
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            int swapBytes, byte[] buf) throws IOException {
-        if (swapBytes == 1) {
-            copy(in, out, len, buf);
-            return;
-        }
-        if (!(swapBytes == 2 || swapBytes == 4))
-            throw new IllegalArgumentException("swapBytes: " + swapBytes);
-        if (len < 0 || (len % swapBytes) != 0)
-            throw new IllegalArgumentException("length: " + len);
-        int off = 0;
-        while (len > 0) {
-            int count = in.read(buf, off, Math.min(len, buf.length - off));
-            if (count < 0)
-                throw new EOFException();
-            len -= count;
-            count += off;
-            off = count % swapBytes;
-            count -= off;
-            switch (swapBytes) {
-                case 2:
-                    ByteKit.swapShorts(buf, 0, count);
-                    break;
-                case 4:
-                    ByteKit.swapInts(buf, 0, count);
-                    break;
-                case 8:
-                    ByteKit.swapLongs(buf, 0, count);
-                    break;
-            }
-            out.write(buf, 0, count);
-            if (off > 0)
-                System.arraycopy(buf, count, buf, 0, off);
-        }
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            int swapBytes) throws IOException {
-        copy(in, out, len, swapBytes, new byte[Math.min(len, COPY_BUFFER_SIZE)]);
-    }
-
-    public static InputStream openFileOrURL(String name) throws IOException {
-        if (name.startsWith("resource:")) {
-            URL url = FileKit.getUrl(name.substring(9), StreamKit.class);
-            if (null == url)
-                throw new FileNotFoundException(name);
-            return url.openStream();
-        }
-        if (name.indexOf(Symbol.C_COLON) < 2)
-            return new FileInputStream(name);
-        return new URL(name).openStream();
-    }
-
-    public static void io(Reader in, Writer out, int bufferSize) throws IOException {
-        if (bufferSize == -1) {
-            bufferSize = 8192 >> 1;
-        }
-
-        char[] buffer = new char[bufferSize];
-        int amount;
-
-        while ((amount = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, amount);
-        }
-    }
-
-    public static <T> Stream<T> of(T... array) {
-        Assert.notNull(array, "Array must be not null!");
-        return Stream.of(array);
-    }
-
     /**
-     * {@link Iterable}转换为{@link Stream}，默认非并行
+     * 根据 源流 和 新的Spliterator 生成新的流
+     * <p>这是一个 顺序的、有状态的流</p>
+     * <p>在新流的第一个节点是顺序执行的, 但是后续操作可以支持并行流</p>
      *
-     * @param iterable 集合
-     * @param <T>      集合元素类型
-     * @return {@link Stream}
+     * @param source         源流
+     * @param newSpliterator 新流的Spliterator
+     * @param <T>            旧流的元素类型
+     * @param <R>            新流的元素类型
+     * @return 新流
      */
-    public static <T> Stream<T> of(Iterable<T> iterable) {
-        return of(iterable, false);
-    }
-
-    /**
-     * {@link Iterable}转换为{@link Stream}
-     *
-     * @param iterable 集合
-     * @param parallel 是否并行
-     * @param <T>      集合元素类型
-     * @return {@link Stream}
-     */
-    public static <T> Stream<T> of(Iterable<T> iterable, boolean parallel) {
-        Assert.notNull(iterable, "Iterable must be not null!");
-        return iterable instanceof Collection ?
-                ((Collection<T>) iterable).stream() :
-                StreamSupport.stream(iterable.spliterator(), parallel);
-    }
-
-    /**
-     * {@link Iterator} 转换为 {@link Stream}
-     *
-     * @param iterator 迭代器
-     * @param <T>      集合元素类型
-     * @return {@link Stream}
-     * @throws IllegalArgumentException 如果iterator为null，抛出该异常
-     */
-    public static <T> Stream<T> of(Iterator<T> iterator) {
-        return of(iterator, false);
-    }
-
-    /**
-     * {@link Iterator} 转换为 {@link Stream}
-     *
-     * @param iterator 迭代器
-     * @param parallel 是否并行
-     * @param <T>      集合元素类型
-     * @return {@link Stream}
-     * @throws IllegalArgumentException 如果iterator为null，抛出该异常
-     */
-    public static <T> Stream<T> of(Iterator<T> iterator, boolean parallel) {
-        Assert.notNull(iterator, "iterator must not be null!");
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), parallel);
-    }
-
-    /**
-     * 按行读取文件为{@link Stream}
-     *
-     * @param file 文件
-     * @return {@link Stream}
-     */
-    public static Stream<String> of(File file) {
-        return of(file, Charset.UTF_8);
-    }
-
-    /**
-     * 按行读取文件为{@link Stream}
-     *
-     * @param path 路径
-     * @return {@link Stream}
-     */
-    public static Stream<String> of(Path path) {
-        return of(path, Charset.UTF_8);
-    }
-
-    /**
-     * 按行读取文件为{@link Stream}
-     *
-     * @param file    文件
-     * @param charset 编码
-     * @return {@link Stream}
-     */
-    public static Stream<String> of(File file, java.nio.charset.Charset charset) {
-        Assert.notNull(file, "File must be not null!");
-        return of(file.toPath(), charset);
-    }
-
-    /**
-     * 按行读取文件为{@link Stream}
-     *
-     * @param path    路径
-     * @param charset 编码
-     * @return {@link Stream}
-     */
-    public static Stream<String> of(Path path, java.nio.charset.Charset charset) {
-        try {
-            return Files.lines(path, charset);
-        } catch (IOException e) {
-            throw new InternalException(e);
+    private static <T, R> Stream<R> createStatefulNewStream(final Stream<T> source, final Spliterator<R> newSpliterator) {
+        // 创建新流
+        Stream<R> newStream = StreamSupport.stream(newSpliterator, source.isParallel());
+        // 如果旧流是并行流, 新流主动调用一个有状态的操作, 虽然没有意义, 但是可以让后续的无状态节点正常并发
+        if (source.isParallel()) {
+            newStream = newStream.limit(Long.MAX_VALUE);
         }
+        // 由于新流不与旧流的节点关联, 所以需要主动设置旧流的close方法, 哪怕几乎不可能有人在旧流上设置onClose操作
+        return newStream.onClose(source::close);
     }
 
 }

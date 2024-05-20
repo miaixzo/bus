@@ -30,8 +30,8 @@ import org.apache.poi.ooxml.POIXMLDocumentPart;
 import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.*;
+import org.miaixz.bus.core.center.map.multi.ListValueMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.map.multi.ListValueMap;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
@@ -51,9 +51,9 @@ public class ExcelPicKit {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
+     * @return 图片映射，键格式：行_列，值：{@link PictureData}
      */
-    public static ListValueMap<String, PictureData> getPicMap(Workbook workbook, int sheetIndex) {
+    public static ListValueMap<String, PictureData> getPicMap(final Workbook workbook, int sheetIndex) {
         Assert.notNull(workbook, "Workbook must be not null !");
         if (sheetIndex < 0) {
             sheetIndex = 0;
@@ -73,16 +73,16 @@ public class ExcelPicKit {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
+     * @return 图片映射，键格式：行_列，值：{@link PictureData}
      */
-    private static ListValueMap<String, PictureData> getPicMapXls(HSSFWorkbook workbook, int sheetIndex) {
+    private static ListValueMap<String, PictureData> getPicMapXls(final HSSFWorkbook workbook, final int sheetIndex) {
         final ListValueMap<String, PictureData> picMap = new ListValueMap<>();
         final List<HSSFPictureData> pictures = workbook.getAllPictures();
         if (CollKit.isNotEmpty(pictures)) {
             final HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
             HSSFClientAnchor anchor;
             int pictureIndex;
-            for (HSSFShape shape : sheet.getDrawingPatriarch().getChildren()) {
+            for (final HSSFShape shape : sheet.getDrawingPatriarch().getChildren()) {
                 if (shape instanceof HSSFPicture) {
                     pictureIndex = ((HSSFPicture) shape).getPictureIndex() - 1;
                     anchor = (HSSFClientAnchor) shape.getAnchor();
@@ -98,24 +98,25 @@ public class ExcelPicKit {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
+     * @return 图片映射，键格式：行_列，值：{@link PictureData}
      */
-    private static ListValueMap<String, PictureData> getPicMapXlsx(XSSFWorkbook workbook, int sheetIndex) {
+    private static ListValueMap<String, PictureData> getPicMapXlsx(final XSSFWorkbook workbook, final int sheetIndex) {
         final ListValueMap<String, PictureData> sheetIndexPicMap = new ListValueMap<>();
         final XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
         XSSFDrawing drawing;
-        for (POIXMLDocumentPart dr : sheet.getRelations()) {
+        for (final POIXMLDocumentPart dr : sheet.getRelations()) {
             if (dr instanceof XSSFDrawing) {
                 drawing = (XSSFDrawing) dr;
                 final List<XSSFShape> shapes = drawing.getShapes();
                 XSSFPicture pic;
                 CTMarker ctMarker;
-                for (XSSFShape shape : shapes) {
+                for (final XSSFShape shape : shapes) {
                     if (shape instanceof XSSFPicture) {
                         pic = (XSSFPicture) shape;
                         ctMarker = pic.getPreferredSize().getFrom();
                         sheetIndexPicMap.putValue(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
                     }
+                    // 其他类似于图表等忽略
                 }
             }
         }

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
-import org.miaixz.bus.core.lang.Enums;
-import org.miaixz.bus.core.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.lang.Enumers;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.toolkit.*;
 
 import java.lang.reflect.Method;
@@ -43,14 +43,17 @@ import java.util.stream.Collectors;
  */
 public class EnumConverter extends AbstractConverter {
 
+    /**
+     * 单例
+     */
     public static final EnumConverter INSTANCE = new EnumConverter();
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
 
     /**
      * 尝试转换，转换规则为：
      * <ul>
-     *     <li>如果实现{@link Enums}接口，则调用fromInt或fromString转换</li>
+     *     <li>如果实现{@link Enumers}接口，则调用fromInt或fromStr转换</li>
      *     <li>找到类似转换的静态方法调用实现转换且优先使用</li>
      *     <li>约定枚举类应该提供 valueOf(String) 和 valueOf(Integer)用于转换</li>
      *     <li>oriInt /name 转换托底</li>
@@ -65,9 +68,9 @@ public class EnumConverter extends AbstractConverter {
             return null;
         }
 
-        // Enums实现转换
-        if (Enums.class.isAssignableFrom(enumClass)) {
-            final Enums first = (Enums) EnumKit.getEnumAt(enumClass, 0);
+        // EnumItem实现转换
+        if (Enumers.class.isAssignableFrom(enumClass)) {
+            final Enumers first = (Enumers) EnumKit.getEnumAt(enumClass, 0);
             if (null != first) {
                 if (value instanceof Integer) {
                     return (Enum) first.from((Integer) value);
@@ -85,7 +88,7 @@ public class EnumConverter extends AbstractConverter {
                 final Class<?> valueClass = value.getClass();
                 for (final Map.Entry<Class<?>, Method> entry : methodMap.entrySet()) {
                     if (ClassKit.isAssignable(entry.getKey(), valueClass)) {
-                        return ReflectKit.invokeStatic(entry.getValue(), value);
+                        return MethodKit.invokeStatic(entry.getValue(), value);
                     }
                 }
             }
@@ -122,7 +125,7 @@ public class EnumConverter extends AbstractConverter {
      */
     private static Map<Class<?>, Method> getMethodMap(final Class<?> enumClass) {
         return VALUE_OF_METHOD_CACHE.computeIfAbsent(enumClass, (key) -> Arrays.stream(enumClass.getMethods())
-                .filter(BeanKit::isStatic)
+                .filter(ModifierKit::isStatic)
                 .filter(m -> m.getReturnType() == enumClass)
                 .filter(m -> m.getParameterCount() == 1)
                 .filter(m -> !"valueOf".equals(m.getName()))
@@ -132,7 +135,7 @@ public class EnumConverter extends AbstractConverter {
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
         Enum enumValue = tryConvertEnum(value, targetClass);
-        if (null == enumValue && false == value instanceof String) {
+        if (null == enumValue && !(value instanceof String)) {
             // 最后尝试先将value转String，再valueOf转换
             enumValue = Enum.valueOf((Class) targetClass, convertToString(value));
         }
@@ -140,6 +143,7 @@ public class EnumConverter extends AbstractConverter {
         if (null != enumValue) {
             return enumValue;
         }
+
         throw new ConvertException("Can not convert {} to {}", value, targetClass);
     }
 

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.tuple;
 
-import org.miaixz.bus.core.clone.Cloning;
-import org.miaixz.bus.core.collection.Iterator.ArrayIterator;
+import org.miaixz.bus.core.center.iterator.ArrayIterator;
+import org.miaixz.bus.core.lang.exception.CloneException;
 import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 
 import java.io.Serializable;
 import java.util.*;
@@ -42,9 +42,9 @@ import java.util.stream.StreamSupport;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializable {
+public class Tuple implements Iterable<Object>, Serializable, Cloneable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final Object[] members;
     private int hashCode;
@@ -55,8 +55,18 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
      *
      * @param members 成员数组
      */
-    public Tuple(Object... members) {
+    public Tuple(final Object... members) {
         this.members = members;
+    }
+
+    /**
+     * 构建Tuple对象
+     *
+     * @param members 成员数组
+     * @return Tuple
+     */
+    public static Tuple of(final Object... members) {
+        return new Tuple(members);
     }
 
     /**
@@ -66,7 +76,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
      * @param index 位置
      * @return 元素
      */
-    public <T> T get(int index) {
+    public <T> T get(final int index) {
         return (T) members[index];
     }
 
@@ -85,7 +95,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
      * @return 转换得到的列表
      */
     public final List<Object> toList() {
-        return CollKit.toList(this.members);
+        return ListKit.of(this.members);
     }
 
     /**
@@ -95,7 +105,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
      * @param cacheHash 是否缓存hash值
      * @return this
      */
-    public Tuple setCacheHash(boolean cacheHash) {
+    public Tuple setCacheHash(final boolean cacheHash) {
         this.cacheHash = cacheHash;
         return this;
     }
@@ -115,7 +125,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
      * @param value 需要判定的元素
      * @return 是否包含
      */
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return ArrayKit.contains(this.members, value);
     }
 
@@ -163,7 +173,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -173,7 +183,7 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Tuple other = (Tuple) obj;
+        final Tuple other = (Tuple) obj;
         return false != Arrays.deepEquals(members, other.members);
     }
 
@@ -190,6 +200,15 @@ public class Tuple extends Cloning<Tuple> implements Iterable<Object>, Serializa
     @Override
     public final Spliterator<Object> spliterator() {
         return Spliterators.spliterator(this.members, Spliterator.ORDERED);
+    }
+
+    @Override
+    public Tuple clone() {
+        try {
+            return (Tuple) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new CloneException(e);
+        }
     }
 
 }

@@ -29,9 +29,9 @@ import jakarta.persistence.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.miaixz.bus.core.annotation.Order;
-import org.miaixz.bus.core.exception.MapperException;
-import org.miaixz.bus.core.lang.Ansi;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.ORDER;
@@ -65,11 +65,11 @@ public class DefaultEntityResolve implements EntityResolve {
      * 根据指定的样式进行转换
      *
      * @param text  字符串
-     * @param mode 样式
+     * @param naming 样式
      * @return the string
      */
-    public static String convertByStyle(String text, Ansi.Mode mode) {
-        switch (mode) {
+    public static String convertByStyle(String text, EnumMap.Naming naming) {
+        switch (naming) {
             case CAMEL:
                 return camelToUnderline(text);
             case UPPER_CASE:
@@ -130,11 +130,11 @@ public class DefaultEntityResolve implements EntityResolve {
 
     @Override
     public EntityTable resolveEntity(Class<?> entityClass, Property property) {
-        Ansi.Mode mode = property.getStyle();
+        EnumMap.Naming naming = property.getStyle();
         // mode，该注解优先于全局配置
         if (entityClass.isAnnotationPresent(NameStyle.class)) {
             NameStyle nameStyle = entityClass.getAnnotation(NameStyle.class);
-            mode = nameStyle.value();
+            naming = nameStyle.value();
         }
 
         // 创建并缓存EntityTable
@@ -149,7 +149,7 @@ public class DefaultEntityResolve implements EntityResolve {
         if (entityTable == null) {
             entityTable = new EntityTable(entityClass);
             // 可以通过stye控制
-            String tableName = convertByStyle(entityClass.getSimpleName(), mode);
+            String tableName = convertByStyle(entityClass.getSimpleName(), naming);
             // 自动处理关键字
             if (StringKit.isNotEmpty(property.getWrapKeyword()) && SqlWords.containsWord(tableName)) {
                 tableName = MessageFormat.format(property.getWrapKeyword(), tableName);
@@ -174,7 +174,7 @@ public class DefaultEntityResolve implements EntityResolve {
                     || field.isAnnotationPresent(Column.class) // 有注解的处理，不考虑类型
                     || field.isAnnotationPresent(ColumnType.class) // 有注解的处理，不考虑类型
                     || (property.isEnumAsSimpleType() && Enum.class.isAssignableFrom(field.getJavaType()))) { // 开启枚举作为简单类型时处理
-                processField(entityTable, field, property, mode);
+                processField(entityTable, field, property, naming);
             }
         }
         // 当pk.size=0的时候使用所有列作为主键
@@ -191,9 +191,9 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param entityTable 对象表
      * @param field       字段
      * @param property      配置
-     * @param mode       样式
+     * @param naming       样式
      */
-    protected void processField(EntityTable entityTable, EntityField field, Property property, Ansi.Mode mode) {
+    protected void processField(EntityTable entityTable, EntityField field, Property property, EnumMap.Naming naming) {
         // 排除字段
         if (field.isAnnotationPresent(Transient.class)) {
             return;
@@ -233,7 +233,7 @@ public class DefaultEntityResolve implements EntityResolve {
         }
         // 列名
         if (StringKit.isEmpty(columnName)) {
-            columnName = convertByStyle(field.getName(), mode);
+            columnName = convertByStyle(field.getName(), naming);
         }
         // 自动处理关键字
         if (StringKit.isNotEmpty(property.getWrapKeyword()) && SqlWords.containsWord(columnName)) {

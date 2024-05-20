@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.tracer;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.tracer.backend.TraceBackendProvider;
 
 import java.util.ArrayList;

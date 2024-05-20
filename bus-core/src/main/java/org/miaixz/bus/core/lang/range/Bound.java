@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * <p>边界对象，描述具有特定上界或下界的单侧无界的区间
+ * <p>边界对象，描述具有特定上界或下界的单侧无界的区间。
  *
  * <p>边界的类型</p>
  * <p>边界根据其{@link #getType()}所获得的类型，可用于描述基于边界值<em>t</em>的不等式:
@@ -41,12 +41,12 @@ import java.util.function.Predicate;
  *     <li>{@link #lessThan}：{@code {x | x < t}}；</li>
  *     <li>{@link #atMost}：{@code {x | x <= t}}；</li>
  * </ul>
- * 当作为{@link Predicate}使用时，可用于判断入参对象是否能满足当前实例所对应的不等式
+ * 当作为{@link Predicate}使用时，可用于判断入参对象是否能满足当前实例所对应的不等式。
  *
  * <p>边界的比较</p>
  * <p>边界对象本身实现了{@link Comparable}接口，
  * 当使用{@link Comparable#compareTo}比较两个边界对象时，
- * 返回的比较值表示两个边界对象对应的点在实数轴上从左到右的先后顺序
+ * 返回的比较值表示两个边界对象对应的点在实数轴上从左到右的先后顺序。
  * 比如：
  * 若令当前边界点为<em>t1</em>，另一边界点为<em>t2</em>，则有
  * <ul>
@@ -57,6 +57,8 @@ import java.util.function.Predicate;
  *
  * @param <T> 边界值类型
  * @author Kimi Liu
+ * @see BoundType
+ * @see BoundedRange
  * @since Java 17+
  */
 public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Comparable<Bound<T>> {
@@ -64,12 +66,12 @@ public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Co
     /**
      * 无穷小的描述
      */
-    String INFINITE_MIN = "-\u221e";
+    String INFINITE_MIN = "-∞";
 
     /**
      * 无穷大的藐视
      */
-    String INFINITE_MAX = "+\u221e";
+    String INFINITE_MAX = "+∞";
 
     /**
      * {@code {x | x > -∞}}
@@ -159,7 +161,7 @@ public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Co
     boolean test(T t);
 
     /**
-     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序
+     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序。
      * 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
      * <ul>
      *     <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>

@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
@@ -77,7 +77,7 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
         List<String> procMemInfo = Builder.readFile(ProcPath.MEMINFO);
         for (String checkLine : procMemInfo) {
-            String[] memorySplit = RegEx.SPACES.split(checkLine, 2);
+            String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine, 2);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "MemTotal:":

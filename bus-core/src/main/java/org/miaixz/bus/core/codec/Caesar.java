@@ -26,15 +26,20 @@
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 凯撒密码实现
+ * 算法来自：<a href="https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption">https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Caesar {
+
+    /**
+     * 26个字母表
+     */
+    public static final String TABLE = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 
     /**
      * 传入明文，加密得到密文
@@ -50,7 +55,7 @@ public class Caesar {
         char c;
         for (int i = 0; i < len; i++) {
             c = message.charAt(i);
-            if (false == Character.isLetter(c)) {
+            if (!Character.isLetter(c)) {
                 continue;
             }
             plain[i] = encodeChar(c, offset);
@@ -72,7 +77,7 @@ public class Caesar {
         char c;
         for (int i = 0; i < len; i++) {
             c = cipherText.charAt(i);
-            if (false == Character.isLetter(c)) {
+            if (!Character.isLetter(c)) {
                 continue;
             }
             plain[i] = decodeChar(c, offset);
@@ -88,24 +93,23 @@ public class Caesar {
      * @return 加密后的字符
      */
     private static char encodeChar(final char c, final int offset) {
-        final int position = (Normal.UPPER_LOWER.indexOf(c) + offset) % 52;
-        return Normal.UPPER_LOWER.charAt(position);
+        final int position = (TABLE.indexOf(c) + offset) % 52;
+        return TABLE.charAt(position);
 
     }
 
     /**
      * 解密轮盘
      *
-     * @param c      字符
-     * @param offset 偏移量
+     * @param c 字符
      * @return 解密后的字符
      */
     private static char decodeChar(final char c, final int offset) {
-        int position = (Normal.UPPER_LOWER.indexOf(c) - offset) % 52;
+        int position = (TABLE.indexOf(c) - offset) % 52;
         if (position < 0) {
             position += 52;
         }
-        return Normal.UPPER_LOWER.charAt(position);
+        return TABLE.charAt(position);
     }
 
 }

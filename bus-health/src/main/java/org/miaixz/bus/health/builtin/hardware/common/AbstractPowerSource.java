@@ -100,6 +100,45 @@ public abstract class AbstractPowerSource implements PowerSource {
         this.temperature = temperature;
     }
 
+    private static List<PowerSource> getPowerSources() {
+        switch (Platform.getCurrentPlatform()) {
+            case WINDOWS:
+                return WindowsPowerSource.getPowerSources();
+            case MACOS:
+                return MacPowerSource.getPowerSources();
+            case LINUX:
+                return LinuxPowerSource.getPowerSources();
+            case SOLARIS:
+                return SolarisPowerSource.getPowerSources();
+            case FREEBSD:
+                return FreeBsdPowerSource.getPowerSources();
+            case AIX:
+                return AixPowerSource.getPowerSources();
+            default:
+                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
+        }
+    }
+
+    /**
+     * Estimated time remaining on power source, formatted as HH:mm
+     *
+     * @param timeInSeconds The time remaining, in seconds
+     * @return formatted String of time remaining
+     */
+    private static String formatTimeRemaining(double timeInSeconds) {
+        String formattedTimeRemaining;
+        if (timeInSeconds < -1.5) {
+            formattedTimeRemaining = "Charging";
+        } else if (timeInSeconds < 0) {
+            formattedTimeRemaining = "Unknown";
+        } else {
+            int hours = (int) (timeInSeconds / 3600);
+            int minutes = (int) (timeInSeconds % 3600 / 60);
+            formattedTimeRemaining = String.format(Locale.ROOT, "%d:%02d", hours, minutes);
+        }
+        return formattedTimeRemaining;
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -238,25 +277,6 @@ public abstract class AbstractPowerSource implements PowerSource {
         return false;
     }
 
-    private static List<PowerSource> getPowerSources() {
-        switch (Platform.getCurrentPlatform()) {
-            case WINDOWS:
-                return WindowsPowerSource.getPowerSources();
-            case MACOS:
-                return MacPowerSource.getPowerSources();
-            case LINUX:
-                return LinuxPowerSource.getPowerSources();
-            case SOLARIS:
-                return SolarisPowerSource.getPowerSources();
-            case FREEBSD:
-                return FreeBsdPowerSource.getPowerSources();
-            case AIX:
-                return AixPowerSource.getPowerSources();
-            default:
-                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
-        }
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -293,25 +313,5 @@ public abstract class AbstractPowerSource implements PowerSource {
             sb.append(Normal.UNKNOWN);
         }
         return sb.toString();
-    }
-
-    /**
-     * Estimated time remaining on power source, formatted as HH:mm
-     *
-     * @param timeInSeconds The time remaining, in seconds
-     * @return formatted String of time remaining
-     */
-    private static String formatTimeRemaining(double timeInSeconds) {
-        String formattedTimeRemaining;
-        if (timeInSeconds < -1.5) {
-            formattedTimeRemaining = "Charging";
-        } else if (timeInSeconds < 0) {
-            formattedTimeRemaining = "Unknown";
-        } else {
-            int hours = (int) (timeInSeconds / 3600);
-            int minutes = (int) (timeInSeconds % 3600 / 60);
-            formattedTimeRemaining = String.format(Locale.ROOT, "%d:%02d", hours, minutes);
-        }
-        return formattedTimeRemaining;
     }
 }

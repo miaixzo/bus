@@ -26,9 +26,9 @@
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.setting.format.ElementFormatter;
-import org.miaixz.bus.setting.magic.IniComment;
-import org.miaixz.bus.setting.magic.IniProperty;
-import org.miaixz.bus.setting.magic.IniSection;
+import org.miaixz.bus.setting.metric.ini.IniComment;
+import org.miaixz.bus.setting.metric.ini.IniProperty;
+import org.miaixz.bus.setting.metric.ini.IniSection;
 
 /**
  * iniFormatter的函数接口

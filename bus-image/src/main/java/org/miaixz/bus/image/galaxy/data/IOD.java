@@ -27,7 +27,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.Property;
 import org.xml.sax.Locator;
@@ -56,7 +56,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static IOD load(String uri) throws IOException {
         if (uri.startsWith("resource:")) {
             try {
-                uri = FileKit.getUrl(uri.substring(9), IOD.class).toString();
+                uri = ResourceKit.getResourceUrl(uri.substring(9), IOD.class).toString();
             } catch (NullPointerException npe) {
                 throw new FileNotFoundException(uri);
             }

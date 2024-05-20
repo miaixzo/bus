@@ -25,8 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
+import org.miaixz.bus.core.io.stream.ReaderInputStream;
+import org.miaixz.bus.core.lang.exception.InternalException;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * 基于{@link InputStream}的资源获取器
@@ -35,7 +42,9 @@ import java.net.URL;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class InputStreamResource implements Resource {
+public class InputStreamResource implements Resource, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private final InputStream in;
     private final String name;
@@ -43,9 +52,19 @@ public class InputStreamResource implements Resource {
     /**
      * 构造
      *
+     * @param reader  {@link Reader}
+     * @param charset 编码
+     */
+    public InputStreamResource(final Reader reader, final Charset charset) {
+        this(new ReaderInputStream(reader, charset));
+    }
+
+    /**
+     * 构造
+     *
      * @param in {@link InputStream}
      */
-    public InputStreamResource(InputStream in) {
+    public InputStreamResource(final InputStream in) {
         this(in, null);
     }
 
@@ -55,7 +74,7 @@ public class InputStreamResource implements Resource {
      * @param in   {@link InputStream}
      * @param name 资源名称
      */
-    public InputStreamResource(InputStream in, String name) {
+    public InputStreamResource(final InputStream in, final String name) {
         this.in = in;
         this.name = name;
     }
@@ -68,6 +87,15 @@ public class InputStreamResource implements Resource {
     @Override
     public URL getUrl() {
         return null;
+    }
+
+    @Override
+    public long size() {
+        try {
+            return this.in.available();
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     @Override

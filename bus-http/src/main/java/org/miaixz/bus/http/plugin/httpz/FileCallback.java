@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;
@@ -58,7 +58,7 @@ public abstract class FileCallback implements Callback {
                 File file = new File(fileAbsolutePath);
                 FileOutputStream fos = new FileOutputStream(file);
                 ByteArrayInputStream bis = new ByteArrayInputStream(response.body().bytes());
-                StreamKit.copy(bis, fos);
+                IoKit.copy(bis, fos);
                 onSuccess(call, file, id);
             } else {
                 onSuccess(call, response.body().byteStream(), id);

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
@@ -65,7 +65,7 @@ public class RecordFactory {
 
     public void loadDefaultConfiguration() {
         try {
-            loadConfiguration(FileKit.getUrl("RecordFactory.xml", RecordFactory.class).toString());
+            loadConfiguration(ResourceKit.getResourceUrl("RecordFactory.xml", RecordFactory.class).toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

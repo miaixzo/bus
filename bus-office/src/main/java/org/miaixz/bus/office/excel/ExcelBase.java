@@ -25,12 +25,20 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.office.excel.cell.CellLocation;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.office.excel.cell.CellKit;
+import org.miaixz.bus.office.excel.cell.CellLocation;
+import org.miaixz.bus.office.excel.style.Styles;
 
 import java.io.Closeable;
 import java.io.File;
@@ -40,14 +48,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Excel基础类,用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
+ * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
  *
- * @param <T> 子类类型,用于返回this
+ * @param <T> 子类类型，用于返回this
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
-
     /**
      * 是否被关闭
      */
@@ -74,7 +81,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param sheet Excel中的sheet
      */
-    public ExcelBase(Sheet sheet) {
+    public ExcelBase(final Sheet sheet) {
         Assert.notNull(sheet, "No Sheet provided.");
         this.sheet = sheet;
         this.workbook = sheet.getWorkbook();
@@ -87,6 +94,15 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     public Workbook getWorkbook() {
         return this.workbook;
+    }
+
+    /**
+     * 创建字体
+     *
+     * @return 字体
+     */
+    public Font createFont() {
+        return getWorkbook().createFont();
     }
 
     /**
@@ -119,11 +135,53 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     public List<String> getSheetNames() {
         final int totalSheet = workbook.getNumberOfSheets();
-        List<String> result = new ArrayList<>(totalSheet);
+        final List<String> result = new ArrayList<>(totalSheet);
         for (int i = 0; i < totalSheet; i++) {
             result.add(this.workbook.getSheetAt(i).getSheetName());
         }
         return result;
+    }
+
+    /**
+     * 获取当前Sheet
+     *
+     * @return {@link Sheet}
+     */
+    public Sheet getSheet() {
+        return this.sheet;
+    }
+
+    /**
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
+     *
+     * @param sheetName sheet名
+     * @return this
+     */
+    public T setSheet(final String sheetName) {
+        return setSheet(WorkbookKit.getOrCreateSheet(this.workbook, sheetName));
+    }
+
+    /**
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     *
+     * @param sheetIndex sheet序号，从0开始计数
+     * @return this
+     */
+    public T setSheet(final int sheetIndex) {
+        return setSheet(WorkbookKit.getOrCreateSheet(this.workbook, sheetIndex));
+    }
+
+    /**
+     * 设置自定义Sheet
+     *
+     * @param sheet 自定义sheet，可以通过{@link WorkbookKit#getOrCreateSheet(Workbook, String)} 创建
+     * @return this
+     */
+    public T setSheet(final Sheet sheet) {
+        this.sheet = sheet;
+        return (T) this;
     }
 
     /**
@@ -133,7 +191,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return this
      * @see Workbook#setSheetName(int, String)
      */
-    public T renameSheet(String newName) {
+    public T renameSheet(final String newName) {
         this.workbook.setSheetName(this.workbook.getSheetIndex(this.sheet), newName);
         return (T) this;
     }
@@ -146,14 +204,15 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param setAsCurrentSheet 是否切换为当前sheet
      * @return this
      */
-    public T cloneSheet(int sheetIndex, String newSheetName, boolean setAsCurrentSheet) {
-        Sheet sheet;
+    public T cloneSheet(final int sheetIndex, final String newSheetName, final boolean setAsCurrentSheet) {
+        final Sheet sheet;
         if (this.workbook instanceof XSSFWorkbook) {
-            XSSFWorkbook workbook = (XSSFWorkbook) this.workbook;
+            final XSSFWorkbook workbook = (XSSFWorkbook) this.workbook;
             sheet = workbook.cloneSheet(sheetIndex, newSheetName);
         } else {
             sheet = this.workbook.cloneSheet(sheetIndex);
-            this.workbook.setSheetName(sheetIndex, newSheetName);
+            // clone后的sheet的index应该重新获取
+            this.workbook.setSheetName(workbook.getSheetIndex(sheet), newSheetName);
         }
         if (setAsCurrentSheet) {
             this.sheet = sheet;
@@ -161,80 +220,26 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         return (T) this;
     }
 
-
     /**
-     * 获取当前Sheet
-     *
-     * @return {@link Sheet}
-     */
-    public Sheet getSheet() {
-        return this.sheet;
-    }
-
-    /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
-     *
-     * @param sheetName sheet名
-     * @return this
-     */
-    public T setSheet(String sheetName) {
-        return setSheet(WorksKit.getOrCreateSheet(this.workbook, sheetName));
-    }
-
-    /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之(命名为默认)
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
-     *
-     * @param sheetIndex sheet序号，从0开始计数
-     * @return this
-     */
-    public T setSheet(int sheetIndex) {
-        return setSheet(WorksKit.getOrCreateSheet(this.workbook, sheetIndex));
-    }
-
-    /**
-     * 设置自定义Sheet
-     *
-     * @param sheet 自定义sheet，可以通过{@link WorksKit#getOrCreateSheet(Workbook, String)} 创建
-     * @return this
-     */
-    public T setSheet(Sheet sheet) {
-        this.sheet = sheet;
-        return (T) this;
-    }
-
-    /**
-     * 获取指定坐标单元格,单元格不存在时返回<code>null</code>
-     *
-     * @param x X坐标,从0计数,既列号
-     * @param y Y坐标,从0计数,既行号
-     * @return {@link Cell}
-     */
-    public Cell getCell(int x, int y) {
-        return getCell(x, y, false);
-    }
-
-    /**
-     * 获取指定坐标单元格，单元格不存在时返回<code>null</code>
+     * 获取指定坐标单元格，单元格不存在时返回{@code null}
      *
      * @param locationRef 单元格地址标识符，例如A11，B5
      * @return {@link Cell}
      */
-    public Cell getCell(String locationRef) {
+    public Cell getCell(final String locationRef) {
         final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getCell(cellLocation.getX(), cellLocation.getY());
     }
 
     /**
-     * 获取或创建指定坐标单元格
+     * 获取指定坐标单元格，单元格不存在时返回{@code null}
      *
-     * @param x X坐标,从0计数,既列号
-     * @param y Y坐标,从0计数,既行号
+     * @param x X坐标，从0计数，即列号
+     * @param y Y坐标，从0计数，即行号
      * @return {@link Cell}
      */
-    public Cell getOrCreateCell(int x, int y) {
-        return getCell(x, y, true);
+    public Cell getCell(final int x, final int y) {
+        return getCell(x, y, false);
     }
 
     /**
@@ -243,20 +248,43 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param locationRef 单元格地址标识符，例如A11，B5
      * @return {@link Cell}
      */
-    public Cell getOrCreateCell(String locationRef) {
+    public Cell getOrCreateCell(final String locationRef) {
         final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getOrCreateCell(cellLocation.getX(), cellLocation.getY());
     }
 
     /**
-     * 获取指定坐标单元格,如果isCreateIfNotExist为false,则在单元格不存在时返回<code>null</code>
+     * 获取或创建指定坐标单元格
      *
-     * @param x                  X坐标,从0计数,既列号
-     * @param y                  Y坐标,从0计数,既行号
+     * @param x X坐标，从0计数，即列号
+     * @param y Y坐标，从0计数，即行号
+     * @return {@link Cell}
+     */
+    public Cell getOrCreateCell(final int x, final int y) {
+        return getCell(x, y, true);
+    }
+
+    /**
+     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     *
+     * @param locationRef        单元格地址标识符，例如A11，B5
      * @param isCreateIfNotExist 单元格不存在时是否创建
      * @return {@link Cell}
      */
-    public Cell getCell(int x, int y, boolean isCreateIfNotExist) {
+    public Cell getCell(final String locationRef, final boolean isCreateIfNotExist) {
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
+        return getCell(cellLocation.getX(), cellLocation.getY(), isCreateIfNotExist);
+    }
+
+    /**
+     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     *
+     * @param x                  X坐标，从0计数，即列号
+     * @param y                  Y坐标，从0计数，即行号
+     * @param isCreateIfNotExist 单元格不存在时是否创建
+     * @return {@link Cell}
+     */
+    public Cell getCell(final int x, final int y, final boolean isCreateIfNotExist) {
         final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
         if (null != row) {
             return isCreateIfNotExist ? CellKit.getOrCreateCell(row, x) : row.getCell(x);
@@ -264,59 +292,109 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         return null;
     }
 
-    /**
-     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回<code>null</code>
-     *
-     * @param locationRef        单元格地址标识符，例如A11，B5
-     * @param isCreateIfNotExist 单元格不存在时是否创建
-     * @return {@link Cell}
-     */
-    public Cell getCell(String locationRef, boolean isCreateIfNotExist) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getCell(cellLocation.getX(), cellLocation.getY(), isCreateIfNotExist);
-    }
 
     /**
      * 获取或者创建行
      *
-     * @param y Y坐标,从0计数,既行号
+     * @param y Y坐标，从0计数，即行号
      * @return {@link Row}
      */
-    public Row getOrCreateRow(int y) {
+    public Row getOrCreateRow(final int y) {
         return RowKit.getOrCreateRow(this.sheet, y);
     }
 
     /**
-     * 为指定单元格获取或者创建样式,返回样式后可以设置样式内容
+     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
      *
-     * @param x X坐标,从0计数,既列号
-     * @param y Y坐标,从0计数,既行号
+     * @param locationRef 单元格地址标识符，例如A11，B5
      * @return {@link CellStyle}
      */
-    public CellStyle getOrCreateCellStyle(int x, int y) {
+    public CellStyle getOrCreateCellStyle(final String locationRef) {
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
+        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
+     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     *
+     * @param x X坐标，从0计数，即列号
+     * @param y Y坐标，从0计数，即行号
+     * @return {@link CellStyle}
+     */
+    public CellStyle getOrCreateCellStyle(final int x, final int y) {
+        final CellStyle cellStyle = getOrCreateCell(x, y).getCellStyle();
+        return Styles.isNullOrDefaultStyle(this.workbook, cellStyle) ? createCellStyle(x, y) : cellStyle;
+    }
+
+    /**
+     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link CellStyle}
+     */
+    public CellStyle createCellStyle(final String locationRef) {
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
+        return createCellStyle(cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
+     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     *
+     * @param x X坐标，从0计数，即列号
+     * @param y Y坐标，从0计数，即行号
+     * @return {@link CellStyle}
+     */
+    public CellStyle createCellStyle(final int x, final int y) {
         final Cell cell = getOrCreateCell(x, y);
-        CellStyle cellStyle = cell.getCellStyle();
-        if (null == cellStyle) {
-            cellStyle = this.workbook.createCellStyle();
-            cell.setCellStyle(cellStyle);
-        }
+        final CellStyle cellStyle = this.workbook.createCellStyle();
+        cell.setCellStyle(cellStyle);
         return cellStyle;
     }
 
     /**
-     * 获取或创建某一行的样式,返回样式后可以设置样式内容
+     * 创建单元格样式
      *
-     * @param y Y坐标,从0计数,既行号
+     * @return {@link CellStyle}
+     * @see Workbook#createCellStyle()
+     */
+    public CellStyle createCellStyle() {
+        return Styles.createCellStyle(this.workbook);
+    }
+
+    /**
+     * 获取或创建某一行的样式，返回样式后可以设置样式内容
+     * 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     *
+     * @param y Y坐标，从0计数，即行号
      * @return {@link CellStyle}
      */
-    public CellStyle getOrCreateRowStyle(int y) {
-        final Row row = getOrCreateRow(y);
-        CellStyle rowStyle = row.getRowStyle();
-        if (null == rowStyle) {
-            rowStyle = this.workbook.createCellStyle();
-            row.setRowStyle(rowStyle);
-        }
+    public CellStyle getOrCreateRowStyle(final int y) {
+        final CellStyle rowStyle = getOrCreateRow(y).getRowStyle();
+        return Styles.isNullOrDefaultStyle(this.workbook, rowStyle) ? createRowStyle(y) : rowStyle;
+    }
+
+    /**
+     * 创建某一行的样式，返回样式后可以设置样式内容
+     *
+     * @param y Y坐标，从0计数，即行号
+     * @return {@link CellStyle}
+     */
+    public CellStyle createRowStyle(final int y) {
+        final CellStyle rowStyle = this.workbook.createCellStyle();
+        getOrCreateRow(y).setRowStyle(rowStyle);
         return rowStyle;
+    }
+
+    /**
+     * 获取或创建某一列的样式，返回样式后可以设置样式内容
+     * 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     *
+     * @param x X坐标，从0计数，即列号
+     * @return {@link CellStyle}
+     */
+    public CellStyle getOrCreateColumnStyle(final int x) {
+        final CellStyle columnStyle = this.sheet.getColumnStyle(x);
+        return Styles.isNullOrDefaultStyle(this.workbook, columnStyle) ? createColumnStyle(x) : columnStyle;
     }
 
     /**
@@ -325,24 +403,9 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param x X坐标，从0计数，即列号
      * @return {@link CellStyle}
      */
-    public CellStyle createColumnStyle(int x) {
+    public CellStyle createColumnStyle(final int x) {
         final CellStyle columnStyle = this.workbook.createCellStyle();
         this.sheet.setDefaultColumnStyle(x, columnStyle);
-        return columnStyle;
-    }
-
-    /**
-     * 获取或创建某一列的样式,返回样式后可以设置样式内容
-     *
-     * @param x X坐标,从0计数,既列号
-     * @return {@link CellStyle}
-     */
-    public CellStyle getOrCreateColumnStyle(int x) {
-        CellStyle columnStyle = this.sheet.getColumnStyle(x);
-        if (null == columnStyle) {
-            columnStyle = this.workbook.createCellStyle();
-            this.sheet.setDefaultColumnStyle(x, columnStyle);
-        }
         return columnStyle;
     }
 
@@ -353,7 +416,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param address 链接地址
      * @return 链接
      */
-    public Hyperlink createHyperlink(HyperlinkType type, String address) {
+    public Hyperlink createHyperlink(final HyperlinkType type, final String address) {
         return createHyperlink(type, address, address);
     }
 
@@ -365,7 +428,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param label   标签，即单元格中显示的内容
      * @return 链接
      */
-    public Hyperlink createHyperlink(HyperlinkType type, String address, String label) {
+    public Hyperlink createHyperlink(final HyperlinkType type, final String address, final String label) {
         final Hyperlink hyperlink = this.workbook.getCreationHelper().createHyperlink(type);
         hyperlink.setAddress(address);
         hyperlink.setLabel(label);
@@ -373,53 +436,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 为指定单元格创建样式，返回样式后可以设置样式内容
-     *
-     * @param x X坐标，从0计数，即列号
-     * @param y Y坐标，从0计数，即行号
-     * @return {@link CellStyle}
-     */
-    public CellStyle createCellStyle(int x, int y) {
-        final Cell cell = getOrCreateCell(x, y);
-        final CellStyle cellStyle = this.workbook.createCellStyle();
-        cell.setCellStyle(cellStyle);
-        return cellStyle;
-    }
-
-    /**
-     * 为指定单元格创建样式，返回样式后可以设置样式内容
-     *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellStyle}
-     */
-    public CellStyle createCellStyle(String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return createCellStyle(cellLocation.getX(), cellLocation.getY());
-    }
-
-    /**
-     * 创建单元格样式
-     *
-     * @return {@link CellStyle}
-     * @see Workbook#createCellStyle()
-     */
-    public CellStyle createCellStyle() {
-        return StyleKit.createCellStyle(this.workbook);
-    }
-
-    /**
-     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
-     *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellStyle}
-     */
-    public CellStyle getOrCreateCellStyle(String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
-    }
-
-    /**
-     * 获取总行数,计算方法为：
+     * 获取总行数，计算方法为：
      *
      * <pre>
      * 最后一行序号 + 1
@@ -432,7 +449,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取有记录的行数,计算方法为：
+     * 获取有记录的行数，计算方法为：
      *
      * <pre>
      * 最后一行序号 - 第一行序号 + 1
@@ -445,7 +462,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取第一行总列数,计算方法为：
+     * 获取第一行总列数，计算方法为：
      *
      * <pre>
      * 最后一列序号 + 1
@@ -458,17 +475,81 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取总列数,计算方法为：
+     * 获取总列数，计算方法为：
      *
      * <pre>
      * 最后一列序号 + 1
      * </pre>
      *
      * @param rowNum 行号
-     * @return 列数
+     * @return 列数，-1表示获取失败
      */
-    public int getColumnCount(int rowNum) {
-        return this.sheet.getRow(rowNum).getLastCellNum();
+    public int getColumnCount(final int rowNum) {
+        final Row row = this.sheet.getRow(rowNum);
+        if (null != row) {
+            // getLastCellNum方法返回序号+1的值
+            return row.getLastCellNum();
+        }
+        return -1;
+    }
+
+    /**
+     * 判断是否为xlsx格式的Excel表（Excel07格式）
+     *
+     * @return 是否为xlsx格式的Excel表（Excel07格式）
+     */
+    public boolean isXlsx() {
+        return this.sheet instanceof XSSFSheet || this.sheet instanceof SXSSFSheet;
+    }
+
+    /**
+     * 获取Content-Type头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
+     *
+     * <pre>
+     * response.setContentType(excelWriter.getContentType());
+     * </pre>
+     *
+     * @return Content-Type值
+     */
+    public String getContentType() {
+        return isXlsx() ? ExcelKit.XLSX_CONTENT_TYPE : ExcelKit.XLS_CONTENT_TYPE;
+    }
+
+    /**
+     * 获取Content-Disposition头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
+     *
+     * <pre>
+     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", Charset.CHARSET_UTF_8));
+     * </pre>
+     *
+     * @param fileName 文件名，如果文件名没有扩展名，会自动按照生成Excel类型补齐扩展名，如果提供空，使用随机UUID
+     * @param charset  编码，null则使用默认UTF-8编码
+     * @return Content-Disposition值
+     */
+    public String getDisposition(String fileName, java.nio.charset.Charset charset) {
+        if (null == charset) {
+            charset = Charset.UTF_8;
+        }
+
+        if (StringKit.isBlank(fileName)) {
+            // 未提供文件名使用随机UUID作为文件名
+            fileName = ID.fastSimpleUUID();
+        }
+
+        fileName = StringKit.addSuffixIfNot(UrlEncoder.encodeAll(fileName, charset), isXlsx() ? ".xlsx" : ".xls");
+        return StringKit.format("attachment; filename=\"{}\"", fileName);
+    }
+
+    /**
+     * 关闭工作簿
+     * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     */
+    @Override
+    public void close() {
+        IoKit.closeQuietly(this.workbook);
+        this.sheet = null;
+        this.workbook = null;
+        this.isClosed = true;
     }
 
     /**
@@ -486,7 +567,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param headerAlias 别名Map
      * @return this
      */
-    public T setHeaderAlias(Map<String, String> headerAlias) {
+    public T setHeaderAlias(final Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
         return (T) this;
     }
@@ -498,7 +579,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param alias  别名
      * @return this
      */
-    public T addHeaderAlias(String header, String alias) {
+    public T addHeaderAlias(final String header, final String alias) {
         Map<String, String> headerAlias = this.headerAlias;
         if (null == headerAlias) {
             headerAlias = new LinkedHashMap<>();
@@ -514,7 +595,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param header 标题
      * @return this
      */
-    public T removeHeaderAlias(String header) {
+    public T removeHeaderAlias(final String header) {
         this.headerAlias.remove(header);
         return (T) this;
     }
@@ -528,17 +609,4 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         this.headerAlias = null;
         return (T) this;
     }
-
-    /**
-     * 关闭工作簿
-     * 如果用户设定了目标文件,先写出目标文件后给关闭工作簿
-     */
-    @Override
-    public void close() {
-        IoKit.close(this.workbook);
-        this.sheet = null;
-        this.workbook = null;
-        this.isClosed = true;
-    }
-
 }

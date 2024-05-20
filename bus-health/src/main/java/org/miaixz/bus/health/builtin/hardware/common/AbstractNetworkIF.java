@@ -167,6 +167,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         return false;
     }
 
+    private static Properties queryVmMacAddrProps() {
+        return Config.readProperties(Config._VM_MAC_ADDR_PROPERTIES);
+    }
+
     @Override
     public NetworkInterface queryNetworkInterface() {
         return this.networkInterface;
@@ -221,10 +225,6 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     public boolean isKnownVmMacAddr() {
         String oui = getMacaddr().length() > 7 ? getMacaddr().substring(0, 8) : getMacaddr();
         return this.vmMacAddrProps.get().containsKey(oui.toUpperCase(Locale.ROOT));
-    }
-
-    private static Properties queryVmMacAddrProps() {
-        return Config.readProperties(Config._VM_MAC_ADDR_PROPERTIES);
     }
 
     @Override

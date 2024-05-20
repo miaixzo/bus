@@ -3,7 +3,7 @@ package org.miaixz.bus.pager;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.statement.Statement;
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.parser.SqlParser;
 

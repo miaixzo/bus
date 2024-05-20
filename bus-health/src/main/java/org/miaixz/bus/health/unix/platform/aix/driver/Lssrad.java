@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -82,7 +82,7 @@ public final class Lssrad {
                     node = Parsing.parseIntOrDefault(t, 0);
                 } else {
                     if (t.contains(".")) {
-                        String[] split = RegEx.SPACES.split(t, 3);
+                        String[] split = Pattern.SPACES_PATTERN.split(t, 3);
                         slot = Parsing.parseIntOrDefault(split[0], 0);
                         t = split.length > 2 ? split[2] : Normal.EMPTY;
                     }

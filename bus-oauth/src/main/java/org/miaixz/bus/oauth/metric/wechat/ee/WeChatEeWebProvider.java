@@ -26,7 +26,7 @@
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -52,7 +52,7 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
         return Builder.fromUrl(complex.authorize())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getAgentId())
-                .queryParam("redirect_uri", UriKit.encode(context.getRedirectUri()))
+                .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
                 .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(WeChatEeWebScope.values())))
                 .queryParam("state", getRealState(state).concat("#wechat_redirect"))

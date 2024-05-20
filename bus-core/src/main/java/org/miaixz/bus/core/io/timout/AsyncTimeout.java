@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.timout;
 
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -220,7 +220,7 @@ public class AsyncTimeout extends Timeout {
                 while (byteCount > 0L) {
                     // Count how many bytes to write. This loop guarantees we split on a segment boundary.
                     long toWrite = 0L;
-                    for (Segment s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
+                    for (SectionBuffer s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
                         int segmentSize = s.limit - s.pos;
                         toWrite += segmentSize;
                         if (toWrite >= byteCount) {
@@ -333,7 +333,7 @@ public class AsyncTimeout extends Timeout {
 
     /**
      * Throws an IOException if {@code throwOnTimeout} is {@code true} and a timeout occurred. See
-     * {@link #newTimeoutException(java.io.IOException)} for the type of exception thrown.
+     * {@link #newTimeoutException(IOException)} for the type of exception thrown.
      */
     final void exit(boolean throwOnTimeout) throws IOException {
         boolean timedOut = exit();
@@ -342,7 +342,7 @@ public class AsyncTimeout extends Timeout {
 
     /**
      * Returns either {@code cause} or an IOException that's caused by {@code cause} if a timeout
-     * occurred. See {@link #newTimeoutException(java.io.IOException)} for the type of exception
+     * occurred. See {@link #newTimeoutException(IOException)} for the type of exception
      * returned.
      */
     final IOException exit(IOException cause) throws IOException {
@@ -352,7 +352,7 @@ public class AsyncTimeout extends Timeout {
 
     /**
      * Returns an {@link IOException} to represent a timeout. By default this method returns {@link
-     * java.io.InterruptedIOException}. If {@code cause} is non-null it is set as the cause of the
+     * InterruptedIOException}. If {@code cause} is non-null it is set as the cause of the
      * returned exception.
      */
     protected IOException newTimeoutException(IOException cause) {

@@ -58,8 +58,18 @@ public enum PayCache implements ExtendCache {
     }
 
     @Override
+    public boolean containsKey(String key) {
+        return false;
+    }
+
+    @Override
     public void remove(String key) {
         cache.remove(key);
+    }
+
+    @Override
+    public void pruneCache() {
+        ExtendCache.super.pruneCache();
     }
 
 }

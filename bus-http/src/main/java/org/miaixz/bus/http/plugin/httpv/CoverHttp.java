@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.http.*;

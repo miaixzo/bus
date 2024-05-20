@@ -26,7 +26,6 @@
 package org.miaixz.bus.core.codec.binary.encoder;
 
 import org.miaixz.bus.core.codec.Encoder;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Bas32编码器
@@ -36,22 +35,17 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 public class Base32Encoder implements Encoder<byte[], String> {
 
-    /**
-     * 默认字符
-     */
     public static final String DEFAULT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    /**
-     * 默认编码器
-     */
-    public static final Base32Encoder ENCODER = new Base32Encoder(DEFAULT_ALPHABET, Symbol.C_EQUAL);
-    /**
-     * HEX字符
-     */
     public static final String HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+    public static final Character DEFAULT_PAD = '=';
     /**
-     * HEX编码器
+     * 编码器
      */
-    public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, Symbol.C_EQUAL);
+    public static final Base32Encoder ENCODER = new Base32Encoder(DEFAULT_ALPHABET, DEFAULT_PAD);
+    /**
+     * 16进制编码器
+     */
+    public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, DEFAULT_PAD);
     private static final int[] BASE32_FILL = {-1, 4, 1, 6, 3};
     private final char[] alphabet;
     private final Character pad;
@@ -86,7 +80,7 @@ public class Base32Encoder implements Encoder<byte[], String> {
             // unsign
             currByte = (data[i] >= 0) ? data[i] : (data[i] + 256);
 
-            // Is the current digit going to span a byte boundary?
+            /* Is the current digit going to span a byte boundary? */
             if (index > 3) {
                 if ((i + 1) < data.length) {
                     nextByte = (data[i + 1] >= 0) ? data[i + 1] : (data[i + 1] + 256);
@@ -118,4 +112,5 @@ public class Base32Encoder implements Encoder<byte[], String> {
 
         return base32.toString();
     }
+
 }

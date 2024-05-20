@@ -224,7 +224,7 @@ public class Cpu {
      * @return 总CPU使用率
      */
     public double getUsed() {
-        return MathKit.sub(100, this.free);
+        return MathKit.sub(100, this.free).doubleValue();
     }
 
     @Override

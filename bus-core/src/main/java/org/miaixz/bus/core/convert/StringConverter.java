@@ -25,73 +25,47 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.convert.stringer.BlobStringer;
+import org.miaixz.bus.core.convert.stringer.ClobStringer;
 import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.XmlKit;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.Type;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.function.Function;
 
 /**
- * 字符串转换器
+ * 字符串转换器，提供各种对象转换为字符串的逻辑封装
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Map<Class<?>, Function<Object, String>> stringer;
 
     /**
-     * Clob字段值转字符串
+     * 加入自定义对象类型的toString规则
      *
-     * @param clob {@link Clob}
-     * @return 字符串
+     * @param clazz          类型
+     * @param stringFunction 序列化函数
+     * @return this
      */
-    private static String clobToString(final Clob clob) {
-        Reader reader = null;
-        try {
-            reader = clob.getCharacterStream();
-            return IoKit.read(reader);
-        } catch (final SQLException e) {
-            throw new ConvertException(e);
-        } finally {
-            IoKit.close(reader);
+    public StringConverter putStringer(final Class<?> clazz, final Function<Object, String> stringFunction) {
+        if (null == stringer) {
+            stringer = new HashMap<>();
         }
-    }
-
-    /**
-     * Blob字段值转字符串
-     *
-     * @param blob {@link Blob}
-     * @return 字符串
-     */
-    private static String blobToString(final Blob blob) {
-        InputStream in = null;
-        try {
-            in = blob.getBinaryStream();
-            return IoKit.read(in, Charset.UTF_8);
-        } catch (final SQLException e) {
-            throw new ConvertException(e);
-        } finally {
-            IoKit.close(in);
-        }
+        stringer.put(clazz, stringFunction);
+        return this;
     }
 
     @Override
     protected String convertInternal(final Class<?> targetClass, final Object value) {
+        // 自定义toString
         if (MapKit.isNotEmpty(stringer)) {
             final Function<Object, String> stringFunction = stringer.get(targetClass);
             if (null != stringFunction) {
@@ -103,29 +77,16 @@ public class StringConverter extends AbstractConverter {
             return ((TimeZone) value).getID();
         } else if (value instanceof org.w3c.dom.Node) {
             return XmlKit.toString((org.w3c.dom.Node) value);
-        } else if (value instanceof Clob) {
-            return clobToString((Clob) value);
-        } else if (value instanceof Blob) {
-            return blobToString((Blob) value);
+        } else if (value instanceof java.sql.Clob) {
+            return ClobStringer.INSTANCE.apply(value);
+        } else if (value instanceof java.sql.Blob) {
+            return BlobStringer.INSTANCE.apply(value);
         } else if (value instanceof Type) {
             return ((Type) value).getTypeName();
         }
-        return convertToString(value);
-    }
 
-    /**
-     * 加入自定义对象类型的toString规则
-     *
-     * @param clazz          类型
-     * @param stringFunction 序列化函数
-     * @return this
-     */
-    public StringConverter putStringer(Class<?> clazz, Function<Object, String> stringFunction) {
-        if (null == stringer) {
-            stringer = new HashMap<>();
-        }
-        stringer.put(clazz, stringFunction);
-        return this;
+        // 其它情况
+        return convertToString(value);
     }
 
 }

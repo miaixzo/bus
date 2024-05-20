@@ -27,14 +27,13 @@ package org.miaixz.bus.crypto;
 
 /**
  * 补码方式
- * 补码方式是在分组密码中，当明文长度不是分组长度的整数倍时，
- * 需要在最后一个分组中填充一些数据使其凑满一个分组的长度。
+ * 补码方式是在分组密码中，当明文长度不是分组长度的整数倍时，需要在最后一个分组中填充一些数据使其凑满一个分组的长度。
  *
  * @author Kimi Liu
+ * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher章节</a>
  * @since Java 17+
  */
 public enum Padding {
-
     /**
      * 无补码
      */
@@ -67,5 +66,4 @@ public enum Padding {
      * The padding scheme defined in the SSL Protocol Version 3.0, November 18, 1996, section 5.2.3.2 (CBC block cipher)
      */
     SSL3Padding
-
 }

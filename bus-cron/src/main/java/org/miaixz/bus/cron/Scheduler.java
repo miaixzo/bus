@@ -25,21 +25,21 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.exception.CrontabException;
-import org.miaixz.bus.core.key.UUID;
+import org.miaixz.bus.core.data.ID;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.thread.ExecutorBuilder;
-import org.miaixz.bus.core.thread.ThreadBuilder;
+import org.miaixz.bus.core.lang.exception.CrontabException;
+import org.miaixz.bus.core.lang.thread.ExecutorBuilder;
+import org.miaixz.bus.core.lang.thread.ThreadFactoryBuilder;
 import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.cron.factory.InvokeTask;
-import org.miaixz.bus.cron.factory.RunnableTask;
-import org.miaixz.bus.cron.factory.Task;
+import org.miaixz.bus.cron.crontab.Crontab;
+import org.miaixz.bus.cron.crontab.InvokeCrontab;
+import org.miaixz.bus.cron.crontab.RunnableCrontab;
 import org.miaixz.bus.cron.listener.TaskListener;
 import org.miaixz.bus.cron.listener.TaskListenerManager;
 import org.miaixz.bus.cron.pattern.CronPattern;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.setting.magic.PopSetting;
+import org.miaixz.bus.setting.Setting;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -51,28 +51,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 任务调度器
- * <p>
+ *
  * 调度器启动流程：
- *
- * <pre>
- * 启动Timer -  启动Launcher -  启动Executor
- * </pre>
- * <p>
+ * <pre>启动Timer = 启动TaskLauncher = 启动TaskExecutor</pre>
  * 调度器关闭流程:
- *
- * <pre>
- * 关闭Timer -  关闭所有运行中的Launcher -  关闭所有运行中的Executor
- * </pre>
- * <p>
+ * <pre>关闭Timer = 关闭所有运行中的TaskLauncher = 关闭所有运行中的TaskExecutor</pre>
  * 其中：
- *
- * <pre>
- * <strong>Launcher</strong>：定时器每分钟调用一次(如果{@link Scheduler#isMatchSecond()}为<code>true</code>每秒调用一次),
+ * <pre>Launcher ：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为{@code true}每秒调用一次），
  * 负责检查<strong>Repertoire</strong>是否有匹配到此时间运行的Task
  * </pre>
  *
  * <pre>
- * <strong>Executor</strong>：Launcher匹配成功后,触发Executor执行具体的作业,执行完毕销毁
+ * Executor ：TaskLauncher匹配成功后，触发TaskExecutor执行具体的作业，执行完毕销毁
  * </pre>
  *
  * @author Kimi Liu
@@ -80,7 +70,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Scheduler implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final Lock lock = new ReentrantLock();
 
@@ -136,7 +126,7 @@ public class Scheduler implements Serializable {
      * @param timeZone 时区
      * @return this
      */
-    public Scheduler setTimeZone(TimeZone timeZone) {
+    public Scheduler setTimeZone(final TimeZone timeZone) {
         this.config.setTimeZone(timeZone);
         return this;
     }
@@ -149,7 +139,7 @@ public class Scheduler implements Serializable {
      * @return this
      * @throws CrontabException 定时任务已经启动抛出此异常
      */
-    public Scheduler setThreadExecutor(ExecutorService threadExecutor) throws CrontabException {
+    public Scheduler setThreadExecutor(final ExecutorService threadExecutor) throws CrontabException {
         lock.lock();
         try {
             checkStarted();
@@ -178,7 +168,7 @@ public class Scheduler implements Serializable {
      * @return this
      * @throws CrontabException 定时任务已经启动抛出此异常
      */
-    public Scheduler setDaemon(boolean on) throws CrontabException {
+    public Scheduler setDaemon(final boolean on) throws CrontabException {
         lock.lock();
         try {
             checkStarted();
@@ -204,7 +194,7 @@ public class Scheduler implements Serializable {
      * @param isMatchSecond {@code true}支持，{@code false}不支持
      * @return this
      */
-    public Scheduler setMatchSecond(boolean isMatchSecond) {
+    public Scheduler setMatchSecond(final boolean isMatchSecond) {
         this.config.setMatchSecond(isMatchSecond);
         return this;
     }
@@ -215,7 +205,7 @@ public class Scheduler implements Serializable {
      * @param listener {@link TaskListener}
      * @return this
      */
-    public Scheduler addListener(TaskListener listener) {
+    public Scheduler addListener(final TaskListener listener) {
         this.listenerManager.addListener(listener);
         return this;
     }
@@ -226,7 +216,7 @@ public class Scheduler implements Serializable {
      * @param listener {@link TaskListener}
      * @return this
      */
-    public Scheduler removeListener(TaskListener listener) {
+    public Scheduler removeListener(final TaskListener listener) {
         this.listenerManager.removeListener(listener);
         return this;
     }
@@ -238,21 +228,22 @@ public class Scheduler implements Serializable {
      * @param cronSetting 定时任务设置文件
      * @return this
      */
-    public Scheduler schedule(PopSetting cronSetting) {
+    public Scheduler schedule(final Setting cronSetting) {
         if (MapKit.isNotEmpty(cronSetting)) {
             String group;
-            for (Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupMap().entrySet()) {
+            for (final Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap().entrySet()) {
                 group = groupedEntry.getKey();
-                for (Entry<String, String> entry : groupedEntry.getValue().entrySet()) {
+                for (final Entry<String, String> entry : groupedEntry.getValue().entrySet()) {
                     String jobClass = entry.getKey();
                     if (StringKit.isNotBlank(group)) {
-                        jobClass = group + Symbol.DOT + jobClass;
+                        jobClass = group + Symbol.C_DOT + jobClass;
                     }
                     final String pattern = entry.getValue();
                     Logger.debug("Load job: {} {}", pattern, jobClass);
                     try {
-                        schedule("id_" + jobClass, pattern, new InvokeTask(jobClass));
-                    } catch (Exception e) {
+                        // 自定义ID避免重复从配置文件加载
+                        schedule("id_" + jobClass, pattern, new InvokeCrontab(jobClass));
+                    } catch (final Exception e) {
                         throw new CrontabException("Schedule [{}] [{}] error!", pattern, jobClass);
                     }
                 }
@@ -262,63 +253,63 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 新增Task,使用随机UUID
+     * 新增Task，使用随机UUID
      *
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Runnable}
      * @return ID
      */
-    public String schedule(String pattern, Runnable task) {
-        return schedule(pattern, new RunnableTask(task));
+    public String schedule(final String pattern, final Runnable task) {
+        return schedule(pattern, new RunnableCrontab(task));
     }
 
     /**
-     * 新增Task,使用随机UUID
+     * 新增Task，使用随机UUID
      *
      * @param pattern {@link CronPattern}对应的String表达式
-     * @param task    {@link Task}
+     * @param crontab    {@link Crontab}
      * @return ID
      */
-    public String schedule(String pattern, Task task) {
-        String id = UUID.randomUUID().toString();
-        schedule(id, pattern, task);
+    public String schedule(final String pattern, final Crontab crontab) {
+        final String id = ID.fastUUID();
+        schedule(id, pattern, crontab);
         return id;
     }
 
     /**
      * 新增Task，如果任务ID已经存在，抛出异常
      *
-     * @param id      ID,为每一个Task定义一个ID
+     * @param id      ID，为每一个Task定义一个ID
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Runnable}
      * @return this
      */
-    public Scheduler schedule(String id, String pattern, Runnable task) {
-        return schedule(id, new CronPattern(pattern), new RunnableTask(task));
+    public Scheduler schedule(final String id, final String pattern, final Runnable task) {
+        return schedule(id, new CronPattern(pattern), new RunnableCrontab(task));
     }
 
     /**
      * 新增Task，如果任务ID已经存在，抛出异常
      *
-     * @param id      ID,为每一个Task定义一个ID
+     * @param id      ID，为每一个Task定义一个ID
      * @param pattern {@link CronPattern}对应的String表达式
-     * @param task    {@link Task}
+     * @param crontab    {@link Crontab}
      * @return this
      */
-    public Scheduler schedule(String id, String pattern, Task task) {
-        return schedule(id, new CronPattern(pattern), task);
+    public Scheduler schedule(final String id, final String pattern, final Crontab crontab) {
+        return schedule(id, new CronPattern(pattern), crontab);
     }
 
     /**
      * 新增Task，如果任务ID已经存在，抛出异常
      *
-     * @param id      ID,为每一个Task定义一个ID
+     * @param id      ID，为每一个Task定义一个ID
      * @param pattern {@link CronPattern}
-     * @param task    {@link Task}
+     * @param crontab    {@link Crontab}
      * @return this
      */
-    public Scheduler schedule(String id, CronPattern pattern, Task task) {
-        repertoire.add(id, pattern, task);
+    public Scheduler schedule(final String id, final CronPattern pattern, final Crontab crontab) {
+        repertoire.add(id, pattern, crontab);
         return this;
     }
 
@@ -328,7 +319,7 @@ public class Scheduler implements Serializable {
      * @param id Task的ID
      * @return this
      */
-    public Scheduler deschedule(String id) {
+    public Scheduler deschedule(final String id) {
         descheduleWithStatus(id);
         return this;
     }
@@ -339,7 +330,7 @@ public class Scheduler implements Serializable {
      * @param id Task的ID
      * @return 是否移除成功，{@code false}表示未找到对应ID的任务
      */
-    public boolean descheduleWithStatus(String id) {
+    public boolean descheduleWithStatus(final String id) {
         return this.repertoire.remove(id);
     }
 
@@ -350,7 +341,7 @@ public class Scheduler implements Serializable {
      * @param pattern {@link CronPattern}
      * @return this
      */
-    public Scheduler updatePattern(String id, CronPattern pattern) {
+    public Scheduler updatePattern(final String id, final CronPattern pattern) {
         this.repertoire.updatePattern(id, pattern);
         return this;
     }
@@ -358,7 +349,7 @@ public class Scheduler implements Serializable {
     /**
      * 获取定时任务表，注意此方法返回非复制对象，对返回对象的修改将影响已有定时任务
      *
-     * @return 定时任务表 {@link Repertoire}
+     * @return 定时任务表{@link Repertoire}
      */
     public Repertoire getTaskTable() {
         return this.repertoire;
@@ -370,17 +361,17 @@ public class Scheduler implements Serializable {
      * @param id ID
      * @return {@link CronPattern}
      */
-    public CronPattern getPattern(String id) {
+    public CronPattern getPattern(final String id) {
         return this.repertoire.getPattern(id);
     }
 
     /**
-     * 获得指定id的{@link Task}
+     * 获得指定id的{@link Crontab}
      *
      * @param id ID
-     * @return {@link Task}
+     * @return {@link Crontab}
      */
-    public Task getTask(String id) {
+    public Crontab getTask(final String id) {
         return this.repertoire.getTask(id);
     }
 
@@ -422,10 +413,10 @@ public class Scheduler implements Serializable {
     /**
      * 启动
      *
-     * @param isDaemon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
+     * @param isDaemon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
      * @return this
      */
-    public Scheduler start(boolean isDaemon) {
+    public Scheduler start(final boolean isDaemon) {
         this.daemon = isDaemon;
         return start();
     }
@@ -443,7 +434,7 @@ public class Scheduler implements Serializable {
             if (null == this.threadExecutor) {
                 // 无界线程池，确保每一个需要执行的线程都可以及时运行，同时复用已有线程避免线程重复创建
                 this.threadExecutor = ExecutorBuilder.of().useSynchronousQueue().setThreadFactory(//
-                        ThreadBuilder.of().setNamePrefix("exec-cron-").setDaemon(this.daemon).build()//
+                        ThreadFactoryBuilder.of().setNamePrefix("x-cron-").setDaemon(this.daemon).build()//
                 ).build();
             }
             this.supervisor = new Supervisor(this);
@@ -462,8 +453,8 @@ public class Scheduler implements Serializable {
 
     /**
      * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束,如果为守护线程模式,则正在执行的作业也会自动结束,否则作业线程将在执行完成后结束
-     * 此方法并不会清除任务表中的任务,请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
+     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
+     * 此方法并不会清除任务表中的任务，请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
      *
      * @return this
      */
@@ -473,15 +464,15 @@ public class Scheduler implements Serializable {
 
     /**
      * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束,如果为守护线程模式,则正在执行的作业也会自动结束,否则作业线程将在执行完成后结束
+     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
      *
-     * @param clearTasks 标记
+     * @param clearTasks 是否清除所有任务
      * @return this
      */
-    public Scheduler stop(boolean clearTasks) {
+    public Scheduler stop(final boolean clearTasks) {
         lock.lock();
         try {
-            if (false == started) {
+            if (!started) {
                 throw new IllegalStateException("Scheduler not started !");
             }
 

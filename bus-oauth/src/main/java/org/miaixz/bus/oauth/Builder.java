@@ -26,9 +26,13 @@
 package org.miaixz.bus.oauth;
 
 import lombok.Setter;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.toolkit.MapKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -78,7 +82,7 @@ public class Builder {
             if (null == v) {
                 paramList.add(k + "=");
             } else {
-                paramList.add(k + "=" + (encode ? UriKit.encode(String.valueOf(v)) : v));
+                paramList.add(k + "=" + (encode ? UrlEncoder.encodeAll(String.valueOf(v)) : v));
             }
         });
         return String.join("&", paramList);
@@ -98,7 +102,7 @@ public class Builder {
             for (String field : fields) {
                 if (field.contains("=")) {
                     String[] keyValue = field.split("=");
-                    res.put(UriKit.decode(keyValue[0]), keyValue.length == 2 ? UriKit.decode(keyValue[1]) : null);
+                    res.put(UrlDecoder.decode(keyValue[0]), keyValue.length == 2 ? UrlDecoder.decode(keyValue[1]) : null);
                 }
             }
         } else {
@@ -126,7 +130,7 @@ public class Builder {
         if (MapKit.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = CharsKit.appendIfMissing(this.baseUrl, "?", "&");
+        String baseUrl = StringKit.appendIfMissing(this.baseUrl, "?", "&");
         String paramString = parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }

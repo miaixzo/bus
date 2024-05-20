@@ -27,7 +27,11 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.toolkit.SerializeKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -36,7 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 数组转换器,包括原始类型数组
+ * 数组转换器，包括原始类型数组
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,10 +48,10 @@ import java.util.List;
 public class ArrayConverter extends AbstractConverter {
 
     /**
-     * 单例对象
+     * 单例
      */
     public static final ArrayConverter INSTANCE = new ArrayConverter();
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 是否忽略元素转换错误
      */
@@ -130,14 +134,14 @@ public class ArrayConverter extends AbstractConverter {
             // 字符串转bytes，首先判断是否为Base64，是则转换，否则按照默认getBytes方法。
             if (targetComponentType == byte.class) {
                 final String text = value.toString();
-                if (Base64.isBase64(text)) {
+                if (Base64.isTypeBase64(text)) {
                     return Base64.decode(value.toString());
                 }
                 return text.getBytes();
             }
 
             // 单纯字符串情况下按照逗号分隔后劈开
-            final String[] strings = StringKit.splitToArray(value.toString(), Symbol.COMMA);
+            final String[] strings = CharsBacker.splitToArray(value.toString(), Symbol.COMMA);
             return convertArrayToArray(targetComponentType, strings);
         }
 
@@ -161,25 +165,26 @@ public class ArrayConverter extends AbstractConverter {
             }
         } else if (value instanceof Iterable) {
             // 可循环对象转数组，可循环对象无法获取长度，因此先转为List后转为数组
-            final List<?> list = CollKit.of((Iterable<?>) value);
+            final List<?> list = ListKit.of((Iterable<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, convertComponentType(targetComponentType, list.get(i)));
             }
         } else if (value instanceof Iterator) {
             // 可循环对象转数组，可循环对象无法获取长度，因此先转为List后转为数组
-            final List<?> list = CollKit.of((Iterator<?>) value);
+            final List<?> list = ListKit.of((Iterator<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, convertComponentType(targetComponentType, list.get(i)));
             }
         } else if (value instanceof Number && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
-            result = ByteKit.getBytes((Number) value);
+            result = ByteKit.toBytes((Number) value);
         } else if (value instanceof Serializable && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
-            result = ObjectKit.serialize(value);
+            result = SerializeKit.serialize(value);
         } else {
+            // everything else:
             result = convertToSingleElementArray(targetComponentType, value);
         }
 

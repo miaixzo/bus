@@ -1,7 +1,7 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperBuilder;

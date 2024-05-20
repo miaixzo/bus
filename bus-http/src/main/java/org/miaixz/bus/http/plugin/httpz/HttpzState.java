@@ -91,7 +91,7 @@ public class HttpzState {
                 errorMsgs.removeFirst();
             }
             StringBuilder errorMsg = new StringBuilder();
-            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME_PATTERN))
+            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME))
                     .append(Symbol.HT)
                     .append(url)
                     .append(Symbol.HT)

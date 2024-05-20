@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.cache;
 
-import org.miaixz.bus.cache.annotation.Cached;
-import org.miaixz.bus.cache.annotation.CachedGet;
-import org.miaixz.bus.cache.annotation.Invalid;
 import org.miaixz.bus.cache.magic.*;
+import org.miaixz.bus.cache.magic.annotation.Cached;
+import org.miaixz.bus.cache.magic.annotation.CachedGet;
+import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.cache.support.ArgNameGenerator;
 import org.miaixz.bus.cache.support.CacheInfoContainer;
 import org.miaixz.bus.cache.support.KeyGenerator;

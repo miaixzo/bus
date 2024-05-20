@@ -25,9 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.io.watcher.WatchMonitor;
-import org.miaixz.bus.core.io.watcher.Watcher;
+import org.miaixz.bus.core.io.file.PathResolve;
+import org.miaixz.bus.core.io.watch.WatchKind;
+import org.miaixz.bus.core.io.watch.WatchMonitor;
+import org.miaixz.bus.core.io.watch.Watcher;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +67,7 @@ public class WatchKit {
      * @return 监听对象
      */
     public static WatchMonitor of(final URL url, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return of(UriKit.toURI(url), maxDepth, events);
+        return of(UrlKit.toURI(url), maxDepth, events);
     }
 
     /**
@@ -179,7 +182,7 @@ public class WatchKit {
      * @return {@link WatchMonitor}
      */
     public static WatchMonitor ofAll(final URL url, final int maxDepth, final Watcher watcher) {
-        return ofAll(UriKit.toURI(url), maxDepth, watcher);
+        return ofAll(UrlKit.toURI(url), maxDepth, watcher);
     }
 
     /**
@@ -271,9 +274,7 @@ public class WatchKit {
      * @return {@link WatchMonitor}
      */
     public static WatchMonitor ofAll(final Path path, final int maxDepth, final Watcher watcher) {
-        final WatchMonitor watchMonitor = of(path, maxDepth, WatchMonitor.EVENTS_ALL);
-        watchMonitor.setWatcher(watcher);
-        return watchMonitor;
+        return of(path, maxDepth, WatchKind.ALL).setWatcher(watcher);
     }
 
     /**
@@ -283,8 +284,8 @@ public class WatchKit {
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final URL url, final Watcher watcher) {
-        return createModify(url, 0, watcher);
+    public static WatchMonitor ofModify(final URL url, final Watcher watcher) {
+        return ofModify(url, 0, watcher);
     }
 
     /**
@@ -295,8 +296,8 @@ public class WatchKit {
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final URL url, final int maxDepth, final Watcher watcher) {
-        return createModify(UriKit.toURI(url), maxDepth, watcher);
+    public static WatchMonitor ofModify(final URL url, final int maxDepth, final Watcher watcher) {
+        return ofModify(UrlKit.toURI(url), maxDepth, watcher);
     }
 
     /**
@@ -306,8 +307,8 @@ public class WatchKit {
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final URI uri, final Watcher watcher) {
-        return createModify(uri, 0, watcher);
+    public static WatchMonitor ofModify(final URI uri, final Watcher watcher) {
+        return ofModify(uri, 0, watcher);
     }
 
     /**
@@ -318,8 +319,8 @@ public class WatchKit {
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final URI uri, final int maxDepth, final Watcher watcher) {
-        return createModify(Paths.get(uri), maxDepth, watcher);
+    public static WatchMonitor ofModify(final URI uri, final int maxDepth, final Watcher watcher) {
+        return ofModify(Paths.get(uri), maxDepth, watcher);
     }
 
     /**
@@ -329,8 +330,8 @@ public class WatchKit {
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final File file, final Watcher watcher) {
-        return createModify(file, 0, watcher);
+    public static WatchMonitor ofModify(final File file, final Watcher watcher) {
+        return ofModify(file, 0, watcher);
     }
 
     /**
@@ -341,8 +342,8 @@ public class WatchKit {
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final File file, final int maxDepth, final Watcher watcher) {
-        return createModify(file.toPath(), maxDepth, watcher);
+    public static WatchMonitor ofModify(final File file, final int maxDepth, final Watcher watcher) {
+        return ofModify(file.toPath(), maxDepth, watcher);
     }
 
     /**
@@ -352,8 +353,8 @@ public class WatchKit {
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final String path, final Watcher watcher) {
-        return createModify(path, 0, watcher);
+    public static WatchMonitor ofModify(final String path, final Watcher watcher) {
+        return ofModify(path, 0, watcher);
     }
 
     /**
@@ -364,8 +365,8 @@ public class WatchKit {
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final String path, final int maxDepth, final Watcher watcher) {
-        return createModify(Paths.get(path), maxDepth, watcher);
+    public static WatchMonitor ofModify(final String path, final int maxDepth, final Watcher watcher) {
+        return ofModify(Paths.get(path), maxDepth, watcher);
     }
 
     /**
@@ -375,8 +376,8 @@ public class WatchKit {
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final Path path, final Watcher watcher) {
-        return createModify(path, 0, watcher);
+    public static WatchMonitor ofModify(final Path path, final Watcher watcher) {
+        return ofModify(path, 0, watcher);
     }
 
     /**
@@ -387,8 +388,8 @@ public class WatchKit {
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
-    public static WatchMonitor createModify(final Path path, final int maxDepth, final Watcher watcher) {
-        final WatchMonitor watchMonitor = of(path, maxDepth, WatchMonitor.ENTRY_MODIFY);
+    public static WatchMonitor ofModify(final Path path, final int maxDepth, final Watcher watcher) {
+        final WatchMonitor watchMonitor = of(path, maxDepth, WatchKind.MODIFY.getValue());
         watchMonitor.setWatcher(watcher);
         return watchMonitor;
     }
@@ -407,6 +408,20 @@ public class WatchKit {
         } catch (final IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * 获取触发事件中相对监听Path的完整路径
+     *
+     * @param event 事件
+     * @param key   {@link WatchKey}
+     * @return 完整路径
+     */
+    public static Path resolvePath(final WatchEvent<?> event, final WatchKey key) {
+        Assert.notNull(event, "WatchEvent must be not null!");
+        Assert.notNull(event, "WatchKey must be not null!");
+
+        return PathResolve.of((Path) key.watchable(), (Path) event.context());
     }
 
 }

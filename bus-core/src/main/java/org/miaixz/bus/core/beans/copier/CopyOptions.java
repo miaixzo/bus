@@ -25,12 +25,14 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans.copier;
 
+import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.Converter;
-import org.miaixz.bus.core.lang.function.FuncX;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.LambdaKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -52,7 +54,7 @@ import java.util.function.UnaryOperator;
  */
 public class CopyOptions implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
@@ -76,13 +78,24 @@ public class CopyOptions implements Serializable {
      */
     protected UnaryOperator<MutableEntry<String, Object>> fieldEditor;
     /**
-     * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略
+     * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      */
     protected boolean transientSupport = true;
     /**
      * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，为{@code null}则写，否则忽略。如果覆盖，则不判断直接写
      */
     protected boolean override = true;
+    /**
+     * 是否自动转换为驼峰方式
+     * 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
+     * <ol>
+     *     <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
+     *     <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
+     * </ol>
+     * <p>
+     * 但是bean转Map和map转map时，没有使用这个参数，是因为没有匹配的必要，转map不存在无法匹配到的问题，因此此参数无效。
+     */
+    protected boolean autoTransCamelCase = true;
     /**
      * 自定义类型转换器，默认使用全局万能转换器转换
      */
@@ -140,7 +153,7 @@ public class CopyOptions implements Serializable {
      * 设置限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
      *
      * @param editable 限制的类或接口
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setEditable(final Class<?> editable) {
         this.editable = editable;
@@ -151,7 +164,7 @@ public class CopyOptions implements Serializable {
      * 设置是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      *
      * @param ignoreNullVall 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setIgnoreNullValue(final boolean ignoreNullVall) {
         this.ignoreNullValue = ignoreNullVall;
@@ -161,7 +174,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略空值，当源对象的值为null时，忽略而不注入此值
      *
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions ignoreNullValue() {
         return setIgnoreNullValue(true);
@@ -172,7 +185,7 @@ public class CopyOptions implements Serializable {
      * {@link BiPredicate#test(Object, Object)}返回{@code true}则属性通过，{@code false}不通过，抛弃之
      *
      * @param propertiesFilter 属性过滤器
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setPropertiesFilter(final BiPredicate<Field, Object> propertiesFilter) {
         this.propertiesFilter = propertiesFilter;
@@ -183,10 +196,15 @@ public class CopyOptions implements Serializable {
      * 设置忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      *
      * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setIgnoreProperties(final String... ignoreProperties) {
-        return setPropertiesFilter((field, o) -> !ArrayKit.contains(ignoreProperties, field.getName()));
+        return setPropertiesFilter((field, o) -> {
+            if (ignoreCase) {
+                return !ArrayKit.containsIgnoreCase(ignoreProperties, field.getName());
+            }
+            return !ArrayKit.contains(ignoreProperties, field.getName());
+        });
     }
 
     /**
@@ -195,9 +213,9 @@ public class CopyOptions implements Serializable {
      * @param <P>   参数类型
      * @param <R>   返回值类型
      * @param funcs 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
-    public <P, R> CopyOptions setIgnoreProperties(final FuncX<P, R>... funcs) {
+    public <P, R> CopyOptions setIgnoreProperties(final FunctionX<P, R>... funcs) {
         final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
         return setPropertiesFilter((field, o) -> !ignoreProperties.contains(field.getName()));
     }
@@ -206,7 +224,7 @@ public class CopyOptions implements Serializable {
      * 设置是否忽略字段的注入错误
      *
      * @param ignoreError 是否忽略注入错误
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setIgnoreError(final boolean ignoreError) {
         this.ignoreError = ignoreError;
@@ -216,7 +234,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略字段的注入错误
      *
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions ignoreError() {
         return setIgnoreError(true);
@@ -226,7 +244,7 @@ public class CopyOptions implements Serializable {
      * 设置是否忽略字段的大小写
      *
      * @param ignoreCase 是否忽略大小写
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setIgnoreCase(final boolean ignoreCase) {
         this.ignoreCase = ignoreCase;
@@ -236,7 +254,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略字段的大小写
      *
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions ignoreCase() {
         return setIgnoreCase(true);
@@ -247,7 +265,7 @@ public class CopyOptions implements Serializable {
      * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
      * @param fieldMapping 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setFieldMapping(final Map<String, String> fieldMapping) {
         return setFieldEditor(entry -> {
@@ -264,7 +282,7 @@ public class CopyOptions implements Serializable {
      * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即参数中key为目标Bean的名称，而返回值是提供者中的key，并且对值的修改无效
      *
      * @param editor 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
-     * @return {@link CopyOptions}
+     * @return CopyOptions
      */
     public CopyOptions setFieldEditor(final UnaryOperator<MutableEntry<String, Object>> editor) {
         this.fieldEditor = editor;
@@ -307,6 +325,25 @@ public class CopyOptions implements Serializable {
     }
 
     /**
+     * 设置是否自动转换为驼峰方式
+     * 一般用于map转bean和bean转bean出现非驼峰格式时，在尝试转换失败的情况下，是否二次检查转为驼峰匹配。
+     * 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
+     * <ol>
+     *     <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
+     *     <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
+     * </ol>
+     * <p>
+     * 但是bean转Map和map转map时，没有使用这个参数，是因为没有匹配的必要，转map不存在无法匹配到的问题，因此此参数无效。
+     *
+     * @param autoTransCamelCase 是否自动转换为驼峰方式
+     * @return this
+     */
+    public CopyOptions setAutoTransCamelCase(final boolean autoTransCamelCase) {
+        this.autoTransCamelCase = autoTransCamelCase;
+        return this;
+    }
+
+    /**
      * 设置自定义类型转换器，默认使用全局万能转换器转换。
      *
      * @param converter 转换器
@@ -339,6 +376,27 @@ public class CopyOptions implements Serializable {
      */
     protected boolean testPropertyFilter(final Field field, final Object value) {
         return null == this.propertiesFilter || this.propertiesFilter.test(field, value);
+    }
+
+    /**
+     * 查找Map对应Bean的名称
+     * 尝试原名称、转驼峰名称、isXxx去掉is的名称
+     *
+     * @param targetPropDescMap 目标bean的属性描述Map
+     * @param sKeyStr           键或字段名
+     * @return {@link PropDesc}
+     */
+    protected PropDesc findPropDesc(final Map<String, PropDesc> targetPropDescMap, final String sKeyStr) {
+        PropDesc propDesc = targetPropDescMap.get(sKeyStr);
+        // 转驼峰尝试查找
+        if (null == propDesc && this.autoTransCamelCase) {
+            final String camelCaseKey = StringKit.toCamelCase(sKeyStr);
+            if (!StringKit.equals(sKeyStr, camelCaseKey)) {
+                // 只有转换为驼峰后与原key不同才重复查询，相同说明本身就是驼峰，不需要二次查询
+                propDesc = targetPropDescMap.get(camelCaseKey);
+            }
+        }
+        return propDesc;
     }
 
 }

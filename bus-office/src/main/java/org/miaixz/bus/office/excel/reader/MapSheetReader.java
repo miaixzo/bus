@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.reader;
 
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.IterKit;
-import org.miaixz.bus.core.toolkit.StringKit;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.IteratorKit;
+import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,36 +52,33 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
      * @param startRowIndex  起始行（包含，从0开始计数）
      * @param endRowIndex    结束行（包含，从0开始计数）
      */
-    public MapSheetReader(int headerRowIndex, int startRowIndex, int endRowIndex) {
+    public MapSheetReader(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         super(startRowIndex, endRowIndex);
         this.headerRowIndex = headerRowIndex;
     }
 
     @Override
-    public List<Map<String, Object>> read(Sheet sheet) {
+    public List<Map<String, Object>> read(final Sheet sheet) {
         // 边界判断
         final int firstRowNum = sheet.getFirstRowNum();
         final int lastRowNum = sheet.getLastRowNum();
+        if (lastRowNum < 0) {
+            return ListKit.empty();
+        }
+
         if (headerRowIndex < firstRowNum) {
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is lower than first row index {}.", headerRowIndex, firstRowNum));
         } else if (headerRowIndex > lastRowNum) {
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
         } else if (startRowIndex > lastRowNum) {
             // 只有标题行的Excel，起始行是1，标题行（最后的行号是0）
-            return CollKit.empty();
+            return ListKit.empty();
         }
-
-        if (lastRowNum < 0) {
-            return Collections.emptyList();
-        }
-
-        // 读取起始行（包含）
-        final int startRowIndex = Math.max(this.startRowIndex, firstRowNum);
-        // 读取结束行（包含）
-        final int endRowIndex = Math.min(this.endRowIndex, lastRowNum);
+        final int startRowIndex = Math.max(this.startRowIndex, firstRowNum);// 读取起始行（包含）
+        final int endRowIndex = Math.min(this.endRowIndex, lastRowNum);// 读取结束行（包含）
 
         // 读取header
-        List<String> headerList = aliasHeader(readRow(sheet, headerRowIndex));
+        final List<String> headerList = aliasHeader(readRow(sheet, headerRowIndex));
 
         final List<Map<String, Object>> result = new ArrayList<>(endRowIndex - startRowIndex + 1);
         List<Object> rowList;
@@ -89,8 +86,8 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
             // 跳过标题行
             if (i != headerRowIndex) {
                 rowList = readRow(sheet, i);
-                if (CollKit.isNotEmpty(rowList) || false == ignoreEmptyRow) {
-                    result.add(IterKit.toMap(headerList, rowList, true));
+                if (CollKit.isNotEmpty(rowList) || !ignoreEmptyRow) {
+                    result.add(IteratorKit.toMap(headerList, rowList, true));
                 }
             }
         }

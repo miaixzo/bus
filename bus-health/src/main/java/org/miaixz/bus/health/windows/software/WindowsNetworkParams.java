@@ -31,9 +31,9 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
 import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
@@ -56,7 +56,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     private static String parseIpv4Route() {
         List<String> lines = Executor.runNative("route print -4 0.0.0.0");
         for (String line : lines) {
-            String[] fields = RegEx.SPACES.split(line.trim());
+            String[] fields = Pattern.SPACES_PATTERN.split(line.trim());
             if (fields.length > 2 && "0.0.0.0".equals(fields[0])) {
                 return fields[2];
             }
@@ -67,7 +67,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     private static String parseIpv6Route() {
         List<String> lines = Executor.runNative("route print -6 ::/0");
         for (String line : lines) {
-            String[] fields = RegEx.SPACES.split(line.trim());
+            String[] fields = Pattern.SPACES_PATTERN.split(line.trim());
             if (fields.length > 3 && "::/0".equals(fields[2])) {
                 return fields[3];
             }

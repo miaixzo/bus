@@ -26,7 +26,7 @@
 package org.miaixz.bus.pager.dialect.auto;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.AutoDialect;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;

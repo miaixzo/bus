@@ -39,20 +39,14 @@ import java.util.Arrays;
 public class Base32Decoder implements Decoder<CharSequence, byte[]> {
 
     /**
-     * 默认解码器
+     * 解码器
      */
     public static final Base32Decoder DECODER = new Base32Decoder(Base32Encoder.DEFAULT_ALPHABET);
     /**
-     * HEX解码器
+     * 16进制解码器
      */
     public static final Base32Decoder HEX_DECODER = new Base32Decoder(Base32Encoder.HEX_ALPHABET);
-    /**
-     * 默认字符
-     */
     private static final char BASE_CHAR = '0';
-    /**
-     * 查找表
-     */
     private final byte[] lookupTable;
 
     /**
@@ -87,14 +81,14 @@ public class Base32Decoder implements Decoder<CharSequence, byte[]> {
         for (i = 0, index = 0, offset = 0; i < base32.length(); i++) {
             lookup = base32.charAt(i) - BASE_CHAR;
 
-            // Skip chars outside the lookup table
+            /* Skip chars outside the lookup table */
             if (lookup < 0 || lookup >= lookupTable.length) {
                 continue;
             }
 
             digit = lookupTable[lookup];
 
-            // If this digit is not in the table, ignore it
+            /* If this digit is not in the table, ignore it */
             if (digit < 0) {
                 continue;
             }
@@ -123,4 +117,5 @@ public class Base32Decoder implements Decoder<CharSequence, byte[]> {
         }
         return bytes;
     }
+
 }

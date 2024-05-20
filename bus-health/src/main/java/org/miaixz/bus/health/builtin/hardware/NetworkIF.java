@@ -182,6 +182,7 @@ public interface NetworkIF {
 
     /**
      * Getter for the field <code>bytesRecv</code>.
+     *
      * @return The Bytes Received.
      * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
      * update this value, execute the {@link #updateAttributes()} method

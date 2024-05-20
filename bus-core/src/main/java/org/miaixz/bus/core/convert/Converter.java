@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.lang.reflect.Type;
 
 /**
- * 转换器接口,实现类型转换
+ * 类型转换接口函数，根据给定的值和目标类型，由用户自定义转换规则。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +44,7 @@ public interface Converter {
      * 如果类型无法确定，将读取默认值的类型做为目标类型
      *
      * @param targetType 目标Type，非泛型类使用
-     * @param value      原始值
+     * @param value      原始值，如果对象实现了此接口，则value为this
      * @return 转换后的值
      * @throws ConvertException 转换无法正常完成或转换异常时抛出此异常
      */

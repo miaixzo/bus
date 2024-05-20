@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.DependencyException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ClassKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
@@ -51,7 +52,7 @@ public class Registry {
     /**
      * 没有引入POI的错误消息
      */
-    public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'poi-ooxml' to your project, and version >= 4.1.2";
+    public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'office-ooxml' to your project, and version >= 4.1.2";
     /**
      * 服务提供者列表
      */
@@ -103,8 +104,8 @@ public class Registry {
     public static void check() {
         try {
             Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            throw new InternalException(NO_POI_ERROR_MSG);
+        } catch (final ClassNotFoundException | NoClassDefFoundError | NoSuchMethodError e) {
+            throw new DependencyException(e, NO_POI_ERROR_MSG);
         }
     }
 

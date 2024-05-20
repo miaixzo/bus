@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec.hash;
 
+import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.toolkit.ByteKit;
 
-import java.nio.ByteOrder;
 import java.util.Arrays;
 
 /**
@@ -43,10 +43,7 @@ import java.util.Arrays;
  * @since Java 17+
  */
 public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]> {
-    /**
-     * CPU的字节序
-     */
-    public static final ByteOrder CPU_ENDIAN = "little".equals(System.getProperty("sun.cpu.endian")) ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
+
     // Some primes between 2^63 and 2^64 for various uses.
     private static final long k0 = 0xc3a5c85c97cb3127L;
     private static final long k1 = 0xb492b66fbe98f273L;
@@ -60,11 +57,11 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     public static CityHash INSTANCE = new CityHash();
 
     private static long fetch64(final byte[] byteArray, final int start) {
-        return ByteKit.bytesToLong(byteArray, start, CPU_ENDIAN);
+        return ByteKit.toLong(byteArray, start, ByteKit.CPU_ENDIAN);
     }
 
     private static int fetch32(final byte[] byteArray, final int start) {
-        return ByteKit.bytesToInt(byteArray, start, CPU_ENDIAN);
+        return ByteKit.toInt(byteArray, start, ByteKit.CPU_ENDIAN);
     }
 
     private static long hashLen16(final long u, final long v, final long mul) {
@@ -473,12 +470,12 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return hash128to64(new No128(v, u));
     }
 
-    private long hash128to64(final No128 diigital) {
+    private long hash128to64(final No128 no128) {
         // Murmur-inspired hashing.
         final long kMul = 0x9ddfea08eb382d69L;
-        long a = (diigital.getLeastSigBits() ^ diigital.getMostSigBits()) * kMul;
+        long a = (no128.getLeastSigBits() ^ no128.getMostSigBits()) * kMul;
         a ^= (a >>> 47);
-        long b = (diigital.getMostSigBits() ^ a) * kMul;
+        long b = (no128.getMostSigBits() ^ a) * kMul;
         b ^= (b >>> 47);
         b *= kMul;
         return b;

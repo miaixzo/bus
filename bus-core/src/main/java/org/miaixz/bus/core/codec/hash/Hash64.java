@@ -36,6 +36,7 @@ import org.miaixz.bus.core.codec.Encoder;
  */
 @FunctionalInterface
 public interface Hash64<T> extends Encoder<T, Number> {
+
     /**
      * 计算Hash值
      *

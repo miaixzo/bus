@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.lang.System;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Platform;
@@ -66,16 +66,16 @@ public class JavaRuntime implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String JAVA_RUNTIME_NAME = Platform.get(System.RUNTIME_NAME, false);
-    private final String JAVA_RUNTIME_VERSION = Platform.get(System.RUNTIME_VERSION, false);
-    private final String JAVA_HOME = Platform.get(System.HOME, false);
-    private final String JAVA_EXT_DIRS = Platform.get(System.EXT_DIRS, false);
-    private final String JAVA_ENDORSED_DIRS = Platform.get(System.ENDORSED_DIRS, false);
-    private final String JAVA_CLASS_PATH = Platform.get(System.CLASS_PATH, false);
-    private final String JAVA_CLASS_VERSION = Platform.get(System.CLASS_VERSION, false);
-    private final String JAVA_LIBRARY_PATH = Platform.get(System.LIBRARY_PATH, false);
-    private final String SUN_BOOT_CLASS_PATH = Platform.get(System.SUN_CLASS_PATH, false);
-    private final String SUN_ARCH_DATA_MODEL = Platform.get(System.SUN_DATA_MODEL, false);
+    private final String JAVA_RUNTIME_NAME = Platform.get(Keys.JAVA_RUNTIME_NAME, false);
+    private final String JAVA_RUNTIME_VERSION = Platform.get(Keys.JAVA_RUNTIME_VERSION, false);
+    private final String JAVA_HOME = Platform.get(Keys.JAVA_HOME, false);
+    private final String JAVA_EXT_DIRS = Platform.get(Keys.JAVA_EXT_DIRS, false);
+    private final String JAVA_ENDORSED_DIRS = Platform.get(Keys.JAVA_ENDORSED_DIRS, false);
+    private final String JAVA_CLASS_PATH = Platform.get(Keys.JAVA_CLASS_PATH, false);
+    private final String JAVA_CLASS_VERSION = Platform.get(Keys.JAVA_CLASS_VERSION, false);
+    private final String JAVA_LIBRARY_PATH = Platform.get(Keys.JAVA_LIBRARY_PATH, false);
+    private final String SUN_BOOT_CLASS_PATH = Platform.get(Keys.SUN_BOOT_CLASS_PATH, false);
+    private final String SUN_ARCH_DATA_MODEL = Platform.get(Keys.SUN_ARCH_DATA_MODEL, false);
 
     public final String getSunBoothClassPath() {
         return SUN_BOOT_CLASS_PATH;

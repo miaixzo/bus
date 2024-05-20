@@ -50,10 +50,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
-
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
+    private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
@@ -206,14 +205,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return BOOTTIME;
     }
 
-    /**
-     * Package-private for use by OpenBsdOSProcess
-     */
-    enum PsKeywords {
-        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
-        ARGS // ARGS must always be last
-    }
-
     @Override
     public NetworkParams getNetworkParams() {
         return new OpenBsdNetworkParams();
@@ -244,5 +235,13 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Directory: /etc/rc.d does not exist");
         }
         return services;
+    }
+
+    /**
+     * Package-private for use by OpenBsdOSProcess
+     */
+    enum PsKeywords {
+        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
+        ARGS // ARGS must always be last
     }
 }

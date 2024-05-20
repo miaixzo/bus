@@ -29,137 +29,146 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
-import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.System.err;
+import static java.lang.System.out;
+
 /**
- * 命令行(控制台)方法类
- * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
+ * 命令行（控制台）工具方法类
+ * 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Console {
 
-    /**
-     * 表格头信息
-     */
-    private final List<List<String>> headers = new ArrayList<>();
-    /**
-     * 表格体信息
-     */
-    private final List<List<String>> bodys = new ArrayList<>();
-    /**
-     * 每列最大字符个数
-     */
-    private List<Integer> maxChar;
-
+    private static final String TEMPLATE_VAR = "{}";
 
     /**
-     * 打印控制台日志,同System.out.println()方法
+     * 同 System.out.println()方法，打印控制台日志
      */
     public static void log() {
-        System.out.println();
+        out.println();
     }
 
     /**
-     * 打印控制台日志,同System.out.println()方法
-     * 如果传入打印对象为{@link Throwable}对象,那么同时打印堆栈
-     *
-     * @param object 要打印的对象
-     */
-    public static void log(Object object) {
-        if (object instanceof Throwable) {
-            final Throwable e = (Throwable) object;
-            log(e, e.getMessage());
-        } else {
-            log(Symbol.DELIM, object);
-        }
-    }
-
-    /**
-     * 打印控制台日志,同System.out.println()方法
+     * 同 System.out.println()方法，打印控制台日志
      * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
-     * @param object 打印模板
-     * @param args   模板参数
+     * @param obj 要打印的对象
      */
-    public static void log(Object object, Object... args) {
-        if (ArrayKit.isEmpty(args)) {
-            log(object);
+    public static void log(final Object obj) {
+        if (obj instanceof Throwable) {
+            final Throwable e = (Throwable) obj;
+            log(e, e.getMessage());
         } else {
-            log(build(args.length + 1), ArrayKit.insert(args, 0, object));
+            log(TEMPLATE_VAR, obj);
         }
     }
 
     /**
-     * 打印控制台日志,同System.out.println()方法
+     * 同 System.out.println()方法，打印控制台日志
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     *
+     * @param obj1      第一个要打印的对象
+     * @param otherObjs 其它要打印的对象
+     */
+    public static void log(final Object obj1, final Object... otherObjs) {
+        if (ArrayKit.isEmpty(otherObjs)) {
+            log(obj1);
+        } else {
+            log(buildTemplateSplitBySpace(otherObjs.length + 1), ArrayKit.insert(otherObjs, 0, obj1));
+        }
+    }
+
+    /**
+     * 同 System.out.println()方法，打印控制台日志
      * 当传入template无"{}"时，被认为非模板，直接打印多个参数以空格分隔
      *
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    public static void log(String template, Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
+    public static void log(final String template, final Object... values) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
             logInternal(template, values);
         } else {
-            logInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+            logInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
         }
     }
 
     /**
-     * 打印控制台日志,同System.out.println()方法
+     * 同 System.out.println()方法，打印控制台日志
      *
      * @param t        异常对象
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    public static void log(Throwable t, String template, Object... values) {
-        System.out.println(StringKit.format(template, values));
+    public static void log(final Throwable t, final String template, final Object... values) {
+        out.println(StringKit.format(template, values));
         if (null != t) {
-            t.printStackTrace(System.out);
-            System.out.flush();
+            t.printStackTrace(out);
+            out.flush();
         }
     }
 
     /**
-     * 打印控制台日志,同System.out.print()方法
-     *
-     * @param object 要打印的对象
-     */
-    public static void print(Object object) {
-        print(Symbol.DELIM, object);
-    }
-
-    /**
-     * 打印控制台日志,同System.out.println()方法
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
-     *
-     * @param object 打印模板
-     * @param args   模板参数
-     */
-    public static void print(Object object, Object... args) {
-        if (ArrayKit.isEmpty(args)) {
-            print(object);
-        } else {
-            print(build(args.length + 1), ArrayKit.insert(args, 0, object));
-        }
-    }
-
-    /**
-     * 打印控制台日志,同System.out.print()方法
+     * 同 System.out.println()方法，打印控制台日志
      *
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    public static void print(String template, Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
+    private static void logInternal(final String template, final Object... values) {
+        log(null, template, values);
+    }
+
+    /**
+     * 打印表格到控制台
+     *
+     * @param consoleTable 控制台表格
+     */
+    public static void table(final Table consoleTable) {
+        print(consoleTable.toString());
+    }
+
+    /**
+     * 同 System.out.print()方法，打印控制台日志
+     *
+     * @param obj 要打印的对象
+     */
+    public static void print(final Object obj) {
+        print(TEMPLATE_VAR, obj);
+    }
+
+    /**
+     * 同 System.out.println()方法，打印控制台日志
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     *
+     * @param obj1      第一个要打印的对象
+     * @param otherObjs 其它要打印的对象
+     */
+    public static void print(final Object obj1, final Object... otherObjs) {
+        if (ArrayKit.isEmpty(otherObjs)) {
+            print(obj1);
+        } else {
+            print(buildTemplateSplitBySpace(otherObjs.length + 1), ArrayKit.insert(otherObjs, 0, obj1));
+        }
+    }
+
+    /**
+     * 同 System.out.print()方法，打印控制台日志
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    public static void print(final String template, final Object... values) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
             printInternal(template, values);
         } else {
-            printInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+            printInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
         }
     }
 
@@ -169,8 +178,8 @@ public class Console {
      * @param showChar 进度条提示字符，例如“#”
      * @param len      打印长度
      */
-    public static void printProgress(char showChar, int len) {
-        print("{}{}", Symbol.CR, StringKit.repeat(showChar, len));
+    public static void printProgress(final char showChar, final int len) {
+        print("{}{}", Symbol.C_CR, StringKit.repeat(showChar, len));
     }
 
     /**
@@ -180,74 +189,94 @@ public class Console {
      * @param totalLen 总长度
      * @param rate     总长度所占比取值0~1
      */
-    public static void printProgress(char showChar, int totalLen, double rate) {
+    public static void printProgress(final char showChar, final int totalLen, final double rate) {
         Assert.isTrue(rate >= 0 && rate <= 1, "Rate must between 0 and 1 (both include)");
         printProgress(showChar, (int) (totalLen * rate));
     }
 
     /**
-     * 打印控制台日志,同System.err.println()方法同
-     */
-    public static void error() {
-        System.err.println();
-    }
-
-    /**
-     * 打印控制台日志,同System.err.println()方法同
-     *
-     * @param object 要打印的对象
-     */
-    public static void error(Object object) {
-        if (object instanceof Throwable) {
-            Throwable e = (Throwable) object;
-            error(e, e.getMessage());
-        } else {
-            error(Symbol.DELIM, object);
-        }
-    }
-
-    /**
-     * 打印控制台日志,同System.err.println()方法同
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
-     *
-     * @param object 打印模板
-     * @param args   模板参数
-     */
-    public static void error(Object object, Object... args) {
-        if (ArrayKit.isEmpty(args)) {
-            error(args);
-        } else {
-            error(build(args.length + 1), ArrayKit.insert(args, 0, object));
-        }
-    }
-
-    /**
-     * 打印控制台日志,同System.err.println()方法同
+     * 同 System.out.println()方法，打印控制台日志
      *
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    public static void error(String template, Object... values) {
-        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
-            errorInternal(template, values);
+    private static void printInternal(final String template, final Object... values) {
+        out.print(StringKit.format(template, values));
+    }
+
+    /**
+     * 同 System.err.println()方法，打印控制台日志
+     */
+    public static void error() {
+        err.println();
+    }
+
+    /**
+     * 同 System.err.println()方法，打印控制台日志
+     *
+     * @param obj 要打印的对象
+     */
+    public static void error(final Object obj) {
+        if (obj instanceof Throwable) {
+            final Throwable e = (Throwable) obj;
+            error(e, e.getMessage());
         } else {
-            errorInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+            error(TEMPLATE_VAR, obj);
         }
     }
 
     /**
-     * 打印控制台日志,同System.err.println()方法同
+     * 同 System.out.println()方法，打印控制台日志
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     *
+     * @param obj1      第一个要打印的对象
+     * @param otherObjs 其它要打印的对象
+     */
+    public static void error(final Object obj1, final Object... otherObjs) {
+        if (ArrayKit.isEmpty(otherObjs)) {
+            error(obj1);
+        } else {
+            error(buildTemplateSplitBySpace(otherObjs.length + 1), ArrayKit.insert(otherObjs, 0, obj1));
+        }
+    }
+
+    /**
+     * 同 System.err.println()方法，打印控制台日志
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    public static void error(final String template, final Object... values) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, TEMPLATE_VAR)) {
+            errorInternal(template, values);
+        } else {
+            errorInternal(buildTemplateSplitBySpace(values.length + 1), ArrayKit.insert(values, 0, template));
+        }
+    }
+
+    /**
+     * 同 System.err.println()方法，打印控制台日志
      *
      * @param t        异常对象
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
-    public static void error(Throwable t, String template, Object... values) {
-        System.err.println(StringKit.format(template, values));
+    public static void error(final Throwable t, final String template, final Object... values) {
+        err.println(StringKit.format(template, values));
         if (null != t) {
-            t.printStackTrace(System.err);
-            System.err.flush();
+            t.printStackTrace(err);
+            err.flush();
         }
+    }
+
+    /**
+     * 同 System.err.println()方法，打印控制台日志
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    private static void errorInternal(final String template, final Object... values) {
+        error(null, template, values);
     }
 
     /**
@@ -297,160 +326,36 @@ public class Console {
      * @param count 变量数量
      * @return 模板
      */
-    private static String build(int count) {
-        return StringKit.repeatAndJoin(Symbol.DELIM, count, Symbol.SPACE);
+    private static String buildTemplateSplitBySpace(final int count) {
+        return StringKit.repeatAndJoin(TEMPLATE_VAR, count, Symbol.SPACE);
     }
 
     /**
-     * 打印控制台日志,同System.out.println()方法
-     *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * 控制台打印表格工具
      */
-    private static void logInternal(String template, Object... values) {
-        log(null, template, values);
-    }
-
-    /**
-     * 打印控制台日志,同System.out.println()方法
-     *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
-     */
-    private static void printInternal(String template, Object... values) {
-        System.out.print(StringKit.format(template, values));
-    }
-
-    /**
-     * 打印控制台日志,同System.err.println()方法同
-     *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
-     */
-    private static void errorInternal(String template, Object... values) {
-        error(null, template, values);
-    }
-
-    /**
-     * 添加头信息
-     *
-     * @param columns 列名
-     * @return 自身对象
-     */
-    public Console addHeader(String... columns) {
-        maxChar = new ArrayList<>(Collections.nCopies(columns.length, 0));
-        List<String> l = new ArrayList<>();
-        headers.add(l);
-        for (int i = 0; i < columns.length; i++) {
-            String column = columns[i];
-            String col = Convert.toSBC(column);
-            l.add(col);
-            int width = col.length();
-            maxChar.set(i, width);
-        }
-        return this;
-    }
-
-    /**
-     * 添加体信息
-     *
-     * @param values 列值
-     * @return 自身对象
-     */
-    public Console addBody(String... values) {
-        List<String> l = new ArrayList<>();
-        bodys.add(l);
-        for (int i = 0; i < values.length; i++) {
-            String value = values[i];
-            String val = Convert.toSBC(value);
-            l.add(val);
-            int width = val.length();
-            if (width > maxChar.get(i)) {
-                maxChar.set(i, width);
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 获取表格字符串
-     *
-     * @return 表格字符串
-     */
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        border(sb);
-        for (List<String> headers : headers) {
-            for (int i = 0; i < headers.size(); i++) {
-                if (i == 0) {
-                    sb.append(Symbol.C_OR);
-                }
-                String header = headers.get(i);
-                sb.append(Convert.toSBC(Symbol.SPACE));
-                sb.append(header);
-                sb.append(Convert.toSBC(Symbol.SPACE));
-                int l = header.length();
-                int lw = maxChar.get(i);
-                if (lw > l) {
-                    for (int j = 0; j < (lw - l); j++) {
-                        sb.append(Convert.toSBC(Symbol.SPACE));
-                    }
-                }
-                sb.append(Symbol.C_OR);
-            }
-            sb.append(Symbol.C_LF);
-        }
-        border(sb);
-        for (List<String> bodys : bodys) {
-            for (int i = 0; i < bodys.size(); i++) {
-                if (i == 0) {
-                    sb.append(Symbol.C_OR);
-                }
-                String body = bodys.get(i);
-                sb.append(Convert.toSBC(Symbol.SPACE));
-                sb.append(body);
-                sb.append(Convert.toSBC(Symbol.SPACE));
-                int l = body.length();
-                int lw = maxChar.get(i);
-                if (lw > l) {
-                    for (int j = 0; j < (lw - l); j++) {
-                        sb.append(Convert.toSBC(Symbol.SPACE));
-                    }
-                }
-                sb.append(Symbol.C_OR);
-            }
-            sb.append(Symbol.C_LF);
-        }
-        border(sb);
-        return sb.toString();
-    }
-
-    private void border(StringBuilder sb) {
-        sb.append(Symbol.STAR);
-        for (Integer width : maxChar) {
-            sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, Symbol.C_MINUS, width + 2)));
-            sb.append(Symbol.STAR);
-        }
-        sb.append(Symbol.C_LF);
-    }
-
     public static class Table {
 
+        private static final char ROW_LINE = '－';
+        private static final char COLUMN_LINE = '|';
+        private static final char CORNER = '+';
+        private static final char SPACE = '\u3000';
+        private static final char LF = Symbol.C_LF;
         /**
          * 表格头信息
          */
-        private final List<List<String>> HEADER_LIST = new ArrayList<>();
+        private final List<List<String>> headerList = new ArrayList<>();
         /**
          * 表格体信息
          */
-        private final List<List<String>> BODY_LIST = new ArrayList<>();
+        private final List<List<String>> bodyList = new ArrayList<>();
+        private boolean isSBCMode = true;
         /**
          * 每列最大字符个数
          */
         private List<Integer> columnCharNumber;
 
         /**
-         * 创建Table对象
+         * 创建ConsoleTable对象
          *
          * @return Table
          */
@@ -459,18 +364,30 @@ public class Console {
         }
 
         /**
+         * 设置是否使用全角模式
+         * 当包含中文字符时，输出的表格可能无法对齐，因此当设置为全角模式时，全部字符转为全角。
+         *
+         * @param isSBCMode 是否全角模式
+         * @return this
+         */
+        public Table setSBCMode(final boolean isSBCMode) {
+            this.isSBCMode = isSBCMode;
+            return this;
+        }
+
+        /**
          * 添加头信息
          *
          * @param titles 列名
          * @return 自身对象
          */
-        public Table addHeader(String... titles) {
-            if (null == columnCharNumber) {
+        public Table addHeader(final String... titles) {
+            if (columnCharNumber == null) {
                 columnCharNumber = new ArrayList<>(Collections.nCopies(titles.length, 0));
             }
-            List<String> l = new ArrayList<>();
+            final List<String> l = new ArrayList<>();
             fillColumns(l, titles);
-            HEADER_LIST.add(l);
+            headerList.add(l);
             return this;
         }
 
@@ -480,9 +397,9 @@ public class Console {
          * @param values 列值
          * @return 自身对象
          */
-        public Table addBody(String... values) {
-            List<String> l = new ArrayList<>();
-            BODY_LIST.add(l);
+        public Table addBody(final String... values) {
+            final List<String> l = new ArrayList<>();
+            bodyList.add(l);
             fillColumns(l, values);
             return this;
         }
@@ -493,12 +410,15 @@ public class Console {
          * @param l       被填充列表
          * @param columns 填充内容
          */
-        private void fillColumns(List<String> l, String[] columns) {
+        private void fillColumns(final List<String> l, final String[] columns) {
+            String column;
             for (int i = 0; i < columns.length; i++) {
-                String column = columns[i];
-                String col = Convert.toSBC(column);
-                l.add(col);
-                int width = column.length();
+                column = StringKit.toString(columns[i]);
+                if (isSBCMode) {
+                    column = Convert.toSBC(column);
+                }
+                l.add(column);
+                final int width = column.length();
                 if (width > columnCharNumber.get(i)) {
                     columnCharNumber.set(i, width);
                 }
@@ -512,11 +432,11 @@ public class Console {
          */
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             fillBorder(sb);
-            fillRows(sb, HEADER_LIST);
+            fillRows(sb, headerList);
             fillBorder(sb);
-            fillRows(sb, BODY_LIST);
+            fillRows(sb, bodyList);
             fillBorder(sb);
             return sb.toString();
         }
@@ -527,11 +447,11 @@ public class Console {
          * @param sb   内容
          * @param list 表头列表或者表体列表
          */
-        private void fillRows(StringBuilder sb, List<List<String>> list) {
-            for (List<String> row : list) {
-                sb.append(Symbol.C_OR);
+        private void fillRows(final StringBuilder sb, final List<List<String>> list) {
+            for (final List<String> row : list) {
+                sb.append(COLUMN_LINE);
                 fillRow(sb, row);
-                sb.append(Symbol.C_LF);
+                sb.append(LF);
             }
         }
 
@@ -541,22 +461,24 @@ public class Console {
          * @param sb  内容
          * @param row 一行数据
          */
-        private void fillRow(StringBuilder sb, List<String> row) {
+        private void fillRow(final StringBuilder sb, final List<String> row) {
             final int size = row.size();
             String value;
             for (int i = 0; i < size; i++) {
                 value = row.get(i);
-                sb.append(Symbol.C_SPACE);
+                sb.append(SPACE);
                 sb.append(value);
-                sb.append(Symbol.C_SPACE);
-                int length = value.length();
-                int maxLength = columnCharNumber.get(i);
-                if (maxLength > length) {
-                    for (int j = 0; j < (maxLength - length); j++) {
-                        sb.append(Symbol.C_SPACE);
-                    }
+                final int length = value.length();
+                final int sbcCount = sbcCount(value);
+                if (sbcCount % 2 == 1) {
+                    sb.append(Symbol.C_SPACE);
                 }
-                sb.append(Symbol.C_OR);
+                sb.append(SPACE);
+                final int maxLength = columnCharNumber.get(i);
+                for (int j = 0; j < (maxLength - length + (sbcCount / 2)); j++) {
+                    sb.append(SPACE);
+                }
+                sb.append(COLUMN_LINE);
             }
         }
 
@@ -565,13 +487,13 @@ public class Console {
          *
          * @param sb StringBuilder
          */
-        private void fillBorder(StringBuilder sb) {
-            sb.append(Symbol.C_PLUS);
-            for (Integer width : columnCharNumber) {
-                sb.append(StringKit.repeat(Symbol.C_MINUS, width + 2));
-                sb.append(Symbol.C_PLUS);
+        private void fillBorder(final StringBuilder sb) {
+            sb.append(CORNER);
+            for (final Integer width : columnCharNumber) {
+                sb.append(StringKit.repeat(ROW_LINE, width + 2));
+                sb.append(CORNER);
             }
-            sb.append(Symbol.C_LF);
+            sb.append(LF);
         }
 
         /**
@@ -581,6 +503,22 @@ public class Console {
             Console.print(toString());
         }
 
+        /**
+         * 半角字符数量
+         *
+         * @param value 字符串
+         * @return 填充空格数量
+         */
+        private int sbcCount(final String value) {
+            int count = 0;
+            for (int i = 0; i < value.length(); i++) {
+                if (value.charAt(i) < '\177') {
+                    count++;
+                }
+            }
+
+            return count;
+        }
     }
 
 }

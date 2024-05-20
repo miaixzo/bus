@@ -27,11 +27,11 @@ package org.miaixz.bus.oauth.metric.stackoverflow;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -64,7 +64,7 @@ public class StackOverflowProvider extends DefaultProvider {
     protected AccToken getAccessToken(Callback authCallback) {
         String accessTokenUrl = accessTokenUrl(authCallback.getCode());
         Map<String, Object> form = new HashMap<>();
-        UriKit.decodeVal(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
+        UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();
         header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");

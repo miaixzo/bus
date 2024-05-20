@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.setting;
 
-import org.miaixz.bus.setting.magic.IniElement;
+import org.miaixz.bus.setting.metric.ini.IniElement;
 
 import java.io.Closeable;
 

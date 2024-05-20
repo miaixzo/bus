@@ -37,20 +37,20 @@ import java.util.LinkedHashSet;
  */
 public class YearValueMatcher implements PartMatcher {
 
-    private final LinkedHashSet<Integer> list;
+    private final LinkedHashSet<Integer> valueList;
 
-    public YearValueMatcher(Collection<Integer> list) {
-        this.list = new LinkedHashSet<>(list);
+    public YearValueMatcher(final Collection<Integer> intValueList) {
+        this.valueList = new LinkedHashSet<>(intValueList);
     }
 
     @Override
-    public boolean test(Integer t) {
-        return list.contains(t);
+    public boolean test(final Integer t) {
+        return valueList.contains(t);
     }
 
     @Override
-    public int nextAfter(int value) {
-        for (Integer year : list) {
+    public int nextAfter(final int value) {
+        for (final Integer year : valueList) {
             if (year >= value) {
                 return year;
             }

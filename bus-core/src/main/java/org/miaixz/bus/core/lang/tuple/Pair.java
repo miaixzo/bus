@@ -25,124 +25,101 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.tuple;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.builder.CompareBuilder;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.CloneException;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Objects;
 
 /**
- * 由两个元素组成
- * <p>
- * 这个类是一个定义基本API的抽象实现
- * 它表示元素为“left”和“right” 它还实现了
- * {@code Map.Entry}接口,其中键为'left',值为'right'.
- * 子类实现可以是可变的,也可以是不可变的
- * 但是,对可能存储的存储对象的类型没有限制
- * 如果可变对象存储在对中,那么对本身就会有效地变成可变的
+ * 不可变二元组对象
  *
- * @param <L> 左元素类型
- * @param <R> 右元素类型
+ * @param <L> 左值类型
+ * @param <R> 右值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-@ThreadSafe
-public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Serializable {
+public class Pair<L, R> implements Serializable, Cloneable {
+
+    private static final long serialVersionUID = -1L;
+
+    protected L left;
+    protected R right;
 
     /**
-     * 获取两个推断泛型类型的对象的不可变对
-     * 这个工厂允许使用推理来创建对，以获得泛型类型
+     * 构造
      *
-     * @param <L>   左元素类型
-     * @param <R>   右元素类型
-     * @param left  左值可以为null
-     * @param right 右值可以为null
-     * @return 由两个参数组成的一对，不是空
+     * @param left  左值
+     * @param right 右值
+     */
+    public Pair(final L left, final R right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    /**
+     * 构建Pair对象
+     *
+     * @param <L>   左值类型
+     * @param <R>   右值类型
+     * @param left  左值
+     * @param right 右值
+     * @return Pair
      */
     public static <L, R> Pair<L, R> of(final L left, final R right) {
-        return new ImmutablePair<>(left, right);
+        return new Pair<>(left, right);
     }
 
     /**
-     * 从这一对中获取左元素
+     * 获取左值
      *
-     * @return 左边的元素可能是空的
+     * @return 左值
      */
-    public abstract L getLeft();
-
-    /**
-     * 从这一对中获取右元素
-     *
-     * @return 右边的元素可能是空的
-     */
-    public abstract R getRight();
-
-    /**
-     * 从这对中获取密钥
-     *
-     * @return 作为键的左元素可以为空
-     */
-    @Override
-    public final L getKey() {
-        return getLeft();
+    public L getLeft() {
+        return this.left;
     }
 
     /**
-     * 从这对中获取值
+     * 获取右值
      *
-     * @return 右边的元素作为值，可以是null
+     * @return 右值
      */
-    @Override
-    public R getValue() {
-        return getRight();
+    public R getRight() {
+        return this.right;
     }
 
-    /**
-     * 比较基于左元素和右元素的对。类型必须是{@code Comparable}
-     *
-     * @param other 另一对，不为空
-     * @return 如果这个小，就是负的;如果相等，就是零;如果大，就是正的
-     */
     @Override
-    public int compareTo(final Pair<L, R> other) {
-        return new CompareBuilder().append(getLeft(), other.getLeft())
-                .append(getRight(), other.getRight()).toComparison();
-    }
-
-    /**
-     * 据这两个元素，将这一对与另一对进行比较
-     *
-     * @param object 要比较的对象null返回false
-     * @return 如果这一对的元素相等，则为true
-     */
-    @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (object instanceof Map.Entry<?, ?>) {
-            final Map.Entry<?, ?> other = (Map.Entry<?, ?>) object;
-            return Objects.equals(getKey(), other.getKey())
-                    && Objects.equals(getValue(), other.getValue());
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        return false;
+        final Pair<?, ?> pair = (Pair<?, ?>) o;
+        return Objects.equals(left, pair.left) && Objects.equals(right, pair.right);
     }
 
     @Override
     public int hashCode() {
-        return (null == getKey() ? 0 : getKey().hashCode()) ^
-                (null == getValue() ? 0 : getValue().hashCode());
+        return Objects.hash(left, right);
     }
 
     @Override
     public String toString() {
-        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.C_COMMA + getRight() + Symbol.C_PARENTHESE_RIGHT;
+        return "Pair{" +
+                "left=" + left +
+                ", right=" + right +
+                '}';
     }
 
-    public String toString(final String format) {
-        return String.format(format, getLeft(), getRight());
+
+    @Override
+    public Pair<L, R> clone() {
+        try {
+            return (Pair<L, R>) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new CloneException(e);
+        }
     }
 
 }

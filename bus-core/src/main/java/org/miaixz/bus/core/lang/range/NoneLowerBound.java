@@ -32,12 +32,16 @@ package org.miaixz.bus.core.lang.range;
  * @author Kimi Liu
  * @since Java 17+
  */
-class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
+public class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
 
     /**
      * 无限小的左边界单例
      */
     static final NoneLowerBound INSTANCE = new NoneLowerBound();
+
+    private NoneLowerBound() {
+
+    }
 
     /**
      * 获取边界值
@@ -71,12 +75,12 @@ class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序
+     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序。
      * 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
      * <ul>
      *     <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
      *     <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
-     *     <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     *     <li>-1：<em>t1</em>在<em>t2</em>的右侧；（不存在）</li>
      * </ul>
      *
      * @param bound 边界
@@ -124,7 +128,7 @@ class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
      */
     @Override
     public String toString() {
-        return "{x | x > -\u221e}";
+        return "{x | x > -∞}";
     }
 
 }

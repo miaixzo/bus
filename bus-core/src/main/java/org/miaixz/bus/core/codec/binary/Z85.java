@@ -31,14 +31,18 @@ import org.miaixz.bus.core.codec.Encoder;
 import java.io.Serializable;
 
 /**
- * ZeroMQ Z85
+ * ZeroMQ Z85实现，
+ * 定义见：<a href="https://rfc.zeromq.org/spec:32/Z85/">ZeroMQ Z85</a>
+ * <p>
+ * 参考实现：https://github.com/cometd/cometd/blob/6.0.x/cometd-java/cometd-java-common/src/main/java/org/cometd/common/Z85.java
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private static final char[] encodeTable = new char[]{
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',

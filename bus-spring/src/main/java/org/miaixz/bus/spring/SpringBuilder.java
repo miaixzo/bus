@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Types;
+import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -134,7 +134,7 @@ public class SpringBuilder implements ApplicationContextAware {
      * @param <T>       Bean类型
      * @return 带泛型参数的Bean
      */
-    public static <T> T getBean(Types<T> reference) {
+    public static <T> T getBean(TypeReference<T> reference) {
         final ParameterizedType parameterizedType = (ParameterizedType) reference.getType();
         final Class<T> rawType = (Class<T>) parameterizedType.getRawType();
         final Class<?>[] genericTypes = Arrays.stream(parameterizedType.getActualTypeArguments()).map(type -> (Class<?>) type).toArray(Class[]::new);

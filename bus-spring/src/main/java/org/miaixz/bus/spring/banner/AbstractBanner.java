@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.spring.banner;
 
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.IoKit;
 
@@ -68,7 +67,7 @@ public abstract class AbstractBanner {
         try {
             if (null != resourceLocation) {
                 inputStream = resourceClass.getResourceAsStream(resourceLocation);
-                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
+                bannerText = IoKit.readUtf8(IoKit.toBuffered(inputStream));
             }
         } catch (Exception e) {
 

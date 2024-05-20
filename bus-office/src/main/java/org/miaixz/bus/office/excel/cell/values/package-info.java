@@ -1,5 +1,5 @@
 /**
- * Excel中单元格值相关类
+ * 不同类型单元格值的封装
  *
  * @author Kimi Liu
  * @since Java 17+

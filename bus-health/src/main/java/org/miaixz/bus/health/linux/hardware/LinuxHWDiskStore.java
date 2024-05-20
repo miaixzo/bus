@@ -31,8 +31,8 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -79,16 +79,15 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     // Get a list of orders to pass to Parsing
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
+    // There are at least 11 elements in udev stat output or sometimes 15. We want
+    // the rightmost 11 or 15 if there is leading text.
+    private static final int UDEV_STAT_LENGTH;
 
     static {
         for (UdevStat stat : UdevStat.values()) {
             UDEV_STAT_ORDERS[stat.ordinal()] = stat.getOrder();
         }
     }
-
-    // There are at least 11 elements in udev stat output or sometimes 15. We want
-    // the rightmost 11 or 15 if there is leading text.
-    private static final int UDEV_STAT_LENGTH;
 
     static {
         String stat = Builder.getStringFromFile(ProcPath.DISKSTATS);
@@ -228,7 +227,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         Map<String, String> mountsMap = new HashMap<>();
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
-            String[] split = RegEx.SPACES.split(mount);
+            String[] split = Pattern.SPACES_PATTERN.split(mount);
             if (split.length < 2 || !split[0].startsWith(DevPath.DEV)) {
                 continue;
             }
@@ -258,6 +257,24 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return DevPath.MAPPER + vgName + '-' + lvName;
     }
 
+    /**
+     * Gets the disks on this machine
+     *
+     * @return a list of {@link HWDiskStore} objects representing the disks
+     */
+    public static List<HWDiskStore> getDisks() {
+        return getDisks(null);
+    }
+
+    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
+        File holdersDir = new File(sysPath + "/holders");
+        File[] holders = holdersDir.listFiles();
+        if (holders != null) {
+            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
+        }
+        return Normal.EMPTY;
+    }
+
     @Override
     public long getReads() {
         return reads;
@@ -271,15 +288,6 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     @Override
     public long getWrites() {
         return writes;
-    }
-
-    /**
-     * Gets the disks on this machine
-     *
-     * @return a list of {@link HWDiskStore} objects representing the disks
-     */
-    public static List<HWDiskStore> getDisks() {
-        return getDisks(null);
     }
 
     @Override
@@ -314,15 +322,6 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return !getDisks(this).isEmpty();
     }
 
-    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
-        File holdersDir = new File(sysPath + "/holders");
-        File[] holders = holdersDir.listFiles();
-        if (holders != null) {
-            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
-        }
-        return Normal.EMPTY;
-    }
-
     // Order the field is in udev stats
     enum UdevStat {
         // The parsing implementation in Parsing requires these to be declared
@@ -331,12 +330,12 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
         private final int order;
 
-        public int getOrder() {
-            return this.order;
-        }
-
         UdevStat(int order) {
             this.order = order;
+        }
+
+        public int getOrder() {
+            return this.order;
         }
     }
 }

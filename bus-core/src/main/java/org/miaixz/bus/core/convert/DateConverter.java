@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.date.DateTime;
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
@@ -41,8 +41,11 @@ import java.util.Calendar;
  */
 public class DateConverter extends AbstractConverter {
 
+    /**
+     * 单例
+     */
     public static final DateConverter INSTANCE = new DateConverter();
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 日期格式化
      */
@@ -96,7 +99,7 @@ public class DateConverter extends AbstractConverter {
         } else {
             // 统一按照字符串处理
             final String valueStr = convertToString(value);
-            final DateTime dateTime = StringKit.isBlank(this.format)
+            final DateTime dateTime = StringKit.isBlank(this.format) //
                     ? DateKit.parse(valueStr) //
                     : DateKit.parse(valueStr, this.format);
             if (null != dateTime) {
@@ -121,21 +124,19 @@ public class DateConverter extends AbstractConverter {
         if (DateTime.class == targetClass) {
             return date;
         }
-        if (java.sql.Date.class == targetClass) {
-            return date.toSqlDate();
-        }
-        if (java.sql.Time.class == targetClass) {
-            return new java.sql.Time(date.getTime());
-        }
-        if (java.sql.Timestamp.class == targetClass) {
-            return date.toTimestamp();
-        }
 
-        throw new UnsupportedOperationException(StringKit.format("Unsupported target Date type: {}", targetClass.getName()));
+        return wrap(targetClass, date.getTime());
     }
 
     /**
-     * java.util.Date转为子类型
+     * 时间戳转为子类型，支持：
+     * <ul>
+     *     <li>{@link java.util.Date}</li>
+     *     <li>{@link DateTime}</li>
+     *     <li>{@link java.sql.Date}</li>
+     *     <li>{@link java.sql.Time}</li>
+     *     <li>{@link java.sql.Timestamp}</li>
+     * </ul>
      *
      * @param mills Date
      * @return 目标类型对象
@@ -148,17 +149,8 @@ public class DateConverter extends AbstractConverter {
         if (DateTime.class == targetClass) {
             return DateKit.date(mills);
         }
-        if (java.sql.Date.class == targetClass) {
-            return new java.sql.Date(mills);
-        }
-        if (java.sql.Time.class == targetClass) {
-            return new java.sql.Time(mills);
-        }
-        if (java.sql.Timestamp.class == targetClass) {
-            return new java.sql.Timestamp(mills);
-        }
 
-        throw new UnsupportedOperationException(StringKit.format("Unsupported target Date type: {}", targetClass.getName()));
+        return DateKit.SQL.wrap(targetClass, mills);
     }
 
 }

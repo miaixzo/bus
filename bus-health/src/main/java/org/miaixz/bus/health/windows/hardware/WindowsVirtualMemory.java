@@ -70,6 +70,27 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
         this.global = windowsGlobalMemory;
     }
 
+    private static long querySwapUsed() {
+        return PagingFile.querySwapUsed().getOrDefault(PagingPercentProperty.PERCENTUSAGE, 0L);
+    }
+
+    private static Triplet<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
+        try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
+            if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return Triplet.of(0L, 0L, 0L);
+            }
+            return Triplet.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
+                    perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
+        }
+    }
+
+    private static Pair<Long, Long> queryPageSwaps() {
+        Map<PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
+        return Pair.of(valueMap.getOrDefault(PageSwapProperty.PAGESINPUTPERSEC, 0L),
+                valueMap.getOrDefault(PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
+    }
+
     @Override
     public long getSwapUsed() {
         return this.global.getPageSize() * used.get();
@@ -98,27 +119,6 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
     @Override
     public long getSwapPagesOut() {
         return swapInOut.get().getRight();
-    }
-
-    private static long querySwapUsed() {
-        return PagingFile.querySwapUsed().getOrDefault(PagingPercentProperty.PERCENTUSAGE, 0L);
-    }
-
-    private static Triplet<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
-        try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
-            if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-                return Triplet.of(0L, 0L, 0L);
-            }
-            return Triplet.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
-                    perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
-        }
-    }
-
-    private static Pair<Long, Long> queryPageSwaps() {
-        Map<PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
-        return Pair.of(valueMap.getOrDefault(PageSwapProperty.PAGESINPUTPERSEC, 0L),
-                valueMap.getOrDefault(PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
     }
 
 }

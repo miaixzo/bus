@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -135,7 +135,7 @@ public final class Lspv {
         Map<String, String> typeMap = new HashMap<>();
         Map<String, Integer> ppMap = new HashMap<>();
         for (String s : Executor.runNative("lspv -p " + device)) {
-            String[] split = RegEx.SPACES.split(s.trim());
+            String[] split = Pattern.SPACES_PATTERN.split(s.trim());
             if (split.length >= 6 && "used".equals(split[1])) {
                 // Region may have two words, so count from end
                 String name = split[split.length - 3];

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.toolkit.StringKit;
  */
 public class CharacterConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected Character convertInternal(final Class<?> targetClass, final Object value) {

@@ -40,7 +40,7 @@ import java.util.Date;
  */
 public class CalendarConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 日期格式化
@@ -67,20 +67,23 @@ public class CalendarConverter extends AbstractConverter {
 
     @Override
     protected Calendar convertInternal(final Class<?> targetClass, final Object value) {
+        // Handle Date
         if (value instanceof Date) {
-            return DateKit.toCalendar((Date) value);
+            return DateKit.calendar((Date) value);
         }
 
+        // Handle Long
         if (value instanceof Long) {
-            return DateKit.toCalendar((Long) value);
+            //此处使用自动拆装箱
+            return DateKit.calendar((Long) value);
         }
 
         if (value instanceof XMLGregorianCalendar) {
-            return DateKit.toCalendar((XMLGregorianCalendar) value);
+            return DateKit.calendar((XMLGregorianCalendar) value);
         }
 
         final String valueStr = convertToString(value);
-        return DateKit.toCalendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
+        return DateKit.calendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
     }
 
 }

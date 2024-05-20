@@ -28,7 +28,7 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.VersionHelpers;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
@@ -44,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Windows Logical Volume Group
@@ -54,9 +53,9 @@ import java.util.regex.Pattern;
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
-    private static final Pattern SP_OBJECT_ID = Pattern.compile(".*ObjectId=.*SP:(\\{.*\\}).*");
-    private static final Pattern PD_OBJECT_ID = Pattern.compile(".*ObjectId=.*PD:(\\{.*\\}).*");
-    private static final Pattern VD_OBJECT_ID = Pattern.compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
+    private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*SP:(\\{.*\\}).*");
+    private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*PD:(\\{.*\\}).*");
+    private static final java.util.regex.Pattern VD_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
 
     private static final boolean IS_WINDOWS8_OR_GREATER = VersionHelpers.IsWindows8OrGreater();
 
@@ -156,7 +155,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 Map<String, Set<String>> logicalVolumeMap = new HashMap<>();
                 for (Entry<String, String> entry : vdMap.entrySet()) {
                     if (entry.getKey().contains(spObjectId)) {
-                        String vdObjectId = RegEx.SPACES.split(entry.getKey())[0];
+                        String vdObjectId = Pattern.SPACES_PATTERN.split(entry.getKey())[0];
                         logicalVolumeMap.put(entry.getValue() + " " + vdObjectId, physicalVolumeSet);
                     }
                 }

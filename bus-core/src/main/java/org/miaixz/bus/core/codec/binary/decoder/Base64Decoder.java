@@ -40,7 +40,7 @@ import java.io.Serializable;
  */
 public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     private static final byte PADDING = -2;
     /**
      * 单例对象
@@ -153,6 +153,7 @@ public class Base64Decoder implements Decoder<byte[], byte[]>, Serializable {
                 }
             }
         }
+        // padding if reached max position
         return PADDING;
     }
 

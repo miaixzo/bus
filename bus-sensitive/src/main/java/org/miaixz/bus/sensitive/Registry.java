@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.sensitive;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.sensitive.annotation.Strategy;
-import org.miaixz.bus.sensitive.provider.StrategyProvider;
-import org.miaixz.bus.sensitive.strategy.*;
+import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.sensitive.magic.annotation.Strategy;
+import org.miaixz.bus.sensitive.metric.*;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -51,18 +50,18 @@ public final class Registry {
     private static Map<Builder.Type, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 
     static {
-        register(Builder.Type.ADDRESS, new AddressStrategy());
-        register(Builder.Type.BANK_CARD, new BandCardStrategy());
-        register(Builder.Type.CNAPS_CODE, new CnapsStrategy());
-        register(Builder.Type.DEFAUL, new DafaultStrategy());
-        register(Builder.Type.EMAIL, new EmailStrategy());
-        register(Builder.Type.CITIZENID, new CitizenIdStrategy());
-        register(Builder.Type.MOBILE, new MobileStrategy());
-        register(Builder.Type.NAME, new NameStrategy());
-        register(Builder.Type.NONE, new NoneStrategy());
-        register(Builder.Type.PASSWORD, new PasswordStrategy());
-        register(Builder.Type.PAY_SIGN_NO, new PayStrategy());
-        register(Builder.Type.PHONE, new PhoneStrategy());
+        register(Builder.Type.ADDRESS, new AddressProvider());
+        register(Builder.Type.BANK_CARD, new BandCardProvider());
+        register(Builder.Type.CNAPS_CODE, new CnapsProvider());
+        register(Builder.Type.DEFAUL, new DafaultProvider());
+        register(Builder.Type.EMAIL, new EmailProvider());
+        register(Builder.Type.CITIZENID, new CitizenIdProvider());
+        register(Builder.Type.MOBILE, new MobileProvider());
+        register(Builder.Type.NAME, new NameProvider());
+        register(Builder.Type.NONE, new NoneProvider());
+        register(Builder.Type.PASSWORD, new PasswordProvider());
+        register(Builder.Type.PAY_SIGN_NO, new CardProvider());
+        register(Builder.Type.PHONE, new PhoneProvider());
     }
 
     /**
@@ -122,10 +121,10 @@ public final class Registry {
             if (ObjectKit.isNotEmpty(sensitiveStrategy)) {
                 Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
                 StrategyProvider strategy;
-                if (BuiltInStrategy.class.equals(clazz)) {
+                if (BuiltInProvider.class.equals(clazz)) {
                     strategy = Registry.require(annotation.annotationType());
                 } else {
-                    strategy = ClassKit.newInstance(clazz);
+                    strategy = ReflectKit.newInstance(clazz);
                 }
                 return strategy;
             }

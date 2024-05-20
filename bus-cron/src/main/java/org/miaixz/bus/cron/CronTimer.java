@@ -29,23 +29,27 @@ import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.toolkit.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.Serializable;
+
 /**
  * 定时任务计时器
- * 计时器线程每隔一分钟检查一次任务列表,一旦匹配到执行对应的Task
+ * 计时器线程每隔一分钟（一秒钟）检查一次任务列表，一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CronTimer extends Thread {
+public class CronTimer extends Thread implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * 定时单元：秒
      */
-    private final long TIMER_UNIT_SECOND = Fields.Units.SECOND.getUnit();
+    private final long TIMER_UNIT_SECOND = Fields.Units.SECOND.getMillis();
     /**
      * 定时单元：分
      */
-    private final long TIMER_UNIT_MINUTE = Fields.Units.MINUTE.getUnit();
+    private final long TIMER_UNIT_MINUTE = Fields.Units.MINUTE.getMillis();
     private final Scheduler scheduler;
     /**
      * 定时任务是否已经被强制关闭
@@ -57,7 +61,7 @@ public class CronTimer extends Thread {
      *
      * @param scheduler {@link Scheduler}
      */
-    public CronTimer(Scheduler scheduler) {
+    public CronTimer(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -72,7 +76,7 @@ public class CronTimer extends Thread {
      * @param timerUnit 定时单位，为秒或者分的毫秒值
      * @return 是否为有效的sleep毫秒数
      */
-    private static boolean isValidSleepMillis(long millis, long timerUnit) {
+    private static boolean isValidSleepMillis(final long millis, final long timerUnit) {
         return millis > 0 &&
                 // 防止用户向前调整时间导致的长时间sleep
                 millis < (2 * timerUnit);
@@ -85,25 +89,30 @@ public class CronTimer extends Thread {
         long thisTime = System.currentTimeMillis();
         long nextTime;
         long sleep;
-        while (false == isStop) {
-            //下一时间计算是按照上一个执行点开始时间计算的
-            //此处除以定时单位是为了清零单位以下部分，例如单位是分则秒和毫秒清零
+        while (!isStop) {
+            // 下一时间计算是按照上一个执行点开始时间计算的
+            // 此处除以定时单位是为了清零单位以下部分，例如单位是分则秒和毫秒清零
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
             if (isValidSleepMillis(sleep, timerUnit)) {
-                if (false == ThreadKit.safeSleep(sleep)) {
-                    //等待直到下一个时间点，如果被中断直接退出Timer
+                if (!ThreadKit.safeSleep(sleep)) {
+                    // 等待直到下一个时间点，如果被中断直接退出Timer
                     break;
                 }
-                //执行点，时间记录为执行开始的时间，而非结束时间
-                thisTime = System.currentTimeMillis();
-                spawnLauncher(thisTime);
+
+                // 执行点，时间记录为执行开始的时间，而非结束时间
+                spawnLauncher(nextTime);
+
+                // 采用叠加方式，确保正好是1分钟或1秒，避免sleep晚醒问题
+                // 此处无需校验，因为每次循环都是sleep与上触发点的时间差。
+                // 当上一次晚醒后，本次会减少sleep时间，保证误差在一个unit内，并不断修正。
+                thisTime = nextTime;
             } else {
                 // 非正常时间重新计算
                 thisTime = System.currentTimeMillis();
             }
         }
-        Logger.debug("Cron timer stopped.");
+        Logger.debug("cron timer stopped.");
     }
 
     /**

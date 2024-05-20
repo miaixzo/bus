@@ -26,13 +26,13 @@
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.Version;
-import org.miaixz.bus.core.exception.RevisedException;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.tls.HostnameVerifier;
+import org.miaixz.bus.core.lang.exception.RevisedException;
+import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
@@ -357,7 +357,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                             "Hostname " + address.url().host() + " not verified:"
                                     + "\n    certificate: " + CertificatePinner.pin(cert)
                                     + "\n    DN: " + cert.getSubjectX500Principal().getName()
-                                    + "\n    subjectAltNames: " + HostnameVerifier.allSubjectAltNames(cert));
+                                    + "\n    subjectAltNames: " + TrustAnyHostnameVerifier.allSubjectAltNames(cert));
                 } else {
                     throw new SSLPeerUnverifiedException(
                             "Hostname " + address.url().host() + " not verified (no certificates)");
@@ -381,7 +381,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                     : Protocol.HTTP_1_1;
             success = true;
         } catch (AssertionError e) {
-            if (Builder.isAndroidGetsocknameError(e)) throw new IOException(e);
+            if (IoKit.isAndroidGetsocknameError(e)) throw new IOException(e);
             throw e;
         } finally {
             if (null != sslSocket) {
@@ -506,7 +506,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         if (routes == null || !routeMatchesAny(routes)) return false;
 
         // 3. 此连接的服务器证书必须覆盖新主机
-        if (address.hostnameVerifier() != HostnameVerifier.INSTANCE) return false;
+        if (address.hostnameVerifier() != TrustAnyHostnameVerifier.INSTANCE) return false;
         if (!supportsUrl(address.url())) return false;
 
         // 4. 证书固定必须与主机匹配
@@ -546,7 +546,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         // 主机不匹配,但是如果证书匹配，仍然是好的。
         if (!url.host().equals(route.address().url().host())) {
             // We have a host mismatch. But if the certificate matches, we're still good.
-            return null != handshake && HostnameVerifier.INSTANCE.verify(
+            return null != handshake && TrustAnyHostnameVerifier.INSTANCE.verify(
                     url.host(), (X509Certificate) handshake.peerCertificates().get(0));
         }
 

@@ -27,7 +27,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -49,10 +49,10 @@ import java.util.function.Supplier;
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufModelSerialUuidVers = Memoizer.memoize(
+    private final Supplier<Tuple> manufModelSerialUuidVers = Memoizer.memoize(
             FreeBsdComputerSystem::readDmiDecode);
 
-    private static Quintet<String, String, String, String, String> readDmiDecode() {
+    private static Tuple readDmiDecode() {
         String manufacturer = null;
         String model = null;
         String serialNumber = null;
@@ -107,7 +107,7 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         if (StringKit.isBlank(uuid)) {
             uuid = BsdSysctlKit.sysctl("kern.hostuuid", Normal.UNKNOWN);
         }
-        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
                 StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid, StringKit.isBlank(version) ? Normal.UNKNOWN : version);
@@ -125,22 +125,22 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
     @Override
     public String getManufacturer() {
-        return manufModelSerialUuidVers.get().getA();
+        return manufModelSerialUuidVers.get().get(0);
     }
 
     @Override
     public String getModel() {
-        return manufModelSerialUuidVers.get().getB();
+        return manufModelSerialUuidVers.get().get(1);
     }
 
     @Override
     public String getSerialNumber() {
-        return manufModelSerialUuidVers.get().getC();
+        return manufModelSerialUuidVers.get().get(2);
     }
 
     @Override
     public String getHardwareUUID() {
-        return manufModelSerialUuidVers.get().getD();
+        return manufModelSerialUuidVers.get().get(3);
     }
 
     @Override
@@ -150,8 +150,8 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
     @Override
     public Baseboard createBaseboard() {
-        return new UnixBaseboard(manufModelSerialUuidVers.get().getA(), manufModelSerialUuidVers.get().getB(),
-                manufModelSerialUuidVers.get().getC(), manufModelSerialUuidVers.get().getE());
+        return new UnixBaseboard(manufModelSerialUuidVers.get().get(0), manufModelSerialUuidVers.get().get(1),
+                manufModelSerialUuidVers.get().get(2), manufModelSerialUuidVers.get().get(4));
     }
 
 }

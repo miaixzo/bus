@@ -81,6 +81,7 @@ public class FaultHideSink extends AssignSink {
     }
 
     protected void onException(IOException e) {
+
     }
 
 }

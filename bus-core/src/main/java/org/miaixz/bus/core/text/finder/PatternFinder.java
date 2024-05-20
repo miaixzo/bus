@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.text.finder;
 
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 正则查找器
@@ -39,9 +39,9 @@ import java.util.regex.Pattern;
  */
 public class PatternFinder extends TextFinder {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    private final Pattern pattern;
+    private final java.util.regex.Pattern pattern;
     private Matcher matcher;
 
     /**
@@ -50,43 +50,50 @@ public class PatternFinder extends TextFinder {
      * @param regex           被查找的正则表达式
      * @param caseInsensitive 是否忽略大小写
      */
-    public PatternFinder(String regex, boolean caseInsensitive) {
-        this(Pattern.compile(regex, caseInsensitive ? Pattern.CASE_INSENSITIVE : 0));
+    public PatternFinder(final String regex, final boolean caseInsensitive) {
+        this(Pattern.get(regex, caseInsensitive ? java.util.regex.Pattern.CASE_INSENSITIVE : 0));
     }
 
     /**
      * 构造
      *
-     * @param pattern 被查找的正则{@link Pattern}
+     * @param pattern 被查找的正则{@link java.util.regex.Pattern}
      */
-    public PatternFinder(Pattern pattern) {
+    public PatternFinder(final java.util.regex.Pattern pattern) {
         this.pattern = pattern;
     }
 
     @Override
-    public TextFinder setText(CharSequence text) {
+    public TextFinder setText(final CharSequence text) {
         this.matcher = pattern.matcher(text);
         return super.setText(text);
     }
 
     @Override
-    public TextFinder setNegative(boolean negative) {
+    public TextFinder setNegative(final boolean negative) {
         throw new UnsupportedOperationException("Negative is invalid for Pattern!");
     }
 
     @Override
-    public int start(int from) {
+    public int start(final int from) {
         if (matcher.find(from)) {
+            final int end = matcher.end();
             // 只有匹配到的字符串结尾在limit范围内，才算找到
-            if (matcher.end() <= getValidEndIndex()) {
-                return matcher.start();
+            if (end <= getValidEndIndex()) {
+                final int start = matcher.start();
+                if (start == end) {
+                    // 如果匹配空串，按照未匹配对待，避免死循环
+                    return Normal.__1;
+                }
+
+                return start;
             }
         }
         return Normal.__1;
     }
 
     @Override
-    public int end(int start) {
+    public int end(final int start) {
         final int end = matcher.end();
         final int limit;
         if (endIndex < 0) {

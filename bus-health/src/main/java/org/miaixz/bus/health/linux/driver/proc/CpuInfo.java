@@ -26,9 +26,9 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -93,7 +93,7 @@ public final class CpuInfo {
      * @return A quartet of strings for manufacturer, model, version, and serial number. Each one may be null if
      * unknown.
      */
-    public static Quartet<String, String, String, String> queryBoardInfo() {
+    public static Tuple queryBoardInfo() {
         String pcManufacturer = null;
         String pcModel = null;
         String pcVersion = null;
@@ -101,7 +101,7 @@ public final class CpuInfo {
 
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
-            String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
+            String[] splitLine = Pattern.SPACES_COLON_SPACE_PATTERN.split(line);
             if (splitLine.length < 2) {
                 continue;
             }
@@ -122,7 +122,7 @@ public final class CpuInfo {
                     // Do nothing
             }
         }
-        return new Quartet<>(pcManufacturer, pcModel, pcVersion, pcSerialNumber);
+        return new Tuple(pcManufacturer, pcModel, pcVersion, pcSerialNumber);
     }
 
     private static String queryBoardManufacturer(char digit) {

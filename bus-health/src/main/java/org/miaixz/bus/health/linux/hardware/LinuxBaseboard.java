@@ -27,7 +27,7 @@ package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
 import org.miaixz.bus.health.linux.driver.Sysfs;
@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufacturerModelVersionSerial = Memoizer.memoize(
+    private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(
             CpuInfo::queryBoardInfo);
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
     private final Supplier<String> model = Memoizer.memoize(this::queryModel);
@@ -74,7 +74,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String queryManufacturer() {
         String result = null;
         if ((result = Sysfs.queryBoardVendor()) == null
-                && (result = manufacturerModelVersionSerial.get().getA()) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(0)) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -83,7 +83,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String queryModel() {
         String result;
         if ((result = Sysfs.queryBoardModel()) == null
-                && (result = manufacturerModelVersionSerial.get().getB()) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(1)) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -92,7 +92,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String queryVersion() {
         String result;
         if ((result = Sysfs.queryBoardVersion()) == null
-                && (result = manufacturerModelVersionSerial.get().getC()) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(2)) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -101,7 +101,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String querySerialNumber() {
         String result;
         if ((result = Sysfs.queryBoardSerial()) == null
-                && (result = manufacturerModelVersionSerial.get().getD()) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(3)) == null) {
             return Normal.UNKNOWN;
         }
         return result;

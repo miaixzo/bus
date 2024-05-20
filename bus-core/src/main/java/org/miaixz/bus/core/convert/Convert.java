@@ -25,21 +25,23 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.Types;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.HexKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.reflect.TypeReference;
+import org.miaixz.bus.core.math.ChineseNumberFormatter;
+import org.miaixz.bus.core.math.ChineseNumberParser;
+import org.miaixz.bus.core.math.EnglishNumberFormatter;
+import org.miaixz.bus.core.toolkit.*;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteOrder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 类型转换器
@@ -466,7 +468,7 @@ public class Convert {
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
-     * @return the date
+     * @return 结果
      */
     public static Date toDate(final Object value, final Date defaultValue) {
         return convertQuietly(Date.class, value, defaultValue);
@@ -479,7 +481,7 @@ public class Convert {
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
-     * @return the LocalDateTime
+     * @return 结果
      */
     public static LocalDateTime toLocalDateTime(final Object value, final LocalDateTime defaultValue) {
         return convertQuietly(LocalDateTime.class, value, defaultValue);
@@ -504,7 +506,7 @@ public class Convert {
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
-     * @return the date
+     * @return 结果
      */
     public static Date toInstant(final Object value, final Date defaultValue) {
         return convertQuietly(Instant.class, value, defaultValue);
@@ -516,7 +518,7 @@ public class Convert {
      * 转换失败不会报错
      *
      * @param value 被转换的值
-     * @return the date
+     * @return 结果
      */
     public static Date toDate(final Object value) {
         return toDate(value, null);
@@ -667,7 +669,7 @@ public class Convert {
      * @return 转换后的值
      * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(final Types<T> reference, final Object value) throws ConvertException {
+    public static <T> T convert(final TypeReference<T> reference, final Object value) throws ConvertException {
         return convert(reference.getType(), value, null);
     }
 
@@ -805,7 +807,7 @@ public class Convert {
      * @param input String.
      * @return 半角字符串
      */
-    public static String toDBC(String input) {
+    public static String toDBC(final String input) {
         return toDBC(input, null);
     }
 
@@ -816,7 +818,7 @@ public class Convert {
      * @param notConvertSet 不替换的字符集合
      * @return 替换后的字符
      */
-    public static String toDBC(String text, Set<Character> notConvertSet) {
+    public static String toDBC(final String text, final Set<Character> notConvertSet) {
         if (StringKit.isBlank(text)) {
             return text;
         }
@@ -828,8 +830,8 @@ public class Convert {
             }
 
             if (c[i] == '\u3000' || c[i] == '\u00a0' || c[i] == '\u2007' || c[i] == '\u202F') {
-                // \u3000是中文全角空格,\u00a0、\u2007、\u202F是不间断空格
-                c[i] = Symbol.C_SPACE;
+                // \u3000是中文全角空格，\u00a0、\u2007、\u202F是不间断空格
+                c[i] = ' ';
             } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
                 c[i] = (char) (c[i] - 65248);
             }
@@ -839,92 +841,126 @@ public class Convert {
     }
 
     /**
-     * byte数组转16进制串
-     *
-     * @param bytes 被转换的byte数组
-     * @return 转换后的值
-     * @see HexKit#encodeHexString(byte[])
-     */
-    public static String toHex(byte[] bytes) {
-        return HexKit.encodeHexString(bytes);
-    }
-
-    /**
-     * 字符串转换成十六进制字符串,结果为小写
+     * 字符串转换成十六进制字符串，结果为小写
      *
      * @param text    待转换的ASCII字符串
      * @param charset 编码
      * @return 16进制字符串
-     * @see HexKit#encodeHexString(String, java.nio.charset.Charset)
+     * @see HexKit#encodeString(String, java.nio.charset.Charset)
      */
-    public static String toHex(String text, java.nio.charset.Charset charset) {
-        return HexKit.encodeHexString(text, charset);
+    public static String toHex(final String text, final java.nio.charset.Charset charset) {
+        return HexKit.encodeString(text, charset);
+    }
+
+    /**
+     * byte数组转16进制串
+     *
+     * @param bytes 被转换的byte数组
+     * @return 转换后的值
+     * @see HexKit#encodeString(byte[])
+     */
+    public static String toHex(final byte[] bytes) {
+        return HexKit.encodeString(bytes);
     }
 
     /**
      * Hex字符串转换为Byte值
      *
-     * @param src Byte字符串,每个Byte之间没有分隔符
+     * @param src Byte字符串，每个Byte之间没有分隔符
      * @return byte[]
-     * @see HexKit#decodeHex(char[])
+     * @see HexKit#decode(char[])
      */
-    public static byte[] hexToBytes(String src) {
-        return HexKit.decodeHex(src.toCharArray());
+    public static byte[] hexToBytes(final String src) {
+        return HexKit.decode(src.toCharArray());
     }
 
     /**
      * 十六进制转换字符串
      *
-     * @param text    Byte字符串(Byte之间无分隔符 如:[616C6B])
+     * @param hexStr  Byte字符串(Byte之间无分隔符 如:[616C6B])
      * @param charset 编码 {@link java.nio.charset.Charset}
      * @return 对应的字符串
-     * @see HexKit#decodeHexString(String, java.nio.charset.Charset)
+     * @see HexKit#decodeString(String, java.nio.charset.Charset)
      */
-    public static String hexToString(String text, java.nio.charset.Charset charset) {
-        return HexKit.decodeHexString(text, charset);
+    public static String hexToString(final String hexStr, final java.nio.charset.Charset charset) {
+        return HexKit.decodeString(hexStr, charset);
     }
 
     /**
      * String的字符串转换成unicode的String
      *
-     * @param text 全角字符串
+     * @param strText 全角字符串
      * @return String 每个unicode之间无分隔符
-     * @see StringKit#toUnicode(String)
+     * @see UnicodeKit#toUnicode(String)
      */
-    public static String toUnicode(String text) {
-        return StringKit.toUnicode(text);
+    public static String strToUnicode(final String strText) {
+        return UnicodeKit.toUnicode(strText);
     }
 
     /**
      * unicode的String转换成String的字符串
      *
-     * @param text Unicode符
+     * @param unicode Unicode符
      * @return String 字符串
-     * @see StringKit#toUnicodeString(String)
+     * @see UnicodeKit#toString(String)
      */
-    public static String toUnicodeString(String text) {
-        return StringKit.toUnicodeString(text);
+    public static String unicodeToString(final String unicode) {
+        return UnicodeKit.toString(unicode);
     }
 
     /**
-     * 原始类转为包装类,非原始类返回原类
+     * 给定字符串转换字符编码
+     * 如果参数为空，则返回原字符串，不报错。
+     *
+     * @param text          被转码的字符串
+     * @param sourceCharset 原字符集
+     * @param destCharset   目标字符集
+     * @return 转换后的字符串
+     * @see Charset#convert(String, String, String)
+     */
+    public static String convertCharset(final String text, final String sourceCharset, final String destCharset) {
+        if (ArrayKit.hasBlank(text, sourceCharset, destCharset)) {
+            return text;
+        }
+
+        return Charset.convert(text, sourceCharset, destCharset);
+    }
+
+    /**
+     * 转换时间单位
+     *
+     * @param sourceDuration 时长
+     * @param sourceUnit     源单位
+     * @param destUnit       目标单位
+     * @return 目标单位的时长
+     */
+    public static long convertTime(final long sourceDuration, final TimeUnit sourceUnit, final TimeUnit destUnit) {
+        Assert.notNull(sourceUnit, "sourceUnit is null !");
+        Assert.notNull(destUnit, "destUnit is null !");
+        return destUnit.convert(sourceDuration, sourceUnit);
+    }
+
+    /**
+     * 原始类转为包装类，非原始类返回原类
      *
      * @param clazz 原始类
      * @return 包装类
      * @see BasicType#wrap(Class)
+     * @see BasicType#wrap(Class)
      */
-    public static Class<?> wrap(Class<?> clazz) {
+    public static Class<?> wrap(final Class<?> clazz) {
         return BasicType.wrap(clazz);
     }
 
     /**
-     * 包装类转为原始类,非包装类返回原类
+     * 包装类转为原始类，非包装类返回原类
      *
      * @param clazz 包装类
      * @return 原始类
      * @see BasicType#unWrap(Class)
+     * @see BasicType#unWrap(Class)
      */
-    public static Class<?> unWrap(Class<?> clazz) {
+    public static Class<?> unWrap(final Class<?> clazz) {
         return BasicType.unWrap(clazz);
     }
 
@@ -934,8 +970,8 @@ public class Convert {
      * @param number {@link Number}对象
      * @return 英文表达式
      */
-    public static String numberToWord(Number number) {
-        return NumberFormatter.Words.format(number);
+    public static String numberToWord(final Number number) {
+        return EnglishNumberFormatter.format(number);
     }
 
     /**
@@ -948,8 +984,8 @@ public class Convert {
      * @param number {@link Number}对象
      * @return 英文表达式
      */
-    public static String numberToSimple(Number number) {
-        return NumberFormatter.Words.formatSimple(number.longValue());
+    public static String numberToSimple(final Number number) {
+        return EnglishNumberFormatter.formatSimple(number.longValue());
     }
 
     /**
@@ -959,22 +995,24 @@ public class Convert {
      * @param isUseTraditional 是否使用繁体字（金额形式）
      * @return 中文
      */
-    public static String numberToChinese(double number, boolean isUseTraditional) {
-        return NumberFormatter.Chinese.format(number, isUseTraditional);
+    public static String numberToChinese(final double number, final boolean isUseTraditional) {
+        return ChineseNumberFormatter.of()
+                .setUseTraditional(isUseTraditional)
+                .format(number);
     }
 
     /**
      * 数字中文表示形式转数字
      * <ul>
-     *     <li>一百一十二 -》 112</li>
-     *     <li>一千零一十二 -》 1012</li>
+     *     <li>一百一十二 - 112</li>
+     *     <li>一千零一十二 - 1012</li>
      * </ul>
      *
      * @param number 数字中文表示
      * @return 数字
      */
-    public static int chineseToNumber(String number) {
-        return NumberFormatter.Chinese.chineseToNumber(number);
+    public static BigDecimal chineseToNumber(final String number) {
+        return ChineseNumberParser.parseFromChineseNumber(number);
     }
 
     /**
@@ -983,16 +1021,18 @@ public class Convert {
      * @param n 数字
      * @return 中文大写数字
      */
-    public static String digitToChinese(Number n) {
+    public static String digitToChinese(final Number n) {
         if (null == n) {
             return "零";
         }
-        return NumberFormatter.Chinese.format(n.doubleValue(), true, true);
+        return ChineseNumberFormatter.of()
+                .setUseTraditional(true)
+                .setMoneyMode(true)
+                .format(n.doubleValue());
     }
 
     /**
      * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字
-     * <p>
      * 如：
      * “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32”
      * “叁角贰分”返回“0.32”
@@ -1000,8 +1040,8 @@ public class Convert {
      * @param chineseMoneyAmount 中文大写数字金额
      * @return 返回结果以元为单位的BigDecimal类型数字
      */
-    public static BigDecimal chineseMoneyToNumber(String chineseMoneyAmount) {
-        return NumberFormatter.Chinese.chineseMoneyToNumber(chineseMoneyAmount);
+    public static BigDecimal chineseMoneyToNumber(final String chineseMoneyAmount) {
+        return ChineseNumberParser.parseFromChineseMoney(chineseMoneyAmount);
     }
 
     /**
@@ -1010,7 +1050,7 @@ public class Convert {
      * @param intValue int值
      * @return byte值
      */
-    public static byte intToByte(int intValue) {
+    public static byte intToByte(final int intValue) {
         return (byte) intValue;
     }
 
@@ -1020,69 +1060,77 @@ public class Convert {
      * @param byteValue byte值
      * @return 无符号int值
      */
-    public static int byteToUnsignedInt(byte byteValue) {
+    public static int byteToUnsignedInt(final byte byteValue) {
         // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
         return byteValue & 0xFF;
     }
 
     /**
      * byte数组转short
+     * 默认以小端序转换
      *
      * @param bytes byte数组
      * @return short值
      */
-    public static short bytesToShort(byte[] bytes) {
-        return ByteKit.getShort(bytes, ByteOrder.LITTLE_ENDIAN);
+    public static short bytesToShort(final byte[] bytes) {
+        return ByteKit.toShort(bytes);
     }
 
     /**
      * short转byte数组
+     * 默认以小端序转换
      *
      * @param shortValue short值
      * @return byte数组
      */
-    public static byte[] shortToBytes(short shortValue) {
-        return ByteKit.getBytes(shortValue, ByteOrder.LITTLE_ENDIAN);
+    public static byte[] shortToBytes(final short shortValue) {
+        return ByteKit.toBytes(shortValue);
     }
 
     /**
      * byte[]转int值
+     * 默认以小端序转换
      *
      * @param bytes byte数组
      * @return int值
      */
-    public static int bytesToInt(byte[] bytes) {
-        return ByteKit.getInt(bytes, ByteOrder.LITTLE_ENDIAN);
-    }
-
-    /**
-     * byte数组转long
-     *
-     * @param bytes byte数组
-     * @return long值
-     */
-    public static long bytesToLong(byte[] bytes) {
-        return ByteKit.getLong(bytes, ByteOrder.LITTLE_ENDIAN);
+    public static int bytesToInt(final byte[] bytes) {
+        return ByteKit.toInt(bytes);
     }
 
     /**
      * int转byte数组
+     * 默认以小端序转换
      *
      * @param intValue int值
      * @return byte数组
      */
-    public static byte[] intToBytes(int intValue) {
-        return ByteKit.getBytes(intValue, ByteOrder.LITTLE_ENDIAN);
+    public static byte[] intToBytes(final int intValue) {
+        return ByteKit.toBytes(intValue);
     }
 
     /**
      * long转byte数组
+     * 默认以小端序转换
+     * from: <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
      *
      * @param longValue long值
      * @return byte数组
      */
-    public static byte[] longToBytes(long longValue) {
-        return ByteKit.getBytes(longValue, ByteOrder.LITTLE_ENDIAN);
+    public static byte[] longToBytes(final long longValue) {
+        return ByteKit.toBytes(longValue);
+    }
+
+    /**
+     * byte数组转long
+     * 默认以小端序转换
+     * from: <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     *
+     * @param bytes byte数组
+     * @return long值
+     */
+    public static long bytesToLong(final byte[] bytes) {
+        return ByteKit.toLong(bytes);
     }
 
 }

@@ -27,37 +27,48 @@ package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.CharsKit;
+import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 字符查找器
+ * 字符串查找器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringFinder extends TextFinder {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    private final CharSequence word;
+    private final CharSequence strToFind;
     private final boolean caseInsensitive;
 
     /**
      * 构造
      *
-     * @param word            被查找的字符
+     * @param strToFind       查找的字符串
      * @param caseInsensitive 是否忽略大小写
      */
-    public StringFinder(CharSequence word, boolean caseInsensitive) {
-        Assert.notEmpty(word);
-        this.word = word;
+    public StringFinder(final CharSequence strToFind, final boolean caseInsensitive) {
+        Assert.notEmpty(strToFind);
+        this.strToFind = strToFind;
         this.caseInsensitive = caseInsensitive;
+    }
+
+    /**
+     * 创建查找器，构造后须调用{@link #setText(CharSequence)} 设置被查找的文本
+     *
+     * @param strToFind       查找的字符串
+     * @param caseInsensitive 是否忽略大小写
+     * @return {@code StringFinder}
+     */
+    public static StringFinder of(final CharSequence strToFind, final boolean caseInsensitive) {
+        return new StringFinder(strToFind, caseInsensitive);
     }
 
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int subLen = this.word.length();
+        final int subLen = strToFind.length();
 
         if (from < 0) {
             from = 0;
@@ -65,14 +76,14 @@ public class StringFinder extends TextFinder {
         int endLimit = getValidEndIndex();
         if (negative) {
             for (int i = from; i > endLimit; i--) {
-                if (CharsKit.isSubEquals(text, i, this.word, 0, subLen, caseInsensitive)) {
+                if (CharsBacker.isSubEquals(text, i, strToFind, 0, subLen, caseInsensitive)) {
                     return i;
                 }
             }
         } else {
             endLimit = endLimit - subLen + 1;
             for (int i = from; i < endLimit; i++) {
-                if (CharsKit.isSubEquals(text, i, this.word, 0, subLen, caseInsensitive)) {
+                if (CharsBacker.isSubEquals(text, i, strToFind, 0, subLen, caseInsensitive)) {
                     return i;
                 }
             }
@@ -82,11 +93,11 @@ public class StringFinder extends TextFinder {
     }
 
     @Override
-    public int end(int start) {
+    public int end(final int start) {
         if (start < 0) {
             return -1;
         }
-        return start + word.length();
+        return start + strToFind.length();
     }
 
 }

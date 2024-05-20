@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.jdbc;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;

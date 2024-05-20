@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
@@ -75,7 +75,7 @@ public class ImageWriterFactory implements Serializable {
 
     private static ImageWriterFactory initDefault() {
         ImageWriterFactory factory = new ImageWriterFactory();
-        URL url = FileKit.getUrl("ImageWriterFactory.properties", ImageWriterFactory.class);
+        URL url = ResourceKit.getResourceUrl("ImageWriterFactory.properties", ImageWriterFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

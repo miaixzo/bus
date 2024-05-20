@@ -30,6 +30,8 @@ import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base58Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 
+import java.io.Serializable;
+
 /**
  * Base58编码器
  * 此编码器不包括校验码、版本等信息
@@ -37,25 +39,29 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]> {
+public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 实例
+     * 单例
      */
     public static Base58Provider INSTANCE = new Base58Provider();
 
     /**
-     * 将数字除以给定的除数，表示为字节数组，每个字节包含指定基数中的单个数字
-     * 给定的数字被就地修改以包含商，返回值是余数
+     * Divides a number, represented as an array of bytes each containing a single digit
+     * in the specified base, by the given divisor. The given number is modified in-place
+     * to contain the quotient, and the return value is the remainder.
      *
-     * @param number     要除的数
-     * @param firstDigit 在第一个非零数字的数组中的索引（这用于通过跳过前导零进行优化）
-     * @param base       表示数字位数的基数（最多 256）
-     * @param divisor    要除以的数（最多 256）
-     * @return 除法运算的其余部分
+     * @param number     the number to divide
+     * @param firstDigit the index within the array of the first non-zero digit
+     *                   (this is used for optimization by skipping the leading zeros)
+     * @param base       the base in which the number's digits are represented (up to 256)
+     * @param divisor    the number to divide by (up to 256)
+     * @return the remainder of the division operation
      */
-    public static byte divmod(byte[] number, int firstDigit, int base, int divisor) {
-        // 用来表示输入数字的基数
+    public static byte divmod(final byte[] number, final int firstDigit, final int base, final int divisor) {
+        // this is just long division which accounts for the base of the input digits
         int remainder = 0;
         for (int i = firstDigit; i < number.length; i++) {
             final int digit = (int) number[i] & 0xFF;
@@ -69,7 +75,7 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     /**
      * Base58编码
      *
-     * @param data 被编码的数据，不带校验和
+     * @param data 被编码的数据，不带校验和。
      * @return 编码后的字符串
      */
     @Override

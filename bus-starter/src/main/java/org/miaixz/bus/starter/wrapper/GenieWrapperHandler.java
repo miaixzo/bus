@@ -27,9 +27,11 @@ package org.miaixz.bus.starter.wrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.miaixz.bus.core.lang.Ansi;
 import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.extra.servlet.ServletKit;
+import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
+import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
+import org.miaixz.bus.core.toolkit.ArrayKit;
+import org.miaixz.bus.core.toolkit.NetKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
@@ -118,37 +120,88 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
+     * 获取客户端IP
+     * 默认检测的Header:
+     *
+     * <pre>
+     * 1、X-Forwarded-For
+     * 2、X-Real-IP
+     * 3、Proxy-Client-IP
+     * 4、WL-Proxy-Client-IP
+     * </pre>
+     *
+     * <p>
+     * otherHeaderNames参数用于自定义检测的Header<br>
+     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * </p>
+     *
+     * @param request          请求对象{@link HttpServletRequest}
+     * @param otherHeaderNames 其他自定义头文件，通常在Http服务器（例如Nginx）中配置
+     * @return IP地址
+     */
+    public static String getClientIP(final HttpServletRequest request, final String... otherHeaderNames) {
+        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
+        if (ArrayKit.isNotEmpty(otherHeaderNames)) {
+            headers = ArrayKit.addAll(headers, otherHeaderNames);
+        }
+
+        return getClientIPByHeader(request, headers);
+    }
+
+    /**
+     * 获取客户端IP
+     * headerNames参数用于自定义检测的Header
+     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     *
+     * @param request     请求对象{@link HttpServletRequest}
+     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
+     * @return IP地址
+     */
+    public static String getClientIPByHeader(final HttpServletRequest request, final String... headerNames) {
+        String ip;
+        for (final String header : headerNames) {
+            ip = request.getHeader(header);
+            if (!NetKit.isUnknown(ip)) {
+                return NetKit.getMultistageReverseProxyIp(ip);
+            }
+        }
+
+        ip = request.getRemoteAddr();
+        return NetKit.getMultistageReverseProxyIp(ip);
+    }
+
+    /**
      * 请求日志信息
      *
      * @param method  请求类型
      * @param request 网络请求
      */
     private void requestInfo(HttpServletRequest request, String method) {
-        String requestMethod = Ansi.encode(Ansi.Color.GREEN, " %s ", method);
+        String requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
         switch (method) {
             case Http.ALL:
-                requestMethod = Ansi.encode(Ansi.Color.WHITE, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
                 break;
             case Http.POST:
-                requestMethod = Ansi.encode(Ansi.Color.MAGENTA, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
                 break;
             case Http.DELETE:
-                requestMethod = Ansi.encode(Ansi.Color.BLUE, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
                 break;
             case Http.PUT:
-                requestMethod = Ansi.encode(Ansi.Color.RED, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
                 break;
             case Http.OPTIONS:
-                requestMethod = Ansi.encode(Ansi.Color.YELLOW, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
                 break;
             case Http.BEFORE:
-                requestMethod = Ansi.encode(Ansi.Color.BLACK, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
                 break;
             case Http.AFTER:
-                requestMethod = Ansi.encode(Ansi.Color.CYAN, " %s ", method);
+                requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
                 break;
         }
-        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), requestMethod, request.getRequestURL().toString());
+        Logger.info("{} {} {}", "==>", getClientIP(request), requestMethod, request.getRequestURL().toString());
     }
 
 }

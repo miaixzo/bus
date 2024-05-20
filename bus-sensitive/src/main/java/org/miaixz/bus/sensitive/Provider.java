@@ -29,14 +29,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.ContextValueFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.*;
-import org.miaixz.bus.sensitive.annotation.Condition;
-import org.miaixz.bus.sensitive.annotation.*;
-import org.miaixz.bus.sensitive.provider.ConditionProvider;
-import org.miaixz.bus.sensitive.provider.StrategyProvider;
-import org.miaixz.bus.sensitive.strategy.BuiltInStrategy;
+import org.miaixz.bus.sensitive.magic.annotation.*;
+import org.miaixz.bus.sensitive.metric.BuiltInProvider;
+import org.miaixz.bus.sensitive.metric.ConditionProvider;
+import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -178,7 +177,7 @@ public class Provider<T> {
                                   final Object copyObject,
                                   final Class clazz) {
         // 每一个实体对应的字段,只对当前 clazz 生效
-        List<Field> fieldList = ClassKit.getAllFieldList(clazz);
+        List<Field> fieldList = ListKit.of(FieldKit.getFields(clazz));
         context.setAllFieldList(fieldList);
         context.setCurrentObject(copyObject);
 
@@ -371,10 +370,10 @@ public class Provider<T> {
             Strategy strategy = annotation.annotationType().getAnnotation(Strategy.class);
             if (ObjectKit.isNotNull(strategy)) {
                 Class<? extends StrategyProvider> clazz = strategy.value();
-                if (BuiltInStrategy.class.equals(clazz)) {
+                if (BuiltInProvider.class.equals(clazz)) {
                     return Registry.require(annotation.annotationType());
                 } else {
-                    return ClassKit.newInstance(clazz);
+                    return ReflectKit.newInstance(clazz);
                 }
             }
         }
@@ -389,10 +388,10 @@ public class Provider<T> {
      */
     private ConditionProvider getCondition(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            org.miaixz.bus.sensitive.annotation.Condition condition = annotation.annotationType().getAnnotation(Condition.class);
+            Condition condition = annotation.annotationType().getAnnotation(Condition.class);
             if (ObjectKit.isNotNull(condition)) {
                 Class<? extends ConditionProvider> clazz = condition.value();
-                return ClassKit.newInstance(clazz);
+                return ReflectKit.newInstance(clazz);
             }
         }
         return null;

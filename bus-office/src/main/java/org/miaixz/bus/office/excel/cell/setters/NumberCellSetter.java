@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.toolkit.MathKit;
 import org.miaixz.bus.office.excel.cell.CellSetter;
-import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * {@link Number} 值单元格设置器
@@ -44,12 +44,12 @@ public class NumberCellSetter implements CellSetter {
      *
      * @param value 值
      */
-    NumberCellSetter(Number value) {
+    NumberCellSetter(final Number value) {
         this.value = value;
     }
 
     @Override
-    public void setValue(Cell cell) {
+    public void setValue(final Cell cell) {
         // 避免float到double的精度问题
         cell.setCellValue(MathKit.toDouble(value));
     }

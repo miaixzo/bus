@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.toolkit.ClassKit;
+import org.miaixz.bus.core.lang.Symbol;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -56,7 +56,7 @@ public class BusXHolder {
     public static Set<Class<?>> scan(String packageName) {
         Set<Class<?>> handlerSet = new HashSet();
         try {
-            String pattern = "classpath*:" + ClassKit.convertClassNameToResourcePath(packageName) + "/**/*.class";
+            String pattern = "classpath*:" + packageName.replace(Symbol.C_DOT, Symbol.C_SLASH) + "/**/*.class";
             PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
             Resource[] resources = resourcePatternResolver.getResources(pattern);
             CachingMetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resourcePatternResolver);

@@ -25,24 +25,23 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.List;
 
 /**
- * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名
- * 从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码
- * 参考：https://blog.csdn.net/a19881029/article/details/18262671
+ * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码
+ * 参考：<a href="https://blog.csdn.net/a19881029/article/details/18262671">https://blog.csdn.net/a19881029/article/details/18262671</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PunyCode {
 
-    public static final String PUNY_CODE_PREFIX = "xn--";
     private static final int TMIN = 1;
     private static final int TMAX = 26;
     private static final int BASE = 36;
@@ -50,6 +49,29 @@ public class PunyCode {
     private static final int INITIAL_BIAS = 72;
     private static final int DAMP = 700;
     private static final int SKEW = 38;
+    private static final char DELIMITER = '-';
+    private static final String PUNY_CODE_PREFIX = "xn--";
+
+    /**
+     * 将域名编码为PunyCode，会忽略"."的编码
+     *
+     * @param domain 域名
+     * @return 编码后的域名
+     * @throws InternalException 计算异常
+     */
+    public static String encodeDomain(final String domain) throws InternalException {
+        Assert.notNull(domain, "domain must not be null!");
+        final List<String> split = CharsBacker.split(domain, Symbol.DOT);
+        final StringBuilder result = new StringBuilder(domain.length() * 4);
+        for (final String text : split) {
+            if (result.length() != 0) {
+                result.append(Symbol.C_DOT);
+            }
+            result.append(encode(text, true));
+        }
+
+        return result.toString();
+    }
 
     /**
      * 将内容编码为PunyCode
@@ -92,7 +114,7 @@ public class PunyCode {
                 // 无需要编码的字符
                 return output.toString();
             }
-            output.append(Symbol.C_MINUS);
+            output.append(DELIMITER);
         }
         int h = b;
         while (h < length) {
@@ -151,6 +173,27 @@ public class PunyCode {
     }
 
     /**
+     * 解码 PunyCode为域名
+     *
+     * @param domain 域名
+     * @return 解码后的域名
+     * @throws InternalException 计算异常
+     */
+    public static String decodeDomain(final String domain) throws InternalException {
+        Assert.notNull(domain, "domain must not be null!");
+        final List<String> split = CharsBacker.split(domain, Symbol.DOT);
+        final StringBuilder result = new StringBuilder(domain.length() / 4 + 1);
+        for (final String text : split) {
+            if (result.length() != 0) {
+                result.append(Symbol.C_DOT);
+            }
+            result.append(StringKit.startWithIgnoreEquals(text, PUNY_CODE_PREFIX) ? decode(text) : text);
+        }
+
+        return result.toString();
+    }
+
+    /**
      * 解码 PunyCode为字符串
      *
      * @param input PunyCode
@@ -166,7 +209,7 @@ public class PunyCode {
         int bias = INITIAL_BIAS;
         final int length = input.length();
         final StringBuilder output = new StringBuilder(length / 4 + 1);
-        int d = input.lastIndexOf(Symbol.C_MINUS);
+        int d = input.lastIndexOf(DELIMITER);
         if (d > 0) {
             for (int j = 0; j < d; j++) {
                 final char c = input.charAt(j);
@@ -215,48 +258,6 @@ public class PunyCode {
         }
 
         return output.toString();
-    }
-
-    /**
-     * 将域名编码为PunyCode，会忽略"."的编码
-     *
-     * @param domain 域名
-     * @return 编码后的域名
-     * @throws InternalException 计算异常
-     */
-    public static String encodeDomain(final String domain) throws InternalException {
-        Assert.notNull(domain, "domain must not be null!");
-        final List<String> split = StringKit.split(domain, Symbol.C_DOT);
-        final StringBuilder result = new StringBuilder(domain.length() * 4);
-        for (final String str : split) {
-            if (result.length() != 0) {
-                result.append(Symbol.C_DOT);
-            }
-            result.append(encode(str, true));
-        }
-
-        return result.toString();
-    }
-
-    /**
-     * 解码 PunyCode为域名
-     *
-     * @param domain 域名
-     * @return 解码后的域名
-     * @throws InternalException 计算异常
-     */
-    public static String decodeDomain(final String domain) throws InternalException {
-        Assert.notNull(domain, "domain must not be null!");
-        final List<String> split = StringKit.split(domain, Symbol.C_DOT);
-        final StringBuilder result = new StringBuilder(domain.length() / 4 + 1);
-        for (final String str : split) {
-            if (result.length() != 0) {
-                result.append(Symbol.C_DOT);
-            }
-            result.append(StringKit.startWithIgnoreEquals(str, PUNY_CODE_PREFIX) ? decode(str) : str);
-        }
-
-        return result.toString();
     }
 
     private static int adapt(int delta, final int numpoints, final boolean first) {

@@ -27,15 +27,19 @@ package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.toolkit.MethodKit;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 
 /**
  * VFS资源封装
+ * 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+
  * 参考：org.springframework.core.io.VfsUtils
+ * <p>
+ * , Spring
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,9 +54,10 @@ public class VfsResource implements Resource {
     private static final Method VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED;
     private static final Method VIRTUAL_FILE_METHOD_TO_URL;
     private static final Method VIRTUAL_FILE_METHOD_GET_NAME;
+    private static final Method VIRTUAL_FILE_METHOD_GET_PHYSICAL_FILE;
 
     static {
-        Class<?> virtualFile = ClassKit.loadClass(VFS3_PKG + "VirtualFile");
+        final Class<?> virtualFile = ClassKit.loadClass(VFS3_PKG + "VirtualFile");
         try {
             VIRTUAL_FILE_METHOD_EXISTS = virtualFile.getMethod("exists");
             VIRTUAL_FILE_METHOD_GET_INPUT_STREAM = virtualFile.getMethod("openStream");
@@ -60,7 +65,8 @@ public class VfsResource implements Resource {
             VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED = virtualFile.getMethod("getLastModified");
             VIRTUAL_FILE_METHOD_TO_URL = virtualFile.getMethod("toURL");
             VIRTUAL_FILE_METHOD_GET_NAME = virtualFile.getMethod("getName");
-        } catch (NoSuchMethodException ex) {
+            VIRTUAL_FILE_METHOD_GET_PHYSICAL_FILE = virtualFile.getMethod("getPhysicalFile");
+        } catch (final NoSuchMethodException ex) {
             throw new IllegalStateException("Could not detect JBoss VFS infrastructure", ex);
         }
     }
@@ -76,7 +82,7 @@ public class VfsResource implements Resource {
      *
      * @param resource org.jboss.vfs.VirtualFile实例对象
      */
-    public VfsResource(Object resource) {
+    public VfsResource(final Object resource) {
         Assert.notNull(resource, "VirtualFile must not be null");
         this.virtualFile = resource;
         this.lastModified = getLastModified();
@@ -88,22 +94,22 @@ public class VfsResource implements Resource {
      * @return 文件是否存在
      */
     public boolean exists() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_EXISTS);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_EXISTS);
     }
 
     @Override
     public String getName() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_NAME);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_NAME);
     }
 
     @Override
     public URL getUrl() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_TO_URL);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_TO_URL);
     }
 
     @Override
     public InputStream getStream() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_INPUT_STREAM);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_INPUT_STREAM);
     }
 
     @Override
@@ -117,7 +123,7 @@ public class VfsResource implements Resource {
      * @return 最后修改时间
      */
     public long getLastModified() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED);
     }
 
     /**
@@ -125,8 +131,18 @@ public class VfsResource implements Resource {
      *
      * @return VFS文件大小
      */
+    @Override
     public long size() {
-        return ReflectKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_SIZE);
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_SIZE);
+    }
+
+    /**
+     * 获取物理文件对象
+     *
+     * @return 物理文件对象
+     */
+    public File getFile() {
+        return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_PHYSICAL_FILE);
     }
 
 }

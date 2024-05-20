@@ -44,13 +44,6 @@ public class OSService {
     private final State state;
 
     /**
-     * Service Execution States
-     */
-    public enum State {
-        RUNNING, STOPPED, OTHER
-    }
-
-    /**
      * Instantiate a new {@link OSService}.
      *
      * @param name      The service name.
@@ -94,6 +87,13 @@ public class OSService {
      */
     public State getState() {
         return this.state;
+    }
+
+    /**
+     * Service Execution States
+     */
+    public enum State {
+        RUNNING, STOPPED, OTHER
     }
 
 }

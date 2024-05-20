@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.collection.Iterator.ComputeIterator;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.TextBuilder;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.text.StringTrimer;
 import org.miaixz.bus.core.toolkit.MapKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -42,23 +41,25 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * CSV行解析器,参考：FastCSV
+ * CSV行解析器，参考：FastCSV
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     private static final int DEFAULT_ROW_CAPACITY = 10;
 
     private final Reader reader;
     private final CsvReadConfig config;
 
-    private final Buffer buf = new Buffer(IoKit.DEFAULT_LARGE_BUFFER_SIZE);
+    private final Buffer buf;
     /**
      * 当前读取字段
      */
-    private final TextBuilder currentField = new TextBuilder(Normal._512);
+    private final StringBuilder currentField = new StringBuilder(512);
     /**
      * 前一个特殊分界字符
      */
@@ -80,11 +81,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      */
     private long inQuotesLineCount;
     /**
-     * 第一行字段数,用于检查每行字段数是否一致
+     * 第一行字段数，用于检查每行字段数是否一致
      */
     private int firstLineFieldCount = -1;
     /**
-     * 最大字段数量
+     * 最大字段数量，用于初始化行，减少扩容
      */
     private int maxFieldCount;
     /**
@@ -98,18 +99,25 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * @param reader Reader
      * @param config 配置，null则为默认配置
      */
-    public CsvParser(final Reader reader, CsvReadConfig config) {
-        this.reader = Objects.requireNonNull(reader, "reader must not be null");
-        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::defaultConfig);
-    }
-
-    @Override
-    protected CsvRow computeNext() {
-        return nextRow();
+    public CsvParser(final Reader reader, final CsvReadConfig config) {
+        this(reader, config, Normal.DEFAULT_LARGE_BUFFER_SIZE);
     }
 
     /**
-     * 获取头部字段列表，如果headerLineNo &lt; 0,抛出异常
+     * CSV解析器
+     *
+     * @param reader     Reader
+     * @param config     配置，null则为默认配置
+     * @param bufferSize 默认缓存大小
+     */
+    public CsvParser(final Reader reader, final CsvReadConfig config, final int bufferSize) {
+        this.reader = Objects.requireNonNull(reader, "reader must not be null");
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::defaultConfig);
+        this.buf = new Buffer(bufferSize);
+    }
+
+    /**
+     * 获取头部字段列表，如果headerLineNo &lt; 0，抛出异常
      *
      * @return 头部列表
      * @throws IllegalStateException 如果不解析头部或者没有调用nextRow()方法
@@ -118,10 +126,15 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         if (config.headerLineNo < 0) {
             throw new IllegalStateException("No header available - header parsing is disabled");
         }
-        if (lineNo == 0) {
+        if (lineNo < config.beginLineNo) {
             throw new IllegalStateException("No header available - call nextRow() first");
         }
         return header.fields;
+    }
+
+    @Override
+    protected CsvRow computeNext() {
+        return nextRow();
     }
 
     /**
@@ -131,25 +144,35 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * @throws InternalException IO读取异常
      */
     public CsvRow nextRow() throws InternalException {
-        long startingLineNo;
         List<String> currentFields;
         int fieldCount;
-        while (false == finished) {
-            startingLineNo = ++lineNo;
+        while (!finished) {
             currentFields = readLine();
             fieldCount = currentFields.size();
             if (fieldCount < 1) {
+                // 空List表示读取结束
+                break;
+            }
+
+            // 读取范围校验
+            if (lineNo < config.beginLineNo) {
+                // 未达到读取起始行，继续
+                continue;
+            }
+            if (lineNo > config.endLineNo) {
+                // 超出结束行，读取结束
                 break;
             }
 
             // 跳过空行
             if (config.skipEmptyRows && fieldCount == 1 && currentFields.get(0).isEmpty()) {
+                // [""]表示空行
                 continue;
             }
 
             // 检查每行的字段数是否一致
             if (config.errorOnDifferentFieldCount) {
-                if (firstLineFieldCount == -1) {
+                if (firstLineFieldCount < 0) {
                     firstLineFieldCount = fieldCount;
                 } else if (fieldCount != firstLineFieldCount) {
                     throw new InternalException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
@@ -161,14 +184,14 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 maxFieldCount = fieldCount;
             }
 
-            // 初始化标题
+            //初始化标题
             if (lineNo == config.headerLineNo && null == header) {
                 initHeader(currentFields);
                 // 作为标题行后，此行跳过，下一行做为第一行
                 continue;
             }
 
-            return new CsvRow(startingLineNo, null == header ? null : header.headerMap, currentFields);
+            return new CsvRow(lineNo, null == header ? null : header.headerMap, currentFields);
         }
 
         return null;
@@ -187,7 +210,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 // 自定义别名
                 field = ObjectKit.defaultIfNull(this.config.headerAlias.get(field), field);
             }
-            if (StringKit.isNotEmpty(field) && false == localHeaderMap.containsKey(field)) {
+            if (StringKit.isNotEmpty(field) && !localHeaderMap.containsKey(field)) {
                 localHeaderMap.put(field, i);
             }
         }
@@ -198,7 +221,10 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     /**
      * 读取一行数据，如果读取结束，返回size为0的List
      * 空行是size为1的List，唯一元素是""
+     *
+     * <p>
      * 行号要考虑注释行和引号包装的内容中的换行
+     * </p>
      *
      * @return 一行数据
      * @throws InternalException IO异常
@@ -213,14 +239,14 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
-        final TextBuilder currentField = this.currentField;
+        final StringBuilder currentField = this.currentField;
         final Buffer buf = this.buf;
         int preChar = this.preChar;//前一个特殊分界字符
         int copyLen = 0; //拷贝长度
         boolean inComment = false;
 
         while (true) {
-            if (false == buf.hasRemaining()) {
+            if (!buf.hasRemaining()) {
                 // 此Buffer读取结束，开始读取下一段
                 if (copyLen > 0) {
                     buf.appendTo(currentField, copyLen);
@@ -230,9 +256,10 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                     // CSV读取结束
                     finished = true;
 
-                    if (!currentField.isEmpty() || preChar == config.fieldSeparator) {
+                    if (currentField.length() > 0 || preChar == config.fieldSeparator) {
                         //剩余部分作为一个字段
-                        addField(currentFields, currentField.toString(true));
+                        addField(currentFields, currentField.toString());
+                        currentField.setLength(0);
                     }
                     break;
                 }
@@ -265,7 +292,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             }
 
             if (inQuotes) {
-                //引号内，做为内容，直到引号结束
+                //引号内，作为内容，直到引号结束
                 if (c == config.textDelimiter) {
                     // End of quoted text
                     inQuotes = false;
@@ -286,7 +313,8 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                         copyLen = 0;
                     }
                     buf.mark();
-                    addField(currentFields, currentField.toString(true));
+                    addField(currentFields, currentField.toString());
+                    currentField.setLength(0);
                 } else if (c == config.textDelimiter) {
                     // 引号开始
                     inQuotes = true;
@@ -297,7 +325,8 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                         buf.appendTo(currentField, copyLen);
                     }
                     buf.mark();
-                    addField(currentFields, currentField.toString(true));
+                    addField(currentFields, currentField.toString());
+                    currentField.setLength(0);
                     preChar = c;
                     break;
                 } else if (c == Symbol.C_LF) {
@@ -307,7 +336,8 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                             buf.appendTo(currentField, copyLen);
                         }
                         buf.mark();
-                        addField(currentFields, currentField.toString(true));
+                        addField(currentFields, currentField.toString());
+                        currentField.setLength(0);
                         preChar = c;
                         break;
                     }
@@ -321,21 +351,12 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
             preChar = c;
         }
+
+        // restore fields
         this.preChar = preChar;
+
         lineNo++;
-
         return currentFields;
-    }
-
-    /**
-     * 是否行结束符
-     *
-     * @param c       符号
-     * @param preChar 前一个字符
-     * @return 是否结束
-     */
-    private boolean isLineEnd(char c, int preChar) {
-        return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
     }
 
     @Override
@@ -349,14 +370,14 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * @param currentFields 当前的字段列表（即为行）
      * @param field         字段
      */
-    private void addField(List<String> currentFields, String field) {
+    private void addField(final List<String> currentFields, String field) {
         final char textDelimiter = this.config.textDelimiter;
 
         // 忽略多余引号后的换行符
-        field = StringKit.trim(field, 1, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
+        field = StringKit.trim(field, StringTrimer.TrimMode.SUFFIX, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
 
         field = StringKit.unWrap(field, textDelimiter);
-        field = StringKit.replace(field, Normal.EMPTY + textDelimiter + textDelimiter, textDelimiter + Normal.EMPTY);
+        field = StringKit.replace(field, String.valueOf(textDelimiter) + textDelimiter, String.valueOf(textDelimiter));
         if (this.config.trimField) {
             field = StringKit.trim(field);
         }
@@ -364,11 +385,24 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
+     * 是否行结束符
+     *
+     * @param c       符号
+     * @param preChar 前一个字符
+     * @return 是否结束
+     */
+    private boolean isLineEnd(final char c, final int preChar) {
+        return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
+    }
+
+    /**
      * 内部Buffer
      */
-    private static class Buffer {
+    private static class Buffer implements Serializable {
+        private static final long serialVersionUID = -1L;
 
         final char[] buf;
+
         /**
          * 标记位置，用于读数据
          */
@@ -382,7 +416,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
          */
         private int limit;
 
-        Buffer(int capacity) {
+        Buffer(final int capacity) {
             buf = new char[capacity];
         }
 
@@ -401,11 +435,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
          *
          * @param reader {@link Reader}
          */
-        int read(Reader reader) {
-            int length;
+        int read(final Reader reader) {
+            final int length;
             try {
                 length = reader.read(this.buf);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new InternalException(e);
             }
             this.mark = 0;
@@ -433,14 +467,14 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         }
 
         /**
-         * 将数据追加到{@link TextBuilder}，追加结束后需手动调用{@link #mark()} 重置读取位置
+         * 将数据追加到{@link StringBuilder}，追加结束后需手动调用{@link #mark()} 重置读取位置
          *
-         * @param textBuilder {@link TextBuilder}
-         * @param length      追加的长度
+         * @param builder {@link StringBuilder}
+         * @param length  追加的长度
          * @see #mark()
          */
-        void appendTo(TextBuilder textBuilder, int length) {
-            textBuilder.append(this.buf, this.mark, length);
+        void appendTo(final StringBuilder builder, final int length) {
+            builder.append(this.buf, this.mark, length);
         }
     }
 

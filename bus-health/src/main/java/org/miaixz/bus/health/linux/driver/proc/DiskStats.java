@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -56,7 +56,7 @@ public final class DiskStats {
         IoStat[] enumArray = IoStat.class.getEnumConstants();
         List<String> diskStats = Builder.readFile(ProcPath.DISKSTATS);
         for (String stat : diskStats) {
-            String[] split = RegEx.SPACES.split(stat.trim());
+            String[] split = Pattern.SPACES_PATTERN.split(stat.trim());
             Map<IoStat, Long> statMap = new EnumMap<>(IoStat.class);
             String name = null;
             for (int i = 0; i < enumArray.length && i < split.length; i++) {

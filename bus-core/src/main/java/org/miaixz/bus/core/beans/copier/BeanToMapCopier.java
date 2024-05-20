@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropertyDesc;
+import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.toolkit.BeanKit;
@@ -55,7 +55,7 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public BeanToMapCopier(Object source, Map target, Type targetType, CopyOptions copyOptions) {
+    public BeanToMapCopier(final Object source, final Map target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }
@@ -70,16 +70,16 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             actualEditable = copyOptions.editable;
         }
 
-        final Map<String, PropertyDesc> sourcePropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> sourcePropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
-            if (null == sFieldName || false == sDesc.isReadable(copyOptions.transientSupport)) {
+            if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
                 return;
             }
 
             // 检查源对象属性是否过滤属性
             Object sValue = sDesc.getValue(this.source);
-            if (false == copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
+            if (!copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
                 return;
             }
 
@@ -97,12 +97,13 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
 
             // 获取目标值真实类型并转换源值
             final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
-            if (null != typeArguments) {
+            if (null != typeArguments && typeArguments.length > 1) {
+                //sValue = Convert.convertWithCheck(typeArguments[1], sValue, null, this.copyOptions.ignoreError);
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
             }
 
             // 目标赋值
-            if (null != sValue || false == copyOptions.ignoreNullValue) {
+            if (null != sValue || !copyOptions.ignoreNullValue) {
                 target.put(sFieldName, sValue);
             }
         });

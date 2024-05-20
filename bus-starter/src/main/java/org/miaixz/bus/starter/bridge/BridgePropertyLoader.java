@@ -78,9 +78,6 @@ public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
             throw new RuntimeException("fetch remote config error!");
         }
 
-        Map<String, Object> result = new HashMap<>();
-        Builder.parseYamlMap(result, (String) map.get("content"));
-
         // 合并属性
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             properties.setProperty(entry.getKey(), entry.getValue().toString());
@@ -91,7 +88,7 @@ public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
         for (Map.Entry<Object, Object> entry : entrySet) {
             String value = entry.getValue().toString();
             if (value.contains(Symbol.DOLLAR + Symbol.C_BRACE_LEFT)) {
-                value = Builder.replaceRefValue(properties, value);
+                value = Builder.replaceYamlValue(properties, value);
                 properties.setProperty(entry.getKey().toString(), value);
             }
         }

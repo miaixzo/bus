@@ -32,7 +32,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
@@ -48,10 +48,10 @@ import java.util.function.Supplier;
 @Immutable
 final class MacFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoizer.memoize(
+    private final Supplier<Tuple> manufNameDescVersRelease = Memoizer.memoize(
             MacFirmware::queryEfi);
 
-    private static Quintet<String, String, String, String, String> queryEfi() {
+    private static Tuple queryEfi() {
         String manufacturer = null;
         String name = null;
         String description = null;
@@ -123,7 +123,7 @@ final class MacFirmware extends AbstractFirmware {
             }
             platformExpert.release();
         }
-        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                 StringKit.isBlank(description) ? Normal.UNKNOWN : description,
                 StringKit.isBlank(version) ? Normal.UNKNOWN : version,
@@ -132,26 +132,26 @@ final class MacFirmware extends AbstractFirmware {
 
     @Override
     public String getManufacturer() {
-        return manufNameDescVersRelease.get().getA();
+        return manufNameDescVersRelease.get().get(0);
     }
 
     @Override
     public String getName() {
-        return manufNameDescVersRelease.get().getB();
+        return manufNameDescVersRelease.get().get(1);
     }
 
     @Override
     public String getDescription() {
-        return manufNameDescVersRelease.get().getC();
+        return manufNameDescVersRelease.get().get(2);
     }
 
     @Override
     public String getVersion() {
-        return manufNameDescVersRelease.get().getD();
+        return manufNameDescVersRelease.get().get(3);
     }
 
     @Override
     public String getReleaseDate() {
-        return manufNameDescVersRelease.get().getE();
+        return manufNameDescVersRelease.get().get(4);
     }
 }

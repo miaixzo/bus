@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.notify;
 
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.ListKit;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.magic.Property;
 
@@ -77,7 +77,7 @@ public interface Provider<T extends Property> {
      * @return 发送结果
      */
     default Message send(T entity, String... mobile) {
-        return send(entity, CollKit.toList(mobile));
+        return send(entity, ListKit.of(mobile));
     }
 
 }

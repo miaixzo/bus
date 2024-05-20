@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -61,7 +61,7 @@ public final class Prtvtoc {
                 // specifying bytes per sector
                 if (line.startsWith("*")) {
                     if (line.endsWith("bytes/sector")) {
-                        split = RegEx.SPACES.split(line);
+                        split = Pattern.SPACES_PATTERN.split(line);
                         if (split.length > 0) {
                             bytesPerSector = Parsing.parseIntOrDefault(split[1], 0);
                         }
@@ -72,7 +72,7 @@ public final class Prtvtoc {
                     // Lines without asterisk have 6 or 7 whitespaces-split values
                     // representing (last field optional):
                     // Partition Tag Flags Sector Count Sector Mount
-                    split = RegEx.SPACES.split(line.trim());
+                    split = Pattern.SPACES_PATTERN.split(line.trim());
                     // Partition 2 is always the whole disk so we ignore it
                     if (split.length >= 6 && !"2".equals(split[0])) {
                         // First field is partition number

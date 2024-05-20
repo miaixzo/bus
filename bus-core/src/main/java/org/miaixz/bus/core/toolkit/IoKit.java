@@ -25,36 +25,37 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.collection.Iterator.LineIterator;
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.iterator.LineIterator;
+import org.miaixz.bus.core.io.BomReader;
 import org.miaixz.bus.core.io.LifeCycle;
-import org.miaixz.bus.core.io.Progress;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
+import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.copier.ChannelCopier;
 import org.miaixz.bus.core.io.copier.FileChannelCopier;
 import org.miaixz.bus.core.io.copier.ReaderWriterCopier;
+import org.miaixz.bus.core.io.copier.StreamCopier;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.RealSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.RealSource;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.io.stream.*;
+import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
+import org.miaixz.bus.core.io.stream.StreamReader;
+import org.miaixz.bus.core.io.stream.StreamWriter;
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.function.ConsumerX;
+import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
-import java.io.ObjectInputStream;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
@@ -62,11 +63,11 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * IO工具类
- * IO工具类只是辅助流的读写,并不负责关闭流
- * 原因是流可能被多次读写,读写关闭后容易造成问题
+ * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,77 +75,9 @@ import java.util.Collection;
 public class IoKit {
 
     /**
-     * 默认缓存大小 8192
-     */
-    public static final int DEFAULT_BUFFER_SIZE = 2 << 12;
-    /**
-     * 默认大缓存大小 32768
-     */
-    public static final int DEFAULT_LARGE_BUFFER_SIZE = 2 << 14;
-
-    /**
      * 数据流末尾
      */
     public static final int EOF = -1;
-
-
-    private IoKit() {
-    }
-
-    public static void checkOffsetAndCount(long size, long offset, long byteCount) {
-        if ((offset | byteCount) < 0 || offset > size || size - offset < byteCount) {
-            throw new ArrayIndexOutOfBoundsException(
-                    String.format("size=%s offset=%s byteCount=%s", size, offset, byteCount));
-        }
-    }
-
-    public static short reverseBytesShort(short s) {
-        int i = s & 0xffff;
-        int reversed = (i & 0xff00) >>> 8
-                | (i & 0x00ff) << 8;
-        return (short) reversed;
-    }
-
-    public static int reverseBytesInt(int i) {
-        return (i & 0xff000000) >>> 24
-                | (i & 0x00ff0000) >>> 8
-                | (i & 0x0000ff00) << 8
-                | (i & 0x000000ff) << 24;
-    }
-
-    public static long reverseBytesLong(long v) {
-        return (v & 0xff00000000000000L) >>> 56
-                | (v & 0x00ff000000000000L) >>> 40
-                | (v & 0x0000ff0000000000L) >>> 24
-                | (v & 0x000000ff00000000L) >>> 8
-                | (v & 0x00000000ff000000L) << 8
-                | (v & 0x0000000000ff0000L) << 24
-                | (v & 0x000000000000ff00L) << 40
-                | (v & 0x00000000000000ffL) << 56;
-    }
-
-    /**
-     * 即使被声明也不允许直接抛出
-     * 这是一种很糟糕的做饭,很容易遭到攻击
-     * 清理后捕获并重新抛出异常 参见Java Puzzlers #43
-     *
-     * @param t 异常
-     */
-    public static void sneakyRethrow(Throwable t) {
-        IoKit.<Error>sneakyThrow2(t);
-    }
-
-    private static <T extends Throwable> void sneakyThrow2(Throwable t) throws T {
-        throw (T) t;
-    }
-
-    public static boolean arrayRangeEquals(
-            byte[] a, int aOffset, byte[] b, int bOffset, int byteCount) {
-        for (int i = 0; i < byteCount; i++) {
-            if (a[i + aOffset] != b[i + bOffset]) return false;
-        }
-        return true;
-    }
 
     /**
      * 将Reader中的内容复制到Writer中 使用默认缓存大小，拷贝后不关闭Reader
@@ -152,9 +85,10 @@ public class IoKit {
      * @param reader Reader
      * @param writer Writer
      * @return 拷贝的字节数
+     * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer) {
-        return copy(reader, writer, DEFAULT_BUFFER_SIZE);
+    public static long copy(final Reader reader, final Writer writer) throws InternalException {
+        return copy(reader, writer, Normal.DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -164,38 +98,41 @@ public class IoKit {
      * @param writer     Writer
      * @param bufferSize 缓存大小
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer, final int bufferSize) {
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize) throws InternalException {
         return copy(reader, writer, bufferSize, null);
     }
 
     /**
      * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
      *
-     * @param reader     Reader
-     * @param writer     Writer
-     * @param bufferSize 缓存大小
-     * @param progress   进度处理器
+     * @param reader         Reader
+     * @param writer         Writer
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度处理器
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final Progress progress) {
-        return copy(reader, writer, bufferSize, -1, progress);
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final StreamProgress streamProgress) throws InternalException {
+        return copy(reader, writer, bufferSize, -1, streamProgress);
     }
 
     /**
      * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
      *
-     * @param reader     Reader，非空
-     * @param writer     Writer，非空
-     * @param bufferSize 缓存大小，-1表示默认
-     * @param count      最大长度，-1表示无限制
-     * @param progress   进度处理器，{@code null}表示无
+     * @param reader         Reader，非空
+     * @param writer         Writer，非空
+     * @param bufferSize     缓存大小，-1表示默认
+     * @param count          最大长度，-1表示无限制
+     * @param streamProgress 进度处理器，{@code null}表示无
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final long count, final Progress progress) {
+    public static long copy(final Reader reader, final Writer writer, final int bufferSize, final long count, final StreamProgress streamProgress) throws InternalException {
         Assert.notNull(reader, "Reader is null !");
         Assert.notNull(writer, "Writer is null !");
-        return new ReaderWriterCopier(bufferSize, count, progress).copy(reader, writer);
+        return new ReaderWriterCopier(bufferSize, count, streamProgress).copy(reader, writer);
     }
 
     /**
@@ -204,9 +141,10 @@ public class IoKit {
      * @param in  输入流
      * @param out 输出流
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out) {
-        return copy(in, out, DEFAULT_BUFFER_SIZE);
+    public static long copy(final InputStream in, final OutputStream out) throws InternalException {
+        return copy(in, out, Normal.DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -216,172 +154,76 @@ public class IoKit {
      * @param out        输出流
      * @param bufferSize 缓存大小
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out, final int bufferSize) {
-        return copy(in, out, bufferSize, null);
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize) throws InternalException {
+        return copy(in, out, bufferSize, (StreamProgress) null);
     }
 
     /**
      * 拷贝流，拷贝后不关闭流
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param progress   进度条
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度条
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final Progress progress) {
-        return copy(in, out, bufferSize, -1, progress);
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final StreamProgress streamProgress) throws InternalException {
+        return copy(in, out, bufferSize, -1, streamProgress);
     }
 
     /**
      * 拷贝流，拷贝后不关闭流
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param count      总拷贝长度，-1表示无限制
-     * @param progress   进度条
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param count          总拷贝长度，-1表示无限制
+     * @param streamProgress 进度条
      * @return 传输的byte数
+     * @throws InternalException IO异常
      */
-    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final long count, final Progress progress) {
+    public static long copy(final InputStream in, final OutputStream out, final int bufferSize, final long count, final StreamProgress streamProgress) throws InternalException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
-        final long copySize = copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, progress);
-        flush(out);
-        return copySize;
+        return new StreamCopier(bufferSize, count, streamProgress).copy(in, out);
     }
 
     /**
-     * 拷贝文件Channel，使用NIO，拷贝后不会关闭channel
-     *
-     * @param inChannel  {@link FileChannel}
-     * @param outChannel {@link FileChannel}
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
-     */
-    public static long copy(FileChannel inChannel, FileChannel outChannel) throws InternalException {
-        Assert.notNull(inChannel, "In channel is null!");
-        Assert.notNull(outChannel, "Out channel is null!");
-
-        try {
-            return copySafely(inChannel, outChannel);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 文件拷贝实现
-     *
-     * <pre>
-     * FileChannel#transferTo 或 FileChannel#transferFrom 的实现是平台相关的，需要确保低版本平台的兼容性
-     * 例如 android 7以下平台在使用 ZipInputStream 解压文件的过程中，
-     * 通过 FileChannel#transferFrom 传输到文件时，其返回值可能小于 totalBytes，不处理将导致文件内容缺失
-     *
-     * // 错误写法，dstChannel.transferFrom 返回值小于 zipEntry.getSize()，导致解压后文件内容缺失
-     * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
-     * 		ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
-     * 		FileOutputStream fos = new FileOutputStream(saveFile);
-     * 		FileChannel dstChannel = fos.getChannel()) {
-     * 		dstChannel.transferFrom(srcChannel, 0, zipEntry.getSize());
-     *  }
-     * </pre>
-     *
-     * @param inChannel  输入通道
-     * @param outChannel 输出通道
-     * @return 输入通道的字节数
-     * @throws IOException 发生IO错误
-     */
-    private static long copySafely(FileChannel inChannel, FileChannel outChannel) throws IOException {
-        final long totalBytes = inChannel.size();
-        // 确保文件内容不会缺失
-        for (long pos = 0, remaining = totalBytes; remaining > 0; ) {
-            // 实际传输的字节数
-            final long writeBytes = inChannel.transferTo(pos, remaining, outChannel);
-            pos += writeBytes;
-            remaining -= writeBytes;
-        }
-        return totalBytes;
-    }
-
-    /**
-     * 拷贝流，使用NIO，不会关闭channel
-     *
-     * @param in  {@link ReadableByteChannel}
-     * @param out {@link WritableByteChannel}
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
-     */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out) throws InternalException {
-        return copy(in, out, DEFAULT_BUFFER_SIZE);
-    }
-
-    /**
-     * 拷贝流，使用NIO，不会关闭channel
-     *
-     * @param in         {@link ReadableByteChannel}
-     * @param out        {@link WritableByteChannel}
-     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
-     */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize) throws InternalException {
-        return copy(in, out, bufferSize, null);
-    }
-
-    /**
-     * 拷贝流，使用NIO，不会关闭channel
-     *
-     * @param in         {@link ReadableByteChannel}
-     * @param out        {@link WritableByteChannel}
-     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
-     * @param progress   {@link Progress}进度处理器
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
-     */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, Progress progress) throws InternalException {
-        return copy(in, out, bufferSize, -1, progress);
-    }
-
-    /**
-     * 拷贝流，使用NIO，不会关闭channel
-     *
-     * @param in         {@link ReadableByteChannel}
-     * @param out        {@link WritableByteChannel}
-     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
-     * @param count      读取总长度
-     * @param progress   {@link Progress}进度处理器
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
-     */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, Progress progress) throws InternalException {
-        return new ChannelCopier(bufferSize, count, progress).copy(in, out);
-    }
-
-    /**
-     * 文件拷贝实现
+     * 拷贝文件流，使用NIO
      *
      * @param in  输入
      * @param out 输出
      * @return 拷贝的字节数
+     * @throws InternalException IO异常
      */
-    public static long copy(final FileInputStream in, final FileOutputStream out) {
+    public static long copy(final FileInputStream in, final FileOutputStream out) throws InternalException {
         Assert.notNull(in, "FileInputStream is null!");
         Assert.notNull(out, "FileOutputStream is null!");
 
-        return new FileChannelCopier(-1).copy(in, out);
+        return FileChannelCopier.of().copy(in, out);
     }
 
     /**
-     * 获得一个文件读取器
+     * 获得一个文件读取器，默认使用 UTF-8 编码
      *
-     * @param in          输入流
-     * @param charsetName 字符集名称
+     * @param in 输入流
      * @return BufferedReader对象
      */
-    public static BufferedReader getReader(InputStream in, String charsetName) {
-        return getReader(in, java.nio.charset.Charset.forName(charsetName));
+    public static BufferedReader toUtf8Reader(final InputStream in) {
+        return toReader(in, Charset.UTF_8);
+    }
+
+    /**
+     * 从{@link InputStream}中获取{@link BomReader}
+     *
+     * @param in {@link InputStream}
+     * @return {@link BomReader}
+     */
+    public static BomReader toBomReader(final InputStream in) {
+        return new BomReader(in);
     }
 
     /**
@@ -391,7 +233,7 @@ public class IoKit {
      * @param charset 字符集
      * @return BufferedReader对象
      */
-    public static BufferedReader getReader(InputStream in, java.nio.charset.Charset charset) {
+    public static BufferedReader toReader(final InputStream in, final java.nio.charset.Charset charset) {
         if (null == in) {
             return null;
         }
@@ -407,61 +249,13 @@ public class IoKit {
     }
 
     /**
-     * 从{@link BOMInputStream}中获取Reader
+     * 获得一个Writer，默认编码UTF-8
      *
-     * @param in {@link BOMInputStream}
-     * @return {@link BufferedReader}
-     */
-    public static BufferedReader getReader(BOMInputStream in) {
-        return getReader(in, in.getCharset());
-    }
-
-    /**
-     * 从{@link InputStream}中获取{@link BOMReader}
-     *
-     * @param in {@link InputStream}
-     * @return {@link BOMReader}
-     */
-    public static BOMReader getReader(InputStream in) {
-        return new BOMReader(in);
-    }
-
-    /**
-     * 获得{@link BufferedReader}
-     * 如果是{@link BufferedReader}强转返回,否则新建 如果提供的Reader为null返回null
-     *
-     * @param reader 普通Reader,如果为null返回null
-     * @return {@link BufferedReader} or null
-     */
-    public static BufferedReader getReader(Reader reader) {
-        if (null == reader) {
-            return null;
-        }
-
-        return (reader instanceof BufferedReader) ? (BufferedReader) reader : new BufferedReader(reader);
-    }
-
-    /**
-     * 获得{@link PushbackReader}
-     * 如果是{@link PushbackReader}强转返回,否则新建
-     *
-     * @param reader       普通Reader
-     * @param pushBackSize 推后的byte数
-     * @return {@link PushbackReader}
-     */
-    public static PushbackReader getPushBackReader(Reader reader, int pushBackSize) {
-        return (reader instanceof PushbackReader) ? (PushbackReader) reader : new PushbackReader(reader, pushBackSize);
-    }
-
-    /**
-     * 获得一个Writer
-     *
-     * @param out         输入流
-     * @param charsetName 字符集
+     * @param out 输入流
      * @return OutputStreamWriter对象
      */
-    public static OutputStreamWriter getWriter(OutputStream out, String charsetName) {
-        return getWriter(out, java.nio.charset.Charset.forName(charsetName));
+    public static OutputStreamWriter toUtf8Writer(final OutputStream out) {
+        return toWriter(out, Charset.UTF_8);
     }
 
     /**
@@ -471,7 +265,7 @@ public class IoKit {
      * @param charset 字符集
      * @return OutputStreamWriter对象
      */
-    public static OutputStreamWriter getWriter(OutputStream out, java.nio.charset.Charset charset) {
+    public static OutputStreamWriter toWriter(final OutputStream out, final java.nio.charset.Charset charset) {
         if (null == out) {
             return null;
         }
@@ -484,29 +278,26 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容
+     * 从流中读取UTF8编码的内容
      *
-     * @param in          输入流
-     * @param charsetName 字符集
+     * @param in 输入流
      * @return 内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static String read(InputStream in, String charsetName) throws InternalException {
-        FastByteOutputStream out = read(in);
-        return StringKit.isBlank(charsetName) ? out.toString() : out.toString(Charset.charset(charsetName));
+    public static String readUtf8(final InputStream in) throws InternalException {
+        return read(in, Charset.UTF_8);
     }
 
     /**
      * 从流中读取内容，读取完毕后关闭流
      *
-     * @param in      输入流,读取完毕后关闭流
+     * @param in      输入流，读取完毕后关闭流
      * @param charset 字符集
      * @return 内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static String read(InputStream in, java.nio.charset.Charset charset) throws InternalException {
-        FastByteOutputStream out = read(in);
-        return null == charset ? out.toString() : out.toString(charset);
+    public static String read(final InputStream in, final java.nio.charset.Charset charset) throws InternalException {
+        return StringKit.toString(readBytes(in), charset);
     }
 
     /**
@@ -514,9 +305,9 @@ public class IoKit {
      *
      * @param in 输入流
      * @return 输出流
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static FastByteOutputStream read(InputStream in) throws InternalException {
+    public static FastByteArrayOutputStream read(final InputStream in) throws InternalException {
         return read(in, true);
     }
 
@@ -528,18 +319,18 @@ public class IoKit {
      * @return 输出流
      * @throws InternalException IO异常
      */
-    public static FastByteOutputStream read(InputStream in, boolean isClose) throws InternalException {
+    public static FastByteArrayOutputStream read(final InputStream in, final boolean isClose) throws InternalException {
         return StreamReader.of(in, isClose).read();
     }
 
     /**
-     * 从Reader中读取String,读取完毕后并关闭Reader
+     * 从Reader中读取String，读取完毕后关闭Reader
      *
      * @param reader Reader
      * @return String
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static String read(Reader reader) throws InternalException {
+    public static String read(final Reader reader) throws InternalException {
         return read(reader, true);
     }
 
@@ -551,98 +342,31 @@ public class IoKit {
      * @return String
      * @throws InternalException IO异常
      */
-    public static String read(Reader reader, boolean isClose) throws InternalException {
+    public static String read(final Reader reader, final boolean isClose) throws InternalException {
         final StringBuilder builder = StringKit.builder();
-        final CharBuffer buffer = CharBuffer.allocate(DEFAULT_BUFFER_SIZE);
+        final CharBuffer buffer = CharBuffer.allocate(Normal.DEFAULT_BUFFER_SIZE);
         try {
             while (-1 != reader.read(buffer)) {
                 builder.append(buffer.flip());
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         } finally {
             if (isClose) {
-                IoKit.close(reader);
+                IoKit.closeQuietly(reader);
             }
         }
         return builder.toString();
     }
 
     /**
-     * 从FileChannel中读取UTF-8编码内容
-     *
-     * @param fileChannel 文件管道
-     * @return 内容
-     * @throws InternalException 异常
-     */
-    public static String read(FileChannel fileChannel) throws InternalException {
-        return read(fileChannel, Charset.UTF_8);
-    }
-
-    /**
-     * 从FileChannel中读取内容,读取完毕后并不关闭Channel
-     *
-     * @param fileChannel 文件管道
-     * @param charsetName 字符集
-     * @return 内容
-     * @throws InternalException 异常
-     */
-    public static String read(FileChannel fileChannel, String charsetName) throws InternalException {
-        return read(fileChannel, Charset.charset(charsetName));
-    }
-
-    /**
-     * 从FileChannel中读取内容
-     *
-     * @param fileChannel 文件管道
-     * @param charset     字符集
-     * @return 内容
-     * @throws InternalException 异常
-     */
-    public static String read(FileChannel fileChannel, java.nio.charset.Charset charset) throws InternalException {
-        MappedByteBuffer buffer;
-        try {
-            buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size()).load();
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-        return StringKit.toString(buffer, charset);
-    }
-
-    /**
-     * 从流中读取内容，读取完毕后并不关闭流
-     *
-     * @param channel 可读通道，读取完毕后并不关闭通道
-     * @param charset 字符集
-     * @return 内容
-     * @throws InternalException IO异常
-     */
-    public static String read(ReadableByteChannel channel, java.nio.charset.Charset charset) throws InternalException {
-        FastByteOutputStream out = read(channel);
-        return null == charset ? out.toString() : out.toString(charset);
-    }
-
-    /**
-     * 从流中读取内容，读到输出流中
-     *
-     * @param channel 可读通道，读取完毕后并不关闭通道
-     * @return 输出流
-     * @throws InternalException IO异常
-     */
-    public static FastByteOutputStream read(ReadableByteChannel channel) throws InternalException {
-        final FastByteOutputStream out = new FastByteOutputStream();
-        copy(channel, Channels.newChannel(out));
-        return out;
-    }
-
-    /**
-     * 从流中读取bytes
+     * 从流中读取bytes，读取完毕后关闭流
      *
      * @param in {@link InputStream}
      * @return bytes
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static byte[] readBytes(InputStream in) throws InternalException {
+    public static byte[] readBytes(final InputStream in) throws InternalException {
         return readBytes(in, true);
     }
 
@@ -654,50 +378,20 @@ public class IoKit {
      * @return bytes
      * @throws InternalException IO异常
      */
-    public static byte[] readBytes(InputStream in, boolean isClose) throws InternalException {
-        if (in instanceof FileInputStream) {
-            // 文件流的长度是可预见的，此时直接读取效率更高
-            final byte[] result;
-            try {
-                final int available = in.available();
-                result = new byte[available];
-                final int readLength = in.read(result);
-                if (readLength != available) {
-                    throw new IOException(StringKit.format("File length is [{}] but read [{}]!", available, readLength));
-                }
-            } catch (IOException e) {
-                throw new InternalException(e);
-            } finally {
-                if (isClose) {
-                    close(in);
-                }
-            }
-            return result;
-        }
-
-        // 未知bytes总量的流
-        return read(in, isClose).toByteArray();
+    public static byte[] readBytes(final InputStream in, final boolean isClose) throws InternalException {
+        return StreamReader.of(in, isClose).readBytes();
     }
 
     /**
-     * 读取指定长度的byte数组,不关闭流
+     * 读取指定长度的byte数组，不关闭流
      *
-     * @param in     {@link InputStream},为null返回null
-     * @param length 长度,小于等于0返回空byte数组
+     * @param in     {@link InputStream}，为{@code null}返回{@code null}
+     * @param length 长度，小于等于0返回空byte数组
      * @return bytes
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static byte[] readBytes(InputStream in, int length) throws InternalException {
-        if (null == in) {
-            return null;
-        }
-        if (length <= 0) {
-            return Normal.EMPTY_BYTE_ARRAY;
-        }
-
-        final FastByteOutputStream out = new FastByteOutputStream(length);
-        copy(in, out, DEFAULT_BUFFER_SIZE, length, null);
-        return out.toByteArray();
+    public static byte[] readBytes(final InputStream in, final int length) throws InternalException {
+        return StreamReader.of(in, false).readBytes(length);
     }
 
     /**
@@ -705,85 +399,43 @@ public class IoKit {
      *
      * @param in          {@link InputStream}
      * @param length      长度
-     * @param toLowerCase true 传换成小写格式 , false 传换成大写格式
+     * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
      * @return 16进制字符串
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static String readHex(InputStream in, int length, boolean toLowerCase) throws InternalException {
-        return HexKit.encodeHexString(readBytes(in, length), toLowerCase);
+    public static String readHex(final InputStream in, final int length, final boolean toLowerCase) throws InternalException {
+        return HexKit.encodeString(readBytes(in, length), toLowerCase);
     }
 
     /**
-     * 从流中读取前28个byte并转换为16进制,字母部分使用大写
+     * 从流中读取对象，即对象的反序列化，读取后不关闭流
      *
-     * @param in {@link InputStream}
-     * @return 16进制字符串
-     * @throws InternalException 异常
-     */
-    public static String readHex28Upper(InputStream in) throws InternalException {
-        return readHex(in, 28, false);
-    }
-
-    /**
-     * 从流中读取前28个byte并转换为16进制,字母部分使用小写
+     * <p>
+     * 注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！
+     * </p>
      *
-     * @param in {@link InputStream}
-     * @return 16进制字符串
-     * @throws InternalException 异常
-     */
-    public static String readHex28Lower(InputStream in) throws InternalException {
-        return readHex(in, 28, true);
-    }
-
-    /**
-     * 从流中读取内容,读到输出流中
-     *
-     * @param <T> 读取对象的类型
-     * @param in  输入流
+     * @param <T>           读取对象的类型
+     * @param in            输入流
+     * @param acceptClasses 读取对象类型
      * @return 输出流
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
+     * @throws InternalException ClassNotFoundException包装
      */
-    public static <T> T readObject(InputStream in) throws InternalException {
-        if (null == in) {
-            throw new IllegalArgumentException("The InputStream must not be null");
-        }
-        ObjectInputStream ois;
-        try {
-            ois = new ObjectInputStream(in);
-            final T object = (T) ois.readObject();
-            return object;
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } catch (ClassNotFoundException e) {
-            throw new InternalException(e);
-        }
+    public static <T> T readObject(final InputStream in, final Class<?>... acceptClasses) throws InternalException, InternalException {
+        return StreamReader.of(in, false).readObject(acceptClasses);
     }
 
     /**
-     * 从流中读取内容,使用UTF-8编码
+     * 从流中读取内容，使用UTF-8编码
      *
      * @param <T>        集合类型
      * @param in         输入流
      * @param collection 返回集合
      * @return 内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, T collection) throws InternalException {
+    public static <T extends Collection<String>> T readUtf8Lines(final InputStream in, final T collection) throws InternalException {
         return readLines(in, Charset.UTF_8, collection);
-    }
-
-    /**
-     * 从流中读取内容
-     *
-     * @param <T>         集合类型
-     * @param in          输入流
-     * @param charsetName 字符集
-     * @param collection  返回集合
-     * @return 内容
-     * @throws InternalException 异常
-     */
-    public static <T extends Collection<String>> T readLines(InputStream in, String charsetName, T collection) throws InternalException {
-        return readLines(in, Charset.charset(charsetName), collection);
     }
 
     /**
@@ -794,10 +446,10 @@ public class IoKit {
      * @param charset    字符集
      * @param collection 返回集合
      * @return 内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, java.nio.charset.Charset charset, T collection) throws InternalException {
-        return readLines(getReader(in, charset), collection);
+    public static <T extends Collection<String>> T readLines(final InputStream in, final java.nio.charset.Charset charset, final T collection) throws InternalException {
+        return readLines(toReader(in, charset), collection);
     }
 
     /**
@@ -807,62 +459,62 @@ public class IoKit {
      * @param reader     {@link Reader}
      * @param collection 返回集合
      * @return 内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(Reader reader, T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(final Reader reader, final T collection) throws InternalException {
         readLines(reader, (ConsumerX<String>) collection::add);
         return collection;
     }
 
     /**
-     * 按行读取UTF-8编码数据,针对每行的数据做处理
+     * 按行读取UTF-8编码数据，针对每行的数据做处理
      *
      * @param in          {@link InputStream}
-     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException 异常
+     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @throws InternalException IO异常
      */
-    public static void readLines(InputStream in, ConsumerX<String> lineHandler) throws InternalException {
+    public static void readUtf8Lines(final InputStream in, final ConsumerX<String> lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
     /**
-     * 按行读取数据,针对每行的数据做处理
+     * 按行读取数据，针对每行的数据做处理
      *
      * @param in          {@link InputStream}
      * @param charset     {@link java.nio.charset.Charset}编码
-     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException 异常
+     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @throws InternalException IO异常
      */
-    public static void readLines(InputStream in, java.nio.charset.Charset charset, ConsumerX<String> lineHandler) throws InternalException {
-        readLines(getReader(in, charset), lineHandler);
+    public static void readLines(final InputStream in, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) throws InternalException {
+        readLines(toReader(in, charset), lineHandler);
     }
 
     /**
-     * 按行读取数据,针对每行的数据做处理
-     * {@link Reader}自带编码定义,因此读取数据的编码跟随其编码
+     * 按行读取数据，针对每行的数据做处理
+     * {@link Reader}自带编码定义，因此读取数据的编码跟随其编码。
+     * 此方法不会关闭流，除非抛出异常
      *
      * @param reader      {@link Reader}
-     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException 异常
+     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @throws InternalException IO异常
      */
-    public static void readLines(Reader reader, ConsumerX<String> lineHandler) throws InternalException {
+    public static void readLines(final Reader reader, final ConsumerX<String> lineHandler) throws InternalException {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
-        for (String line : new LineIterator(reader)) {
+        for (final String line : lineIter(reader)) {
             lineHandler.accept(line);
         }
     }
 
     /**
-     * String 转为流
+     * String 转为UTF-8编码的字节流流
      *
-     * @param content     内容
-     * @param charsetName 编码
+     * @param content 内容
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(String content, String charsetName) {
-        return toStream(content, Charset.charset(charsetName));
+    public static ByteArrayInputStream toUtf8Stream(final String content) {
+        return toStream(content, Charset.UTF_8);
     }
 
     /**
@@ -872,30 +524,20 @@ public class IoKit {
      * @param charset 编码
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(String content, java.nio.charset.Charset charset) {
-        if (null == content) {
+    public static ByteArrayInputStream toStream(final String content, final java.nio.charset.Charset charset) {
+        if (content == null) {
             return null;
         }
-        return toStream(StringKit.bytes(content, charset));
-    }
-
-    /**
-     * String 转为UTF-8编码的字节流流
-     *
-     * @param content 内容
-     * @return 字节流
-     */
-    public static ByteArrayInputStream toStream(String content) {
-        return toStream(content, Charset.UTF_8);
+        return toStream(ByteKit.toBytes(content, charset));
     }
 
     /**
      * 文件转为{@link InputStream}
      *
-     * @param file 文件
+     * @param file 文件，非空
      * @return {@link InputStream}
      */
-    public static InputStream toStream(File file) {
+    public static InputStream toStream(final File file) {
         Assert.notNull(file);
         return toStream(file.toPath());
     }
@@ -916,95 +558,42 @@ public class IoKit {
     }
 
     /**
-     * String 转为流
+     * byte[] 转为{@link ByteArrayInputStream}
      *
      * @param content 内容bytes
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(byte[] content) {
-        if (null == content) {
+    public static ByteArrayInputStream toStream(final byte[] content) {
+        if (content == null) {
             return null;
         }
         return new ByteArrayInputStream(content);
     }
 
     /**
-     * {@link FastByteOutputStream}转为{@link ByteArrayInputStream}
+     * {@link ByteArrayOutputStream}转为{@link ByteArrayInputStream}
      *
-     * @param out {@link java.io.ByteArrayOutputStream}
+     * @param out {@link ByteArrayOutputStream}
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(FastByteOutputStream out) {
+    public static ByteArrayInputStream toStream(final ByteArrayOutputStream out) {
         if (out == null) {
             return null;
         }
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-
     /**
-     * 将{@link InputStream}转换为支持mark标记的流
-     * 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
+     * {@link FastByteArrayOutputStream}转为{@link ByteArrayInputStream}
      *
-     * @param in 流
-     * @return {@link InputStream}
+     * @param out {@link FastByteArrayOutputStream}
+     * @return 字节流
      */
-    public static InputStream toMarkSupportStream(final InputStream in) {
-        if (null == in) {
+    public static ByteArrayInputStream toStream(final FastByteArrayOutputStream out) {
+        if (out == null) {
             return null;
         }
-        if (false == in.markSupported()) {
-            return new BufferedInputStream(in);
-        }
-        return in;
-    }
-
-    /**
-     * 转换为{@link PushbackInputStream}
-     * 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
-     *
-     * @param in           {@link InputStream}
-     * @param pushBackSize 推后的byte数
-     * @return {@link PushbackInputStream}
-     */
-    public static PushbackInputStream toPushbackStream(final InputStream in, final int pushBackSize) {
-        return (in instanceof PushbackInputStream) ? (PushbackInputStream) in : new PushbackInputStream(in, pushBackSize);
-    }
-
-    /**
-     * 将指定{@link InputStream} 转换为{@link InputStream#available()}方法可用的流。
-     * 在Socket通信流中，服务端未返回数据情况下{@link InputStream#available()}方法始终为{@code 0}
-     * 因此，在读取前需要调用{@link InputStream#read()}读取一个字节（未返回会阻塞），一旦读取到了，{@link InputStream#available()}方法就正常了。
-     * 需要注意的是，在网络流中，是按照块来传输的，所以 {@link InputStream#available()} 读取到的并非最终长度，而是此次块的长度。
-     * 此方法返回对象的规则为：
-     *
-     * <ul>
-     *     <li>FileInputStream 返回原对象，因为文件流的available方法本身可用</li>
-     *     <li>其它InputStream 返回PushbackInputStream</li>
-     * </ul>
-     *
-     * @param in 被转换的流
-     * @return 转换后的流，可能为{@link PushbackInputStream}
-     */
-    public static InputStream toAvailableStream(final InputStream in) {
-        if (in instanceof FileInputStream) {
-            // FileInputStream本身支持available方法。
-            return in;
-        }
-
-        final PushbackInputStream pushbackInputStream = toPushbackStream(in, 1);
-        try {
-            final int available = pushbackInputStream.available();
-            if (available <= 0) {
-                //此操作会阻塞，直到有数据被读到
-                final int b = pushbackInputStream.read();
-                pushbackInputStream.unread(b);
-            }
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-
-        return pushbackInputStream;
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
     /**
@@ -1100,6 +689,40 @@ public class IoKit {
     }
 
     /**
+     * 将{@link InputStream}转换为支持mark标记的流
+     * 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
+     *
+     * @param in 流
+     * @return {@link InputStream}
+     */
+    public static InputStream toMarkSupport(final InputStream in) {
+        if (null == in) {
+            return null;
+        }
+        if (!in.markSupported()) {
+            return new BufferedInputStream(in);
+        }
+        return in;
+    }
+
+    /**
+     * 将{@link Reader}转换为支持mark标记的Reader
+     * 若原Reader支持mark标记，则返回原Reader，否则使用{@link BufferedReader} 包装之
+     *
+     * @param reader {@link Reader}
+     * @return {@link Reader}
+     */
+    public static Reader toMarkSupport(final Reader reader) {
+        if (null == reader) {
+            return null;
+        }
+        if (!reader.markSupported()) {
+            return new BufferedReader(reader);
+        }
+        return reader;
+    }
+
+    /**
      * 获得{@link PushbackReader}
      * 如果是{@link PushbackReader}强转返回，否则新建
      *
@@ -1112,79 +735,110 @@ public class IoKit {
     }
 
     /**
+     * 转换为{@link PushbackInputStream}
+     * 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
+     *
+     * @param in           {@link InputStream}
+     * @param pushBackSize 推后的byte数
+     * @return {@link PushbackInputStream}
+     */
+    public static PushbackInputStream toPushbackStream(final InputStream in, final int pushBackSize) {
+        return (in instanceof PushbackInputStream) ? (PushbackInputStream) in : new PushbackInputStream(in, pushBackSize);
+    }
+
+    /**
+     * 将指定{@link InputStream} 转换为{@link InputStream#available()}方法可用的流。
+     * 在Socket通信流中，服务端未返回数据情况下{@link InputStream#available()}方法始终为{@code 0}
+     * 因此，在读取前需要调用{@link InputStream#read()}读取一个字节（未返回会阻塞），一旦读取到了，{@link InputStream#available()}方法就正常了。
+     * 需要注意的是，在网络流中，是按照块来传输的，所以 {@link InputStream#available()} 读取到的并非最终长度，而是此次块的长度。
+     * 此方法返回对象的规则为：
+     *
+     * <ul>
+     *     <li>FileInputStream 返回原对象，因为文件流的available方法本身可用</li>
+     *     <li>其它InputStream 返回PushbackInputStream</li>
+     * </ul>
+     *
+     * @param in 被转换的流
+     * @return 转换后的流，可能为{@link PushbackInputStream}
+     */
+    public static InputStream toAvailableStream(final InputStream in) {
+        if (in instanceof FileInputStream) {
+            // FileInputStream本身支持available方法。
+            return in;
+        }
+
+        final PushbackInputStream pushbackInputStream = toPushbackStream(in, 1);
+        try {
+            final int available = pushbackInputStream.available();
+            if (available <= 0) {
+                //此操作会阻塞，直到有数据被读到
+                final int b = pushbackInputStream.read();
+                pushbackInputStream.unread(b);
+            }
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+
+        return pushbackInputStream;
+    }
+
+    /**
+     * 将byte[]写到流中，并关闭目标流
+     *
+     * @param out     输出流
+     * @param content 写入的内容
+     * @throws InternalException IO异常
+     */
+    public static void writeClose(final OutputStream out, final byte[] content) throws InternalException {
+        write(out, true, content);
+    }
+
+    /**
+     * 将byte[]写到流中，并关闭目标流
+     *
+     * @param out     输出流
+     * @param content 写入的内容
+     * @throws InternalException IO异常
+     */
+    public static void write(final OutputStream out, final byte[] content) throws InternalException {
+        write(out, false, content);
+    }
+
+    /**
      * 将byte[]写到流中
      *
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param content    写入的内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws InternalException {
+    public static void write(final OutputStream out, final boolean isCloseOut, final byte[] content) throws InternalException {
         StreamWriter.of(out, isCloseOut).write(content);
     }
 
     /**
-     * 将多部分内容写到流中,自动转换为UTF-8字符串
+     * 将多部分内容写到流中，自动转换为UTF-8字符串
      *
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InternalException 异常
+     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
+     * @throws InternalException IO异常
      */
-    public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InternalException {
-        StreamWriter.of(out, isCloseOut).writeObject(contents);
+    public static void writeUtf8(final OutputStream out, final boolean isCloseOut, final Object... contents) throws InternalException {
+        write(out, Charset.UTF_8, isCloseOut, contents);
     }
 
     /**
-     * 将多部分内容写到流中,自动转换为字符串
-     *
-     * @param out         输出流
-     * @param charsetName 写出的内容的字符集
-     * @param isCloseOut  写入完毕是否关闭输出流
-     * @param contents    写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InternalException 异常
-     */
-    public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InternalException {
-        StreamWriter.of(out, isCloseOut).writeString(Charset.charset(charsetName), contents);
-    }
-
-    /**
-     * 将多部分内容写到流中,自动转换为字符串
+     * 将多部分内容写到流中，自动转换为字符串
      *
      * @param out        输出流
      * @param charset    写出的内容的字符集
      * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InternalException 异常
+     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
+     * @throws InternalException IO异常
      */
-    public static void write(OutputStream out, java.nio.charset.Charset charset, boolean isCloseOut, Object... contents) throws InternalException {
-        OutputStreamWriter osw = null;
-        try {
-            osw = getWriter(out, charset);
-            for (Object content : contents) {
-                if (null != content) {
-                    osw.write(Convert.toString(content, Normal.EMPTY));
-                }
-            }
-            osw.flush();
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            if (isCloseOut) {
-                close(osw);
-            }
-        }
-    }
-
-    /**
-     * 将多部分内容写到流中
-     *
-     * @param out        输出流
-     * @param isCloseOut 写入完毕是否关闭输出流
-     * @param object     写入的对象内容
-     */
-    public static void write(OutputStream out, boolean isCloseOut, Serializable object) throws InternalException {
-        writeObjects(out, isCloseOut, object);
+    public static void write(final OutputStream out, final java.nio.charset.Charset charset, final boolean isCloseOut, final Object... contents) throws InternalException {
+        StreamWriter.of(out, isCloseOut).writeString(charset, contents);
     }
 
     /**
@@ -1193,23 +847,23 @@ public class IoKit {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容
-     * @throws InternalException 异常
+     * @throws InternalException IO异常
      */
-    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) throws InternalException {
-        ObjectOutputStream osw = null;
-        try {
-            osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
-            for (Object content : contents) {
-                if (null != content) {
-                    osw.writeObject(content);
-                }
-            }
-            osw.flush();
-        } catch (IOException e) {
-            throw new InternalException(e);
-        } finally {
-            if (isCloseOut) {
-                close(osw);
+    public static void writeObjects(final OutputStream out, final boolean isCloseOut, final Object... contents) throws InternalException {
+        StreamWriter.of(out, isCloseOut).writeObject(contents);
+    }
+
+    /**
+     * 从缓存中刷出数据
+     *
+     * @param flushable {@link Flushable}
+     */
+    public static void flush(final Flushable flushable) {
+        if (null != flushable) {
+            try {
+                flushable.flush();
+            } catch (final Exception e) {
+                // 静默刷出
             }
         }
     }
@@ -1306,130 +960,37 @@ public class IoKit {
     }
 
     /**
-     * 从缓存中刷出数据
+     * 按照给定顺序连续关闭一系列对象
+     * 这些对象必须按照顺序关闭，否则会出错。
      *
-     * @param flushable {@link Flushable}
+     * @param closeables 需要关闭的对象
      */
-    public static void flush(Flushable flushable) {
-        if (null != flushable) {
-            try {
-                flushable.flush();
-            } catch (Exception e) {
-                // 静默刷出
-            }
+    public static void closeQuietly(final AutoCloseable... closeables) {
+        for (final AutoCloseable closeable : closeables) {
+            close(closeable);
         }
     }
 
     /**
-     * 对比两个流内容是否相同
-     * 内部会转换流为 {@link BufferedInputStream}
-     *
-     * @param input1 第一个流
-     * @param input2 第二个流
-     * @return 两个流的内容一致返回true, 否则false
-     * @throws InternalException 异常
+     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
+     * https://code.google.com/p/android/issues/detail?id=54072
      */
-    public static boolean contentEquals(InputStream input1, InputStream input2) throws InternalException {
-        if (false == (input1 instanceof BufferedInputStream)) {
-            input1 = new BufferedInputStream(input1);
-        }
-        if (false == (input2 instanceof BufferedInputStream)) {
-            input2 = new BufferedInputStream(input2);
-        }
-
-        try {
-            int ch = input1.read();
-            while (EOF != ch) {
-                int ch2 = input2.read();
-                if (ch != ch2) {
-                    return false;
-                }
-                ch = input1.read();
-            }
-
-            int ch2 = input2.read();
-            return ch2 == EOF;
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
+    public static boolean isAndroidGetsocknameError(AssertionError e) {
+        return null != e.getCause() && null != e.getMessage()
+                && e.getMessage().contains("getsockname failed");
     }
 
     /**
-     * 对比两个Reader的内容是否一致
-     * 内部会转换流为 {@link BufferedInputStream}
+     * 关闭
+     * 关闭失败抛出{@link IOException}异常
      *
-     * @param input1 第一个reader
-     * @param input2 第二个reader
-     * @return 两个流的内容一致返回true, 否则false
-     * @throws InternalException 异常
+     * @param closeable 被关闭的对象
+     * @throws IOException IO异常
      */
-    public static boolean contentEquals(Reader input1, Reader input2) throws InternalException {
-        input1 = getReader(input1);
-        input2 = getReader(input2);
-
-        try {
-            int ch = input1.read();
-            while (EOF != ch) {
-                int ch2 = input2.read();
-                if (ch != ch2) {
-                    return false;
-                }
-                ch = input1.read();
-            }
-
-            int ch2 = input2.read();
-            return ch2 == EOF;
-        } catch (IOException e) {
-            throw new InternalException(e);
+    public static void nullSafeClose(final Closeable closeable) throws IOException {
+        if (null != closeable) {
+            closeable.close();
         }
-    }
-
-    /**
-     * 对比两个流内容是否相同,忽略EOL字符
-     * 内部会转换流为 {@link BufferedInputStream}
-     *
-     * @param input1 第一个流
-     * @param input2 第二个流
-     * @return 两个流的内容一致返回true, 否则false
-     * @throws InternalException 异常
-     */
-    public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InternalException {
-        final BufferedReader br1 = getReader(input1);
-        final BufferedReader br2 = getReader(input2);
-
-        try {
-            String line1 = br1.readLine();
-            String line2 = br2.readLine();
-            while (null != line1 && null != line2 && line1.equals(line2)) {
-                line1 = br1.readLine();
-                line2 = br2.readLine();
-            }
-            return null == line1 ? null == line2 : line1.equals(line2);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 返回缓冲区从{@code source}读取的字节流
-     * 返回的源将对其内存缓冲区执行批量读取
-     *
-     * @param source 字节流
-     * @return 返回缓冲区
-     */
-    public static BufferSource buffer(Source source) {
-        return new RealSource(source);
-    }
-
-    /**
-     * 返回一个新接收器，该接收器缓冲写{@code sink}
-     * 返回的接收器将批量写入{@code sink}
-     *
-     * @param sink 接收一个字节流
-     * @return 接收缓冲区
-     */
-    public static BufferSink buffer(Sink sink) {
-        return new RealSink(sink);
     }
 
     /**
@@ -1465,7 +1026,7 @@ public class IoKit {
                 checkOffsetAndCount(source.size, 0, byteCount);
                 while (byteCount > 0) {
                     timeout.throwIfReached();
-                    Segment head = source.head;
+                    SectionBuffer head = source.head;
                     int toCopy = (int) Math.min(byteCount, head.limit - head.pos);
                     out.write(head.data, head.pos, toCopy);
 
@@ -1555,8 +1116,8 @@ public class IoKit {
                 if (byteCount == 0) return 0;
                 try {
                     timeout.throwIfReached();
-                    Segment tail = sink.writableSegment(1);
-                    int maxToCopy = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
+                    SectionBuffer tail = sink.writableSegment(1);
+                    int maxToCopy = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
                     int bytesRead = in.read(tail.data, tail.limit, maxToCopy);
                     if (bytesRead == -1) {
                         if (tail.pos == tail.limit) {
@@ -1740,127 +1301,466 @@ public class IoKit {
     }
 
     /**
-     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
-     * https://code.google.com/p/android/issues/detail?id=54072
-     */
-    static boolean isAndroidGetsocknameError(AssertionError e) {
-        return null != e.getCause() && null != e.getMessage()
-                && e.getMessage().contains("getsockname failed");
-    }
-
-    /**
-     * 将指定的字符串转换为输入流，使用平台的默认字符编码编码为字节
+     * 对比两个流内容是否相同
+     * 内部会转换流为 {@link BufferedInputStream}
      *
-     * @param input 要转换的字符串
-     * @return 一个输入流
+     * @param input1 第一个流
+     * @param input2 第二个流
+     * @return 两个流的内容一致返回true，否则false
+     * @throws InternalException IO异常
      */
-    public static InputStream toInputStream(String input) {
-        byte[] bytes = input.getBytes();
-        return new ByteArrayInputStream(bytes);
-    }
+    public static boolean contentEquals(InputStream input1, InputStream input2) throws InternalException {
+        if (!(input1 instanceof BufferedInputStream)) {
+            input1 = new BufferedInputStream(input1);
+        }
+        if (!(input2 instanceof BufferedInputStream)) {
+            input2 = new BufferedInputStream(input2);
+        }
 
-    /**
-     * 将指定的字符串转换为输入流，使用指定的字符编码编码为字节
-     *
-     * @param input    要转换的字符串
-     * @param encoding 要使用的编码，null表示平台默认值
-     * @return 一个输入流
-     * @throws IOException 如果编码无效
-     */
-    public static InputStream toInputStream(String input, String encoding) throws IOException {
-        byte[] bytes = null != encoding ? input.getBytes(encoding) : input.getBytes();
-        return new ByteArrayInputStream(bytes);
-    }
+        try {
+            int ch = input1.read();
+            while (EOF != ch) {
+                final int ch2 = input2.read();
+                if (ch != ch2) {
+                    return false;
+                }
+                ch = input1.read();
+            }
 
-    /**
-     * 使用指定的字符编码将InputStream的内容作为字符串获取
-     * 这个方法在内部缓冲输入，所以不需要使用BufferedInputStream
-     *
-     * @param input    要从中读取的InputStream
-     * @param encoding 要使用的编码，null表示平台默认值
-     * @return 所请求的字符串
-     * @throws NullPointerException 如果输入为空
-     * @throws IOException          如果发生I/O错误
-     */
-    public static String toString(InputStream input, String encoding)
-            throws IOException {
-        StringWriter sw = new StringWriter();
-        copy(input, sw, encoding);
-        return sw.toString();
-    }
-
-    /**
-     * 使用平台的默认字符编码将字节从InputStream复制到写入器上的字符
-     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
-     * 方法使用 {@link InputStreamReader}
-     *
-     * @param input  要从中读取的InputStream
-     * @param output 要写入的输出者
-     */
-    public static void copy(InputStream input, Writer output) {
-        InputStreamReader in = new InputStreamReader(input);
-        copy(in, output);
-    }
-
-    /**
-     * 使用指定的字符编码将字节从InputStream复制到写入器上的字符.
-     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
-     * 方法使用 {@link InputStreamReader}
-     *
-     * @param input    要从中读取的InputStream
-     * @param output   要写入的输出者
-     * @param encoding 要使用的编码，null表示平台默认值
-     * @throws NullPointerException 如果输入为空
-     * @throws IOException          如果发生I/O错误
-     */
-    public static void copy(InputStream input, Writer output, String encoding)
-            throws IOException {
-        if (null == encoding) {
-            copy(input, output);
-        } else {
-            InputStreamReader in = new InputStreamReader(input, encoding);
-            copy(in, output);
+            final int ch2 = input2.read();
+            return ch2 == EOF;
+        } catch (final IOException e) {
+            throw new InternalException(e);
         }
     }
 
     /**
-     * 以字符串的形式获取阅读器的内容
+     * 对比两个Reader的内容是否一致
+     * 内部会转换流为 {@link BufferedInputStream}
      *
-     * @param input 读取信息
-     * @return 所请求的字符串
+     * @param input1 第一个reader
+     * @param input2 第二个reader
+     * @return 两个流的内容一致返回true，否则false
+     * @throws InternalException IO异常
      */
-    public static String toString(Reader input) {
-        StringWriter sw = new StringWriter();
-        copy(input, sw);
-        return sw.toString();
-    }
+    public static boolean contentEquals(Reader input1, Reader input2) throws InternalException {
+        input1 = toBuffered(input1);
+        input2 = toBuffered(input2);
 
-    /**
-     * 使用平台的默认字符编码将byte[]的内容作为字符串获取
-     *
-     * @param input 要从中读取的字节数组
-     * @return 所请求的字符串
-     */
-    public static String toString(byte[] input) {
-        return new String(input);
-    }
+        try {
+            int ch = input1.read();
+            while (EOF != ch) {
+                final int ch2 = input2.read();
+                if (ch != ch2) {
+                    return false;
+                }
+                ch = input1.read();
+            }
 
-    /**
-     * 使用指定的字符编码将字节[]的内容作为字符串获取
-     *
-     * @param input    要从中读取的字节数组
-     * @param encoding 要使用的编码，null表示平台默认值
-     * @return 所请求的字符串
-     * @throws NullPointerException 如果输入为空
-     * @throws IOException          如果发生I/O错误(从未发生)
-     */
-    public static String toString(byte[] input, String encoding)
-            throws IOException {
-        if (null == encoding) {
-            return new String(input);
-        } else {
-            return new String(input, encoding);
+            final int ch2 = input2.read();
+            return ch2 == EOF;
+        } catch (final IOException e) {
+            throw new InternalException(e);
         }
+    }
+
+    /**
+     * 对比两个流内容是否相同，忽略EOL字符
+     * 内部会转换流为 {@link BufferedInputStream}
+     *
+     * @param input1 第一个流
+     * @param input2 第二个流
+     * @return 两个流的内容一致返回true，否则false
+     * @throws InternalException IO异常
+     */
+    public static boolean contentEqualsIgnoreEOL(final Reader input1, final Reader input2) throws InternalException {
+        final BufferedReader br1 = toBuffered(input1);
+        final BufferedReader br2 = toBuffered(input2);
+
+        try {
+            String line1 = br1.readLine();
+            String line2 = br2.readLine();
+            while (line1 != null && line1.equals(line2)) {
+                line1 = br1.readLine();
+                line2 = br2.readLine();
+            }
+            return Objects.equals(line1, line2);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 返回行遍历器
+     * <pre>
+     * LineIterator it = null;
+     * try {
+     * 	it = IoKit.lineIter(reader);
+     * 	while (it.hasNext()) {
+     * 		String line = it.nextLine();
+     * 		// do something with line
+     *    }
+     * } finally {
+     * 		it.close();
+     * }
+     * </pre>
+     *
+     * @param reader {@link Reader}
+     * @return {@link LineIterator}
+     */
+    public static LineIterator lineIter(final Reader reader) {
+        return new LineIterator(reader);
+    }
+
+    /**
+     * 返回行遍历器
+     * <pre>
+     * LineIterator it = null;
+     * try {
+     * 	it = IoKit.lineIter(in, Charset.CHARSET_UTF_8);
+     * 	while (it.hasNext()) {
+     * 		String line = it.nextLine();
+     * 		// do something with line
+     *    }
+     * } finally {
+     * 		it.close();
+     * }
+     * </pre>
+     *
+     * @param in      {@link InputStream}
+     * @param charset 编码
+     * @return {@link LineIterator}
+     */
+    public static LineIterator lineIter(final InputStream in, final java.nio.charset.Charset charset) {
+        return new LineIterator(in, charset);
+    }
+
+    /**
+     * {@link ByteArrayOutputStream} 转换为String
+     *
+     * @param out     {@link ByteArrayOutputStream}
+     * @param charset 编码
+     * @return 字符串
+     */
+    public static String toString(final ByteArrayOutputStream out, final java.nio.charset.Charset charset) {
+        try {
+            return out.toString(charset.name());
+        } catch (final UnsupportedEncodingException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    public static void checkOffsetAndCount(long size, long offset, long byteCount) {
+        if ((offset | byteCount) < 0 || offset > size || size - offset < byteCount) {
+            throw new ArrayIndexOutOfBoundsException(
+                    String.format("size=%s offset=%s byteCount=%s", size, offset, byteCount));
+        }
+    }
+
+    /**
+     * 即使被声明也不允许直接抛出
+     * 这是一种很糟糕的做饭,很容易遭到攻击
+     * 清理后捕获并重新抛出异常
+     *
+     * @param t 异常
+     */
+    public static void sneakyRethrow(Throwable t) {
+        IoKit.<Error>sneakyThrow2(t);
+    }
+
+    private static <T extends Throwable> void sneakyThrow2(Throwable t) throws T {
+        throw (T) t;
+    }
+
+    public static boolean arrayRangeEquals(
+            byte[] a, int aOffset, byte[] b, int bOffset, int byteCount) {
+        for (int i = 0; i < byteCount; i++) {
+            if (a[i + aOffset] != b[i + bOffset]) return false;
+        }
+        return true;
+    }
+
+    /**
+     * 返回缓冲区从{@code source}读取的字节流
+     * 返回的源将对其内存缓冲区执行批量读取
+     *
+     * @param source 字节流
+     * @return 返回缓冲区
+     */
+    public static BufferSource buffer(Source source) {
+        return new RealSource(source);
+    }
+
+    /**
+     * 返回一个新接收器，该接收器缓冲写{@code sink}
+     * 返回的接收器将批量写入{@code sink}
+     *
+     * @param sink 接收一个字节流
+     * @return 接收缓冲区
+     */
+    public static BufferSink buffer(Sink sink) {
+        return new RealSink(sink);
+    }
+
+    public static short reverseBytesShort(short s) {
+        int i = s & 0xffff;
+        int reversed = (i & 0xff00) >>> 8
+                | (i & 0x00ff) << 8;
+        return (short) reversed;
+    }
+
+    public static int reverseBytesInt(int i) {
+        return (i & 0xff000000) >>> 24
+                | (i & 0x00ff0000) >>> 8
+                | (i & 0x0000ff00) << 8
+                | (i & 0x000000ff) << 24;
+    }
+
+    public static long reverseBytesLong(long v) {
+        return (v & 0xff00000000000000L) >>> 56
+                | (v & 0x00ff000000000000L) >>> 40
+                | (v & 0x0000ff0000000000L) >>> 24
+                | (v & 0x000000ff00000000L) >>> 8
+                | (v & 0x00000000ff000000L) << 8
+                | (v & 0x0000000000ff0000L) << 24
+                | (v & 0x000000000000ff00L) << 40
+                | (v & 0x00000000000000ffL) << 56;
+    }
+
+    public static void copy(InputStream in, OutputStream out, byte[] buf)
+            throws IOException {
+        int count;
+        while ((count = in.read(buf, 0, buf.length)) > 0)
+            if (null != out) {
+                out.write(buf, 0, count);
+            }
+    }
+
+    public static void copy(InputStream in, OutputStream out, int len,
+                            byte[] buf) throws IOException {
+        if (len < 0)
+            throw new IndexOutOfBoundsException();
+        while (len > 0) {
+            int count = in.read(buf, 0, Math.min(len, buf.length));
+            if (count < 0)
+                throw new EOFException();
+            out.write(buf, 0, count);
+            len -= count;
+        }
+    }
+
+    public static void copy(InputStream in, OutputStream out, int len,
+                            int swapBytes) throws IOException {
+        copy(in, out, len, swapBytes, new byte[Math.min(len, 2048)]);
+    }
+
+    public static void copy(InputStream in, OutputStream out, int len,
+                            int swapBytes, byte[] buf) throws IOException {
+        if (swapBytes == 1) {
+            copy(in, out, len, buf);
+            return;
+        }
+        if (!(swapBytes == 2 || swapBytes == 4))
+            throw new IllegalArgumentException("swapBytes: " + swapBytes);
+        if (len < 0 || (len % swapBytes) != 0)
+            throw new IllegalArgumentException("length: " + len);
+        int off = 0;
+        while (len > 0) {
+            int count = in.read(buf, off, Math.min(len, buf.length - off));
+            if (count < 0)
+                throw new EOFException();
+            len -= count;
+            count += off;
+            off = count % swapBytes;
+            count -= off;
+            switch (swapBytes) {
+                case 2:
+                    ByteKit.swapShorts(buf, 0, count);
+                    break;
+                case 4:
+                    ByteKit.swapInts(buf, 0, count);
+                    break;
+                case 8:
+                    ByteKit.swapLongs(buf, 0, count);
+                    break;
+            }
+            out.write(buf, 0, count);
+            if (off > 0)
+                System.arraycopy(buf, count, buf, 0, off);
+        }
+    }
+
+    public static InputStream openFileOrURL(String name) throws IOException {
+        if (name.startsWith("resource:")) {
+            URL url = ResourceKit.getResourceUrl(name.substring(9), StreamKit.class);
+            if (null == url)
+                throw new FileNotFoundException(name);
+            return url.openStream();
+        }
+        if (name.indexOf(Symbol.C_COLON) < 2)
+            return new FileInputStream(name);
+        return new URL(name).openStream();
+    }
+
+    /**
+     * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
+     * 本方法不会关闭流
+     *
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度条
+     * @return 传输的byte数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final InputStream in, final OutputStream out, final int bufferSize, final StreamProgress streamProgress) throws InternalException {
+        return copyNio(in, out, bufferSize, -1, streamProgress);
+    }
+
+    /**
+     * 拷贝流
+     * 本方法不会关闭流
+     *
+     * @param in             输入流， 非空
+     * @param out            输出流， 非空
+     * @param bufferSize     缓存大小，-1表示默认
+     * @param count          最大长度，-1表示无限制
+     * @param streamProgress 进度条，{@code null}表示无进度条
+     * @return 传输的byte数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final InputStream in, final OutputStream out, final int bufferSize, final long count, final StreamProgress streamProgress) throws InternalException {
+        Assert.notNull(in, "InputStream channel is null!");
+        Assert.notNull(out, "OutputStream channel is null!");
+        final long copySize = copyNio(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, streamProgress);
+        flush(out);
+        return copySize;
+    }
+
+    /**
+     * 拷贝文件Channel，使用NIO，拷贝后不会关闭channel
+     *
+     * @param in  {@link FileChannel}，非空
+     * @param out {@link FileChannel}，非空
+     * @return 拷贝的字节数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final FileChannel in, final FileChannel out) throws InternalException {
+        Assert.notNull(in, "In channel is null!");
+        Assert.notNull(out, "Out channel is null!");
+
+        return FileChannelCopier.of().copy(in, out);
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in  {@link ReadableByteChannel}
+     * @param out {@link WritableByteChannel}
+     * @return 拷贝的字节数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final ReadableByteChannel in, final WritableByteChannel out) throws InternalException {
+        return copyNio(in, out, Normal.DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in         {@link ReadableByteChannel}
+     * @param out        {@link WritableByteChannel}
+     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
+     * @return 拷贝的字节数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize) throws InternalException {
+        return copyNio(in, out, bufferSize, null);
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in             {@link ReadableByteChannel}
+     * @param out            {@link WritableByteChannel}
+     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
+     * @param streamProgress {@link StreamProgress}进度处理器
+     * @return 拷贝的字节数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize, final StreamProgress streamProgress) throws InternalException {
+        return copyNio(in, out, bufferSize, -1, streamProgress);
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in             {@link ReadableByteChannel}
+     * @param out            {@link WritableByteChannel}
+     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
+     * @param count          读取总长度
+     * @param streamProgress {@link StreamProgress}进度处理器
+     * @return 拷贝的字节数
+     * @throws InternalException IO异常
+     */
+    public static long copyNio(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize, final long count, final StreamProgress streamProgress) throws InternalException {
+        Assert.notNull(in, "In channel is null!");
+        Assert.notNull(out, "Out channel is null!");
+        return new ChannelCopier(bufferSize, count, streamProgress).copy(in, out);
+    }
+
+    /**
+     * 从流中读取内容，读取完毕后并不关闭流
+     *
+     * @param channel 可读通道，读取完毕后并不关闭通道
+     * @param charset 字符集
+     * @return 内容
+     * @throws InternalException IO异常
+     */
+    public static String readNio(final ReadableByteChannel channel, final java.nio.charset.Charset charset) throws InternalException {
+        final FastByteArrayOutputStream out = readNio(channel);
+        return null == charset ? out.toString() : out.toString(charset);
+    }
+
+    /**
+     * 从流中读取内容，读到输出流中
+     *
+     * @param channel 可读通道，读取完毕后并不关闭通道
+     * @return 输出流
+     * @throws InternalException IO异常
+     */
+    public static FastByteArrayOutputStream readNio(final ReadableByteChannel channel) throws InternalException {
+        final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+        copyNio(channel, Channels.newChannel(out));
+        return out;
+    }
+
+    /**
+     * 从FileChannel中读取UTF-8编码内容
+     *
+     * @param fileChannel 文件管道
+     * @return 内容
+     * @throws InternalException IO异常
+     */
+    public static String readNio(final FileChannel fileChannel) throws InternalException {
+        return readNio(fileChannel, Charset.UTF_8);
+    }
+
+    /**
+     * 从FileChannel中读取内容
+     *
+     * @param fileChannel 文件管道
+     * @param charset     字符集
+     * @return 内容
+     * @throws InternalException IO异常
+     */
+    public static String readNio(final FileChannel fileChannel, final java.nio.charset.Charset charset) throws InternalException {
+        final MappedByteBuffer buffer;
+        try {
+            buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size()).load();
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+        return StringKit.toString(buffer, charset);
     }
 
 }

@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class StreamWriter {
             throw new InternalException(e);
         } finally {
             if (closeAfterWrite) {
-                IoKit.close(out);
+                IoKit.closeQuietly(out);
             }
         }
     }
@@ -108,7 +108,7 @@ public class StreamWriter {
             throw new InternalException(e);
         } finally {
             if (closeAfterWrite) {
-                IoKit.close(osw);
+                IoKit.closeQuietly(osw);
             }
         }
     }
@@ -123,7 +123,7 @@ public class StreamWriter {
     public void writeString(final Charset charset, final Object... contents) throws InternalException {
         OutputStreamWriter osw = null;
         try {
-            osw = IoKit.getWriter(out, charset);
+            osw = IoKit.toWriter(out, charset);
             for (final Object content : contents) {
                 if (content != null) {
                     osw.write(Convert.toString(content, Normal.EMPTY));
@@ -134,7 +134,7 @@ public class StreamWriter {
             throw new InternalException(e);
         } finally {
             if (closeAfterWrite) {
-                IoKit.close(osw);
+                IoKit.closeQuietly(osw);
             }
         }
     }

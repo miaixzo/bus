@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.metric.internal.hl7;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Compatible;

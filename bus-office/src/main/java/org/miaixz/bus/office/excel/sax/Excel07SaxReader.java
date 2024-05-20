@@ -25,17 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.sax;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.office.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.MethodKit;
+import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,22 +44,32 @@ import java.util.Iterator;
 
 /**
  * Sax方式读取Excel文件
- * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
+ * Excel2007格式说明见：<a href="http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 
-    private final SheetSaxHandler handler;
+    private final SheetDataSaxHandler handler;
 
     /**
      * 构造
      *
      * @param rowHandler 行处理器
      */
-    public Excel07SaxReader(RowHandler rowHandler) {
-        this.handler = new SheetSaxHandler(rowHandler);
+    public Excel07SaxReader(final RowHandler rowHandler) {
+        this(rowHandler, false);
+    }
+
+    /**
+     * 构造
+     *
+     * @param rowHandler        行处理器
+     * @param padCellAtEndOfRow 是否对齐数据，即在行尾补充null cell
+     */
+    public Excel07SaxReader(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
+        this.handler = new SheetDataSaxHandler(rowHandler, padCellAtEndOfRow);
     }
 
     /**
@@ -68,37 +78,37 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @param rowHandler 行处理器
      * @return this
      */
-    public Excel07SaxReader setRowHandler(RowHandler rowHandler) {
+    public Excel07SaxReader setRowHandler(final RowHandler rowHandler) {
         this.handler.setRowHandler(rowHandler);
         return this;
     }
 
     @Override
-    public Excel07SaxReader read(File file, int rid) throws InternalException {
+    public Excel07SaxReader read(final File file, final int rid) throws InternalException {
         return read(file, RID_PREFIX + rid);
     }
 
     @Override
-    public Excel07SaxReader read(File file, String idOrRidOrSheetName) throws InternalException {
-        try (OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
+    public Excel07SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
+        try (final OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
             return read(open, idOrRidOrSheetName);
-        } catch (InvalidFormatException | IOException e) {
+        } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         }
     }
 
     @Override
-    public Excel07SaxReader read(InputStream in, int rid) throws InternalException {
+    public Excel07SaxReader read(final InputStream in, final int rid) throws InternalException {
         return read(in, RID_PREFIX + rid);
     }
 
     @Override
-    public Excel07SaxReader read(InputStream in, String idOrRidOrSheetName) throws InternalException {
+    public Excel07SaxReader read(final InputStream in, final String idOrRidOrSheetName) throws InternalException {
         try (final OPCPackage opcPackage = OPCPackage.open(in)) {
             return read(opcPackage, idOrRidOrSheetName);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
-        } catch (InvalidFormatException e) {
+        } catch (final InvalidFormatException e) {
             throw new InternalException(e);
         }
     }
@@ -111,7 +121,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    public Excel07SaxReader read(OPCPackage opcPackage, int rid) throws InternalException {
+    public Excel07SaxReader read(final OPCPackage opcPackage, final int rid) throws InternalException {
         return read(opcPackage, RID_PREFIX + rid);
     }
 
@@ -123,12 +133,12 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    public Excel07SaxReader read(OPCPackage opcPackage, String idOrRidOrSheetName) throws InternalException {
+    public Excel07SaxReader read(final OPCPackage opcPackage, final String idOrRidOrSheetName) throws InternalException {
         try {
             return read(new XSSFReader(opcPackage), idOrRidOrSheetName);
-        } catch (OpenXML4JException e) {
+        } catch (final OpenXML4JException e) {
             throw new InternalException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
@@ -141,17 +151,18 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    public Excel07SaxReader read(XSSFReader xssfReader, String idOrRidOrSheetName) throws InternalException {
+    public Excel07SaxReader read(final XSSFReader xssfReader, final String idOrRidOrSheetName) throws InternalException {
         // 获取共享样式表，样式非必须
         try {
             this.handler.stylesTable = xssfReader.getStylesTable();
-        } catch (IOException | InvalidFormatException ignore) {
+        } catch (final IOException | InvalidFormatException ignore) {
             // ignore
         }
 
         // 获取共享字符串表
         // POI-5.2.0开始返回值有所变更，导致实际使用时提示方法未找到，此处使用反射调用，解决不同版本返回值变更问题
-        this.handler.sharedStrings = ReflectKit.invoke(xssfReader, "getSharedStringsTable");
+        //this.handler.sharedStrings = xssfReader.getSharedStringsTable();
+        this.handler.sharedStrings = MethodKit.invoke(xssfReader, "getSharedStringsTable");
 
         return readSheets(xssfReader, idOrRidOrSheetName);
     }
@@ -164,14 +175,14 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    private Excel07SaxReader readSheets(XSSFReader xssfReader, String idOrRidOrSheetName) throws InternalException {
+    private Excel07SaxReader readSheets(final XSSFReader xssfReader, final String idOrRidOrSheetName) throws InternalException {
         this.handler.sheetIndex = getSheetIndex(xssfReader, idOrRidOrSheetName);
         InputStream sheetInputStream = null;
         try {
             if (this.handler.sheetIndex > -1) {
                 // 根据 rId# 或 rSheet# 查找sheet
                 sheetInputStream = xssfReader.getSheet(RID_PREFIX + (this.handler.sheetIndex + 1));
-                ExcelSaxKit.readFrom(sheetInputStream, this.handler);
+                ExcelSax.readFrom(sheetInputStream, this.handler);
                 this.handler.rowHandler.doAfterAllAnalysed();
             } else {
                 this.handler.sheetIndex = -1;
@@ -182,16 +193,16 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
                     this.handler.index = 0;
                     this.handler.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
-                    ExcelSaxKit.readFrom(sheetInputStream, this.handler);
+                    ExcelSax.readFrom(sheetInputStream, this.handler);
                     this.handler.rowHandler.doAfterAllAnalysed();
                 }
             }
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new InternalException(e);
         } finally {
-            IoKit.close(sheetInputStream);
+            IoKit.closeQuietly(sheetInputStream);
         }
         return this;
     }
@@ -208,7 +219,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
      * @return sheet索引，从0开始
      */
-    private int getSheetIndex(XSSFReader xssfReader, String idOrRidOrSheetName) {
+    private int getSheetIndex(final XSSFReader xssfReader, String idOrRidOrSheetName) {
         // rid直接处理
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
@@ -236,12 +247,12 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
                 rid = ridReader.getRidBySheetIdBase0(sheetIndex);
                 // 如果查找不到对应index，则认为用户传入的直接是rid
                 return ObjectKit.defaultIfNull(rid, sheetIndex);
-            } catch (NumberFormatException ignore) {
+            } catch (final NumberFormatException ignore) {
                 // 非数字，说明非index，且没有对应名称，抛出异常
             }
         }
 
-        throw new IllegalArgumentException("Invalid rId or id or sheetName: " + idOrRidOrSheetName);
+        throw new IllegalArgumentException("Invalid rId or data or sheetName: " + idOrRidOrSheetName);
     }
 
 }

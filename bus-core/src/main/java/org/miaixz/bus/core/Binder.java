@@ -29,12 +29,11 @@ import lombok.RequiredArgsConstructor;
 import org.miaixz.bus.core.annotation.Ignore;
 import org.miaixz.bus.core.annotation.Values;
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.io.resource.PropertySource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.FieldKit;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -162,7 +161,7 @@ public class Binder {
             throw new InternalException(e);
         }
 
-        Class<?> actualClass = ClassKit.getCglibActualClass(clazz);
+        Class<?> actualClass = null;// ClassKit.getCglibActualClass(clazz);
         boolean b = (null == prefix || Symbol.DOT.equals(prefix)) && actualClass.isAnnotationPresent(Values.class);
         if (b) {
             prefix = actualClass.getAnnotation(Values.class).value();
@@ -179,45 +178,41 @@ public class Binder {
      * @return the object
      */
     public <T> T bind(T object, String prefix) {
-        if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
+        /* if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
             prefix = null;
         }
-        for (Field field : ClassKit.getDeclaredFields(object.getClass())) {
+       for (Field field : ClassKit.getDeclaredFields(object.getClass())) {
             bindField(object, field, prefix);
-        }
+        }*/
         return object;
     }
 
     private void bindField(Object object, Field field, String prefix) {
-        try {
-            if (field.isAnnotationPresent(Ignore.class)) {
-                return;
+        if (field.isAnnotationPresent(Ignore.class)) {
+            return;
+        }
+        String key = field.getName();
+        boolean wrap = false;
+        if (field.isAnnotationPresent(Values.class)) {
+            key = field.getAnnotation(Values.class).value();
+            wrap = true;
+        } else if (null != prefix) {
+            key = prefix + Symbol.DOT + key;
+        }
+        Object value = getProperty(key, field.getType(), wrap);
+        if (null != value) {
+            FieldKit.setFieldValue(object, field, value);
+            return;
+        }
+        if (!(null == field.getType().getClassLoader()) && source
+                .containPrefix(key + Symbol.DOT)) {
+            value = FieldKit.getFieldValue(object, field);
+            if (null == value) {
+                value = bind(field.getType(), key);
+                FieldKit.setFieldValue(object, field, value);
+            } else {
+                bind(value, key);
             }
-            String key = field.getName();
-            boolean wrap = false;
-            if (field.isAnnotationPresent(Values.class)) {
-                key = field.getAnnotation(Values.class).value();
-                wrap = true;
-            } else if (null != prefix) {
-                key = prefix + Symbol.DOT + key;
-            }
-            Object value = getProperty(key, field.getType(), wrap);
-            if (null != value) {
-                ClassKit.writeField(field, object, value);
-                return;
-            }
-            if (!(null == field.getType().getClassLoader()) && source
-                    .containPrefix(key + Symbol.DOT)) {
-                value = ClassKit.readField(field, object);
-                if (null == value) {
-                    value = bind(field.getType(), key);
-                    ClassKit.writeField(field, object, value);
-                } else {
-                    bind(value, key);
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
     }
 

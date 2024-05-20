@@ -28,20 +28,17 @@ package org.miaixz.bus.core.convert;
 import org.miaixz.bus.core.beans.copier.BeanCopier;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
-import org.miaixz.bus.core.exception.ConvertException;
+import org.miaixz.bus.core.center.map.MapProxy;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.map.MapProxy;
-import org.miaixz.bus.core.toolkit.BeanKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
-import org.miaixz.bus.core.toolkit.TypeKit;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
- * Bean转换器,支持：
+ * Bean转换器，支持：
  * <pre>
  * Map = Bean
  * Bean = Bean
@@ -53,7 +50,7 @@ import java.util.Map;
  */
 public class BeanConverter implements Converter, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 单例对象
@@ -99,7 +96,7 @@ public class BeanConverter implements Converter, Serializable {
     private Object convertInternal(final Type targetType, final Class<?> targetClass, final Object value) {
         if (value instanceof Map ||
                 value instanceof ValueProvider ||
-                BeanKit.isBean(value.getClass())) {
+                BeanKit.isWritableBean(value.getClass())) {
             if (value instanceof Map && targetClass.isInterface()) {
                 // 将Map动态代理为Bean
                 return MapProxy.of((Map<?, ?>) value).toProxyBean(targetClass);
@@ -109,8 +106,11 @@ public class BeanConverter implements Converter, Serializable {
             return BeanCopier.of(value, ReflectKit.newInstanceIfPossible(targetClass), targetType, this.copyOptions).copy();
         } else if (value instanceof byte[]) {
             // 尝试反序列化
-            return ObjectKit.deserialize((byte[]) value);
+            return SerializeKit.deserialize((byte[]) value);
+        } else if (StringKit.isEmptyIfString(value)) {
+            return null;
         }
+
         throw new ConvertException("Unsupported source type: [{}] to [{}]", value.getClass(), targetType);
     }
 

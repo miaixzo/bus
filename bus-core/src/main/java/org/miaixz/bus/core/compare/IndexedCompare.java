@@ -31,8 +31,8 @@ import org.miaixz.bus.core.toolkit.ArrayKit;
 import java.util.Comparator;
 
 /**
- * 按照数组的顺序正序排列,数组的元素位置决定了对象的排序先后
- * 如果参与排序的元素并不在数组中,则排序在前
+ * 按照数组的顺序正序排列，数组的元素位置决定了对象的排序先后
+ * 默认的，如果参与排序的元素并不在数组中，则排序在前（可以通过atEndIfMiss设置)
  *
  * @param <T> 被排序元素类型
  * @author Kimi Liu
@@ -46,26 +46,26 @@ public class IndexedCompare<T> implements Comparator<T> {
     /**
      * 构造
      *
-     * @param object 参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param objs 参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedCompare(T... object) {
-        this(false, object);
+    public IndexedCompare(final T... objs) {
+        this(false, objs);
     }
 
     /**
      * 构造
      *
      * @param atEndIfMiss 如果不在列表中是否排在后边
-     * @param object      参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param objs        参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedCompare(boolean atEndIfMiss, T... object) {
-        Assert.notNull(object, "'objs' array must not be null");
+    public IndexedCompare(final boolean atEndIfMiss, final T... objs) {
+        Assert.notNull(objs, "'objs' array must not be null");
         this.atEndIfMiss = atEndIfMiss;
-        this.array = object;
+        this.array = objs;
     }
 
     @Override
-    public int compare(T o1, T o2) {
+    public int compare(final T o1, final T o2) {
         final int index1 = getOrder(o1);
         final int index2 = getOrder(o2);
 
@@ -86,7 +86,7 @@ public class IndexedCompare<T> implements Comparator<T> {
      * @param object 对象
      * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
      */
-    private int getOrder(T object) {
+    private int getOrder(final T object) {
         int order = ArrayKit.indexOf(array, object);
         if (order < 0) {
             order = this.atEndIfMiss ? this.array.length : -1;

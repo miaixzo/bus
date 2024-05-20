@@ -25,13 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.sax;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.office.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
@@ -41,6 +34,13 @@ import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
+ * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取
+ * 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,7 +58,7 @@ import java.util.List;
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
 
     /**
-     * 如果为公式,true表示输出公式计算后的结果值,false表示输出公式本身
+     * 如果为公式，true表示输出公式计算后的结果值，false表示输出公式本身
      */
     private final boolean isOutputFormulaValues = true;
     /**
@@ -73,7 +74,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private SheetRecordCollectingListener workbookBuildingListener;
     /**
-     * 子工作簿,用于公式计算
+     * 子工作簿，用于公式计算
      */
     private HSSFWorkbook stubWorkbook;
     /**
@@ -82,8 +83,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
     private boolean isOutputNextStringRecord;
+    // 存储行记录的容器
+    private List<Object> rowCellList = new ArrayList<>();
     /**
-     * 自定义需要处理的sheet编号,如果-1表示处理所有sheet
+     * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
      */
     private int rid = -1;
     /**
@@ -91,37 +94,33 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private String sheetName;
     /**
-     * 当前表索引
+     * 当前rid索引
      */
     private int curRid = -1;
-    /**
-     * 存储行记录的容器
-     */
-    private List<Object> rowCellList = new ArrayList<>();
 
     /**
      * 构造
      *
      * @param rowHandler 行处理器
      */
-    public Excel03SaxReader(RowHandler rowHandler) {
+    public Excel03SaxReader(final RowHandler rowHandler) {
         this.rowHandler = rowHandler;
     }
 
     @Override
-    public Excel03SaxReader read(File file, String idOrRid) throws InternalException {
-        try {
-            return read(new POIFSFileSystem(file), idOrRid);
-        } catch (IOException e) {
+    public Excel03SaxReader read(final File file, final String idOrRidOrSheetName) throws InternalException {
+        try (final POIFSFileSystem poifsFileSystem = new POIFSFileSystem(file, true)) {
+            return read(poifsFileSystem, idOrRidOrSheetName);
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
 
     @Override
-    public Excel03SaxReader read(InputStream excelStream, String idOrRid) throws InternalException {
+    public Excel03SaxReader read(final InputStream excelStream, final String idOrRidOrSheetName) throws InternalException {
         try {
-            return read(new POIFSFileSystem(excelStream), idOrRid);
-        } catch (IOException e) {
+            return read(new POIFSFileSystem(excelStream), idOrRidOrSheetName);
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
@@ -129,13 +128,13 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     /**
      * 读取
      *
-     * @param fs {@link POIFSFileSystem}
-     * @param id sheet序号
+     * @param fs                 {@link POIFSFileSystem}
+     * @param idOrRidOrSheetName sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
      * @return this
      * @throws InternalException IO异常包装
      */
-    public Excel03SaxReader read(POIFSFileSystem fs, String id) throws InternalException {
-        this.rid = Integer.parseInt(id);
+    public Excel03SaxReader read(final POIFSFileSystem fs, final String idOrRidOrSheetName) throws InternalException {
+        this.rid = getSheetIndex(idOrRidOrSheetName);
 
         formatListener = new FormatTrackingHSSFListener(new MissingRecordAwareHSSFListener(this));
         final HSSFRequest request = new HSSFRequest();
@@ -148,16 +147,16 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         final HSSFEventFactory factory = new HSSFEventFactory();
         try {
             factory.processWorkbookEvents(request, fs);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         } finally {
-            IoKit.close(fs);
+            IoKit.closeQuietly(fs);
         }
         return this;
     }
 
     /**
-     * 获得Sheet序号,如果处理所有sheet,获得最大的Sheet序号,从0开始
+     * 获得Sheet序号，如果处理所有sheet，获得最大的Sheet序号，从0开始
      *
      * @return sheet序号
      */
@@ -166,7 +165,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 获得Sheet名,如果处理所有sheet,获得后一个Sheet名,从0开始
+     * 获得Sheet名，如果处理所有sheet，获得后一个Sheet名，从0开始
      *
      * @return Sheet名
      */
@@ -174,19 +173,21 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         if (null != this.sheetName) {
             return this.sheetName;
         }
+
         if (this.boundSheetRecords.size() > this.rid) {
             return this.boundSheetRecords.get(this.rid > -1 ? this.rid : this.curRid).getSheetname();
         }
+
         return null;
     }
 
     /**
-     * HSSFListener 监听方法,处理 Record
+     * HSSFListener 监听方法，处理 Record
      *
      * @param record 记录
      */
     @Override
-    public void processRecord(Record record) {
+    public void processRecord(final Record record) {
         if (this.rid > -1 && this.curRid > this.rid) {
             // 指定Sheet之后的数据不再处理
             return;
@@ -204,10 +205,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             // 静态字符串表
             sstRecord = (SSTRecord) record;
         } else if (record instanceof BOFRecord) {
-            BOFRecord bofRecord = (BOFRecord) record;
+            final BOFRecord bofRecord = (BOFRecord) record;
             if (bofRecord.getType() == BOFRecord.TYPE_WORKSHEET) {
                 // 如果有需要，则建立子工作薄
-                if (null != workbookBuildingListener && null == stubWorkbook) {
+                if (workbookBuildingListener != null && stubWorkbook == null) {
                     stubWorkbook = workbookBuildingListener.getStubHSSFWorkbook();
                 }
                 curRid++;
@@ -223,7 +224,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         } else if (isProcessCurrentSheet()) {
             if (record instanceof MissingCellDummyRecord) {
                 // 空值的操作
-                MissingCellDummyRecord mc = (MissingCellDummyRecord) record;
+                final MissingCellDummyRecord mc = (MissingCellDummyRecord) record;
                 addToRowCellList(mc);
             } else if (record instanceof LastCellOfRowDummyRecord) {
                 // 行结束
@@ -233,6 +234,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 processCellValue(record);
             }
         }
+
     }
 
     /**
@@ -240,7 +242,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      *
      * @param record MissingCellDummyRecord
      */
-    private void addToRowCellList(MissingCellDummyRecord record) {
+    private void addToRowCellList(final MissingCellDummyRecord record) {
         addToRowCellList(record.getRow(), record.getColumn(), Normal.EMPTY);
     }
 
@@ -250,7 +252,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @param record 单元格
      * @param value  值
      */
-    private void addToRowCellList(CellValueRecordInterface record, Object value) {
+    private void addToRowCellList(final CellValueRecordInterface record, final Object value) {
         addToRowCellList(record.getRow(), record.getColumn(), value);
     }
 
@@ -261,7 +263,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @param column 单元格
      * @param value  值
      */
-    private void addToRowCellList(int row, int column, Object value) {
+    private void addToRowCellList(final int row, final int column, final Object value) {
         while (column > this.rowCellList.size()) {
             // 对于中间无数据的单元格补齐空白
             this.rowCellList.add(Normal.EMPTY);
@@ -277,7 +279,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      *
      * @param record 单元格
      */
-    private void processCellValue(Record record) {
+    private void processCellValue(final Record record) {
         Object value = null;
 
         switch (record.getSid()) {
@@ -299,7 +301,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                         // This is stored in the next record
                         isOutputNextStringRecord = true;
                     } else {
-                        value = ExcelSaxKit.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
+                        value = ExcelSax.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
                     }
                 } else {
                     value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
@@ -321,7 +323,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case LabelSSTRecord.sid:
                 // 字符串类型
-                LabelSSTRecord lsrec = (LabelSSTRecord) record;
+                final LabelSSTRecord lsrec = (LabelSSTRecord) record;
                 if (null != sstRecord) {
                     value = sstRecord.getString(lsrec.getSSTIndex()).toString();
                 }
@@ -329,7 +331,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
-                value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
+                value = ExcelSax.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
                 // 向容器加入列值
                 addToRowCellList(numrec, value);
                 break;
@@ -339,12 +341,12 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     /**
-     * 处理行结束后的操作,{@link LastCellOfRowDummyRecord}是行结束的标识Record
+     * 处理行结束后的操作，{@link LastCellOfRowDummyRecord}是行结束的标识Record
      *
      * @param lastCell 行结束的标识Record
      */
-    private void processLastCell(LastCellOfRowDummyRecord lastCell) {
-        // 每行结束时, 调用handle() 方法
+    private void processLastCell(final LastCellOfRowDummyRecord lastCell) {
+        // 每行结束时， 调用handle() 方法
         this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
         // 清空行Cache
         this.rowCellList = new ArrayList<>(this.rowCellList.size());
@@ -363,6 +365,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @return 是否处理当前sheet
      */
     private boolean isProcessCurrentSheet() {
+        // rid < 0 且 sheet名称存在，说明没有匹配到sheet名称
         return (this.rid < 0 && null == this.sheetName) || this.rid == this.curRid;
     }
 
@@ -373,12 +376,12 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      *     <li>传入纯数字，表示sheetIndex，直接转换为rid</li>
      * </ul>
      *
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，
-     *                           从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
+     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
      * @return sheet索引，从0开始
      */
-    private int getSheetIndex(String idOrRidOrSheetName) {
-        Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
+    private int getSheetIndex(final String idOrRidOrSheetName) {
+        Assert.notBlank(idOrRidOrSheetName, "data or rid or sheetName must be not blank!");
+
         // rid直接处理
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
@@ -388,7 +391,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         } else {
             try {
                 return Integer.parseInt(idOrRidOrSheetName);
-            } catch (NumberFormatException ignore) {
+            } catch (final NumberFormatException ignore) {
                 // 如果用于传入非数字，按照sheet名称对待
                 this.sheetName = idOrRidOrSheetName;
             }

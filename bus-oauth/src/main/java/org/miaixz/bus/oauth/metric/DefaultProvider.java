@@ -26,12 +26,12 @@
 package org.miaixz.bus.oauth.metric;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
-import org.miaixz.bus.core.key.ID;
+import org.miaixz.bus.core.data.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;
@@ -310,7 +310,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
             separator = Symbol.SPACE;
         }
         String scope = String.join(separator, scopes);
-        return encode ? UriKit.encode(scope) : scope;
+        return encode ? UrlEncoder.encodeAll(scope) : scope;
     }
 
 }

@@ -29,8 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.unix.Resource;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
@@ -68,16 +68,15 @@ public class AixOSProcess extends AbstractOSProcess {
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
     private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo, Memoizer.defaultExpiration());
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer.memoize(this::queryCommandlineEnvironment);
-
+    // Memoized copy from OperatingSystem
+    private final Supplier<perfstat_process_t[]> procCpu;
     private String name;
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private String commandLineBackup;
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private String user;
     private String userID;
     private String group;
     private String groupID;
-    // Memoized copy from OperatingSystem
-    private final Supplier<perfstat_process_t[]> procCpu;
     private int parentProcessID;
     private int threadCount;
     private int priority;
@@ -324,7 +323,7 @@ public class AixOSProcess extends AbstractOSProcess {
         // Need to capture pr_bndpro for all threads
         // Get process files in proc
         File directory = new File(String.format(Locale.ROOT, "/proc/%d/lwp", getProcessID()));
-        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        File[] numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());
         if (numericFiles == null) {
             return mask;
         }
@@ -344,7 +343,7 @@ public class AixOSProcess extends AbstractOSProcess {
     public List<OSThread> getThreadDetails() {
         // Get process files in proc
         File directory = new File(String.format(Locale.ROOT, "/proc/%d/lwp", getProcessID()));
-        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        File[] numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());
         if (numericFiles == null) {
             return Collections.emptyList();
         }
@@ -393,7 +392,7 @@ public class AixOSProcess extends AbstractOSProcess {
         this.userTime = userSysCpuTime.getLeft();
         this.kernelTime = userSysCpuTime.getRight();
         this.commandLineBackup = Native.toString(info.pr_psargs);
-        this.path = RegEx.SPACES.split(commandLineBackup)[0];
+        this.path = Pattern.SPACES_PATTERN.split(commandLineBackup)[0];
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         if (this.name.isEmpty()) {
             this.name = Native.toString(info.pr_fname);

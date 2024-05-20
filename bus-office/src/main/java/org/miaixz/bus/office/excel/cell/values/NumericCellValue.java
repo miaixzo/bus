@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.values;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.office.Builder;
-import org.miaixz.bus.office.excel.cell.CellValue;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.NumberToTextConverter;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.office.excel.ExcelDate;
+import org.miaixz.bus.office.excel.cell.CellValue;
 
 import java.time.LocalDateTime;
 
@@ -50,7 +50,7 @@ public class NumericCellValue implements CellValue<Object> {
      *
      * @param cell {@link Cell}
      */
-    public NumericCellValue(Cell cell) {
+    public NumericCellValue(final Cell cell) {
         this.cell = cell;
     }
 
@@ -61,7 +61,7 @@ public class NumericCellValue implements CellValue<Object> {
         final CellStyle style = cell.getCellStyle();
         if (null != style) {
             // 判断是否为日期
-            if (Builder.isDateFormat(cell)) {
+            if (ExcelDate.isDateFormat(cell)) {
                 final LocalDateTime date = cell.getLocalDateTimeCellValue();
                 // 1899年写入会导致数据错乱，读取到1899年证明这个单元格的信息不关注年月日
                 if (1899 == date.getYear()) {
@@ -81,7 +81,7 @@ public class NumericCellValue implements CellValue<Object> {
             }
         }
 
-        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题
+        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题。
         return Double.parseDouble(NumberToTextConverter.toText(value));
     }
 

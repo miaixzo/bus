@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -96,7 +96,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
             if (line.startsWith("/")) {
-                String[] split = RegEx.SPACES.split(line);
+                String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[6], 0L));
                     // total is used + free
@@ -108,7 +108,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
 
         // Get mount table
         for (String fs : Executor.runNative("mount -p")) {
-            String[] split = RegEx.SPACES.split(fs);
+            String[] split = Pattern.SPACES_PATTERN.split(fs);
             if (split.length < 5) {
                 continue;
             }

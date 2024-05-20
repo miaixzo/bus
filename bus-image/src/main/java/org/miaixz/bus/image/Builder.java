@@ -27,6 +27,7 @@ package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StreamKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -341,7 +342,7 @@ public class Builder {
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
                     dos.write(p.buffer, 0, p.realBufferLength);
                 }
-                StreamKit.copy(bis, dos, p.buffer);
+                IoKit.copy(bis, dos, p.buffer);
                 if ((itemLen & 1) != 0) {
                     dos.write(0);
                 }

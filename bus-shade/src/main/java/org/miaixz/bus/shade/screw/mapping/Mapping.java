@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.mapping;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
 
 import java.beans.BeanInfo;

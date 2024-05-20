@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -81,7 +81,7 @@ public final class NetStat {
         for (String s : activeConns) {
             String[] split;
             if (s.startsWith("tcp") || s.startsWith("udp")) {
-                split = RegEx.SPACES.split(s);
+                split = Pattern.SPACES_PATTERN.split(s);
                 if (split.length >= 5) {
                     String state = (split.length == 6) ? split[5] : null;
                     // Substitution if required

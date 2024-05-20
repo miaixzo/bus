@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.toolkit.ArrayKit;
 import org.miaixz.bus.core.toolkit.MapKit;

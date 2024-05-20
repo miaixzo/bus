@@ -26,8 +26,8 @@
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.magic.IniProperty;
-import org.miaixz.bus.setting.magic.IniPropertyImpl;
+import org.miaixz.bus.setting.metric.ini.IniProperty;
+import org.miaixz.bus.setting.metric.ini.IniPropertyService;
 
 /**
  * 将字符串值格式设置为{@link IniProperty}
@@ -82,7 +82,7 @@ public class PropertyFormatter extends AbstractFormatter<IniProperty> {
         final String propKey = split[0];
         final String propValue = split[1];
 
-        return new IniPropertyImpl(propKey, propValue, value, line);
+        return new IniPropertyService(propKey, propValue, value, line);
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager;
 
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.plugin.BoundSqlHandler;
 import org.miaixz.bus.pager.plugin.PageSqlHandler;

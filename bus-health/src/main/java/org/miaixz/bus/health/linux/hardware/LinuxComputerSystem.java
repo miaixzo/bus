@@ -62,6 +62,32 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         return result;
     }
 
+    private static String queryManufacturer() {
+        String result;
+        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
+    private static String querySerialNumber() {
+        String result;
+        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
+                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
+    private static String queryUUID() {
+        String result;
+        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
+                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
     @Override
     public String getManufacturer() {
         return manufacturer.get();
@@ -87,34 +113,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         return new LinuxFirmware();
     }
 
-    private static String queryManufacturer() {
-        String result;
-        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
     @Override
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
-    }
-
-    private static String querySerialNumber() {
-        String result;
-        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
-                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
-    private static String queryUUID() {
-        String result;
-        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
-                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
     }
 }

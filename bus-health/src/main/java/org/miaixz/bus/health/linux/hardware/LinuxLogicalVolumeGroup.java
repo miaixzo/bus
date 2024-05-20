@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
@@ -64,7 +64,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
         // Populate pv map from pvs command
         // This requires elevated permissions and may fail
         for (String s : Executor.runNative("pvs -o vg_name,pv_name")) {
-            String[] split = RegEx.SPACES.split(s.trim());
+            String[] split = Pattern.SPACES_PATTERN.split(s.trim());
             if (split.length == 2 && split[1].startsWith(DevPath.DEV)) {
                 physicalVolumesMap.computeIfAbsent(split[0], k -> new HashSet<>()).add(split[1]);
             }

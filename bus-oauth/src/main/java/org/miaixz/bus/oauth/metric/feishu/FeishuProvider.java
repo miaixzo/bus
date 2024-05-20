@@ -28,11 +28,11 @@ package org.miaixz.bus.oauth.metric.feishu;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.core.toolkit.UriKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -156,7 +156,7 @@ public class FeishuProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize())
                 .queryParam("app_id", context.getAppKey())
-                .queryParam("redirect_uri", UriKit.encode(context.getRedirectUri()))
+                .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("state", getRealState(state))
                 .build();
     }

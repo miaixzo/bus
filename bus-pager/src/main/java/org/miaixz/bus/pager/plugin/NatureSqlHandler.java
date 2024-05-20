@@ -36,10 +36,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.key.ObjectId;
+import org.miaixz.bus.core.data.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -68,7 +68,7 @@ public class NatureSqlHandler extends SqlParserHandler implements Interceptor {
         // 获取参数
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        String id = ObjectId.id();
+        String id = ID.objectId();
         // 1.SQL语句多个空格全部使用一个空格代替
         // 2.防止参数值中有问号问题,全部动态替换
         String sql = boundSql.getSql()

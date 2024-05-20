@@ -25,18 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel;
 
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeUtil;
+import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.cell.CellKit;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -47,7 +47,6 @@ import java.util.stream.IntStream;
  * @since Java 17+
  */
 public class RowKit {
-
     /**
      * 获取已有行或创建新行
      *
@@ -89,7 +88,7 @@ public class RowKit {
         }
         final short rowLength = row.getLastCellNum();
         if (rowLength < 0) {
-            return Collections.emptyList();
+            return ListKit.empty();
         }
 
         final int size = Math.min(endCellNumInclude + 1, rowLength);
@@ -98,13 +97,13 @@ public class RowKit {
         boolean isAllNull = true;
         for (int i = startCellNumInclude; i < size; i++) {
             cellValue = CellKit.getCellValue(CellKit.getCell(row, i), cellEditor);
-            isAllNull &= StringKit.emptyIfString(cellValue);
+            isAllNull &= StringKit.isEmptyIfString(cellValue);
             cellValues.add(cellValue);
         }
 
         if (isAllNull) {
             // 如果每个元素都为空，则定义为空行
-            return Collections.emptyList();
+            return ListKit.empty();
         }
         return cellValues;
     }
@@ -151,7 +150,7 @@ public class RowKit {
             return;
         }
         // 插入位置的行，如果插入的行不存在则创建新行
-        final Row sourceRow = Optional.ofNullable(sheet.getRow(startRow)).orElseGet(() -> sheet.createRow(insertNumber));
+        final Row sourceRow = getOrCreateRow(sheet, startRow);
         // 从插入行开始到最后一行向下移动
         sheet.shiftRows(startRow, sheet.getLastRowNum(), insertNumber, true, false);
 
@@ -171,6 +170,7 @@ public class RowKit {
      * 从工作表中删除指定的行，此方法修复sheet.shiftRows删除行时会拆分合并的单元格的问题
      *
      * @param row 需要删除的行
+     * @see <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=56454">sheet.shiftRows的bug</a>
      */
     public static void removeRow(final Row row) {
         if (row == null) {
@@ -219,5 +219,4 @@ public class RowKit {
             }
         }
     }
-
 }

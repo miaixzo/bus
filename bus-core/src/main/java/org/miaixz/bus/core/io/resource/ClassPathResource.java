@@ -25,20 +25,26 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.*;
+
+import java.net.URL;
 
 /**
  * ClassPath单一资源访问类
- * 传入路径path必须为相对路径,如果传入绝对路径,Linux路径会去掉开头的“/”,而Windows路径会直接报错
- * 传入的path所指向的资源必须存在,否则报错
+ * 传入路径path必须为相对路径，如果传入绝对路径，Linux路径会去掉开头的“/”，而Windows路径会直接报错。
+ * 传入的path所指向的资源必须存在，否则报错
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ClassPathResource extends UriResource {
+public class ClassPathResource extends UrlResource {
+
+    private static final long serialVersionUID = -1L;
 
     private final String path;
     private final ClassLoader classLoader;
@@ -49,7 +55,7 @@ public class ClassPathResource extends UriResource {
      *
      * @param path 相对于ClassPath的路径
      */
-    public ClassPathResource(String path) {
+    public ClassPathResource(final String path) {
         this(path, null, null);
     }
 
@@ -59,7 +65,7 @@ public class ClassPathResource extends UriResource {
      * @param path        相对于ClassPath的路径
      * @param classLoader {@link ClassLoader}
      */
-    public ClassPathResource(String path, ClassLoader classLoader) {
+    public ClassPathResource(final String path, final ClassLoader classLoader) {
         this(path, classLoader, null);
     }
 
@@ -69,7 +75,7 @@ public class ClassPathResource extends UriResource {
      * @param path  相对于给定Class的路径
      * @param clazz {@link Class} 用于定位路径
      */
-    public ClassPathResource(String path, Class<?> clazz) {
+    public ClassPathResource(final String path, final Class<?> clazz) {
         this(path, null, clazz);
     }
 
@@ -80,13 +86,13 @@ public class ClassPathResource extends UriResource {
      * @param classLoader         {@link ClassLoader}
      * @param clazz               {@link Class} 用于定位路径
      */
-    public ClassPathResource(String pathBaseClassLoader, ClassLoader classLoader, Class<?> clazz) {
-        super();
+    public ClassPathResource(final String pathBaseClassLoader, final ClassLoader classLoader, final Class<?> clazz) {
+        super((URL) null);
         Assert.notNull(pathBaseClassLoader, "Path must not be null");
 
         final String path = normalizePath(pathBaseClassLoader);
         this.path = path;
-        this.name = StringKit.isBlank(path) ? null : FileKit.getName(path);
+        this.name = StringKit.isBlank(path) ? null : FileName.getName(path);
 
         this.classLoader = ObjectKit.defaultIfNull(classLoader, ClassKit::getClassLoader);
         this.clazz = clazz;
@@ -104,7 +110,7 @@ public class ClassPathResource extends UriResource {
 
     /**
      * 获得绝对路径Path
-     * 对于不存在的资源,返回拼接后的绝对路径
+     * 对于不存在的资源，返回拼接后的绝对路径
      *
      * @return 绝对路径path
      */
@@ -112,8 +118,8 @@ public class ClassPathResource extends UriResource {
         if (FileKit.isAbsolutePath(this.path)) {
             return this.path;
         }
-        // url在初始化的时候已经断言,此处始终不为null
-        return FileKit.normalize(UriKit.getDecodedPath(this.url));
+        // url在初始化的时候已经断言，此处始终不为null
+        return FileKit.normalize(UrlKit.getDecodedPath(this.url));
     }
 
     /**
@@ -143,7 +149,7 @@ public class ClassPathResource extends UriResource {
 
     @Override
     public String toString() {
-        return (null == this.path) ? super.toString() : "classpath:" + this.path;
+        return (null == this.path) ? super.toString() : Normal.CLASSPATH + this.path;
     }
 
     /**

@@ -46,7 +46,7 @@ public class XmlProvider implements Provider {
             StringBuffer buffer = new StringBuffer();
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             Map<String, Object> map = JsonKit.getProvider().toMap(object);
-            XmlKit.toXml(map, buffer);
+            XmlKit.mapToXmlString(map);
             return buffer.toString();
         } catch (Exception e) {
             e.printStackTrace();

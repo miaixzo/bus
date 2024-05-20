@@ -25,20 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.exception.CrontabException;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.cron.factory.Task;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.cron.crontab.Crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;
-import org.miaixz.bus.setting.magic.PopSetting;
+import org.miaixz.bus.setting.Setting;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 定时任务工具类
- * 此工具持有一个全局{@link Scheduler},所有定时任务在同一个调度器中执行
- * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
+ * 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行
+ * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,18 +47,21 @@ public class Builder {
      * Crontab配置文件
      */
     public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
+    /**
+     * Crontab配置文件2
+     */
     public static final String CRONTAB_CONFIG_PATH2 = "cron.setting";
 
     private static final Lock lock = new ReentrantLock();
     private static final Scheduler scheduler = new Scheduler();
-    private static PopSetting crontabSetting;
+    private static Setting crontabSetting;
 
     /**
      * 自定义定时任务配置文件
      *
      * @param cronSetting 定时任务配置文件
      */
-    public static void setCronSetting(PopSetting cronSetting) {
+    public static void setCronSetting(final Setting cronSetting) {
         crontabSetting = cronSetting;
     }
 
@@ -69,21 +70,21 @@ public class Builder {
      *
      * @param cronSettingPath 定时任务配置文件路径（相对绝对都可）
      */
-    public static void setCronSetting(String cronSettingPath) {
+    public static void setCronSetting(final String cronSettingPath) {
         try {
-            crontabSetting = new PopSetting(cronSettingPath, Charset.UTF_8, false);
-        } catch (InternalException e) {
+            crontabSetting = new Setting(cronSettingPath, Setting.DEFAULT_CHARSET, false);
+        } catch (final InternalException e) {
             // ignore setting file parse error and no config error
         }
     }
 
     /**
      * 设置是否支持秒匹配
-     * 此方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
+     * 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
      *
-     * @param isMatchSecond <code>true</code>支持,<code>false</code>不支持
+     * @param isMatchSecond {@code true}支持，{@code false}不支持
      */
-    public static void setMatchSecond(boolean isMatchSecond) {
+    public static void setMatchSecond(final boolean isMatchSecond) {
         scheduler.setMatchSecond(isMatchSecond);
     }
 
@@ -91,11 +92,11 @@ public class Builder {
      * 加入定时任务
      *
      * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param task              任务
+     * @param crontab              任务
      * @return 定时任务ID
      */
-    public static String schedule(String schedulingPattern, Task task) {
-        return scheduler.schedule(schedulingPattern, task);
+    public static String schedule(final String schedulingPattern, final Crontab crontab) {
+        return scheduler.schedule(schedulingPattern, crontab);
     }
 
     /**
@@ -103,11 +104,11 @@ public class Builder {
      *
      * @param id                定时任务ID
      * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param task              任务
+     * @param crontab              任务
      * @return 定时任务ID
      */
-    public static String schedule(String id, String schedulingPattern, Task task) {
-        scheduler.schedule(id, schedulingPattern, task);
+    public static String schedule(final String id, final String schedulingPattern, final Crontab crontab) {
+        scheduler.schedule(id, schedulingPattern, crontab);
         return id;
     }
 
@@ -118,7 +119,7 @@ public class Builder {
      * @param task              任务
      * @return 定时任务ID
      */
-    public static String schedule(String schedulingPattern, Runnable task) {
+    public static String schedule(final String schedulingPattern, final Runnable task) {
         return scheduler.schedule(schedulingPattern, task);
     }
 
@@ -127,7 +128,7 @@ public class Builder {
      *
      * @param cronSetting 定时任务设置文件
      */
-    public static void schedule(PopSetting cronSetting) {
+    public static void schedule(final Setting cronSetting) {
         scheduler.schedule(cronSetting);
     }
 
@@ -137,7 +138,7 @@ public class Builder {
      * @param schedulerId 任务ID
      * @return 是否移除成功，{@code false}表示未找到对应ID的任务
      */
-    public static boolean remove(String schedulerId) {
+    public static boolean remove(final String schedulerId) {
         return scheduler.descheduleWithStatus(schedulerId);
     }
 
@@ -147,7 +148,7 @@ public class Builder {
      * @param id      Task的ID
      * @param pattern {@link CronPattern}
      */
-    public static void updatePattern(String id, CronPattern pattern) {
+    public static void updatePattern(final String id, final CronPattern pattern) {
         scheduler.updatePattern(id, pattern);
     }
 
@@ -159,7 +160,7 @@ public class Builder {
     }
 
     /**
-     * 开始,非守护线程模式
+     * 开始，非守护线程模式
      *
      * @see #start(boolean)
      */
@@ -170,11 +171,11 @@ public class Builder {
     /**
      * 开始
      *
-     * @param isDaemon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
+     * @param isDaemon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
      */
-    synchronized public static void start(boolean isDaemon) {
+    synchronized public static void start(final boolean isDaemon) {
         if (scheduler.isStarted()) {
-            throw new CrontabException("Scheduler has been started, please stop it first!");
+            throw new InternalException("Scheduler has been started, please stop it first!");
         }
 
         lock.lock();
@@ -197,7 +198,7 @@ public class Builder {
 
     /**
      * 重新启动定时任务
-     * 此方法会清除动态加载的任务,重新启动后,守护线程与否与之前保持一致
+     * 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
      */
     public static void restart() {
         lock.lock();

@@ -27,7 +27,7 @@ package org.miaixz.bus.cron;
 
 /**
  * 作业启动器
- * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task
+ * 负责检查 {@link Repertoire} 是否有匹配到此时运行的Task
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
@@ -44,17 +44,17 @@ public class Launcher implements Runnable {
      * @param scheduler {@link Scheduler}
      * @param millis    毫秒数
      */
-    public Launcher(Scheduler scheduler, long millis) {
+    public Launcher(final Scheduler scheduler, final long millis) {
         this.scheduler = scheduler;
         this.millis = millis;
     }
 
     @Override
     public void run() {
-        //匹配秒部分由用户定义决定,始终不匹配年
+        // 匹配秒部分由用户定义决定，始终不匹配年
         scheduler.repertoire.executeTaskIfMatch(this.scheduler, this.millis);
 
-        //结束通知
+        // 结束通知
         scheduler.supervisor.notifyLauncherCompleted(this);
     }
 

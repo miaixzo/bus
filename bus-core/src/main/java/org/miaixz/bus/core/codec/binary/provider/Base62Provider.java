@@ -43,13 +43,13 @@ import java.io.Serializable;
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = -1L;
 
     public static final int STANDARD_BASE = 256;
     public static final int TARGET_BASE = 62;
 
     /**
-     * 实例
+     * 单例
      */
     public static Base62Provider INSTANCE = new Base62Provider();
 

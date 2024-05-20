@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.sax;
 
-import org.miaixz.bus.core.lang.Normal;
-
 /**
  * 单元格数据类型枚举
  *
@@ -44,13 +42,13 @@ public enum CellDataType {
      */
     ERROR("e"),
     /**
-     * 计算结果类型
+     * 计算结果类型，此类型使用f标签辅助判断，而非属性
      */
-    FORMULA("text"),
+    FORMULA("formula"),
     /**
      * 富文本类型
      */
-    INLINESTRING("inlineString"),
+    INLINESTR("inlineStr"),
     /**
      * 共享字符串索引类型
      */
@@ -58,15 +56,15 @@ public enum CellDataType {
     /**
      * 数字类型
      */
-    NUMBER(Normal.EMPTY),
+    NUMBER(""),
     /**
-     * 日期类型
+     * 日期类型，此类型使用值判断，而非属性
      */
     DATE("m/d/yy"),
     /**
      * 空类型
      */
-    NULL(Normal.EMPTY);
+    NULL("");
 
     /**
      * 属性值
@@ -78,7 +76,7 @@ public enum CellDataType {
      *
      * @param name 类型属性值
      */
-    CellDataType(String name) {
+    CellDataType(final String name) {
         this.name = name;
     }
 
@@ -88,18 +86,18 @@ public enum CellDataType {
      * @param name 类型字符串
      * @return 类型枚举
      */
-    public static CellDataType of(String name) {
+    public static CellDataType of(final String name) {
         if (null == name) {
-            //默认数字
-            return NUMBER;
+            //默认空
+            return NULL;
         }
 
         if (BOOL.name.equals(name)) {
             return BOOL;
         } else if (ERROR.name.equals(name)) {
             return ERROR;
-        } else if (INLINESTRING.name.equals(name)) {
-            return INLINESTRING;
+        } else if (INLINESTR.name.equals(name)) {
+            return INLINESTR;
         } else if (SSTINDEX.name.equals(name)) {
             return SSTINDEX;
         } else if (FORMULA.name.equals(name)) {

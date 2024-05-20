@@ -27,7 +27,6 @@ package org.miaixz.bus.core.codec.binary.encoder;
 
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
-import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Base62编码器
@@ -38,16 +37,42 @@ import org.miaixz.bus.core.lang.Normal;
 public class Base62Encoder implements Encoder<byte[], byte[]> {
 
     /**
-     * GMP 编码器
+     * GMP风格
      */
-    public static Base62Encoder GMP_ENCODER = new Base62Encoder(Normal.UPPER_LOWER_NUMBER.getBytes());
+    public static final byte[] GMP = { //
+            '0', '1', '2', '3', '4', '5', '6', '7', //
+            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', //
+            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', //
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', //
+            'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', //
+            'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', //
+            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', //
+            'u', 'v', 'w', 'x', 'y', 'z' //
+    };
+
     /**
-     * INVERTED 编码器
+     * 反转风格，即将GMP风格中的大小写做转换
      */
-    public static Base62Encoder INVERTED_ENCODER = new Base62Encoder(Normal.LOWER_UPPER_NUMBER.getBytes());
+    public static final byte[] INVERTED = { //
+            '0', '1', '2', '3', '4', '5', '6', '7', //
+            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', //
+            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', //
+            'o', 'p', 'q', 'r', 's', 't', 'u', 'v', //
+            'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', //
+            'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', //
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', //
+            'U', 'V', 'W', 'X', 'Y', 'Z' //
+    };
+
     /**
-     * 字符信息
+     * GMP风格编码器
      */
+    public static Base62Encoder GMP_ENCODER = new Base62Encoder(GMP);
+    /**
+     * 反转风格，即将GMP风格中的大小写做转换编码器
+     */
+    public static Base62Encoder INVERTED_ENCODER = new Base62Encoder(INVERTED);
+
     private final byte[] alphabet;
 
     /**
@@ -64,4 +89,5 @@ public class Base62Encoder implements Encoder<byte[], byte[]> {
         final byte[] indices = Base62Provider.convert(data, Base62Provider.STANDARD_BASE, Base62Provider.TARGET_BASE);
         return Base62Provider.translate(indices, alphabet);
     }
+
 }

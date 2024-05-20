@@ -31,7 +31,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
@@ -49,40 +49,10 @@ import java.util.function.Supplier;
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Quartet<String, String, String, String>> manufacturerModelSerialUUID = Memoizer.memoize(
+    private final Supplier<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(
             MacComputerSystem::platformExpert);
 
-    @Override
-    public String getManufacturer() {
-        return manufacturerModelSerialUUID.get().getA();
-    }
-
-    @Override
-    public String getModel() {
-        return manufacturerModelSerialUUID.get().getB();
-    }
-
-    @Override
-    public String getSerialNumber() {
-        return manufacturerModelSerialUUID.get().getC();
-    }
-
-    @Override
-    public String getHardwareUUID() {
-        return manufacturerModelSerialUUID.get().getD();
-    }
-
-    @Override
-    public Firmware createFirmware() {
-        return new MacFirmware();
-    }
-
-    @Override
-    public Baseboard createBaseboard() {
-        return new MacBaseboard();
-    }
-
-    private static Quartet<String, String, String, String> platformExpert() {
+    private static Tuple platformExpert() {
         String manufacturer = null;
         String model = null;
         String serialNumber = null;
@@ -101,10 +71,40 @@ final class MacComputerSystem extends AbstractComputerSystem {
             uuid = platformExpert.getStringProperty("IOPlatformUUID");
             platformExpert.release();
         }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
                 StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return manufacturerModelSerialUUID.get().get(0);
+    }
+
+    @Override
+    public String getModel() {
+        return manufacturerModelSerialUUID.get().get(1);
+    }
+
+    @Override
+    public String getSerialNumber() {
+        return manufacturerModelSerialUUID.get().get(2);
+    }
+
+    @Override
+    public String getHardwareUUID() {
+        return manufacturerModelSerialUUID.get().get(3);
+    }
+
+    @Override
+    public Firmware createFirmware() {
+        return new MacFirmware();
+    }
+
+    @Override
+    public Baseboard createBaseboard() {
+        return new MacBaseboard();
     }
 
 }

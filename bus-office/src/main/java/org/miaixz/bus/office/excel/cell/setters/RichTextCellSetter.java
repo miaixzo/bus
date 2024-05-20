@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
-import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
+import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
  * {@link RichTextString} 值单元格设置器
@@ -44,12 +44,12 @@ public class RichTextCellSetter implements CellSetter {
      *
      * @param value 值
      */
-    RichTextCellSetter(RichTextString value) {
+    RichTextCellSetter(final RichTextString value) {
         this.value = value;
     }
 
     @Override
-    public void setValue(Cell cell) {
+    public void setValue(final Cell cell) {
         cell.setCellValue(value);
     }
 

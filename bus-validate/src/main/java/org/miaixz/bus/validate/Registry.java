@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.validate;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.validate.strategy.*;
+import org.miaixz.bus.validate.metric.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,31 +51,31 @@ public class Registry {
     private static Registry instance;
 
     static {
-        register(Builder._ALWAYS, new AlwaysStrategy());
-        register(Builder._BLANK, new BlankStrategy());
-        register(Builder._CHINESE, new ChineseStrategy());
-        register(Builder._CITIZENID, new CitizenIdStrategy());
-        register(Builder._DATE, new DateStrategy());
-        register(Builder._EACH, new EachStrategy());
-        register(Builder._EMAIL, new EmailStrategy());
-        register(Builder._ENGLISH, new EnglishStrategy());
-        register(Builder._EQUALS, new EqualsStrategy());
-        register(Builder._FALSE, new FalseStrategy());
-        register(Builder._IN_ENUM, new InEnumStrategy());
-        register(Builder._IN, new InStrategy());
-        register(Builder._INT_RANGE, new IntRangeStrategy());
-        register(Builder._IP_ADDRESS, new IPAddressStrategy());
-        register(Builder._LENGTH, new LengthStrategy());
-        register(Builder._MOBILE, new MobileStrategy());
-        register(Builder._MULTI, new MultiStrategy());
-        register(Builder._NOT_BLANK, new NotBlankStrategy());
-        register(Builder._NOT_IN, new NotInStrategy());
-        register(Builder._NOT_NULL, new NotNullStrategy());
-        register(Builder._NULL, new NullStrategy());
-        register(Builder._PHONE, new PhoneStrategy());
-        register(Builder._REFLECT, new ReflectStrategy());
-        register(Builder._REGEX, new RegexStrategy());
-        register(Builder._TRUE, new TrueStrategy());
+        register(Builder._ALWAYS, new AlwaysMatcher());
+        register(Builder._BLANK, new BlankMatcher());
+        register(Builder._CHINESE, new ChineseMatcher());
+        register(Builder._CITIZENID, new CitizenIdMatcher());
+        register(Builder._DATE, new DateMatcher());
+        register(Builder._EACH, new EachMatcher());
+        register(Builder._EMAIL, new EmailMatcher());
+        register(Builder._ENGLISH, new EnglishMatcher());
+        register(Builder._EQUALS, new EqualsMatcher());
+        register(Builder._FALSE, new FalseMatcher());
+        register(Builder._IN_ENUM, new InEnumMatcher());
+        register(Builder._IN, new InMatcher());
+        register(Builder._INT_RANGE, new IntRangeMatcher());
+        register(Builder._IP_ADDRESS, new IPAddressMatcher());
+        register(Builder._LENGTH, new LengthMatcher());
+        register(Builder._MOBILE, new MobileMatcher());
+        register(Builder._MULTI, new MultiMatcher());
+        register(Builder._NOT_BLANK, new NotBlankMatcher());
+        register(Builder._NOT_IN, new NotInMatcher());
+        register(Builder._NOT_NULL, new NotNullMatcher());
+        register(Builder._NULL, new NullMatcher());
+        register(Builder._PHONE, new PhoneMatcher());
+        register(Builder._REFLECT, new ReflectMatcher());
+        register(Builder._REGEX, new RegexMatcher());
+        register(Builder._TRUE, new TrueMatcher());
     }
 
     public Registry() {

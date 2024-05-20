@@ -330,6 +330,7 @@ public interface OperatingSystem {
          * Only include 32-bit processes.
          */
         public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+
         private ProcessFiltering() {
         }
     }
@@ -376,6 +377,7 @@ public interface OperatingSystem {
          */
         public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
                 String.CASE_INSENSITIVE_ORDER);
+
         private ProcessSorting() {
         }
     }

@@ -28,7 +28,7 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
@@ -47,30 +47,10 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoizer.memoize(
+    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(
             WindowsBaseboard::queryManufModelVersSerial);
 
-    @Override
-    public String getManufacturer() {
-        return manufModelVersSerial.get().getA();
-    }
-
-    @Override
-    public String getModel() {
-        return manufModelVersSerial.get().getB();
-    }
-
-    @Override
-    public String getVersion() {
-        return manufModelVersSerial.get().getC();
-    }
-
-    @Override
-    public String getSerialNumber() {
-        return manufModelVersSerial.get().getD();
-    }
-
-    private static Quartet<String, String, String, String> queryManufModelVersSerial() {
+    private static Tuple queryManufModelVersSerial() {
         String manufacturer = null;
         String model = null;
         String version = null;
@@ -82,9 +62,29 @@ final class WindowsBaseboard extends AbstractBaseboard {
             version = WmiKit.getString(win32BaseBoard, BaseBoardProperty.VERSION, 0);
             serialNumber = WmiKit.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);
         }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+        return new Tuple(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return manufModelVersSerial.get().get(0);
+    }
+
+    @Override
+    public String getModel() {
+        return manufModelVersSerial.get().get(1);
+    }
+
+    @Override
+    public String getVersion() {
+        return manufModelVersSerial.get().get(2);
+    }
+
+    @Override
+    public String getSerialNumber() {
+        return manufModelVersSerial.get().get(3);
     }
 
 }

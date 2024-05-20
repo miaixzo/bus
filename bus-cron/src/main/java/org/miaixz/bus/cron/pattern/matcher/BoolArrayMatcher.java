@@ -43,19 +43,19 @@ public class BoolArrayMatcher implements PartMatcher {
     /**
      * 用户定义此字段的最小值
      */
-    private final int minValue;
-    private final boolean[] bValues;
+    protected final int minValue;
+    protected final boolean[] bValues;
 
     /**
      * 构造
      *
      * @param intValueList 匹配值列表
      */
-    public BoolArrayMatcher(List<Integer> intValueList) {
+    public BoolArrayMatcher(final List<Integer> intValueList) {
         Assert.isTrue(CollKit.isNotEmpty(intValueList), "Values must be not empty!");
         bValues = new boolean[Collections.max(intValueList) + 1];
         int min = Integer.MAX_VALUE;
-        for (Integer value : intValueList) {
+        for (final Integer value : intValueList) {
             min = Math.min(min, value);
             bValues[value] = true;
         }
@@ -63,7 +63,8 @@ public class BoolArrayMatcher implements PartMatcher {
     }
 
     @Override
-    public boolean test(Integer value) {
+    public boolean test(final Integer value) {
+        final boolean[] bValues = this.bValues;
         if (null == value || value >= bValues.length) {
             return false;
         }
@@ -72,7 +73,9 @@ public class BoolArrayMatcher implements PartMatcher {
 
     @Override
     public int nextAfter(int value) {
+        final int minValue = this.minValue;
         if (value > minValue) {
+            final boolean[] bValues = this.bValues;
             while (value < bValues.length) {
                 if (bValues[value]) {
                     return value;

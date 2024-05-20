@@ -37,39 +37,43 @@ import java.util.List;
  */
 public class Supervisor implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 启动器列表
      */
     protected final List<Launcher> launchers = new ArrayList<>();
     protected Scheduler scheduler;
 
-    public Supervisor(Scheduler scheduler) {
+    /**
+     * 构造
+     *
+     * @param scheduler {@link Scheduler}
+     */
+    public Supervisor(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * 启动 TaskLauncher
+     * 启动 Launcher
      *
      * @param millis 触发事件的毫秒数
      * @return {@link Launcher}
      */
-    protected Launcher spawnLauncher(long millis) {
+    protected Launcher spawnLauncher(final long millis) {
         final Launcher launcher = new Launcher(this.scheduler, millis);
         synchronized (this.launchers) {
             this.launchers.add(launcher);
         }
-        // 子线程是否为daemon线程取决于父线程，因此此处无需显示调用
         this.scheduler.threadExecutor.execute(launcher);
         return launcher;
     }
 
     /**
-     * 启动器启动完毕,启动完毕后从执行器列表中移除
+     * 启动器启动完毕，启动完毕后从执行器列表中移除
      *
      * @param launcher 启动器 {@link Launcher}
      */
-    protected void notifyLauncherCompleted(Launcher launcher) {
+    protected void notifyLauncherCompleted(final Launcher launcher) {
         synchronized (launchers) {
             launchers.remove(launcher);
         }

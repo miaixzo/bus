@@ -29,8 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.linux.Udev;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
@@ -64,14 +64,6 @@ import java.util.*;
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
-    // Package private for access from LinuxOSProcess
-    static final long BOOTTIME;
-    private static final String OS_RELEASE_LOG = "os-release: {}";
-    private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
-    private static final String LSB_RELEASE_LOG = "lsb-release: {}";
-    private static final String RELEASE_DELIM = " release ";
-    private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
-
     /**
      * This static field identifies if the udev library can be loaded.
      */
@@ -84,6 +76,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * This static field identifies if the syscall for gettid returns sane results.
      */
     public static final boolean HAS_SYSCALL_GETTID;
+    // Package private for access from LinuxOSProcess
+    static final long BOOTTIME;
+    private static final String OS_RELEASE_LOG = "os-release: {}";
+    private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
+    private static final String LSB_RELEASE_LOG = "lsb-release: {}";
+    private static final String RELEASE_DELIM = " release ";
+    private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
     /**
      * Jiffies per second, used for process time counters.
      */
@@ -466,11 +465,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return PAGE_SIZE;
     }
 
-    @Override
-    public String queryManufacturer() {
-        return OS_NAME;
-    }
-
     /**
      * Looks for a collection of possible distrib-release filenames
      *
@@ -496,6 +490,11 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         // If all else fails, try this
         return "/etc/issue";
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return OS_NAME;
     }
 
     @Override
@@ -541,7 +540,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         String buildNumber = null;
         List<String> procVersion = Builder.readFile(ProcPath.VERSION);
         if (!procVersion.isEmpty()) {
-            String[] split = RegEx.SPACES.split(procVersion.get(0));
+            String[] split = Pattern.SPACES_PATTERN.split(procVersion.get(0));
             for (String s : split) {
                 if (!"Linux".equals(s) && !"version".equals(s)) {
                     buildNumber = s;
@@ -660,7 +659,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         boolean systemctlFound = false;
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String text : systemctl) {
-            String[] split = RegEx.SPACES.split(text);
+            String[] split = Pattern.SPACES_PATTERN.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);

@@ -32,6 +32,7 @@ package org.miaixz.bus.core.lang.copier;
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface Copier<T> {
 
     /**

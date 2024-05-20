@@ -25,17 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.base.service.impl;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.entity.Result;
 import org.miaixz.bus.base.mapper.BaseMapper;
 import org.miaixz.bus.base.normal.Consts;
 import org.miaixz.bus.base.service.BaseService;
+import org.miaixz.bus.core.toolkit.FieldKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ import java.util.List;
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
         implements BaseService<T> {
 
-    @Autowired
+    @Resource
     protected Mapper mapper;
 
     @Override
@@ -123,8 +124,8 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     @Override
     public T updateByIdCas(T entity, String locking) {
         Condition condition = new Condition(entity.getClass());
-        Object before = ObjectKit.getAttributeValue(entity, locking);
-        Object id = ObjectKit.getAttributeValue(entity, "id");
+        Object before = FieldKit.getFieldValue(entity, locking);
+        Object id = FieldKit.getFieldValue(entity, "id");
         condition.createCriteria().andEqualTo(locking, before);
         condition.createCriteria().andEqualTo("id", id);
         updateByWhereSelective(entity, condition);

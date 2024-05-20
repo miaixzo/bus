@@ -588,21 +588,11 @@ public interface CentralProcessor {
     @Immutable
     class ProcessorCache {
 
-        /**
-         * The cache associativity. If this member is {@code 0xFF}, the cache is fully associative.
-         *
-         * @return the associativity
-         */
-        public byte getAssociativity() {
-            return associativity;
-        }
-
         private final byte level;
         private final byte associativity;
         private final short lineSize;
         private final int cacheSize;
         private final Type type;
-
         public ProcessorCache(byte level, byte associativity, short lineSize, int cacheSize, Type type) {
             this.level = level;
             this.associativity = associativity;
@@ -616,24 +606,21 @@ public interface CentralProcessor {
         }
 
         /**
+         * The cache associativity. If this member is {@code 0xFF}, the cache is fully associative.
+         *
+         * @return the associativity
+         */
+        public byte getAssociativity() {
+            return associativity;
+        }
+
+        /**
          * The cache level. This member can be 1 (L1), 2 (L2), 3 (L3), or 4 (L4).
          *
          * @return the level
          */
         public byte getLevel() {
             return level;
-        }
-
-        /**
-         * The type of cache.
-         */
-        public enum Type {
-            UNIFIED, INSTRUCTION, DATA, TRACE;
-
-            @Override
-            public String toString() {
-                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
-            }
         }
 
         /**
@@ -686,6 +673,18 @@ public interface CentralProcessor {
         @Override
         public int hashCode() {
             return Objects.hash(associativity, cacheSize, level, lineSize, type);
+        }
+
+        /**
+         * The type of cache.
+         */
+        public enum Type {
+            UNIFIED, INSTRUCTION, DATA, TRACE;
+
+            @Override
+            public String toString() {
+                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+            }
         }
     }
 

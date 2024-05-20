@@ -31,15 +31,42 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * 参考Guava的Range实现，用于描述作为上下界的两个{@link Bound}实例围成的一段区间
- * 作为{@link Predicate}使用时，可检验指定值是否在区间中，即指定值是否同时满足上下界的{@link Bound#test}方法
+ * <p>参考<em>Guava</em>的<em>Range</em>实现，用于描述作为上下界的两个{@link Bound}实例围成的一段区间。
+ * 作为{@link Predicate}使用时，可检验指定值是否在区间中，即指定值是否同时满足上下界的{@link Bound#test}方法。
+ *
+ * <p>区间的类型，支持通过工厂方法创建下述几种类型的区间：</p>
+ * <table>
+ * <caption>区间</caption>
+ * <tr><th>区间            <th>数学定义                  <th>工厂方法
+ * <tr><td>{@code (a, b)}  <td>{@code {x | a < x < b}}  <td>{@link #open}
+ * <tr><td>{@code [a, b]}  <td>{@code {x | a <= x <= b}}<td>{@link #close}
+ * <tr><td>{@code (a, b]}  <td>{@code {x | a < x <= b}} <td>{@link #openClose}
+ * <tr><td>{@code [a, b)}  <td>{@code {x | a <= x < b}} <td>{@link #closeOpen}
+ * <tr><td>{@code (a, +∞)} <td>{@code {x | x > a}}      <td>{@link #greaterThan}
+ * <tr><td>{@code [a, +∞)} <td>{@code {x | x >= a}}     <td>{@link #atLeast}
+ * <tr><td>{@code (-∞, b)} <td>{@code {x | x < b}}      <td>{@link #lessThan}
+ * <tr><td>{@code (-∞, b]} <td>{@code {x | x <= b}}     <td>{@link #atMost}
+ * <tr><td>{@code (-∞, +∞)}<td>{@code {x}}              <td>{@link #all}
+ * </table>
+ *
+ * <p>空区间</p>
+ * <p>根据数学定义，当区间中无任何实数时，认为该区间 代表的集合为空集，
+ * 用户可通过{@link #isEmpty}确认当前实例是否为空区间。
+ * 若实例上界<em>a</em>，下界为<em>b</em>，则当实例满足下述任意条件时，认为其为一个空区间：
+ * <ul>
+ *     <li>{@code a > b}；</li>
+ *     <li>{@code [a, b)}，且{@code a == b}；</li>
+ *     <li>{@code (a, b)}，且{@code a == b}；</li>
+ *     <li>{@code (a, b]}，且{@code a == b}；</li>
+ * </ul>
  * 当通过工厂方法创建区间时，若区间为空，则会抛出{@link IllegalArgumentException},
- * 但是通过交并操作仍有可能创建出满足上述描述的空区间
+ * 但是通过交并操作仍有可能创建出满足上述描述的空区间。
  * 此时若空区间参与操作可能得到意外的结果，
- * 因此对通过非工厂方法得到的区间，在操作前有必要通过{@link #isEmpty}进行检验
+ * 因此对通过非工厂方法得到的区间，在操作前有必要通过{@link #isEmpty}进行检验。
  *
  * @param <T> 边界值类型
  * @author Kimi Liu
+ * @see Bound
  * @since Java 17+
  */
 public class BoundedRange<T extends Comparable<? super T>> implements Predicate<T> {
@@ -270,7 +297,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     }
 
     /**
-     * <p>当前区间是否为空
+     * <p>当前区间是否为空。
      * 当由下界<em>left</em>与上界<em>right</em>构成的区间，
      * 符合下述任意条件时，认为当前区间为空：
      * <ul>
@@ -295,7 +322,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
         // 上界小于下界时为空
         return compareValue > 0
                 // 上下界的边界值相等，且不为退化区间是为空
-                || false == (low.getType().isClose() && up.getType().isClose());
+                || !(low.getType().isClose() && up.getType().isClose());
     }
 
     /**
@@ -387,7 +414,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 是否
      */
     public boolean isDisjoint(final BoundedRange<T> other) {
-        return BoundedOperation.isDisjoint(this, other);
+        return BoundedRangeOperation.isDisjoint(this, other);
     }
 
     /**
@@ -397,7 +424,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 是否
      */
     public boolean isIntersected(final BoundedRange<T> other) {
-        return BoundedOperation.isIntersected(this, other);
+        return BoundedRangeOperation.isIntersected(this, other);
     }
 
     /**
@@ -414,13 +441,13 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     }
 
     /**
-     * 若{@code other}与当前区间相交，则将其与当前区间合并
+     * 若{@code other}与当前区间相交，则将其与当前区间合并。
      *
      * @param other 另一个区间
      * @return 合并后的新区间，若两区间不相交则返回当前集合
      */
     public BoundedRange<T> unionIfIntersected(final BoundedRange<T> other) {
-        return BoundedOperation.unionIfIntersected(this, other);
+        return BoundedRangeOperation.unionIfIntersected(this, other);
     }
 
     /**
@@ -430,7 +457,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 包含当前区间与指定区间的最小的区间
      */
     public BoundedRange<T> span(final BoundedRange<T> other) {
-        return BoundedOperation.span(this, other);
+        return BoundedRangeOperation.span(this, other);
     }
 
     /**
@@ -440,7 +467,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 代表间隔部分的区间，若两区间相交则返回{@code null}
      */
     public BoundedRange<T> gap(final BoundedRange<T> other) {
-        return BoundedOperation.gap(this, other);
+        return BoundedRangeOperation.gap(this, other);
     }
 
     /**
@@ -450,7 +477,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 代表交集的区间，若无交集则返回{@code null}
      */
     public BoundedRange<T> intersection(final BoundedRange<T> other) {
-        return BoundedOperation.intersection(this, other);
+        return BoundedRangeOperation.intersection(this, other);
     }
 
     /**
@@ -460,7 +487,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 区间
      */
     public BoundedRange<T> subGreatThan(final T min) {
-        return BoundedOperation.subGreatThan(this, min);
+        return BoundedRangeOperation.subGreatThan(this, min);
     }
 
     /**
@@ -470,7 +497,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 区间
      */
     public BoundedRange<T> subAtLeast(final T min) {
-        return BoundedOperation.subAtLeast(this, min);
+        return BoundedRangeOperation.subAtLeast(this, min);
     }
 
     /**
@@ -480,7 +507,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 区间
      */
     public BoundedRange<T> subLessThan(final T max) {
-        return BoundedOperation.subLessThan(this, max);
+        return BoundedRangeOperation.subLessThan(this, max);
     }
 
     /**
@@ -490,7 +517,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 区间
      */
     public BoundedRange<T> subAtMost(final T max) {
-        return BoundedOperation.subAtMost(this, max);
+        return BoundedRangeOperation.subAtMost(this, max);
     }
 
 }

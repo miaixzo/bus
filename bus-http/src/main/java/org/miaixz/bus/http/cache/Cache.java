@@ -26,7 +26,6 @@
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.FileSystem;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.AssignSink;
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -116,11 +115,11 @@ public class Cache implements Closeable, Flushable {
      * @param maxSize   缓存的最大大小(以字节为单位)
      */
     public Cache(File directory, long maxSize) {
-        this(directory, maxSize, FileSystem.SYSTEM);
+        this(directory, maxSize, DiskLruCache.DiskFile.SYSTEM);
     }
 
-    public Cache(File directory, long maxSize, FileSystem fileSystem) {
-        this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
+    public Cache(File directory, long maxSize, DiskLruCache.DiskFile diskFile) {
+        this.cache = DiskLruCache.create(diskFile, directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
     public static String key(UnoUrl url) {

@@ -38,7 +38,7 @@ import java.util.TimeZone;
  */
 public class TimeZoneConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected TimeZone convertInternal(final Class<?> targetClass, final Object value) {

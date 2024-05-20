@@ -25,16 +25,14 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * {@link CharSequence}资源，字符串做为资源
@@ -42,18 +40,20 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CharSequenceResource implements Resource {
+public class CharSequenceResource implements Resource, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private final CharSequence data;
     private final CharSequence name;
-    private final Charset charset;
+    private final java.nio.charset.Charset charset;
 
     /**
      * 构造，使用UTF8编码
      *
      * @param data 资源数据
      */
-    public CharSequenceResource(CharSequence data) {
+    public CharSequenceResource(final CharSequence data) {
         this(data, null);
     }
 
@@ -63,8 +63,8 @@ public class CharSequenceResource implements Resource {
      * @param data 资源数据
      * @param name 资源名称
      */
-    public CharSequenceResource(CharSequence data, String name) {
-        this(data, name, org.miaixz.bus.core.lang.Charset.UTF_8);
+    public CharSequenceResource(final CharSequence data, final String name) {
+        this(data, name, Charset.UTF_8);
     }
 
     /**
@@ -74,7 +74,7 @@ public class CharSequenceResource implements Resource {
      * @param name    资源名称
      * @param charset 编码
      */
-    public CharSequenceResource(CharSequence data, CharSequence name, Charset charset) {
+    public CharSequenceResource(final CharSequence data, final CharSequence name, final java.nio.charset.Charset charset) {
         this.data = data;
         this.name = name;
         this.charset = charset;
@@ -91,23 +91,28 @@ public class CharSequenceResource implements Resource {
     }
 
     @Override
+    public long size() {
+        return data.length();
+    }
+
+    @Override
     public InputStream getStream() {
         return new ByteArrayInputStream(readBytes());
     }
 
     @Override
-    public BufferedReader getReader(Charset charset) {
-        return IoKit.getReader(new StringReader(this.data.toString()));
+    public BufferedReader getReader(final java.nio.charset.Charset charset) {
+        return IoKit.toBuffered(new StringReader(this.data.toString()));
     }
 
     @Override
-    public String readString(Charset charset) throws InternalException {
+    public String readString(final java.nio.charset.Charset charset) throws InternalException {
         return this.data.toString();
     }
 
     @Override
     public byte[] readBytes() throws InternalException {
-        return StringKit.bytes(this.data, this.charset);
+        return ByteKit.toBytes(this.data, this.charset);
     }
 
 }

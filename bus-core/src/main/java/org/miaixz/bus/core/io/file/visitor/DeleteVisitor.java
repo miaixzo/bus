@@ -40,10 +40,13 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class DeleteVisitor extends SimpleFileVisitor<Path> {
 
+    /**
+     * 单例对象
+     */
     public static DeleteVisitor INSTANCE = new DeleteVisitor();
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         Files.delete(file);
         return FileVisitResult.CONTINUE;
     }
@@ -58,7 +61,7 @@ public class DeleteVisitor extends SimpleFileVisitor<Path> {
      * @throws IOException IO异常
      */
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+    public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
         if (e == null) {
             Files.delete(dir);
             return FileVisitResult.CONTINUE;

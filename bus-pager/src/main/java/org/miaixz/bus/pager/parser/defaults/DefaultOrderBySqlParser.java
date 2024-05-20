@@ -27,7 +27,7 @@ package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.parser.OrderBySqlParser;

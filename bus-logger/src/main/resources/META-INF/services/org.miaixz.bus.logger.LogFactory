@@ -1,5 +1,0 @@
-org.miaixz.bus.logger.dialect.slf4j.Slf4jLogFactory
-org.miaixz.bus.logger.dialect.log4j2.Log4j2LogFactory
-org.miaixz.bus.logger.dialect.commons.ApacheCommonsLogFactory
-org.miaixz.bus.logger.dialect.tinylog.TinyLogFactory
-org.miaixz.bus.logger.dialect.jboss.JbossLogFactory

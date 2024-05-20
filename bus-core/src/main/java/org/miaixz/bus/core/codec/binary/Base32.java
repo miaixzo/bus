@@ -26,14 +26,16 @@
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base32Provider;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
-import java.nio.charset.Charset;
-
 /**
- * Base32 - encodes and decodes RFC4648 Base32 (see https://datatracker.ietf.org/doc/html/rfc4648#section-6)
- * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码,所以5个ASCII字符经过base32编码后会变为8个字符（公约数为40）
- * 长度增加3/5.不足8n用“=”补足,根据RFC4648 Base32规范，支持两种模式：
+ * Base32 - encodes and decodes RFC4648 Base32
+ * (see <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">https://datatracker.ietf.org/doc/html/rfc4648#section-6</a> )
+ * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码。
+ * 所以，5个ASCII字符经过base32编码后会变为8个字符（公约数为40），长度增加3/5.不足8n用“=”补足。
+ * 根据RFC4648 Base32规范，支持两种模式：
  * <ul>
  *     <li>Base 32 Alphabet                 (ABCDEFGHIJKLMNOPQRSTUVWXYZ234567)</li>
  *     <li>"Extended Hex" Base 32 Alphabet  (0123456789ABCDEFGHIJKLMNOPQRSTUV)</li>
@@ -61,7 +63,7 @@ public class Base32 {
      * @return 被加密后的字符串
      */
     public static String encode(final String source) {
-        return encode(source, org.miaixz.bus.core.lang.Charset.UTF_8);
+        return encode(source, Charset.UTF_8);
     }
 
     /**
@@ -71,8 +73,8 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(final String source, final Charset charset) {
-        return encode(StringKit.bytes(source, charset));
+    public static String encode(final String source, final java.nio.charset.Charset charset) {
+        return encode(ByteKit.toBytes(source, charset));
     }
 
     /**
@@ -92,7 +94,7 @@ public class Base32 {
      * @return 被加密后的字符串
      */
     public static String encodeHex(final String source) {
-        return encodeHex(source, org.miaixz.bus.core.lang.Charset.UTF_8);
+        return encodeHex(source, Charset.UTF_8);
     }
 
     /**
@@ -102,8 +104,8 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encodeHex(final String source, final Charset charset) {
-        return encodeHex(StringKit.bytes(source, charset));
+    public static String encodeHex(final String source, final java.nio.charset.Charset charset) {
+        return encodeHex(ByteKit.toBytes(source, charset));
     }
 
     /**
@@ -123,7 +125,7 @@ public class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeString(final String source) {
-        return decodeString(source, org.miaixz.bus.core.lang.Charset.UTF_8);
+        return decodeString(source, Charset.UTF_8);
     }
 
     /**
@@ -133,7 +135,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeString(final String source, final Charset charset) {
+    public static String decodeString(final String source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 
@@ -153,8 +155,8 @@ public class Base32 {
      * @param source 被解码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String decodeStringHex(final String source) {
-        return decodeStringHex(source, org.miaixz.bus.core.lang.Charset.UTF_8);
+    public static String decodeStrHex(final String source) {
+        return decodeStrHex(source, Charset.UTF_8);
     }
 
     /**
@@ -164,7 +166,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStringHex(final String source, final Charset charset) {
+    public static String decodeStrHex(final String source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decodeHex(source), charset);
     }
 

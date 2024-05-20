@@ -30,10 +30,9 @@ import org.miaixz.bus.base.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.crypto.Mode;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.symmetric.AES;
-import org.miaixz.bus.crypto.symmetric.Crypto;
+import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.center.AES;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
@@ -61,7 +60,7 @@ import java.nio.CharBuffer;
 public class EncryptFilter implements WebFilter {
 
     private Config.Encrypt encrypt;
-    private Crypto crypto;
+    private SymmetricCrypto crypto;
 
     public EncryptFilter(Config.Encrypt encrypt) {
         this.encrypt = encrypt;
@@ -70,7 +69,7 @@ public class EncryptFilter implements WebFilter {
     @PostConstruct
     public void init() {
         if (Algorithm.AES.getValue().equals(encrypt.getType())) {
-            crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
+            crypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
         }
     }
 

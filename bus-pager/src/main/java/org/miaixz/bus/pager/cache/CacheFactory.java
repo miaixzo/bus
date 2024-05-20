@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.cache;
 
-import org.miaixz.bus.core.exception.PageException;
+import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.pager.Property;
 

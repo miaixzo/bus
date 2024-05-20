@@ -29,7 +29,7 @@ import org.miaixz.bus.cache.magic.CacheKeys;
 import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.annotation.Inject;
 import org.miaixz.bus.core.annotation.Singleton;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.logger.Logger;
 

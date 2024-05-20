@@ -25,13 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.text.escape.EscapeCodeValues;
-import org.miaixz.bus.core.text.translate.CharSequenceTranslator;
+import org.miaixz.bus.core.text.escape.Html4Escape;
+import org.miaixz.bus.core.text.escape.Html4Unescape;
+import org.miaixz.bus.core.text.escape.XmlEscape;
+import org.miaixz.bus.core.text.escape.XmlUnescape;
+
+import java.util.function.Predicate;
 
 /**
  * 转义和反转义工具类Escape / Unescape
- * escape采用ISO Latin字符集对指定的字符串进行编码
- * Java, Java Script, HTML and XML.
+ * escape采用ISO Latin字符集对指定的字符串进行编码。
+ * 所有的空格符、标点符号、特殊字符以及其他非ASCII字符都将被转化成%xx格式的字符编码(xx等于该字符在字符集表里面的编码的16进制数字)。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,255 +43,179 @@ import org.miaixz.bus.core.text.translate.CharSequenceTranslator;
 public class EscapeKit {
 
     /**
-     * 获取一个{@link Builder}.
-     *
-     * @param translator 文本转义
-     * @return {@link Builder}
+     * 不转义的符号编码
      */
-    public static Builder builder(final CharSequenceTranslator translator) {
-        return new Builder(translator);
-    }
+    private static final String NOT_ESCAPE_CHARS = "*@-_+./";
+    private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(
+            Character.isDigit(c)
+                    || Character.isLowerCase(c)
+                    || Character.isUpperCase(c)
+                    || StringKit.contains(NOT_ESCAPE_CHARS, c)
+    );
 
     /**
-     * 使用Java字符串规则转义{@code String}中的字符
-     *
+     * 转义XML中的特殊字符
      * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn't say, \"Stop!\"
+     * 	 &amp; (ampersand) 替换为 &amp;amp;
+     * 	 &lt; (less than) 替换为 &amp;lt;
+     * 	 &gt; (greater than) 替换为 &amp;gt;
+     * 	 &quot; (double quote) 替换为 &amp;quot;
+     * 	 ' (single quote / apostrophe) 替换为 &amp;apos;
      * </pre>
      *
-     * @param input 要转义值的字符串可以为空
-     * @return 带转义值的字符串，{@code null}如果输入为空字符串
+     * @param xml XML文本
+     * @return 转义后的文本
      */
-    public static final String escapeJava(final String input) {
-        return new EscapeCodeValues().ESCAPE_JAVA.translate(input);
+    public static String escapeXml(final CharSequence xml) {
+        final XmlEscape escape = new XmlEscape();
+        return escape.apply(xml).toString();
     }
 
     /**
-     * 使用EcmaScript字符串规则转义{@code String }中的字符.
+     * 反转义XML中的特殊字符
      *
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn\'t say, \"Stop!\"
-     * </pre>
-     *
-     * @param input 要转义值的字符串可以为空
-     * @return 带转义值的字符串，{@code null}如果输入为空字符串
+     * @param xml XML文本
+     * @return 转义后的文本
      */
-    public static final String escapeEcmaScript(final String input) {
-        return new EscapeCodeValues().ESCAPE_ECMASCRIPT.translate(input);
+    public static String unescapeXml(final CharSequence xml) {
+        final XmlUnescape unescape = new XmlUnescape();
+        return unescape.apply(xml).toString();
     }
 
     /**
-     * 使用Json字符串规则转义{@code String}中的字符
+     * 转义HTML4中的特殊字符
      *
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He didn't say, \"Stop!\"
-     * </pre>
-     *
-     * @param input 要转义值的字符串可以为空
-     * @return 带转义值的字符串，{@code null}如果输入为空字符串
+     * @param html HTML文本
+     * @return 转义后的文本
      */
-    public static final String escapeJson(final String input) {
-        return new EscapeCodeValues().ESCAPE_JSON.translate(input);
+    public static String escapeHtml4(final CharSequence html) {
+        final Html4Escape escape = new Html4Escape();
+        return escape.apply(html).toString();
     }
 
     /**
-     * 取消在{@code String}中发现的任何Java信息的转义.
+     * 反转义HTML4中的特殊字符
      *
-     * @param input 要取消转义的{@code String}可以为空
-     * @return 新的未转义的{@code String}, {@code null}如果输入为空字符串
+     * @param html HTML文本
+     * @return 转义后的文本
      */
-    public static final String unescapeJava(final String input) {
-        return new EscapeCodeValues().UNESCAPE_JAVA.translate(input);
+    public static String unescapeHtml4(final CharSequence html) {
+        final Html4Unescape unescape = new Html4Unescape();
+        return unescape.apply(html).toString();
     }
 
     /**
-     * 取消在{@code String}中找到的任何EcmaScript文本
+     * Escape编码（Unicode）（等同于JS的escape()方法）
+     * 该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ - _ + . /
+     * 其他所有的字符都会被转义序列替换。
      *
-     * @param input 要取消转义的{@code String }可以为空
-     * @return 新的未转义的{@code String}， {@code null}如果输入为空字符串
-     * @see #unescapeJava(String)
+     * @param content 被转义的内容
+     * @return 编码后的字符串
      */
-    public static final String unescapeEcmaScript(final String input) {
-        return new EscapeCodeValues().UNESCAPE_ECMASCRIPT.translate(input);
+    public static String escape(final CharSequence content) {
+        return escape(content, JS_ESCAPE_FILTER);
     }
 
     /**
-     * 取消在{@code String}中找到的任何Json文本
+     * Escape编码（Unicode）
+     * 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
      *
-     * @param input 要取消转义的{@code String}可以为空
-     * @return 新的未转义的{@code String}， {@code null}如果输入为空字符串
-     * @see #unescapeJava(String)
+     * @param content 被转义的内容
+     * @return 编码后的字符串
      */
-    public static final String unescapeJson(final String input) {
-        return new EscapeCodeValues().UNESCAPE_JSON.translate(input);
+    public static String escapeAll(final CharSequence content) {
+        return escape(content, c -> true);
     }
 
     /**
-     * 使用HTML实体转义{@code String}中的字符
+     * Escape编码（Unicode）
+     * 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
      *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
-     * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
-     * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
-     * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
-     * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
+     * @param content 被转义的内容
+     * @param filter  编码过滤器，对于过滤器中accept为false的字符不做编码
+     * @return 编码后的字符串
      */
-    public static final String escapeHtml4(final String input) {
-        return EscapeCodeValues.ESCAPE_HTML4.translate(input);
-    }
-
-    /**
-     * 使用HTML实体转义{@code String}中的字符.
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     */
-    public static final String escapeHtml3(final String input) {
-        return EscapeCodeValues.ESCAPE_HTML3.translate(input);
-    }
-
-    /**
-     * 将包含实体的字符串转义为包含与转义对应的实际Unicode字符的字符串。支持HTML 4.0实体
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     */
-    public static final String unescapeHtml4(final String input) {
-        return new EscapeCodeValues().UNESCAPE_HTML4.translate(input);
-    }
-
-    /**
-     * 将包含实体的字符串转义为包含与转义对应的实际Unicode字符的字符串。支持HTML 4.0实体
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     */
-    public static final String unescapeHtml3(final String input) {
-        return new EscapeCodeValues().UNESCAPE_HTML3.translate(input);
-    }
-
-    /**
-     * 使用XML实体转义{@code String}中的字符
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see #unescapeXml(String)
-     */
-    public static String escapeXml10(final String input) {
-        return new EscapeCodeValues().ESCAPE_XML10.translate(input);
-    }
-
-    /**
-     * 使用XML实体转义{@code String}中的字符
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see #unescapeXml(String)
-     */
-    public static String escapeXml11(final String input) {
-        return new EscapeCodeValues().ESCAPE_XML11.translate(input);
-    }
-
-    /**
-     * 将包含XML实体的字符串转义为包含与转义对应的实际Unicode字符的字符串
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see #escapeXml10(String)
-     * @see #escapeXml11(String)
-     */
-    public static final String unescapeXml(final String input) {
-        return new EscapeCodeValues().UNESCAPE_XML.translate(input);
-    }
-
-    /**
-     * 使用XSI规则转义{@code String}中的字符
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see <a href="http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html">Shell Command Language</a>
-     */
-    public static final String escapeXSI(final String input) {
-        return new EscapeCodeValues().ESCAPE_XSI.translate(input);
-    }
-
-    /**
-     * 使用XSI规则取消对{@code String}中的字符的转义
-     *
-     * @param input 要转义的{@code String}可以为空
-     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
-     * @see EscapeKit#escapeXSI(String)
-     */
-    public static final String unescapeXSI(final String input) {
-        return new EscapeCodeValues().UNESCAPE_XSI.translate(input);
-    }
-
-    /**
-     * 提供转义方法的方便的{@link StringBuilder}包装器
-     *
-     * <pre>
-     * new Builder(ESCAPE_HTML4)
-     *      .append("&lt;p&gt;")
-     *      .escape("This is paragraph 1 and special chars like &amp; get escaped.")
-     *      .append("&lt;/p&gt;&lt;p&gt;")
-     *      .escape("This is paragraph 2 &amp; more...")
-     *      .append("&lt;/p&gt;")
-     *      .toString()
-     * </pre>
-     */
-    public static final class Builder {
-
-        /**
-         * 要在生成器类中使用的StringBuilder.
-         */
-        private final StringBuilder sb;
-
-        /**
-         * 将在构建器类中使用的CharSequenceTranslator.
-         */
-        private final CharSequenceTranslator translator;
-
-
-        private Builder(final CharSequenceTranslator translator) {
-            this.sb = new StringBuilder();
-            this.translator = translator;
+    public static String escape(final CharSequence content, final Predicate<Character> filter) {
+        if (StringKit.isEmpty(content)) {
+            return StringKit.toString(content);
         }
 
-        /**
-         * 根据给定的{@link CharSequenceTranslator}转义{@code input}
-         *
-         * @param input 要转义的字符串
-         * @return {@code this}，以启用
-         */
-        public Builder escape(final String input) {
-            sb.append(translator.translate(input));
-            return this;
+        final StringBuilder tmp = new StringBuilder(content.length() * 6);
+        char c;
+        for (int i = 0; i < content.length(); i++) {
+            c = content.charAt(i);
+            if (!filter.test(c)) {
+                tmp.append(c);
+            } else if (c < 256) {
+                tmp.append("%");
+                if (c < 16) {
+                    tmp.append("0");
+                }
+                tmp.append(Integer.toString(c, 16));
+            } else {
+                tmp.append("%u");
+                if (c <= 0xfff) {
+                    tmp.append("0");
+                }
+                tmp.append(Integer.toString(c, 16));
+            }
+        }
+        return tmp.toString();
+    }
+
+    /**
+     * Escape解码
+     *
+     * @param content 被转义的内容
+     * @return 解码后的字符串
+     */
+    public static String unescape(final String content) {
+        if (StringKit.isBlank(content)) {
+            return content;
         }
 
-        /**
-         * 追加字符串信息.
-         *
-         * @param input 要追加的字符串
-         * @return {@code this}，以启用
-         */
-        public Builder append(final String input) {
-            sb.append(input);
-            return this;
+        final StringBuilder tmp = new StringBuilder(content.length());
+        int lastPos = 0;
+        int pos;
+        char ch;
+        while (lastPos < content.length()) {
+            pos = content.indexOf("%", lastPos);
+            if (pos == lastPos) {
+                if (content.charAt(pos + 1) == 'u') {
+                    ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);
+                    tmp.append(ch);
+                    lastPos = pos + 6;
+                } else {
+                    ch = (char) Integer.parseInt(content.substring(pos + 1, pos + 3), 16);
+                    tmp.append(ch);
+                    lastPos = pos + 3;
+                }
+            } else {
+                if (pos == -1) {
+                    tmp.append(content.substring(lastPos));
+                    lastPos = content.length();
+                } else {
+                    tmp.append(content, lastPos, pos);
+                    lastPos = pos;
+                }
+            }
         }
+        return tmp.toString();
+    }
 
-        /**
-         * 返回转义字符串
-         *
-         * @return 转义后的字符串
-         */
-        @Override
-        public String toString() {
-            return sb.toString();
+    /**
+     * 安全的unescape文本，当文本不是被escape的时候，返回原文。
+     *
+     * @param content 内容
+     * @return 解码后的字符串，如果解码失败返回原字符串
+     */
+    public static String safeUnescape(final String content) {
+        try {
+            return unescape(content);
+        } catch (final Exception e) {
+            // Ignore Exception
         }
+        return content;
     }
 
 }

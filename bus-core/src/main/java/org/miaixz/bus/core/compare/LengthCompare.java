@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
 
 import java.util.Comparator;
 
@@ -46,7 +46,7 @@ public class LengthCompare implements Comparator<CharSequence> {
     public int compare(final CharSequence o1, final CharSequence o2) {
         int result = Integer.compare(o1.length(), o2.length());
         if (0 == result) {
-            result = ObjectKit.compare(o1.toString(), o2.toString());
+            result = CompareKit.compare(o1.toString(), o2.toString());
         }
         return result;
     }

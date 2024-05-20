@@ -26,10 +26,10 @@
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
@@ -241,7 +241,7 @@ public class Platform {
      * @return 属性值或<code>null</code>
      */
     public static String get(String name, String defaultValue) {
-        return StringKit.nullToDefault(get(name, false), defaultValue);
+        return ObjectKit.defaultIfNull(get(name, false), defaultValue);
     }
 
     /**

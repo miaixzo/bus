@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern.matcher;
 
+import org.miaixz.bus.core.toolkit.DateKit;
 import org.miaixz.bus.cron.pattern.Part;
 
 import java.time.Year;
@@ -56,13 +57,13 @@ public class PatternMatcher {
      * @param dayOfWeekMatcher  周匹配器
      * @param yearMatcher       年匹配器
      */
-    public PatternMatcher(PartMatcher secondMatcher,
-                          PartMatcher minuteMatcher,
-                          PartMatcher hourMatcher,
-                          PartMatcher dayOfMonthMatcher,
-                          PartMatcher monthMatcher,
-                          PartMatcher dayOfWeekMatcher,
-                          PartMatcher yearMatcher) {
+    public PatternMatcher(final PartMatcher secondMatcher,
+                          final PartMatcher minuteMatcher,
+                          final PartMatcher hourMatcher,
+                          final PartMatcher dayOfMonthMatcher,
+                          final PartMatcher monthMatcher,
+                          final PartMatcher dayOfWeekMatcher,
+                          final PartMatcher yearMatcher) {
 
         matchers = new PartMatcher[]{
                 secondMatcher,
@@ -84,9 +85,9 @@ public class PatternMatcher {
      * @param isLeapYear 是否闰年
      * @return 是否匹配
      */
-    private static boolean isMatchDayOfMonth(PartMatcher matcher, int dayOfMonth, int month, boolean isLeapYear) {
-        return ((matcher instanceof DayOfMonthMatcher)
-                ? ((DayOfMonthMatcher) matcher).match(dayOfMonth, month, isLeapYear)
+    private static boolean matchDayOfMonth(final PartMatcher matcher, final int dayOfMonth, final int month, final boolean isLeapYear) {
+        return ((matcher instanceof DayOfMonthMatcher) //
+                ? ((DayOfMonthMatcher) matcher).match(dayOfMonth, month, isLeapYear) //
                 : matcher.test(dayOfMonth));
     }
 
@@ -96,7 +97,7 @@ public class PatternMatcher {
      * @param part 表达式位置
      * @return {@link PartMatcher}
      */
-    public PartMatcher get(Part part) {
+    public PartMatcher get(final Part part) {
         return matchers[part.ordinal()];
     }
 
@@ -106,7 +107,7 @@ public class PatternMatcher {
      * @param fields 时间字段值，{second, minute, hour, dayOfMonth, month, dayOfWeek, year}
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    public boolean match(int[] fields) {
+    public boolean match(final int[] fields) {
         return match(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6]);
     }
 
@@ -116,7 +117,7 @@ public class PatternMatcher {
      * @param dayOfWeekValue dayOfMonth值，星期从0开始，0和7都表示周日
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    public boolean matchWeek(int dayOfWeekValue) {
+    public boolean matchWeek(final int dayOfWeekValue) {
         return matchers[5].test(dayOfWeekValue);
     }
 
@@ -132,11 +133,11 @@ public class PatternMatcher {
      * @param year       年
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    private boolean match(int second, int minute, int hour, int dayOfMonth, int month, int dayOfWeek, int year) {
+    private boolean match(final int second, final int minute, final int hour, final int dayOfMonth, final int month, final int dayOfWeek, final int year) {
         return ((second < 0) || matchers[0].test(second)) // 匹配秒（非秒匹配模式下始终返回true）
                 && matchers[1].test(minute)// 匹配分
                 && matchers[2].test(hour)// 匹配时
-                && isMatchDayOfMonth(matchers[3], dayOfMonth, month, Year.isLeap(year))// 匹配日
+                && matchDayOfMonth(matchers[3], dayOfMonth, month, Year.isLeap(year))// 匹配日
                 && matchers[4].test(month) // 匹配月
                 && matchers[5].test(dayOfWeek)// 匹配周
                 && matchers[6].test(year);// 匹配年
@@ -152,15 +153,16 @@ public class PatternMatcher {
      * </ul>
      *
      * <pre>
-     *        秒 分 时 日 月 周 年
+     *        秒 分 时 日 月(1) 周(0) 年
      *     下 &lt;-----------------&gt; 上
      * </pre>
      *
-     * @param values 时间字段值，{second, minute, hour, dayOfMonth, month, dayOfWeek, year}
+     * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year},
+     *               注意这个字段值会被修改
      * @param zone   时区
      * @return {@link Calendar}，毫秒数为0
      */
-    public Calendar nextMatchAfter(int[] values, TimeZone zone) {
+    public Calendar nextMatchAfter(final int[] values, final TimeZone zone) {
         final Calendar calendar = Calendar.getInstance(zone);
         calendar.set(Calendar.MILLISECOND, 0);
 
@@ -184,17 +186,15 @@ public class PatternMatcher {
      *     <li>如果此部分下个值小于给定值，回退到上一个值获取下一个新值，之后的值置为最小值</li>
      * </ul>
      *
-     * <pre>
-     *        秒 分 时 日 月 周 年
-     *     下 &lt;-----------------&gt; 上
-     * </pre>
+     * <pre>{@code
+     *          秒 分 时 日 月 周 年
+     *     下 <--------------------> 上
+     * }</pre>
      *
-     * @param values 时间字段值，{second, minute, hour, dayOfMonth, month, dayOfWeek, year}
+     * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
      * @return {@link Calendar}，毫秒数为0
      */
-    private int[] nextMatchValuesAfter(int[] values) {
-        final int[] newValues = values.clone();
-
+    private int[] nextMatchValuesAfter(final int[] values) {
         int i = Part.YEAR.ordinal();
         // 新值，-1表示标识为回退
         int nextValue = 0;
@@ -204,10 +204,12 @@ public class PatternMatcher {
                 i--;
                 continue;
             }
-            nextValue = matchers[i].nextAfter(values[i]);
+
+            nextValue = getNextMatch(values, i, 0);
+
             if (nextValue > values[i]) {
                 // 此部分正常获取新值，结束循环，后续的部分置最小值
-                newValues[i] = nextValue;
+                values[i] = nextValue;
                 i--;
                 break;
             } else if (nextValue < values[i]) {
@@ -216,6 +218,7 @@ public class PatternMatcher {
                 nextValue = -1;// 标记回退查找
                 break;
             }
+
             // 值不变，检查下一个部分
             i--;
         }
@@ -228,9 +231,11 @@ public class PatternMatcher {
                     i++;
                     continue;
                 }
-                nextValue = matchers[i].nextAfter(values[i] + 1);
+
+                nextValue = getNextMatch(values, i, 1);
+
                 if (nextValue > values[i]) {
-                    newValues[i] = nextValue;
+                    values[i] = nextValue;
                     i--;
                     break;
                 }
@@ -239,8 +244,30 @@ public class PatternMatcher {
         }
 
         // 修改值以下的字段全部归最小值
-        setToMin(newValues, i);
-        return newValues;
+        setToMin(values, i);
+        return values;
+    }
+
+    /**
+     * 获取指定部分的下一个匹配值，三种结果：
+     * <ul>
+     *     <li>结果值大于原值：此部分已更新，后续部分取匹配的最小值。</li>
+     *     <li>结果值小于原值：此部分获取到了最小值，上一个部分需要继续取下一个值。</li>
+     *     <li>结果值等于原值：此部分匹配，获取下一个部分的next值</li>
+     * </ul>
+     *
+     * @param newValues   时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
+     * @param partOrdinal 序号
+     * @return 下一个值
+     */
+    private int getNextMatch(final int[] newValues, final int partOrdinal, final int plusValue) {
+        if (partOrdinal == Part.DAY_OF_MONTH.ordinal() && matchers[partOrdinal] instanceof DayOfMonthMatcher) {
+            final boolean isLeapYear = DateKit.isLeapYear(newValues[Part.YEAR.ordinal()]);
+            final int month = newValues[Part.MONTH.ordinal()];
+            return ((DayOfMonthMatcher) matchers[partOrdinal]).nextAfter(newValues[partOrdinal] + plusValue, month, isLeapYear);
+        }
+
+        return matchers[partOrdinal].nextAfter(newValues[partOrdinal] + plusValue);
     }
 
     /**
@@ -249,10 +276,20 @@ public class PatternMatcher {
      * @param values 值数组
      * @param toPart 截止的部分
      */
-    private void setToMin(int[] values, int toPart) {
+    private void setToMin(final int[] values, final int toPart) {
         Part part;
-        for (int i = 0; i <= toPart; i++) {
+        for (int i = toPart; i >= 0; i--) {
             part = Part.of(i);
+            if (part == Part.DAY_OF_MONTH) {
+                final boolean isLeapYear = DateKit.isLeapYear(values[Part.YEAR.ordinal()]);
+                final int month = values[Part.MONTH.ordinal()];
+                final PartMatcher partMatcher = get(part);
+                if (partMatcher instanceof DayOfMonthMatcher) {
+                    values[i] = ((DayOfMonthMatcher) partMatcher).getMinValue(month, isLeapYear);
+                    continue;
+                }
+            }
+
             values[i] = getMin(part);
         }
     }
@@ -263,13 +300,15 @@ public class PatternMatcher {
      * @param part {@link Part}
      * @return 最小值，如果匹配所有，返回对应部分范围的最小值
      */
-    private int getMin(Part part) {
-        PartMatcher matcher = get(part);
+    private int getMin(final Part part) {
+        final PartMatcher matcher = get(part);
 
-        int min;
+        final int min;
         if (matcher instanceof AlwaysTrueMatcher) {
+            // 匹配所有时，获取这个字段本身的最小值
             min = part.getMin();
         } else if (matcher instanceof BoolArrayMatcher) {
+            // 获取用户定义的最小值
             min = ((BoolArrayMatcher) matcher).getMinValue();
         } else {
             throw new IllegalArgumentException("Invalid matcher: " + matcher.getClass().getName());
@@ -289,7 +328,7 @@ public class PatternMatcher {
      * @param value    值
      * @return {@link Calendar}
      */
-    private Calendar setValue(Calendar calendar, Part part, int value) {
+    private Calendar setValue(final Calendar calendar, final Part part, int value) {
         switch (part) {
             case MONTH:
                 value -= 1;

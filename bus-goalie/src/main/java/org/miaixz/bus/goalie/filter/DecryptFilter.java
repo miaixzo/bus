@@ -30,10 +30,9 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.crypto.Mode;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.symmetric.AES;
-import org.miaixz.bus.crypto.symmetric.Crypto;
+import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.center.AES;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
 import org.springframework.core.Ordered;
@@ -55,7 +54,7 @@ import java.util.Map;
 public class DecryptFilter implements WebFilter {
 
     private Config.Decrypt decrypt;
-    private Crypto crypto;
+    private SymmetricCrypto crypto;
 
     public DecryptFilter(Config.Decrypt decrypt) {
         this.decrypt = decrypt;
@@ -64,7 +63,7 @@ public class DecryptFilter implements WebFilter {
     @PostConstruct
     public void init() {
         if (Algorithm.AES.getValue().equals(decrypt.getType())) {
-            crypto = new AES(Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(), decrypt.getOffset().getBytes());
+            crypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(), decrypt.getOffset().getBytes());
         }
     }
 

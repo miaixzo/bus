@@ -28,7 +28,7 @@ package org.miaixz.bus.health.builtin.hardware.common;
 import com.sun.jna.Platform;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
@@ -51,19 +51,16 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
     // Max often iterates current, intentionally making it shorter to re-memoize current
     private final Supplier<long[]> currentFreq = Memoizer.memoize(this::queryCurrentFreq, Memoizer.defaultExpiration() / 2L);
-    private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
     private final Supplier<Long> contextSwitches = Memoizer.memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
     private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
-
     private final Supplier<long[]> systemCpuLoadTicks = Memoizer.memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
     private final Supplier<long[][]> processorCpuLoadTicks = Memoizer.memoize(this::queryProcessorCpuLoadTicks,
             Memoizer.defaultExpiration());
-
     // Logical and Physical Processor Counts
     private final int physicalPackageCount;
     private final int physicalProcessorCount;
     private final int logicalProcessorCount;
-
+    private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
     // Processor info, initialized in constructor
     private final List<LogicalProcessor> logicalProcessors;
     private final List<PhysicalProcessor> physicalProcessors;
@@ -74,10 +71,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      * Create a Processor
      */
     protected AbstractCentralProcessor() {
-        Quartet<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>, List<String>> processorLists = initProcessorCounts();
+        Tuple processorLists = initProcessorCounts();
         // Populate logical processor lists.
-        this.logicalProcessors = Collections.unmodifiableList(processorLists.getA());
-        if (processorLists.getB() == null) {
+        this.logicalProcessors = Collections.unmodifiableList(processorLists.get(0));
+        if (processorLists.get(1) == null) {
             Set<Integer> pkgCoreKeys = this.logicalProcessors.stream()
                     .map(p -> (p.getPhysicalPackageNumber() << 16) + p.getPhysicalProcessorNumber())
                     .collect(Collectors.toSet());
@@ -85,10 +82,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                     .map(k -> new PhysicalProcessor(k >> 16, k & 0xffff)).collect(Collectors.toList());
             this.physicalProcessors = Collections.unmodifiableList(physProcs);
         } else {
-            this.physicalProcessors = Collections.unmodifiableList(processorLists.getB());
+            this.physicalProcessors = Collections.unmodifiableList(processorLists.get(1));
         }
-        this.processorCaches = processorLists.getC() == null ? Collections.emptyList()
-                : Collections.unmodifiableList(processorLists.getC());
+        this.processorCaches = processorLists.get(2) == null ? Collections.emptyList()
+                : Collections.unmodifiableList(processorLists.get(2));
         // Init processor counts
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
@@ -98,7 +95,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         this.logicalProcessorCount = this.logicalProcessors.size();
         this.physicalProcessorCount = this.physicalProcessors.size();
         this.physicalPackageCount = physPkgs.size();
-        this.featureFlags = Collections.unmodifiableList(processorLists.getD());
+        this.featureFlags = Collections.unmodifiableList(processorLists.get(3));
     }
 
     /**
@@ -248,7 +245,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      *
      * @return Lists of initialized Logical Processors, Physical Processors, Processor Caches, and Feature Flags.
      */
-    protected abstract Quartet<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>, List<String>> initProcessorCounts();
+    protected abstract Tuple initProcessorCounts();
 
     /**
      * Updates logical and physical processor counts and arrays

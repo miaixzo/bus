@@ -172,7 +172,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         public String toString() {
             StringBuilder builder = new StringBuilder();
             if (null != terminals && terminals.length != 0) {
-                builder.append(ArrayKit.join(Symbol.COMMA, terminals));
+                builder.append(ArrayKit.join(terminals, Symbol.COMMA));
             } else {
                 builder.append("*");
             }

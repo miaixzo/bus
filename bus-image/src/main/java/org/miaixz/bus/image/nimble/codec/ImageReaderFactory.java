@@ -27,7 +27,7 @@ package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.toolkit.ResourceKit;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
@@ -75,7 +75,7 @@ public class ImageReaderFactory implements Serializable {
 
     private static ImageReaderFactory initDefault() {
         ImageReaderFactory factory = new ImageReaderFactory();
-        URL url = FileKit.getUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
+        URL url = ResourceKit.getResourceUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

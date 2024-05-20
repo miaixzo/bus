@@ -25,52 +25,141 @@
  ********************************************************************************/
 package org.miaixz.bus.core;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.toolkit.CharKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 用于识别当前版本号和版权声明!
- * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
+ * 字符串版本表示，用于解析版本号的不同部分并比较大小。
+ * 来自：java.lang.module.ModuleDescriptor.Version
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Version {
+public class Version implements Comparable<Version>, Serializable {
 
     /**
      * 版本信息
      */
     public static final String _VERSION = "8.0.0.RELEASE";
 
-    /**
-     * JDK版本
-     */
-    public static final int _JVM_VERSION;
+    private static final long serialVersionUID = -1L;
+    private final String version;
+    private final List<Object> sequence;
+    private final List<Object> pre;
+    private final List<Object> build;
 
     /**
-     * 是否大于等于JDK17
+     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+'
+     * 数字部分按照大小比较，字符串按照字典顺序比较。
+     *
+     * <ol>
+     *     <li>sequence: 主版本号</li>
+     *     <li>pre: 次版本号</li>
+     *     <li>build: 构建版本</li>
+     * </ol>
+     *
+     * @param v 版本字符串
      */
-    public static final boolean _IS_JDK17;
+    public Version(final String v) {
+        Assert.notNull(v, "Null version string");
+        final int n = v.length();
+        if (n == 0) {
+            throw new IllegalArgumentException("Empty version string");
+        }
+        this.version = v;
+        this.sequence = new ArrayList<>(4);
+        this.pre = new ArrayList<>(2);
+        this.build = new ArrayList<>(2);
+
+        int i = 0;
+        char c = v.charAt(i);
+        // 不检查开头字符为数字，字母按照字典顺序的数字对待
+
+        final List<Object> sequence = this.sequence;
+        final List<Object> pre = this.pre;
+        final List<Object> build = this.build;
+
+        // 解析主版本
+        i = takeNumber(v, i, sequence);
+
+        while (i < n) {
+            c = v.charAt(i);
+            if (c == '.') {
+                i++;
+                continue;
+            }
+            if (c == '-' || c == '+') {
+                i++;
+                break;
+            }
+            if (CharKit.isNumber(c)) {
+                i = takeNumber(v, i, sequence);
+            } else {
+                i = takeString(v, i, sequence);
+            }
+        }
+
+        if (c == '-' && i >= n) {
+            return;
+        }
+
+        // 解析次版本
+        while (i < n) {
+            c = v.charAt(i);
+            if (c >= '0' && c <= '9')
+                i = takeNumber(v, i, pre);
+            else
+                i = takeString(v, i, pre);
+            if (i >= n) {
+                break;
+            }
+            c = v.charAt(i);
+            if (c == '.' || c == '-') {
+                i++;
+                continue;
+            }
+            if (c == '+') {
+                i++;
+                break;
+            }
+        }
+
+        if (c == '+' && i >= n) {
+            return;
+        }
+
+        // 解析build版本
+        while (i < n) {
+            c = v.charAt(i);
+            if (c >= '0' && c <= '9') {
+                i = takeNumber(v, i, build);
+            } else {
+                i = takeString(v, i, build);
+            }
+            if (i >= n) {
+                break;
+            }
+            c = v.charAt(i);
+            if (c == '.' || c == '-' || c == '+') {
+                i++;
+            }
+        }
+    }
 
     /**
-     * 是否Android环境
+     * 解析版本字符串为Version对象
+     *
+     * @param v 版本字符串
+     * @return The resulting {@code Version}
+     * @throws IllegalArgumentException 如果 {@code v} 为 {@code null}或 ""或无法解析的字符串，抛出此异常
      */
-    public static final boolean _IS_ANDROID;
-
-    /**
-     * 是否完整模式,默认使用完整模式
-     */
-    private boolean complete = true;
-
-    static {
-        // JVM版本
-        _JVM_VERSION = _getJvmVersion();
-        _IS_JDK17 = _JVM_VERSION >= 17;
-
-        // JVM名称
-        final String jvmName = _getJvmName();
-        _IS_ANDROID = jvmName.equals("Dalvik");
+    public static Version of(final String v) {
+        return new Version(v);
     }
 
     /**
@@ -89,172 +178,146 @@ public class Version {
      *
      * @return 项目的版本号
      */
-    public static String get() {
-        return _VERSION;
-    }
-
-    /**
-     * 主要版本号
-     *
-     * @return 版本号
-     */
-    public static String major() {
-        return StringKit.splitToArray(get(), Symbol.DOT)[0];
-    }
-
-    /**
-     * 次要版本号
-     *
-     * @return 次要号
-     */
-    public static String minor() {
-        return StringKit.splitToArray(get(), Symbol.DOT)[1];
-    }
-
-    /**
-     * 阶段版本号
-     *
-     * @return 阶段号
-     */
-    public static String stage() {
-        return StringKit.splitToArray(get(), Symbol.DOT)[2];
-    }
-
-    /**
-     * 版本质量
-     *
-     * @return 质量
-     */
-    public static String level() {
-        return StringKit.splitToArray(get(), Symbol.DOT)[3];
-    }
-
     /**
      * 完整版本号
      *
      * @return the agent
      */
     public static String all() {
-        return major() + minor() + stage();
+        return _VERSION;
     }
 
     /**
-     * 不完整模式
+     * 获取字符串中从位置i开始的数字，并加入到acc中
+     * 如 a123b，则从1开始，解析到acc中为[1, 2, 3]
      *
-     * @return {Version}
+     * @param s   字符串
+     * @param i   位置
+     * @param acc 数字列表
+     * @return 结束位置（不包含）
      */
-    public Version inComplete() {
-        this.complete = false;
-        return this;
-    }
-
-    /**
-     * 比较版本号是否相同
-     * example:
-     * * Version.of("v0.3").eq("v0.4")
-     *
-     * @param version 字符串版本号
-     * @return {boolean}
-     */
-    public boolean eq(String version) {
-        return compare(version) == 0;
-    }
-
-    /**
-     * 不相同
-     * <p>
-     * example:
-     * * Version.of("v0.3").ne("v0.4")
-     *
-     * @param version 字符串版本号
-     * @return {boolean}
-     */
-    public boolean ne(String version) {
-        return compare(version) != 0;
-    }
-
-    /**
-     * 大于
-     *
-     * @param version 版本号
-     * @return 是否大于
-     */
-    public boolean gt(String version) {
-        return compare(version) > 0;
-    }
-
-    /**
-     * 大于和等于
-     *
-     * @param version 版本号
-     * @return 是否大于和等于
-     */
-    public boolean gte(String version) {
-        return compare(version) >= 0;
-    }
-
-    /**
-     * 小于
-     *
-     * @param version 版本号
-     * @return 是否小于
-     */
-    public boolean lt(String version) {
-        return compare(version) < 0;
-    }
-
-    /**
-     * 小于和等于
-     *
-     * @param version 版本号
-     * @return 是否小于和等于
-     */
-    public boolean lte(String version) {
-        return compare(version) <= 0;
-    }
-
-    /**
-     * 和另外一个版本号比较
-     *
-     * @param version 版本号
-     * @return {int}
-     */
-    private int compare(String version) {
-        return ObjectKit.compare(get(), version, complete);
-    }
-
-    /**
-     * 获取JVM名称
-     *
-     * @return JVM名称
-     */
-    private static String _getJvmName() {
-        return System.getProperty("java.vm.name");
-    }
-
-    /**
-     * 根据{@code java.specification.version}属性值，获取版本号
-     *
-     * @return 版本号
-     */
-    private static int _getJvmVersion() {
-        int jvmVersion = -1;
-        try {
-            String javaSpecVer = System.getProperty("java.specification.version");
-            if (StringKit.isNotBlank(javaSpecVer)) {
-                if (javaSpecVer.startsWith("1.")) {
-                    javaSpecVer = javaSpecVer.substring(2);
-                }
-                if (javaSpecVer.indexOf(Symbol.C_DOT) == -1) {
-                    jvmVersion = Integer.parseInt(javaSpecVer);
-                }
+    private static int takeNumber(final String s, int i, final List<Object> acc) {
+        char c = s.charAt(i);
+        int d = (c - '0');
+        final int n = s.length();
+        while (++i < n) {
+            c = s.charAt(i);
+            if (CharKit.isNumber(c)) {
+                d = d * 10 + (c - '0');
+                continue;
             }
-        } catch (Throwable ignore) {
-            // 默认JDK17
-            jvmVersion = 17;
+            break;
         }
+        acc.add(d);
+        return i;
+    }
 
-        return jvmVersion;
+    /**
+     * 获取字符串中从位置i开始的字符串，并加入到acc中
+     * 字符串结束的位置为'.'、'-'、'+'和数字
+     *
+     * @param s   版本字符串
+     * @param i   开始位置
+     * @param acc 字符串列表
+     * @return 结束位置（不包含）
+     */
+    private static int takeString(final String s, int i, final List<Object> acc) {
+        final int b = i;
+        final int n = s.length();
+        while (++i < n) {
+            final char c = s.charAt(i);
+            if (c != '.' && c != '-' && c != '+' && !(c >= '0' && c <= '9')) {
+                continue;
+            }
+            break;
+        }
+        acc.add(s.substring(b, i));
+        return i;
+    }
+
+    @Override
+    public int compareTo(final Version that) {
+        int c = compareTokens(this.sequence, that.sequence);
+        if (c != 0) {
+            return c;
+        }
+        if (this.pre.isEmpty()) {
+            if (!that.pre.isEmpty()) {
+                return +1;
+            }
+        } else {
+            if (that.pre.isEmpty()) {
+                return -1;
+            }
+        }
+        c = compareTokens(this.pre, that.pre);
+        if (c != 0) {
+            return c;
+        }
+        return compareTokens(this.build, that.build);
+    }
+
+    @Override
+    public boolean equals(final Object ob) {
+        if (!(ob instanceof Version)) {
+            return false;
+        }
+        return compareTo((Version) ob) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return version.hashCode();
+    }
+
+    // Take a string token starting at position i
+    // Append it to the given list
+    // Return the index of the first character not taken
+    // Requires: s.charAt(i) is not '.'
+    //
+
+    @Override
+    public String toString() {
+        return version;
+    }
+
+    /**
+     * 比较节点
+     *
+     * @param ts1 节点1
+     * @param ts2 节点2
+     * @return 比较结果
+     */
+    private int compareTokens(final List<Object> ts1, final List<Object> ts2) {
+        final int n = Math.min(ts1.size(), ts2.size());
+        for (int i = 0; i < n; i++) {
+            final Object o1 = ts1.get(i);
+            final Object o2 = ts2.get(i);
+            if ((o1 instanceof Integer && o2 instanceof Integer)
+                    || (o1 instanceof String && o2 instanceof String)) {
+                final int c = CompareKit.compare(o1, o2, null);
+                if (c == 0) {
+                    continue;
+                }
+                return c;
+            }
+            // Types differ, so convert number to string form
+            final int c = o1.toString().compareTo(o2.toString());
+            if (c == 0) {
+                continue;
+            }
+            return c;
+        }
+        final List<Object> rest = ts1.size() > ts2.size() ? ts1 : ts2;
+        final int e = rest.size();
+        for (int i = n; i < e; i++) {
+            final Object o = rest.get(i);
+            if (o instanceof Integer && ((Integer) o) == 0) {
+                continue;
+            }
+            return ts1.size() - ts2.size();
+        }
+        return 0;
     }
 
 }

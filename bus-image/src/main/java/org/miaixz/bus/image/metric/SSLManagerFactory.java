@@ -26,7 +26,6 @@
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StreamKit;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -74,7 +73,7 @@ public abstract class SSLManagerFactory {
             throws IOException, KeyStoreException, NoSuchAlgorithmException,
             CertificateException {
         KeyStore ks = KeyStore.getInstance(type);
-        InputStream in = StreamKit.openFileOrURL(url);
+        InputStream in = IoKit.openFileOrURL(url);
         try {
             ks.load(in, password);
         } finally {

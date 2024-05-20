@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.provider;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.proxy.Provider;
 
 import java.rmi.NotBoundException;

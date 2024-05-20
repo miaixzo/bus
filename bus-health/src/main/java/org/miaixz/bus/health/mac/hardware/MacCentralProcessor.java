@@ -33,7 +33,7 @@ import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Formats;
@@ -188,7 +188,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         int logicalProcessorCount = SysctlKit.sysctl("hw.logicalcpu", 1);
         int physicalProcessorCount = SysctlKit.sysctl("hw.physicalcpu", 1);
         int physicalPackageCount = SysctlKit.sysctl("hw.packages", 1);
@@ -213,7 +213,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         }).collect(Collectors.toList());
         List<CentralProcessor.ProcessorCache> caches = orderedProcCaches(getCacheValues(perflevels));
         List<String> featureFlags = getFeatureFlagsFromSysctl();
-        return new Quartet<>(logProcs, physProcs, caches, featureFlags);
+        return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
     private Set<CentralProcessor.ProcessorCache> getCacheValues(int perflevels) {

@@ -56,6 +56,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 public final class SmcKit {
 
+    public static final String SMC_KEY_FAN_NUM = "FNum";
+    public static final String SMC_KEY_FAN_SPEED = "F%dAc";
+    public static final String SMC_KEY_CPU_TEMP = "TC0P";
+    public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
+    public static final byte SMC_CMD_READ_BYTES = 5;
+    public static final byte SMC_CMD_READ_KEYINFO = 9;
+    public static final int KERNEL_INDEX_SMC = 2;
     private static final IOKit IO = IOKit.INSTANCE;
     /**
      * Byte array used for matching return type
@@ -67,15 +74,6 @@ public final class SmcKit {
      * Thread-safe map for caching info retrieved by a key necessary for subsequent calls.
      */
     private static final Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
-
-    public static final String SMC_KEY_FAN_NUM = "FNum";
-    public static final String SMC_KEY_FAN_SPEED = "F%dAc";
-    public static final String SMC_KEY_CPU_TEMP = "TC0P";
-    public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
-
-    public static final byte SMC_CMD_READ_BYTES = 5;
-    public static final byte SMC_CMD_READ_KEYINFO = 9;
-    public static final int KERNEL_INDEX_SMC = 2;
 
     private SmcKit() {
     }

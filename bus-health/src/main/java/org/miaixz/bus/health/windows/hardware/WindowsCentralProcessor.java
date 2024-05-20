@@ -32,11 +32,11 @@ import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Quartet;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -85,6 +85,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             LoadAverage.startDaemon();
         }
     }
+
     // This tick query is memoized to enforce a minimum elapsed time for determining
     // the capacity base multiplier
     private final Supplier<Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
@@ -107,7 +108,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      * @return the string following id
      */
     private static String parseIdentifier(String identifier, String key) {
-        String[] idSplit = RegEx.SPACES.split(identifier);
+        String[] idSplit = Pattern.SPACES_PATTERN.split(identifier);
         boolean found = false;
         for (String s : idSplit) {
             // If key string found, return next value
@@ -182,7 +183,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         Triplet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>> lpi;
         if (VersionHelpers.IsWindows7OrGreater()) {
             lpi = LogicalProcessorInformation.getLogicalProcessorInformationEx();
@@ -210,7 +211,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         List<String> featureFlags = Arrays.stream(Kernel32.ProcessorFeature.values())
                 .filter(f -> Kernel32.INSTANCE.IsProcessorFeaturePresent(f.value())).map(Kernel32.ProcessorFeature::name)
                 .collect(Collectors.toList());
-        return new Quartet<>(lpi.getLeft(), lpi.getMiddle(), lpi.getRight(), featureFlags);
+        return new Tuple(lpi.getLeft(), lpi.getMiddle(), lpi.getRight(), featureFlags);
     }
 
     @Override

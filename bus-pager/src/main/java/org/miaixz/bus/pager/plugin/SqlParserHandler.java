@@ -36,9 +36,9 @@ import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.ibatis.reflection.MetaObject;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 

@@ -32,7 +32,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -106,7 +106,7 @@ public final class PsInfo {
      * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these fields
      * @return A quartet containing the argc, argv, envp and dmodel values, or null if unable to read
      */
-    public static Quartet<Integer, Long, Long, Byte> queryArgsEnvAddrs(int pid, SolarisLibc.SolarisPsInfo psinfo) {
+    public static Tuple queryArgsEnvAddrs(int pid, SolarisLibc.SolarisPsInfo psinfo) {
         if (psinfo != null) {
             int argc = psinfo.pr_argc;
             // Must have at least one argc (the command itself) so failure here means exit
@@ -117,7 +117,7 @@ public final class PsInfo {
                 byte dmodel = psinfo.pr_dmodel;
                 // Sanity check
                 if (dmodel * 4 == (envp - argv) / (argc + 1)) {
-                    return new Quartet<>(argc, argv, envp, dmodel);
+                    return new Tuple(argc, argv, envp, dmodel);
                 }
                 Logger.trace("Failed data model and offset increment sanity check: dm={} diff={}", dmodel, envp - argv);
                 return null;
@@ -141,7 +141,7 @@ public final class PsInfo {
         Map<String, String> env = new LinkedHashMap<>();
 
         // Get the arg count and list of env vars
-        Quartet<Integer, Long, Long, Byte> addrs = queryArgsEnvAddrs(pid, psinfo);
+        Tuple addrs = queryArgsEnvAddrs(pid, psinfo);
         if (addrs != null) {
             // Open a file descriptor to the address space
             String procas = "/proc/" + pid + "/as";
@@ -152,10 +152,10 @@ public final class PsInfo {
             }
             try {
                 // Non-null addrs means argc > 0
-                int argc = addrs.getA();
-                long argv = addrs.getB();
-                long envp = addrs.getC();
-                long increment = addrs.getD() * 4L;
+                int argc = addrs.get(0);
+                long argv = addrs.get(1);
+                long envp = addrs.get(2);
+                long increment = ((byte) addrs.get(3)) * 4L;
 
                 // Reusable buffer
                 long bufStart = 0;

@@ -26,17 +26,18 @@
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
-import org.miaixz.bus.core.exception.ValidateException;
-import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+
 /**
  * Base58工具类，提供Base58的编码和解码方案
- * 参考： https://github.com/Anujraval24/Base58Encoding
- * 规范见：https://en.bitcoin.it/wiki/Base58Check_encoding
+ * 参考： <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>
+ * 规范见：<a href="https://en.bitcoin.it/wiki/Base58Check_encoding">https://en.bitcoin.it/wiki/Base58Check_encoding</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,16 +45,6 @@ import java.util.Arrays;
 public class Base58 {
 
     private static final int CHECKSUM_SIZE = 4;
-
-    /**
-     * Base58编码
-     *
-     * @param data 被编码的数据，不带校验和
-     * @return 编码后的字符串
-     */
-    public static String encode(final byte[] data) {
-        return Base58Provider.INSTANCE.encode(data);
-    }
 
     /**
      * Base58编码
@@ -68,13 +59,13 @@ public class Base58 {
     }
 
     /**
-     * Base58解码
+     * Base58编码
      *
-     * @param encoded 被编码的base58字符串
-     * @return 解码后的bytes
+     * @param data 被编码的数据，不带校验和。
+     * @return 编码后的字符串
      */
-    public static byte[] decode(final CharSequence encoded) {
-        return Base58Provider.INSTANCE.decode(encoded);
+    public static String encode(final byte[] data) {
+        return Base58Provider.INSTANCE.encode(data);
     }
 
     /**
@@ -108,6 +99,16 @@ public class Base58 {
     }
 
     /**
+     * Base58解码
+     *
+     * @param encoded 被编码的base58字符串
+     * @return 解码后的bytes
+     */
+    public static byte[] decode(final CharSequence encoded) {
+        return Base58Provider.INSTANCE.decode(encoded);
+    }
+
+    /**
      * 验证并去除验证位和版本位
      *
      * @param data        编码的数据
@@ -118,8 +119,8 @@ public class Base58 {
         final byte[] payload = Arrays.copyOfRange(data, withVersion ? 1 : 0, data.length - CHECKSUM_SIZE);
         final byte[] checksum = Arrays.copyOfRange(data, data.length - CHECKSUM_SIZE, data.length);
         final byte[] expectedChecksum = checksum(payload);
-        if (false == Arrays.equals(checksum, expectedChecksum)) {
-            throw new ValidateException("Base58 checksum is invalid");
+        if (!Arrays.equals(checksum, expectedChecksum)) {
+            throw new ValidateException("Base58 check is invalid");
         }
         return payload;
     }
@@ -166,9 +167,9 @@ public class Base58 {
      */
     private static byte[] hash256(final byte[] data) {
         try {
-            return MessageDigest.getInstance(Algorithm.SHA256.getValue()).digest(data);
+            return MessageDigest.getInstance("SHA-256").digest(data);
         } catch (final NoSuchAlgorithmException e) {
-            throw new ValidateException(e);
+            throw new InternalException(e);
         }
     }
 

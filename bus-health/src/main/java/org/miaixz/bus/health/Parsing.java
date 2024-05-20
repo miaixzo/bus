@@ -26,9 +26,10 @@
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.logger.Logger;
@@ -44,7 +45,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * String parsing support.
@@ -59,32 +59,32 @@ public final class Parsing {
     /**
      * Used for matching
      */
-    private static final Pattern HERTZ_PATTERN = Pattern.compile("(\\d+(.\\d+)?) ?([kKMGT]?Hz).*");
-    private static final Pattern BYTES_PATTERN = Pattern.compile("(\\d+) ?([kKMGT]?B?).*");
-    private static final Pattern UNITS_PATTERN = Pattern.compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?");
+    private static final java.util.regex.Pattern HERTZ_PATTERN = java.util.regex.Pattern.compile("(\\d+(.\\d+)?) ?([kKMGT]?Hz).*");
+    private static final java.util.regex.Pattern BYTES_PATTERN = java.util.regex.Pattern.compile("(\\d+) ?([kKMGT]?B?).*");
+    private static final java.util.regex.Pattern UNITS_PATTERN = java.util.regex.Pattern.compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?");
 
     /**
-     * Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
+     * java.util.regex.Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
-    private static final Pattern DHMS = Pattern.compile("(?:(\\d+)-)?(?:(\\d+):)??(?:(\\d+):)?(\\d+)(?:\\.(\\d+))?");
+    private static final java.util.regex.Pattern DHMS = java.util.regex.Pattern.compile("(?:(\\d+)-)?(?:(\\d+):)??(?:(\\d+):)?(\\d+)(?:\\.(\\d+))?");
     /**
-     * Pattern for a UUID
+     * java.util.regex.Pattern for a UUID
      */
-    private static final Pattern UUID_PATTERN = Pattern
+    private static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
     /**
-     * Pattern for Windows DeviceID vendor and product ID and serial
+     * java.util.regex.Pattern for Windows DeviceID vendor and product ID and serial
      */
-    private static final Pattern VENDOR_PRODUCT_ID_SERIAL = Pattern
+    private static final java.util.regex.Pattern VENDOR_PRODUCT_ID_SERIAL = java.util.regex.Pattern
             .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4})(.*)\\\\(.*)");
     /**
-     * Pattern for Linux lspci machine readable
+     * java.util.regex.Pattern for Linux lspci machine readable
      */
-    private static final Pattern LSPCI_MACHINE_READABLE = Pattern.compile("(.+)\\s\\[(.*?)\\]");
+    private static final java.util.regex.Pattern LSPCI_MACHINE_READABLE = java.util.regex.Pattern.compile("(.+)\\s\\[(.*?)\\]");
     /**
-     * Pattern for Linux lspci memory
+     * java.util.regex.Pattern for Linux lspci memory
      */
-    private static final Pattern LSPCI_MEMORY_SIZE = Pattern.compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
+    private static final java.util.regex.Pattern LSPCI_MEMORY_SIZE = java.util.regex.Pattern.compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
     /**
      * Hertz related variables.
      */
@@ -201,46 +201,9 @@ public final class Parsing {
      * @return last space-delimited element
      */
     public static String parseLastString(String s) {
-        String[] ss = RegEx.SPACES.split(s);
+        String[] ss = Pattern.SPACES_PATTERN.split(s);
         // guaranteed at least one element
         return ss[ss.length - 1];
-    }
-
-    /**
-     * Parse a byte array into a string of hexadecimal digits including all array bytes as digits
-     *
-     * @param bytes The byte array to represent
-     * @return A string of hex characters corresponding to the bytes. The string is upper case.
-     */
-    public static String byteArrayToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (byte b : bytes) {
-            sb.append(Character.forDigit((b & 0xf0) >>> 4, 16));
-            sb.append(Character.forDigit(b & 0x0f, 16));
-        }
-        return sb.toString().toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * Parse a string of hexadecimal digits into a byte array
-     *
-     * @param digits The string to be parsed
-     * @return a byte array with each pair of characters converted to a byte, or empty array if the string is not valid
-     * hex
-     */
-    public static byte[] hexStringToByteArray(String digits) {
-        int len = digits.length();
-        // Check if string is valid hex
-        if (!RegEx.VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
-            Logger.warn("Invalid hexadecimal string: {}", digits);
-            return new byte[0];
-        }
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) (Character.digit(digits.charAt(i), 16) << 4
-                    | Character.digit(digits.charAt(i + 1), 16));
-        }
-        return data;
     }
 
     /**
@@ -567,7 +530,7 @@ public final class Parsing {
      */
     public static int getNthIntValue(String line, int n) {
         // Split the string by non-digits,
-        String[] split = RegEx.NOT_NUMBERS.split(RegEx.WITH_NOT_NUMBERS.matcher(line).replaceFirst(Normal.EMPTY));
+        String[] split = Pattern.NOT_NUMBERS_PATTERN.split(Pattern.WITH_NOT_NUMBERS_PATTERN.matcher(line).replaceFirst(Normal.EMPTY));
         if (split.length >= n) {
             return parseIntOrDefault(split[n - 1], 0);
         }
@@ -897,7 +860,7 @@ public final class Parsing {
      * @return the size parsed to a long
      */
     public static long parseDecimalMemorySizeToBinary(String size) {
-        String[] mem = RegEx.SPACES.split(size);
+        String[] mem = Regex.SPACES.split(size);
         if (mem.length < 2) {
             // If no spaces, use regexp
             Matcher matcher = BYTES_PATTERN.matcher(size.trim());
@@ -958,7 +921,7 @@ public final class Parsing {
     public static long parseLshwResourceString(String resources) {
         long bytes = 0L;
         // First split by whitespace
-        String[] resourceArray = RegEx.SPACES.split(resources);
+        String[] resourceArray = Regex.SPACES.split(resources);
         for (String r : resourceArray) {
             // Remove prefix
             if (r.startsWith("memory:")) {
@@ -1018,7 +981,7 @@ public final class Parsing {
         String[] csvTokens = str.split(",");
         for (String csvToken : csvTokens) {
             csvToken = csvToken.trim();
-            for (String s : RegEx.SPACES.split(csvToken)) {
+            for (String s : Regex.SPACES.split(csvToken)) {
                 if (s.contains("-")) {
                     int first = getFirstIntValue(s);
                     int last = getNthIntValue(s, 2);

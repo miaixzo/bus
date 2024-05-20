@@ -49,7 +49,7 @@ public class LimiterConfiguration extends AdviceModeImportSelector<EnableLimiter
                 List<String> list = new ArrayList<>();
                 list.add(AutoProxyRegistrar.class.getName());
                 list.add(LimiterAwareHandler.class.getName());
-                return ArrayKit.toArray(list);
+                return ArrayKit.ofArray(list);
             case ASPECTJ:
                 throw new RuntimeException("NotImplemented");
             default:

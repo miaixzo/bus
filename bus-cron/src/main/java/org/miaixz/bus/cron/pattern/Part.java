@@ -25,15 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern;
 
-import org.miaixz.bus.core.exception.CrontabException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.exception.CrontabException;
 
 import java.util.Calendar;
 
 /**
- * 表达式各个部分的枚举，用于限定在表达式中的位置和规则（如最小值和最大值）<br>
- * {@link #ordinal()}表示此部分在表达式中的位置，如0表示秒<br>
+ * 表达式各个部分的枚举，用于限定在表达式中的位置和规则（如最小值和最大值）
+ * {@link #ordinal()}表示此部分在表达式中的位置，如0表示秒
  * 表达式各个部分的枚举位置为：
  * <pre>
  *         0       1    2        3         4       5         6
@@ -44,12 +44,13 @@ import java.util.Calendar;
  * @since Java 17+
  */
 public enum Part {
+
     SECOND(Calendar.SECOND, 0, 59),
     MINUTE(Calendar.MINUTE, 0, 59),
     HOUR(Calendar.HOUR_OF_DAY, 0, 23),
     DAY_OF_MONTH(Calendar.DAY_OF_MONTH, 1, 31),
-    MONTH(Calendar.MONTH, Fields.Month.Jan.getKey(), Fields.Month.Dec.getKey()),
-    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Fields.Week.Sun.getKey(), Fields.Week.Sat.getKey()),
+    MONTH(Calendar.MONTH, Fields.Month.JANUARY.getValueBaseOne(), Fields.Month.DECEMBER.getValueBaseOne()),
+    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Fields.Week.SUNDAY.ordinal(), Fields.Week.SATURDAY.ordinal()),
     YEAR(Calendar.YEAR, 1970, 2099);
 
     private static final Part[] ENUMS = Part.values();
@@ -65,7 +66,7 @@ public enum Part {
      * @param min           限定最小值（包含）
      * @param max           限定最大值（包含）
      */
-    Part(int calendarField, int min, int max) {
+    Part(final int calendarField, final int min, final int max) {
         this.calendarField = calendarField;
         if (min > max) {
             this.min = max;
@@ -82,7 +83,7 @@ public enum Part {
      * @param i 位置，从0开始
      * @return Part
      */
-    public static Part of(int i) {
+    public static Part of(final int i) {
         return ENUMS[i];
     }
 
@@ -120,9 +121,9 @@ public enum Part {
      * @return 检查后的值
      * @throws CrontabException 检查无效抛出此异常
      */
-    public int checkValue(int value) throws CrontabException {
+    public int checkValue(final int value) throws CrontabException {
         Assert.checkBetween(value, min, max,
-                () -> new CrontabException("Value {} out of range: [{} , {}]", value, min, max));
+                () -> new CrontabException("{} value {} out of range: [{} , {}]", this.name(), value, min, max));
         return value;
     }
 

@@ -29,14 +29,19 @@ import org.miaixz.bus.core.toolkit.ClassKit;
 
 /**
  * 类转换器
- * 将类名转换为类
+ * 将类名转换为类，默认初始化这个类（执行static块）
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClassConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * 单例
+     */
+    public static ClassConverter INSTANCE = new ClassConverter();
 
     private final boolean isInitialized;
 

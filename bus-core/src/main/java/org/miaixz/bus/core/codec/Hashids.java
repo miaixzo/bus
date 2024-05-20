@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -46,11 +44,11 @@ import java.util.stream.LongStream;
  * </ul>
  *
  * <p>
- * 来自：https://github.com/davidafsilva/java-hashids
+ * 来自：<a href="https://github.com/davidafsilva/java-hashids">https://github.com/davidafsilva/java-hashids</a>
  * </p>
  *
  * <p>
- * {@code Hashids}可以将数字或者16进制字符串转为短且唯一不连续的字符串，采用双向编码实现，比如，它可以将347之类的数字转换为yr8之类的字符串，也可以将yr8之类的字符串重新解码为347之类的数字。<br>
+ * {@code Hashids}可以将数字或者16进制字符串转为短且唯一不连续的字符串，采用双向编码实现，比如，它可以将347之类的数字转换为yr8之类的字符串，也可以将yr8之类的字符串重新解码为347之类的数字。
  * 此编码算法主要是解决爬虫类应用对连续ID爬取问题，将有序的ID转换为无序的Hashids，而且一一对应。
  * </p>
  *
@@ -59,37 +57,34 @@ import java.util.stream.LongStream;
  */
 public class Hashids implements Encoder<long[], String>, Decoder<String, long[]> {
 
+    // 默认编解码字符串
+    public static final char[] DEFAULT_ALPHABET = {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+    };
     private static final int LOTTERY_MOD = 100;
     private static final double GUARD_THRESHOLD = 12;
     private static final double SEPARATOR_THRESHOLD = 3.5;
-    /**
-     * 最小编解码字符串
-     */
+    // 最小编解码字符串
     private static final int MIN_ALPHABET_LENGTH = 16;
     private static final Pattern HEX_VALUES_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
-    /**
-     * 默认分隔符
-     */
+    // 默认分隔符
     private static final char[] DEFAULT_SEPARATORS = {
             'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T', 'U'
     };
-    /**
-     * 算法属性
-     */
+
+    // algorithm properties
     private final char[] alphabet;
-    /**
-     * 多个数字编解码的分界符
-     */
+    // 多个数字编解码的分界符
     private final char[] separators;
     private final Set<Character> separatorsSet;
     private final char[] salt;
-    /**
-     * 补齐至 minLength 长度添加的字符列表
-     */
+    // 补齐至 minLength 长度添加的字符列表
     private final char[] guards;
-    /**
-     * 编码后最小的字符长度
-     */
+    // 编码后最小的字符长度
     private final int minLength;
 
     /**
@@ -148,24 +143,24 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link Normal#LOWER_UPPER_NUMBER}作为字母表，不限制最小长度
+     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表，不限制最小长度
      *
      * @param salt 加盐值
      * @return {@code Hashids}
      */
     public static Hashids of(final char[] salt) {
-        return of(salt, Normal.LOWER_UPPER_NUMBER.toCharArray(), -1);
+        return of(salt, DEFAULT_ALPHABET, -1);
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link Normal#LOWER_UPPER_NUMBER}作为字母表
+     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表
      *
      * @param salt      加盐值
      * @param minLength 限制最小长度，-1表示不限制
      * @return {@code Hashids}
      */
     public static Hashids of(final char[] salt, final int minLength) {
-        return of(salt, Normal.LOWER_UPPER_NUMBER.toCharArray(), minLength);
+        return of(salt, DEFAULT_ALPHABET, minLength);
     }
 
     /**
@@ -220,7 +215,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
             return null;
         }
 
-        // copy alphabet
+        // copier alphabet
         final char[] currentAlphabet = Arrays.copyOf(alphabet, alphabet.length);
 
         // determine the lottery number
@@ -351,7 +346,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
 
         LongStream decoded = LongStream.empty();
         // parse the hash
-        if (hash.length() > 0) {
+        if (!hash.isEmpty()) {
             final char lottery = hash.charAt(startIdx);
 
             // create the initial accumulation string
@@ -365,11 +360,11 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
             System.arraycopy(salt, 0, decodeSalt, 1, saltLength);
             final int saltLeft = alphabet.length - saltLength - 1;
 
-            // copy alphabet
+            // copier alphabet
             final char[] currentAlphabet = Arrays.copyOf(alphabet, alphabet.length);
 
             for (int i = startIdx + 1; i < endIdx; i++) {
-                if (false == separatorsSet.contains(hash.charAt(i))) {
+                if (!separatorsSet.contains(hash.charAt(i))) {
                     block.append(hash.charAt(i));
                     // continue if we have not reached the end, yet
                     if (i < endIdx - 1) {

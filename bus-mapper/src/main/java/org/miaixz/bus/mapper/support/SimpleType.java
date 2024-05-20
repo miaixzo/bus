@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.support;
 
-import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.math.BigDecimal;

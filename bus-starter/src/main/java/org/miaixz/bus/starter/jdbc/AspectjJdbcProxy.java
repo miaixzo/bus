@@ -68,7 +68,7 @@ public class AspectjJdbcProxy {
         Method method = ((MethodSignature) point.getSignature()).getMethod();
         // 获取方法的@DataSource注解
         DataSource dataSource = method.getAnnotation(DataSource.class);
-        if (!StringKit.hasLength(dataSource.value())) {
+        if (!StringKit.isEmptyIfString(dataSource.value())) {
             // 获取类级别的@DataSource注解
             dataSource = method.getDeclaringClass().getAnnotation(DataSource.class);
         }

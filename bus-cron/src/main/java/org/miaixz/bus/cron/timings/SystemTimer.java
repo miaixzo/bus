@@ -26,6 +26,7 @@
 package org.miaixz.bus.cron.timings;
 
 import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.cron.crontab.TimerCrontab;
 
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
@@ -58,6 +59,7 @@ public class SystemTimer {
      * 轮询delayQueue获取过期任务线程
      */
     private ExecutorService bossThreadPool;
+    private volatile boolean isRunning;
 
     /**
      * 构造
@@ -72,7 +74,7 @@ public class SystemTimer {
      * @param delayQueueTimeout 执行队列取元素超时时长，单位毫秒
      * @return this
      */
-    public SystemTimer setDelayQueueTimeout(long delayQueueTimeout) {
+    public SystemTimer setDelayQueueTimeout(final long delayQueueTimeout) {
         this.delayQueueTimeout = delayQueueTimeout;
         return this;
     }
@@ -84,9 +86,10 @@ public class SystemTimer {
      */
     public SystemTimer start() {
         bossThreadPool = ThreadKit.newSingleExecutor();
+        isRunning = true;
         bossThreadPool.submit(() -> {
             while (true) {
-                if (false == advanceClock()) {
+                if (!advanceClock()) {
                     break;
                 }
             }
@@ -98,18 +101,19 @@ public class SystemTimer {
      * 强制结束
      */
     public void stop() {
+        this.isRunning = false;
         this.bossThreadPool.shutdown();
     }
 
     /**
      * 添加任务
      *
-     * @param timerTask 任务
+     * @param timerCrontab 任务
      */
-    public void addTask(TimerTask timerTask) {
-        // 添加失败任务直接执行
-        if (false == timeWheel.addTask(timerTask)) {
-            ThreadKit.execAsync(timerTask.getTask());
+    public void addTask(final TimerCrontab timerCrontab) {
+        //添加失败任务直接执行
+        if (!timeWheel.addTask(timerCrontab)) {
+            ThreadKit.execAsync(timerCrontab.getTask());
         }
     }
 
@@ -119,15 +123,18 @@ public class SystemTimer {
      * @return 是否结束
      */
     private boolean advanceClock() {
+        if (!isRunning) {
+            return false;
+        }
         try {
-            TimerTaskList timerTaskList = poll();
+            final TimerTaskList timerTaskList = poll();
             if (null != timerTaskList) {
-                // 推进时间
+                //推进时间
                 timeWheel.advanceClock(timerTaskList.getExpire());
-                // 执行过期任务（包含降级操作）
+                //执行过期任务（包含降级操作）
                 timerTaskList.flush(this::addTask);
             }
-        } catch (InterruptedException ignore) {
+        } catch (final InterruptedException ignore) {
             return false;
         }
         return true;

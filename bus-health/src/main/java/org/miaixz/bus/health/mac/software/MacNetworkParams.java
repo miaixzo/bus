@@ -28,8 +28,8 @@ package org.miaixz.bus.health.mac.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
@@ -101,7 +101,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
         boolean v6Table = false;
         for (String line : lines) {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
-                String[] fields = RegEx.SPACES.split(line);
+                String[] fields = Pattern.SPACES_PATTERN.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
                     return fields[1].split("%")[0];
                 }

@@ -27,6 +27,7 @@ package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.core.toolkit.FileKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StringKit;
@@ -43,6 +44,8 @@ import java.io.OutputStream;
  */
 public class Base62 {
 
+    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
+
     /**
      * Base62编码
      *
@@ -50,7 +53,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String encode(final CharSequence source) {
-        return encode(source, Charset.UTF_8);
+        return encode(source, DEFAULT_CHARSET);
     }
 
     /**
@@ -61,7 +64,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String encode(final CharSequence source, final java.nio.charset.Charset charset) {
-        return encode(StringKit.bytes(source, charset));
+        return encode(ByteKit.toBytes(source, charset));
     }
 
     /**
@@ -101,7 +104,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String encodeInverted(final CharSequence source) {
-        return encodeInverted(source, Charset.UTF_8);
+        return encodeInverted(source, DEFAULT_CHARSET);
     }
 
     /**
@@ -112,7 +115,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String encodeInverted(final CharSequence source, final java.nio.charset.Charset charset) {
-        return encodeInverted(StringKit.bytes(source, charset));
+        return encodeInverted(ByteKit.toBytes(source, charset));
     }
 
     /**
@@ -148,31 +151,11 @@ public class Base62 {
     /**
      * Base62解码
      *
-     * @param base62 被解码的Base62字符串
-     * @return 被加密后的字符串
-     */
-    public static byte[] decode(final CharSequence base62) {
-        return decode(StringKit.bytes(base62, Charset.UTF_8));
-    }
-
-    /**
-     * 解码Base62
-     *
-     * @param base62 Base62输入
-     * @return 解码后的bytes
-     */
-    public static byte[] decode(final byte[] base62) {
-        return Base62Provider.INSTANCE.decode(base62);
-    }
-
-    /**
-     * Base62解码
-     *
      * @param source 被解码的Base62字符串
-     * @return 被加密后的字符串
+     * @return 密文解密的结果
      */
     public static String decodeString(final CharSequence source) {
-        return decodeString(source, Charset.UTF_8);
+        return decodeString(source, DEFAULT_CHARSET);
     }
 
     /**
@@ -180,7 +163,7 @@ public class Base62 {
      *
      * @param source  被解码的Base62字符串
      * @param charset 字符集
-     * @return 被加密后的字符串
+     * @return 密文解密的结果
      */
     public static String decodeString(final CharSequence source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
@@ -189,23 +172,43 @@ public class Base62 {
     /**
      * Base62解码
      *
-     * @param base62   被解码的Base62字符串
+     * @param Base62   被解码的Base62字符串
      * @param destFile 目标文件
      * @return 目标文件
      */
-    public static File decodeToFile(final CharSequence base62, final File destFile) {
-        return FileKit.writeBytes(decode(base62), destFile);
+    public static File decodeToFile(final CharSequence Base62, final File destFile) {
+        return FileKit.writeBytes(decode(Base62), destFile);
     }
 
     /**
      * Base62解码
      *
-     * @param base62     被解码的Base62字符串
+     * @param base62Str  被解码的Base62字符串
      * @param out        写出到的流
      * @param isCloseOut 是否关闭输出流
      */
-    public static void decodeToStream(final CharSequence base62, final OutputStream out, final boolean isCloseOut) {
-        IoKit.write(out, isCloseOut, decode(base62));
+    public static void decodeToStream(final CharSequence base62Str, final OutputStream out, final boolean isCloseOut) {
+        IoKit.write(out, isCloseOut, decode(base62Str));
+    }
+
+    /**
+     * Base62解码
+     *
+     * @param base62Str 被解码的Base62字符串
+     * @return 被加密后的字符串
+     */
+    public static byte[] decode(final CharSequence base62Str) {
+        return decode(ByteKit.toBytes(base62Str, DEFAULT_CHARSET));
+    }
+
+    /**
+     * 解码Base62
+     *
+     * @param base62bytes Base62输入
+     * @return 解码后的bytes
+     */
+    public static byte[] decode(final byte[] base62bytes) {
+        return Base62Provider.INSTANCE.decode(base62bytes);
     }
 
     /**
@@ -215,7 +218,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String decodeStrInverted(final CharSequence source) {
-        return decodeStrInverted(source, Charset.UTF_8);
+        return decodeStrInverted(source, DEFAULT_CHARSET);
     }
 
     /**
@@ -243,32 +246,32 @@ public class Base62 {
     /**
      * Base62解码（反转字母表模式）
      *
-     * @param base62     被解码的Base62字符串
+     * @param base62Str  被解码的Base62字符串
      * @param out        写出到的流
      * @param isCloseOut 是否关闭输出流
      */
-    public static void decodeToStreamInverted(final CharSequence base62, final OutputStream out, final boolean isCloseOut) {
-        IoKit.write(out, isCloseOut, decodeInverted(base62));
+    public static void decodeToStreamInverted(final CharSequence base62Str, final OutputStream out, final boolean isCloseOut) {
+        IoKit.write(out, isCloseOut, decodeInverted(base62Str));
     }
 
     /**
      * Base62解码（反转字母表模式）
      *
-     * @param base62 被解码的Base62字符串
+     * @param base62Str 被解码的Base62字符串
      * @return 被加密后的字符串
      */
-    public static byte[] decodeInverted(final CharSequence base62) {
-        return decodeInverted(StringKit.bytes(base62, Charset.UTF_8));
+    public static byte[] decodeInverted(final CharSequence base62Str) {
+        return decodeInverted(ByteKit.toBytes(base62Str, DEFAULT_CHARSET));
     }
 
     /**
      * 解码Base62（反转字母表模式）
      *
-     * @param base62 Base62输入
+     * @param base62bytes Base62输入
      * @return 解码后的bytes
      */
-    public static byte[] decodeInverted(final byte[] base62) {
-        return Base62Provider.INSTANCE.decode(base62, true);
+    public static byte[] decodeInverted(final byte[] base62bytes) {
+        return Base62Provider.INSTANCE.decode(base62bytes, true);
     }
 
 }

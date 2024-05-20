@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
@@ -142,7 +142,7 @@ public final class RealSink implements BufferSink {
             throw new IllegalArgumentException("source == null");
         }
         long totalBytesRead = 0;
-        for (long readCount; (readCount = source.read(buffer, Segment.SIZE)) != -1; ) {
+        for (long readCount; (readCount = source.read(buffer, SectionBuffer.SIZE)) != -1; ) {
             totalBytesRead += readCount;
             emitCompleteSegments();
         }

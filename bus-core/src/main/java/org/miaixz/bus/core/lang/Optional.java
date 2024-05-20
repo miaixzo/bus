@@ -1,7 +1,33 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.lang.function.SupplierX;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 
 import java.util.Collection;
@@ -14,7 +40,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * 复制jdk16中的Optional，进行了一些调整，比jdk8中的Optional多了几个实用的函数
+ * 复制jdk16中的Optional，以及进行了一点调整和新增，比jdk8中的Optional多了几个实用的函数
  *
  * @param <T> 包裹里元素的类型
  * @author Kimi Liu
@@ -27,12 +53,10 @@ public class Optional<T> {
      * 一个空的{@code Optional}
      */
     private static final Optional<?> EMPTY = new Optional<>(null);
-
     /**
      * 包裹里实际的元素
      */
     private final T value;
-
     private Throwable throwable;
 
     /**
@@ -40,7 +64,7 @@ public class Optional<T> {
      *
      * @param value 包裹里的元素
      */
-    public Optional(final T value) {
+    private Optional(final T value) {
         this.value = value;
     }
 
@@ -48,22 +72,10 @@ public class Optional<T> {
      * 返回一个空的{@code Optional}
      *
      * @param <T> 包裹里元素的类型
-     * @return this
+     * @return Optional
      */
     public static <T> Optional<T> empty() {
-        final Optional<T> t = (Optional<T>) EMPTY;
-        return t;
-    }
-
-    /**
-     * 根据 {@link java.util.Optional} 构造 {@code Optional}
-     *
-     * @param optional optional
-     * @param <T>      包裹的元素类型
-     * @return 一个包裹里元素可能为空的 {@code Optional}
-     */
-    public static <T> Optional<T> of(final java.util.Optional<T> optional) {
-        return ofNullable(optional.orElse(null));
+        return (Optional<T>) EMPTY;
     }
 
     /**
@@ -86,8 +98,7 @@ public class Optional<T> {
      * @return 一个包裹里元素可能为空的 {@code Optional}
      */
     public static <T> Optional<T> ofNullable(final T value) {
-        return value == null ? empty()
-                : new Optional<>(value);
+        return value == null ? empty() : new Optional<>(value);
     }
 
     /**
@@ -102,15 +113,15 @@ public class Optional<T> {
     }
 
     /**
-     * 返回一个包裹里{@code List}集合可能为空的{@code Opt}，额外判断了集合内元素为空的情况
+     * 返回一个包裹里{@code List}集合可能为空的{@code Optional}，额外判断了集合内元素为空的情况
      *
      * @param <T>   包裹里元素的类型
      * @param <R>   集合值类型
-     * @param value 传入需要包裹的元素
-     * @return 一个包裹里元素可能为空的 {@code Opt}
+     * @param value 传入需要包裹的元素，支持CharSequence、Map、Iterable、Iterator、Array类型
+     * @return 一个包裹里元素可能为空的 {@code Optional}
      */
     public static <T, R extends Collection<T>> Optional<R> ofEmptyAble(final R value) {
-        return CollKit.isEmpty(value) || CollKit.getFirst(value) == null ? empty() : new Optional<>(value);
+        return ObjectKit.isEmpty(value) ? empty() : new Optional<>(value);
     }
 
     /**
@@ -120,12 +131,23 @@ public class Optional<T> {
      */
     public static <T> Optional<T> ofTry(final SupplierX<T> supplier) {
         try {
-            return Optional.ofNullable(supplier.getting());
-        } catch (final Throwable throwable) {
+            return ofNullable(supplier.getting());
+        } catch (final Throwable e) {
             final Optional<T> empty = new Optional<>(null);
-            empty.throwable = throwable;
+            empty.throwable = e;
             return empty;
         }
+    }
+
+    /**
+     * 根据 {@link java.util.Optional} 构造 {@code Optional}
+     *
+     * @param optional optional
+     * @param <T>      包裹的元素类型
+     * @return 一个包裹里元素可能为空的 {@code Optional}
+     */
+    public static <T> Optional<T> of(final java.util.Optional<T> optional) {
+        return ofNullable(optional.orElse(null));
     }
 
     /**
@@ -147,6 +169,7 @@ public class Optional<T> {
      * 判断包裹里元素的值是否不存在，不存在为 {@code true}，否则为{@code false}
      *
      * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false}
+     * 这是jdk11{@link java.util.Optional}中的新函数
      */
     public boolean isEmpty() {
         return value == null;
@@ -158,7 +181,7 @@ public class Optional<T> {
      *
      * @return 异常
      */
-    public Throwable getException() {
+    public Throwable getThrowable() {
         return this.throwable;
     }
 
@@ -170,6 +193,52 @@ public class Optional<T> {
      */
     public boolean isFail() {
         return null != this.throwable;
+    }
+
+    /**
+     * 如果包裹内容失败了，则执行传入的操作({@link Consumer#accept})
+     *
+     * <p> 例如执行有异常就打印结果
+     * <pre>{@code
+     *     Optional.ofTry(() -> 1 / 0).ifFail(Console::logger);
+     * }</pre>
+     *
+     * @param action 你想要执行的操作
+     * @return this
+     * @throws NullPointerException 如果包裹里的值存在，但你传入的操作为{@code null}时抛出
+     */
+    public Optional<T> ifFail(final Consumer<? super Throwable> action) throws NullPointerException {
+        Objects.requireNonNull(action, "action is null");
+
+        if (isFail()) {
+            action.accept(throwable);
+        }
+
+        return this;
+    }
+
+    /**
+     * 如果包裹内容失败了，同时是指定的异常执行传入的操作({@link Consumer#accept})
+     *
+     * <p> 例如如果值存在就打印结果
+     * <pre>{@code
+     *     Optional.ofTry(() -> 1 / 0).ifFail(Console::logger, ArithmeticException.class);
+     * }</pre>
+     *
+     * @param action 你想要执行的操作
+     * @param exs    限定的异常
+     * @return this
+     * @throws NullPointerException 如果包裹里的值存在，但你传入的操作为{@code null}时抛出
+     */
+    @SafeVarargs
+    public final Optional<T> ifFail(final Consumer<? super Throwable> action, final Class<? extends Throwable>... exs) throws NullPointerException {
+        Objects.requireNonNull(action, "action is null");
+
+        if (isFail() && EasyStream.of(exs).anyMatch(e -> e.isAssignableFrom(throwable.getClass()))) {
+            action.accept(throwable);
+        }
+
+        return this;
     }
 
     /**
@@ -186,7 +255,7 @@ public class Optional<T> {
      *
      * <p> 例如如果值存在就打印结果
      * <pre>{@code
-     * Optional.ofNullable("Hello!").ifPresent(Console::log);
+     * Optional.ofNullable("Hello!").ifPresent(Console::logger);
      * }</pre>
      *
      * @param action 你想要执行的操作
@@ -206,12 +275,12 @@ public class Optional<T> {
      * 不满足条件或者元素本身为空时返回一个返回一个空的{@code Optional}
      *
      * @param predicate 给定的条件
-     * @return 如果满足条件则返回本身, 不满足条件或者元素本身为空时返回一个返回一个空的{@code Optional}
-     * @throws NullPointerException 如果给定的条件为 {@code null}，抛出{@code NPE}
+     * @return 如果满足条件则返回本身, 不满足条件或者元素本身为空时返回一个空的{@code Optional}
+     * @throws NullPointerException 如果给定的条件为 {@code null}抛出{@code NPE}
      */
     public Optional<T> filter(final Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        if (isEmpty()) {
+        if (isEmpty() || isFail()) {
             return this;
         } else {
             return predicate.test(value) ? this : empty();
@@ -230,7 +299,9 @@ public class Optional<T> {
      */
     public <U> Optional<U> map(final Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (isEmpty()) {
+        if (isFail()) {
+            return (Optional<U>) this;
+        } else if (isEmpty()) {
             return empty();
         } else {
             return Optional.ofNullable(mapper.apply(value));
@@ -242,15 +313,17 @@ public class Optional<T> {
      * 如果不存在，返回一个空的{@code Optional}
      * 和 {@link Optional#map}的区别为 传入的操作返回值必须为 Optional
      *
-     * @param <U>    操作返回值的类型
      * @param mapper 值存在时执行的操作
+     * @param <U>    操作返回值的类型
      * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
      * 如果不存在，返回一个空的{@code Optional}
      * @throws NullPointerException 如果给定的操作为 {@code null}或者给定的操作执行结果为 {@code null}，抛出 {@code NPE}
      */
     public <U> Optional<U> flatMap(final Function<? super T, ? extends Optional<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (isEmpty()) {
+        if (isFail()) {
+            return (Optional<U>) this;
+        } else if (isEmpty()) {
             return empty();
         } else {
             final Optional<U> r = (Optional<U>) mapper.apply(value);
@@ -272,7 +345,9 @@ public class Optional<T> {
      */
     public <U> Optional<U> flattedMap(final Function<? super T, ? extends java.util.Optional<? extends U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (isEmpty()) {
+        if (isFail()) {
+            return (Optional<U>) this;
+        } else if (isEmpty()) {
             return empty();
         } else {
             return ofNullable(mapper.apply(value).orElse(null));
@@ -281,7 +356,9 @@ public class Optional<T> {
 
     /**
      * 如果包裹里元素的值存在，就执行对应的操作，并返回本身
-     * 如果不存在，返回一个空的{@code Optional} 属于 {@link #ifPresent}的链式拓展
+     * 如果不存在，返回一个空的{@code Optional}
+     *
+     * <p>属于 {@link #ifPresent}的链式拓展
      *
      * @param action 值存在时执行的操作
      * @return this
@@ -290,6 +367,7 @@ public class Optional<T> {
     public Optional<T> peek(final Consumer<T> action) throws NullPointerException {
         return ifPresent(action);
     }
+
 
     /**
      * 如果包裹里元素的值存在，就执行对应的操作集，并返回本身
@@ -377,6 +455,17 @@ public class Optional<T> {
     }
 
     /**
+     * 如果包裹里元素的值存在，则返回该值，否则返回传入的操作执行后的返回值
+     *
+     * @param supplier 值不存在时需要执行的操作，返回一个类型与 包裹里元素类型 相同的元素
+     * @return 如果包裹里元素的值存在，则返回该值，否则返回传入的操作执行后的返回值
+     * @throws NullPointerException 如果之不存在，并且传入的操作为空，则抛出 {@code NPE}
+     */
+    public Optional<T> orElseOpt(final Supplier<? extends T> supplier) {
+        return or(() -> ofNullable(supplier.get()));
+    }
+
+    /**
      * 如果包裹里元素的值存在，则返回该值，否则执行传入的操作
      *
      * @param action 值不存在时执行的操作
@@ -426,7 +515,16 @@ public class Optional<T> {
      * @return {@link java.util.Optional}对象
      */
     public java.util.Optional<T> toOptional() {
-        return java.util.Optional.ofNullable(this.value);
+        return java.util.Optional.ofNullable(value);
+    }
+
+    /**
+     * 转换为 {@link EasyStream}对象
+     *
+     * @return {@link EasyStream}对象
+     */
+    public EasyStream<T> toEasyStream() {
+        return EasyStream.of(value);
     }
 
     /**
@@ -438,22 +536,22 @@ public class Optional<T> {
      * <li>它们包裹住的元素之间相互 {@code equals()}
      * </ul>
      *
-     * @param object 一个要用来判断是否相等的参数
+     * @param obj 一个要用来判断是否相等的参数
      * @return 如果传入的参数也是一个 {@code Optional}并且它们包裹住的元素都为空
      * 或者它们包裹住的元素之间相互 {@code equals()} 就返回{@code true}
      * 否则返回 {@code false}
      */
     @Override
-    public boolean equals(final Object object) {
-        if (this == object) {
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (!(object instanceof Optional)) {
+        if (!(obj instanceof Optional)) {
             return false;
         }
 
-        final Optional<?> other = (Optional<?>) object;
+        final Optional<?> other = (Optional<?>) obj;
         return Objects.equals(value, other.value);
     }
 
@@ -474,7 +572,7 @@ public class Optional<T> {
      */
     @Override
     public String toString() {
-        return StringKit.toStringOrNull(this.value);
+        return StringKit.toStringOrNull(value);
     }
 
 }

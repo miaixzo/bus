@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.editors;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
-import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * 去除String类型的单元格值两边的空格
@@ -38,7 +38,7 @@ import org.apache.poi.ss.usermodel.Cell;
 public class TrimEditor implements CellEditor {
 
     @Override
-    public Object edit(Cell cell, Object value) {
+    public Object edit(final Cell cell, final Object value) {
         if (value instanceof String) {
             return StringKit.trim((String) value);
         }

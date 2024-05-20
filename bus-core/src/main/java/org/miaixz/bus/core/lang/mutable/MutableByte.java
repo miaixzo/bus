@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.toolkit.CompareKit;
 
 /**
- * 可变 <code>byte</code> 类型
+ * 可变 {@code byte} 类型
  *
  * @author Kimi Liu
  * @see Byte
@@ -36,15 +36,14 @@ import org.miaixz.bus.core.toolkit.MathKit;
  */
 public class MutableByte extends Number implements Comparable<MutableByte>, Mutable<Number> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private byte value;
 
     /**
-     * 构造,默认值0
+     * 构造，默认值0
      */
     public MutableByte() {
-
     }
 
     /**
@@ -128,7 +127,7 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
     /**
      * 增加值
      *
-     * @param operand 被增加的值,非空
+     * @param operand 被增加的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -151,7 +150,7 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
     /**
      * 减去值
      *
-     * @param operand 被减的值,非空
+     * @param operand 被减的值，非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -188,18 +187,18 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@link MutableByte}</li>
-     * <li>值相等</li>
+     * 	<li>非空</li>
+     * 	<li>类型为 MutableByte</li>
+     * 	<li>值相等</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>,否则 <code>false</code>
+     * @param obj 比对的对象
+     * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object object) {
-        if (object instanceof MutableByte) {
-            return value == ((MutableByte) object).byteValue();
+    public boolean equals(final Object obj) {
+        if (obj instanceof MutableByte) {
+            return value == ((MutableByte) obj).byteValue();
         }
         return false;
     }
@@ -212,12 +211,12 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
     /**
      * 比较
      *
-     * @param other 其它 {@link MutableByte} 对象
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @param other 其它 MutableByte 对象
+     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableByte other) {
-        return MathKit.compare(this.value, other.value);
+        return CompareKit.compare(this.value, other.value);
     }
 
     @Override

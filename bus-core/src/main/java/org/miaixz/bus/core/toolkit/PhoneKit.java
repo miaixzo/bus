@@ -25,11 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.core.toolkit;
 
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.lang.Validator;
 
 /**
- * 电话号码工具类
+ * 电话号码工具类，包括：
+ * <ul>
+ *     <li>手机号码</li>
+ *     <li>400、800号码</li>
+ *     <li>座机号码</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,13 +43,13 @@ import org.miaixz.bus.core.lang.Validator;
 public class PhoneKit {
 
     /**
-     * 验证是否为手机号码（中国大陆）
+     * 验证是否为手机号码（中国）
      *
      * @param value 值
-     * @return 是否为手机号码（中国大陆）
+     * @return 是否为手机号码（中国）
      */
-    public static boolean isMobile(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.MOBILE, value);
+    public static boolean isMobile(final CharSequence value) {
+        return Validator.isMatchRegex(Regex.MOBILE_PATTERN, value);
     }
 
     /**
@@ -52,8 +58,8 @@ public class PhoneKit {
      * @param value 手机号码
      * @return 是否为中国香港手机号码
      */
-    public static boolean isMobileHk(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.MOBILE_HK, value);
+    public static boolean isMobileHk(final CharSequence value) {
+        return Validator.isMatchRegex(Regex.MOBILE_HK, value);
     }
 
     /**
@@ -62,8 +68,8 @@ public class PhoneKit {
      * @param value 手机号码
      * @return 是否为中国台湾手机号码
      */
-    public static boolean isMobileTw(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.MOBILE_TW, value);
+    public static boolean isMobileTw(final CharSequence value) {
+        return Validator.isMatchRegex(Pattern.MOBILE_TW_PATTERN, value);
     }
 
     /**
@@ -72,8 +78,8 @@ public class PhoneKit {
      * @param value 手机号码
      * @return 是否为中国澳门手机号码
      */
-    public static boolean isMobileMo(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.MOBILE_MO, value);
+    public static boolean isMobileMo(final CharSequence value) {
+        return Validator.isMatchRegex(Regex.MOBILE_MO, value);
     }
 
     /**
@@ -82,28 +88,28 @@ public class PhoneKit {
      * @param value 值
      * @return 是否为座机号码（中国大陆）
      */
-    public static boolean isPhone(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.PHONE, value);
+    public static boolean isTel(final CharSequence value) {
+        return Validator.isMatchRegex(Pattern.TEL_PATTERN, value);
     }
 
     /**
-     * 验证是否为座机号码（中国）+ 400 + 800
+     * 验证是否为座机号码（中国大陆）+ 400 + 800
      *
      * @param value 值
      * @return 是否为座机号码（中国大陆）
      */
-    public static boolean isPhone400800(CharSequence value) {
-        return Validator.isMatchRegex(RegEx.PHONE_400_800, value);
+    public static boolean isTel400800(final CharSequence value) {
+        return Validator.isMatchRegex(Regex.TEL_400_800, value);
     }
 
     /**
-     * 验证是否为座机号码+手机号码（CharKit中国）+ 400 + 800电话 + 手机号号码（香港）
+     * 验证是否为座机号码+手机号码（CharKit中国大陆）+ 400 + 800电话 + 手机号号码（中国香港）
      *
      * @param value 值
-     * @return 是否为座机号码+手机号码（中国大陆）+手机号码（香港）+手机号码（中国台湾）+手机号码（澳门）
+     * @return 是否为座机号码+手机号码（中国大陆）+手机号码（中国香港）+手机号码（中国台湾）+手机号码（中国澳门）
      */
-    public static boolean isPhoneAll(CharSequence value) {
-        return isMobile(value) || isPhone400800(value) || isMobileHk(value) || isMobileTw(value) || isMobileMo(value);
+    public static boolean isPhone(final CharSequence value) {
+        return isMobile(value) || isTel400800(value) || isMobileHk(value) || isMobileTw(value) || isMobileMo(value);
     }
 
     /**
@@ -113,7 +119,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 替换后的字符串
      */
-    public static CharSequence hideBefore(CharSequence phone) {
+    public static CharSequence hideBefore(final CharSequence phone) {
         return StringKit.hide(phone, 0, 7);
     }
 
@@ -123,7 +129,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 替换后的字符串
      */
-    public static CharSequence hideBetween(CharSequence phone) {
+    public static CharSequence hideBetween(final CharSequence phone) {
         return StringKit.hide(phone, 3, 7);
     }
 
@@ -133,7 +139,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 替换后的字符串
      */
-    public static CharSequence hideAfter(CharSequence phone) {
+    public static CharSequence hideAfter(final CharSequence phone) {
         return StringKit.hide(phone, 7, 11);
     }
 
@@ -143,7 +149,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 手机号前3位
      */
-    public static CharSequence subBefore(CharSequence phone) {
+    public static CharSequence subBefore(final CharSequence phone) {
         return StringKit.sub(phone, 0, 3);
     }
 
@@ -153,7 +159,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 手机号中间4位
      */
-    public static CharSequence subBetween(CharSequence phone) {
+    public static CharSequence subBetween(final CharSequence phone) {
         return StringKit.sub(phone, 3, 7);
     }
 
@@ -163,7 +169,7 @@ public class PhoneKit {
      * @param phone 手机号码
      * @return 手机号后4位
      */
-    public static CharSequence subAfter(CharSequence phone) {
+    public static CharSequence subAfter(final CharSequence phone) {
         return StringKit.sub(phone, 7, 11);
     }
 
@@ -173,8 +179,8 @@ public class PhoneKit {
      * @param value 完整的固话号码
      * @return 固话号码的区号部分
      */
-    public static CharSequence subPhoneBefore(CharSequence value) {
-        return PatternKit.getGroup1(RegEx.PHONE, value);
+    public static CharSequence subTelBefore(final CharSequence value) {
+        return PatternKit.getGroup1(Pattern.TEL_PATTERN, value);
     }
 
     /**
@@ -183,8 +189,8 @@ public class PhoneKit {
      * @param value 完整的固话号码
      * @return 固话号码的号码部分
      */
-    public static CharSequence subPhoneAfter(CharSequence value) {
-        return PatternKit.get(RegEx.PHONE, value, 2);
+    public static CharSequence subTelAfter(final CharSequence value) {
+        return PatternKit.get(Pattern.TEL_PATTERN, value, 2);
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.lang.Types;
+import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.TypeKit;
 
@@ -41,14 +41,14 @@ import java.util.Collection;
 public class CollectionConverter implements Converter {
 
     /**
-     * 单例对象
+     * 单例实体
      */
     public static CollectionConverter INSTANCE = new CollectionConverter();
 
     @Override
     public Collection<?> convert(Type targetType, final Object value) {
-        if (targetType instanceof Types) {
-            targetType = ((Types<?>) targetType).getType();
+        if (targetType instanceof TypeReference) {
+            targetType = ((TypeReference<?>) targetType).getType();
         }
 
         return convert(targetType, TypeKit.getTypeArgument(targetType), value);
@@ -63,7 +63,8 @@ public class CollectionConverter implements Converter {
      * @return 转换后的集合对象
      */
     public Collection<?> convert(final Type collectionType, final Type elementType, final Object value) {
-        final Collection<Object> collection = CollKit.create(TypeKit.getClass(collectionType));
+        // 兼容EnumSet创建
+        final Collection<?> collection = CollKit.create(TypeKit.getClass(collectionType), TypeKit.getClass(elementType));
         return CollKit.addAll(collection, value, elementType);
     }
 

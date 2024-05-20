@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.values;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.office.excel.cell.CellValue;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaError;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.office.excel.cell.CellValue;
 
 /**
  * ERROR类型单元格值
@@ -45,7 +45,7 @@ public class ErrorCellValue implements CellValue<String> {
      *
      * @param cell {@link Cell}
      */
-    public ErrorCellValue(Cell cell) {
+    public ErrorCellValue(final Cell cell) {
         this.cell = cell;
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.lang.Protocol;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,23 +43,23 @@ public enum TlsVersion {
     /**
      * 2016年版本
      */
-    TLS_1_3(Http.TLS_V_13),
+    TLS_1_3(Protocol.TLS_V_13),
     /**
      * 2008年版本
      */
-    TLS_1_2(Http.TLS_V_12),
+    TLS_1_2(Protocol.TLS_V_12),
     /**
      * 2006年版本
      */
-    TLS_1_1(Http.TLS_V_11),
+    TLS_1_1(Protocol.TLS_V_11),
     /**
      * 1999年版本
      */
-    TLS_1_0(Http.TLS_V_10),
+    TLS_1_0(Protocol.TLS_V_10),
     /**
      * 1996年版本
      */
-    SSL_3_0(Http.SSL_V_30);
+    SSL_3_0(Protocol.SSL_V_30);
 
     public final String javaName;
 
@@ -69,15 +69,15 @@ public enum TlsVersion {
 
     public static TlsVersion forJavaName(String javaName) {
         switch (javaName) {
-            case Http.TLS_V_13:
+            case Protocol.TLS_V_13:
                 return TLS_1_3;
-            case Http.TLS_V_12:
+            case Protocol.TLS_V_12:
                 return TLS_1_2;
-            case Http.TLS_V_11:
+            case Protocol.TLS_V_11:
                 return TLS_1_1;
-            case Http.TLS_V_10:
+            case Protocol.TLS_V_10:
                 return TLS_1_0;
-            case Http.SSL_V_30:
+            case Protocol.SSL_V_30:
                 return SSL_3_0;
         }
         throw new IllegalArgumentException("Unexpected TLS version: " + javaName);

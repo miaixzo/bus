@@ -259,6 +259,19 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         return maps;
     }
 
+    /**
+     * Parse a drive name like "0 C:" to just the index "0"
+     *
+     * @param s A drive name to parse
+     * @return The first space-delimited value
+     */
+    private static String getIndexFromName(String s) {
+        if (s.isEmpty()) {
+            return s;
+        }
+        return s.split("\\s")[0];
+    }
+
     @Override
     public long getReads() {
         return reads;
@@ -297,19 +310,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
-    }
-
-    /**
-     * Parse a drive name like "0 C:" to just the index "0"
-     *
-     * @param s A drive name to parse
-     * @return The first space-delimited value
-     */
-    private static String getIndexFromName(String s) {
-        if (s.isEmpty()) {
-            return s;
-        }
-        return s.split("\\s")[0];
     }
 
     @Override

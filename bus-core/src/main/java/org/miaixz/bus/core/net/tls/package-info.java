@@ -1,5 +1,5 @@
 /**
- * SSL相关封装
+ * TLS相关
  *
  * @author Kimi Liu
  * @since Java 17+

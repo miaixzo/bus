@@ -35,15 +35,18 @@ import org.miaixz.bus.core.toolkit.StringKit;
  */
 public class AlwaysTrueMatcher implements PartMatcher {
 
+    /**
+     * 单例
+     */
     public static AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
 
     @Override
-    public boolean test(Integer t) {
+    public boolean test(final Integer t) {
         return true;
     }
 
     @Override
-    public int nextAfter(int value) {
+    public int nextAfter(final int value) {
         return value;
     }
 

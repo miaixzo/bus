@@ -26,9 +26,9 @@
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * OpenBSD hard disk implementation.
@@ -54,12 +53,11 @@ import java.util.regex.Pattern;
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
     private final Supplier<List<String>> iostat = Memoizer.memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
-
+    private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
     private long writes = 0L;
     private long writeBytes = 0L;
-    private final long currentQueueLength = 0L;
     private long transferTime = 0L;
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;
@@ -85,15 +83,15 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         for (String device : devices) {
             diskName = device.split(":")[0];
             // get partitions using disklabel command (requires root)
-            Quartet<String, String, Long, List<HWPartition>> diskdata = Disklabel.getDiskParams(diskName);
-            String model = diskdata.getA();
-            long size = diskdata.getC();
+            Tuple diskdata = Disklabel.getDiskParams(diskName);
+            String model = diskdata.get(0);
+            long size = diskdata.get(2);
             if (size <= 1) {
                 if (dmesg == null) {
                     dmesg = Executor.runNative("dmesg");
                 }
-                Pattern diskAt = Pattern.compile(diskName + " at .*<(.+)>.*");
-                Pattern diskMB = Pattern
+                java.util.regex.Pattern diskAt = java.util.regex.Pattern.compile(diskName + " at .*<(.+)>.*");
+                java.util.regex.Pattern diskMB = java.util.regex.Pattern
                         .compile(diskName + ":.* (\\d+)MB, (?:(\\d+) bytes\\/sector, )?(?:(\\d+) sectors).*");
                 for (String line : dmesg) {
                     Matcher m = diskAt.matcher(line);
@@ -121,13 +119,17 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
                     }
                 }
             }
-            store = new OpenBsdHWDiskStore(diskName, model, diskdata.getB(), size);
-            store.partitionList = diskdata.getD();
+            store = new OpenBsdHWDiskStore(diskName, model, diskdata.get(1), size);
+            store.partitionList = diskdata.get(3);
             store.updateAttributes();
 
             diskList.add(store);
         }
         return diskList;
+    }
+
+    private static List<String> querySystatIostat() {
+        return Executor.runNative("systat -ab iostat");
     }
 
     @Override
@@ -170,10 +172,6 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         return this.partitionList;
     }
 
-    private static List<String> querySystatIostat() {
-        return Executor.runNative("systat -ab iostat");
-    }
-
     @Override
     public boolean updateAttributes() {
         /*-
@@ -201,7 +199,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         long now = System.currentTimeMillis();
         boolean diskFound = false;
         for (String line : iostat.get()) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length < 7 && split[0].equals(getName())) {
                 diskFound = true;
                 this.readBytes = Parsing.parseMultipliedToLongs(split[1]);

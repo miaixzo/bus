@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 可变{@code Object}
@@ -39,12 +39,12 @@ import java.io.Serializable;
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private T value;
 
     /**
-     * 构造,空值
+     * 构造，空值
      */
     public MutableObject() {
 
@@ -59,7 +59,14 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
         this.value = value;
     }
 
-    public static <T> MutableObject<T> of(T value) {
+    /**
+     * 构建MutableObj
+     *
+     * @param value 被包装的值
+     * @param <T>   值类型
+     * @return MutableObject
+     */
+    public static <T> MutableObject<T> of(final T value) {
         return new MutableObject<>(value);
     }
 
@@ -74,15 +81,15 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
     }
 
     @Override
-    public boolean equals(final Object object) {
-        if (null == object) {
+    public boolean equals(final Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (this == object) {
+        if (this == obj) {
             return true;
         }
-        if (this.getClass() == object.getClass()) {
-            final MutableObject<?> that = (MutableObject<?>) object;
+        if (this.getClass() == obj.getClass()) {
+            final MutableObject<?> that = (MutableObject<?>) obj;
             return ObjectKit.equals(this.value, that.value);
         }
         return false;
@@ -90,12 +97,12 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Override
     public int hashCode() {
-        return null == value ? 0 : value.hashCode();
+        return Objects.hashCode(value);
     }
 
     @Override
     public String toString() {
-        return null == value ? Normal.NULL : value.toString();
+        return value == null ? "null" : value.toString();
     }
 
 }

@@ -37,12 +37,21 @@ import java.util.TimeZone;
 public class ZoneKit {
 
     /**
+     * UTC 的 ZoneID
+     */
+    public static final TimeZone ZONE_UTC = TimeZone.getTimeZone("UTC");
+    /**
+     * UTC 的 TimeZone
+     */
+    public static final ZoneId ZONE_ID_UTC = ZONE_UTC.toZoneId();
+
+    /**
      * {@link ZoneId}转换为{@link TimeZone}，{@code null}则返回系统默认值
      *
      * @param zoneId {@link ZoneId}，{@code null}则返回系统默认值
      * @return {@link TimeZone}
      */
-    public static TimeZone toTimeZone(ZoneId zoneId) {
+    public static TimeZone toTimeZone(final ZoneId zoneId) {
         if (null == zoneId) {
             return TimeZone.getDefault();
         }
@@ -56,7 +65,7 @@ public class ZoneKit {
      * @param timeZone {@link TimeZone}，{@code null}则返回系统默认值
      * @return {@link ZoneId}
      */
-    public static ZoneId toZoneId(TimeZone timeZone) {
+    public static ZoneId toZoneId(final TimeZone timeZone) {
         if (null == timeZone) {
             return ZoneId.systemDefault();
         }

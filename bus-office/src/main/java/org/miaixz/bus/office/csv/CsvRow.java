@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office.csv;
 
+import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.toolkit.BeanKit;
 
 import java.util.*;
@@ -53,14 +53,15 @@ public final class CsvRow implements List<String> {
      * @param headerMap          标题Map
      * @param fields             数据列表
      */
-    public CsvRow(long originalLineNumber, Map<String, Integer> headerMap, List<String> fields) {
+    public CsvRow(final long originalLineNumber, final Map<String, Integer> headerMap, final List<String> fields) {
+        Assert.notNull(fields, "fields must be not null!");
         this.originalLineNumber = originalLineNumber;
         this.headerMap = headerMap;
         this.fields = fields;
     }
 
     /**
-     * 获取原始行号,多行情况下为首行行号
+     * 获取原始行号，多行情况下为首行行号。忽略注释行
      *
      * @return the original line number 行号
      */
@@ -72,7 +73,7 @@ public final class CsvRow implements List<String> {
      * 获取标题对应的字段内容
      *
      * @param name 标题名
-     * @return 字段值, null表示无此字段值
+     * @return 字段值，null表示无此字段值
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public String getByName(final String name) {
@@ -97,15 +98,15 @@ public final class CsvRow implements List<String> {
     /**
      * 获取标题与字段值对应的Map
      *
-     * @return an unmodifiable map of header names and field values of this row
+     * @return 标题与字段值对应的Map
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public Map<String, String> getFieldMap() {
-        if (null == headerMap) {
+        if (headerMap == null) {
             throw new IllegalStateException("No header available");
         }
 
-        final Map<String, String> fieldMap = new LinkedHashMap<>(headerMap.size());
+        final Map<String, String> fieldMap = new LinkedHashMap<>(headerMap.size(), 1);
         String key;
         Integer col;
         String val;
@@ -120,23 +121,23 @@ public final class CsvRow implements List<String> {
     }
 
     /**
+     * 一行数据转换为Bean对象，忽略转换错误
+     *
+     * @param <T>   Bean类型
+     * @param clazz bean类
+     * @return Bean
+     */
+    public <T> T toBean(final Class<T> clazz) {
+        return BeanKit.toBean(getFieldMap(), clazz, CopyOptions.of().setIgnoreError(true));
+    }
+
+    /**
      * 获取字段格式
      *
      * @return 字段格式
      */
     public int getFieldCount() {
         return fields.size();
-    }
-
-    /**
-     * 数据转换为Bean对象
-     *
-     * @param <T>   Bean类型
-     * @param clazz bean类
-     * @return Bean
-     */
-    public <T> T toBean(Class<T> clazz) {
-        return BeanKit.toBeanIgnoreError(getFieldMap(), clazz);
     }
 
     @Override
@@ -150,7 +151,7 @@ public final class CsvRow implements List<String> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(final Object o) {
         return this.fields.contains(o);
     }
 
@@ -165,42 +166,42 @@ public final class CsvRow implements List<String> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(final T[] a) {
         return this.fields.toArray(a);
     }
 
     @Override
-    public boolean add(String e) {
+    public boolean add(final String e) {
         return this.fields.add(e);
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return this.fields.remove(o);
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
-        return this.fields.containsAll(c);
+    public boolean containsAll(final Collection<?> c) {
+        return new HashSet<>(this.fields).containsAll(c);
     }
 
     @Override
-    public boolean addAll(Collection<? extends String> c) {
+    public boolean addAll(final Collection<? extends String> c) {
         return this.fields.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends String> c) {
+    public boolean addAll(final int index, final Collection<? extends String> c) {
         return this.fields.addAll(index, c);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         return this.fields.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         return this.fields.retainAll(c);
     }
 
@@ -210,32 +211,32 @@ public final class CsvRow implements List<String> {
     }
 
     @Override
-    public String get(int index) {
+    public String get(final int index) {
         return index >= fields.size() ? null : fields.get(index);
     }
 
     @Override
-    public String set(int index, String element) {
+    public String set(final int index, final String element) {
         return this.fields.set(index, element);
     }
 
     @Override
-    public void add(int index, String element) {
+    public void add(final int index, final String element) {
         this.fields.add(index, element);
     }
 
     @Override
-    public String remove(int index) {
+    public String remove(final int index) {
         return this.fields.remove(index);
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(final Object o) {
         return this.fields.indexOf(o);
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(final Object o) {
         return this.fields.lastIndexOf(o);
     }
 
@@ -245,12 +246,12 @@ public final class CsvRow implements List<String> {
     }
 
     @Override
-    public ListIterator<String> listIterator(int index) {
+    public ListIterator<String> listIterator(final int index) {
         return this.fields.listIterator(index);
     }
 
     @Override
-    public List<String> subList(int fromIndex, int toIndex) {
+    public List<String> subList(final int fromIndex, final int toIndex) {
         return this.fields.subList(fromIndex, toIndex);
     }
 
@@ -262,26 +263,26 @@ public final class CsvRow implements List<String> {
         sb.append(", ");
 
         sb.append("fields=");
-        if (null != headerMap) {
-            sb.append(Symbol.C_BRACE_LEFT);
+        if (headerMap != null) {
+            sb.append('{');
             for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext(); ) {
 
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());
-                sb.append(Symbol.C_EQUAL);
-                if (null != entry.getValue()) {
+                sb.append('=');
+                if (entry.getValue() != null) {
                     sb.append(entry.getValue());
                 }
                 if (it.hasNext()) {
                     sb.append(", ");
                 }
             }
-            sb.append(Symbol.C_BRACE_RIGHT);
+            sb.append('}');
         } else {
             sb.append(fields.toString());
         }
 
-        sb.append(Symbol.C_BRACE_RIGHT);
+        sb.append('}');
         return sb.toString();
     }
 

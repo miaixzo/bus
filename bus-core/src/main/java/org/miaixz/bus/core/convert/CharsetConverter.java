@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Charset;
  */
 public class CharsetConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected java.nio.charset.Charset convertInternal(final Class<?> targetClass, final Object value) {

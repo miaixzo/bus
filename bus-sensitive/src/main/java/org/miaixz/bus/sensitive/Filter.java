@@ -26,13 +26,13 @@
 package org.miaixz.bus.sensitive;
 
 import com.alibaba.fastjson.serializer.BeanContext;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.*;
-import org.miaixz.bus.sensitive.annotation.Condition;
-import org.miaixz.bus.sensitive.annotation.Entry;
-import org.miaixz.bus.sensitive.annotation.Shield;
-import org.miaixz.bus.sensitive.provider.ConditionProvider;
-import org.miaixz.bus.sensitive.provider.StrategyProvider;
+import org.miaixz.bus.sensitive.magic.annotation.Condition;
+import org.miaixz.bus.sensitive.magic.annotation.Entry;
+import org.miaixz.bus.sensitive.magic.annotation.Shield;
+import org.miaixz.bus.sensitive.metric.ConditionProvider;
+import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -43,7 +43,6 @@ import java.util.List;
 
 /**
  * 默认的上下文过滤器
- * <p>
  * {@link Entry} 放在对象时,则不用特殊处理
  * 只需要处理 集合、数组集合
  * 注意： 和 {@link Builder#on(Object)} 的区别
@@ -71,9 +70,9 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      */
     private static ConditionProvider getConditionOpt(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            org.miaixz.bus.sensitive.annotation.Condition sensitiveCondition = annotation.annotationType().getAnnotation(Condition.class);
+            Condition sensitiveCondition = annotation.annotationType().getAnnotation(Condition.class);
             if (ObjectKit.isNotNull(sensitiveCondition)) {
-                return ClassKit.newInstance(sensitiveCondition.value());
+                return ReflectKit.newInstance(sensitiveCondition.value());
             }
         }
         return null;
@@ -89,7 +88,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         // 信息初始化
         final java.lang.reflect.Field field = context.getField();
         final Class clazz = context.getBeanClass();
-        final List<java.lang.reflect.Field> fieldList = ClassKit.getAllFieldList(clazz);
+        final List<java.lang.reflect.Field> fieldList = ListKit.of(FieldKit.getFields(clazz));
         sensitiveContext.setCurrentField(field);
         sensitiveContext.setCurrentObject(object);
         sensitiveContext.setBeanClass(clazz);
@@ -117,7 +116,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             // 为数组类型
             Object[] arrays = (Object[]) value;
             if (ArrayKit.isNotEmpty(arrays)) {
-                Object firstArrayEntry = ArrayKit.firstNotNull(arrays).get();
+                Object firstArrayEntry = ArrayKit.firstNonNull(arrays);
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {
@@ -139,7 +138,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             // Collection 接口的子类
             final Collection<?> entryCollection = (Collection<?>) value;
             if (CollKit.isNotEmpty(entryCollection)) {
-                Object firstCollectionEntry = CollKit.firstNotNullElem(entryCollection).get();
+                Object firstCollectionEntry = ArrayKit.firstNonNull(entryCollection);
 
                 if (isBaseType(firstCollectionEntry.getClass())) {
                     //2, 基础值,直接循环设置即可

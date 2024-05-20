@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.nimble.codec;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ByteKit;
 import org.miaixz.bus.core.toolkit.IoKit;
 import org.miaixz.bus.core.toolkit.StreamKit;
@@ -145,7 +145,7 @@ public class Transcoder implements Closeable {
             } else {
                 int length = dis.length();
                 dos.writeHeader(Tag.Item, null, length);
-                StreamKit.copy(dis, dos, length, buffer());
+                IoKit.copy(dis, dos, length, buffer());
             }
         }
 
@@ -420,9 +420,9 @@ public class Transcoder implements Closeable {
             dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
         } else {
             if (dis.bigEndian() == dos.isBigEndian())
-                StreamKit.copy(dis, dos, length, buffer());
+                IoKit.copy(dis, dos, length, buffer());
             else
-                StreamKit.copy(dis, dos, length, dis.vr().numEndianBytes(), buffer());
+                IoKit.copy(dis, dos, length, dis.vr().numEndianBytes(), buffer());
         }
     }
 

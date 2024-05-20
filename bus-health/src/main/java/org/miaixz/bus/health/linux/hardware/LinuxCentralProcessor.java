@@ -31,9 +31,10 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.toolkit.ObjectKit;
 import org.miaixz.bus.core.toolkit.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -68,7 +69,7 @@ import java.util.stream.Stream;
 @ThreadSafe
 final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
-    private static Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
+    private static Tuple readTopologyFromUdev() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
@@ -100,10 +101,10 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } finally {
             udev.unref();
         }
-        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
+        return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
-    private static Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromSysfs() {
+    private static Tuple readTopologyFromSysfs() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
@@ -124,7 +125,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             // No udev and no cpu info in sysfs? Bad.
             Logger.warn("Unable to find CPU information in sysfs at path {}", SysPath.CPU);
         }
-        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
+        return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
     private static CentralProcessor.LogicalProcessor getLogicalProcessorFromSyspath(String syspath, Set<CentralProcessor.ProcessorCache> caches,
@@ -173,7 +174,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
-    private static Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromCpuinfo() {
+    private static Tuple readTopologyFromCpuinfo() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Set<CentralProcessor.ProcessorCache> caches = mapCachesFromLscpu();
         Map<Integer, Integer> numaNodeMap = mapNumaNodesFromLscpu();
@@ -208,7 +209,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
                 numaNodeMap.getOrDefault(currentProcessor, 0)));
         coreEfficiencyMap.put((currentPackage << 16) + currentCore, 0);
-        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, Collections.emptyMap());
+        return new Tuple(logProcs, orderedProcCaches(caches), coreEfficiencyMap, Collections.emptyMap());
     }
 
     private static Map<Integer, Integer> mapNumaNodesFromLscpu() {
@@ -255,14 +256,14 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 size = 0L;
             } else if (s.contains("one-size")) {
                 // "one-size": "65536",
-                String[] split = RegEx.NOT_NUMBERS.split(s);
+                String[] split = Pattern.NOT_NUMBERS_PATTERN.split(s);
                 if (split.length > 1) {
                     size = Parsing.parseLongOrDefault(split[1], 0L);
                 }
             } else if (s.contains("ways")) {
                 // "ways": null,
                 // "ways": 4,
-                String[] split = RegEx.NOT_NUMBERS.split(s);
+                String[] split = Pattern.NOT_NUMBERS_PATTERN.split(s);
                 if (split.length > 1) {
                     associativity = Parsing.parseIntOrDefault(split[1], 0);
                 }
@@ -274,13 +275,13 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
             } else if (s.contains("level")) {
                 // "level": 3,
-                String[] split = RegEx.NOT_NUMBERS.split(s);
+                String[] split = Pattern.NOT_NUMBERS_PATTERN.split(s);
                 if (split.length > 1) {
                     level = Parsing.parseIntOrDefault(split[1], 0);
                 }
             } else if (s.contains("coherency-size")) {
                 // "coherency-size": 64
-                String[] split = RegEx.NOT_NUMBERS.split(s);
+                String[] split = Pattern.NOT_NUMBERS_PATTERN.split(s);
                 if (split.length > 1) {
                     lineSize = Parsing.parseIntOrDefault(split[1], 0);
                 }
@@ -317,7 +318,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
                 String eax = Normal.EMPTY;
                 String edx = Normal.EMPTY;
-                for (String register : RegEx.SPACES.split(checkLine)) {
+                for (String register : Pattern.SPACES_PATTERN.split(checkLine)) {
                     if (register.startsWith("eax=")) {
                         eax = Parsing.removeMatchingString(register, "eax=0x");
                     } else if (register.startsWith("edx=")) {
@@ -393,7 +394,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         String[] flags = new String[0];
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
-            String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
+            String[] splitLine = Pattern.SPACES_COLON_SPACE_PATTERN.split(line);
             if (splitLine.length < 2) {
                 // special case
                 if (line.startsWith("CPU architecture: ")) {
@@ -487,19 +488,19 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         // Attempt to read from sysfs
-        Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> topology = LinuxOperatingSystem.HAS_UDEV
+        Tuple topology = LinuxOperatingSystem.HAS_UDEV
                 ? readTopologyFromUdev()
                 : readTopologyFromSysfs();
         // This sometimes fails so fall back to CPUID
-        if (topology.getA().isEmpty()) {
+        if (ObjectKit.isEmpty(topology.get(0))) {
             topology = readTopologyFromCpuinfo();
         }
-        List<CentralProcessor.LogicalProcessor> logProcs = topology.getA();
-        List<CentralProcessor.ProcessorCache> caches = topology.getB();
-        Map<Integer, Integer> coreEfficiencyMap = topology.getC();
-        Map<Integer, String> modAliasMap = topology.getD();
+        List<CentralProcessor.LogicalProcessor> logProcs = topology.get(0);
+        List<CentralProcessor.ProcessorCache> caches = topology.get(1);
+        Map<Integer, Integer> coreEfficiencyMap = topology.get(2);
+        Map<Integer, String> modAliasMap = topology.get(3);
         // Failsafe
         if (logProcs.isEmpty()) {
             logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
@@ -517,7 +518,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     return new CentralProcessor.PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), Normal.EMPTY));
                 }).collect(Collectors.toList());
         List<String> featureFlags = CpuInfo.queryFeatureFlags();
-        return new Quartet<>(logProcs, physProcs, caches, featureFlags);
+        return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
     @Override

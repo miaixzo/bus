@@ -55,7 +55,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * A singleton empty {@code ByteString}.
      */
     public static final ByteString EMPTY = ByteString.of();
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     public final byte[] data;
     public transient int hashCode; // Lazily computed; 0 if unknown.
     public transient String utf8; // Lazily computed.
@@ -163,8 +163,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     /**
      * Reads {@code count} bytes from {@code in} and returns the result.
      *
-     * @throws java.io.EOFException if {@code in} has fewer than {@code count}
-     *                              bytes to read.
+     * @throws EOFException if {@code in} has fewer than {@code count}
+     *                      bytes to read.
      */
     public static ByteString read(InputStream in, int byteCount) throws IOException {
         if (null == in) {

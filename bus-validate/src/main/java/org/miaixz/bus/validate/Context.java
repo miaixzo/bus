@@ -26,10 +26,10 @@
 package org.miaixz.bus.validate;
 
 import lombok.Data;
-import org.miaixz.bus.core.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.toolkit.CollKit;
 import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.validate.validators.Checker;
+import org.miaixz.bus.validate.magic.Checker;
 
 import java.util.ArrayList;
 import java.util.Arrays;

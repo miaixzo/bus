@@ -26,9 +26,9 @@
 package org.miaixz.bus.core.instance;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.toolkit.ObjectKit;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +45,7 @@ public final class InstanceFactory implements Instance {
 
     /**
      * 单例 map 对象
-     * 1. key 是 class 的全称
+     * 1. data 是 class 的全称
      */
     private final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
     /**
@@ -54,6 +54,7 @@ public final class InstanceFactory implements Instance {
     private final ThreadLocal<Map<String, Object>> mapThreadLocal = new ThreadLocal<>();
 
     private InstanceFactory() {
+
     }
 
     /**
@@ -169,7 +170,7 @@ public final class InstanceFactory implements Instance {
     private <T> T getSingleton(final Class<T> clazz,
                                final String group, final Map<String, Object> instanceMap) {
         this.notNull(clazz);
-        Assert.notEmpty(group, "key");
+        Assert.notEmpty(group, "id");
 
         final String fullClassName = clazz.getName() + Symbol.MINUS + group;
         T instance = (T) instanceMap.get(fullClassName);

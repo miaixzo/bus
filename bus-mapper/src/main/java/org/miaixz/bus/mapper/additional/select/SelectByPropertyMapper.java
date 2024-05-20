@@ -27,7 +27,7 @@ package org.miaixz.bus.mapper.additional.select;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.miaixz.bus.core.lang.function.FuncX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public interface SelectByPropertyMapper<T> {
      * @return the object
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    T selectOneByProperty(@Param("fn") FuncX<T, ?> fn, @Param("value") Object value);
+    T selectOneByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("value") Object value);
 
     /**
      * 根据属性及对应值进行查询，有多个返回值，查询条件使用等号
@@ -60,7 +60,7 @@ public interface SelectByPropertyMapper<T> {
      * @return the list
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    List<T> selectByProperty(@Param("fn") FuncX<T, ?> fn, @Param("value") Object value);
+    List<T> selectByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("value") Object value);
 
     /**
      * 根据属性及对应值进行查询，查询条件使用 in
@@ -70,7 +70,7 @@ public interface SelectByPropertyMapper<T> {
      * @return the list
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    List<T> selectInByProperty(@Param("fn") FuncX<T, ?> fn, @Param("values") List<?> values);
+    List<T> selectInByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("values") List<?> values);
 
     /**
      * 根据属性及对应值进行查询，查询条件使用 between
@@ -81,7 +81,7 @@ public interface SelectByPropertyMapper<T> {
      * @return the list
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    List<T> selectBetweenByProperty(@Param("fn") FuncX<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
+    List<T> selectBetweenByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
 
     /**
      * 根据属性及对应值进行查询，检查是否存在对应记录，查询条件使用等号
@@ -91,7 +91,7 @@ public interface SelectByPropertyMapper<T> {
      * @return the boolean
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    boolean existsWithProperty(@Param("fn") FuncX<T, ?> fn, @Param("value") Object value);
+    boolean existsWithProperty(@Param("fn") FunctionX<T, ?> fn, @Param("value") Object value);
 
     /**
      * 根据属性及对应值进行查询，统计符合条件的记录数，查询条件使用等号
@@ -101,6 +101,6 @@ public interface SelectByPropertyMapper<T> {
      * @return the int
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    int selectCountByProperty(@Param("fn") FuncX<T, ?> fn, @Param("value") Object value);
+    int selectCountByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("value") Object value);
 
 }

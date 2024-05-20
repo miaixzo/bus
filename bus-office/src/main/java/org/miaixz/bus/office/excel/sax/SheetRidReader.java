@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.sax;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.office.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.toolkit.ListKit;
+import org.miaixz.bus.core.toolkit.StringKit;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -42,18 +42,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
+ * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系，类似于:
+ * <pre>
+ * &lt;sheet name="Sheet6" sheetId="4" r:data="rId6"/&gt;
+ * </pre>
+ * 读取结果为：
+ *
+ * <pre>
+ *     {"4": "6"}
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SheetRidReader extends DefaultHandler {
 
-    private final static String TAG_NAME = "sheet";
-    private final static String RID_ATTR = "r:id";
-    private final static String SHEET_ID_ATTR = "sheetId";
-    private final static String NAME_ATTR = "name";
-
+    private static final String TAG_NAME = "sheet";
+    private static final String RID_ATTR = "r:data";
+    private static final String SHEET_ID_ATTR = "sheetId";
+    private static final String NAME_ATTR = "name";
     private final Map<Integer, Integer> ID_RID_MAP = new LinkedHashMap<>();
     private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
 
@@ -63,7 +70,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param reader {@link XSSFReader}
      * @return SheetRidReader
      */
-    public static SheetRidReader parse(XSSFReader reader) {
+    public static SheetRidReader parse(final XSSFReader reader) {
         return new SheetRidReader().read(reader);
     }
 
@@ -73,17 +80,17 @@ public class SheetRidReader extends DefaultHandler {
      * @param xssfReader XSSF读取器
      * @return this
      */
-    public SheetRidReader read(XSSFReader xssfReader) {
+    public SheetRidReader read(final XSSFReader xssfReader) {
         InputStream workbookData = null;
         try {
             workbookData = xssfReader.getWorkbookData();
-            ExcelSaxKit.readFrom(workbookData, this);
-        } catch (InvalidFormatException e) {
+            ExcelSax.readFrom(workbookData, this);
+        } catch (final InvalidFormatException e) {
             throw new InternalException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         } finally {
-            IoKit.close(workbookData);
+            IoKit.closeQuietly(workbookData);
         }
         return this;
     }
@@ -94,7 +101,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param sheetId Sheet的ID，从1开始
      * @return rid，从1开始
      */
-    public Integer getRidBySheetId(int sheetId) {
+    public Integer getRidBySheetId(final int sheetId) {
         return ID_RID_MAP.get(sheetId);
     }
 
@@ -104,7 +111,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param sheetId Sheet的ID，从0开始
      * @return rid，从0开始
      */
-    public Integer getRidBySheetIdBase0(int sheetId) {
+    public Integer getRidBySheetIdBase0(final int sheetId) {
         final Integer rid = getRidBySheetId(sheetId + 1);
         if (null != rid) {
             return rid - 1;
@@ -118,7 +125,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param sheetName Sheet的name
      * @return rid，从1开始
      */
-    public Integer getRidByName(String sheetName) {
+    public Integer getRidByName(final String sheetName) {
         return NAME_RID_MAP.get(sheetName);
     }
 
@@ -128,7 +135,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param sheetName Sheet的name
      * @return rid，从0开始
      */
-    public Integer getRidByNameBase0(String sheetName) {
+    public Integer getRidByNameBase0(final String sheetName) {
         final Integer rid = getRidByName(sheetName);
         if (null != rid) {
             return rid - 1;
@@ -142,7 +149,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param index 序号，从0开始
      * @return rid
      */
-    public Integer getRidByIndex(int index) {
+    public Integer getRidByIndex(final int index) {
         return CollKit.get(this.NAME_RID_MAP.values(), index);
     }
 
@@ -152,7 +159,7 @@ public class SheetRidReader extends DefaultHandler {
      * @param index 序号，从0开始
      * @return rid，从0开始
      */
-    public Integer getRidByIndexBase0(int index) {
+    public Integer getRidByIndexBase0(final int index) {
         final Integer rid = CollKit.get(this.NAME_RID_MAP.values(), index);
         if (null != rid) {
             return rid - 1;
@@ -166,11 +173,11 @@ public class SheetRidReader extends DefaultHandler {
      * @return sheet名称
      */
     public List<String> getSheetNames() {
-        return CollKit.toList(this.NAME_RID_MAP.keySet());
+        return ListKit.of(this.NAME_RID_MAP.keySet());
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) {
         if (TAG_NAME.equalsIgnoreCase(localName)) {
             final String ridStr = attributes.getValue(RID_ATTR);
             if (StringKit.isEmpty(ridStr)) {
