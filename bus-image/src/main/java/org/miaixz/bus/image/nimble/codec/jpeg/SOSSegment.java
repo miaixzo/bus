@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
  * @author Kimi Liu

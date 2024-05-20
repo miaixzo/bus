@@ -29,7 +29,7 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.proxy.Interceptor;
 import org.miaixz.bus.proxy.Invoker;
 import org.miaixz.bus.proxy.Provider;

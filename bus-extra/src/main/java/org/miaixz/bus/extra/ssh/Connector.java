@@ -26,32 +26,30 @@
 package org.miaixz.bus.extra.ssh;
 
 /**
- * 连接者对象,提供一些连接的基本信息
+ * 连接者对象，提供一些连接的基本信息，包括：
+ * <ul>
+ *     <li>host：主机名</li>
+ *     <li>port：端口</li>
+ *     <li>user：用户名（默认root）</li>
+ *     <li>password：密码</li>
+ *     <li>timeout：连接超时毫秒数</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Connector {
+
     private String host;
     private int port;
-    private String user;
+    private String user = "root";
     private String password;
-    private String group;
-
-    public Connector() {
-    }
+    private long timeout;
 
     /**
      * 构造
-     *
-     * @param user     用户名
-     * @param password 密码
-     * @param group    组
      */
-    public Connector(String user, String password, String group) {
-        this.user = user;
-        this.password = password;
-        this.group = group;
+    public Connector() {
     }
 
     /**
@@ -61,12 +59,50 @@ public class Connector {
      * @param port     端口
      * @param user     用户名
      * @param password 密码
+     * @param timeout  连接超时时长，0表示默认
      */
-    public Connector(String host, int port, String user, String password) {
+    public Connector(final String host, final int port, final String user, final String password, final long timeout) {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
+        this.timeout = timeout;
+    }
+
+    /**
+     * 创建Connector，所有参数为默认，用于构建模式
+     *
+     * @return Connector
+     */
+    public static Connector of() {
+        return new Connector();
+    }
+
+    /**
+     * 创建Connector
+     *
+     * @param host     主机名
+     * @param port     端口
+     * @param user     用户名
+     * @param password 密码
+     * @return Connector
+     */
+    public static Connector of(final String host, final int port, final String user, final String password) {
+        return of(host, port, user, password, 0);
+    }
+
+    /**
+     * 创建Connector
+     *
+     * @param host     主机名
+     * @param port     端口
+     * @param user     用户名
+     * @param password 密码
+     * @param timeout  连接超时时长，0表示默认
+     * @return Connector
+     */
+    public static Connector of(final String host, final int port, final String user, final String password, final long timeout) {
+        return new Connector(host, port, user, password, timeout);
     }
 
     /**
@@ -82,9 +118,11 @@ public class Connector {
      * 设定主机名
      *
      * @param host 主机名
+     * @return this
      */
-    public void setHost(String host) {
+    public Connector setHost(final String host) {
         this.host = host;
+        return this;
     }
 
     /**
@@ -100,9 +138,11 @@ public class Connector {
      * 设定端口号
      *
      * @param port 端口号
+     * @return this
      */
-    public void setPort(int port) {
+    public Connector setPort(final int port) {
         this.port = port;
+        return this;
     }
 
     /**
@@ -118,9 +158,11 @@ public class Connector {
      * 设定用户名
      *
      * @param name 用户名
+     * @return this
      */
-    public void setUser(String name) {
+    public Connector setUser(final String name) {
         this.user = name;
+        return this;
     }
 
     /**
@@ -136,27 +178,44 @@ public class Connector {
      * 设定密码
      *
      * @param password 密码
+     * @return this
      */
-    public void setPassword(String password) {
+    public Connector setPassword(final String password) {
         this.password = password;
+        return this;
     }
 
     /**
-     * 获得用户组名
+     * 获得连接超时时间
      *
-     * @return 用户组
+     * @return 连接超时时间
      */
-    public String getGroup() {
-        return group;
+    public long getTimeout() {
+        return timeout;
     }
 
     /**
-     * 设定用户组名
+     * 设置连接超时时间
      *
-     * @param group 用户组
+     * @param timeout 连接超时时间
+     * @return this
      */
-    public void setGroup(String group) {
-        this.group = group;
+    public Connector setTimeout(final long timeout) {
+        this.timeout = timeout;
+        return this;
     }
 
+    /**
+     * toString方法仅用于测试显示
+     */
+    @Override
+    public String toString() {
+        return "Connector{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", user='" + user + '\'' +
+                ", password='" + password + '\'' +
+                ", timeout=" + timeout +
+                '}';
+    }
 }

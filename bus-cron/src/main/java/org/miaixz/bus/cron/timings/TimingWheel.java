@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.timings;
 
+import org.miaixz.bus.cron.crontab.TimerCrontab;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.function.Consumer;
@@ -78,7 +79,7 @@ public class TimingWheel {
      * @param wheelSize 时间轮大小
      * @param consumer  任务处理器
      */
-    public TimingWheel(long tickMs, int wheelSize, Consumer<TimerTaskList> consumer) {
+    public TimingWheel(final long tickMs, final int wheelSize, final Consumer<TimerTaskList> consumer) {
         this(tickMs, wheelSize, System.currentTimeMillis(), consumer);
     }
 
@@ -90,11 +91,15 @@ public class TimingWheel {
      * @param currentTime 当前时间
      * @param consumer    任务处理器
      */
-    public TimingWheel(long tickMs, int wheelSize, long currentTime, Consumer<TimerTaskList> consumer) {
+    public TimingWheel(final long tickMs, final int wheelSize, final long currentTime, final Consumer<TimerTaskList> consumer) {
         this.tickMs = tickMs;
         this.wheelSize = wheelSize;
         this.interval = tickMs * wheelSize;
         this.timerTaskLists = new TimerTaskList[wheelSize];
+        for (int i = 0; i < wheelSize; i++) {
+            this.timerTaskLists[i] = new TimerTaskList();
+        }
+
         // currentTime为tickMs的整数倍 这里做取整操作
         this.currentTime = currentTime - (currentTime % tickMs);
         this.consumer = consumer;
@@ -103,34 +108,30 @@ public class TimingWheel {
     /**
      * 添加任务到时间轮
      *
-     * @param timerTask 任务
+     * @param timerCrontab 任务
      * @return 是否成功
      */
-    public boolean addTask(TimerTask timerTask) {
-        long expiration = timerTask.getDelayMs();
+    public boolean addTask(final TimerCrontab timerCrontab) {
+        final long expiration = timerCrontab.getDelayMs();
         // 过期任务直接执行
         if (expiration < currentTime + tickMs) {
             return false;
         } else if (expiration < currentTime + interval) {
             // 当前时间轮可以容纳该任务 加入时间槽
-            long virtualId = expiration / tickMs;
-            int index = (int) (virtualId % wheelSize);
-            Logger.debug("TickMs: {} ------index: {} ------expiration: {}", tickMs, index, expiration);
+            final long virtualId = expiration / tickMs;
+            final int index = (int) (virtualId % wheelSize);
+            Logger.debug("tickMs: {} ------index: {} ------expiration: {}", tickMs, index, expiration);
 
-            TimerTaskList timerTaskList = timerTaskLists[index];
-            if (null == timerTaskList) {
-                timerTaskList = new TimerTaskList();
-                timerTaskLists[index] = timerTaskList;
-            }
-            timerTaskList.addTask(timerTask);
+            final TimerTaskList timerTaskList = timerTaskLists[index];
+            timerTaskList.addTask(timerCrontab);
             if (timerTaskList.setExpiration(virtualId * tickMs)) {
                 // 添加到delayQueue中
                 consumer.accept(timerTaskList);
             }
         } else {
             // 放到上一层的时间轮
-            TimingWheel timeWheel = getOverflowWheel();
-            timeWheel.addTask(timerTask);
+            final TimingWheel timeWheel = getOverflowWheel();
+            timeWheel.addTask(timerCrontab);
         }
         return true;
     }
@@ -140,7 +141,7 @@ public class TimingWheel {
      *
      * @param timestamp 推进的时间
      */
-    public void advanceClock(long timestamp) {
+    public void advanceClock(final long timestamp) {
         if (timestamp >= currentTime + tickMs) {
             currentTime = timestamp - (timestamp % tickMs);
             if (overflowWheel != null) {

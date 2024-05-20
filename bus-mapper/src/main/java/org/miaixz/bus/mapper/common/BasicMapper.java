@@ -34,7 +34,7 @@ import org.miaixz.bus.mapper.common.basic.BasicUpdateMapper;
 /**
  * 通用Mapper接口,其他接口继承该接口即可
  *
- * @param <T>   泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

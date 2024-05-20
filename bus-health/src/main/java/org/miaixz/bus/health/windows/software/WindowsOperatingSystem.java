@@ -35,6 +35,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.LUID;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -219,53 +220,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return systemLog;
     }
 
-    @Override
-    public boolean isElevated() {
-        return Advapi32Util.isCurrentProcessElevated();
-    }
-
-    @Override
-    public FileSystem getFileSystem() {
-        return new WindowsFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new WindowsInternetProtocolStats();
-    }
-
-    @Override
-    public List<OSSession> getSessions() {
-        List<OSSession> whoList = HkeyUserData.queryUserSessions();
-        whoList.addAll(SessionWtsData.queryUserSessions());
-        whoList.addAll(NetSessionData.queryUserSessions());
-        return whoList;
-    }
-
-    @Override
-    public List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return processMapToList(pids);
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return processMapToList(null);
-    }
-
     private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromRegistry() {
         return ThreadPerformanceData.buildThreadMapFromRegistry(null);
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, false);
-        return processMapToList(descendantPids);
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, true);
-        return processMapToList(descendantPids);
     }
 
     private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromPerfCounters() {
@@ -337,6 +293,84 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         }
     }
 
+    /**
+     * Is the current operating process x86 or x86-compatibility mode?
+     *
+     * @return true if the current process is 32-bit
+     */
+    public static boolean isWow() {
+        return WOW;
+    }
+
+    /**
+     * Is the specified process x86 or x86-compatibility mode?
+     *
+     * @param h The handle to the processs to check
+     * @return true if the process is 32-bit
+     */
+    public static boolean isWow(HANDLE h) {
+        if (X86) {
+            return true;
+        }
+        try (ByRef.CloseableIntByReference isWow = new ByRef.CloseableIntByReference()) {
+            Kernel32.INSTANCE.IsWow64Process(h, isWow);
+            return isWow.getValue() != 0;
+        }
+    }
+
+    private static boolean isCurrentWow() {
+        if (X86) {
+            return true;
+        }
+        HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
+        return (h == null) ? false : isWow(h);
+    }
+
+    @Override
+    public boolean isElevated() {
+        return Advapi32Util.isCurrentProcessElevated();
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return new WindowsFileSystem();
+    }
+
+    @Override
+    public InternetProtocolStats getInternetProtocolStats() {
+        return new WindowsInternetProtocolStats();
+    }
+
+    @Override
+    public List<OSSession> getSessions() {
+        List<OSSession> whoList = HkeyUserData.queryUserSessions();
+        whoList.addAll(SessionWtsData.queryUserSessions());
+        whoList.addAll(NetSessionData.queryUserSessions());
+        return whoList;
+    }
+
+    @Override
+    public List<OSProcess> getProcesses(Collection<Integer> pids) {
+        return processMapToList(pids);
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return processMapToList(null);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, false);
+        return processMapToList(descendantPids);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        Set<Integer> descendantPids = getChildrenOrDescendants(getParentPidsFromSnapshot(), parentPid, true);
+        return processMapToList(descendantPids);
+    }
+
     @Override
     public int getProcessId() {
         return Kernel32.INSTANCE.GetCurrentProcessId();
@@ -387,42 +421,9 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return BOOTTIME;
     }
 
-    /**
-     * Is the current operating process x86 or x86-compatibility mode?
-     *
-     * @return true if the current process is 32-bit
-     */
-    public static boolean isWow() {
-        return WOW;
-    }
-
     @Override
     public NetworkParams getNetworkParams() {
         return new WindowsNetworkParams();
-    }
-
-    /**
-     * Is the specified process x86 or x86-compatibility mode?
-     *
-     * @param h The handle to the processs to check
-     * @return true if the process is 32-bit
-     */
-    public static boolean isWow(HANDLE h) {
-        if (X86) {
-            return true;
-        }
-        try (ByRef.CloseableIntByReference isWow = new ByRef.CloseableIntByReference()) {
-            Kernel32.INSTANCE.IsWow64Process(h, isWow);
-            return isWow.getValue() != 0;
-        }
-    }
-
-    private static boolean isCurrentWow() {
-        if (X86) {
-            return true;
-        }
-        HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
-        return (h == null) ? false : isWow(h);
     }
 
     @Override
@@ -490,7 +491,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if (versionInfo.getResultCount() > 0) {
             sp = WmiKit.getString(versionInfo, Win32OperatingSystem.OSVersionProperty.CSDVERSION, 0);
             if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
-                version = version + " " + sp.replace("Service Pack ", "SP");
+                version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
             }
             suiteMask = WmiKit.getUint32(versionInfo, Win32OperatingSystem.OSVersionProperty.SUITEMASK, 0);
             buildNumber = WmiKit.getString(versionInfo, Win32OperatingSystem.OSVersionProperty.BUILDNUMBER, 0);

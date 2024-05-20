@@ -28,7 +28,7 @@ package org.miaixz.bus.mapper;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.support.GenId;
 import org.miaixz.bus.mapper.support.MetaObject;
 
@@ -59,9 +59,9 @@ public class Builder {
      * @param genClass class
      * @param table    表
      * @param column   列
-     * @throws InternalException 异常
+     * @throws MapperException 异常
      */
-    public static void genId(Object target, String property, Class<? extends GenId> genClass, String table, String column) throws InternalException {
+    public static void genId(Object target, String property, Class<? extends GenId> genClass, String table, String column) throws MapperException {
         try {
             GenId genId;
             if (CACHE.containsKey(genClass)) {
@@ -83,7 +83,7 @@ public class Builder {
                 metaObject.setValue(property, id);
             }
         } catch (Exception e) {
-            throw new InternalException("生成 ID 失败!", e);
+            throw new MapperException("生成 ID 失败!", e);
         }
     }
 

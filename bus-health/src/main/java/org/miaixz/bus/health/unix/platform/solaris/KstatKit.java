@@ -40,6 +40,7 @@ import org.miaixz.bus.core.annotation.GuardedBy;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
@@ -177,7 +178,7 @@ public final class KstatKit {
         Kstat2MatcherList matchers = new Kstat2MatcherList();
         KstatKit.CHAIN.lock();
         try {
-            matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + "*" + afterStr);
+            matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + Symbol.STAR + afterStr);
             Kstat2Handle handle = new Kstat2Handle();
             try {
                 for (s = 0; s < Integer.MAX_VALUE; s++) {

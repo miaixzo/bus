@@ -32,10 +32,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.MapKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -116,7 +116,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                     String packName = handlerType.getPackageName();
                     if (antPathMatcher.matchStart(packName, basePackage)
                             || antPathMatcher.matchStart(basePackage, packName)) {
-                        String[] arrays = StringKit.splitToArray(basePackage, Symbol.C_DOT);
+                        String[] arrays = StringKit.splitToArray(basePackage, Symbol.DOT);
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
                         Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
                                 + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());

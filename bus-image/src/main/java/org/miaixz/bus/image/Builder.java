@@ -27,8 +27,9 @@ package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StreamKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.BulkData;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -74,10 +75,10 @@ public class Builder {
     public static final int AC_USER_IDENTITY = 0x59;
     public static final int MAGIC_LEN = 0xfbfb;
 
-    public final static int KNOWN_INCONSISTENCIES = 0xFFFF;
-    public final static int NO_KNOWN_INCONSISTENCIES = 0;
-    public final static int IN_USE = 0xFFFF;
-    public final static int IN_ACTIVE = 0;
+    public static final int KNOWN_INCONSISTENCIES = 0xFFFF;
+    public static final int NO_KNOWN_INCONSISTENCIES = 0;
+    public static final int IN_USE = 0xFFFF;
+    public static final int IN_ACTIVE = 0;
 
     public static final String FAILED = "FAILED";
     public static final String WARNING = "WARNING";
@@ -341,7 +342,7 @@ public class Builder {
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
                     dos.write(p.buffer, 0, p.realBufferLength);
                 }
-                StreamKit.copy(bis, dos, p.buffer);
+                IoKit.copy(bis, dos, p.buffer);
                 if ((itemLen & 1) != 0) {
                     dos.write(0);
                 }

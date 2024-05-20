@@ -27,7 +27,8 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.galaxy.Property;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
@@ -200,9 +201,9 @@ public class BulkData implements Value {
         InputStream in = openStream();
         try {
             if (this.bigEndian != out.isBigEndian())
-                StreamKit.copy(in, out, length, vr.numEndianBytes());
+                IoKit.copy(in, out, length, vr.numEndianBytes());
             else
-                StreamKit.copy(in, out, length);
+                IoKit.copy(in, out, length);
             if ((length & 1) != 0)
                 out.write(vr.paddingByte());
         } finally {

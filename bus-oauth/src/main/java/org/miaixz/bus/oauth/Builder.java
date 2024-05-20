@@ -26,9 +26,14 @@
 package org.miaixz.bus.oauth;
 
 import lombok.Setter;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -76,12 +81,12 @@ public class Builder {
         List<String> paramList = new ArrayList<>();
         map.forEach((k, v) -> {
             if (null == v) {
-                paramList.add(k + "=");
+                paramList.add(k + Symbol.EQUAL);
             } else {
-                paramList.add(k + "=" + (encode ? UriKit.encode(String.valueOf(v)) : v));
+                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(String.valueOf(v)) : v));
             }
         });
-        return String.join("&", paramList);
+        return String.join(Symbol.AND, paramList);
     }
 
     /**
@@ -92,19 +97,39 @@ public class Builder {
      */
     public static Map<String, String> parseStringToMap(String text) {
         Map<String, String> res;
-        if (text.contains("&")) {
-            String[] fields = text.split("&");
+        if (text.contains(Symbol.AND)) {
+            String[] fields = text.split(Symbol.AND);
             res = new HashMap<>((int) (fields.length / 0.75 + 1));
             for (String field : fields) {
-                if (field.contains("=")) {
-                    String[] keyValue = field.split("=");
-                    res.put(UriKit.decode(keyValue[0]), keyValue.length == 2 ? UriKit.decode(keyValue[1]) : null);
+                if (field.contains(Symbol.EQUAL)) {
+                    String[] keyValue = field.split(Symbol.EQUAL);
+                    res.put(UrlDecoder.decode(keyValue[0]), keyValue.length == 2 ? UrlDecoder.decode(keyValue[1]) : null);
                 }
             }
         } else {
             res = new HashMap<>(0);
         }
         return res;
+    }
+
+    /**
+     * 签名
+     *
+     * @param key       key
+     * @param data      data
+     * @param algorithm algorithm
+     * @return byte[]
+     */
+    public static byte[] sign(byte[] key, byte[] data, String algorithm) {
+        try {
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(new SecretKeySpec(key, algorithm));
+            return mac.doFinal(data);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
+        } catch (InvalidKeyException ex) {
+            throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
+        }
     }
 
     /**
@@ -126,7 +151,7 @@ public class Builder {
         if (MapKit.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = CharsKit.appendIfMissing(this.baseUrl, "?", "&");
+        String baseUrl = StringKit.appendIfMissing(this.baseUrl, "?", Symbol.AND);
         String paramString = parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }
@@ -155,26 +180,6 @@ public class Builder {
         this.params.put(key, valueAsString);
 
         return this;
-    }
-
-    /**
-     * 签名
-     *
-     * @param key       key
-     * @param data      data
-     * @param algorithm algorithm
-     * @return byte[]
-     */
-    public static byte[] sign(byte[] key, byte[] data, String algorithm) {
-        try {
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(new SecretKeySpec(key, algorithm));
-            return mac.doFinal(data);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
-        } catch (InvalidKeyException ex) {
-            throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
-        }
     }
 
 }

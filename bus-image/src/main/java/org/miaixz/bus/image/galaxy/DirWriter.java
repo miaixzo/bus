@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.galaxy;
 
-import org.miaixz.bus.core.toolkit.ByteKit;
+import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;

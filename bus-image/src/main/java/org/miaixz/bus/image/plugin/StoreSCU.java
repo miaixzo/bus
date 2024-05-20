@@ -26,8 +26,8 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -276,7 +276,7 @@ public class StoreSCU implements AutoCloseable {
                         break;
                     }
                 }
-                String[] ss = StringKit.splitToArray(line, Symbol.C_HT);
+                String[] ss = StringKit.splitToArray(line, Symbol.HT);
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
                 } catch (Exception e) {
@@ -457,7 +457,7 @@ public class StoreSCU implements AutoCloseable {
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames()) {
                 commonExtNegs.put(cuid, new CommonExtended(cuid, UID.StorageServiceClass,
-                        StringKit.splitToArray(props.getProperty(cuid), Symbol.C_COMMA)));
+                        StringKit.splitToArray(props.getProperty(cuid), Symbol.COMMA)));
             }
         }
 

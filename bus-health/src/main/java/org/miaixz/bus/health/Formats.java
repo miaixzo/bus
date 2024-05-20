@@ -26,6 +26,7 @@
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.math.BigInteger;
 import java.util.Locale;
@@ -50,11 +51,6 @@ public final class Formats {
     private static final long TEBI = 1L << 40;
     private static final long PEBI = 1L << 50;
     private static final long EXBI = 1L << 60;
-
-    /**
-     * Constant <code>HEX_ERROR="0x%08X"</code>
-     */
-    public static final String HEX_ERROR = "0x%08X";
     private static final long MEGA = 1_000_000L;
     private static final long GIGA = 1_000_000_000L;
     private static final long TERA = 1_000_000_000_000L;
@@ -229,7 +225,7 @@ public final class Formats {
      * @return A string representing the error as 0x....
      */
     public static String formatError(int errorCode) {
-        return String.format(Locale.ROOT, HEX_ERROR, errorCode);
+        return String.format(Locale.ROOT, Normal.HEX_ERROR, errorCode);
     }
 
     /**

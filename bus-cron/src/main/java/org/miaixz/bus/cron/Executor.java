@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.cron.factory.CronTask;
-import org.miaixz.bus.cron.factory.Task;
+import org.miaixz.bus.cron.crontab.CronCrontab;
+import org.miaixz.bus.cron.crontab.Crontab;
 
 /**
  * 作业执行器
- * 执行具体的作业,执行完毕销毁
+ * 执行具体的作业，执行完毕销毁
+ * 作业执行器唯一关联一个作业，负责管理作业的运行的生命周期。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,7 +39,7 @@ import org.miaixz.bus.cron.factory.Task;
 public class Executor implements Runnable {
 
     private final Scheduler scheduler;
-    private final CronTask task;
+    private final CronCrontab task;
 
     /**
      * 构造
@@ -46,7 +47,7 @@ public class Executor implements Runnable {
      * @param scheduler 调度器
      * @param task      被执行的任务
      */
-    public Executor(Scheduler scheduler, CronTask task) {
+    public Executor(final Scheduler scheduler, final CronCrontab task) {
         this.scheduler = scheduler;
         this.task = task;
     }
@@ -56,7 +57,7 @@ public class Executor implements Runnable {
      *
      * @return 任务对象
      */
-    public Task getTask() {
+    public Crontab getTask() {
         return this.task.getRaw();
     }
 
@@ -65,7 +66,7 @@ public class Executor implements Runnable {
      *
      * @return 任务对象
      */
-    public CronTask getCronTask() {
+    public CronCrontab getCronTask() {
         return this.task;
     }
 
@@ -75,7 +76,7 @@ public class Executor implements Runnable {
             scheduler.listenerManager.notifyTaskStart(this);
             task.execute();
             scheduler.listenerManager.notifyTaskSucceeded(this);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             scheduler.listenerManager.notifyTaskFailed(this, e);
         } finally {
             scheduler.manager.notifyExecutorCompleted(this);

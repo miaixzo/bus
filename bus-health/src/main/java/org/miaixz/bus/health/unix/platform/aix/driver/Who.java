@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 
 import java.time.LocalDateTime;
@@ -67,7 +68,7 @@ public final class Who {
         Matcher m = BOOT_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             try {
-                return LocalDateTime.parse(m.group(1) + " " + m.group(2), BOOT_DATE_FORMAT_AIX)
+                return LocalDateTime.parse(m.group(1) + Symbol.SPACE + m.group(2), BOOT_DATE_FORMAT_AIX)
                         .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             } catch (DateTimeParseException | NullPointerException e) {
                 // Shouldn't happen with regex matching

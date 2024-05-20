@@ -29,7 +29,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.limiter.support.lock.Lock;
 import org.miaixz.bus.logger.Logger;
 

@@ -35,19 +35,19 @@ import java.util.Map;
 /**
  * Utility to calculate a load average equivalent metric on Windows. Starts a daemon thread to collect the necessary
  * counters and averages in 5-second intervals.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 @ThreadSafe
 public final class LoadAverage {
 
-    // Daemon thread for Load Average
-    private static Thread loadAvgThread = null;
-
-    private static double[] loadAverages = new double[]{-1d, -1d, -1d};
     private static final double[] EXP_WEIGHT = new double[]{
             // 1-, 5-, and 15-minute exponential smoothing weight
             Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d)};
+    // Daemon thread for Load Average
+    private static Thread loadAvgThread = null;
+    private static double[] loadAverages = new double[]{-1d, -1d, -1d};
 
     public static double[] queryLoadAverage(int nelem) {
         synchronized (loadAverages) {

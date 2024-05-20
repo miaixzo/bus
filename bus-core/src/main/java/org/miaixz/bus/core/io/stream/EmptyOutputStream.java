@@ -25,11 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.stream;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>,既忽略所有数据
+ * 此OutputStream写出数据到<b>/dev/null</b>，即忽略所有数据
  * 来自 Apache Commons io
  *
  * @author Kimi Liu
@@ -43,11 +42,10 @@ public class EmptyOutputStream extends OutputStream {
     public static final EmptyOutputStream INSTANCE = new EmptyOutputStream();
 
     private EmptyOutputStream() {
-
     }
 
     /**
-     * 什么也不做，写出到{@code /dev/null}
+     * 什么也不做，写出到{@code /dev/null}.
      *
      * @param b   写出的数据
      * @param off 开始位置
@@ -55,28 +53,27 @@ public class EmptyOutputStream extends OutputStream {
      */
     @Override
     public void write(final byte[] b, final int off, final int len) {
-
+        // to /dev/null
     }
 
     /**
-     * 什么也不做，写出到 {@code /dev/null}
+     * 什么也不做，写出到 {@code /dev/null}.
      *
      * @param b 写出的数据
      */
     @Override
     public void write(final int b) {
-
+        // to /dev/null
     }
 
     /**
-     * 什么也不做，写出到 {@code /dev/null}
+     * 什么也不做，写出到 {@code /dev/null}.
      *
      * @param b 写出的数据
-     * @throws IOException 不抛出
      */
     @Override
-    public void write(final byte[] b) throws IOException {
-
+    public void write(final byte[] b) {
+        // to /dev/null
     }
 
 }

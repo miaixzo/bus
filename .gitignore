@@ -49,7 +49,7 @@ dependency-reduced-pom.xml
 /backwards
 /dev-tools/backwards
 
-# needed in case docs build is run...maybe we can configure doc build to generate files under build?
+# needed in case docs build is run...maybe we can configure doc build to generate files under build ?
 html_docs
 
 # random old stuff that we should look at the necessity of...

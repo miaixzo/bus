@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.driver;
 import com.sun.jna.Platform;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.software.OSSession;
 
@@ -103,7 +104,7 @@ public final class Who {
         if (m.matches()) {
             try {
                 whoList.add(new OSSession(m.group(1), m.group(2),
-                        LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
+                        LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
                                 .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                         m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
                 return true;
@@ -126,7 +127,7 @@ public final class Who {
         if (m.matches()) {
             try {
                 // Missing year, parse date time with current year
-                LocalDateTime login = LocalDateTime.parse(m.group(3) + " " + m.group(4) + " " + m.group(5),
+                LocalDateTime login = LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
                         WHO_DATE_FORMAT_UNIX);
                 // If this date is in the future, subtract a year
                 if (login.isAfter(LocalDateTime.now(ZoneId.systemDefault()))) {

@@ -27,8 +27,8 @@ package org.miaixz.bus.mapper.additional.delete;
 
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
@@ -98,7 +98,7 @@ public class DeletePropertyProvider extends MapperTemplate {
         }
         sql.append("<where>\n");
         sql.append("<if test=\"false==");
-        sql.append("@");
+        sql.append(Symbol.AT);
         sql.append(propertyHelper);
         sql.append("@isNull(value, ");
         sql.append(getConfig().isSafeDelete());

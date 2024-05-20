@@ -63,6 +63,34 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         this.global = macGlobalMemory;
     }
 
+    private static Pair<Long, Long> querySwapUsage() {
+        long swapUsed = 0L;
+        long swapTotal = 0L;
+        try (Struct.CloseableXswUsage xswUsage = new Struct.CloseableXswUsage()) {
+            if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
+                swapUsed = xswUsage.xsu_used;
+                swapTotal = xswUsage.xsu_total;
+            }
+        }
+        return Pair.of(swapUsed, swapTotal);
+    }
+
+    private static Pair<Long, Long> queryVmStat() {
+        long swapPagesIn = 0L;
+        long swapPagesOut = 0L;
+        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
+             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(vmStats.size() / SystemB.INT_SIZE)) {
+            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
+                    size)) {
+                swapPagesIn = Parsing.unsignedIntToLong(vmStats.pageins);
+                swapPagesOut = Parsing.unsignedIntToLong(vmStats.pageouts);
+            } else {
+                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+            }
+        }
+        return Pair.of(swapPagesIn, swapPagesOut);
+    }
+
     @Override
     public long getSwapUsed() {
         return usedTotal.get().getLeft();
@@ -91,33 +119,5 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     @Override
     public long getSwapPagesOut() {
         return inOut.get().getRight();
-    }
-
-    private static Pair<Long, Long> querySwapUsage() {
-        long swapUsed = 0L;
-        long swapTotal = 0L;
-        try (Struct.CloseableXswUsage xswUsage = new Struct.CloseableXswUsage()) {
-            if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
-                swapUsed = xswUsage.xsu_used;
-                swapTotal = xswUsage.xsu_total;
-            }
-        }
-        return Pair.of(swapUsed, swapTotal);
-    }
-
-    private static Pair<Long, Long> queryVmStat() {
-        long swapPagesIn = 0L;
-        long swapPagesOut = 0L;
-        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
-             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(vmStats.size() / SystemB.INT_SIZE)) {
-            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
-                    size)) {
-                swapPagesIn = Parsing.unsignedIntToLong(vmStats.pageins);
-                swapPagesOut = Parsing.unsignedIntToLong(vmStats.pageouts);
-            } else {
-                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
-            }
-        }
-        return Pair.of(swapPagesIn, swapPagesOut);
     }
 }

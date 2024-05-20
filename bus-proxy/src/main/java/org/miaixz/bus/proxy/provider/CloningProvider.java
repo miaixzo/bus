@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.provider;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.proxy.Builder;
 import org.miaixz.bus.proxy.Provider;
 

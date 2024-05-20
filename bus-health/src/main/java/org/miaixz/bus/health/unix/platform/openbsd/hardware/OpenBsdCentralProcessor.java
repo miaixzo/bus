@@ -28,11 +28,11 @@ package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Quartet;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -44,7 +44,6 @@ import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * OpenBSD Central Processor implementation
@@ -54,9 +53,10 @@ import java.util.regex.Pattern;
  */
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
+
+    private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern.compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
     private final Supplier<Pair<Long, Long>> vmStats = Memoizer.memoize(OpenBsdCentralProcessor::queryVmStats,
             Memoizer.defaultExpiration());
-    private static final Pattern DMESG_CPU = Pattern.compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
 
     private static Triplet<Integer, Integer, Integer> cpuidToFamilyModelStepping(int cpuid) {
         // family is bits 27:20 | 11:8
@@ -165,7 +165,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         // Iterate dmesg, look for lines:
         // cpu0: smt 0, core 0, package 0
         // cpu1: smt 0, core 1, package 0
@@ -195,7 +195,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         // cpu0: AMD GX-412TC SOC, 998.28 MHz, 16-30-01
         // cpu0: AMD EPYC 7313P 16-Core Processor, 2994.74 MHz, 19-01-01
         // cpu0: Intel(R) Celeron(R) N4000 CPU @ 1.10GHz, 2491.67 MHz, 06-7a-01
-        Pattern p = Pattern.compile("cpu(\\\\d+).*: ((ARM|AMD|Intel|Apple).+)");
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile("cpu(\\\\d+).*: ((ARM|AMD|Intel|Apple).+)");
 
         Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
         // cpu0: 48KB 64b/line 12-way D-cache, 32KB 64b/line 8-way I-cache,
@@ -224,7 +224,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         // cpu4 at mainbus0 mpidr 100: ARM Cortex-A72 r0p2
         // cpu4: 48KB 64b/line 3-way L1 PIPT I-cache, 32KB 64b/line 2-way L1 D-cache
         // cpu4: 1024KB 64b/line 16-way L2 cache
-        Pattern q = Pattern.compile("cpu(\\\\d+).*: (.+(I-|D-|L\\d+\\s)cache)");
+        java.util.regex.Pattern q = java.util.regex.Pattern.compile("cpu(\\\\d+).*: (.+(I-|D-|L\\d+\\s)cache)");
         Set<String> featureFlags = new LinkedHashSet<>();
         for (String s : Executor.runNative("dmesg")) {
             Matcher m = p.matcher(s);
@@ -250,11 +250,11 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
             }
         }
         List<CentralProcessor.PhysicalProcessor> physProcs = cpuMap.isEmpty() ? null : createProcListFromDmesg(logProcs, cpuMap);
-        return new Quartet<>(logProcs, physProcs, orderedProcCaches(caches), new ArrayList<>(featureFlags));
+        return new Tuple(logProcs, physProcs, orderedProcCaches(caches), new ArrayList<>(featureFlags));
     }
 
     private CentralProcessor.ProcessorCache parseCacheStr(String cacheStr) {
-        String[] split = RegEx.SPACES.split(cacheStr);
+        String[] split = Pattern.SPACES_PATTERN.split(cacheStr);
         if (split.length > 3) {
             switch (split[split.length - 1]) {
                 case "I-cache":

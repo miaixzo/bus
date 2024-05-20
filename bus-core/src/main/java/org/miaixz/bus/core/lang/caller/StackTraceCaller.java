@@ -25,16 +25,19 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang.caller;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
+
+import java.io.Serializable;
 
 /**
- * 通过StackTrace方式获取调用者 此方式效率最低,不推荐使用
+ * 通过StackTrace方式获取调用者。此方式效率最低，不推荐使用
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StackTraceCaller implements Caller {
+public class StackTraceCaller implements Caller, Serializable {
 
+    private static final long serialVersionUID = -1L;
     private static final int OFFSET = 2;
 
     @Override
@@ -46,13 +49,13 @@ public class StackTraceCaller implements Caller {
         final String className = stackTrace[OFFSET + 1].getClassName();
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new InternalException("[{}] not found!", className);
+        } catch (final ClassNotFoundException e) {
+            throw new InternalException(e, "[{}] not found!", className);
         }
     }
 
     @Override
-    public Class<?> getCallers() {
+    public Class<?> getCallerCaller() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (OFFSET + 2 >= stackTrace.length) {
             return null;
@@ -60,13 +63,13 @@ public class StackTraceCaller implements Caller {
         final String className = stackTrace[OFFSET + 2].getClassName();
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new InternalException("[{}] not found!", className);
+        } catch (final ClassNotFoundException e) {
+            throw new InternalException(e, "[{}] not found!", className);
         }
     }
 
     @Override
-    public Class<?> getCaller(int depth) {
+    public Class<?> getCaller(final int depth) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (OFFSET + depth >= stackTrace.length) {
             return null;
@@ -74,13 +77,13 @@ public class StackTraceCaller implements Caller {
         final String className = stackTrace[OFFSET + depth].getClassName();
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new InternalException("[{}] not found!", className);
+        } catch (final ClassNotFoundException e) {
+            throw new InternalException(e, "[{}] not found!", className);
         }
     }
 
     @Override
-    public boolean isCalledBy(Class<?> clazz) {
+    public boolean isCalledBy(final Class<?> clazz) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (final StackTraceElement element : stackTrace) {
             if (element.getClassName().equals(clazz.getName())) {

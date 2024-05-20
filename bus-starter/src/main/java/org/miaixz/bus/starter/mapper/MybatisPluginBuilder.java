@@ -26,8 +26,8 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.plugin.Interceptor;
-import org.miaixz.bus.core.toolkit.CollKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.pager.plugin.ExplainSqlHandler;
 import org.miaixz.bus.pager.plugin.NatureSqlHandler;
 import org.miaixz.bus.pager.plugin.PageSqlHandler;
@@ -53,7 +53,7 @@ public class MybatisPluginBuilder {
     public static List<Interceptor> plugins = new ArrayList<>();
 
     public static Interceptor[] build(Environment environment) {
-        List<Interceptor> list = CollKit.newArrayList(
+        List<Interceptor> list = ListKit.of(
                 new NatureSqlHandler(),
                 new ExplainSqlHandler()
         );

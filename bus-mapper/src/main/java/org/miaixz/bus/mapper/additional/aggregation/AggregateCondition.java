@@ -26,7 +26,7 @@
 package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;

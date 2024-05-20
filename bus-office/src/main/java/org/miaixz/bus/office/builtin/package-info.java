@@ -1,5 +1,5 @@
 /**
- * Office启动任务实体类
+ * Office相关封装实现
  *
  * @author Kimi Liu
  * @since Java 17+

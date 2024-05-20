@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.copier;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.io.Progress;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * 构造
      */
     public ChannelCopier() {
-        this(IoKit.DEFAULT_BUFFER_SIZE);
+        this(Normal.DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      *
      * @param bufferSize 缓存大小
      */
-    public ChannelCopier(int bufferSize) {
+    public ChannelCopier(final int bufferSize) {
         this(bufferSize, -1);
     }
 
@@ -66,7 +66,7 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * @param bufferSize 缓存大小
      * @param count      拷贝总数
      */
-    public ChannelCopier(int bufferSize, long count) {
+    public ChannelCopier(final int bufferSize, final long count) {
         this(bufferSize, count, null);
     }
 
@@ -77,20 +77,20 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * @param count      拷贝总数
      * @param progress   进度条
      */
-    public ChannelCopier(int bufferSize, long count, Progress progress) {
+    public ChannelCopier(final int bufferSize, final long count, final StreamProgress progress) {
         super(bufferSize, count, progress);
     }
 
     @Override
-    public long copy(ReadableByteChannel source, WritableByteChannel target) {
-        final Progress progress = this.progress;
+    public long copy(final ReadableByteChannel source, final WritableByteChannel target) {
+        final StreamProgress progress = this.progress;
         if (null != progress) {
             progress.start();
         }
         final long size;
         try {
             size = doCopy(source, target, ByteBuffer.allocate(bufferSize(this.count)), progress);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
 
@@ -110,7 +110,7 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * @return 拷贝总长度
      * @throws IOException IO异常
      */
-    private long doCopy(ReadableByteChannel source, WritableByteChannel target, ByteBuffer buffer, Progress progress) throws IOException {
+    private long doCopy(final ReadableByteChannel source, final WritableByteChannel target, final ByteBuffer buffer, final StreamProgress progress) throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;
 

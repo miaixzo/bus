@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.toolkit.ThreadKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 
 /**

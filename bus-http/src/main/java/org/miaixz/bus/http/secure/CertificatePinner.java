@@ -143,7 +143,7 @@ public class CertificatePinner {
             message.append("\n    ").append(pin(x509Certificate))
                     .append(": ").append(x509Certificate.getSubjectDN().getName());
         }
-        message.append("\n  Pinned certificates for ").append(hostname).append(":");
+        message.append("\n  Pinned certificates for ").append(hostname).append(Symbol.COLON);
         for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
             Pin pin = pins.get(p);
             message.append("\n    ").append(pin);

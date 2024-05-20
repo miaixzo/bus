@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.Progress;
@@ -168,7 +168,7 @@ public class CGet {
     }
 
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = StringKit.splitToArray(tsuids, Symbol.C_SEMICOLON);
+        String[] ts = StringKit.splitToArray(tsuids, Symbol.SEMICOLON);
         for (int i = 0; i < ts.length; i++) {
             ts[i] = Builder.toUID(ts[i]);
         }

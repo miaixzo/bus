@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.execute;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Config;
 import org.miaixz.bus.shade.screw.engine.EngineFactory;

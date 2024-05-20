@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.galaxy.media;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

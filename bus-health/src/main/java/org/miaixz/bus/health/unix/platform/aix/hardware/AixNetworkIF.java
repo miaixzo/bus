@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 @ThreadSafe
 public final class AixNetworkIF extends AbstractNetworkIF {
 
+    private final Supplier<perfstat_netinterface_t[]> netstats;
     private long bytesRecv;
     private long bytesSent;
     private long packetsRecv;
@@ -58,8 +59,6 @@ public final class AixNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long speed;
     private long timeStamp;
-
-    private final Supplier<perfstat_netinterface_t[]> netstats;
 
     public AixNetworkIF(NetworkInterface netint, Supplier<perfstat_netinterface_t[]> netstats)
             throws InstantiationException {

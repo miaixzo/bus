@@ -30,7 +30,7 @@ import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.windows.driver.perfmon.PerfmonDisabled;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerformanceProperty;
@@ -39,6 +39,7 @@ import java.util.*;
 
 /**
  * Utility to read thread data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

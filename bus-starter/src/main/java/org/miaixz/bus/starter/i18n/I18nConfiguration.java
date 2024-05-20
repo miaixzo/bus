@@ -26,8 +26,7 @@
 package org.miaixz.bus.starter.i18n;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -47,7 +46,7 @@ public class I18nConfiguration {
     @Bean
     private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
-        bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
+        bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding()));
         bundleMessageSource.setBasenames(this.properties.getBaseNames());
         return bundleMessageSource;
     }

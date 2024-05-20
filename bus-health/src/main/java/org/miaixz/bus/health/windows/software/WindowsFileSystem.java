@@ -56,10 +56,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class WindowsFileSystem extends AbstractFileSystem {
 
+    static final long MAX_WINDOWS_HANDLES;
     private static final int BUFSIZE = 255;
-
     private static final int SEM_FAILCRITICALERRORS = 0x0001;
-
     private static final int FILE_CASE_SENSITIVE_SEARCH = 0x00000001;
     private static final int FILE_CASE_PRESERVED_NAMES = 0x00000002;
     private static final int FILE_FILE_COMPRESSION = 0x00000010;
@@ -77,7 +76,6 @@ public class WindowsFileSystem extends AbstractFileSystem {
     private static final int FILE_UNICODE_ON_DISK = 0x00000004;
     private static final int FILE_VOLUME_IS_COMPRESSED = 0x00008000;
     private static final int FILE_VOLUME_QUOTAS = 0x00000020;
-
     private static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
 
     static {
@@ -98,8 +96,6 @@ public class WindowsFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(FILE_VOLUME_IS_COMPRESSED, "vcomp");
         OPTIONS_MAP.put(FILE_VOLUME_QUOTAS, "quota");
     }
-
-    static final long MAX_WINDOWS_HANDLES;
 
     static {
         // Determine whether 32-bit or 64-bit handle limit, although both are

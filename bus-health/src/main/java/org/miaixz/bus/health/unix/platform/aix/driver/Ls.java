@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -62,7 +63,7 @@ public final class Ls {
             // Filter to block devices
             if (!s.isEmpty() && s.charAt(0) == 'b') {
                 // Device name is last space-delim string
-                int idx = s.lastIndexOf(' ');
+                int idx = s.lastIndexOf(Symbol.C_SPACE);
                 if (idx > 0 && idx < s.length()) {
                     String device = s.substring(idx + 1);
                     int major = Parsing.getNthIntValue(s, 2);

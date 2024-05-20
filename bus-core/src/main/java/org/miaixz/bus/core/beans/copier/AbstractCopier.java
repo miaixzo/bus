@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.beans.copier;
 
 import org.miaixz.bus.core.lang.copier.Copier;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 抽象的对象拷贝封装，提供来源对象、目标对象持有
@@ -38,13 +38,7 @@ import org.miaixz.bus.core.toolkit.ObjectKit;
  */
 public abstract class AbstractCopier<S, T> implements Copier<T> {
 
-    /**
-     * 源对象
-     */
     protected final S source;
-    /**
-     * 目标对象
-     */
     protected final T target;
     /**
      * 拷贝选项
@@ -58,7 +52,7 @@ public abstract class AbstractCopier<S, T> implements Copier<T> {
      * @param target      目标对象
      * @param copyOptions 拷贝选项
      */
-    public AbstractCopier(S source, T target, CopyOptions copyOptions) {
+    public AbstractCopier(final S source, final T target, final CopyOptions copyOptions) {
         this.source = source;
         this.target = target;
         this.copyOptions = ObjectKit.defaultIfNull(copyOptions, CopyOptions::of);

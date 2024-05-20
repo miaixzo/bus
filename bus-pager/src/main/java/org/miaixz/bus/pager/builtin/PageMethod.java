@@ -98,7 +98,7 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param pageNo  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize) {
@@ -108,7 +108,7 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param pageNo  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      * @param count    是否进行count查询
      */
@@ -119,7 +119,7 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param pageNo  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      * @param orderBy  排序
      */
@@ -132,7 +132,7 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param pageNo      页码
+     * @param pageNo       页码
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置

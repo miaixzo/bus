@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.galaxy;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.ApplicationEntity;
 import org.miaixz.bus.image.metric.WebApplication;

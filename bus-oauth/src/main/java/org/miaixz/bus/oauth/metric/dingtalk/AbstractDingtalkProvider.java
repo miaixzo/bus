@@ -29,12 +29,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
@@ -60,6 +60,18 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
 
     public AbstractDingtalkProvider(Context context, Complex complex, ExtendCache authorizeCache) {
         super(context, complex, authorizeCache);
+    }
+
+    /**
+     * 钉钉请求的签名
+     *
+     * @param secretKey 平台应用的授权密钥
+     * @param timestamp 时间戳
+     * @return Signature
+     */
+    public static String sign(String secretKey, String timestamp) {
+        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
+        return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
     }
 
     @Override
@@ -91,18 +103,6 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
                 .source(complex.toString())
                 .token(token)
                 .build();
-    }
-
-    /**
-     * 钉钉请求的签名
-     *
-     * @param secretKey 平台应用的授权密钥
-     * @param timestamp 时间戳
-     * @return Signature
-     */
-    public static String sign(String secretKey, String timestamp) {
-        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
-        return UriKit.encode(new String(Base64.encode(signData, false)));
     }
 
     /**

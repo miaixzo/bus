@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -88,7 +88,7 @@ public class AixFileSystem extends AbstractFileSystem {
             /dev/fslv00          12419240  292668 12126572    3% /home
             */
             if (line.startsWith("/")) {
-                String[] split = RegEx.SPACES.split(line);
+                String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length > 5) {
                     inodeTotalMap.put(split[0], Parsing.parseLongOrDefault(split[1], 0L));
                     inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[3], 0L));
@@ -113,7 +113,7 @@ public class AixFileSystem extends AbstractFileSystem {
              */
             // Lines begin with optional node, which we don't use. To force sensible split
             // behavior, append any character at the beginning of the string
-            String[] split = RegEx.SPACES.split("x" + fs);
+            String[] split = Pattern.SPACES_PATTERN.split("x" + fs);
             if (split.length > 7) {
                 // 1st field is volume name [0-index]
                 // 2nd field is mount point

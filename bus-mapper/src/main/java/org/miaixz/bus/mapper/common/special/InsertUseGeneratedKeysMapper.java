@@ -33,7 +33,7 @@ import org.miaixz.bus.mapper.provider.SpecialProvider;
 /**
  * 通用Mapper接口,特殊方法，批量插入，支持批量插入的数据库都可以使用，例如mysql,h2等
  *
- * @param <T>   泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

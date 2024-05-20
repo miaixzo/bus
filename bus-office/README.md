@@ -47,55 +47,56 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
 > 具体使用如下：
 
 ```java
-    @Resource
-    OfficeProviderService officeProviderService;
+
+@Resource
+OfficeProviderService officeProviderService;
 
 @ApiOperation(value = "将传入的文档转换为指定的格式", notes = "文档转换")
 @PostMapping("/index")
 public Object convertToUsingParam(
-@ApiParam(value = "The input document to convert.", required = true)
-@RequestParam("data") final MultipartFile inputFile,
-@ApiParam(value = "The document format to convert the input document to.", required = true)
-@RequestParam(name = "format") final String type,
-@ApiParam(value = "The options to apply to the type.")
-@RequestParam(required = false) final Map<String, String> parameters){
-        Logger.debug("convertUsingRequestParam > Converting file to {}",type);
-        if(inputFile.isEmpty()){
+        @ApiParam(value = "The input document to convert.", required = true)
+        @RequestParam("data") final MultipartFile inputFile,
+        @ApiParam(value = "The document format to convert the input document to.", required = true)
+        @RequestParam(name = "format") final String type,
+        @ApiParam(value = "The options to apply to the type.")
+        @RequestParam(required = false) final Map<String, String> parameters) {
+    Logger.debug("convertUsingRequestParam > Converting file to {}", type);
+    if (inputFile.isEmpty()) {
         return write(ErrorCode.EM_100506);
-        }
+    }
 
-        if(StringKit.isBlank(convertToFormat)){
+    if (StringKit.isBlank(convertToFormat)) {
         return write(ErrorCode.EM_100506);
-        }
+    }
 
-        try{
-        ByteArrayOutputStream out=new ByteArrayOutputStream();
-final DocumentFormat targetFormat=DefaultFormatRegistry.getFormatByExtension(type);
+    try {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final DocumentFormat targetFormat = DefaultFormatRegistry.getFormatByExtension(type);
 
-final Map<String, Object> loadProperties=new HashMap<>(LocalOfficeProvider.DEFAULT_LOAD_PROPERTIES);
-final Map<String, Object> storeProperties=new HashMap<>();
-        decodeParameters(parameters,loadProperties,storeProperties);
+        final Map<String, Object> loadProperties = new HashMap<>(LocalOfficeProvider.DEFAULT_LOAD_PROPERTIES);
+        final Map<String, Object> storeProperties = new HashMap<>();
+        decodeParameters(parameters, loadProperties, storeProperties);
 
-        Provider effectProvider=officeProviderService.get(Registry.LOCAL);
+        Provider effectProvider = officeProviderService.get(Registry.LOCAL);
         effectProvider.convert(inputStream)
-        .as(DefaultFormatRegistry.getFormatByExtension(FileKit.getExtension(filename)))
-        .to(outputStream)
-        .as(targetFormat)
-        .execute();
+                .as(DefaultFormatRegistry.getFormatByExtension(FileKit.getExtension(filename)))
+                .to(outputStream)
+                .as(targetFormat)
+                .execute();
 
-final HttpHeaders headers=new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(targetFormat.getMediaType()));
         headers.add(
-        "Content-Disposition",
-        "attachment; filename="
-        +ObjectID.id()
-        +"."
-        +targetFormat.getExtension());
+                "Content-Disposition",
+                "attachment; filename="
+                        + ObjectID.id()
+                        + "."
+                        + targetFormat.getExtension());
 
         return ResponseEntity.ok().headers(headers).body(out.toByteArray());
-        }catch(InternalException|IOException ex){
+    } catch (InternalException | IOException ex) {
         return write(ErrorCode.EM_100506);
-        }
-        }
+    }
+}
 
 ```

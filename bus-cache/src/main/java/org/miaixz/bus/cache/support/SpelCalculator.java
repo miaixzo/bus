@@ -26,7 +26,7 @@
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -54,8 +54,6 @@ public class SpelCalculator {
         for (int i = 0; i < argValues.length; ++i) {
             context.setVariable(argNames[i], argValues[i]);
         }
-
-        // todo: 先将xArg放到这儿, 后面可以再想下可以放到哪儿?
         String[] xArgNames = ArgNameGenerator.getXArgNames(argValues.length);
         for (int i = 0; i < argValues.length; ++i) {
             context.setVariable(xArgNames[i], argValues[i]);

@@ -27,7 +27,7 @@ package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.DateKit;
+import org.miaixz.bus.core.xyz.DateKit;
 
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -91,7 +91,7 @@ public class HttpzState {
                 errorMsgs.removeFirst();
             }
             StringBuilder errorMsg = new StringBuilder();
-            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME_PATTERN))
+            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME))
                     .append(Symbol.HT)
                     .append(url)
                     .append(Symbol.HT)

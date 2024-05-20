@@ -31,7 +31,7 @@ import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Quintet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
 
@@ -56,14 +56,14 @@ public final class DeviceTree {
      * name, device ID, and manufacturer
      *
      * @param guidDevInterface The GUID of a device interface class for which the tree should be collected.
-     * @return A {@link Quintet} of maps indexed by node ID, where the key set represents node IDs for all devices
+     * @return A {@link Tuple} of maps indexed by node ID, where the key set represents node IDs for all devices
      * matching the specified device interface GUID. The first element is a set containing devices with no
      * parents, match the device interface requested.. The second element maps each node ID to its parents, if
      * any. This map's key set excludes the no-parent devices returned in the first element. The third element
      * maps a node ID to a name or description. The fourth element maps a node id to a device ID. The fifth
      * element maps a node ID to a manufacturer.
      */
-    public static Quintet<Set<Integer>, Map<Integer, Integer>, Map<Integer, String>, Map<Integer, String>, Map<Integer, String>> queryDeviceTree(
+    public static Tuple queryDeviceTree(
             GUID guidDevInterface) {
         Map<Integer, Integer> parentMap = new HashMap<>();
         Map<Integer, String> nameMap = new HashMap<>();
@@ -126,7 +126,7 @@ public final class DeviceTree {
         // Look for output without parents, these are top of tree
         Set<Integer> controllerDevices = deviceIdMap.keySet().stream().filter(k -> !parentMap.containsKey(k))
                 .collect(Collectors.toSet());
-        return new Quintet<>(controllerDevices, parentMap, nameMap, deviceIdMap, mfgMap);
+        return new Tuple(controllerDevices, parentMap, nameMap, deviceIdMap, mfgMap);
     }
 
     private static String getDevNodeProperty(int node, int cmDrp, Memory buf, IntByReference size) {

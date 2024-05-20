@@ -26,8 +26,9 @@
 package org.miaixz.bus.health.builtin.software.common;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
 
@@ -48,6 +49,27 @@ import java.util.Locale;
 public abstract class AbstractNetworkParams implements NetworkParams {
 
     private static final String NAMESERVER = "nameserver";
+
+    /**
+     * Convenience method to parse the output of the `route` command. While the command arguments vary between OS's the
+     * output is consistently parsable.
+     *
+     * @param lines output of OS-specific route command
+     * @return default gateway
+     */
+    protected static String searchGateway(List<String> lines) {
+        for (String line : lines) {
+            String leftTrimmed = line.replaceFirst("^\\s+", Normal.EMPTY);
+            if (leftTrimmed.startsWith("gateway:")) {
+                String[] split = Pattern.SPACES_PATTERN.split(leftTrimmed);
+                if (split.length < 2) {
+                    return Normal.EMPTY;
+                }
+                return split[1].split(Symbol.PERCENT)[0];
+            }
+        }
+        return Normal.EMPTY;
+    }
 
     @Override
     public String getDomainName() {
@@ -76,27 +98,6 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return hn.substring(0, dot);
     }
 
-    /**
-     * Convenience method to parse the output of the `route` command. While the command arguments vary between OS's the
-     * output is consistently parsable.
-     *
-     * @param lines output of OS-specific route command
-     * @return default gateway
-     */
-    protected static String searchGateway(List<String> lines) {
-        for (String line : lines) {
-            String leftTrimmed = line.replaceFirst("^\\s+", Normal.EMPTY);
-            if (leftTrimmed.startsWith("gateway:")) {
-                String[] split = RegEx.SPACES.split(leftTrimmed);
-                if (split.length < 2) {
-                    return Normal.EMPTY;
-                }
-                return split[1].split("%")[0];
-            }
-        }
-        return Normal.EMPTY;
-    }
-
     @Override
     public String[] getDnsServers() {
         List<String> resolv = Builder.readFile("/etc/resolv.conf");
@@ -107,7 +108,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
                 String value = line.substring(key.length()).replaceFirst("^[ \t]+", Normal.EMPTY);
-                if (value.length() != 0 && value.charAt(0) != '#' && value.charAt(0) != ';') {
+                if (value.length() != 0 && value.charAt(0) != Symbol.C_SHAPE && value.charAt(0) != Symbol.C_SEMICOLON) {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);
                 }

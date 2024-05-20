@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -60,7 +60,7 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
 
     private static long querySwapUsed() {
         String swapInfo = Executor.getAnswerAt("swapinfo -k", 1);
-        String[] split = RegEx.SPACES.split(swapInfo);
+        String[] split = Pattern.SPACES_PATTERN.split(swapInfo);
         if (split.length < 5) {
             return 0L;
         }

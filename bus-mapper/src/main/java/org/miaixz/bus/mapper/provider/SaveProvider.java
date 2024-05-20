@@ -1,7 +1,7 @@
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.MapperException;
+import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.builder.*;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 

@@ -33,8 +33,8 @@ import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Headers;
 
 import java.io.IOException;

@@ -26,8 +26,8 @@
 package org.miaixz.bus.proxy.factory.javassist;
 
 import javassist.*;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.proxy.Builder;
 
 import java.util.HashSet;

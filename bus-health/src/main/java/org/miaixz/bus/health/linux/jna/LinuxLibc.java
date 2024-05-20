@@ -52,6 +52,35 @@ public interface LinuxLibc extends LibC, CLibrary {
             : ((Platform.isARM() && Platform.is64Bit()) ? 224 : 178));
 
     /**
+     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
+     * fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link LinuxUtmpx} on success, and NULL on failure (which includes the "record not found" case)
+     */
+    LinuxUtmpx getutxent();
+
+    /**
+     * Returns the caller's thread ID (TID). In a single-threaded process, the thread ID is equal to the process ID. In
+     * a multithreaded process, all threads have the same PID, but each one has a unique TID.
+     *
+     * @return the thread ID of the calling thread.
+     */
+    int gettid();
+
+    /**
+     * syscall() performs the system call whose assembly language interface has the specified number with the specified
+     * arguments.
+     *
+     * @param number sys call number
+     * @param args   sys call arguments
+     * @return The return value is defined by the system call being invoked. In general, a 0 return value indicates
+     * success. A -1 return value indicates an error, and an error code is stored in errno.
+     */
+    NativeLong syscall(NativeLong number, Object... args);
+
+    /**
      * Return type for getutxent()
      */
     @FieldOrder({"ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
@@ -87,33 +116,4 @@ public interface LinuxLibc extends LibC, CLibrary {
         public int tv_sec; // seconds
         public int tv_usec; // microseconds
     }
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a pointer to a structure containing the
-     * fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link LinuxUtmpx} on success, and NULL on failure (which includes the "record not found" case)
-     */
-    LinuxUtmpx getutxent();
-
-    /**
-     * Returns the caller's thread ID (TID). In a single-threaded process, the thread ID is equal to the process ID. In
-     * a multithreaded process, all threads have the same PID, but each one has a unique TID.
-     *
-     * @return the thread ID of the calling thread.
-     */
-    int gettid();
-
-    /**
-     * syscall() performs the system call whose assembly language interface has the specified number with the specified
-     * arguments.
-     *
-     * @param number sys call number
-     * @param args   sys call arguments
-     * @return The return value is defined by the system call being invoked. In general, a 0 return value indicates
-     * success. A -1 return value indicates an error, and an error code is stored in errno.
-     */
-    NativeLong syscall(NativeLong number, Object... args);
 }

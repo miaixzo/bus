@@ -26,8 +26,8 @@
 package org.miaixz.bus.starter.office;
 
 import jakarta.annotation.Resource;
-import org.miaixz.bus.office.builtin.provider.LocalOfficeProvider;
-import org.miaixz.bus.office.builtin.provider.OnlineOfficeProvider;
+import org.miaixz.bus.office.builtin.LocalOfficeProvider;
+import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 

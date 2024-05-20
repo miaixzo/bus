@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.metric.internal.hl7;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * @author Kimi Liu

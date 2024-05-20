@@ -28,7 +28,7 @@ package org.miaixz.bus.http.metric.http;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;

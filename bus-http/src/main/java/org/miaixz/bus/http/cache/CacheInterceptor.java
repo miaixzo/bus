@@ -34,7 +34,7 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RealResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;

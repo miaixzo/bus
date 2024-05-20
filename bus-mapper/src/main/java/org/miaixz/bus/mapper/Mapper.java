@@ -26,10 +26,7 @@
 package org.miaixz.bus.mapper;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-import org.miaixz.bus.mapper.common.BasicMapper;
-import org.miaixz.bus.mapper.common.ConditionMapper;
-import org.miaixz.bus.mapper.common.RowBoundsMapper;
-import org.miaixz.bus.mapper.common.SaveMapper;
+import org.miaixz.bus.mapper.common.*;
 
 /**
  * 通用Mapper接口
@@ -42,6 +39,7 @@ import org.miaixz.bus.mapper.common.SaveMapper;
 public interface Mapper<T> extends
         BasicMapper<T>,
         ConditionMapper<T>,
+        IdsMapper<T>,
         RowBoundsMapper<T>,
         SaveMapper<T>,
         Marker {

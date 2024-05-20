@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
-import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.apache.poi.ss.usermodel.Cell;
+import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
  * {@link CharSequence} 值单元格设置器
@@ -43,12 +43,12 @@ public class CharSequenceCellSetter implements CellSetter {
      *
      * @param value 值
      */
-    CharSequenceCellSetter(CharSequence value) {
+    CharSequenceCellSetter(final CharSequence value) {
         this.value = value;
     }
 
     @Override
-    public void setValue(Cell cell) {
+    public void setValue(final Cell cell) {
         cell.setCellValue(value.toString());
     }
 

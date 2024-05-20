@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.AssignSink;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.bodys.RequestBody;
 

@@ -26,7 +26,7 @@
 package org.miaixz.bus.pager.cache;
 
 import com.google.common.cache.CacheBuilder;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;

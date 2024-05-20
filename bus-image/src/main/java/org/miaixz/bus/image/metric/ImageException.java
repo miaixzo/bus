@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.core.exception.RelevantException;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.Property;

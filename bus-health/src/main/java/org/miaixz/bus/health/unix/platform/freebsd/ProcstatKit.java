@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.freebsd;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
@@ -55,7 +55,7 @@ public final class ProcstatKit {
         List<String> procstat = Executor.runNative("procstat -f " + (pid < 0 ? "-a" : pid));
         Map<Integer, String> cwdMap = new HashMap<>();
         for (String line : procstat) {
-            String[] split = RegEx.SPACES.split(line.trim(), 10);
+            String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && split[2].equals("cwd")) {
                 cwdMap.put(Parsing.parseIntOrDefault(split[0], -1), split[9]);
             }
@@ -72,7 +72,7 @@ public final class ProcstatKit {
     public static String getCwd(int pid) {
         List<String> procstat = Executor.runNative("procstat -f " + pid);
         for (String line : procstat) {
-            String[] split = RegEx.SPACES.split(line.trim(), 10);
+            String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && split[2].equals("cwd")) {
                 return split[9];
             }
@@ -90,7 +90,7 @@ public final class ProcstatKit {
         long fd = 0L;
         List<String> procstat = Executor.runNative("procstat -f " + pid);
         for (String line : procstat) {
-            String[] split = RegEx.SPACES.split(line.trim(), 10);
+            String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 10);
             if (split.length == 10 && !"Vd-".contains(split[4])) {
                 fd++;
             }

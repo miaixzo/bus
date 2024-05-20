@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.pager.plugin;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Builder;
 
 import java.util.ArrayList;

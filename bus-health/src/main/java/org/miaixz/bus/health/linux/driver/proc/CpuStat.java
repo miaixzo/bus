@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
@@ -62,7 +62,7 @@ public final class CpuStat {
 
         // Split the line. Note the first (0) element is "cpu" so remaining
         // elements are offset by 1 from the enum index
-        String[] tickArr = RegEx.SPACES.split(tickStr);
+        String[] tickArr = Pattern.SPACES_PATTERN.split(tickStr);
         if (tickArr.length <= CentralProcessor.TickType.IDLE.getIndex()) {
             // If ticks don't at least go user/nice/system/idle, abort
             return ticks;
@@ -95,7 +95,7 @@ public final class CpuStat {
                 // Split the line. Note the first (0) element is "cpu" so
                 // remaining
                 // elements are offset by 1 from the enum index
-                String[] tickArr = RegEx.SPACES.split(stat);
+                String[] tickArr = Pattern.SPACES_PATTERN.split(stat);
                 if (tickArr.length <= CentralProcessor.TickType.IDLE.getIndex()) {
                     // If ticks don't at least go user/nice/system/idle, abort
                     return ticks;
@@ -122,7 +122,7 @@ public final class CpuStat {
         List<String> procStat = Builder.readFile(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("ctxt ")) {
-                String[] ctxtArr = RegEx.SPACES.split(stat);
+                String[] ctxtArr = Pattern.SPACES_PATTERN.split(stat);
                 if (ctxtArr.length == 2) {
                     return Parsing.parseLongOrDefault(ctxtArr[1], 0);
                 }
@@ -140,7 +140,7 @@ public final class CpuStat {
         List<String> procStat = Builder.readFile(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("intr ")) {
-                String[] intrArr = RegEx.SPACES.split(stat);
+                String[] intrArr = Pattern.SPACES_PATTERN.split(stat);
                 if (intrArr.length > 2) {
                     return Parsing.parseLongOrDefault(intrArr[1], 0);
                 }
@@ -159,7 +159,7 @@ public final class CpuStat {
         List<String> procStat = Builder.readFile(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("btime")) {
-                String[] bTime = RegEx.SPACES.split(stat);
+                String[] bTime = Pattern.SPACES_PATTERN.split(stat);
                 return Parsing.parseLongOrDefault(bTime[1], 0L);
             }
         }

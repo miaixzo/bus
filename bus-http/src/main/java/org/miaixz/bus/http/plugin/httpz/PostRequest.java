@@ -28,8 +28,8 @@ package org.miaixz.bus.http.plugin.httpz;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.FileKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.FormBody;
@@ -74,7 +74,7 @@ public class PostRequest extends HttpRequest {
                 } else if (null != fileInfo.fileInputStream) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMediaType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
+                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
                             fileInfo.fileContent);
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);

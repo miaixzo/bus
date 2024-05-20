@@ -28,10 +28,10 @@ package org.miaixz.bus.oauth.metric.ximalaya;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -56,11 +56,11 @@ import java.util.TreeMap;
 public class XimalayaProvider extends DefaultProvider {
 
     public XimalayaProvider(Context context) {
-        super(context, Registry.XMLY);
+        super(context, Registry.XIMALAYA);
     }
 
     public XimalayaProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.XMLY, authorizeCache);
+        super(context, Registry.XIMALAYA, authorizeCache);
     }
 
     /**

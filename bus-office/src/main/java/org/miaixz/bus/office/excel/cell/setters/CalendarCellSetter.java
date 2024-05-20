@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
-import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.apache.poi.ss.usermodel.Cell;
+import org.miaixz.bus.office.excel.cell.CellSetter;
 
 import java.util.Calendar;
 
@@ -45,12 +45,12 @@ public class CalendarCellSetter implements CellSetter {
      *
      * @param value 值
      */
-    CalendarCellSetter(Calendar value) {
+    CalendarCellSetter(final Calendar value) {
         this.value = value;
     }
 
     @Override
-    public void setValue(Cell cell) {
+    public void setValue(final Cell cell) {
         cell.setCellValue(value);
     }
 

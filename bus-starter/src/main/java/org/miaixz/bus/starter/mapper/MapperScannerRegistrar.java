@@ -1,7 +1,7 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.miaixz.bus.core.toolkit.*;
+import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.spring.BusXConfig;
 import org.miaixz.bus.spring.PlaceBinder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
@@ -98,7 +98,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             scanner.setMapperProperties(environment);
         }
         scanner.registerFilters();
-        scanner.doScan(ArrayKit.toArray(basePackages));
+        scanner.doScan(ArrayKit.ofArray(basePackages));
     }
 
     @Override

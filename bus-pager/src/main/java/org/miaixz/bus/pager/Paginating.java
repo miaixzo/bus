@@ -421,12 +421,12 @@ public class Paginating<T> extends Serialize<T> {
         return navigateFirstPage;
     }
 
-    public int getNavigateLastPage() {
-        return navigateLastPage;
-    }
-
     public void setNavigateFirstPage(int navigateFirstPage) {
         this.navigateFirstPage = navigateFirstPage;
+    }
+
+    public int getNavigateLastPage() {
+        return navigateLastPage;
     }
 
     public void setNavigateLastPage(int navigateLastPage) {

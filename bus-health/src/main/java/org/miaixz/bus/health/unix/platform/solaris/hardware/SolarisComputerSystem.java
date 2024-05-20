@@ -26,7 +26,8 @@
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -105,7 +106,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
                 break;
             }
             // Based on the smbTypeID we are processing for
-            Integer colonDelimiterIndex = checkLine.indexOf(":");
+            Integer colonDelimiterIndex = checkLine.indexOf(Symbol.COLON);
             if (smbTypeId != null && colonDelimiterIndex >= 0) {
                 String key = checkLine.substring(0, colonDelimiterIndex).trim();
                 String val = checkLine.substring(colonDelimiterIndex + 1).trim();
@@ -140,6 +141,17 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         return serialNumber;
     }
 
+    private static SmbType getSmbType(String checkLine) {
+        for (SmbType smbType : SmbType.values()) {
+            if (checkLine.contains(smbType.name())) {
+                return smbType;
+            }
+        }
+        // First 3 SMB_TYPEs are what we need. After that no need to
+        // continue processing the output
+        return null;
+    }
+
     @Override
     public String getManufacturer() {
         return smbiosStrings.get().manufacturer;
@@ -170,17 +182,6 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
     public Baseboard createBaseboard() {
         return new UnixBaseboard(smbiosStrings.get().boardManufacturer, smbiosStrings.get().boardModel,
                 smbiosStrings.get().boardSerialNumber, smbiosStrings.get().boardVersion);
-    }
-
-    private static SmbType getSmbType(String checkLine) {
-        for (SmbType smbType : SmbType.values()) {
-            if (checkLine.contains(smbType.name())) {
-                return smbType;
-            }
-        }
-        // First 3 SMB_TYPEs are what we need. After that no need to
-        // continue processing the output
-        return null;
     }
 
     public enum SmbType {

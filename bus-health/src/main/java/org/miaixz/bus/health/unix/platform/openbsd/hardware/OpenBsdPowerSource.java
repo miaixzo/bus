@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
@@ -100,7 +100,7 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
         double psTemperature = 0d;
 
         for (String line : Executor.runNative("systat -ab sensors")) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length > 1 && split[0].startsWith(name)) {
                 if (split[0].contains("volt0") || split[0].contains("volt") && line.contains("current")) {
                     psVoltage = Parsing.parseDoubleOrDefault(split[1], -1d);

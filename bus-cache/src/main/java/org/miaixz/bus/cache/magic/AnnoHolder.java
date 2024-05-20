@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cache.magic;
 
-import org.miaixz.bus.cache.annotation.CacheKey;
+import org.miaixz.bus.cache.magic.annotation.CacheKey;
 
 import java.lang.reflect.Method;
 import java.util.Map;

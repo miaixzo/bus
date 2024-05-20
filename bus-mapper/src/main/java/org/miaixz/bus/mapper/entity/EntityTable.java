@@ -32,9 +32,9 @@ import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
-import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 
 /**
  * 数据库表
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -55,7 +55,7 @@ final class OpenBsdSensors extends AbstractSensors {
         List<Double> allTemps = new ArrayList<>();
         List<Integer> fanRPMs = new ArrayList<>();
         for (String line : Executor.runNative("systat -ab sensors")) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length > 1) {
                 if (split[0].contains("cpu")) {
                     if (split[0].contains("temp0")) {

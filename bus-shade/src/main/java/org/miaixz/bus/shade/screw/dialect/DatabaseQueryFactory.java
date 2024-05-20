@@ -26,7 +26,7 @@
 package org.miaixz.bus.shade.screw.dialect;
 
 import lombok.Data;
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import javax.sql.DataSource;
 import java.io.Serializable;

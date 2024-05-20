@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
@@ -98,14 +99,14 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 parent = line.substring(11);
             } else if (line.startsWith("addr ")) {
                 // addr 01: 8086:0000 Intel, EHCI root hub
-                if (line.indexOf(':') == 7 && line.indexOf(',') >= 18) {
+                if (line.indexOf(Symbol.C_COLON) == 7 && line.indexOf(',') >= 18) {
                     key = parent + line.substring(0, 7);
                     String[] split = line.substring(8).trim().split(",");
                     if (split.length > 1) {
                         // 0 = vid:pid vendor
                         String vendorStr = split[0].trim();
-                        int idx1 = vendorStr.indexOf(':');
-                        int idx2 = vendorStr.indexOf(' ');
+                        int idx1 = vendorStr.indexOf(Symbol.C_COLON);
+                        int idx2 = vendorStr.indexOf(Symbol.C_SPACE);
                         if (idx1 >= 0 && idx2 >= 0) {
                             vendorIdMap.put(key, vendorStr.substring(0, idx1));
                             productIdMap.put(key, vendorStr.substring(idx1 + 1, idx2));
@@ -176,7 +177,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }

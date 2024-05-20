@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.io.Blending;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Internal;
@@ -107,7 +107,7 @@ public class Builder {
     /**
      * Byte order marks.
      */
-    private static final Blending UNICODE_BOMS = Blending.of(
+    private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(
             ByteString.decodeHex("efbbbf"),   // UTF-8
             ByteString.decodeHex("feff"),     // UTF-16BE
             ByteString.decodeHex("fffe"),     // UTF-16LE
@@ -268,21 +268,12 @@ public class Builder {
     }
 
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
-        String host = url.host().contains(":")
+        String host = url.host().contains(Symbol.COLON)
                 ? "[" + url.host() + "]"
                 : url.host();
         return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
-                ? host + ":" + url.port()
+                ? host + Symbol.COLON + url.port()
                 : host;
-    }
-
-    /**
-     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
-     * https://code.google.com/p/android/issues/detail?id=54072
-     */
-    public static boolean isAndroidGetsocknameError(AssertionError e) {
-        return e.getCause() != null && e.getMessage() != null
-                && e.getMessage().contains("getsockname failed");
     }
 
     public static int indexOf(Comparator<String> comparator, String[] array, String value) {
@@ -380,7 +371,7 @@ public class Builder {
      */
     public static String canonicalizeHost(String host) {
         // If the input contains a :, it’s an IPv6 address.
-        if (host.contains(":")) {
+        if (host.contains(Symbol.COLON)) {
             InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
@@ -437,7 +428,7 @@ public class Builder {
      * Returns true if {@code host} is not a host name and might be an IP address.
      */
     public static boolean verifyAsIpAddress(String host) {
-        return RegEx.IP_ADDRESS.matcher(host).matches();
+        return Pattern.IP_ADDRESS_PATTERN.matcher(host).matches();
     }
 
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {

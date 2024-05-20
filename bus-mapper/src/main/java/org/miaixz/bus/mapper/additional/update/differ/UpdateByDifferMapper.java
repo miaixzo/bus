@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.annotation.RegisterMapper;
 /**
  * 差异更新
  *
- * @param <T>   泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

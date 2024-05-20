@@ -26,7 +26,7 @@
 package org.miaixz.bus.limiter.intercept;
 
 import org.aopalliance.intercept.MethodInvocation;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.limiter.execute.LimitContextsValueWrapper;
 import org.miaixz.bus.limiter.execute.LimiterExecutionContext;
 import org.miaixz.bus.limiter.metadata.LimitedResourceMetadata;

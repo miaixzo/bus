@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.toolkit.MathKit;
+import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 
 import java.text.DecimalFormat;
@@ -224,7 +224,7 @@ public class Cpu {
      * @return 总CPU使用率
      */
     public double getUsed() {
-        return MathKit.sub(100, this.free);
+        return MathKit.sub(100, this.free).doubleValue();
     }
 
     @Override

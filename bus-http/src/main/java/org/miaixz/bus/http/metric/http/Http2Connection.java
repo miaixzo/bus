@@ -31,7 +31,7 @@ import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Settings;
 import org.miaixz.bus.http.metric.NamedRunnable;

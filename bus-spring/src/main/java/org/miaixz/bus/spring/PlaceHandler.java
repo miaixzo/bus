@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -52,8 +52,8 @@ public class PlaceHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object ret = method.invoke(delegate, args);
-        if (!ReflectKit.isEqualsMethod(method) && !ReflectKit.isHashCodeMethod(method)
-                && !ReflectKit.isToStringMethod(method) && isAttributeMethod(method)) {
+        if (!MethodKit.isEqualsMethod(method) && !MethodKit.isHashCodeMethod(method)
+                && !MethodKit.isToStringMethod(method) && isAttributeMethod(method)) {
             return resolvePlaceHolder(ret);
         }
         return ret;

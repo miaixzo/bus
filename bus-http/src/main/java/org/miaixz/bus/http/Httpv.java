@@ -25,10 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.httpv.*;
 import org.miaixz.bus.http.socket.WebSocket;
@@ -393,7 +394,7 @@ public class Httpv {
 
         public Builder() {
             mediaTypes = new HashMap<>();
-            mediaTypes.put("*", MediaType.APPLICATION_OCTET_STREAM);
+            mediaTypes.put(Symbol.STAR, MediaType.APPLICATION_OCTET_STREAM);
             mediaTypes.put("png", "image/png");
             mediaTypes.put("jpg", "image/jpeg");
             mediaTypes.put("jpeg", "image/jpeg");

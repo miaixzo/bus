@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.annotation;
 
-import org.miaixz.bus.core.lang.Ansi;
+import org.miaixz.bus.core.lang.EnumMap;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -42,6 +42,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NameStyle {
 
-    Ansi.Mode value() default Ansi.Mode.NORMAL;
+    EnumMap.Naming value() default EnumMap.Naming.NORMAL;
 
 }

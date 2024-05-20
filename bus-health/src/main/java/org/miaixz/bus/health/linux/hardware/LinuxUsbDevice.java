@@ -31,6 +31,7 @@ import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
@@ -207,7 +208,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }

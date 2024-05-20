@@ -26,8 +26,9 @@
 package org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -81,7 +82,7 @@ public final class GeomPartList {
                     partList = new ArrayList<>();
                 }
                 // Now use new diskName
-                diskName = line.substring(line.lastIndexOf(' ') + 1);
+                diskName = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we don't have a valid store, don't bother parsing anything
             if (diskName != null) {
@@ -102,7 +103,7 @@ public final class GeomPartList {
                     }
                     // Verify new entry is a partition
                     // (will happen in 'providers' section)
-                    String part = line.substring(line.lastIndexOf(' ') + 1);
+                    String part = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
                     if (part.startsWith(diskName)) {
                         partName = part;
                         identification = part;
@@ -111,7 +112,7 @@ public final class GeomPartList {
                 }
                 // If we don't have a valid partition, don't parse anything until we do.
                 if (partName != null) {
-                    String[] split = RegEx.SPACES.split(line);
+                    String[] split = Pattern.SPACES_PATTERN.split(line);
                     if (split.length >= 2) {
                         if (line.startsWith("Mediasize:")) {
                             size = Parsing.parseLongOrDefault(split[1], 0L);

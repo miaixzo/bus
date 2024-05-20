@@ -27,8 +27,8 @@ package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;
@@ -46,11 +46,11 @@ import org.miaixz.bus.oauth.magic.*;
 public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     public WeChatEeThirdQrcodeProvider(Context context) {
-        super(context, Registry.WECHAT_ENTERPRISE_QRCODE_THIRD);
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD);
     }
 
     public WeChatEeThirdQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_ENTERPRISE_QRCODE_THIRD, authorizeCache);
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD, authorizeCache);
     }
 
     @Override

@@ -27,7 +27,7 @@ package org.miaixz.bus.tracer.binding.apache.dubbo;
 
 import org.apache.dubbo.rpc.Filter;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 基础dubbo过滤器

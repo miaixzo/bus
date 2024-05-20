@@ -35,9 +35,9 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Complex;
 import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.Module;
-import org.miaixz.bus.cache.annotation.Cached;
-import org.miaixz.bus.cache.annotation.CachedGet;
-import org.miaixz.bus.cache.annotation.Invalid;
+import org.miaixz.bus.cache.magic.annotation.Cached;
+import org.miaixz.bus.cache.magic.annotation.CachedGet;
+import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.proxy.invoker.InvocationInvoker;
 
 import java.lang.reflect.Method;
@@ -60,21 +60,21 @@ public class AspectjCacheProxy {
         core = Module.coreInstance(config);
     }
 
-    @Around("@annotation(org.miaixz.bus.cache.annotation.CachedGet)")
+    @Around("@annotation(org.miaixz.bus.cache.magic.annotation.CachedGet)")
     public Object read(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         CachedGet cachedGet = method.getAnnotation(CachedGet.class);
         return core.read(cachedGet, method, new InvocationInvoker(point));
     }
 
-    @Around("@annotation(org.miaixz.bus.cache.annotation.Cached)")
+    @Around("@annotation(org.miaixz.bus.cache.magic.annotation.Cached)")
     public Object readWrite(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Cached cached = method.getAnnotation(Cached.class);
         return core.readWrite(cached, method, new InvocationInvoker(point));
     }
 
-    @After("@annotation(org.miaixz.bus.cache.annotation.Invalid)")
+    @After("@annotation(org.miaixz.bus.cache.magic.annotation.Invalid)")
     public void remove(JoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Invalid invalid = method.getAnnotation(Invalid.class);

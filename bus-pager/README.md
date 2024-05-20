@@ -174,15 +174,21 @@
 
 ```java
 //第一种，RowBounds方式的调用
-List<User> list=sqlSession.selectList("x.y.selectIf",null,new RowBounds(0,10));
+List<User> list = sqlSession.selectList("x.y.selectIf", null, new RowBounds(0, 10));
 
 //第二种，Mapper接口方式的调用，推荐这种使用方式。
-        PageContext.startPage(1,10);
-        List<User> list=userMapper.selectIf(1);
+        PageContext.
+
+startPage(1,10);
+
+List<User> list = userMapper.selectIf(1);
 
 //第三种，Mapper接口方式的调用，推荐这种使用方式。
-        PageContext.offsetPage(1,10);
-        List<User> list=userMapper.selectIf(1);
+        PageContext.
+
+offsetPage(1,10);
+
+List<User> list = userMapper.selectIf(1);
 
 //第四种，参数方法调用
 //存在以下 Mapper 接口方法，你不需要在 xml 处理后两个参数
@@ -192,9 +198,10 @@ public interface CountryMapper {
             @Param("PageNo") int PageNo,
             @Param("pageSize") int pageSize);
 }
-    //配置supportMethodsArguments=true
+
+//配置supportMethodsArguments=true
 //在代码中直接调用：
-    List<User> list = userMapper.selectByPageNoSize(user, 1, 10);
+List<User> list = userMapper.selectByPageNoSize(user, 1, 10);
 
 //第五种，参数对象
 //如果 PageNo 和 pageSize 存在于 User 对象中，只要参数有值，也会被分页
@@ -210,39 +217,54 @@ public class User {
 public interface CountryMapper {
     List<User> selectByPageNoSize(User user);
 }
-    //当 user 中的 null != PageNo && null != pageSize 时，会自动分页
-    List<User> list = userMapper.selectByPageNoSize(user);
+
+//当 user 中的 null != PageNo && null != pageSize 时，会自动分页
+List<User> list = userMapper.selectByPageNoSize(user);
 
 //第六种，Querying 接口方式
 //jdk6,7用法，创建接口
-    Page<User> page = PageContext.startPage(1, 10).doSelectPage(new ISelect() {
-        @Override
-        public void doSelect() {
-            userMapper.selectGroupBy();
-        }
-    });
-    //jdk8 lambda用法
-    Page<User> page = PageContext.startPage(1, 10).doSelectPage(() -> userMapper.selectGroupBy());
+Page<User> page = PageContext.startPage(1, 10).doSelectPage(new ISelect() {
+    @Override
+    public void doSelect() {
+        userMapper.selectGroupBy();
+    }
+});
+//jdk8 lambda用法
+Page<User> page = PageContext.startPage(1, 10).doSelectPage(() -> userMapper.selectGroupBy());
 
 //也可以直接返回Page，注意doSelectPage方法和doSelectPage
-page=PageContext.startPage(1,10).doSelectPage(new ISelect(){
-@Override
-public void doSelect(){
+page=PageContext.
+
+startPage(1,10).
+
+doSelectPage(new ISelect() {
+    @Override
+    public void doSelect () {
         userMapper.selectGroupBy();
-        }
-        });
+    }
+});
 //对应的lambda用法
-        Page=PageContext.startPage(1,10).doSelectPage(()->userMapper.selectGroupBy());
+Page=PageContext.
+
+startPage(1,10).
+
+doSelectPage(()->userMapper.
+
+selectGroupBy());
 
 //count查询，返回一个查询语句的count数
-        long total=PageContext.count(new ISelect(){
-@Override
-public void doSelect(){
+long total = PageContext.count(new ISelect() {
+    @Override
+    public void doSelect() {
         userMapper.selectLike(user);
-        }
-        });
+    }
+});
 //lambda
-        total=PageContext.count(()->userMapper.selectLike(user));
+total=PageContext.
+
+count(()->userMapper.
+
+selectLike(user));
 ```  
 
 下面对最常用的方式进行详细介绍
@@ -296,20 +318,32 @@ PageContext.startPage(1,10);
 //request: url?PageNo=1&pageSize=10
 //支持 ServletRequest,Map,POJO 对象，需要配合 params 参数
 PageContext.startPage(request);
+
 //紧跟着的第一个select方法会被分页
-        List<User> list=userMapper.selectIf(1);
+List<User> list = userMapper.selectIf(1);
 
 //后面的不会被分页，除非再次调用PageContext.startPage
-        List<User> list2=userMapper.selectIf(null);
+List<User> list2 = userMapper.selectIf(null);
+
 //list1
-        assertEquals(2,list.get(0).getId());
-        assertEquals(10,list.size());
+assertEquals(2,list.get(0).
+
+getId());
+
+assertEquals(10,list.size());
+
 //分页时，实际返回的结果list类型是Page<E>，如果想取出分页信息，需要强制转换为Page<E>，
 //或者使用Page类（下面的例子有介绍）
-        assertEquals(182,((Page)list).getTotal());
+assertEquals(182,((Page)list).
+
+getTotal());
+
 //list2
-        assertEquals(1,list2.get(0).getId());
-        assertEquals(182,list2.size());
+assertEquals(1,list2.get(0).
+
+getId());
+
+assertEquals(182,list2.size());
 ```  
 
 ##### 例三，使用`Page`的用法：
@@ -356,9 +390,9 @@ PageContext.startPage(1,10);
 
 ```java
 List<User> selectByPageNoSize(
-@Param("user") User user,
-@Param("PageNoKey") int PageNo,
-@Param("pageSizeKey") int pageSize);
+        @Param("user") User user,
+        @Param("PageNoKey") int PageNo,
+        @Param("pageSizeKey") int pageSize);
 ```
 
 当调用这个方法时，由于同时发现了 `PageNoKey` 和 `pageSizeKey` 参数，这个方法就会被分页。params 提供的几个参数都可以这样使用。

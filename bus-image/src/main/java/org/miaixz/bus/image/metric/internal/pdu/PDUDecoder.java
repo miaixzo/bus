@@ -26,9 +26,9 @@
 package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.ByteKit;
-import org.miaixz.bus.core.toolkit.IoKit;
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Tag;

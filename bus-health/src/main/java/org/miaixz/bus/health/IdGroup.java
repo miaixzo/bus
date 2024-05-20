@@ -28,6 +28,7 @@ package org.miaixz.bus.health;
 import com.sun.jna.Platform;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,7 @@ public final class IdGroup {
         Map<String, String> userMap = new ConcurrentHashMap<>();
         // see man 5 passwd for the fields
         for (String entry : passwd) {
-            String[] split = entry.split(":");
+            String[] split = entry.split(Symbol.COLON);
             if (split.length > 2) {
                 String userName = split[0];
                 String uid = split[2];
@@ -136,7 +137,7 @@ public final class IdGroup {
         Map<String, String> groupMap = new ConcurrentHashMap<>();
         // see man 5 group for the fields
         for (String entry : group) {
-            String[] split = entry.split(":");
+            String[] split = entry.split(Symbol.COLON);
             if (split.length > 2) {
                 String groupName = split[0];
                 String gid = split[2];

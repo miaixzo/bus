@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cache.support;
 
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;

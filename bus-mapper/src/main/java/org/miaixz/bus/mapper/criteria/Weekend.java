@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.criteria;
 
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.mapper.support.Reflector;
 
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 /**
  * 条件
  *
- * @param <T>  泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -84,7 +84,7 @@ public class Weekend<T> extends Condition {
      * @param fns 属性名的可变参数
      * @return the object
      */
-    public Weekend<T> excludeProperties(XFunction<T, ?>... fns) {
+    public Weekend<T> excludeProperties(FunctionX<T, ?>... fns) {
         String[] properties = Stream.of(fns).map(Reflector::fnToFieldName).toArray(String[]::new);
         this.excludeProperties(properties);
         return this;
@@ -96,13 +96,13 @@ public class Weekend<T> extends Condition {
      * @param fns 函数
      * @return the object
      */
-    public Weekend<T> selectProperties(XFunction<T, ?>... fns) {
+    public Weekend<T> selectProperties(FunctionX<T, ?>... fns) {
         String[] properties = Stream.of(fns).map(Reflector::fnToFieldName).toArray(String[]::new);
         this.selectProperties(properties);
         return this;
     }
 
-    public OrderBy orderBy(XFunction<T, ?> fn) {
+    public OrderBy orderBy(FunctionX<T, ?> fn) {
         return this.orderBy(Reflector.fnToFieldName(fn));
     }
 
@@ -116,7 +116,7 @@ public class Weekend<T> extends Condition {
         return this;
     }
 
-    public Weekend<T> withCountProperty(XFunction<T, ?> fn) {
+    public Weekend<T> withCountProperty(FunctionX<T, ?> fn) {
         this.setCountProperty(Reflector.fnToFieldName(fn));
         return this;
     }

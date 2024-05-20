@@ -34,8 +34,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.EscapeKit;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.EscapeKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 

@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.common.sqlserver.InsertSelectiveMapper;
 /**
  * 通用Mapper接口,SqlServerMapper独有的通用方法
  *
- * @param <T>   泛型
+ * @param <T> 泛型
  * @author Kimi Liu
  * @since Java 17+
  */

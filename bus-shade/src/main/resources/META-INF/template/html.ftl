@@ -57,7 +57,8 @@
         <td><a href='#${t.tableName}'>${t.tableName}</a></td>
         <td>${t.remarks!''}</td></tr></#items></#list></table><#list tables><#items as t><a name='${t.tableName}'></a>
         <div style='margin-top:30px;'><a href='#index'
-                                         style='float:right; margin-top:6px;'>返回目录</a><b>表名：${t.tableName}</b></div>
+                                         style='float:right; margin-top:6px;'>返回目录</a><b>表名：${t.tableName}</b>
+        </div>
         <div>说明：${t.remarks!''}</div>
         <div>数据列：</div>
         <table cellspacing='1'>

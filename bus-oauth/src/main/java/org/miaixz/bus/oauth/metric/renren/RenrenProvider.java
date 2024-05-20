@@ -28,22 +28,17 @@ package org.miaixz.bus.oauth.metric.renren;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
-import org.miaixz.bus.oauth.magic.AccToken;
-import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Message;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.Registry;
+import org.miaixz.bus.oauth.magic.*;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 import java.util.Objects;
-
-import static org.miaixz.bus.oauth.Registry.RENREN;
-import static org.miaixz.bus.oauth.magic.ErrorCode.SUCCESS;
 
 /**
  * 人人网 登录
@@ -54,11 +49,11 @@ import static org.miaixz.bus.oauth.magic.ErrorCode.SUCCESS;
 public class RenrenProvider extends DefaultProvider {
 
     public RenrenProvider(Context context) {
-        super(context, RENREN);
+        super(context, Registry.RENREN);
     }
 
     public RenrenProvider(Context context, ExtendCache authorizeCache) {
-        super(context, RENREN, authorizeCache);
+        super(context, Registry.RENREN, authorizeCache);
     }
 
     @Override
@@ -86,7 +81,7 @@ public class RenrenProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken accToken) {
         return Message.builder()
-                .errcode(SUCCESS.getCode())
+                .errcode(ErrorCode.SUCCESS.getCode())
                 .data(getToken(this.refreshTokenUrl(accToken.getRefreshToken())))
                 .build();
     }
@@ -101,8 +96,8 @@ public class RenrenProvider extends DefaultProvider {
         return AccToken.builder()
                 .tokenType(jsonObject.getString("token_type"))
                 .expireIn(jsonObject.getIntValue("expires_in"))
-                .accessToken(UriKit.encode(jsonObject.getString("access_token")))
-                .refreshToken(UriKit.encode(jsonObject.getString("refresh_token")))
+                .accessToken(UrlEncoder.encodeAll(jsonObject.getString("access_token")))
+                .refreshToken(UrlEncoder.encodeAll(jsonObject.getString("refresh_token")))
                 .openId(jsonObject.getJSONObject("user").getString("id"))
                 .build();
     }

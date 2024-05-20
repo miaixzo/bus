@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.BooleanKit;
+import org.miaixz.bus.core.xyz.BooleanKit;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AtomicBooleanConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected AtomicBoolean convertInternal(final Class<?> targetClass, final Object value) {

@@ -29,9 +29,8 @@ import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.exception.MapperException;
-import org.miaixz.bus.core.lang.function.XFunction;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.exception.MapperException;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
@@ -48,10 +47,9 @@ import java.util.regex.Pattern;
  */
 public class Reflector {
 
+    public static final Cache CLASS_CACHE = new SoftCache(new PerpetualCache("MAPPER_CLASS_CACHE"));
     private static final Pattern GET_PATTERN = Pattern.compile("^get[A-Z].*");
     private static final Pattern IS_PATTERN = Pattern.compile("^is[A-Z].*");
-
-    public static final Cache CLASS_CACHE = new SoftCache(new PerpetualCache("MAPPER_CLASS_CACHE"));
 
     /**
      * 根据msId获取接口类
@@ -90,7 +88,7 @@ public class Reflector {
         return mapperClass;
     }
 
-    public static String fnToFieldName(XFunction fn) {
+    public static String fnToFieldName(FunctionX fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(Boolean.TRUE);
@@ -103,13 +101,13 @@ public class Reflector {
             }
             return Introspector.decapitalize(getter);
         } catch (ReflectiveOperationException e) {
-            throw new InternalException(e);
+            throw new MapperException(e);
         }
     }
 
-    public static String[] fnToFieldNames(XFunction... fns) {
+    public static String[] fnToFieldNames(FunctionX... fns) {
         List<String> list = new ArrayList<>();
-        for (XFunction fn : fns) {
+        for (FunctionX fn : fns) {
             list.add(fnToFieldName(fn));
         }
         return list.toArray(new String[0]);

@@ -15,7 +15,7 @@
  */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.Interceptor;

@@ -519,7 +519,7 @@ public class Http1Codec implements HttpCodec {
             try {
                 bytesRemainingInChunk = source.readHexadecimalUnsignedLong();
                 String extensions = source.readUtf8LineStrict().trim();
-                if (bytesRemainingInChunk < 0 || (!extensions.isEmpty() && !extensions.startsWith(";"))) {
+                if (bytesRemainingInChunk < 0 || (!extensions.isEmpty() && !extensions.startsWith(Symbol.SEMICOLON))) {
                     throw new ProtocolException("expected chunk size and optional extensions but was \""
                             + bytesRemainingInChunk + extensions + "\"");
                 }

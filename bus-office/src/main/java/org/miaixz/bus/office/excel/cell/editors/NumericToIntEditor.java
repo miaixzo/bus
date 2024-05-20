@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.editors;
 
-import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.miaixz.bus.office.excel.cell.CellEditor;
 
 /**
- * POI中NUMRIC类型的值默认返回的是Double类型,此编辑器用于转换其为int型
+ * POI中NUMRIC类型的值默认返回的是Double类型，此编辑器用于转换其为int型
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,7 +37,7 @@ import org.apache.poi.ss.usermodel.Cell;
 public class NumericToIntEditor implements CellEditor {
 
     @Override
-    public Object edit(Cell cell, Object value) {
+    public Object edit(final Cell cell, final Object value) {
         if (value instanceof Number) {
             return ((Number) value).intValue();
         }

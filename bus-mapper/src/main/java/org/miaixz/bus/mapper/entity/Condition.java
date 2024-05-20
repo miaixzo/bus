@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.entity;
 
-import org.miaixz.bus.core.exception.MapperException;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.criteria.SqlCriteria;
 import org.miaixz.bus.mapper.criteria.Sqls;
@@ -1122,21 +1122,21 @@ public class Condition implements TableNames {
         private void transformCriterion(Criteria criteria, String condition, String property, Object[] values, String andOr) {
             if (values.length == 0) {
                 if ("and".equals(andOr)) {
-                    criteria.addCriterion(column(property) + " " + condition);
+                    criteria.addCriterion(column(property) + Symbol.SPACE + condition);
                 } else {
-                    criteria.addOrCriterion(column(property) + " " + condition);
+                    criteria.addOrCriterion(column(property) + Symbol.SPACE + condition);
                 }
             } else if (values.length == 1) {
                 if ("and".equals(andOr)) {
-                    criteria.addCriterion(column(property) + " " + condition, values[0], property(property));
+                    criteria.addCriterion(column(property) + Symbol.SPACE + condition, values[0], property(property));
                 } else {
-                    criteria.addOrCriterion(column(property) + " " + condition, values[0], property(property));
+                    criteria.addOrCriterion(column(property) + Symbol.SPACE + condition, values[0], property(property));
                 }
             } else if (values.length == 2) {
                 if ("and".equals(andOr)) {
-                    criteria.addCriterion(column(property) + " " + condition, values[0], values[1], property(property));
+                    criteria.addCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1], property(property));
                 } else {
-                    criteria.addOrCriterion(column(property) + " " + condition, values[0], values[1], property(property));
+                    criteria.addOrCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1], property(property));
                 }
             }
         }

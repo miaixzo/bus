@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.SAXWriter;

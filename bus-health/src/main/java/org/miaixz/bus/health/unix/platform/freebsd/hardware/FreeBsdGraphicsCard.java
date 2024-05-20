@@ -26,8 +26,9 @@
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
@@ -89,9 +90,9 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                             versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Parse this line
-                String[] split = RegEx.SPACES.split(line);
+                String[] split = Pattern.SPACES_PATTERN.split(line);
                 for (String s : split) {
-                    String[] keyVal = s.split("=");
+                    String[] keyVal = s.split(Symbol.EQUAL);
                     if (keyVal.length > 1) {
                         if (keyVal[0].equals("class") && keyVal[1].length() >= 4) {
                             // class=0x030000
@@ -109,7 +110,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                 // Reset name
                 name = Normal.UNKNOWN;
             } else {
-                String[] split = line.trim().split("=", 2);
+                String[] split = line.trim().split(Symbol.EQUAL, 2);
                 if (split.length == 2) {
                     String key = split[0].trim();
                     if (key.equals("vendor")) {

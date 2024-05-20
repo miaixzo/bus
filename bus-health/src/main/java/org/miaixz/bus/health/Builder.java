@@ -35,7 +35,8 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.*;
@@ -94,10 +95,10 @@ public final class Builder {
      * @return True if the String matches or if the first character is ^ and the remainder of the String does not match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
             return !wildcardMatch(text, pattern.substring(1));
         }
-        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -208,11 +209,11 @@ public final class Builder {
     public static String getManufacturerID(byte[] edid) {
         // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
         String temp = String.format(Locale.ROOT, "%8s%8s", Integer.toBinaryString(edid[8] & 0xFF),
-                Integer.toBinaryString(edid[9] & 0xFF)).replace(' ', '0');
+                Integer.toBinaryString(edid[9] & 0xFF)).replace(Symbol.C_SPACE, '0');
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format(Locale.ROOT, "%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", Normal.EMPTY);
+                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
     }
 
     /**
@@ -408,14 +409,14 @@ public final class Builder {
                     sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
                     break;
                 case 0xfb:
-                    sb.append("\n  White Point Data: ").append(Parsing.byteArrayToHexString(b));
+                    sb.append("\n  White Point Data: ").append(ByteKit.byteArrayToHexString(b));
                     break;
                 case 0xfa:
-                    sb.append("\n  Standard Timing ID: ").append(Parsing.byteArrayToHexString(b));
+                    sb.append("\n  Standard Timing ID: ").append(ByteKit.byteArrayToHexString(b));
                     break;
                 default:
                     if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
-                        sb.append("\n  Manufacturer Data: ").append(Parsing.byteArrayToHexString(b));
+                        sb.append("\n  Manufacturer Data: ").append(ByteKit.byteArrayToHexString(b));
                     } else {
                         sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
                     }
@@ -431,7 +432,7 @@ public final class Builder {
      *
      * @param filename The file to read
      * @return A list of Strings representing each line of the file, or an empty list if file could not be read or is
-     *         empty
+     * empty
      */
     public static List<String> readFile(String filename) {
         return readFile(filename, true);
@@ -765,9 +766,8 @@ public final class Builder {
      *
      * @param filename  The file to read
      * @param separator Character(s) in each line of the file that separate the key and the value.
-     *
      * @return The map contained in the file, delimited by the separator, with the value whitespace trimmed. If keys and
-     *         values are not parsed, an empty map is returned.
+     * values are not parsed, an empty map is returned.
      */
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
@@ -806,7 +806,7 @@ public final class Builder {
      * @param value   值
      */
     public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
+        builder.append(caption).append(ObjectKit.defaultIfNull(Convert.toString(value), "[n/a]")).append(Symbol.LF);
     }
 
 }

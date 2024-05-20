@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.socket;
 
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.buffers.BufferFactory;
 import org.miaixz.bus.socket.buffers.BufferPool;

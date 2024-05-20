@@ -107,98 +107,98 @@ ImageKit-图片合并功能使用起来相当简单，主要的类只用一个�
 ## 完整示例
 
 ```java
-  public void demo()throws Exception{
-        // 背景图
-        String bgImageUrl="http://xxx.com/image/bg.jpg";
-        // 二维码
-        String qrCodeUrl="http://xxx.com/image/qrCode.png";
-        // 商品图
-        String itemUrl="http://xxx.com/image/item.jpg";
-        // 水印图
-        BufferedImage waterMark=ImageIO.read(new URL("https://xxx.com/image/mark.jpg"));
-        // 头像
-        BufferedImage avatar=ImageIO.read(new URL("https://xxx.com/image/avatar.jpg"));
-        String title="# 最爱的家居";                                       //标题文本
-        String content="“如果没有那个桌子，可能就没有那个水壶”";  //内容文本
+  public void demo() throws Exception {
+    // 背景图
+    String bgImageUrl = "http://xxx.com/image/bg.jpg";
+    // 二维码
+    String qrCodeUrl = "http://xxx.com/image/qrCode.png";
+    // 商品图
+    String itemUrl = "http://xxx.com/image/item.jpg";
+    // 水印图
+    BufferedImage waterMark = ImageIO.read(new URL("https://xxx.com/image/mark.jpg"));
+    // 头像
+    BufferedImage avatar = ImageIO.read(new URL("https://xxx.com/image/avatar.jpg"));
+    String title = "# 最爱的家居";                                       //标题文本
+    String content = "“如果没有那个桌子，可能就没有那个水壶”";  //内容文本
 
-        // 背景图（整个图片的宽高和相关计算依赖于背景图，所以背景图的大小是个基准）
-        Image image=ImageKit.merge(bgImageUrl,FileType.TYPE_JPG);
+    // 背景图（整个图片的宽高和相关计算依赖于背景图，所以背景图的大小是个基准）
+    Image image = ImageKit.merge(bgImageUrl, FileType.TYPE_JPG);
 
-        // 加图片元素（居中绘制，圆角，半透明）
-        image.addImageElement(itemUrl,0,300)
-        .setCenter(true)
-        .setRoundCorner(60)
-        .setAlpha(.8f);
+    // 加图片元素（居中绘制，圆角，半透明）
+    image.addImageElement(itemUrl, 0, 300)
+            .setCenter(true)
+            .setRoundCorner(60)
+            .setAlpha(.8f);
 
-        // 加文本元素
-        image.addTextElement(title,60,100,960)
-        .setColor(Color.red);
-        // 合成图片
-        image.merge();
-        // 输出文件
-        image.out("E://123.jpg");
+    // 加文本元素
+    image.addTextElement(title, 60, 100, 960)
+            .setColor(Color.red);
+    // 合成图片
+    image.merge();
+    // 输出文件
+    image.out("E://123.jpg");
 
 
-        // 商品图（设置坐标、宽高和缩放模式，若按宽度缩放，则高度按比例自动计算）
-        image.addImageElement(itemUrl,0,160,837,0,Scale.Mode.WIDTH)
-        .setRoundCorner(46)     //设置圆角
-        .setCenter(true);       //居中绘制，会忽略x坐标参数，改为自动计算
+    // 商品图（设置坐标、宽高和缩放模式，若按宽度缩放，则高度按比例自动计算）
+    image.addImageElement(itemUrl, 0, 160, 837, 0, Scale.Mode.WIDTH)
+            .setRoundCorner(46)     //设置圆角
+            .setCenter(true);       //居中绘制，会忽略x坐标参数，改为自动计算
 
-        // 标题（默认字体为阿里普惠、黑色，也可以自己指定Font对象）
-        image.addTextElement(title,55,150,1400);
+    // 标题（默认字体为阿里普惠、黑色，也可以自己指定Font对象）
+    image.addTextElement(title, 55, 150, 1400);
 
-        // 内容（设置文本自动换行，需要指定最大宽度（超出则换行）、最大行数（超出则丢弃）、行高）
-        image.addTextElement(content,"微软雅黑",40,150,1480)
-        .setAutoBreakLine(837,2,60);
+    // 内容（设置文本自动换行，需要指定最大宽度（超出则换行）、最大行数（超出则丢弃）、行高）
+    image.addTextElement(content, "微软雅黑", 40, 150, 1480)
+            .setAutoBreakLine(837, 2, 60);
 
-        // 头像（圆角设置一定的大小，可以把头像变成圆的）
-        image.addImageElement(avatar,200,1200).setRoundCorner(200);
+    // 头像（圆角设置一定的大小，可以把头像变成圆的）
+    image.addImageElement(avatar, 200, 1200).setRoundCorner(200);
 
-        // 水印（设置透明度，0.0~1.0）
-        image.addImageElement(waterMark,630,1200).setAlpha(.8f);
+    // 水印（设置透明度，0.0~1.0）
+    image.addImageElement(waterMark, 630, 1200).setAlpha(.8f);
 
-        // 二维码（强制按指定宽度、高度缩放）
-        image.addImageElement(qrCodeUrl,138,1707,186,186,Scale.Mode.OPTIONAL);
+    // 二维码（强制按指定宽度、高度缩放）
+    image.addImageElement(qrCodeUrl, 138, 1707, 186, 186, Scale.Mode.OPTIONAL);
 
-        // 元素对象也可以直接new，然后手动加入待绘制列表
-        TextElement textPrice=new TextElement("￥1290",60,230,1300);
-        // 红色
-        textPrice.setColor(Color.red);
-        // 删除线
-        textPrice.setStrikeThrough(true);
-        // 加入待绘制集合
-        image.addElement(textPrice);
+    // 元素对象也可以直接new，然后手动加入待绘制列表
+    TextElement textPrice = new TextElement("￥1290", 60, 230, 1300);
+    // 红色
+    textPrice.setColor(Color.red);
+    // 删除线
+    textPrice.setStrikeThrough(true);
+    // 加入待绘制集合
+    image.addElement(textPrice);
 
-        // 执行图片合并
-        image.merge();
-        // 获取流（并上传oss等）
-        InputStream is=image.getInputStream();
-        // 输出文件
-        image.out("E://topic.png");
-        }
+    // 执行图片合并
+    image.merge();
+    // 获取流（并上传oss等）
+    InputStream is = image.getInputStream();
+    // 输出文件
+    image.out("E://topic.png");
+}
 ```
 
 ## 元素支持的特性
 
 具体`ImageElement`和`TextElement`对象支持的特性如下表：
 
-| 元素类型        | 特性    | 相关方法                                 |
-| ---------      | ---------------------- | ----------------------------------------- |
-| `ImageElement` | 图片     | `setImage()`,`setImgUrl()`              |
-| `ImageElement` | 位置     | `setX()`,`setY()`                       |
-| `ImageElement` | 缩放     | `setWidth()`,`setHeight()`,`ZoomMode`   |
-| `ImageElement` | 圆角     | `setRoundCorner()`                      |
-| `ImageElement` | 居中绘制 | `setCenter()`                           |
-| `ImageElement` | 透明度   | `setAlpha()`                            |
-| ----------------- |  |  |
-| `TextElement`  | 文本     | `setText()`,`setY()`                    |
-| `TextElement`  | 位置     | `setX()`,`setY()`                       |
-| `TextElement`  | 居中绘制 | `setCenter()`                           |
-| `TextElement`  | 透明度   | `setAlpha()`                            |
-| `TextElement`  | 颜色     | `setColor()`                            |
-| `TextElement`  | 字体     | `setFontName()`                         |
-| `TextElement`  | 字号     | `setFontName()`                         |
-| `TextElement`  | 删除线   | `setStrikeThrough()`                    |
-| `TextElement`  | 自动换行 | `setAutoBreakLine()`                    |
+| 元素类型              | 特性   | 相关方法                                  |
+|-------------------|------|---------------------------------------|
+| `ImageElement`    | 图片   | `setImage()`,`setImgUrl()`            |
+| `ImageElement`    | 位置   | `setX()`,`setY()`                     |
+| `ImageElement`    | 缩放   | `setWidth()`,`setHeight()`,`ZoomMode` |
+| `ImageElement`    | 圆角   | `setRoundCorner()`                    |
+| `ImageElement`    | 居中绘制 | `setCenter()`                         |
+| `ImageElement`    | 透明度  | `setAlpha()`                          |
+| ----------------- |      |                                       |
+| `TextElement`     | 文本   | `setText()`,`setY()`                  |
+| `TextElement`     | 位置   | `setX()`,`setY()`                     |
+| `TextElement`     | 居中绘制 | `setCenter()`                         |
+| `TextElement`     | 透明度  | `setAlpha()`                          |
+| `TextElement`     | 颜色   | `setColor()`                          |
+| `TextElement`     | 字体   | `setFontName()`                       |
+| `TextElement`     | 字号   | `setFontName()`                       |
+| `TextElement`     | 删除线  | `setStrikeThrough()`                  |
+| `TextElement`     | 自动换行 | `setAutoBreakLine()`                  |
 
 注意：合成图片若包含文字的话，开发机和服务器要先安装相应的字体，否则看不出效果，默认使用的字体为“阿里普惠”

@@ -26,7 +26,7 @@
 package org.miaixz.bus.shade.safety.complex;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.loader.AntFilter;
+import org.miaixz.bus.core.lang.loader.AntFilter;
 import org.miaixz.bus.shade.safety.Complex;
 
 /**

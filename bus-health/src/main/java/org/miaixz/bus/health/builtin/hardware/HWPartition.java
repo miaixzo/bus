@@ -27,6 +27,7 @@ package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Formats;
 
 /**
@@ -165,9 +166,9 @@ public class HWPartition {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getIdentification()).append(": ");
-        sb.append(getName()).append(" ");
+        sb.append(getName()).append(Symbol.SPACE);
         sb.append("(").append(getType()).append(") ");
-        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(", ");
+        sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
         sb.append("size: ").append(Formats.formatBytesDecimal(getSize()));
         sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
         return sb.toString();

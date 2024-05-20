@@ -49,7 +49,7 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.lang.System;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.health.Platform;
 
 /**
@@ -60,14 +60,14 @@ import org.miaixz.bus.health.Platform;
  */
 public class User {
 
-    private final String USER_HOME = Platform.get(System.USER_HOME, false);
-    private final String USER_DIR = Platform.get(System.USER_DIR, false);
-    private final String USER_LANGUAGE = Platform.get(System.USER_LANGUAGE, false);
-    private final String USER_COUNTRY = null == Platform.get(System.USER_COUNTRY, false)
-            ? Platform.get(System.USER_REGION, false) : Platform.get(System.USER_COUNTRY, false);
-    private final String JAVA_IO_TMPDIR = Platform.get(System.IO_TMPDIR, false);
+    private final String USER_HOME = Platform.get(Keys.USER_HOME, false);
+    private final String USER_DIR = Platform.get(Keys.USER_DIR, false);
+    private final String USER_LANGUAGE = Platform.get(Keys.USER_LANGUAGE, false);
+    private final String USER_COUNTRY = null == Platform.get(Keys.USER_COUNTRY, false)
+            ? Platform.get(Keys.USER_REGION, false) : Platform.get(Keys.USER_COUNTRY, false);
+    private final String JAVA_IO_TMPDIR = Platform.get(Keys.JAVA_IO_TMPDIR, false);
     private String USER_ID;
-    private String USER_NAME = Platform.get(System.USER_NAME, false);
+    private String USER_NAME = Platform.get(Keys.USER_NAME, false);
 
     /**
      * <p>

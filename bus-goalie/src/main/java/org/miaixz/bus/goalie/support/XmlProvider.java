@@ -26,7 +26,7 @@
 package org.miaixz.bus.goalie.support;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.XmlKit;
+import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Provider;
 
@@ -46,7 +46,7 @@ public class XmlProvider implements Provider {
             StringBuffer buffer = new StringBuffer();
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             Map<String, Object> map = JsonKit.getProvider().toMap(object);
-            XmlKit.toXml(map, buffer);
+            XmlKit.mapToXmlString(map);
             return buffer.toString();
         } catch (Exception e) {
             e.printStackTrace();

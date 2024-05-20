@@ -40,7 +40,7 @@ public interface EntityResolve {
      * 解析类为 EntityTable
      *
      * @param entityClass 实体Class对象
-     * @param property      配置
+     * @param property    配置
      * @return the object
      */
     EntityTable resolveEntity(Class<?> entityClass, Property property);

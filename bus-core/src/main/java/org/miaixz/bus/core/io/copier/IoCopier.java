@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.copier;
 
-import org.miaixz.bus.core.io.Progress;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * IO拷贝抽象，可自定义包括缓存、进度条等信息
@@ -48,7 +48,7 @@ public abstract class IoCopier<S, T> {
     /**
      * 进度条
      */
-    protected Progress progress;
+    protected StreamProgress progress;
 
     /**
      * 是否每次写出一个buffer内容就执行flush
@@ -58,12 +58,12 @@ public abstract class IoCopier<S, T> {
     /**
      * 构造
      *
-     * @param bufferSize 缓存大小，&lt; 0 表示默认{@link IoKit#DEFAULT_BUFFER_SIZE}
+     * @param bufferSize 缓存大小，&lt; 0 表示默认{@link Normal#DEFAULT_BUFFER_SIZE}
      * @param count      拷贝总数，-1表示无限制
      * @param progress   进度条
      */
-    public IoCopier(int bufferSize, long count, Progress progress) {
-        this.bufferSize = bufferSize > 0 ? bufferSize : IoKit.DEFAULT_BUFFER_SIZE;
+    public IoCopier(final int bufferSize, final long count, final StreamProgress progress) {
+        this.bufferSize = bufferSize > 0 ? bufferSize : Normal.DEFAULT_BUFFER_SIZE;
         this.count = count <= 0 ? Long.MAX_VALUE : count;
         this.progress = progress;
     }
@@ -83,7 +83,7 @@ public abstract class IoCopier<S, T> {
      * @param count 目标长度
      * @return 缓存大小
      */
-    protected int bufferSize(long count) {
+    protected int bufferSize(final long count) {
         return (int) Math.min(this.bufferSize, count);
     }
 
@@ -93,7 +93,7 @@ public abstract class IoCopier<S, T> {
      * @param flushEveryBuffer 是否每次写出一个buffer内容就执行flush
      * @return this
      */
-    public IoCopier<S, T> setFlushEveryBuffer(boolean flushEveryBuffer) {
+    public IoCopier<S, T> setFlushEveryBuffer(final boolean flushEveryBuffer) {
         this.flushEveryBuffer = flushEveryBuffer;
         return this;
     }

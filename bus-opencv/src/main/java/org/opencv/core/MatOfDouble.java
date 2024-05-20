@@ -14,34 +14,34 @@ public class MatOfDouble extends Mat {
 
     protected MatOfDouble(long addr) {
         super(addr);
-        if( !empty() && checkVector(_channels, _depth) < 0 )
+        if (!empty() && checkVector(_channels, _depth) < 0)
             throw new IllegalArgumentException("Incompatible Mat");
         //FIXME: do we need release() here?
+    }
+
+    public MatOfDouble(Mat m) {
+        super(m, Range.all());
+        if (!empty() && checkVector(_channels, _depth) < 0)
+            throw new IllegalArgumentException("Incompatible Mat");
+        //FIXME: do we need release() here?
+    }
+
+    public MatOfDouble(double... a) {
+        super();
+        fromArray(a);
     }
 
     public static MatOfDouble fromNativeAddr(long addr) {
         return new MatOfDouble(addr);
     }
 
-    public MatOfDouble(Mat m) {
-        super(m, Range.all());
-        if( !empty() && checkVector(_channels, _depth) < 0 )
-            throw new IllegalArgumentException("Incompatible Mat");
-        //FIXME: do we need release() here?
-    }
-
-    public MatOfDouble(double...a) {
-        super();
-        fromArray(a);
-    }
-
     public void alloc(int elemNumber) {
-        if(elemNumber>0)
+        if (elemNumber > 0)
             super.create(elemNumber, 1, CvType.makeType(_depth, _channels));
     }
 
-    public void fromArray(double...a) {
-        if(a==null || a.length==0)
+    public void fromArray(double... a) {
+        if (a == null || a.length == 0)
             return;
         int num = a.length / _channels;
         alloc(num);
@@ -50,21 +50,21 @@ public class MatOfDouble extends Mat {
 
     public double[] toArray() {
         int num = checkVector(_channels, _depth);
-        if(num < 0)
+        if (num < 0)
             throw new RuntimeException("Native Mat has unexpected type or size: " + toString());
         double[] a = new double[num * _channels];
-        if(num == 0)
+        if (num == 0)
             return a;
         get(0, 0, a); //TODO: check ret val!
         return a;
     }
 
     public void fromList(List<Double> lb) {
-        if(lb==null || lb.size()==0)
+        if (lb == null || lb.size() == 0)
             return;
         Double ab[] = lb.toArray(new Double[0]);
         double a[] = new double[ab.length];
-        for(int i=0; i<ab.length; i++)
+        for (int i = 0; i < ab.length; i++)
             a[i] = ab[i];
         fromArray(a);
     }
@@ -72,7 +72,7 @@ public class MatOfDouble extends Mat {
     public List<Double> toList() {
         double[] a = toArray();
         Double ab[] = new Double[a.length];
-        for(int i=0; i<a.length; i++)
+        for (int i = 0; i < a.length; i++)
             ab[i] = a[i];
         return Arrays.asList(ab);
     }

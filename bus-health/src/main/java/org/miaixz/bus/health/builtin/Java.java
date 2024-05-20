@@ -49,8 +49,8 @@
  ********************************************************************************/
 package org.miaixz.bus.health.builtin;
 
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.System;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Platform;
 
@@ -66,11 +66,11 @@ public class Java implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final String JAVA_VERSION = Platform.get(System.VERSION, false);
+    private final String JAVA_VERSION = Platform.get(Keys.JAVA_VERSION, false);
     private final float JAVA_VERSION_FLOAT = getJavaVersionAsFloat();
     private final int JAVA_VERSION_INT = getJavaVersionAsInt();
-    private final String JAVA_VENDOR = Platform.get(System.VENDOR, false);
-    private final String JAVA_VENDOR_URL = Platform.get(System.VENDOR_URL, false);
+    private final String JAVA_VENDOR = Platform.get(Keys.JAVA_VENDOR, false);
+    private final String JAVA_VENDOR_URL = Platform.get(Keys.JAVA_VENDOR_URL, false);
 
     private final boolean IS_JAVA_1_8 = getJavaVersionMatches("1.8");
     private final boolean IS_JAVA_9 = getJavaVersionMatches("9");

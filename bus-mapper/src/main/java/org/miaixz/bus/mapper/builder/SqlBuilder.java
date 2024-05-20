@@ -25,11 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.builder;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.exception.VersionException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.VersionException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.annotation.LogicDelete;
 import org.miaixz.bus.mapper.annotation.Version;
 import org.miaixz.bus.mapper.entity.EntityColumn;
@@ -261,7 +260,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append(getAllColumns(entityClass));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -313,7 +312,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append(" FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -340,7 +339,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ");
         sql.append(getDynamicTableName(entityClass, defaultTableName, entityName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -355,7 +354,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -370,7 +369,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -386,7 +385,7 @@ public class SqlBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(getDynamicTableName(entityClass, defaultTableName, parameterName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -482,7 +481,7 @@ public class SqlBuilder {
             }
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -492,7 +491,7 @@ public class SqlBuilder {
                     String versionClass = version.nextVersion().getName();
                     sql.append("<bind name=\"").append(column.getProperty()).append("Version\" value=\"");
                     sql.append("@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ");
+                            .append(Symbol.AT).append(versionClass).append("@class, ");
                     if (StringKit.isNotEmpty(entityName)) {
                         sql.append(entityName).append(".");
                     }
@@ -531,7 +530,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -789,7 +788,7 @@ public class SqlBuilder {
      */
     public static Integer getLogicDeletedValue(EntityColumn column, boolean isDeleted) {
         if (!column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
-            throw new InternalException(column.getColumn() + " 没有 @LogicDelete 注解!");
+            throw new VersionException(column.getColumn() + " 没有 @LogicDelete 注解!");
         }
         LogicDelete logicDelete = column.getEntityField().getAnnotation(LogicDelete.class);
         if (isDeleted) {
@@ -821,7 +820,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (hasLogicDelete) {
-                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 hasLogicDelete = true;
                 logicDeleteColumn = column;

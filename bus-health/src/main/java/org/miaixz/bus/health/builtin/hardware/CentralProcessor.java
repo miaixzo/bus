@@ -28,7 +28,8 @@ package org.miaixz.bus.health.builtin.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -588,15 +589,6 @@ public interface CentralProcessor {
     @Immutable
     class ProcessorCache {
 
-        /**
-         * The cache associativity. If this member is {@code 0xFF}, the cache is fully associative.
-         *
-         * @return the associativity
-         */
-        public byte getAssociativity() {
-            return associativity;
-        }
-
         private final byte level;
         private final byte associativity;
         private final short lineSize;
@@ -616,24 +608,21 @@ public interface CentralProcessor {
         }
 
         /**
+         * The cache associativity. If this member is {@code 0xFF}, the cache is fully associative.
+         *
+         * @return the associativity
+         */
+        public byte getAssociativity() {
+            return associativity;
+        }
+
+        /**
          * The cache level. This member can be 1 (L1), 2 (L2), 3 (L3), or 4 (L4).
          *
          * @return the level
          */
         public byte getLevel() {
             return level;
-        }
-
-        /**
-         * The type of cache.
-         */
-        public enum Type {
-            UNIFIED, INSTRUCTION, DATA, TRACE;
-
-            @Override
-            public String toString() {
-                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
-            }
         }
 
         /**
@@ -665,7 +654,7 @@ public interface CentralProcessor {
 
         @Override
         public String toString() {
-            return "ProcessorCache [L" + level + " " + type + ", cacheSize=" + cacheSize + ", "
+            return "ProcessorCache [L" + level + Symbol.SPACE + type + ", cacheSize=" + cacheSize + ", "
                     + (associativity > 0 ? associativity + "-way" : "unknown") + " associativity, lineSize=" + lineSize
                     + "]";
         }
@@ -686,6 +675,18 @@ public interface CentralProcessor {
         @Override
         public int hashCode() {
             return Objects.hash(associativity, cacheSize, level, lineSize, type);
+        }
+
+        /**
+         * The type of cache.
+         */
+        public enum Type {
+            UNIFIED, INSTRUCTION, DATA, TRACE;
+
+            @Override
+            public String toString() {
+                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+            }
         }
     }
 

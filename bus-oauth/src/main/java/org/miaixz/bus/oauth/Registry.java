@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth;
 
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 import org.miaixz.bus.oauth.metric.alipay.AlipayProvider;
@@ -1097,7 +1097,7 @@ public enum Registry implements Complex {
     /**
      * 企业微信二维码
      */
-    WECHAT_ENTERPRISE {
+    WECHAT_EE {
         @Override
         public String authorize() {
             return "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
@@ -1121,7 +1121,7 @@ public enum Registry implements Complex {
     /**
      * 企业微信二维码第三方
      */
-    WECHAT_ENTERPRISE_QRCODE_THIRD {
+    WECHAT_EE_QRCODE_THIRD {
         /**
          * 授权的api
          *
@@ -1160,7 +1160,7 @@ public enum Registry implements Complex {
     /**
      * 企业微信网页
      */
-    WECHAT_ENTERPRISE_WEB {
+    WECHAT_EE_WEB {
         @Override
         public String authorize() {
             return "https://open.weixin.qq.com/connect/oauth2/authorize";
@@ -1272,7 +1272,7 @@ public enum Registry implements Complex {
     /**
      * 喜马拉雅
      */
-    XMLY {
+    XIMALAYA {
         @Override
         public String authorize() {
             return "https://api.ximalaya.com/oauth2/js/authorize";

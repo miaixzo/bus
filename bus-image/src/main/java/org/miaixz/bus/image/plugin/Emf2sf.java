@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.builtin.Multiframe;
 import org.miaixz.bus.image.galaxy.data.Attributes;

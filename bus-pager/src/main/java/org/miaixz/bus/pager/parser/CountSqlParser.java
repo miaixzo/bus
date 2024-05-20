@@ -26,7 +26,7 @@
 package org.miaixz.bus.pager.parser;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -152,7 +152,7 @@ public interface CountSqlParser {
     /**
      * 获取智能的countSql
      *
-     * @param sql    sql
+     * @param sql         sql
      * @param countColumn 列名,默认 0
      * @return the string
      */

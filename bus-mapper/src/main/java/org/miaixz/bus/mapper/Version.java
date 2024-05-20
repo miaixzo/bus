@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper;
 
-import org.miaixz.bus.core.exception.VersionException;
+import org.miaixz.bus.core.lang.exception.VersionException;
 
 import java.sql.Timestamp;
 import java.util.Map;

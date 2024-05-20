@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.ByteArrayOutputStream;

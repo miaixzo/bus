@@ -35,7 +35,8 @@ import java.util.Objects;
  * @since Java 17+
  */
 public class CellLocation implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -1L;
 
     private int x;
     private int y;
@@ -46,33 +47,53 @@ public class CellLocation implements Serializable {
      * @param x 列号，从0开始
      * @param y 行号，从0开始
      */
-    public CellLocation(int x, int y) {
+    public CellLocation(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * 获取x（列）号
+     *
+     * @return x（列）号
+     */
     public int getX() {
         return x;
     }
 
-    public void setX(int x) {
+    /**
+     * 设置x（列）号
+     *
+     * @param x x（列）号
+     */
+    public void setX(final int x) {
         this.x = x;
     }
 
+    /**
+     * 获取y（行）号
+     *
+     * @return y（行）号
+     */
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
+    /**
+     * 设置y（行）号
+     *
+     * @param y y（行）号
+     */
+    public void setY(final int y) {
         this.y = y;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
-        if (null == o || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         final CellLocation that = (CellLocation) o;

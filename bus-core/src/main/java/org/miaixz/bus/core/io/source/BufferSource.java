@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.Blending;
 import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.SegmentBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 
@@ -314,7 +314,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *
      * @return the int
      */
-    int select(Blending blending) throws IOException;
+    int select(SegmentBuffer segmentBuffer) throws IOException;
 
     /**
      * Removes all bytes from this and returns them as a byte array.

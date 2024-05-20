@@ -26,7 +26,8 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StreamKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -151,7 +152,7 @@ public class Jpg2Dcm {
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
                     dos.write(buffer, 0, headerLength);
                 }
-                StreamKit.copy(bis, dos, buffer);
+                IoKit.copy(bis, dos, buffer);
                 if ((itemLen & 1) != 0)
                     dos.write(0);
                 dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);

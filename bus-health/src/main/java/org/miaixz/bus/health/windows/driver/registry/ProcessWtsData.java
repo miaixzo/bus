@@ -46,6 +46,7 @@ import java.util.Map;
 
 /**
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

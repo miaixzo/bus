@@ -26,9 +26,9 @@
 package org.miaixz.bus.mapper.additional.update.force;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.VersionException;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.VersionException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.annotation.Version;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
@@ -93,7 +93,7 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn())
                             .append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ");
+                            .append(Symbol.AT).append(versionClass).append("@class, ");
                     // 虽然从函数调用上来看entityName必为"record"，但还是判断一下
                     if (StringKit.isNotEmpty(entityName)) {
                         sql.append(entityName).append('.');

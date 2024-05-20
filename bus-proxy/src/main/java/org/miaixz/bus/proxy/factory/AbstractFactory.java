@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.factory;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.proxy.Factory;
 import org.miaixz.bus.proxy.aspects.Aspectj;
 import org.miaixz.bus.proxy.factory.cglib.CglibFactory;

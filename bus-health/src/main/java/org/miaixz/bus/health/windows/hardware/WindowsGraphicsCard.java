@@ -30,7 +30,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
@@ -51,7 +51,6 @@ import java.util.List;
 @Immutable
 final class WindowsGraphicsCard extends AbstractGraphicsCard {
 
-    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     public static final String ADAPTER_STRING = "HardwareInformation.AdapterString";
     public static final String DRIVER_DESC = "DriverDesc";
     public static final String DRIVER_VERSION = "DriverVersion";
@@ -60,6 +59,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
     public static final String MEMORY_SIZE = "HardwareInformation.MemorySize";
     public static final String DISPLAY_DEVICES_REGISTRY_PATH =
             "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
+    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     /**
      * Constructor for WindowsGraphicsCard

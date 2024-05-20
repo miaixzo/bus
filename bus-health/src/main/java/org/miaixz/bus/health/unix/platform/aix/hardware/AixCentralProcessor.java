@@ -32,7 +32,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Quartet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -119,7 +119,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Quartet<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>, List<CentralProcessor.ProcessorCache>, List<String>> initProcessorCounts() {
+    protected Tuple initProcessorCounts() {
         this.config = PerfstatConfig.queryConfig();
 
         // Reporting "online" or "active" values can lead to nonsense so we go with max
@@ -145,7 +145,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
             logProcs.add(new CentralProcessor.LogicalProcessor(proc, physProc, nodePkg == null ? 0 : nodePkg.getRight(),
                     nodePkg == null ? 0 : nodePkg.getLeft()));
         }
-        return new Quartet<>(logProcs, null, getCachesForModel(physProcs), Collections.emptyList());
+        return new Tuple(logProcs, null, getCachesForModel(physProcs), Collections.emptyList());
     }
 
     private List<CentralProcessor.ProcessorCache> getCachesForModel(int cores) {

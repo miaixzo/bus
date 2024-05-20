@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 
@@ -47,7 +47,7 @@ public class PeekSource implements Source {
     private final BufferSource upstream;
     private final Buffer buffer;
 
-    private Segment expectedSegment;
+    private SectionBuffer expectedSegment;
     private int expectedPos;
     private boolean closed;
     private long pos;
@@ -64,7 +64,7 @@ public class PeekSource implements Source {
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed) throw new IllegalStateException("closed");
 
-        // Source becomes invalid if there is an expected Segment and it and the expected position
+        // Source becomes invalid if there is an expected SectionBuffer and it and the expected position
         // do not match the current head and head position of the upstream buffer
         if (expectedSegment != null
                 && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
@@ -74,7 +74,7 @@ public class PeekSource implements Source {
         if (!upstream.request(pos + 1)) return -1L;
 
         if (expectedSegment == null && buffer.head != null) {
-            // Only once the buffer actually holds data should an expected Segment and position be
+            // Only once the buffer actually holds data should an expected SectionBuffer and position be
             // recorded. This allows reads from the peek source to repeatedly return -1 and for data to be
             // added later. Unit tests depend on this behavior.
             expectedSegment = buffer.head;

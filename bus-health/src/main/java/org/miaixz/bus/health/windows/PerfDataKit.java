@@ -194,6 +194,16 @@ public final class PerfDataKit {
     }
 
     /**
+     * Remove a pdh counter
+     *
+     * @param p pointer to the counter
+     * @return true if successful
+     */
+    public static boolean removeCounter(HANDLEByReference p) {
+        return WinError.ERROR_SUCCESS == PDH.PdhRemoveCounter(p.getValue());
+    }
+
+    /**
      * Encapsulates the three string components of a performance counter
      */
     @Immutable
@@ -258,16 +268,6 @@ public final class PerfDataKit {
             sb.append('\\').append(counter);
             return sb.toString();
         }
-    }
-
-    /**
-     * Remove a pdh counter
-     *
-     * @param p pointer to the counter
-     * @return true if successful
-     */
-    public static boolean removeCounter(HANDLEByReference p) {
-        return WinError.ERROR_SUCCESS == PDH.PdhRemoveCounter(p.getValue());
     }
 
 }

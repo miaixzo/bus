@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -60,6 +60,29 @@ final class LinuxFirmware extends AbstractFirmware {
     private final Supplier<Pair<String, String>> biosNameRev = Memoizer.memoize(Dmidecode::queryBiosNameRev);
     private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
     private final Supplier<String> name = Memoizer.memoize(this::queryName);
+
+    private static VcGenCmdStrings queryVcGenCmd() {
+        String vcReleaseDate;
+        String vcManufacturer;
+        String vcVersion;
+
+        List<String> vcgencmd = Executor.runNative("vcgencmd version");
+        if (vcgencmd.size() >= 3) {
+            // First line is date
+            try {
+                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
+            } catch (DateTimeParseException e) {
+                vcReleaseDate = Normal.UNKNOWN;
+            }
+            // Second line is copyright
+            String[] copyright = Pattern.SPACES_PATTERN.split(vcgencmd.get(1));
+            vcManufacturer = copyright[copyright.length - 1];
+            // Third line is version
+            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
+            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
+        }
+        return new VcGenCmdStrings(null, null, null, null, null);
+    }
 
     @Override
     public String getManufacturer() {
@@ -125,29 +148,6 @@ final class LinuxFirmware extends AbstractFirmware {
             return Normal.UNKNOWN;
         }
         return result;
-    }
-
-    private static VcGenCmdStrings queryVcGenCmd() {
-        String vcReleaseDate;
-        String vcManufacturer;
-        String vcVersion;
-
-        List<String> vcgencmd = Executor.runNative("vcgencmd version");
-        if (vcgencmd.size() >= 3) {
-            // First line is date
-            try {
-                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
-            } catch (DateTimeParseException e) {
-                vcReleaseDate = Normal.UNKNOWN;
-            }
-            // Second line is copyright
-            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
-            vcManufacturer = copyright[copyright.length - 1];
-            // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
-            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
-        }
-        return new VcGenCmdStrings(null, null, null, null, null);
     }
 
     private static final class VcGenCmdStrings {

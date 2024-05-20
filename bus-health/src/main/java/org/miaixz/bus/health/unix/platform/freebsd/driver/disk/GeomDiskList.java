@@ -26,8 +26,9 @@
 package org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -74,13 +75,13 @@ public final class GeomDiskList {
                     mediaSize = 0L;
                 }
                 // Now use new diskName
-                diskName = line.substring(line.lastIndexOf(' ') + 1);
+                diskName = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we don't have a valid store, don't bother parsing anything
             if (diskName != null) {
                 line = line.trim();
                 if (line.startsWith("Mediasize:")) {
-                    String[] split = RegEx.SPACES.split(line);
+                    String[] split = Pattern.SPACES_PATTERN.split(line);
                     if (split.length > 1) {
                         mediaSize = Parsing.parseLongOrDefault(split[1], 0L);
                     }

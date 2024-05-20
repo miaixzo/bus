@@ -27,6 +27,7 @@ package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -84,7 +85,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         boolean found = false;
         String lookupDevice = null;
         for (String line : lspci) {
-            String[] split = line.trim().split(":", 2);
+            String[] split = line.trim().split(Symbol.COLON, 2);
             String prefix = split[0];
             // Skip until line contains "VGA"
             if (prefix.equals("Class") && line.contains("VGA")) {
@@ -153,7 +154,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         long vram = 0;
         int cardNum = 0;
         for (String line : lshw) {
-            String[] split = line.trim().split(":");
+            String[] split = line.trim().split(Symbol.COLON);
             if (split[0].startsWith("*-display")) {
                 // Save previous card
                 if (cardNum++ > 0) {

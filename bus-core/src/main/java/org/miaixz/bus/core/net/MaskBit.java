@@ -25,8 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.net;
 
+import org.miaixz.bus.core.center.map.BiMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.map.DuplexingMap;
+import org.miaixz.bus.core.lang.Protocol;
+import org.miaixz.bus.core.net.ip.IPv4;
 
 import java.util.HashMap;
 
@@ -41,10 +43,10 @@ public class MaskBit {
     /**
      * 掩码位与掩码的点分十进制的双向对应关系
      */
-    private static final DuplexingMap<Integer, String> MASK_BIT_MAP;
+    private static final BiMap<Integer, String> MASK_BIT_MAP;
 
     static {
-        MASK_BIT_MAP = new DuplexingMap<>(new HashMap<>(32));
+        MASK_BIT_MAP = new BiMap<>(new HashMap<>(32));
         MASK_BIT_MAP.put(1, "128.0.0.0");
         MASK_BIT_MAP.put(2, "192.0.0.0");
         MASK_BIT_MAP.put(3, "224.0.0.0");
@@ -107,7 +109,7 @@ public class MaskBit {
      */
     public static long getMaskIpLong(final int maskBit) {
         Assert.isTrue(MASK_BIT_MAP.containsKey(maskBit), "非法的掩码位数：{}", maskBit);
-        return (0xffffffffL << (32 - maskBit)) & 0xffffffffL;
+        return (Protocol.IPV4_NUM_MAX << (IPv4.IPV4_MASK_BIT_MAX - maskBit)) & Protocol.IPV4_NUM_MAX;
     }
 
 }

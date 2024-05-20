@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Locale;
 
@@ -39,7 +39,7 @@ import java.util.Locale;
  */
 public class LocaleConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected Locale convertInternal(final Class<?> targetClass, final Object value) {

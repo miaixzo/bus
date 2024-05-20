@@ -1,5 +1,5 @@
 /**
- * 缓存支持
+ * 消息实现
  *
  * @author Kimi Liu
  * @since Java 17+

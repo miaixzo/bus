@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -58,6 +59,20 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
     private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
+    private static long queryPhysMem() {
+        return SysctlKit.sysctl("hw.memsize", 0L);
+    }
+
+    private static long queryPageSize() {
+        try (ByRef.CloseableLongByReference pPageSize = new ByRef.CloseableLongByReference()) {
+            if (0 == SystemB.INSTANCE.host_page_size(SystemB.INSTANCE.mach_host_self(), pPageSize)) {
+                return pPageSize.getValue();
+            }
+        }
+        Logger.error("Failed to get host page size. Error code: {}", Native.getLastError());
+        return 4098L;
+    }
+
     @Override
     public long getAvailable() {
         return available.get();
@@ -76,20 +91,6 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     @Override
     public VirtualMemory getVirtualMemory() {
         return vm.get();
-    }
-
-    private static long queryPhysMem() {
-        return SysctlKit.sysctl("hw.memsize", 0L);
-    }
-
-    private static long queryPageSize() {
-        try (ByRef.CloseableLongByReference pPageSize = new ByRef.CloseableLongByReference()) {
-            if (0 == SystemB.INSTANCE.host_page_size(SystemB.INSTANCE.mach_host_self(), pPageSize)) {
-                return pPageSize.getValue();
-            }
-        }
-        Logger.error("Failed to get host page size. Error code: {}", Native.getLastError());
-        return 4098L;
     }
 
     private long queryVmStats() {
@@ -123,12 +124,12 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                             Normal.UNKNOWN));
                 }
                 bankLabel = line.trim();
-                int colon = bankLabel.lastIndexOf(':');
+                int colon = bankLabel.lastIndexOf(Symbol.C_COLON);
                 if (colon > 0) {
                     bankLabel = bankLabel.substring(0, colon - 1);
                 }
             } else if (bank > 0) {
-                String[] split = line.trim().split(":");
+                String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
                         case "Size":

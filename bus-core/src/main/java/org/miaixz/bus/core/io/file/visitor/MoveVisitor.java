@@ -25,15 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.file.visitor;
 
-import org.miaixz.bus.core.toolkit.FileKit;
+import org.miaixz.bus.core.io.file.PathResolve;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件
- * 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录
+ * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件，此类非线程安全
+ * 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,8 +52,8 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
      * @param target      目标Path
      * @param copyOptions 拷贝（移动）选项
      */
-    public MoveVisitor(Path source, Path target, CopyOption... copyOptions) {
-        if (FileKit.exists(target, false) && false == FileKit.isDirectory(target)) {
+    public MoveVisitor(final Path source, final Path target, final CopyOption... copyOptions) {
+        if (PathResolve.exists(target, false) && !PathResolve.isDirectory(target)) {
             throw new IllegalArgumentException("Target must be a directory");
         }
         this.source = source;
@@ -62,21 +62,21 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs)
             throws IOException {
         initTarget();
         // 将当前目录相对于源路径转换为相对于目标路径
         final Path targetDir = target.resolve(source.relativize(dir));
-        if (false == Files.exists(targetDir)) {
+        if (!Files.exists(targetDir)) {
             Files.createDirectories(targetDir);
-        } else if (false == Files.isDirectory(targetDir)) {
+        } else if (!Files.isDirectory(targetDir)) {
             throw new FileAlreadyExistsException(targetDir.toString());
         }
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
             throws IOException {
         initTarget();
         Files.move(file, target.resolve(source.relativize(file)), copyOptions);
@@ -87,8 +87,8 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
      * 初始化目标文件或目录
      */
     private void initTarget() {
-        if (false == this.isTargetCreated) {
-            FileKit.mkdir(this.target);
+        if (!this.isTargetCreated) {
+            PathResolve.mkdir(this.target);
             this.isTargetCreated = true;
         }
     }

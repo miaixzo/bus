@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.support;
 
-import org.miaixz.bus.core.exception.MapperException;
+import org.miaixz.bus.core.lang.exception.MapperException;
 
 import java.lang.reflect.Method;
 

@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.openbsd;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public final class FstatKit {
         long fd = 0L;
         List<String> fstat = Executor.runNative("fstat -sp " + pid);
         for (String line : fstat) {
-            String[] split = RegEx.SPACES.split(line.trim(), 11);
+            String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 11);
             if (split.length == 11 && !"pipe".contains(split[4]) && !"unix".contains(split[4])) {
                 fd++;
             }

@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  */
 public class WebHookManager implements HookManager {
 
-    private final static Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.

@@ -47,4 +47,20 @@ import org.miaixz.bus.core.Version;
  */
 public class Bus extends Version {
 
+    /**
+     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+'
+     * 数字部分按照大小比较，字符串按照字典顺序比较。
+     *
+     * <ol>
+     *     <li>sequence: 主版本号</li>
+     *     <li>pre: 次版本号</li>
+     *     <li>build: 构建版本</li>
+     * </ol>
+     *
+     * @param v 版本字符串
+     */
+    public Bus(String v) {
+        super(v);
+    }
+
 }

@@ -27,7 +27,7 @@ package org.miaixz.bus.image;
 
 import lombok.Data;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Progress;
 

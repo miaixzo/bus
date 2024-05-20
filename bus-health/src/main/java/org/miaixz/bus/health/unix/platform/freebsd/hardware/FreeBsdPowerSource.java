@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
@@ -108,7 +109,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         List<String> acpiconf = Executor.runNative("acpiconf -i 0");
         Map<String, String> psMap = new HashMap<>();
         for (String line : acpiconf) {
-            String[] split = line.split(":", 2);
+            String[] split = line.split(Symbol.COLON, 2);
             if (split.length > 1) {
                 String value = split[1].trim();
                 if (!value.isEmpty()) {
@@ -139,7 +140,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         double psTimeRemainingInstant = psTimeRemainingEstimated;
         String time = psMap.get("Remaining time");
         if (time != null) {
-            String[] hhmm = time.split(":");
+            String[] hhmm = time.split(Symbol.COLON);
             if (hhmm.length == 2) {
                 psTimeRemainingInstant = 3600d * Parsing.parseIntOrDefault(hhmm[0], 0)
                         + 60d * Parsing.parseIntOrDefault(hhmm[1], 0);

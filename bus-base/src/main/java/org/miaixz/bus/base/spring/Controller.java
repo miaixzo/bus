@@ -27,7 +27,7 @@ package org.miaixz.bus.base.spring;
 
 import org.miaixz.bus.base.entity.Message;
 import org.miaixz.bus.base.normal.ErrorCode;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 基础输出封装

@@ -26,8 +26,7 @@
 package org.miaixz.bus.core.text.finder;
 
 /**
- * 字符串查找接口
- * 通过调用{@link #start(int)}查找开始位置，再调用{@link #end(int)}找结束位置
+ * 字符串查找接口，通过调用{@link #start(int)}查找开始位置，再调用{@link #end(int)}找结束位置
  *
  * @author Kimi Liu
  * @since Java 17+

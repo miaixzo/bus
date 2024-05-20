@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -78,7 +78,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
             /dev/wd0d      6082908   3343172   2435592    58%   27813  386905     7%   /usr
             */
             if (line.startsWith("/")) {
-                String[] split = RegEx.SPACES.split(line);
+                String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length > 6) {
                     inodeUsedlMap.put(split[0], Parsing.parseLongOrDefault(split[5], 0L));
                     inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[6], 0L));
@@ -94,7 +94,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
              /dev/wd0e (d1c342b6965d372c.e) on /home type ffs (rw, local, nodevl, nosuid, ctime=Sun Jan  3 18:02:56 2021)
              /dev/wd0d (d1c342b6965d372c.d) on /usr type ffs (rw, local, nodev, wxallowed, ctime=Sun Jan  3 18:02:56 2021)
              */
-            String[] split = RegEx.SPACES.split(fs, 7);
+            String[] split = Pattern.SPACES_PATTERN.split(fs, 7);
             if (split.length == 7) {
                 // 1st field is volume name [0-index] + partition letter
                 // 2nd field is disklabel UUID (DUID) + partition letter after the dot

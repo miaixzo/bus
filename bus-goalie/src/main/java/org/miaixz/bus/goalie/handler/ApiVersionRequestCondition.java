@@ -28,8 +28,8 @@ package org.miaixz.bus.goalie.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.ArrayKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.annotation.TerminalVersion;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
@@ -79,7 +79,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     String content = matcher.group(i);
                     if (i == 1) {
-                        if (StringKit.isNotBlank(content) && !content.equalsIgnoreCase("*")) {
+                        if (StringKit.isNotBlank(content) && !content.equalsIgnoreCase(Symbol.STAR)) {
                             String[] split = content.split(Symbol.COMMA);
                             terminals = new int[split.length];
                             for (int j = 0; j < split.length; j++) {
@@ -172,9 +172,9 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         public String toString() {
             StringBuilder builder = new StringBuilder();
             if (null != terminals && terminals.length != 0) {
-                builder.append(ArrayKit.join(Symbol.COMMA, terminals));
+                builder.append(ArrayKit.join(terminals, Symbol.COMMA));
             } else {
-                builder.append("*");
+                builder.append(Symbol.STAR);
             }
             builder.append(operator.getCode());
             if (StringKit.isNotBlank(version)) {

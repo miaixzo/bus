@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
-import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
+import org.miaixz.bus.office.excel.cell.CellSetter;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -47,7 +47,7 @@ public class CellSetterFactory {
      * @param value 值
      * @return {@link CellSetter}
      */
-    public static CellSetter createCellSetter(Object value) {
+    public static CellSetter createCellSetter(final Object value) {
         if (null == value) {
             return NullCellSetter.INSTANCE;
         } else if (value instanceof CellSetter) {

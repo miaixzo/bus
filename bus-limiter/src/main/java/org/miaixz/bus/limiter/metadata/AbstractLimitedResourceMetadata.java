@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.limiter.metadata;
 
-import org.miaixz.bus.core.toolkit.AnnoKit;
-import org.miaixz.bus.core.toolkit.CollKit;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.limiter.Handler;
 import org.miaixz.bus.limiter.Injector;
 import org.miaixz.bus.limiter.Limiter;

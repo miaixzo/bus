@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.annotation;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

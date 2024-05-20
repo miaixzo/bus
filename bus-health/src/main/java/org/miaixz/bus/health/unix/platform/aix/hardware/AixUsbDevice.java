@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 
@@ -68,7 +68,7 @@ public class AixUsbDevice extends AbstractUsbDevice {
         for (String line : lscfg.get()) {
             String s = line.trim();
             if (s.startsWith("usb")) {
-                String[] split = RegEx.SPACES.split(s, 3);
+                String[] split = Pattern.SPACES_PATTERN.split(s, 3);
                 if (split.length == 3) {
                     deviceList.add(new AixUsbDevice(split[2], Normal.UNKNOWN, Normal.UNKNOWN, Normal.UNKNOWN,
                             Normal.UNKNOWN, split[0], Collections.emptyList()));

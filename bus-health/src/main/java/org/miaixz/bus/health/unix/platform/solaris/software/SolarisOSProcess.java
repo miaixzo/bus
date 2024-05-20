@@ -28,8 +28,9 @@ package org.miaixz.bus.health.unix.platform.solaris.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.Resource;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
@@ -66,12 +67,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
     private final Supplier<SolarisLibc.SolarisPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo, Memoizer.defaultExpiration());
     private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer.memoize(this::queryCommandlineEnvironment);
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer.memoize(this::queryPrUsage, Memoizer.defaultExpiration());
-
     private String name;
     private String path = Normal.EMPTY;
     private String commandLineBackup;
+    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private String user;
     private String userID;
     private String group;
@@ -96,48 +96,6 @@ public class SolarisOSProcess extends AbstractOSProcess {
         super(pid);
         this.os = os;
         updateAttributes();
-    }
-
-    private SolarisLibc.SolarisPsInfo queryPsInfo() {
-        return PsInfo.queryPsInfo(this.getProcessID());
-    }
-
-    private SolarisLibc.SolarisPrUsage queryPrUsage() {
-        return PsInfo.queryPrUsage(this.getProcessID());
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public String getPath() {
-        return this.path;
-    }
-
-    @Override
-    public String getCommandLine() {
-        return this.commandLine.get();
-    }
-
-    private String queryCommandLine() {
-        String cl = String.join(" ", getArguments());
-        return cl.isEmpty() ? this.commandLineBackup : cl;
-    }
-
-    @Override
-    public List<String> getArguments() {
-        return cmdEnv.get().getLeft();
-    }
-
-    @Override
-    public Map<String, String> getEnvironmentVariables() {
-        return cmdEnv.get().getRight();
-    }
-
-    private Pair<List<String>, Map<String, String>> queryCommandlineEnvironment() {
-        return PsInfo.queryArgsEnv(getProcessID(), psinfo.get());
     }
 
     /***
@@ -170,6 +128,48 @@ public class SolarisOSProcess extends AbstractOSProcess {
                 break;
         }
         return state;
+    }
+
+    private SolarisLibc.SolarisPsInfo queryPsInfo() {
+        return PsInfo.queryPsInfo(this.getProcessID());
+    }
+
+    private SolarisLibc.SolarisPrUsage queryPrUsage() {
+        return PsInfo.queryPrUsage(this.getProcessID());
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getPath() {
+        return this.path;
+    }
+
+    @Override
+    public String getCommandLine() {
+        return this.commandLine.get();
+    }
+
+    private String queryCommandLine() {
+        String cl = String.join(Symbol.SPACE, getArguments());
+        return cl.isEmpty() ? this.commandLineBackup : cl;
+    }
+
+    @Override
+    public List<String> getArguments() {
+        return cmdEnv.get().getLeft();
+    }
+
+    @Override
+    public Map<String, String> getEnvironmentVariables() {
+        return cmdEnv.get().getRight();
+    }
+
+    private Pair<List<String>, Map<String, String>> queryCommandlineEnvironment() {
+        return PsInfo.queryArgsEnv(getProcessID(), psinfo.get());
     }
 
     @Override
@@ -341,7 +341,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         if (cpuset.isEmpty()) {
             List<String> allProcs = Executor.runNative("psrinfo");
             for (String proc : allProcs) {
-                String[] split = RegEx.SPACES.split(proc);
+                String[] split = Pattern.SPACES_PATTERN.split(proc);
                 int bitToSet = Parsing.parseIntOrDefault(split[0], -1);
                 if (bitToSet >= 0) {
                     bitMask |= 1L << bitToSet;
@@ -350,7 +350,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
             return bitMask;
         } else if (cpuset.endsWith(".") && cpuset.contains("strongly bound to processor(s)")) {
             String parse = cpuset.substring(0, cpuset.length() - 1);
-            String[] split = RegEx.SPACES.split(parse);
+            String[] split = Pattern.SPACES_PATTERN.split(parse);
             for (int i = split.length - 1; i >= 0; i--) {
                 int bitToSet = Parsing.parseIntOrDefault(split[i], -1);
                 if (bitToSet >= 0) {
@@ -368,7 +368,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     public List<OSThread> getThreadDetails() {
         // Get process files in proc
         File directory = new File(String.format(Locale.ROOT, "/proc/%d/lwp", getProcessID()));
-        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        File[] numericFiles = directory.listFiles(file -> Pattern.NUMBERS_PATTERN.matcher(file.getName()).matches());
         if (numericFiles == null) {
             return Collections.emptyList();
         }
@@ -406,7 +406,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         this.userTime = info.pr_time.tv_sec.longValue() * 1000L + info.pr_time.tv_nsec.longValue() / 1_000_000L;
         // 80 character truncation but enough for path and name (usually)
         this.commandLineBackup = Native.toString(info.pr_psargs);
-        this.path = RegEx.SPACES.split(commandLineBackup)[0];
+        this.path = Pattern.SPACES_PATTERN.split(commandLineBackup)[0];
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         if (usage != null) {
             this.userTime = usage.pr_utime.tv_sec.longValue() * 1000L + usage.pr_utime.tv_nsec.longValue() / 1_000_000L;

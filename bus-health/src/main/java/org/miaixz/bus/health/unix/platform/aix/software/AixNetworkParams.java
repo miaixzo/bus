@@ -28,8 +28,8 @@ package org.miaixz.bus.health.unix.platform.aix.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.health.unix.jna.AixLibc;
@@ -60,7 +60,7 @@ final class AixNetworkParams extends AbstractNetworkParams {
         192.168.10.255     192.168.10.80     UHSb      2      7466 en0      -      -
         */
         for (String line : Executor.runNative(netstat)) {
-            String[] split = RegEx.SPACES.split(line);
+            String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length > 7 && "default".equals(split[0])) {
                 return split[1];
             }

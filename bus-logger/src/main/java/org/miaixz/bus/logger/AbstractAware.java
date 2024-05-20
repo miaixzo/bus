@@ -26,8 +26,8 @@
 package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
-import org.miaixz.bus.logger.level.Level;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.magic.Log;
 
 import java.io.Serializable;
 
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * 实现了一些通用的接口
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public abstract class AbstractAware implements Log, Serializable {
 

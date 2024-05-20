@@ -58,6 +58,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     // Backup estimate get ipstat and subtract off udp
     private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer.memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
     private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer.memoize(MacInternetProtocolStats::queryIp6stat, Memoizer.defaultExpiration());
+
     public MacInternetProtocolStats(boolean elevated) {
         this.isElevated = elevated;
     }

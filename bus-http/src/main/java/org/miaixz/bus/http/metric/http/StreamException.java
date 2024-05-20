@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.exception.RevisedException;
+import org.miaixz.bus.core.lang.exception.RevisedException;
 
 /**
  * 当取消HTTP/2流而不损坏承载它的套接字时抛出

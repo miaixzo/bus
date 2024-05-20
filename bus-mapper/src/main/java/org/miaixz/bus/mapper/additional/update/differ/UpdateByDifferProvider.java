@@ -26,9 +26,9 @@
 package org.miaixz.bus.mapper.additional.update.differ;
 
 import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.core.exception.VersionException;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.VersionException;
 import org.miaixz.bus.mapper.annotation.Version;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
@@ -140,7 +140,7 @@ public class UpdateByDifferProvider extends MapperTemplate {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn()).append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append("@").append(versionClass).append("@class, ")
+                            .append(Symbol.AT).append(versionClass).append("@class, ")
                             .append(NEWER).append('.').append(column.getProperty()).append(")},");
                 } else {
                     sql.append(getIfNotEqual(column, column.getColumnEqualsHolder(NEWER) + Symbol.COMMA));

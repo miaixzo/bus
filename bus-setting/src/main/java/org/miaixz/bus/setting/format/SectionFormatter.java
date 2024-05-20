@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.setting.format;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.magic.IniComment;
-import org.miaixz.bus.setting.magic.IniSection;
-import org.miaixz.bus.setting.magic.IniSectionImpl;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.setting.metric.ini.IniComment;
+import org.miaixz.bus.setting.metric.ini.IniSection;
+import org.miaixz.bus.setting.metric.ini.IniSectionService;
 
 /**
  * 将字符串值格式设置为{@link IniSection}
@@ -109,7 +109,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
             }
         }
 
-        return new IniSectionImpl(sectionValue.substring(1, indexOfEnd), sectionValue, line, comment);
+        return new IniSectionService(sectionValue.substring(1, indexOfEnd), sectionValue, line, comment);
     }
 
 }

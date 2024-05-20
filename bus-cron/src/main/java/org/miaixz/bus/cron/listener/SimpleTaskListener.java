@@ -28,7 +28,7 @@ package org.miaixz.bus.cron.listener;
 import org.miaixz.bus.cron.Executor;
 
 /**
- * 简单监听实现,不做任何操作
+ * 简单监听实现，不做任何操作
  * 继承此监听后实现需要的方法即可
  *
  * @author Kimi Liu
@@ -37,17 +37,15 @@ import org.miaixz.bus.cron.Executor;
 public class SimpleTaskListener implements TaskListener {
 
     @Override
-    public void onStart(Executor executor) {
+    public void onStart(final Executor executor) {
     }
 
     @Override
-    public void onSucceeded(Executor executor) {
-
+    public void onSucceeded(final Executor executor) {
     }
 
     @Override
-    public void onFailed(Executor executor, Throwable exception) {
-
+    public void onFailed(final Executor executor, final Throwable exception) {
     }
 
 }

@@ -28,7 +28,7 @@ package org.miaixz.bus.health.builtin.software;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.unix.driver.Who;
 import org.miaixz.bus.health.unix.driver.Xwininfo;
@@ -330,6 +330,7 @@ public interface OperatingSystem {
          * Only include 32-bit processes.
          */
         public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+
         private ProcessFiltering() {
         }
     }
@@ -376,6 +377,7 @@ public interface OperatingSystem {
          */
         public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
                 String.CASE_INSENSITIVE_ORDER);
+
         private ProcessSorting() {
         }
     }

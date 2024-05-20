@@ -29,7 +29,7 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
 import org.miaixz.bus.http.metric.Interceptor;

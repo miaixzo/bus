@@ -26,8 +26,8 @@
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.magic.IniComment;
-import org.miaixz.bus.setting.magic.IniCommentImpl;
+import org.miaixz.bus.setting.metric.ini.IniComment;
+import org.miaixz.bus.setting.metric.ini.IniCommentService;
 
 /**
  * 将字符串值格式设置为{@link IniComment}
@@ -51,7 +51,7 @@ public class CommentFormatter extends AbstractFormatter<IniComment> {
 
     @Override
     public IniComment format(String value, int line) {
-        return new IniCommentImpl(value.substring(1), value, line);
+        return new IniCommentService(value.substring(1), value, line);
     }
 
     @Override

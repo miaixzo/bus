@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth.metric;
 
-import org.miaixz.bus.core.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;

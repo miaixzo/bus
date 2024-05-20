@@ -44,6 +44,9 @@ public class Configure {
      */
     protected boolean matchSecond;
 
+    /**
+     * 构造
+     */
     public Configure() {
 
     }
@@ -63,7 +66,7 @@ public class Configure {
      * @param timezone 时区
      * @return this
      */
-    public Configure setTimeZone(TimeZone timezone) {
+    public Configure setTimeZone(final TimeZone timezone) {
         this.timezone = timezone;
         return this;
     }
@@ -71,7 +74,7 @@ public class Configure {
     /**
      * 是否支持秒匹配
      *
-     * @return <code>true</code>使用，<code>false</code>不使用
+     * @return {@code true}使用，{@code false}不使用
      */
     public boolean isMatchSecond() {
         return this.matchSecond;
@@ -80,10 +83,10 @@ public class Configure {
     /**
      * 设置是否支持秒匹配，默认不使用
      *
-     * @param isMatchSecond <code>true</code>支持，<code>false</code>不支持
+     * @param isMatchSecond {@code true}支持，{@code false}不支持
      * @return this
      */
-    public Configure setMatchSecond(boolean isMatchSecond) {
+    public Configure setMatchSecond(final boolean isMatchSecond) {
         this.matchSecond = isMatchSecond;
         return this;
     }

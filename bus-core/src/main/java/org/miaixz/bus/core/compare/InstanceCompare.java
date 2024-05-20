@@ -32,6 +32,9 @@ import java.util.Comparator;
 /**
  * 按照指定类型顺序排序，对象顺序取决于对象对应的类在数组中的位置
  *
+ * <p>如果对比的两个对象类型相同，返回{@code 0}，默认如果对象类型不在列表中，则排序在前</p>
+ * <p>此类来自Spring，有所改造</p>
+ *
  * @param <T> 用于比较的对象类型
  * @author Kimi Liu
  * @since Java 17+
@@ -46,7 +49,7 @@ public class InstanceCompare<T> implements Comparator<T> {
      *
      * @param instanceOrder 用于比较排序的对象类型数组，排序按照数组位置排序
      */
-    public InstanceCompare(Class<?>... instanceOrder) {
+    public InstanceCompare(final Class<?>... instanceOrder) {
         this(false, instanceOrder);
     }
 
@@ -56,16 +59,17 @@ public class InstanceCompare<T> implements Comparator<T> {
      * @param atEndIfMiss   如果不在列表中是否排在后边
      * @param instanceOrder 用于比较排序的对象类型数组，排序按照数组位置排序
      */
-    public InstanceCompare(boolean atEndIfMiss, Class<?>... instanceOrder) {
+    public InstanceCompare(final boolean atEndIfMiss, final Class<?>... instanceOrder) {
         Assert.notNull(instanceOrder, "'instanceOrder' array must not be null");
         this.atEndIfMiss = atEndIfMiss;
         this.instanceOrder = instanceOrder;
     }
 
+
     @Override
-    public int compare(T o1, T o2) {
-        int i1 = getOrder(o1);
-        int i2 = getOrder(o2);
+    public int compare(final T o1, final T o2) {
+        final int i1 = getOrder(o1);
+        final int i2 = getOrder(o2);
         return Integer.compare(i1, i2);
     }
 
@@ -75,8 +79,8 @@ public class InstanceCompare<T> implements Comparator<T> {
      * @param object 对象
      * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
      */
-    private int getOrder(T object) {
-        if (null != object) {
+    private int getOrder(final T object) {
+        if (object != null) {
             for (int i = 0; i < this.instanceOrder.length; i++) {
                 if (this.instanceOrder[i].isInstance(object)) {
                     return i;

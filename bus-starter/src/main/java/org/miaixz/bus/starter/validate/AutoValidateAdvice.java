@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.validate;
 
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 import org.miaixz.bus.validate.Builder;

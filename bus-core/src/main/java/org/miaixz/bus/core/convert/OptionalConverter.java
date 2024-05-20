@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.lang.Optional;
+import java.util.Optional;
 
 /**
  * {@link Optional}对象转换器
@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Optional;
  */
 public class OptionalConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected Optional<?> convertInternal(final Class<?> targetClass, final Object value) {

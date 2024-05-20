@@ -41,7 +41,6 @@ public final class EmptyInputStream extends InputStream {
     public static final EmptyInputStream INSTANCE = new EmptyInputStream();
 
     private EmptyInputStream() {
-
     }
 
     @Override

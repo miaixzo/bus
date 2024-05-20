@@ -26,7 +26,7 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
@@ -70,7 +70,7 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
 
         List<String> procMemInfo = Builder.readFile(ProcPath.MEMINFO);
         for (String checkLine : procMemInfo) {
-            String[] memorySplit = RegEx.SPACES.split(checkLine);
+            String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "SwapTotal:":
@@ -96,7 +96,7 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         long swapPagesOut = 0L;
         List<String> procVmStat = Builder.readFile(ProcPath.VMSTAT);
         for (String checkLine : procVmStat) {
-            String[] memorySplit = RegEx.SPACES.split(checkLine);
+            String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "pswpin":

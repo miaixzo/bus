@@ -26,7 +26,7 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.PatternKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 
 import java.util.regex.Pattern;
 

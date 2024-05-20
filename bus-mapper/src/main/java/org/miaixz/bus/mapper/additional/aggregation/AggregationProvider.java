@@ -29,7 +29,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
@@ -116,14 +116,14 @@ public class AggregationProvider extends MapperTemplate {
             sql.append(SqlBuilder.conditionCheck(entityClass));
         }
         sql.append("SELECT ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationSelectClause(");
-        sql.append("@").append(entityClass.getName()).append("@class");
+        sql.append(Symbol.AT).append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");
         sql.append(")} ");
         sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.updateByConditionWhereClause());
         sql.append(" ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationGroupBy(");
-        sql.append("@").append(entityClass.getName()).append("@class");
+        sql.append(Symbol.AT).append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");
         sql.append(")} ");

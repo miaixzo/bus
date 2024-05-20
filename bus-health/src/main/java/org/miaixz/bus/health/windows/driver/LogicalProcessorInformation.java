@@ -147,8 +147,8 @@ public final class LogicalProcessorInformation {
     }
 
     private static List<CentralProcessor.PhysicalProcessor> getPhysProcs(List<GROUP_AFFINITY> cores,
-                                                        Map<GROUP_AFFINITY, Integer> coreEfficiencyMap, Map<Integer, Integer> corePkgMap,
-                                                        Map<Integer, String> coreCpuidMap) {
+                                                                         Map<GROUP_AFFINITY, Integer> coreEfficiencyMap, Map<Integer, Integer> corePkgMap,
+                                                                         Map<Integer, String> coreCpuidMap) {
         List<CentralProcessor.PhysicalProcessor> physProcs = new ArrayList<>();
         for (int coreId = 0; coreId < cores.size(); coreId++) {
             int efficiency = coreEfficiencyMap.getOrDefault(cores.get(coreId), 0);

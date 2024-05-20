@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy.intercept;
 
-import org.miaixz.bus.core.toolkit.ClassKit;
-import org.miaixz.bus.core.toolkit.ReflectKit;
+import org.miaixz.bus.core.xyz.ModifierKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.proxy.aspects.Aspectj;
 
 import java.io.Serializable;
@@ -73,7 +73,7 @@ public class JavassistInterceptor implements InvocationHandler, Serializable {
             ReflectKit.setAccessible(method);
 
             try {
-                result = method.invoke(ClassKit.isStatic(method) ? null : target, args);
+                result = method.invoke(ModifierKit.isStatic(method) ? null : target, args);
             } catch (InvocationTargetException e) {
                 // 异常回调(只捕获业务代码导致的异常,而非反射导致的异常)
                 if (aspectj.afterException(target, method, args, e.getTargetException())) {

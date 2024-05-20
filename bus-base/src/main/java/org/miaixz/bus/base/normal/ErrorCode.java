@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.base.normal;
 
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

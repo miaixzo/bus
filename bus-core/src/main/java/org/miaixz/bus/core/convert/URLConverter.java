@@ -31,10 +31,13 @@ import java.net.URL;
 
 /**
  * URL对象转换器
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class URLConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected URL convertInternal(final Class<?> targetClass, final Object value) {

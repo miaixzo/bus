@@ -26,6 +26,7 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -46,7 +47,7 @@ public final class UpTime {
      */
     public static double getSystemUptimeSeconds() {
         String uptime = Builder.getStringFromFile(ProcPath.UPTIME);
-        int spaceIndex = uptime.indexOf(' ');
+        int spaceIndex = uptime.indexOf(Symbol.C_SPACE);
         if (spaceIndex < 0) {
             // No space, error
             return 0d;

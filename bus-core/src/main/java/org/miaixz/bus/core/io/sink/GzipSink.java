@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.sink;
 
-import org.miaixz.bus.core.io.Segment;
+import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.IOException;
 import java.util.zip.CRC32;
@@ -158,7 +158,7 @@ public class GzipSink implements Sink {
      * Updates the CRC with the given bytes.
      */
     private void updateCrc(Buffer buffer, long byteCount) {
-        for (Segment head = buffer.head; byteCount > 0; head = head.next) {
+        for (SectionBuffer head = buffer.head; byteCount > 0; head = head.next) {
             int segmentLength = (int) Math.min(byteCount, head.limit - head.pos);
             crc.update(head.data, head.pos, segmentLength);
             byteCount -= segmentLength;

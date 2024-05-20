@@ -27,10 +27,10 @@ package org.miaixz.bus.oauth.metric.weibo;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.toolkit.NetKit;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -80,7 +80,7 @@ public class WeiboProvider extends DefaultProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + oauthParam);
-        header.put("API-RemoteIP", NetKit.getLocalhostString());
+        header.put("API-RemoteIP", NetKit.getLocalhostStringV4());
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
         if (object.containsKey("error")) {

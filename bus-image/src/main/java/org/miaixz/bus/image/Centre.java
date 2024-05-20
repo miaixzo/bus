@@ -27,10 +27,10 @@ package org.miaixz.bus.image;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.toolkit.BooleanKit;
-import org.miaixz.bus.core.toolkit.ObjectKit;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.BooleanKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.TransferCapability;
 import org.miaixz.bus.image.plugin.StoreSCP;

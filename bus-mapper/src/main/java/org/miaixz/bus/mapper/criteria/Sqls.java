@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.mapper.criteria;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class Sqls {
     }
 
     public Sqls andEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "=", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.EQUAL, "and"));
         return this;
     }
 
@@ -134,7 +136,7 @@ public class Sqls {
 
 
     public Sqls orEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "=", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.EQUAL, "or"));
         return this;
     }
 

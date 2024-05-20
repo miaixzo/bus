@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.office.excel.cell.setters;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.office.excel.cell.CellSetter;
-import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * {@link Number} 值单元格设置器
@@ -40,7 +40,7 @@ public class NullCellSetter implements CellSetter {
     public static final NullCellSetter INSTANCE = new NullCellSetter();
 
     @Override
-    public void setValue(Cell cell) {
+    public void setValue(final Cell cell) {
         cell.setCellValue(Normal.EMPTY);
     }
 

@@ -25,9 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.core.compare;
 
-import java.io.Serializable;
-import java.text.Collator;
-import java.util.Comparator;
 import java.util.Locale;
 
 /**
@@ -36,22 +33,24 @@ import java.util.Locale;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PinyinCompare implements Comparator<String>, Serializable {
+public class PinyinCompare extends LocaleCompare {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
-    final Collator collator;
+    /**
+     * 构造，{@code null}最大，排在最后
+     */
+    public PinyinCompare() {
+        this(true);
+    }
 
     /**
      * 构造
+     *
+     * @param nullGreater 是否{@code null}最大，排在最后
      */
-    public PinyinCompare() {
-        collator = Collator.getInstance(Locale.CHINESE);
-    }
-
-    @Override
-    public int compare(String o1, String o2) {
-        return collator.compare(o1, o2);
+    public PinyinCompare(final boolean nullGreater) {
+        super(nullGreater, Locale.CHINESE);
     }
 
 }

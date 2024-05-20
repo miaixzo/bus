@@ -27,6 +27,7 @@ package org.miaixz.bus.office.excel;
 
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.miaixz.bus.office.excel.style.Styles;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,14 +36,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
+ * 样式集合，此样式集合汇集了整个工作簿的样式，用于减少样式的创建和冗余
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StyleSet implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 标题样式
      */
@@ -73,24 +73,24 @@ public class StyleSet implements Serializable {
      *
      * @param workbook 工作簿
      */
-    public StyleSet(Workbook workbook) {
+    public StyleSet(final Workbook workbook) {
         this.workbook = workbook;
-        this.headCellStyle = StyleKit.createHeadCellStyle(workbook);
-        this.cellStyle = StyleKit.createDefaultCellStyle(workbook);
+        this.headCellStyle = Styles.createHeadCellStyle(workbook);
+        this.cellStyle = Styles.createDefaultCellStyle(workbook);
 
         // 默认数字格式
-        cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
-        // 2表示：0.00
-        cellStyleForNumber.setDataFormat((short) 2);
+        cellStyleForNumber = Styles.cloneCellStyle(workbook, this.cellStyle);
+        // 0表示：General
+        cellStyleForNumber.setDataFormat((short) 0);
 
         // 默认日期格式
-        this.cellStyleForDate = StyleKit.cloneCellStyle(workbook, this.cellStyle);
+        this.cellStyleForDate = Styles.cloneCellStyle(workbook, this.cellStyle);
         // 22表示：m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
 
         // 默认链接样式
-        this.cellStyleForHyperlink = StyleKit.cloneCellStyle(workbook, this.cellStyle);
+        this.cellStyleForHyperlink = Styles.cloneCellStyle(workbook, this.cellStyle);
         final Font font = this.workbook.createFont();
         font.setUnderline((byte) 1);
         font.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
@@ -149,12 +149,12 @@ public class StyleSet implements Serializable {
      * @param colorIndex 颜色的short值
      * @return this
      */
-    public StyleSet setBorder(BorderStyle borderSize, IndexedColors colorIndex) {
-        StyleKit.setBorder(this.headCellStyle, borderSize, colorIndex);
-        StyleKit.setBorder(this.cellStyle, borderSize, colorIndex);
-        StyleKit.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
-        StyleKit.setBorder(this.cellStyleForDate, borderSize, colorIndex);
-        StyleKit.setBorder(this.cellStyleForHyperlink, borderSize, colorIndex);
+    public StyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
+        Styles.setBorder(this.headCellStyle, borderSize, colorIndex);
+        Styles.setBorder(this.cellStyle, borderSize, colorIndex);
+        Styles.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
+        Styles.setBorder(this.cellStyleForDate, borderSize, colorIndex);
+        Styles.setBorder(this.cellStyleForHyperlink, borderSize, colorIndex);
         return this;
     }
 
@@ -165,12 +165,12 @@ public class StyleSet implements Serializable {
      * @param valign 纵向位置
      * @return this
      */
-    public StyleSet setAlign(HorizontalAlignment halign, VerticalAlignment valign) {
-        StyleKit.setAlign(this.headCellStyle, halign, valign);
-        StyleKit.setAlign(this.cellStyle, halign, valign);
-        StyleKit.setAlign(this.cellStyleForNumber, halign, valign);
-        StyleKit.setAlign(this.cellStyleForDate, halign, valign);
-        StyleKit.setAlign(this.cellStyleForHyperlink, halign, valign);
+    public StyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
+        Styles.setAlign(this.headCellStyle, halign, valign);
+        Styles.setAlign(this.cellStyle, halign, valign);
+        Styles.setAlign(this.cellStyleForNumber, halign, valign);
+        Styles.setAlign(this.cellStyleForDate, halign, valign);
+        Styles.setAlign(this.cellStyleForHyperlink, halign, valign);
         return this;
     }
 
@@ -181,14 +181,14 @@ public class StyleSet implements Serializable {
      * @param withHeadCell    是否也定义头部样式
      * @return this
      */
-    public StyleSet setBackgroundColor(IndexedColors backgroundColor, boolean withHeadCell) {
+    public StyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
         if (withHeadCell) {
-            StyleKit.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+            Styles.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         }
-        StyleKit.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        StyleKit.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        StyleKit.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        StyleKit.setColor(this.cellStyleForHyperlink, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        Styles.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        Styles.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        Styles.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        Styles.setColor(this.cellStyleForHyperlink, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         return this;
     }
 
@@ -201,20 +201,20 @@ public class StyleSet implements Serializable {
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
-    public StyleSet setFont(short color, short fontSize, String fontName, boolean ignoreHead) {
-        final Font font = StyleKit.createFont(this.workbook, color, fontSize, fontName);
+    public StyleSet setFont(final short color, final short fontSize, final String fontName, final boolean ignoreHead) {
+        final Font font = Styles.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);
     }
 
     /**
      * 设置全局字体
      *
-     * @param font       字体，可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
+     * @param font       字体，可以通过{@link Styles#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
-    public StyleSet setFont(Font font, boolean ignoreHead) {
-        if (false == ignoreHead) {
+    public StyleSet setFont(final Font font, final boolean ignoreHead) {
+        if (!ignoreHead) {
             this.headCellStyle.setFont(font);
         }
         this.cellStyle.setFont(font);
@@ -244,7 +244,7 @@ public class StyleSet implements Serializable {
      * @param isHeader 是否为标题单元格
      * @return 值对应单元格样式
      */
-    public CellStyle getStyleByValueType(Object value, boolean isHeader) {
+    public CellStyle getStyleByValueType(final Object value, final boolean isHeader) {
         CellStyle style = null;
 
         if (isHeader && null != this.headCellStyle) {

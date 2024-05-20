@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -50,10 +51,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
-
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
             .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
+    private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
@@ -77,7 +77,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         String version = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
         mib[1] = OpenBsdLibc.KERN_VERSION;
         String versionInfo = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
-        String buildNumber = versionInfo.split(":")[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
+        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
 
         return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
@@ -145,7 +145,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 procs.add(new OpenBsdOSProcess(
@@ -206,14 +206,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return BOOTTIME;
     }
 
-    /**
-     * Package-private for use by OpenBsdOSProcess
-     */
-    enum PsKeywords {
-        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
-        ARGS // ARGS must always be last
-    }
-
     @Override
     public NetworkParams getNetworkParams() {
         return new OpenBsdNetworkParams();
@@ -244,5 +236,13 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Directory: /etc/rc.d does not exist");
         }
         return services;
+    }
+
+    /**
+     * Package-private for use by OpenBsdOSProcess
+     */
+    enum PsKeywords {
+        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
+        ARGS // ARGS must always be last
     }
 }

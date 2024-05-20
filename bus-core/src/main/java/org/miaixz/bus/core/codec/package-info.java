@@ -1,5 +1,5 @@
 /**
- * BaseX以及BCD编码封装
+ * 编码解码封装编码封装
  *
  * @author Kimi Liu
  * @since Java 17+

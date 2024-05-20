@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.toolkit.ZoneKit;
+import org.miaixz.bus.core.xyz.ZoneKit;
 
 import java.time.ZoneId;
 import java.util.TimeZone;
@@ -38,7 +38,7 @@ import java.util.TimeZone;
  */
 public class TimeZoneConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected TimeZone convertInternal(final Class<?> targetClass, final Object value) {

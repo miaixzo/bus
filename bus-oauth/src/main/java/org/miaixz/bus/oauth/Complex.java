@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth;
 
-import org.miaixz.bus.core.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.AuthorizeProvider;

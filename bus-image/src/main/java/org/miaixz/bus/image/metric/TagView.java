@@ -26,7 +26,7 @@
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.toolkit.StringKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * @author Kimi Liu

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.copier;
 
-import org.miaixz.bus.core.exception.InternalException;
-import org.miaixz.bus.core.io.Progress;
+import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +46,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * 构造
      */
     public StreamCopier() {
-        this(IoKit.DEFAULT_BUFFER_SIZE);
+        this(Normal.DEFAULT_BUFFER_SIZE);
     }
 
     /**
@@ -54,7 +54,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      *
      * @param bufferSize 缓存大小
      */
-    public StreamCopier(int bufferSize) {
+    public StreamCopier(final int bufferSize) {
         this(bufferSize, -1);
     }
 
@@ -64,7 +64,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * @param bufferSize 缓存大小
      * @param count      拷贝总数，-1表示无限制
      */
-    public StreamCopier(int bufferSize, long count) {
+    public StreamCopier(final int bufferSize, final long count) {
         this(bufferSize, count, null);
     }
 
@@ -75,16 +75,16 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * @param count      拷贝总数，-1表示无限制
      * @param progress   进度条
      */
-    public StreamCopier(int bufferSize, long count, Progress progress) {
+    public StreamCopier(final int bufferSize, final long count, final StreamProgress progress) {
         super(bufferSize, count, progress);
     }
 
     @Override
-    public long copy(InputStream source, OutputStream target) {
+    public long copy(final InputStream source, final OutputStream target) {
         Assert.notNull(source, "InputStream is null !");
         Assert.notNull(target, "OutputStream is null !");
 
-        final Progress progress = this.progress;
+        final StreamProgress progress = this.progress;
         if (null != progress) {
             progress.start();
         }
@@ -92,7 +92,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
         try {
             size = doCopy(source, target, new byte[bufferSize(this.count)], progress);
             target.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
 
@@ -113,7 +113,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * @return 拷贝总长度
      * @throws IOException IO异常
      */
-    private long doCopy(InputStream source, OutputStream target, byte[] buffer, Progress progress) throws IOException {
+    private long doCopy(final InputStream source, final OutputStream target, final byte[] buffer, final StreamProgress progress) throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;
 

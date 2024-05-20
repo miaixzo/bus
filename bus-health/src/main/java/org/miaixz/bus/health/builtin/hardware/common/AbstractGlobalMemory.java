@@ -27,6 +27,7 @@ package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
@@ -73,7 +74,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                     speed = 0L;
                 }
             } else if (bank > 0) {
-                String[] split = line.trim().split(":");
+                String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
                         case "Bank Locator":

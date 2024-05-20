@@ -30,7 +30,7 @@ import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.toolkit.IoKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;

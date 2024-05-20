@@ -27,6 +27,7 @@ package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -136,7 +137,7 @@ public class OpenBsdOSThread extends AbstractOSThread {
         String tidStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
             Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap = Parsing.stringToEnumMap(OpenBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
-                    ' ');
+                    Symbol.C_SPACE);
             if (threadMap.containsKey(OpenBsdOSProcess.PsThreadColumns.ARGS) && tidStr.equals(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID))) {
                 return updateAttributes(threadMap);
             }

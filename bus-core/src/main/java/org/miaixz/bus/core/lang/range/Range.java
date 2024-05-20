@@ -26,17 +26,22 @@
 package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lock.AtomicNoLock;
+import org.miaixz.bus.core.lang.thread.lock.NoLock;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 范围生成器。根据给定的初始值、结束值和步进生成一个步进列表生成器
  * 由于用户自行实现{@link Stepper}来定义步进，因此Range本身无法判定边界（是否达到end），需在step实现边界判定逻辑。
+ *
+ * <p>
+ * 此类使用{@link ReentrantReadWriteLock}保证线程安全
+ * </p>
  *
  * @param <T> 生成范围对象的类型
  * @author Kimi Liu
@@ -44,7 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 起始对象
      */
@@ -124,7 +129,7 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
      * @return this
      */
     public Range<T> disableLock() {
-        this.lock = new AtomicNoLock();
+        this.lock = new NoLock();
         return this;
     }
 
@@ -137,7 +142,7 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
             }
             if (null == this.next) {
                 return false;
-            } else if (false == includeEnd && this.next.equals(this.end)) {
+            } else if (!includeEnd && this.next.equals(this.end)) {
                 return false;
             }
         } finally {
@@ -150,7 +155,7 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
     public T next() {
         lock.lock();
         try {
-            if (false == this.hasNext()) {
+            if (!this.hasNext()) {
                 throw new NoSuchElementException("Has no next range!");
             }
             return nextUncheck();
@@ -166,7 +171,7 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
         final T current;
         if (0 == this.index) {
             current = start;
-            if (false == this.includeStart) {
+            if (!this.includeStart) {
                 // 获取下一组元素
                 index++;
                 return nextUncheck();
@@ -222,33 +227,6 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
             lock.unlock();
         }
         return this;
-    }
-
-    /**
-     * 步进接口，此接口用于实现如何对一个对象按照指定步进增加步进
-     * 步进接口可以定义以下逻辑：
-     *
-     * <pre>
-     * 1、步进规则，即对象如何做步进
-     * 2、步进大小，通过实现此接口，在实现类中定义一个对象属性，可灵活定义步进大小
-     * 3、限制range个数，通过实现此接口，在实现类中定义一个对象属性，可灵活定义limit，限制range个数
-     * </pre>
-     *
-     * @param <T> 需要增加步进的对象
-     */
-    @FunctionalInterface
-    public interface Stepper<T> {
-        /**
-         * 增加步进
-         * 增加步进后的返回值如果为{@code null}则表示步进结束
-         * 用户需根据end参数自行定义边界，当达到边界时返回null表示结束，否则Range中边界对象无效，会导致无限循环
-         *
-         * @param current 上一次增加步进后的基础对象
-         * @param end     结束对象
-         * @param index   当前索引（步进到第几个元素），从0开始计数
-         * @return 增加步进后的对象
-         */
-        T step(T current, T end, int index);
     }
 
 }

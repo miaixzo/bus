@@ -27,6 +27,7 @@ package org.miaixz.bus.shade.screw.engine;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.io.Serializable;
 
@@ -41,7 +42,7 @@ public enum TemplateType implements Serializable {
     /**
      * freeMarker 模板
      */
-    FREEMARKER("/META-INF/template/",
+    FREEMARKER(Normal.META_INF + "/template/",
             FreemarkerEngine.class,
             ".ftl");
 

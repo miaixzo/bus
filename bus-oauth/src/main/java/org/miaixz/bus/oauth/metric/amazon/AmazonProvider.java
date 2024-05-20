@@ -28,12 +28,13 @@ package org.miaixz.bus.oauth.metric.amazon;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.toolkit.RandomKit;
-import org.miaixz.bus.core.toolkit.UriKit;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -105,7 +106,7 @@ public class AmazonProvider extends DefaultProvider {
     public String authorize(String state) {
         Builder builder = Builder.fromUrl(complex.authorize())
                 .queryParam("client_id", context.getAppKey())
-                .queryParam("scope", this.getScopes(" ", true, this.getDefaultScopes(AmazonScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(AmazonScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
                 .queryParam("state", getRealState(state));
@@ -183,7 +184,7 @@ public class AmazonProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject jsonObject) {
         if (jsonObject.containsKey("error")) {
-            throw new AuthorizedException(jsonObject.getString("error_description").concat(" ") + jsonObject.getString("error_description"));
+            throw new AuthorizedException(jsonObject.getString("error_description").concat(Symbol.SPACE) + jsonObject.getString("error_description"));
         }
     }
 
@@ -218,7 +219,7 @@ public class AmazonProvider extends DefaultProvider {
     }
 
     private void checkToken(String accessToken) {
-        String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UriKit.encode(accessToken));
+        String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(accessToken));
         JSONObject jsonObject = JSONObject.parseObject(tokenInfo);
         if (!context.getAppKey().equals(jsonObject.getString("aud"))) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());

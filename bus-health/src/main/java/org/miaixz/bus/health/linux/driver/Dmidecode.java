@@ -26,7 +26,8 @@
 package org.miaixz.bus.health.linux.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.RegEx;
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
@@ -129,9 +130,9 @@ public final class Dmidecode {
 
             for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
                 if (checkLine.contains(biosMarker)) {
-                    String[] biosArr = RegEx.SPACES.split(checkLine);
+                    String[] biosArr = Pattern.SPACES_PATTERN.split(checkLine);
                     if (biosArr.length >= 2) {
-                        biosName = biosArr[0] + " " + biosArr[1];
+                        biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
                     }
                 }
                 if (checkLine.contains(revMarker)) {

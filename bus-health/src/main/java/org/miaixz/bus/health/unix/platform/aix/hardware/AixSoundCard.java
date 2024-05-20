@@ -26,8 +26,8 @@
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.RegEx;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 
@@ -66,7 +66,7 @@ final class AixSoundCard extends AbstractSoundCard {
         for (String line : lscfg.get()) {
             String s = line.trim();
             if (s.startsWith("paud")) {
-                String[] split = RegEx.SPACES.split(s, 3);
+                String[] split = Pattern.SPACES_PATTERN.split(s, 3);
                 if (split.length == 3) {
                     soundCards.add(new AixSoundCard(Normal.UNKNOWN, split[2], Normal.UNKNOWN));
                 }
