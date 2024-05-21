@@ -4,22 +4,17 @@
 package org.opencv.img_hash;
 
 // C++: class RadialVarianceHash
-
 /**
  * Image hash based on Radon transform.
- * <p>
+ *
  * See CITE: tang2012perceptual for details.
  */
 public class RadialVarianceHash extends ImgHashBase {
 
-    protected RadialVarianceHash(long addr) {
-        super(addr);
-    }
+    protected RadialVarianceHash(long addr) { super(addr); }
 
     // internal usage only
-    public static RadialVarianceHash __fromPtr__(long addr) {
-        return new RadialVarianceHash(addr);
-    }
+    public static RadialVarianceHash __fromPtr__(long addr) { return new RadialVarianceHash(addr); }
 
     //
     // C++: static Ptr_RadialVarianceHash cv::img_hash::RadialVarianceHash::create(double sigma = 1, int numOfAngleLine = 180)
@@ -42,27 +37,44 @@ public class RadialVarianceHash extends ImgHashBase {
     // C++:  int cv::img_hash::RadialVarianceHash::getNumOfAngleLine()
     //
 
-    // C++: static Ptr_RadialVarianceHash cv::img_hash::RadialVarianceHash::create(double sigma = 1, int numOfAngleLine = 180)
-    private static native long create_0(double sigma, int numOfAngleLine);
+    public int getNumOfAngleLine() {
+        return getNumOfAngleLine_0(nativeObj);
+    }
 
 
     //
     // C++:  double cv::img_hash::RadialVarianceHash::getSigma()
     //
 
-    private static native long create_1(double sigma);
+    public double getSigma() {
+        return getSigma_0(nativeObj);
+    }
 
 
     //
     // C++:  void cv::img_hash::RadialVarianceHash::setNumOfAngleLine(int value)
     //
 
-    private static native long create_2();
+    public void setNumOfAngleLine(int value) {
+        setNumOfAngleLine_0(nativeObj, value);
+    }
 
 
     //
     // C++:  void cv::img_hash::RadialVarianceHash::setSigma(double value)
     //
+
+    public void setSigma(double value) {
+        setSigma_0(nativeObj, value);
+    }
+
+
+
+
+    // C++: static Ptr_RadialVarianceHash cv::img_hash::RadialVarianceHash::create(double sigma = 1, int numOfAngleLine = 180)
+    private static native long create_0(double sigma, int numOfAngleLine);
+    private static native long create_1(double sigma);
+    private static native long create_2();
 
     // C++:  int cv::img_hash::RadialVarianceHash::getNumOfAngleLine()
     private static native int getNumOfAngleLine_0(long nativeObj);
@@ -78,26 +90,5 @@ public class RadialVarianceHash extends ImgHashBase {
 
     // native support for deleting native object
     private static native void delete(long nativeObj);
-
-    public int getNumOfAngleLine() {
-        return getNumOfAngleLine_0(nativeObj);
-    }
-
-    public void setNumOfAngleLine(int value) {
-        setNumOfAngleLine_0(nativeObj, value);
-    }
-
-    public double getSigma() {
-        return getSigma_0(nativeObj);
-    }
-
-    public void setSigma(double value) {
-        setSigma_0(nativeObj, value);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
 
 }
