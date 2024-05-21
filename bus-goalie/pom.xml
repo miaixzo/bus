@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <spring.boot.version>3.0.5</spring.boot.version>
+        <spring.boot.version>3.2.5</spring.boot.version>
         <lombok.version>1.18.32</lombok.version>
         <guava.version>33.1.0-jre</guava.version>
     </properties>

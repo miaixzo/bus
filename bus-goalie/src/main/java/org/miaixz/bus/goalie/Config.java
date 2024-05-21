@@ -66,7 +66,7 @@ public class Config {
     /**
      * 默认数据大小
      */
-    public static final Integer MAX_INMEMORY_SIZE = 2 * 2048 * 4096;
+    public static final Integer MAX_INMEMORY_SIZE = 100 * 1024 * 1024;
 
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();

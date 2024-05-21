@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.miaixz.bus.goalie.handler;
 
-import org.miaixz.bus.base.normal.ErrorCode;
+import io.netty.handler.timeout.ReadTimeoutException;
 import org.miaixz.bus.base.spring.Controller;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
 import org.miaixz.bus.goalie.Provider;
+import org.miaixz.bus.goalie.metric.ErrorCode;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -66,12 +67,14 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
             method = map.get(Config.METHOD);
         }
         Logger.error("traceId:{},request: {},error:{}", exchange.getLogPrefix(), method, ex.getMessage());
-        Logger.error(ex);
         Object message;
         if (ex instanceof WebClientException) {
-            message = Controller.write(ErrorCode.EM_FAILURE);
-        } else if (ex instanceof BusinessException) {
-            BusinessException e = (BusinessException) ex;
+            if (ex.getCause() instanceof ReadTimeoutException) {
+                message = Controller.write(ErrorCode.EM_80010003);
+            } else {
+                message = Controller.write(ErrorCode.EM_80010004);
+            }
+        } else if (ex instanceof BusinessException e) {
             if (StringKit.isNotBlank(e.getErrcode())) {
                 message = Controller.write(e.getErrcode());
             } else {
