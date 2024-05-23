@@ -25,55 +25,49 @@
  ********************************************************************************/
 package org.miaixz.bus.logger;
 
-import org.miaixz.bus.logger.metric.commons.ApacheCommonsFactory;
+import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
+import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.logger.metric.commons.CommonsFactory;
 import org.miaixz.bus.logger.metric.console.ConsoleFactory;
 import org.miaixz.bus.logger.metric.jdk.JdkFactory;
-import org.miaixz.bus.logger.metric.log4j2.Log4J2Factory;
+import org.miaixz.bus.logger.metric.log4j.Log4JFactory;
 import org.miaixz.bus.logger.metric.slf4j.Slf4JFactory;
 
+import java.net.URL;
+
 /**
- * 全局日志提供者
- * 用于减少日志提供者创建,减少日志库探测
+ * 日志引擎简单工厂（静态工厂）类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Holder {
 
-    private static final Object lock = new Object();
-    private static volatile Factory currentFactory;
-
     /**
-     * 获取单例日志提供者类,如果不存在创建之
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
      *
-     * @return 当前使用的日志提供者
+     * @return the factory
      */
     public static Factory get() {
-        if (null == currentFactory) {
-            synchronized (lock) {
-                if (null == currentFactory) {
-                    currentFactory = Factory.of();
-                }
-            }
-        }
-        return currentFactory;
+        return InstanceHolder.INSTANCE;
     }
 
     /**
-     * 自定义日志实现
+     * 自定义默认日志实现
      *
-     * @param logFactoryClass 日志提供者类
-     * @return 自定义的日志提供者类
+     * @param clazz 日志工厂类
      * @see Slf4JFactory
-     * @see Log4J2Factory
-     * @see ApacheCommonsFactory
+     * @see Log4JFactory
+     * @see CommonsFactory
      * @see JdkFactory
      * @see ConsoleFactory
      */
-    public static Factory set(Class<? extends Factory> logFactoryClass) {
+    public static void set(final Class<? extends Factory> clazz) {
         try {
-            return set(logFactoryClass.getConstructor().newInstance());
-        } catch (Exception e) {
+            set(ReflectKit.newInstance(clazz));
+        } catch (final Exception e) {
             throw new IllegalArgumentException("Can not instance LogFactory class!", e);
         }
     }
@@ -81,18 +75,65 @@ public class Holder {
     /**
      * 自定义日志实现
      *
-     * @param factory 日志提供者类对象
-     * @return 自定义的日志提供者类
+     * @param factory 日志工厂对象
      * @see Slf4JFactory
-     * @see Log4J2Factory
-     * @see ApacheCommonsFactory
+     * @see Log4JFactory
+     * @see CommonsFactory
      * @see JdkFactory
      * @see ConsoleFactory
      */
-    public static Factory set(Factory factory) {
-        factory.getLog(Holder.class).debug("Custom Use [{}] Logger.", factory.name);
-        currentFactory = factory;
-        return currentFactory;
+    public static void set(final Factory factory) {
+        Instances.put(Holder.class.getName(), factory);
+        factory.create(Holder.class).debug("Custom Use [{}] Logger.", factory.getName());
+    }
+
+    /**
+     * 创建指定日志实现引擎
+     *
+     * @param clazz 引擎类
+     * @return {@link Factory}
+     */
+    public static Factory create(final Class<? extends Factory> clazz) {
+        return ReflectKit.newInstance(clazz);
+    }
+
+    /**
+     * 决定日志实现
+     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，
+     * 存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     *
+     * @return 日志实现类
+     */
+    public static Factory create() {
+        final Factory engine = doCreate();
+        engine.create(Registry.class).debug("Use [{}] Logger As Default.", engine.getName());
+        return engine;
+    }
+
+    /**
+     * 决定日志实现
+     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     *
+     * @return 日志实现类
+     */
+    private static Factory doCreate() {
+        final Factory engine = SPIKit.loadFirstAvailable(Factory.class);
+        if (null != engine) {
+            return engine;
+        }
+
+        // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
+        final URL url = ResourceKit.getResourceUrl("logging.properties");
+        return (null != url) ? new JdkFactory() : new ConsoleFactory();
+    }
+
+    /**
+     * 嵌套使用Instances.get时在JDK9+会引起Recursive update问题，此处日志单独使用单例
+     */
+    private static class InstanceHolder {
+
+        public static final Factory INSTANCE = create();
+
     }
 
 }

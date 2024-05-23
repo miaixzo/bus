@@ -27,31 +27,36 @@ package org.miaixz.bus.logger.metric.jdk;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.AbstractAware;
+import org.miaixz.bus.logger.Provider;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * java.util.logging log.
+ * java.util.logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkLog extends AbstractAware {
+public class JdkProvider extends Provider {
 
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * 日志门面
+     */
     private final transient Logger logger;
 
-    public JdkLog(Logger logger) {
+    public JdkProvider(final Logger logger) {
         this.logger = logger;
     }
 
-    public JdkLog(Class<?> clazz) {
+    public JdkProvider(final Class<?> clazz) {
         this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
-    public JdkLog(String name) {
+    public JdkProvider(final String name) {
         this(Logger.getLogger(name));
     }
 
@@ -61,12 +66,13 @@ public class JdkLog extends AbstractAware {
      * @param callerFQCN 调用者全限定类名
      * @param record     The record to update
      */
-    private static void fillCallerData(String callerFQCN, LogRecord record) {
-        StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
+    private static void fillCallerData(final String callerFQCN, final LogRecord record) {
+        final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
 
         int found = -1;
         String className;
         for (int i = steArray.length - 2; i > -1; i--) {
+            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
             className = steArray[i].getClassName();
             if (callerFQCN.equals(className)) {
                 found = i;
@@ -75,7 +81,7 @@ public class JdkLog extends AbstractAware {
         }
 
         if (found > -1) {
-            StackTraceElement ste = steArray[found + 1];
+            final StackTraceElement ste = steArray[found + 1];
             record.setSourceClassName(ste.getClassName());
             record.setSourceMethodName(ste.getMethodName());
         }
@@ -92,8 +98,8 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.FINEST, t, format, arguments);
+    public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, Level.FINEST, t, format, args);
     }
 
     @Override
@@ -102,8 +108,8 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.FINE, t, format, arguments);
+    public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, Level.FINE, t, format, args);
     }
 
     @Override
@@ -112,8 +118,8 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public void info(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.INFO, t, format, arguments);
+    public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, Level.INFO, t, format, args);
     }
 
     @Override
@@ -122,8 +128,8 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.WARNING, t, format, arguments);
+    public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, Level.WARNING, t, format, args);
     }
 
     @Override
@@ -132,13 +138,13 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public void error(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.SEVERE, t, format, arguments);
+    public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, Level.SEVERE, t, format, args);
     }
 
     @Override
-    public void log(String fqcn, org.miaixz.bus.logger.Level level, Throwable t, String format, Object... arguments) {
-        Level jdkLevel;
+    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format, final Object... args) {
+        final Level jdkLevel;
         switch (level) {
             case TRACE:
                 jdkLevel = Level.FINEST;
@@ -158,24 +164,24 @@ public class JdkLog extends AbstractAware {
             default:
                 throw new Error(StringKit.format("Can not identify level: {}", level));
         }
-        logIfEnabled(fqcn, jdkLevel, t, format, arguments);
+        log(fqcn, jdkLevel, t, format, args);
     }
 
     /**
      * 打印对应等级的日志
      *
-     * @param callerFQCN 调用者的完全限定类名(Fully Qualified Class Name)
-     * @param level      等级
-     * @param throwable  异常对象
-     * @param format     消息模板
-     * @param arguments  参数
+     * @param fqcn      调用者的完全限定类名(Fully Qualified Class Name)
+     * @param level     等级
+     * @param throwable 异常对象
+     * @param format    消息格式
+     * @param args      参数
      */
-    private void logIfEnabled(String callerFQCN, Level level, Throwable throwable, String format, Object[] arguments) {
+    private void log(final String fqcn, final Level level, final Throwable throwable, final String format, final Object[] args) {
         if (logger.isLoggable(level)) {
-            LogRecord record = new LogRecord(level, StringKit.format(format, arguments));
+            final LogRecord record = new LogRecord(level, StringKit.format(format, args));
             record.setLoggerName(getName());
             record.setThrown(throwable);
-            fillCallerData(callerFQCN, record);
+            fillCallerData(fqcn, record);
             logger.log(record);
         }
     }

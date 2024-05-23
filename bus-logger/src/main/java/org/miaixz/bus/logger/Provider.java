@@ -25,9 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.logger;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.magic.Log;
 
 import java.io.Serializable;
 
@@ -38,12 +37,19 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractAware implements Log, Serializable {
+public abstract class Provider implements Supplier, Serializable {
 
-    private static final String FQCN = AbstractAware.class.getName();
+    private static final long serialVersionUID = -1L;
+
+    private static final String FQCN = Provider.class.getName();
+
+    /**
+     * 日志框架名
+     */
+    protected String name;
 
     @Override
-    public boolean isEnabled(Level level) {
+    public boolean isEnabled(final Level level) {
         switch (level) {
             case TRACE:
                 return isTrace();
@@ -61,108 +67,108 @@ public abstract class AbstractAware implements Log, Serializable {
     }
 
     @Override
-    public void trace(Throwable t) {
-        trace(t, (null == t) ? Normal.NULL : t.getMessage());
+    public void trace(final Throwable t) {
+        trace(t, ExceptionKit.getSimpleMessage(t));
     }
 
     @Override
-    public void trace(String format, Object... arguments) {
-        trace(null, format, arguments);
+    public void trace(final String format, final Object... args) {
+        trace(null, format, args);
     }
 
     @Override
-    public void trace(Throwable t, String format, Object... arguments) {
-        trace(FQCN, t, format, arguments);
+    public void trace(final Throwable t, final String format, final Object... args) {
+        trace(FQCN, t, format, args);
     }
 
     @Override
-    public void debug(Throwable t) {
-        debug(t, (null == t) ? Normal.NULL : t.getMessage());
+    public void debug(final Throwable t) {
+        debug(t, ExceptionKit.getSimpleMessage(t));
     }
 
     @Override
-    public void debug(String format, Object... arguments) {
-        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
-            debug((Throwable) arguments[0], format);
+    public void debug(final String format, final Object... args) {
+        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
+            debug((Throwable) args[0], format);
         } else {
-            debug(null, format, arguments);
+            debug(null, format, args);
         }
     }
 
     @Override
-    public void debug(Throwable t, String format, Object... arguments) {
-        debug(FQCN, t, format, arguments);
+    public void debug(final Throwable t, final String format, final Object... args) {
+        debug(FQCN, t, format, args);
     }
 
     @Override
-    public void info(Throwable t) {
-        info(t, (null == t) ? Normal.NULL : t.getMessage());
+    public void info(final Throwable t) {
+        info(t, ExceptionKit.getSimpleMessage(t));
     }
 
     @Override
-    public void info(String format, Object... arguments) {
-        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
-            info((Throwable) arguments[0], format);
+    public void info(final String format, final Object... args) {
+        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
+            info((Throwable) args[0], format);
         } else {
-            info(null, format, arguments);
+            info(null, format, args);
         }
     }
 
     @Override
-    public void info(Throwable t, String format, Object... arguments) {
-        info(FQCN, t, format, arguments);
+    public void info(final Throwable t, final String format, final Object... args) {
+        info(FQCN, t, format, args);
     }
 
     @Override
-    public void warn(Throwable t) {
-        warn(t, (null == t) ? Normal.NULL : t.getMessage());
+    public void warn(final Throwable t) {
+        warn(t, ExceptionKit.getSimpleMessage(t));
     }
 
     @Override
-    public void warn(String format, Object... arguments) {
-        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
-            warn((Throwable) arguments[0], format);
+    public void warn(final String format, final Object... args) {
+        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
+            warn((Throwable) args[0], format);
         } else {
-            warn(null, format, arguments);
+            warn(null, format, args);
         }
     }
 
     @Override
-    public void warn(Throwable t, String format, Object... arguments) {
-        warn(FQCN, t, format, arguments);
+    public void warn(final Throwable t, final String format, final Object... args) {
+        warn(FQCN, t, format, args);
     }
 
     @Override
-    public void error(Throwable t) {
-        this.error(t, (null == t) ? Normal.NULL : t.getMessage());
+    public void error(final Throwable t) {
+        this.error(t, ExceptionKit.getSimpleMessage(t));
     }
 
     @Override
-    public void error(String format, Object... arguments) {
-        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
-            error((Throwable) arguments[0], format);
+    public void error(final String format, final Object... args) {
+        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
+            error((Throwable) args[0], format);
         } else {
-            error(null, format, arguments);
+            error(null, format, args);
         }
     }
 
     @Override
-    public void error(Throwable t, String format, Object... arguments) {
-        error(FQCN, t, format, arguments);
+    public void error(final Throwable t, final String format, final Object... args) {
+        error(FQCN, t, format, args);
     }
 
     @Override
-    public void log(Level level, String format, Object... arguments) {
-        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
-            log(level, (Throwable) arguments[0], format);
+    public void log(final Level level, final String format, final Object... args) {
+        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
+            log(level, (Throwable) args[0], format);
         } else {
-            log(level, null, format, arguments);
+            log(level, null, format, args);
         }
     }
 
     @Override
-    public void log(Level level, Throwable t, String format, Object... arguments) {
-        this.log(FQCN, level, t, format, arguments);
+    public void log(final Level level, final Throwable t, final String format, final Object... args) {
+        this.log(FQCN, level, t, format, args);
     }
 
 }

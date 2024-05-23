@@ -40,7 +40,9 @@ import java.util.function.Function;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConsoleColorLog extends ConsoleLog {
+public class ConsoleColorProvider extends ConsoleProvider {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 控制台打印类名的颜色代码
@@ -78,7 +80,7 @@ public class ConsoleColorLog extends ConsoleLog {
      *
      * @param name 类名
      */
-    public ConsoleColorLog(String name) {
+    public ConsoleColorProvider(final String name) {
         super(name);
     }
 
@@ -87,7 +89,7 @@ public class ConsoleColorLog extends ConsoleLog {
      *
      * @param clazz 类
      */
-    public ConsoleColorLog(Class<?> clazz) {
+    public ConsoleColorProvider(final Class<?> clazz) {
         super(clazz);
     }
 
@@ -96,18 +98,18 @@ public class ConsoleColorLog extends ConsoleLog {
      *
      * @param colorFactory 颜色工厂函数
      */
-    public static void setColorFactory(Function<Level, Ansi4BitColor> colorFactory) {
-        ConsoleColorLog.colorFactory = colorFactory;
+    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
+        ConsoleColorProvider.colorFactory = colorFactory;
     }
 
     @Override
-    public synchronized void log(String fqcn, Level level, Throwable t, String format, Object... arguments) {
-        if (false == isEnabled(level)) {
+    public synchronized void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+        if (!isEnabled(level)) {
             return;
         }
 
         final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
-        System.out.format(template, DateKit.now(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, arguments));
+        System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, args));
     }
 
 }

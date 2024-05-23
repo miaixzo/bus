@@ -23,32 +23,41 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.metric.log4j2;
+package org.miaixz.bus.logger.metric.commons;
 
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * Apache Log4J 2
+ * commons logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Log4J2Factory extends Factory {
+public class CommonsFactory extends AbstractFactory {
 
-    public Log4J2Factory() {
-        super("Log4j2");
-        checkLogExist(org.apache.logging.log4j.LogManager.class);
+    /**
+     * 构造
+     */
+    public CommonsFactory() {
+        super("Common Logging");
+        check(org.apache.commons.logging.LogFactory.class);
     }
 
     @Override
-    public Log createLog(String name) {
-        return new Log4j2Log(name);
+    public Supplier create(final String name) {
+        return new CommonsProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new Log4j2Log(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new CommonsProvider(clazz);
+    }
+
+    @Override
+    protected void check(final Class<?> clazz) {
+        super.check(clazz);
+        create(CommonsFactory.class);
     }
 
 }

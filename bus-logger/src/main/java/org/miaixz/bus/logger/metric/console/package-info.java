@@ -1,5 +1,5 @@
 /**
- * 控制台输出的实现封装
+ * console 实现封装
  *
  * @author Kimi Liu
  * @since Java 17+

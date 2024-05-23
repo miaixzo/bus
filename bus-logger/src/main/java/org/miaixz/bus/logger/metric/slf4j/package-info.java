@@ -1,5 +1,5 @@
 /**
- * Slf4j的实现封装
+ * slf4j/logback 实现封装
  *
  * @author Kimi Liu
  * @since Java 17+

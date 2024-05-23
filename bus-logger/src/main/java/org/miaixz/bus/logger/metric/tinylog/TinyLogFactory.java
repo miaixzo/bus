@@ -23,38 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.metric.commons;
+package org.miaixz.bus.logger.metric.tinylog;
 
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * Apache Commons Logging
+ * tinylog
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ApacheCommonsFactory extends Factory {
+public class TinyLogFactory extends AbstractFactory {
 
-    public ApacheCommonsFactory() {
-        super("Apache Common Logging");
-        checkLogExist(org.apache.commons.logging.LogFactory.class);
+    /**
+     * 构造
+     */
+    public TinyLogFactory() {
+        super("TinyLog");
+        check(org.tinylog.Logger.class);
     }
 
     @Override
-    public Log createLog(String name) {
-        return new ApacheCommonsLog(name);
+    public Supplier create(final String name) {
+        return new TinyLogProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new ApacheCommonsLog(clazz);
-    }
-
-    @Override
-    protected void checkLogExist(Class<?> logClassName) {
-        super.checkLogExist(logClassName);
-        getLog(ApacheCommonsFactory.class);
+    public Supplier create(final Class<?> clazz) {
+        return new TinyLogProvider(clazz);
     }
 
 }

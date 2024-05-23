@@ -23,53 +23,34 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.magic;
+package org.miaixz.bus.logger;
 
 /**
- * WARN级别日志接口
+ * 日志简单工厂类，提供带有缓存的日志对象创建
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface WarnLog {
+public abstract class Registry {
 
     /**
-     * @return WARN 等级是否开启
-     */
-    boolean isWarn();
-
-    /**
-     * 打印 WARN 等级的日志
+     * 获得日志对象
      *
-     * @param t 错误对象
+     * @param name 日志对象名
+     * @return 日志对象
      */
-    void warn(Throwable t);
+    public static Supplier get(final String name) {
+        return Holder.get().get(name);
+    }
 
     /**
-     * 打印 WARN 等级的日志
+     * 获得日志对象
      *
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param clazz 日志对应类
+     * @return 日志对象
      */
-    void warn(String format, Object... arguments);
-
-    /**
-     * 打印 WARN 等级的日志
-     *
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void warn(Throwable t, String format, Object... arguments);
-
-    /**
-     * 打印 WARN 等级的日志
-     *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void warn(String fqcn, Throwable t, String format, Object... arguments);
+    public static Supplier get(final Class<?> clazz) {
+        return Holder.get().get(clazz);
+    }
 
 }

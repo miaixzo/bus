@@ -23,15 +23,15 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.magic;
+package org.miaixz.bus.logger.magic.level;
 
 /**
- * INFO级别日志接口
+ * INFO 级别日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface InfoLog {
+public interface Info {
 
     /**
      * @return INFO 等级是否开启
@@ -48,28 +48,28 @@ public interface InfoLog {
     /**
      * 打印 INFO 等级的日志
      *
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param format 消息模板
+     * @param args   参数
      */
-    void info(String format, Object... arguments);
+    void info(String format, Object... args);
 
     /**
      * 打印 INFO 等级的日志
      *
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
      */
-    void info(Throwable t, String format, Object... arguments);
+    void info(Throwable t, String format, Object... args);
 
     /**
      * 打印 INFO 等级的日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
      */
-    void info(String fqcn, Throwable t, String format, Object... arguments);
+    void info(String fqcn, Throwable t, String format, Object... args);
 
 }

@@ -1,5 +1,5 @@
 /**
- * jboss-logging实现
+ * jboss-logging 实现
  *
  * @author Kimi Liu
  * @since Java 17+

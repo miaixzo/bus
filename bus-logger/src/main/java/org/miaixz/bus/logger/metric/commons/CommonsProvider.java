@@ -23,40 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.metric.log4j2;
+package org.miaixz.bus.logger.metric.commons;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.AbstractAware;
+import org.miaixz.bus.logger.Level;
+import org.miaixz.bus.logger.Provider;
 
 /**
- * Apache Log4J 2 log.
+ * commons logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Log4j2Log extends AbstractAware {
+public class CommonsProvider extends Provider {
 
-    private final transient Logger logger;
+    private static final long serialVersionUID = -1L;
 
-    public Log4j2Log(Logger logger) {
+    /**
+     * 日志门面
+     */
+    private final transient Log logger;
+
+    /**
+     * 构造
+     *
+     * @param logger Logger
+     * @param name   名称
+     */
+    public CommonsProvider(final Log logger, final String name) {
         this.logger = logger;
+        this.name = name;
     }
 
-    public Log4j2Log(Class<?> clazz) {
-        this(LogManager.getLogger(clazz));
+    /**
+     * 构造
+     *
+     * @param clazz 类
+     */
+    public CommonsProvider(final Class<?> clazz) {
+        this(LogFactory.getLog(clazz), null == clazz ? Normal.NULL : clazz.getName());
     }
 
-    public Log4j2Log(String name) {
-        this(LogManager.getLogger(name));
+    /**
+     * 构造
+     *
+     * @param name 名称
+     */
+    public CommonsProvider(final String name) {
+        this(LogFactory.getLog(name), name);
     }
 
     @Override
     public String getName() {
-        return logger.getName();
+        return this.name;
     }
 
     @Override
@@ -65,8 +87,10 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.TRACE, t, format, arguments);
+    public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isTrace()) {
+            logger.trace(StringKit.format(format, args), t);
+        }
     }
 
     @Override
@@ -75,13 +99,10 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public void debug(String format, Object... arguments) {
-        debug(null, format, arguments);
-    }
-
-    @Override
-    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.DEBUG, t, format, arguments);
+    public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isDebug()) {
+            logger.debug(StringKit.format(format, args), t);
+        }
     }
 
     @Override
@@ -90,8 +111,10 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public void info(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.INFO, t, format, arguments);
+    public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isInfo()) {
+            logger.info(StringKit.format(format, args), t);
+        }
     }
 
     @Override
@@ -100,8 +123,21 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.WARN, t, format, arguments);
+    public void warn(final String format, final Object... args) {
+        if (isWarn()) {
+            logger.warn(StringKit.format(format, args));
+        }
+    }
+
+    @Override
+    public void warn(final Throwable t, final String format, final Object... args) {
+    }
+
+    @Override
+    public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isWarn()) {
+            logger.warn(StringKit.format(format, args), t);
+        }
     }
 
     @Override
@@ -110,52 +146,33 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public void error(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.ERROR, t, format, arguments);
+    public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isError()) {
+            logger.warn(StringKit.format(format, args), t);
+        }
+
     }
 
     @Override
-    public void log(String fqcn, org.miaixz.bus.logger.Level level, Throwable t, String format, Object... arguments) {
-        Level log4j2Level;
+    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
         switch (level) {
             case TRACE:
-                log4j2Level = Level.TRACE;
+                trace(t, format, args);
                 break;
             case DEBUG:
-                log4j2Level = Level.DEBUG;
+                debug(t, format, args);
                 break;
             case INFO:
-                log4j2Level = Level.INFO;
+                info(t, format, args);
                 break;
             case WARN:
-                log4j2Level = Level.WARN;
+                warn(t, format, args);
                 break;
             case ERROR:
-                log4j2Level = Level.ERROR;
+                error(t, format, args);
                 break;
             default:
                 throw new Error(StringKit.format("Can not identify level: {}", level));
-        }
-        logIfEnabled(fqcn, log4j2Level, t, format, arguments);
-    }
-
-    /**
-     * 打印日志
-     * 此方法用于兼容底层日志实现,通过传入当前包装类名,以解决打印日志中行号错误问题
-     *
-     * @param fqcn        完全限定类名(Fully Qualified Class Name),用于纠正定位错误行号
-     * @param level       日志级别,使用org.apache.logging.log4j.Level中的常量
-     * @param t           异常
-     * @param msgTemplate 消息模板
-     * @param arguments   参数
-     */
-    private void logIfEnabled(String fqcn, Level level, Throwable t, String msgTemplate, Object... arguments) {
-        if (this.logger.isEnabled(level)) {
-            if (this.logger instanceof AbstractLogger) {
-                ((AbstractLogger) this.logger).logIfEnabled(fqcn, level, null, StringKit.format(msgTemplate, arguments), t);
-            } else {
-                this.logger.log(level, StringKit.format(msgTemplate, arguments), t);
-            }
         }
     }
 

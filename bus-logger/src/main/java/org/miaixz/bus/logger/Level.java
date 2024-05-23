@@ -65,4 +65,5 @@ public enum Level {
      * 'OFF' log.
      */
     OFF
+
 }

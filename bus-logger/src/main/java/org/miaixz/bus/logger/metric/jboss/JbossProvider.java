@@ -23,136 +23,142 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.metric.console;
+package org.miaixz.bus.logger.metric.jboss;
 
-import org.miaixz.bus.core.center.map.Dictionary;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Console;
+import org.jboss.logging.Logger;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.AbstractAware;
 import org.miaixz.bus.logger.Level;
+import org.miaixz.bus.logger.Provider;
 
 /**
- * 利用System.out.println()打印日志
+ * jboss-logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConsoleLog extends AbstractAware {
+public class JbossProvider extends Provider {
 
-    private static final String logFormat = "[{date}] [{level}] {name}: {msg}";
-    private static Level currentLevel = Level.DEBUG;
-    private final String name;
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * 日志门面
+     */
+    private final transient Logger logger;
 
     /**
      * 构造
      *
-     * @param clazz 类
+     * @param logger {@link Logger}
      */
-    public ConsoleLog(Class<?> clazz) {
-        this.name = (null == clazz) ? Normal.NULL : clazz.getName();
+    public JbossProvider(final Logger logger) {
+        this.logger = logger;
     }
 
     /**
      * 构造
      *
-     * @param name 类名
+     * @param clazz 日志打印所在类
      */
-    public ConsoleLog(String name) {
-        this.name = name;
+    public JbossProvider(final Class<?> clazz) {
+        this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
     /**
-     * 设置自定义的日志显示级别
+     * 构造
      *
-     * @param customLevel 自定义级别
+     * @param name 日志打印所在类名
      */
-    public static void setLevel(Level customLevel) {
-        Assert.notNull(customLevel);
-        currentLevel = customLevel;
+    public JbossProvider(final String name) {
+        this(Logger.getLogger(name));
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return logger.getName();
     }
 
     @Override
     public boolean isTrace() {
-        return isEnabled(Level.TRACE);
+        return logger.isTraceEnabled();
     }
 
     @Override
-    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
-        log(fqcn, Level.TRACE, t, format, arguments);
+    public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isTrace()) {
+            logger.trace(fqcn, StringKit.format(format, args), t);
+        }
     }
 
     @Override
     public boolean isDebug() {
-        return isEnabled(Level.DEBUG);
+        return logger.isDebugEnabled();
     }
 
     @Override
-    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
-        log(fqcn, Level.DEBUG, t, format, arguments);
+    public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isDebug()) {
+            logger.debug(fqcn, StringKit.format(format, args), t);
+        }
     }
 
     @Override
     public boolean isInfo() {
-        return isEnabled(Level.INFO);
+        return logger.isInfoEnabled();
     }
 
     @Override
-    public void info(String fqcn, Throwable t, String format, Object... arguments) {
-        log(fqcn, Level.INFO, t, format, arguments);
+    public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isInfo()) {
+            logger.info(fqcn, StringKit.format(format, args), t);
+        }
     }
 
     @Override
     public boolean isWarn() {
-        return isEnabled(Level.WARN);
+        return logger.isEnabled(Logger.Level.WARN);
     }
 
     @Override
-    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        log(fqcn, Level.WARN, t, format, arguments);
+    public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isWarn()) {
+            logger.warn(fqcn, StringKit.format(format, args), t);
+        }
     }
 
     @Override
     public boolean isError() {
-        return isEnabled(Level.ERROR);
+        return logger.isEnabled(Logger.Level.ERROR);
     }
 
     @Override
-    public void error(String fqcn, Throwable t, String format, Object... arguments) {
-        log(fqcn, Level.ERROR, t, format, arguments);
-    }
-
-    @Override
-    public void log(String fqcn, Level level, Throwable t, String format, Object... arguments) {
-        if (false == isEnabled(level)) {
-            return;
-        }
-
-        final Dictionary dictionary = Dictionary.of()
-                .set("date", DateKit.now())
-                .set("level", level.toString())
-                .set("name", this.name)
-                .set("msg", StringKit.format(format, arguments));
-
-        final String logMsg = StringKit.format(logFormat, dictionary);
-
-        if (level.ordinal() >= Level.WARN.ordinal()) {
-            Console.error(t, logMsg);
-        } else {
-            Console.log(t, logMsg);
+    public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
+        if (isError()) {
+            logger.error(fqcn, StringKit.format(format, args), t);
         }
     }
 
     @Override
-    public boolean isEnabled(Level level) {
-        return currentLevel.compareTo(level) <= 0;
+    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+        switch (level) {
+            case TRACE:
+                trace(fqcn, t, format, args);
+                break;
+            case DEBUG:
+                debug(fqcn, t, format, args);
+                break;
+            case INFO:
+                info(fqcn, t, format, args);
+                break;
+            case WARN:
+                warn(fqcn, t, format, args);
+                break;
+            case ERROR:
+                error(fqcn, t, format, args);
+                break;
+            default:
+                throw new Error(StringKit.format("Can not identify level: {}", level));
+        }
     }
 
 }

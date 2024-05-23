@@ -28,8 +28,8 @@ package org.miaixz.bus.logger.metric.tinylog;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.AbstractAware;
-import org.tinylog.Level;
+import org.miaixz.bus.logger.Level;
+import org.miaixz.bus.logger.Provider;
 import org.tinylog.configuration.Configuration;
 import org.tinylog.format.AdvancedMessageFormatter;
 import org.tinylog.format.MessageFormatter;
@@ -37,33 +37,46 @@ import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
 
 /**
- * <a href="http://www.tinylog.org/">tinylog</a> logger.
+ * tinylog
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TinyLog2 extends AbstractAware {
+public class TinyLogProvider extends Provider {
 
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 堆栈增加层数，因为封装因此多了两层，此值用于正确获取当前类名
+     * 日志框架实现提供者
      */
-    private static final int DEPTH = 5;
     private static final LoggingProvider provider = ProviderRegistry.getLoggingProvider();
+    /**
+     * 文本消息格式化程序
+     */
     private static final MessageFormatter formatter = new AdvancedMessageFormatter(
             Configuration.getLocale(),
             Configuration.isEscapingEnabled()
     );
+    /**
+     * 日志级别
+     */
     private final int level;
 
-    private final String name;
-
-    public TinyLog2(Class<?> clazz) {
+    /**
+     * 构造
+     *
+     * @param clazz class
+     */
+    public TinyLogProvider(final Class<?> clazz) {
         this(null == clazz ? Normal.NULL : clazz.getName());
     }
 
-    public TinyLog2(String name) {
+    /**
+     * 构造
+     *
+     * @param name 名称
+     */
+    public TinyLogProvider(final String name) {
         this.name = name;
         this.level = provider.getMinimumLevel().ordinal();
     }
@@ -71,12 +84,12 @@ public class TinyLog2 extends AbstractAware {
     /**
      * 如果最后一个参数为异常参数，则获取之，否则返回null
      *
-     * @param arguments 参数
+     * @param args 参数
      * @return 最后一个异常参数
      */
-    private static Throwable getLastArgumentIfThrowable(Object... arguments) {
-        if (ArrayKit.isNotEmpty(arguments) && arguments[arguments.length - 1] instanceof Throwable) {
-            return (Throwable) arguments[arguments.length - 1];
+    private static Throwable getLastArgumentIfThrowable(final Object... args) {
+        if (ArrayKit.isNotEmpty(args) && args[args.length - 1] instanceof Throwable) {
+            return (Throwable) args[args.length - 1];
         } else {
             return null;
         }
@@ -89,108 +102,106 @@ public class TinyLog2 extends AbstractAware {
 
     @Override
     public boolean isTrace() {
-        return this.level <= Level.TRACE.ordinal();
+        return this.level <= org.tinylog.Level.TRACE.ordinal();
     }
 
-
     @Override
-    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.TRACE, t, format, arguments);
+    public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, org.tinylog.Level.TRACE, t, format, args);
     }
 
     @Override
     public boolean isDebug() {
-        return this.level <= Level.DEBUG.ordinal();
+        return this.level <= org.tinylog.Level.DEBUG.ordinal();
     }
 
     @Override
-    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.DEBUG, t, format, arguments);
+    public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, org.tinylog.Level.DEBUG, t, format, args);
     }
 
     @Override
     public boolean isInfo() {
-        return this.level <= Level.INFO.ordinal();
+        return this.level <= org.tinylog.Level.INFO.ordinal();
     }
 
     @Override
-    public void info(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.INFO, t, format, arguments);
+    public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, org.tinylog.Level.INFO, t, format, args);
     }
 
     @Override
     public boolean isWarn() {
-        return this.level <= Level.WARN.ordinal();
+        return this.level <= org.tinylog.Level.WARN.ordinal();
     }
 
     @Override
-    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.WARN, t, format, arguments);
+    public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, org.tinylog.Level.WARN, t, format, args);
     }
 
     @Override
     public boolean isError() {
-        return this.level <= Level.ERROR.ordinal();
+        return this.level <= org.tinylog.Level.ERROR.ordinal();
     }
 
     @Override
-    public void error(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.ERROR, t, format, arguments);
+    public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
+        log(fqcn, org.tinylog.Level.ERROR, t, format, args);
     }
 
     @Override
-    public void log(String fqcn, org.miaixz.bus.logger.Level level, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, toTinyLevel(level), t, format, arguments);
+    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+        log(fqcn, toTinyLevel(level), t, format, args);
     }
 
     @Override
-    public boolean isEnabled(org.miaixz.bus.logger.Level level) {
+    public boolean isEnabled(final Level level) {
         return this.level <= toTinyLevel(level).ordinal();
     }
 
     /**
      * 在对应日志级别打开情况下打印日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于定位日志位置
-     * @param level     日志级别
-     * @param t         异常，null则检查最后一个参数是否为Throwable类型，是则取之，否则不打印堆栈
-     * @param format    日志消息模板
-     * @param arguments 日志消息参数
+     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param level  日志级别
+     * @param t      异常，null则检查最后一个参数是否为Throwable类型，是则取之，否则不打印堆栈
+     * @param format 日志消息模板
+     * @param args   日志消息参数
      */
-    private void logIfEnabled(String fqcn, Level level, Throwable t, String format, Object... arguments) {
-        // fqcn 无效
+    private void log(final String fqcn, final org.tinylog.Level level, Throwable t, final String format, final Object... args) {
         if (null == t) {
-            t = getLastArgumentIfThrowable(arguments);
+            t = getLastArgumentIfThrowable(args);
         }
-        provider.log(DEPTH, null, level, t, formatter, StringKit.toString(format), arguments);
+        provider.log(Normal._5, null, level, t, formatter, StringKit.toString(format), args);
     }
 
     /**
      * 将Level等级转换为Tinylog的Level等级
      *
      * @param level Level等级
-     * @return Tinylog的Level
+     * @return the level
      */
-    private Level toTinyLevel(org.miaixz.bus.logger.Level level) {
-        Level tinyLevel;
+    private org.tinylog.Level toTinyLevel(final Level level) {
+        final org.tinylog.Level tinyLevel;
         switch (level) {
             case TRACE:
-                tinyLevel = Level.TRACE;
+                tinyLevel = org.tinylog.Level.TRACE;
                 break;
             case DEBUG:
-                tinyLevel = Level.DEBUG;
+                tinyLevel = org.tinylog.Level.DEBUG;
                 break;
             case INFO:
-                tinyLevel = Level.INFO;
+                tinyLevel = org.tinylog.Level.INFO;
                 break;
             case WARN:
-                tinyLevel = Level.WARN;
+                tinyLevel = org.tinylog.Level.WARN;
                 break;
             case ERROR:
-                tinyLevel = Level.ERROR;
+                tinyLevel = org.tinylog.Level.ERROR;
                 break;
             case OFF:
-                tinyLevel = Level.OFF;
+                tinyLevel = org.tinylog.Level.OFF;
                 break;
             default:
                 throw new Error(StringKit.format("Can not identify level: {}", level));

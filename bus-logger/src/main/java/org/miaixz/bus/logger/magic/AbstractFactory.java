@@ -25,51 +25,48 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.magic;
 
+import org.miaixz.bus.logger.Factory;
+
 /**
- * ERROR级别日志接口
+ * 抽象日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ErrorLog {
+public abstract class AbstractFactory implements Factory {
 
     /**
-     * @return ERROR 等级是否开启
+     * 日志框架名，用于打印当前所用日志框架
      */
-    boolean isError();
+    private final String name;
 
     /**
-     * 打印 ERROR 等级的日志
+     * 构造
      *
-     * @param t 错误对象
+     * @param name 日志框架名
      */
-    void error(Throwable t);
+    public AbstractFactory(final String name) {
+        this.name = name;
+    }
 
     /**
-     * 打印 ERROR 等级的日志
+     * 获取日志框架名，用于打印当前所用日志框架
      *
-     * @param format    消息模板
-     * @param arguments 参数
+     * @return 日志框架名
      */
-    void error(String format, Object... arguments);
+    public String getName() {
+        return this.name;
+    }
 
     /**
-     * 打印 ERROR 等级的日志
+     * 检查日志实现是否存在
+     * 此方法仅用于检查所提供的日志相关类是否存在，当传入的日志类类不存在时抛出ClassNotFoundException
+     * 此方法的作用是在detectLogFactory方法自动检测所用日志时，如果实现类不存在，调用此方法会自动抛出异常，从而切换到下一种日志的检测。
      *
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param clazz 日志实现相关类
      */
-    void error(Throwable t, String format, Object... arguments);
-
-    /**
-     * 打印 ERROR 等级的日志
-     *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void error(String fqcn, Throwable t, String format, Object... arguments);
+    protected void check(final Class<?> clazz) {
+        // 不做任何操作
+    }
 
 }

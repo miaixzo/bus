@@ -23,35 +23,53 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.metric.tinylog;
-
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+package org.miaixz.bus.logger.magic.level;
 
 /**
- * <a href="http://www.tinylog.org/">TinyLog2</a> logger.
+ * DEBUG 级别日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Tiny2Factory extends Factory {
+public interface Debug {
 
     /**
-     * 构造
+     * @return DEBUG 等级是否开启
      */
-    public Tiny2Factory() {
-        super("TinyLog");
-        checkLogExist(org.tinylog.Logger.class);
-    }
+    boolean isDebug();
 
-    @Override
-    public Log createLog(String name) {
-        return new TinyLog2(name);
-    }
+    /**
+     * 打印 DEBUG 等级的日志
+     *
+     * @param t 错误对象
+     */
+    void debug(Throwable t);
 
-    @Override
-    public Log createLog(Class<?> clazz) {
-        return new TinyLog2(clazz);
-    }
+    /**
+     * 打印 DEBUG 等级的日志
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void debug(String format, Object... args);
+
+    /**
+     * 打印 DEBUG 等级的日志
+     *
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void debug(Throwable t, String format, Object... args);
+
+    /**
+     * 打印 DEBUG 等级的日志
+     *
+     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void debug(String fqcn, Throwable t, String format, Object... args);
 
 }

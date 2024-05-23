@@ -23,15 +23,15 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.magic;
+package org.miaixz.bus.logger.magic.level;
 
 /**
- * TRACE级别日志接口
+ * TRACE 级别日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface TraceLog {
+public interface Trace {
 
     /**
      * @return TRACE 等级是否开启
@@ -48,28 +48,28 @@ public interface TraceLog {
     /**
      * 打印 TRACE 等级的日志
      *
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param format 消息模板
+     * @param args   参数
      */
-    void trace(String format, Object... arguments);
+    void trace(String format, Object... args);
 
     /**
      * 打印 TRACE 等级的日志
      *
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
      */
-    void trace(Throwable t, String format, Object... arguments);
+    void trace(Throwable t, String format, Object... args);
 
     /**
      * 打印 TRACE 等级的日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
+     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
      */
-    void trace(String fqcn, Throwable t, String format, Object... arguments);
+    void trace(String fqcn, Throwable t, String format, Object... args);
 
 }

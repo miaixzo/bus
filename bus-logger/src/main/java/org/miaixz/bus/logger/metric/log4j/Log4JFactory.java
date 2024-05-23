@@ -23,59 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.logger.magic;
+package org.miaixz.bus.logger.metric.log4j;
 
-import org.miaixz.bus.logger.Level;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 日志统一接口
+ * log4j
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Log extends TraceLog, DebugLog, InfoLog, WarnLog, ErrorLog {
+public class Log4JFactory extends AbstractFactory {
 
     /**
-     * @return 日志对象的Name
+     * 构造
      */
-    String getName();
+    public Log4JFactory() {
+        super("Log4j");
+        check(org.apache.logging.log4j.LogManager.class);
+    }
 
-    /**
-     * 是否开启指定日志
-     *
-     * @param level 日志级别
-     * @return 是否开启指定级别
-     */
-    boolean isEnabled(Level level);
+    @Override
+    public Supplier create(final String name) {
+        return new Log4jProvider(name);
+    }
 
-    /**
-     * 打印指定级别的日志
-     *
-     * @param level     级别
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void log(Level level, String format, Object... arguments);
-
-    /**
-     * 打印 指定级别的日志
-     *
-     * @param level     级别
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void log(Level level, Throwable t, String format, Object... arguments);
-
-    /**
-     * 打印 ERROR 等级的日志
-     *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
-     * @param level     级别
-     * @param t         错误对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    void log(String fqcn, Level level, Throwable t, String format, Object... arguments);
+    @Override
+    public Supplier create(final Class<?> clazz) {
+        return new Log4jProvider(clazz);
+    }
 
 }

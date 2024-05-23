@@ -1,5 +1,5 @@
 /**
- * Apache-Commons-Logging日志库的实现封装
+ * commons-logging 实现封装
  *
  * @author Kimi Liu
  * @since Java 17+

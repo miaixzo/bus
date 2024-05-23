@@ -28,41 +28,44 @@ package org.miaixz.bus.logger.metric.jdk;
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 import java.io.InputStream;
 import java.util.logging.LogManager;
 
 /**
- * JDK日志工厂类
  * java.util.logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkFactory extends Factory {
+public class JdkFactory extends AbstractFactory {
 
+    /**
+     * 构造
+     */
     public JdkFactory() {
         super("JDK Logging");
         readConfig();
     }
 
     @Override
-    public Log createLog(String name) {
-        return new JdkLog(name);
+    public Supplier create(final String name) {
+        return new JdkProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new JdkLog(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new JdkProvider(clazz);
     }
 
     /**
      * 读取ClassPath下的logging.properties配置文件
      */
     private void readConfig() {
-        InputStream in = ResourceKit.getStreamSafe("logging.properties");
+        // 避免循环引用，Log初始化的时候不使用相关工具类
+        final InputStream in = ResourceKit.getStreamSafe("logging.properties");
         if (null == in) {
             System.err.println("[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");
             return;
@@ -70,11 +73,11 @@ public class JdkFactory extends Factory {
 
         try {
             LogManager.getLogManager().readConfiguration(in);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Console.error(e, "Read [logging.properties] from classpath error!");
             try {
                 LogManager.getLogManager().readConfiguration();
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 Console.error(e, "Read [logging.properties] from [%JRE_HOME%/lib/logging.properties] error!");
             }
         } finally {
