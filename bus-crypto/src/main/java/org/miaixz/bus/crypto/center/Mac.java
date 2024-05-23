@@ -33,7 +33,6 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.crypto.builtin.digest.mac.MacEngine;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -57,14 +56,14 @@ public class Mac implements Serializable {
     /**
      * Mac引擎
      */
-    private final MacEngine engine;
+    private final org.miaixz.bus.crypto.builtin.digest.mac.Mac engine;
 
     /**
      * 构造
      *
      * @param engine MAC算法实现引擎
      */
-    public Mac(final MacEngine engine) {
+    public Mac(final org.miaixz.bus.crypto.builtin.digest.mac.Mac engine) {
         this.engine = engine;
     }
 
@@ -73,7 +72,7 @@ public class Mac implements Serializable {
      *
      * @return MAC算法引擎
      */
-    public MacEngine getEngine() {
+    public org.miaixz.bus.crypto.builtin.digest.mac.Mac getEngine() {
         return this.engine;
     }
 

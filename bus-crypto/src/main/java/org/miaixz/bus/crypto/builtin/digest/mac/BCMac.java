@@ -25,87 +25,39 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.params.KeyParameter;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.crypto.Keeper;
-
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * JDK提供的的MAC算法实现引擎，使用{@link Mac} 实现摘要
+ * BouncyCastle的MAC算法实现引擎，使用{@link org.bouncycastle.crypto.Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JCEMacEngine extends SimpleWrapper<Mac> implements MacEngine {
+public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements Mac {
 
     /**
      * 构造
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param mac    {@link org.bouncycastle.crypto.Mac}
+     * @param params 参数，例如密钥可以用{@link KeyParameter}
      */
-    public JCEMacEngine(final String algorithm, final byte[] key) {
-        this(algorithm, (null == key) ? null : new SecretKeySpec(key, algorithm));
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法
-     * @param key       密钥
-     */
-    public JCEMacEngine(final String algorithm, final Key key) {
-        this(algorithm, key, null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法
-     * @param key       密钥
-     * @param spec      {@link AlgorithmParameterSpec}
-     */
-    public JCEMacEngine(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
-        super(initMac(algorithm, key, spec));
+    public BCMac(final org.bouncycastle.crypto.Mac mac, final CipherParameters params) {
+        super(initMac(mac, params));
     }
 
     /**
      * 初始化
      *
-     * @param algorithm 算法
-     * @param key       密钥 {@link SecretKey}
-     * @param spec      {@link AlgorithmParameterSpec}
+     * @param mac    摘要算法
+     * @param params 参数，例如密钥可以用{@link KeyParameter}
      * @return this
-     * @throws CryptoException Cause by IOException
      */
-    private static Mac initMac(final String algorithm, Key key, final AlgorithmParameterSpec spec) {
-        final Mac mac;
-        try {
-            mac = Builder.createMac(algorithm);
-            if (null == key) {
-                key = Keeper.generateKey(algorithm);
-            }
-            if (null != spec) {
-                mac.init(key, spec);
-            } else {
-                mac.init(key);
-            }
-        } catch (final Exception e) {
-            throw new CryptoException(e);
-        }
+    private static org.bouncycastle.crypto.Mac initMac(final org.bouncycastle.crypto.Mac mac, final CipherParameters params) {
+        mac.init(params);
         return mac;
-    }
-
-    @Override
-    public void update(final byte[] in) {
-        this.raw.update(in);
     }
 
     @Override
@@ -115,7 +67,9 @@ public class JCEMacEngine extends SimpleWrapper<Mac> implements MacEngine {
 
     @Override
     public byte[] doFinal() {
-        return this.raw.doFinal();
+        final byte[] result = new byte[getMacLength()];
+        this.raw.doFinal(result, 0);
+        return result;
     }
 
     @Override
@@ -125,12 +79,12 @@ public class JCEMacEngine extends SimpleWrapper<Mac> implements MacEngine {
 
     @Override
     public int getMacLength() {
-        return this.raw.getMacLength();
+        return this.raw.getMacSize();
     }
 
     @Override
     public String getAlgorithm() {
-        return this.raw.getAlgorithm();
+        return this.raw.getAlgorithmName();
     }
 
 }

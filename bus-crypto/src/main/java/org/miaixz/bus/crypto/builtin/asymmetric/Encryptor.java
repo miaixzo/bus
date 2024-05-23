@@ -45,7 +45,7 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface AsymmetricEncryptor {
+public interface Encryptor {
 
     /**
      * 加密

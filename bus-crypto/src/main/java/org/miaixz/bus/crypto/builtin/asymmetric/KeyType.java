@@ -47,7 +47,6 @@ public enum KeyType {
      */
     SecretKey(Cipher.SECRET_KEY);
 
-
     private final int value;
 
     /**
@@ -67,4 +66,5 @@ public enum KeyType {
     public int getValue() {
         return this.value;
     }
+
 }

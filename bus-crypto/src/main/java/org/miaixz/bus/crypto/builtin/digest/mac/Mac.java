@@ -25,45 +25,93 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 
-import java.security.Key;
-import java.security.spec.AlgorithmParameterSpec;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * {@link MacEngine} 简单工厂类
+ * MAC（Message Authentication Code）算法引擎
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MacEngineFactory {
+public interface Mac {
 
     /**
-     * 根据给定算法和密钥生成对应的{@link MacEngine}
+     * 加入需要被摘要的内容
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param key       密钥
-     * @return {@link MacEngine}
+     * @param in 内容
      */
-    public static MacEngine createEngine(final String algorithm, final Key key) {
-        return createEngine(algorithm, key, null);
+    default void update(final byte[] in) {
+        update(in, 0, in.length);
     }
 
     /**
-     * 根据给定算法和密钥生成对应的{@link MacEngine}
+     * 加入需要被摘要的内容
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param key       密钥
-     * @param spec      spec
-     * @return {@link MacEngine}
+     * @param in    内容
+     * @param inOff 内容起始位置
+     * @param len   内容长度
      */
-    public static MacEngine createEngine(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
-        if (algorithm.equalsIgnoreCase(Algorithm.HMACSM3.getValue())) {
-            // HmacSM3算法是BC库实现的，忽略加盐
-            return Builder.createHmacSm3Engine(key.getEncoded());
+    void update(byte[] in, int inOff, int len);
+
+    /**
+     * 结束并生成摘要
+     *
+     * @return 摘要内容
+     */
+    byte[] doFinal();
+
+    /**
+     * 重置
+     */
+    void reset();
+
+    /**
+     * 生成摘要
+     *
+     * @param data         {@link InputStream} 数据流
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @return 摘要bytes
+     */
+    default byte[] digest(final InputStream data, int bufferLength) {
+        if (bufferLength < 1) {
+            bufferLength = Normal.DEFAULT_BUFFER_SIZE;
         }
-        return new JCEMacEngine(algorithm, key, spec);
+
+        final byte[] buffer = new byte[bufferLength];
+
+        byte[] result;
+        try {
+            int read = data.read(buffer, 0, bufferLength);
+
+            while (read > -1) {
+                update(buffer, 0, read);
+                read = data.read(buffer, 0, bufferLength);
+            }
+            result = doFinal();
+        } catch (final IOException e) {
+            throw new CryptoException(e);
+        } finally {
+            reset();
+        }
+        return result;
     }
+
+    /**
+     * 获取MAC算法块大小
+     *
+     * @return MAC算法块大小
+     */
+    int getMacLength();
+
+    /**
+     * 获取当前算法
+     *
+     * @return 算法
+     */
+    String getAlgorithm();
 
 }

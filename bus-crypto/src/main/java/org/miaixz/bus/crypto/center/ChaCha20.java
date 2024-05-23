@@ -27,7 +27,7 @@ package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 import javax.crypto.spec.IvParameterSpec;
 
@@ -38,7 +38,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ChaCha20 extends SymmetricCrypto {
+public class ChaCha20 extends Crypto {
 
     /**
      * 算法名称：ChaCha20

@@ -23,69 +23,82 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.crypto.builtin.digest.mac;
+package org.miaixz.bus.crypto.builtin.asymmetric;
 
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.Mac;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
+
+import java.io.InputStream;
 
 /**
- * BouncyCastle的MAC算法实现引擎，使用{@link Mac} 实现摘要
- * 当引入BouncyCastle库时自动使用其作为Provider
+ * 非对称解密器接口，提供：
+ * <ul>
+ *     <li>从bytes解密</li>
+ *     <li>从Hex(16进制)解密</li>
+ *     <li>从Base64解密</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BCMacEngine extends SimpleWrapper<Mac> implements MacEngine {
+public interface Decryptor {
 
     /**
-     * 构造
+     * 解密
      *
-     * @param mac    {@link Mac}
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     * @param bytes   被解密的bytes
+     * @param keyType 私钥或公钥 {@link KeyType}
+     * @return 解密后的bytes
      */
-    public BCMacEngine(final Mac mac, final CipherParameters params) {
-        super(initMac(mac, params));
+    byte[] decrypt(byte[] bytes, KeyType keyType);
+
+    /**
+     * 解密
+     *
+     * @param data    被解密的bytes
+     * @param keyType 私钥或公钥 {@link KeyType}
+     * @return 解密后的bytes
+     * @throws InternalException IO异常
+     */
+    default byte[] decrypt(final InputStream data, final KeyType keyType) throws InternalException {
+        return decrypt(IoKit.readBytes(data), keyType);
     }
 
     /**
-     * 初始化
+     * 从Hex或Base64字符串解密，编码为UTF-8格式
      *
-     * @param mac    摘要算法
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
-     * @return this
+     * @param data    Hex（16进制）或Base64字符串
+     * @param keyType 私钥或公钥 {@link KeyType}
+     * @return 解密后的bytes
      */
-    private static Mac initMac(final Mac mac, final CipherParameters params) {
-        mac.init(params);
-        return mac;
+    default byte[] decrypt(final String data, final KeyType keyType) {
+        return decrypt(Builder.decode(data), keyType);
     }
 
-    @Override
-    public void update(final byte[] in, final int inOff, final int len) {
-        this.raw.update(in, inOff, len);
+    /**
+     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     *
+     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param keyType 密钥类型
+     * @param charset 加密前编码
+     * @return 解密后的密文
+     */
+    default String decryptString(final String data, final KeyType keyType, final java.nio.charset.Charset charset) {
+        return StringKit.toString(decrypt(data, keyType), charset);
     }
 
-    @Override
-    public byte[] doFinal() {
-        final byte[] result = new byte[getMacLength()];
-        this.raw.doFinal(result, 0);
-        return result;
-    }
-
-    @Override
-    public void reset() {
-        this.raw.reset();
-    }
-
-    @Override
-    public int getMacLength() {
-        return this.raw.getMacSize();
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return this.raw.getAlgorithmName();
+    /**
+     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     *
+     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param keyType 密钥类型
+     * @return 解密后的密文
+     */
+    default String decryptString(final String data, final KeyType keyType) {
+        return decryptString(data, keyType, Charset.UTF_8);
     }
 
 }

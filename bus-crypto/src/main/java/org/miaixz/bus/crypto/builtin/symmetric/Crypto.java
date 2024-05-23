@@ -62,7 +62,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, Serializable {
+public class Crypto implements Encryptor, Decryptor, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -96,7 +96,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      *
      * @param algorithm {@link Algorithm}
      */
-    public SymmetricCrypto(final Algorithm algorithm) {
+    public Crypto(final Algorithm algorithm) {
         this(algorithm, (byte[]) null);
     }
 
@@ -105,7 +105,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      *
      * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
      */
-    public SymmetricCrypto(final String algorithm) {
+    public Crypto(final String algorithm) {
         this(algorithm, (byte[]) null);
     }
 
@@ -115,7 +115,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param algorithm 算法 {@link Algorithm}
      * @param key       自定义KEY
      */
-    public SymmetricCrypto(final Algorithm algorithm, final byte[] key) {
+    public Crypto(final Algorithm algorithm, final byte[] key) {
         this(algorithm.getValue(), key);
     }
 
@@ -125,7 +125,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param algorithm 算法 {@link Algorithm}
      * @param key       自定义KEY
      */
-    public SymmetricCrypto(final Algorithm algorithm, final SecretKey key) {
+    public Crypto(final Algorithm algorithm, final SecretKey key) {
         this(algorithm.getValue(), key);
     }
 
@@ -135,7 +135,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param algorithm 算法
      * @param key       密钥
      */
-    public SymmetricCrypto(final String algorithm, final byte[] key) {
+    public Crypto(final String algorithm, final byte[] key) {
         this(algorithm, Keeper.generateKey(algorithm, key));
     }
 
@@ -145,7 +145,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param algorithm 算法
      * @param key       密钥
      */
-    public SymmetricCrypto(final String algorithm, final SecretKey key) {
+    public Crypto(final String algorithm, final SecretKey key) {
         this(algorithm, key, null);
     }
 
@@ -156,7 +156,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param key        密钥
      * @param paramsSpec 算法参数，例如加盐等
      */
-    public SymmetricCrypto(final String algorithm, final SecretKey key, final AlgorithmParameterSpec paramsSpec) {
+    public Crypto(final String algorithm, final SecretKey key, final AlgorithmParameterSpec paramsSpec) {
         init(algorithm, key);
         initParams(algorithm, paramsSpec);
     }
@@ -207,7 +207,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param key       密钥，如果为{@code null}自动生成一个key
      * @return SymmetricCrypto的子对象，即子对象自身
      */
-    public SymmetricCrypto init(String algorithm, final SecretKey key) {
+    public Crypto init(String algorithm, final SecretKey key) {
         Assert.notBlank(algorithm, "'algorithm' must be not blank !");
         this.secretKey = key;
 
@@ -245,7 +245,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
      * @return this
      */
-    public SymmetricCrypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
+    public Crypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
         this.algorithmParameterSpec = algorithmParameterSpec;
         return this;
     }
@@ -256,7 +256,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param iv {@link IvParameterSpec}偏移向量
      * @return 自身
      */
-    public SymmetricCrypto setIv(final IvParameterSpec iv) {
+    public Crypto setIv(final IvParameterSpec iv) {
         return setAlgorithmParameterSpec(iv);
     }
 
@@ -266,7 +266,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param iv 偏移向量，加盐
      * @return 自身
      */
-    public SymmetricCrypto setIv(final byte[] iv) {
+    public Crypto setIv(final byte[] iv) {
         return setIv(new IvParameterSpec(iv));
     }
 
@@ -276,7 +276,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param random 随机数生成器，可自定义随机数种子
      * @return this
      */
-    public SymmetricCrypto setRandom(final SecureRandom random) {
+    public Crypto setRandom(final SecureRandom random) {
         this.random = random;
         return this;
     }
@@ -287,7 +287,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param mode 模式枚举
      * @return this
      */
-    public SymmetricCrypto setMode(final Algorithm.Type mode) {
+    public Crypto setMode(final Algorithm.Type mode) {
         return setMode(mode, null);
     }
 
@@ -298,7 +298,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param salt 加盐值，用于
      * @return this
      */
-    public SymmetricCrypto setMode(final Algorithm.Type mode, final byte[] salt) {
+    public Crypto setMode(final Algorithm.Type mode, final byte[] salt) {
         lock.lock();
         try {
             initMode(mode, salt);
@@ -453,7 +453,7 @@ public class SymmetricCrypto implements SymmetricEncryptor, SymmetricDecryptor, 
      * @param paramsSpec 用户定义的{@link AlgorithmParameterSpec}
      * @return this
      */
-    private SymmetricCrypto initParams(final String algorithm, AlgorithmParameterSpec paramsSpec) {
+    private Crypto initParams(final String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
             byte[] iv = Optional.ofNullable(cipher)
                     .map(JceCipher::getRaw).map(Cipher::getIV).get();

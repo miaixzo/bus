@@ -28,19 +28,18 @@ package org.miaixz.bus.crypto.builtin.digest.mac;
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.macs.CBCBlockCipherMac;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
 import java.security.Key;
 
 /**
- * {@link CBCBlockCipherMac}实现的MAC算法，使用CBC Block方式
+ * {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}实现的MAC算法，使用CBC Block方式
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CBCBlockCipherMacEngine extends BCMacEngine {
+public class CBCBlockCipherMac extends BCMac {
 
     /**
      * 构造
@@ -50,7 +49,7 @@ public class CBCBlockCipherMacEngine extends BCMacEngine {
      * @param key           密钥
      * @param iv            加盐
      */
-    public CBCBlockCipherMacEngine(final BlockCipher digest, final int macSizeInBits, final Key key, final byte[] iv) {
+    public CBCBlockCipherMac(final BlockCipher digest, final int macSizeInBits, final Key key, final byte[] iv) {
         this(digest, macSizeInBits, key.getEncoded(), iv);
     }
 
@@ -62,7 +61,7 @@ public class CBCBlockCipherMacEngine extends BCMacEngine {
      * @param key           密钥
      * @param iv            加盐
      */
-    public CBCBlockCipherMacEngine(final BlockCipher digest, final int macSizeInBits, final byte[] key, final byte[] iv) {
+    public CBCBlockCipherMac(final BlockCipher digest, final int macSizeInBits, final byte[] key, final byte[] iv) {
         this(digest, macSizeInBits, new ParametersWithIV(new KeyParameter(key), iv));
     }
 
@@ -73,7 +72,7 @@ public class CBCBlockCipherMacEngine extends BCMacEngine {
      * @param macSizeInBits mac结果的bits长度，必须为8的倍数
      * @param key           密钥
      */
-    public CBCBlockCipherMacEngine(final BlockCipher cipher, final int macSizeInBits, final Key key) {
+    public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final Key key) {
         this(cipher, macSizeInBits, key.getEncoded());
     }
 
@@ -84,7 +83,7 @@ public class CBCBlockCipherMacEngine extends BCMacEngine {
      * @param macSizeInBits mac结果的bits长度，必须为8的倍数
      * @param key           密钥
      */
-    public CBCBlockCipherMacEngine(final BlockCipher cipher, final int macSizeInBits, final byte[] key) {
+    public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final byte[] key) {
         this(cipher, macSizeInBits, new KeyParameter(key));
     }
 
@@ -95,17 +94,17 @@ public class CBCBlockCipherMacEngine extends BCMacEngine {
      * @param macSizeInBits mac结果的bits长度，必须为8的倍数
      * @param params        参数，例如密钥可以用{@link KeyParameter}
      */
-    public CBCBlockCipherMacEngine(final BlockCipher cipher, final int macSizeInBits, final CipherParameters params) {
-        this(new CBCBlockCipherMac(cipher, macSizeInBits), params);
+    public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final CipherParameters params) {
+        this(new org.bouncycastle.crypto.macs.CBCBlockCipherMac(cipher, macSizeInBits), params);
     }
 
     /**
      * 构造
      *
-     * @param mac    {@link CBCBlockCipherMac}
+     * @param mac    {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      */
-    public CBCBlockCipherMacEngine(final CBCBlockCipherMac mac, final CipherParameters params) {
+    public CBCBlockCipherMac(final org.bouncycastle.crypto.macs.CBCBlockCipherMac mac, final CipherParameters params) {
         super(mac, params);
     }
 

@@ -27,7 +27,7 @@ package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 import javax.crypto.spec.IvParameterSpec;
 
@@ -37,7 +37,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ZUC extends SymmetricCrypto {
+public class ZUC extends Crypto {
 
     private static final long serialVersionUID = -1L;
 

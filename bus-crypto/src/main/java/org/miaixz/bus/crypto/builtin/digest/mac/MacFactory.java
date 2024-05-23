@@ -23,82 +23,47 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.crypto.builtin.asymmetric;
+package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.Builder;
 
-import java.io.InputStream;
+import java.security.Key;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * 非对称解密器接口，提供：
- * <ul>
- *     <li>从bytes解密</li>
- *     <li>从Hex(16进制)解密</li>
- *     <li>从Base64解密</li>
- * </ul>
+ * {@link Mac} 简单工厂类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface AsymmetricDecryptor {
+public class MacFactory {
 
     /**
-     * 解密
+     * 根据给定算法和密钥生成对应的{@link Mac}
      *
-     * @param bytes   被解密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param key       密钥
+     * @return {@link Mac}
      */
-    byte[] decrypt(byte[] bytes, KeyType keyType);
-
-    /**
-     * 解密
-     *
-     * @param data    被解密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
-     * @throws InternalException IO异常
-     */
-    default byte[] decrypt(final InputStream data, final KeyType keyType) throws InternalException {
-        return decrypt(IoKit.readBytes(data), keyType);
+    public static Mac createEngine(final String algorithm, final Key key) {
+        return createEngine(algorithm, key, null);
     }
 
     /**
-     * 从Hex或Base64字符串解密，编码为UTF-8格式
+     * 根据给定算法和密钥生成对应的{@link Mac}
      *
-     * @param data    Hex（16进制）或Base64字符串
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param key       密钥
+     * @param spec      spec
+     * @return {@link Mac}
      */
-    default byte[] decrypt(final String data, final KeyType keyType) {
-        return decrypt(Builder.decode(data), keyType);
-    }
-
-    /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
-     *
-     * @param data    数据，Hex（16进制）或Base64字符串
-     * @param keyType 密钥类型
-     * @param charset 加密前编码
-     * @return 解密后的密文
-     */
-    default String decryptString(final String data, final KeyType keyType, final java.nio.charset.Charset charset) {
-        return StringKit.toString(decrypt(data, keyType), charset);
-    }
-
-    /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
-     *
-     * @param data    数据，Hex（16进制）或Base64字符串
-     * @param keyType 密钥类型
-     * @return 解密后的密文
-     */
-    default String decryptString(final String data, final KeyType keyType) {
-        return decryptString(data, keyType, Charset.UTF_8);
+    public static Mac createEngine(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
+        if (algorithm.equalsIgnoreCase(Algorithm.HMACSM3.getValue())) {
+            // HmacSM3算法是BC库实现的，忽略加盐
+            return Builder.createHmacSm3Engine(key.getEncoded());
+        }
+        return new JCEMac(algorithm, key, spec);
     }
 
 }

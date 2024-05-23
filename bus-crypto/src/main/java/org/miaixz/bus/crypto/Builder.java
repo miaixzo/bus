@@ -53,13 +53,12 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.crypto.builtin.digest.Digester;
-import org.miaixz.bus.crypto.builtin.digest.mac.BCHMacEngine;
-import org.miaixz.bus.crypto.builtin.digest.mac.MacEngine;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.digest.mac.BCHMac;
+import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
 
 import javax.crypto.Cipher;
-import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.*;
 import java.io.ByteArrayInputStream;
@@ -137,7 +136,7 @@ public class Builder {
      * </pre>
      *
      * @param key 密钥
-     * @return {@link SymmetricCrypto}
+     * @return {@link Crypto}
      */
     public static AES aes(final byte[] key) {
         return new AES(key);
@@ -611,17 +610,17 @@ public class Builder {
     }
 
     /**
-     * 创建{@link Mac}
+     * 创建{@link javax.crypto.Mac}
      *
      * @param algorithm 算法
-     * @return {@link Mac}
+     * @return {@link javax.crypto.Mac}
      */
-    public static Mac createMac(final String algorithm) {
+    public static javax.crypto.Mac createMac(final String algorithm) {
         final java.security.Provider provider = Holder.getProvider();
 
-        final Mac mac;
+        final javax.crypto.Mac mac;
         try {
-            mac = (null == provider) ? Mac.getInstance(algorithm) : Mac.getInstance(algorithm, provider);
+            mac = (null == provider) ? javax.crypto.Mac.getInstance(algorithm) : javax.crypto.Mac.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
@@ -633,10 +632,10 @@ public class Builder {
      * RC4算法
      *
      * @param key 密钥
-     * @return {@link SymmetricCrypto}
+     * @return {@link Crypto}
      */
-    public static SymmetricCrypto rc4(final byte[] key) {
-        return new SymmetricCrypto(Algorithm.RC4, key);
+    public static Crypto rc4(final byte[] key) {
+        return new Crypto(Algorithm.RC4, key);
     }
 
     /**
@@ -807,7 +806,7 @@ public class Builder {
     }
 
     /**
-     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link SymmetricCrypto}对象或者使用相同KEY
+     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Crypto}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -815,7 +814,7 @@ public class Builder {
      * SM4解密：sm4().decrypt(data)
      * </pre>
      *
-     * @return {@link SymmetricCrypto}
+     * @return {@link Crypto}
      */
     public static SM4 sm4() {
         return new SM4();
@@ -913,13 +912,13 @@ public class Builder {
     }
 
     /**
-     * 创建HmacSM3算法的{@link MacEngine}
+     * 创建HmacSM3算法的{@link Mac}
      *
      * @param key 密钥
-     * @return {@link MacEngine}
+     * @return {@link Mac}
      */
-    public static MacEngine createHmacSm3Engine(final byte[] key) {
-        return new BCHMacEngine(new SM3Digest(), key);
+    public static Mac createHmacSm3Engine(final byte[] key) {
+        return new BCHMac(new SM3Digest(), key);
     }
 
     /**
@@ -1035,7 +1034,7 @@ public class Builder {
      * @param otherParams 其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final SymmetricCrypto crypto, final Map<?, ?> params, final String... otherParams) {
+    public static String signParams(final Crypto crypto, final Map<?, ?> params, final String... otherParams) {
         return signParams(crypto, params, Normal.EMPTY, Normal.EMPTY, true, otherParams);
     }
 
@@ -1051,7 +1050,7 @@ public class Builder {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final SymmetricCrypto crypto, final Map<?, ?> params, final String separator,
+    public static String signParams(final Crypto crypto, final Map<?, ?> params, final String separator,
                                     final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
         return crypto.encryptHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }

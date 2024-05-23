@@ -23,95 +23,36 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.crypto.builtin.digest.mac;
+package org.miaixz.bus.crypto.builtin.asymmetric;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.CryptoException;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
- * MAC（Message Authentication Code）算法引擎
+ * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
  *
+ * @param <T> 返回自身类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface MacEngine {
+public abstract class AbstractCrypto<T extends AbstractCrypto<T>>
+        extends Asymmetric<T>
+        implements Encryptor, Decryptor {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 加入需要被摘要的内容
+     * 构造
+     * <p>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param in 内容
+     * @param algorithm  算法
+     * @param privateKey 私钥
+     * @param publicKey  公钥
      */
-    default void update(final byte[] in) {
-        update(in, 0, in.length);
+    public AbstractCrypto(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+        super(algorithm, privateKey, publicKey);
     }
-
-    /**
-     * 加入需要被摘要的内容
-     *
-     * @param in    内容
-     * @param inOff 内容起始位置
-     * @param len   内容长度
-     */
-    void update(byte[] in, int inOff, int len);
-
-    /**
-     * 结束并生成摘要
-     *
-     * @return 摘要内容
-     */
-    byte[] doFinal();
-
-    /**
-     * 重置
-     */
-    void reset();
-
-    /**
-     * 生成摘要
-     *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
-     * @return 摘要bytes
-     */
-    default byte[] digest(final InputStream data, int bufferLength) {
-        if (bufferLength < 1) {
-            bufferLength = Normal.DEFAULT_BUFFER_SIZE;
-        }
-
-        final byte[] buffer = new byte[bufferLength];
-
-        byte[] result;
-        try {
-            int read = data.read(buffer, 0, bufferLength);
-
-            while (read > -1) {
-                update(buffer, 0, read);
-                read = data.read(buffer, 0, bufferLength);
-            }
-            result = doFinal();
-        } catch (final IOException e) {
-            throw new CryptoException(e);
-        } finally {
-            reset();
-        }
-        return result;
-    }
-
-    /**
-     * 获取MAC算法块大小
-     *
-     * @return MAC算法块大小
-     */
-    int getMacLength();
-
-    /**
-     * 获取当前算法
-     *
-     * @return 算法
-     */
-    String getAlgorithm();
 
 }

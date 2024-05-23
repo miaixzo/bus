@@ -23,36 +23,28 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.crypto.builtin.asymmetric;
+package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.engines.SM4Engine;
 
 /**
- * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
+ * SM4算法的MAC引擎实现
  *
- * @param <T> 返回自身类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractAsymmetricCrypto<T extends AbstractAsymmetricCrypto<T>>
-        extends BaseAsymmetric<T>
-        implements AsymmetricEncryptor, AsymmetricDecryptor {
+public class SM4Mac extends CBCBlockCipherMac {
 
-    private static final long serialVersionUID = -1L;
+    private static final int MAC_SIZE = 128;
 
     /**
      * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param params {@link CipherParameters}
      */
-    public AbstractAsymmetricCrypto(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(algorithm, privateKey, publicKey);
+    public SM4Mac(final CipherParameters params) {
+        super(new SM4Engine(), MAC_SIZE, params);
     }
 
 }

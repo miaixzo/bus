@@ -39,7 +39,7 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BCHMacEngine extends BCMacEngine {
+public class BCHMac extends BCMac {
 
     /**
      * 构造
@@ -48,7 +48,7 @@ public class BCHMacEngine extends BCMacEngine {
      * @param key    密钥
      * @param iv     加盐
      */
-    public BCHMacEngine(final Digest digest, final byte[] key, final byte[] iv) {
+    public BCHMac(final Digest digest, final byte[] key, final byte[] iv) {
         this(digest, new ParametersWithIV(new KeyParameter(key), iv));
     }
 
@@ -58,7 +58,7 @@ public class BCHMacEngine extends BCMacEngine {
      * @param digest 摘要算法，为{@link Digest} 的接口实现
      * @param key    密钥
      */
-    public BCHMacEngine(final Digest digest, final byte[] key) {
+    public BCHMac(final Digest digest, final byte[] key) {
         this(digest, new KeyParameter(key));
     }
 
@@ -68,7 +68,7 @@ public class BCHMacEngine extends BCMacEngine {
      * @param digest 摘要算法
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      */
-    public BCHMacEngine(final Digest digest, final CipherParameters params) {
+    public BCHMac(final Digest digest, final CipherParameters params) {
         this(new HMac(digest), params);
     }
 
@@ -78,7 +78,7 @@ public class BCHMacEngine extends BCMacEngine {
      * @param mac    {@link HMac}
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      */
-    public BCHMacEngine(final HMac mac, final CipherParameters params) {
+    public BCHMac(final HMac mac, final CipherParameters params) {
         super(mac, params);
     }
 

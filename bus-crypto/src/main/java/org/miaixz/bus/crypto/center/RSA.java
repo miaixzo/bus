@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.crypto.Holder;
 import org.miaixz.bus.crypto.Keeper;
-import org.miaixz.bus.crypto.builtin.asymmetric.AsymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 
 import java.math.BigInteger;
@@ -50,7 +50,7 @@ import java.security.spec.RSAPublicKeySpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RSA extends AsymmetricCrypto {
+public class RSA extends Crypto {
 
     private static final long serialVersionUID = -1L;
 

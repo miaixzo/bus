@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.crypto.center;
 
-import org.miaixz.bus.crypto.builtin.asymmetric.AsymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -41,7 +41,7 @@ import java.security.PublicKey;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ECIES extends AsymmetricCrypto {
+public class ECIES extends Crypto {
 
     private static final long serialVersionUID = -1L;
 

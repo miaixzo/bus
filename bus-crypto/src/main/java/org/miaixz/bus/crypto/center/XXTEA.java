@@ -26,8 +26,8 @@
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricDecryptor;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricEncryptor;
+import org.miaixz.bus.crypto.builtin.symmetric.Decryptor;
+import org.miaixz.bus.crypto.builtin.symmetric.Encryptor;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +40,7 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XXTEA implements SymmetricEncryptor, SymmetricDecryptor, Serializable {
+public class XXTEA implements Encryptor, Decryptor, Serializable {
 
     private static final long serialVersionUID = -1L;
 

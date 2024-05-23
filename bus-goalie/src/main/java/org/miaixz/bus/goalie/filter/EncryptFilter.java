@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.AES;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Config;
@@ -60,7 +60,7 @@ import java.nio.CharBuffer;
 public class EncryptFilter implements WebFilter {
 
     private Config.Encrypt encrypt;
-    private SymmetricCrypto crypto;
+    private Crypto crypto;
 
     public EncryptFilter(Config.Encrypt encrypt) {
         this.encrypt = encrypt;

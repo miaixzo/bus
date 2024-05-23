@@ -57,7 +57,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto> {
+public class Crypto extends AbstractCrypto<Crypto> {
 
     private static final long serialVersionUID = -1L;
 
@@ -88,7 +88,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      *
      * @param algorithm {@link Algorithm}
      */
-    public AsymmetricCrypto(final Algorithm algorithm) {
+    public Crypto(final Algorithm algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
@@ -97,7 +97,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      *
      * @param algorithm 算法
      */
-    public AsymmetricCrypto(final String algorithm) {
+    public Crypto(final String algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
@@ -109,7 +109,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKeyStr 私钥Hex或Base64表示
      * @param publicKeyStr  公钥Hex或Base64表示
      */
-    public AsymmetricCrypto(final Algorithm algorithm, final String privateKeyStr, final String publicKeyStr) {
+    public Crypto(final Algorithm algorithm, final String privateKeyStr, final String publicKeyStr) {
         this(algorithm.getValue(), Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
     }
 
@@ -121,7 +121,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
-    public AsymmetricCrypto(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
+    public Crypto(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm.getValue(), privateKey, publicKey);
     }
 
@@ -133,7 +133,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
-    public AsymmetricCrypto(final Algorithm algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Crypto(final Algorithm algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
         this(algorithm.getValue(), privateKey, publicKey);
     }
 
@@ -145,7 +145,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
      */
-    public AsymmetricCrypto(final String algorithm, final String privateKeyBase64, final String publicKeyBase64) {
+    public Crypto(final String algorithm, final String privateKeyBase64, final String publicKeyBase64) {
         this(algorithm, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
     }
 
@@ -159,7 +159,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
-    public AsymmetricCrypto(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
+    public Crypto(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm, //
                 Keeper.generatePrivateKey(algorithm, privateKey), //
                 Keeper.generatePublicKey(algorithm, publicKey)//
@@ -176,7 +176,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
-    public AsymmetricCrypto(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Crypto(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
         super(algorithm, privateKey, publicKey);
     }
 
@@ -233,7 +233,7 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
      * @return this
      */
-    public AsymmetricCrypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
+    public Crypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
         this.algorithmParameterSpec = algorithmParameterSpec;
         return this;
     }
@@ -244,13 +244,13 @@ public class AsymmetricCrypto extends AbstractAsymmetricCrypto<AsymmetricCrypto>
      * @param random 随机数生成器，可自定义随机数种子
      * @return this
      */
-    public AsymmetricCrypto setRandom(final SecureRandom random) {
+    public Crypto setRandom(final SecureRandom random) {
         this.random = random;
         return this;
     }
 
     @Override
-    public AsymmetricCrypto init(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Crypto init(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
         super.init(algorithm, privateKey, publicKey);
         initCipher();
         return this;

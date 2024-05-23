@@ -45,7 +45,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaseAsymmetric<T extends BaseAsymmetric<T>> implements Serializable {
+public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     /**
@@ -75,7 +76,7 @@ public class BaseAsymmetric<T extends BaseAsymmetric<T>> implements Serializable
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
-    public BaseAsymmetric(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Asymmetric(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
         init(algorithm, privateKey, publicKey);
     }
 

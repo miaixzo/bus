@@ -46,7 +46,7 @@ import java.io.OutputStream;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface SymmetricEncryptor {
+public interface Encryptor {
 
     /**
      * 加密
