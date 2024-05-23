@@ -26,10 +26,7 @@
 package org.miaixz.bus.shade.safety.boot;
 
 import org.miaixz.bus.shade.safety.Launcher;
-import org.springframework.boot.loader.WarLauncher;
-
-import java.net.URL;
-import java.net.URLClassLoader;
+import org.springframework.boot.loader.launch.WarLauncher;
 
 /**
  * Spring-Boot Jar 启动器
@@ -51,15 +48,6 @@ public class BootWarLauncher extends WarLauncher {
 
     public void launch() throws Exception {
         launch(launcher.args);
-    }
-
-    @Override
-    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
-        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-        URL[] urls = urlClassLoader.getURLs();
-        ClassLoader cl = new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
-        Thread.currentThread().setContextClassLoader(cl);
-        createMainMethodRunner(launchClass, args, classLoader).run();
     }
 
 }

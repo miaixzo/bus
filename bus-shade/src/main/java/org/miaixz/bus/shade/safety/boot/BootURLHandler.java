@@ -29,7 +29,7 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-import org.springframework.boot.loader.jar.Handler;
+import org.springframework.boot.loader.net.protocol.jar.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
