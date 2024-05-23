@@ -34,7 +34,9 @@ package org.miaixz.bus.logger.magic.level;
 public interface Debug {
 
     /**
-     * @return DEBUG 等级是否开启
+     * DEBUG 等级是否开启
+     *
+     * @return the true/false
      */
     boolean isDebug();
 

@@ -67,7 +67,9 @@ public interface Supplier extends Trace, Debug, Info, Warn, Error {
     }
 
     /**
-     * @return 日志对象的Name
+     * 日志对象名称
+     *
+     * @return the string
      */
     String getName();
 
@@ -75,7 +77,7 @@ public interface Supplier extends Trace, Debug, Info, Warn, Error {
      * 是否开启指定日志
      *
      * @param level 日志级别
-     * @return 是否开启指定级别
+     * @return the true/false
      */
     boolean isEnabled(Level level);
 

@@ -50,18 +50,7 @@ public class CommonsProvider extends Provider {
     /**
      * 构造
      *
-     * @param logger Logger
-     * @param name   名称
-     */
-    public CommonsProvider(final Log logger, final String name) {
-        this.logger = logger;
-        this.name = name;
-    }
-
-    /**
-     * 构造
-     *
-     * @param clazz 类
+     * @param clazz 日志实现类
      */
     public CommonsProvider(final Class<?> clazz) {
         this(LogFactory.getLog(clazz), null == clazz ? Normal.NULL : clazz.getName());
@@ -74,6 +63,17 @@ public class CommonsProvider extends Provider {
      */
     public CommonsProvider(final String name) {
         this(LogFactory.getLog(name), name);
+    }
+
+    /**
+     * 构造
+     *
+     * @param logger 日志对象
+     * @param name   名称
+     */
+    public CommonsProvider(final Log logger, final String name) {
+        this.logger = logger;
+        this.name = name;
     }
 
     @Override

@@ -34,7 +34,9 @@ package org.miaixz.bus.logger.magic.level;
 public interface Trace {
 
     /**
-     * @return TRACE 等级是否开启
+     * TRACE 等级是否开启
+     *
+     * @return the true/false
      */
     boolean isTrace();
 

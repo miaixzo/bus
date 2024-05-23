@@ -34,6 +34,13 @@ package org.miaixz.bus.logger;
 public abstract class Registry {
 
     /**
+     * 默认构造
+     */
+    public Registry() {
+
+    }
+
+    /**
      * 获得日志对象
      *
      * @param name 日志对象名

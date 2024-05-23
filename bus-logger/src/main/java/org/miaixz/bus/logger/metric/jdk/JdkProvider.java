@@ -48,43 +48,31 @@ public class JdkProvider extends Provider {
      */
     private final transient Logger logger;
 
+    /**
+     * 构造
+     *
+     * @param logger 日志对象
+     */
     public JdkProvider(final Logger logger) {
         this.logger = logger;
     }
 
+    /**
+     * 构造
+     *
+     * @param clazz 日志实现类
+     */
     public JdkProvider(final Class<?> clazz) {
         this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
+    /**
+     * 构造
+     *
+     * @param name 日志实现类名
+     */
     public JdkProvider(final String name) {
         this(Logger.getLogger(name));
-    }
-
-    /**
-     * 传入调用日志类的信息
-     *
-     * @param callerFQCN 调用者全限定类名
-     * @param record     The record to update
-     */
-    private static void fillCallerData(final String callerFQCN, final LogRecord record) {
-        final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
-
-        int found = -1;
-        String className;
-        for (int i = steArray.length - 2; i > -1; i--) {
-            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
-            className = steArray[i].getClassName();
-            if (callerFQCN.equals(className)) {
-                found = i;
-                break;
-            }
-        }
-
-        if (found > -1) {
-            final StackTraceElement ste = steArray[found + 1];
-            record.setSourceClassName(ste.getClassName());
-            record.setSourceMethodName(ste.getMethodName());
-        }
     }
 
     @Override
@@ -181,8 +169,35 @@ public class JdkProvider extends Provider {
             final LogRecord record = new LogRecord(level, StringKit.format(format, args));
             record.setLoggerName(getName());
             record.setThrown(throwable);
-            fillCallerData(fqcn, record);
+            fill(fqcn, record);
             logger.log(record);
+        }
+    }
+
+    /**
+     * 传入调用日志类的信息
+     *
+     * @param fqcn   调用者全限定类名
+     * @param record 要更新的记录
+     */
+    private static void fill(final String fqcn, final LogRecord record) {
+        final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
+
+        int found = -1;
+        String className;
+        for (int i = steArray.length - 2; i > -1; i--) {
+            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
+            className = steArray[i].getClassName();
+            if (fqcn.equals(className)) {
+                found = i;
+                break;
+            }
+        }
+
+        if (found > -1) {
+            final StackTraceElement ste = steArray[found + 1];
+            record.setSourceClassName(ste.getClassName());
+            record.setSourceMethodName(ste.getMethodName());
         }
     }
 

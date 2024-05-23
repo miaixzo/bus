@@ -52,15 +52,30 @@ public class Slf4jProvider extends Provider {
      */
     private final boolean isLocationAwareLogger;
 
+    /**
+     * 构造
+     *
+     * @param logger 日志对象
+     */
     public Slf4jProvider(final Logger logger) {
         this.logger = logger;
         this.isLocationAwareLogger = (logger instanceof LocationAwareLogger);
     }
 
+    /**
+     * 构造
+     *
+     * @param clazz 日志实现类
+     */
     public Slf4jProvider(final Class<?> clazz) {
         this(null == clazz ? LoggerFactory.getLogger(Normal.EMPTY) : LoggerFactory.getLogger(clazz));
     }
 
+    /**
+     * 构造
+     *
+     * @param name 日志实现类名
+     */
     public Slf4jProvider(final String name) {
         this(LoggerFactory.getLogger(name));
     }

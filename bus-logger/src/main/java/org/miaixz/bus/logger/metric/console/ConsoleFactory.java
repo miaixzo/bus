@@ -29,7 +29,7 @@ import org.miaixz.bus.logger.Supplier;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 利用System.out.println()打印日志
+ * System.out.println 打印日志
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.Provider;
 
 /**
- * 利用System.out.println()打印日志
+ * System.out.println 打印日志
  *
  * @author Kimi Liu
  * @since Java 17+

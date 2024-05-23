@@ -49,7 +49,7 @@ public class JbossProvider extends Provider {
     /**
      * 构造
      *
-     * @param logger {@link Logger}
+     * @param logger 日志对象
      */
     public JbossProvider(final Logger logger) {
         this.logger = logger;
@@ -58,7 +58,7 @@ public class JbossProvider extends Provider {
     /**
      * 构造
      *
-     * @param clazz 日志打印所在类
+     * @param clazz 日志实现类
      */
     public JbossProvider(final Class<?> clazz) {
         this((null == clazz) ? Normal.NULL : clazz.getName());
@@ -67,7 +67,7 @@ public class JbossProvider extends Provider {
     /**
      * 构造
      *
-     * @param name 日志打印所在类名
+     * @param name 日志实现类名
      */
     public JbossProvider(final String name) {
         this(Logger.getLogger(name));

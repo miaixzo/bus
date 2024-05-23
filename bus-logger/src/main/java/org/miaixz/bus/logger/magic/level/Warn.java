@@ -34,7 +34,9 @@ package org.miaixz.bus.logger.magic.level;
 public interface Warn {
 
     /**
-     * @return WARN 等级是否开启
+     * WARN 等级是否开启
+     *
+     * @return the true/false
      */
     boolean isWarn();
 

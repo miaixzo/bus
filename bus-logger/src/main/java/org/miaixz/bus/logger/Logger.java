@@ -39,6 +39,13 @@ public class Logger {
     private static final String FQCN = Logger.class.getName();
 
     /**
+     * 默认构造
+     */
+    public Logger() {
+
+    }
+
+    /**
      * Trace等级日志，小于debug
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *

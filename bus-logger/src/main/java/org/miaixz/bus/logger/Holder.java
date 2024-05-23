@@ -46,6 +46,13 @@ import java.net.URL;
 public class Holder {
 
     /**
+     * 默认构造
+     */
+    public Holder() {
+
+    }
+
+    /**
      * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
      *
      * @return the factory

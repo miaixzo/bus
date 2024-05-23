@@ -65,7 +65,7 @@ public class TinyLogProvider extends Provider {
     /**
      * 构造
      *
-     * @param clazz class
+     * @param clazz 日志实现类
      */
     public TinyLogProvider(final Class<?> clazz) {
         this(null == clazz ? Normal.NULL : clazz.getName());

@@ -48,6 +48,13 @@ public abstract class Provider implements Supplier, Serializable {
      */
     protected String name;
 
+    /**
+     * 默认构造
+     */
+    public Provider() {
+
+    }
+
     @Override
     public boolean isEnabled(final Level level) {
         switch (level) {

@@ -34,7 +34,9 @@ package org.miaixz.bus.logger.magic.level;
 public interface Info {
 
     /**
-     * @return INFO 等级是否开启
+     * INFO 等级是否开启
+     *
+     * @return the true/false
      */
     boolean isInfo();
 

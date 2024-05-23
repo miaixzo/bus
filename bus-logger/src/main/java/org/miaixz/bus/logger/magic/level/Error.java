@@ -34,7 +34,9 @@ package org.miaixz.bus.logger.magic.level;
 public interface Error {
 
     /**
-     * @return ERROR 等级是否开启
+     * ERROR 等级是否开启
+     *
+     * @return the true/false
      */
     boolean isError();
 

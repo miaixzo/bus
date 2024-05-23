@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Level;
 import java.util.function.Function;
 
 /**
- * 利用System.out.println()打印彩色日志
+ * System.out.println 打印彩色日志
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -87,19 +87,10 @@ public class ConsoleColorProvider extends ConsoleProvider {
     /**
      * 构造
      *
-     * @param clazz 类
+     * @param clazz 日志实现类
      */
     public ConsoleColorProvider(final Class<?> clazz) {
         super(clazz);
-    }
-
-    /**
-     * 设置颜色工厂，根据日志级别，定义不同的颜色
-     *
-     * @param colorFactory 颜色工厂函数
-     */
-    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
-        ConsoleColorProvider.colorFactory = colorFactory;
     }
 
     @Override
@@ -110,6 +101,15 @@ public class ConsoleColorProvider extends ConsoleProvider {
 
         final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
         System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, args));
+    }
+
+    /**
+     * 设置颜色工厂，根据日志级别，定义不同的颜色
+     *
+     * @param colorFactory 颜色工厂函数
+     */
+    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
+        ConsoleColorProvider.colorFactory = colorFactory;
     }
 
 }
