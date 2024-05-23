@@ -152,7 +152,7 @@ public class PathMover {
             // 移动失败，可能是跨分区移动导致的，采用递归移动方式
             walkMove(src, target, options);
             // 移动后删除空目录
-            PathResolve.del(src);
+            PathResolve.remove(src);
             return target;
         }
     }

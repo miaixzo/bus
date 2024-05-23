@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PathDeleter {
+public class PathRemover {
 
     private final Path path;
 
@@ -50,7 +50,7 @@ public class PathDeleter {
      *
      * @param path 文件或目录，不能为{@code null}且必须存在
      */
-    public PathDeleter(final Path path) {
+    public PathRemover(final Path path) {
         this.path = Assert.notNull(path, "Path must be not null !");
     }
 
@@ -60,8 +60,39 @@ public class PathDeleter {
      * @param src 源文件或目录
      * @return {@code PathMover}
      */
-    public static PathDeleter of(final Path src) {
-        return new PathDeleter(src);
+    public static PathRemover of(final Path src) {
+        return new PathRemover(src);
+    }
+
+    /**
+     * 删除文件或者文件夹，不追踪软链
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 某个文件删除失败会终止删除操作
+     *
+     * @throws InternalException IO异常
+     */
+    public void remove() throws InternalException {
+        final Path path = this.path;
+        if (Files.notExists(path)) {
+            return;
+        }
+
+        if (PathResolve.isDirectory(path)) {
+            remove(path);
+        } else {
+            removeFile(path);
+        }
+    }
+
+    /**
+     * 清空目录
+     */
+    public void clean() {
+        try (final Stream<Path> list = Files.list(this.path)) {
+            list.forEach(PathResolve::remove);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**
@@ -69,7 +100,7 @@ public class PathDeleter {
      *
      * @param path 目录路径
      */
-    private static void _del(final Path path) {
+    private static void remove(final Path path) {
         try {
             Files.walkFileTree(path, DeleteVisitor.INSTANCE);
         } catch (final IOException e) {
@@ -83,7 +114,7 @@ public class PathDeleter {
      * @param path 文件对象
      * @throws InternalException IO异常
      */
-    private static void delFile(final Path path) throws InternalException {
+    private static void removeFile(final Path path) throws InternalException {
         try {
             Files.delete(path);
         } catch (final IOException e) {
@@ -93,37 +124,6 @@ public class PathDeleter {
                     return;
                 }
             }
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 删除文件或者文件夹，不追踪软链
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
-     *
-     * @throws InternalException IO异常
-     */
-    public void del() throws InternalException {
-        final Path path = this.path;
-        if (Files.notExists(path)) {
-            return;
-        }
-
-        if (PathResolve.isDirectory(path)) {
-            _del(path);
-        } else {
-            delFile(path);
-        }
-    }
-
-    /**
-     * 清空目录
-     */
-    public void clean() {
-        try (final Stream<Path> list = Files.list(this.path)) {
-            list.forEach(PathResolve::del);
-        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }

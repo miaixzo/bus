@@ -41,6 +41,7 @@ package org.miaixz.bus.core.io.file;
  * @since Java 17+
  */
 public enum LineSeparator {
+
     /**
      * Mac系统换行符："\r"
      */
@@ -63,4 +64,5 @@ public enum LineSeparator {
     public String getValue() {
         return this.value;
     }
+
 }

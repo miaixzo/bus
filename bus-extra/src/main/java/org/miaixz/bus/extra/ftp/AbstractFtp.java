@@ -165,7 +165,7 @@ public abstract class AbstractFtp implements Ftp {
             FileKit.rename(outFile, fileName, true);
         } catch (final Throwable e) {
             // 异常则删除临时文件
-            FileKit.del(outFile);
+            FileKit.remove(outFile);
             throw new InternalException(e);
         }
     }

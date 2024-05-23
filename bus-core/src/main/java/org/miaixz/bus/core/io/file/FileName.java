@@ -132,67 +132,6 @@ public class FileName {
     }
 
     /**
-     * 获取文件后缀名，扩展名不带“.”
-     *
-     * @param file 文件
-     * @return 扩展名
-     * @see #extName(File)
-     */
-    public static String getSuffix(final File file) {
-        return extName(file);
-    }
-
-    /**
-     * 获得文件后缀名，扩展名不带“.”
-     *
-     * @param fileName 文件名
-     * @return 扩展名
-     * @see #extName(String)
-     */
-    public static String getSuffix(final String fileName) {
-        return extName(fileName);
-    }
-
-    /**
-     * 增加临时扩展名
-     *
-     * @param fileName 文件名
-     * @param suffix   临时扩展名，如果为空，使用`.temp`
-     * @return 临时文件名
-     */
-    public static String addTempSuffix(final String fileName, String suffix) {
-        if (StringKit.isBlank(suffix)) {
-            suffix = ".temp";
-        } else {
-            suffix = StringKit.addPrefixIfNot(suffix, Symbol.DOT);
-        }
-
-        return fileName + suffix;
-    }
-
-    /**
-     * 返回主文件名
-     *
-     * @param file 文件
-     * @return 主文件名
-     * @see #mainName(File)
-     */
-    public static String getPrefix(final File file) {
-        return mainName(file);
-    }
-
-    /**
-     * 返回主文件名
-     *
-     * @param fileName 完整文件名
-     * @return 主文件名
-     * @see #mainName(String)
-     */
-    public static String getPrefix(final String fileName) {
-        return mainName(fileName);
-    }
-
-    /**
      * 返回主文件名
      *
      * @param file 文件
@@ -290,6 +229,67 @@ public class FileName {
             // 扩展名中不能包含路径相关的符号
             return StringKit.containsAny(ext, UNIX_SEPARATOR, WINDOWS_SEPARATOR) ? Normal.EMPTY : ext;
         }
+    }
+
+    /**
+     * 获取文件后缀名，扩展名不带“.”
+     *
+     * @param file 文件
+     * @return 扩展名
+     * @see #extName(File)
+     */
+    public static String getSuffix(final File file) {
+        return extName(file);
+    }
+
+    /**
+     * 获得文件后缀名，扩展名不带“.”
+     *
+     * @param fileName 文件名
+     * @return 扩展名
+     * @see #extName(String)
+     */
+    public static String getSuffix(final String fileName) {
+        return extName(fileName);
+    }
+
+    /**
+     * 返回主文件名
+     *
+     * @param file 文件
+     * @return 主文件名
+     * @see #mainName(File)
+     */
+    public static String getPrefix(final File file) {
+        return mainName(file);
+    }
+
+    /**
+     * 返回主文件名
+     *
+     * @param fileName 完整文件名
+     * @return 主文件名
+     * @see #mainName(String)
+     */
+    public static String getPrefix(final String fileName) {
+        return mainName(fileName);
+    }
+
+    /**
+     * 增加临时扩展名
+     *
+     * @param fileName 文件名
+     * @param suffix   临时扩展名，如果为空，使用`.temp`
+     * @return 临时文件名
+     */
+    public static String addTempSuffix(final String fileName, String suffix) {
+        if (StringKit.isBlank(suffix)) {
+            suffix = ".temp";
+        } else {
+            suffix = StringKit.addPrefixIfNot(suffix, Symbol.DOT);
+        }
+
+        return fileName + suffix;
     }
 
     /**

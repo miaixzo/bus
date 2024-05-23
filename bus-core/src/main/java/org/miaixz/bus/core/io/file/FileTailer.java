@@ -80,9 +80,9 @@ public class FileTailer implements Serializable {
     private final String filePath;
     private final RandomAccessFile randomAccessFile;
     private final ScheduledExecutorService executorService;
-    private WatchMonitor fileDeleteWatchMonitor;
+    private WatchMonitor fileWatchMonitor;
 
-    private boolean stopOnDelete;
+    private boolean stopOnRemove;
 
     /**
      * 构造，默认UTF-8编码
@@ -153,10 +153,10 @@ public class FileTailer implements Serializable {
     /**
      * 设置删除文件后是否退出并抛出异常
      *
-     * @param stopOnDelete 删除文件后是否退出并抛出异常
+     * @param stopOnRemove 删除文件后是否退出并抛出异常
      */
-    public void setStopOnDelete(final boolean stopOnDelete) {
-        this.stopOnDelete = stopOnDelete;
+    public void setStopOnRemove(final boolean stopOnRemove) {
+        this.stopOnRemove = stopOnRemove;
     }
 
     /**
@@ -187,9 +187,9 @@ public class FileTailer implements Serializable {
         );
 
         // 监听删除
-        if (stopOnDelete) {
-            fileDeleteWatchMonitor = WatchKit.of(this.filePath, WatchKind.DELETE.getValue());
-            fileDeleteWatchMonitor.setWatcher(new SimpleWatcher() {
+        if (stopOnRemove) {
+            fileWatchMonitor = WatchKit.of(this.filePath, WatchKind.DELETE.getValue());
+            fileWatchMonitor.setWatcher(new SimpleWatcher() {
 
                 private static final long serialVersionUID = -1L;
 
@@ -200,7 +200,7 @@ public class FileTailer implements Serializable {
                     throw new InternalException("{} has been deleted", filePath);
                 }
             });
-            fileDeleteWatchMonitor.start();
+            fileWatchMonitor.start();
         }
 
         if (!async) {
@@ -222,7 +222,7 @@ public class FileTailer implements Serializable {
             this.executorService.shutdown();
         } finally {
             IoKit.closeQuietly(this.randomAccessFile);
-            IoKit.closeQuietly(this.fileDeleteWatchMonitor);
+            IoKit.closeQuietly(this.fileWatchMonitor);
         }
     }
 
