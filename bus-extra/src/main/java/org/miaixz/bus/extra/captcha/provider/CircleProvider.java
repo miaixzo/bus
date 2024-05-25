@@ -23,12 +23,13 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha;
+package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.extra.captcha.generator.CodeGenerator;
-import org.miaixz.bus.extra.captcha.generator.RandomGenerator;
+import org.miaixz.bus.extra.captcha.AbstractProvider;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
+import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;
@@ -36,23 +37,23 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 使用干扰线方式生成的图形验证码
+ * 圆圈干扰验证码
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LineCaptcha extends AbstractCaptcha {
+public class CircleProvider extends AbstractProvider {
 
     private static final long serialVersionUID = -1L;
 
     /**
-     * 构造，默认5位验证码，150条干扰线
+     * 构造
      *
      * @param width  图片宽
      * @param height 图片高
      */
-    public LineCaptcha(final int width, final int height) {
-        this(width, height, 5, 150);
+    public CircleProvider(final int width, final int height) {
+        this(width, height, 5);
     }
 
     /**
@@ -61,10 +62,21 @@ public class LineCaptcha extends AbstractCaptcha {
      * @param width     图片宽
      * @param height    图片高
      * @param codeCount 字符个数
-     * @param lineCount 干扰线条数
      */
-    public LineCaptcha(final int width, final int height, final int codeCount, final int lineCount) {
-        this(width, height, new RandomGenerator(codeCount), lineCount);
+    public CircleProvider(final int width, final int height, final int codeCount) {
+        this(width, height, codeCount, 15);
+    }
+
+    /**
+     * 构造
+     *
+     * @param width          图片宽
+     * @param height         图片高
+     * @param codeCount      字符个数
+     * @param interfereCount 验证码干扰元素个数
+     */
+    public CircleProvider(final int width, final int height, final int codeCount, final int interfereCount) {
+        this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
@@ -75,7 +87,7 @@ public class LineCaptcha extends AbstractCaptcha {
      * @param generator      验证码生成器
      * @param interfereCount 验证码干扰元素个数
      */
-    public LineCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount) {
+    public CircleProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
@@ -88,21 +100,20 @@ public class LineCaptcha extends AbstractCaptcha {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public LineCaptcha(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
-        super(width, height, new RandomGenerator(codeCount), interfereCount, sizeBaseHeight);
+    public CircleProvider(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
+        super(width, height, new RandomStrategy(codeCount), interfereCount, sizeBaseHeight);
     }
 
     @Override
     public Image createImage(final String code) {
-        // 图像buffer
         final BufferedImage image = new BufferedImage(width, height, (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {
-            // 干扰线
+            // 随机画干扰圈圈
             drawInterfere(g);
 
-            // 字符串
+            // 画字符串
             drawString(g, code);
         } finally {
             g.dispose();
@@ -114,7 +125,7 @@ public class LineCaptcha extends AbstractCaptcha {
     /**
      * 绘制字符串
      *
-     * @param g    {@link Graphics}画笔
+     * @param g    {@link Graphics2D}画笔
      * @param code 验证码
      */
     private void drawString(final Graphics2D g, final String code) {
@@ -126,20 +137,16 @@ public class LineCaptcha extends AbstractCaptcha {
     }
 
     /**
-     * 绘制干扰线
+     * 画随机干扰
      *
-     * @param g {@link Graphics2D}画笔
+     * @param g {@link Graphics2D}
      */
     private void drawInterfere(final Graphics2D g) {
         final ThreadLocalRandom random = RandomKit.getRandom();
-        // 干扰线
+
         for (int i = 0; i < this.interfereCount; i++) {
-            final int xs = random.nextInt(width);
-            final int ys = random.nextInt(height);
-            final int xe = xs + random.nextInt(width / 8);
-            final int ye = ys + random.nextInt(height / 8);
             g.setColor(ColorKit.randomColor(random));
-            g.drawLine(xs, ys, xe, ye);
+            g.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
         }
     }
 

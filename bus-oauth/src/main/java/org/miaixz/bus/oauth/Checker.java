@@ -51,18 +51,18 @@ public class Checker {
         boolean isSupported = StringKit.isNotEmpty(context.getAppKey())
                 && StringKit.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.STACK_OVERFLOW == complex) {
-            isSupported = StringKit.isNotEmpty(context.getStackOverflowKey());
+            isSupported = StringKit.isNotEmpty(context.getUnionId());
         }
         if (isSupported && Registry.WECHAT_EE == complex) {
-            isSupported = StringKit.isNotEmpty(context.getAgentId());
+            isSupported = StringKit.isNotEmpty(context.getUnionId());
         }
         if (isSupported && (Registry.CODING == complex || Registry.OKTA == complex)) {
             isSupported = StringKit.isNotEmpty(context.getPrefix());
         }
         if (isSupported && Registry.XIMALAYA == complex) {
-            isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getClientOsType();
+            isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getType();
             if (isSupported) {
-                isSupported = context.getClientOsType() == 3 || StringKit.isNotEmpty(context.getPackId());
+                isSupported = "3".equals(context.getType()) || StringKit.isNotEmpty(context.getUnionId());
             }
         }
         return isSupported;
@@ -76,7 +76,7 @@ public class Checker {
      */
     public static void checkConfig(Context context, Complex complex) {
         String redirectUri = context.getRedirectUri();
-        if (context.isIgnoreCheckRedirectUri()) {
+        if (context.isIgnoreRedirectUri()) {
             return;
         }
         if (StringKit.isEmpty(redirectUri)) {

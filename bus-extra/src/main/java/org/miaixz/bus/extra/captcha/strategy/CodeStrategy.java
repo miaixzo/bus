@@ -23,90 +23,33 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha.generator;
+package org.miaixz.bus.extra.captcha.strategy;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.math.Calculator;
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import java.io.Serializable;
 
 /**
- * 数字计算验证码生成器
+ * 验证码文字生成策略
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MathGenerator implements CodeGenerator {
-
-    private static final long serialVersionUID = -1L;
-
-    private static final String operators = "+-*";
+public interface CodeStrategy extends Serializable {
 
     /**
-     * 参与计算数字最大长度
-     */
-    private final int numberLength;
-
-    /**
-     * 构造
-     */
-    public MathGenerator() {
-        this(2);
-    }
-
-    /**
-     * 构造
+     * 生成验证码
      *
-     * @param numberLength 参与计算最大数字位数
+     * @return 验证码
      */
-    public MathGenerator(final int numberLength) {
-        this.numberLength = numberLength;
-    }
-
-    @Override
-    public String generate() {
-        final int limit = getLimit();
-        String number1 = Integer.toString(RandomKit.randomInt(limit));
-        String number2 = Integer.toString(RandomKit.randomInt(limit));
-        number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
-        number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
-
-        return StringKit.builder()
-                .append(number1)
-                .append(RandomKit.randomChar(operators))
-                .append(number2)//
-                .append(Symbol.C_EQUAL).toString();
-    }
-
-    @Override
-    public boolean verify(final String code, final String userInputCode) {
-        final int result;
-        try {
-            result = Integer.parseInt(userInputCode);
-        } catch (final NumberFormatException e) {
-            // 用户输入非数字
-            return false;
-        }
-
-        final int calculateResult = (int) Calculator.conversion(code);
-        return result == calculateResult;
-    }
+    String generate();
 
     /**
-     * 获取验证码长度
+     * 验证用户输入的字符串是否与生成的验证码匹配
+     * 用户通过实现此方法定义验证码匹配方式
      *
-     * @return 验证码长度
+     * @param code          生成的随机验证码
+     * @param userInputCode 用户输入的验证码
+     * @return 是否验证通过
      */
-    public int getLength() {
-        return this.numberLength * 2 + 2;
-    }
+    boolean verify(String code, String userInputCode);
 
-    /**
-     * 根据长度获取参与计算数字最大值
-     *
-     * @return 最大值
-     */
-    private int getLimit() {
-        return Integer.parseInt("1" + StringKit.repeat('0', this.numberLength));
-    }
 }

@@ -134,7 +134,7 @@ public class FileType {
      */
     public static final String TYPE_TXT = "txt";
 
-    private static final Map<String, String> FILE_TYPE = new ConcurrentSkipListMap<>() {
+    public static final Map<String, String> FILE_TYPE = new ConcurrentSkipListMap<>() {
 
         /**
          * 图片格式

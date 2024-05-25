@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,56 +23,64 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha.generator;
+package org.miaixz.bus.oauth;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.oauth.magic.AccToken;
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Message;
 
 /**
- * 随机字符验证码生成器
- * 可以通过传入的基础集合和长度随机生成验证码字符
+ * {@code Request}公共接口，所有平台的{@code Request}都需要实现该接口
+ * {@link Provider#authorize(String)}
+ * {@link Provider#login(Callback)}
+ * {@link Provider#revoke(AccToken)}
+ * {@link Provider#refresh(AccToken)}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractGenerator implements CodeGenerator {
-
-    private static final long serialVersionUID = -1L;
+public interface Provider {
 
     /**
-     * 基础字符集合，用于随机获取字符串的字符集合
-     */
-    protected final String baseStr;
-    /**
-     * 验证码长度
-     */
-    protected final int length;
-
-    /**
-     * 构造，使用字母+数字做为基础
+     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
      *
-     * @param count 生成验证码长度
+     * @param state state 验证授权流程的参数，可以防止csrf
+     * @return 返回授权地址
      */
-    public AbstractGenerator(final int count) {
-        this(Normal.LOWER_ALPHABET_NUMBER, count);
+    default String authorize(String state) {
+        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
     /**
-     * 构造
+     * 第三方登录
      *
-     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
-     * @param length  生成验证码长度
+     * @param authCallback 用于接收回调参数的实体
+     * @return 返回登录成功后的用户信息
      */
-    public AbstractGenerator(final String baseStr, final int length) {
-        this.baseStr = baseStr;
-        this.length = length;
+    default Message login(Callback authCallback) {
+        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
     /**
-     * 获取长度验证码
+     * 撤销授权
      *
-     * @return 验证码长度
+     * @param accToken 登录成功后返回的Token信息
+     * @return Message
      */
-    public int getLength() {
-        return this.length;
+    default Message revoke(AccToken accToken) {
+        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
     }
+
+    /**
+     * 刷新access token （续期）
+     *
+     * @param accToken 登录成功后返回的Token信息
+     * @return Message
+     */
+    default Message refresh(AccToken accToken) {
+        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+    }
+
 }

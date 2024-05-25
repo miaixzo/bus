@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
+ * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,64 +23,51 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.oauth.metric;
+package org.miaixz.bus.extra.captcha.strategy;
 
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.oauth.magic.AccToken;
-import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.magic.Message;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@code Request}公共接口，所有平台的{@code Request}都需要实现该接口
- * {@link AuthorizeProvider#authorize(String)}
- * {@link AuthorizeProvider#login(Callback)}
- * {@link AuthorizeProvider#revoke(AccToken)}
- * {@link AuthorizeProvider#refresh(AccToken)}
+ * 随机字符验证码生成策略
+ * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface AuthorizeProvider {
+public class RandomStrategy extends AbstractStrategy {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 构造，使用字母+数字做为基础
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param count 生成验证码长度
      */
-    default String authorize(String state) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+    public RandomStrategy(final int count) {
+        super(count);
     }
 
     /**
-     * 第三方登录
+     * 构造
      *
-     * @param authCallback 用于接收回调参数的实体
-     * @return 返回登录成功后的用户信息
+     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
+     * @param length  生成验证码长度
      */
-    default Message login(Callback authCallback) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+    public RandomStrategy(final String baseStr, final int length) {
+        super(baseStr, length);
     }
 
-    /**
-     * 撤销授权
-     *
-     * @param accToken 登录成功后返回的Token信息
-     * @return Message
-     */
-    default Message revoke(AccToken accToken) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+    @Override
+    public String generate() {
+        return RandomKit.randomString(this.baseStr, this.length);
     }
 
-    /**
-     * 刷新access token （续期）
-     *
-     * @param accToken 登录成功后返回的Token信息
-     * @return Message
-     */
-    default Message refresh(AccToken accToken) {
-        throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
+    @Override
+    public boolean verify(final String code, final String userInputCode) {
+        if (StringKit.isNotBlank(userInputCode)) {
+            return StringKit.equalsIgnoreCase(code, userInputCode);
+        }
+        return false;
     }
-
 }

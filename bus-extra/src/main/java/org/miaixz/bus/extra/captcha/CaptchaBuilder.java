@@ -25,23 +25,28 @@
  ********************************************************************************/
 package org.miaixz.bus.extra.captcha;
 
+import org.miaixz.bus.extra.captcha.provider.CircleProvider;
+import org.miaixz.bus.extra.captcha.provider.GifProvider;
+import org.miaixz.bus.extra.captcha.provider.LineProvider;
+import org.miaixz.bus.extra.captcha.provider.ShearProvider;
+
 /**
  * 图形验证码工具
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CaptchaKit {
+public class CaptchaBuilder {
 
     /**
      * 创建线干扰的验证码，默认5位验证码，150条干扰线
      *
      * @param width  图片宽
      * @param height 图片高
-     * @return {@link LineCaptcha}
+     * @return {@link LineProvider}
      */
-    public static LineCaptcha ofLineCaptcha(final int width, final int height) {
-        return new LineCaptcha(width, height);
+    public static LineProvider ofLineCaptcha(final int width, final int height) {
+        return new LineProvider(width, height);
     }
 
     /**
@@ -51,10 +56,10 @@ public class CaptchaKit {
      * @param height    图片高
      * @param codeCount 字符个数
      * @param lineCount 干扰线条数
-     * @return {@link LineCaptcha}
+     * @return {@link LineProvider}
      */
-    public static LineCaptcha ofLineCaptcha(final int width, final int height, final int codeCount, final int lineCount) {
-        return new LineCaptcha(width, height, codeCount, lineCount);
+    public static LineProvider ofLineCaptcha(final int width, final int height, final int codeCount, final int lineCount) {
+        return new LineProvider(width, height, codeCount, lineCount);
     }
 
     /**
@@ -65,11 +70,11 @@ public class CaptchaKit {
      * @param codeCount      字符个数
      * @param lineCount      干扰线条数
      * @param sizeBaseHeight 字体的大小 高度的倍数
-     * @return {@link LineCaptcha}
+     * @return {@link LineProvider}
      */
-    public static LineCaptcha ofLineCaptcha(final int width, final int height, final int codeCount,
-                                            final int lineCount, final float sizeBaseHeight) {
-        return new LineCaptcha(width, height, codeCount, lineCount, sizeBaseHeight);
+    public static LineProvider ofLineCaptcha(final int width, final int height, final int codeCount,
+                                             final int lineCount, final float sizeBaseHeight) {
+        return new LineProvider(width, height, codeCount, lineCount, sizeBaseHeight);
     }
 
     /**
@@ -77,10 +82,10 @@ public class CaptchaKit {
      *
      * @param width  图片宽
      * @param height 图片高
-     * @return {@link CircleCaptcha}
+     * @return {@link CircleProvider}
      */
-    public static CircleCaptcha ofCircleCaptcha(final int width, final int height) {
-        return new CircleCaptcha(width, height);
+    public static CircleProvider ofCircleCaptcha(final int width, final int height) {
+        return new CircleProvider(width, height);
     }
 
     /**
@@ -90,10 +95,10 @@ public class CaptchaKit {
      * @param height      图片高
      * @param codeCount   字符个数
      * @param circleCount 干扰圆圈条数
-     * @return {@link CircleCaptcha}
+     * @return {@link CircleProvider}
      */
-    public static CircleCaptcha ofCircleCaptcha(final int width, final int height, final int codeCount, final int circleCount) {
-        return new CircleCaptcha(width, height, codeCount, circleCount);
+    public static CircleProvider ofCircleCaptcha(final int width, final int height, final int codeCount, final int circleCount) {
+        return new CircleProvider(width, height, codeCount, circleCount);
     }
 
     /**
@@ -104,11 +109,11 @@ public class CaptchaKit {
      * @param codeCount   字符个数
      * @param circleCount 干扰圆圈条数
      * @param size        字体的大小 高度的倍数
-     * @return {@link CircleCaptcha}
+     * @return {@link CircleProvider}
      */
-    public static CircleCaptcha ofCircleCaptcha(final int width, final int height, final int codeCount,
-                                                final int circleCount, final float size) {
-        return new CircleCaptcha(width, height, codeCount, circleCount, size);
+    public static CircleProvider ofCircleCaptcha(final int width, final int height, final int codeCount,
+                                                 final int circleCount, final float size) {
+        return new CircleProvider(width, height, codeCount, circleCount, size);
     }
 
     /**
@@ -116,10 +121,10 @@ public class CaptchaKit {
      *
      * @param width  图片宽
      * @param height 图片高
-     * @return {@link ShearCaptcha}
+     * @return {@link ShearProvider}
      */
-    public static ShearCaptcha ofShearCaptcha(final int width, final int height) {
-        return new ShearCaptcha(width, height);
+    public static ShearProvider ofShearCaptcha(final int width, final int height) {
+        return new ShearProvider(width, height);
     }
 
     /**
@@ -129,10 +134,10 @@ public class CaptchaKit {
      * @param height    图片高
      * @param codeCount 字符个数
      * @param thickness 干扰线宽度
-     * @return {@link ShearCaptcha}
+     * @return {@link ShearProvider}
      */
-    public static ShearCaptcha ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness) {
-        return new ShearCaptcha(width, height, codeCount, thickness);
+    public static ShearProvider ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness) {
+        return new ShearProvider(width, height, codeCount, thickness);
     }
 
     /**
@@ -143,10 +148,10 @@ public class CaptchaKit {
      * @param codeCount      字符个数
      * @param thickness      干扰线宽度
      * @param sizeBaseHeight 字体的大小 高度的倍数
-     * @return {@link ShearCaptcha}
+     * @return {@link ShearProvider}
      */
-    public static ShearCaptcha ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness, final float sizeBaseHeight) {
-        return new ShearCaptcha(width, height, codeCount, thickness, sizeBaseHeight);
+    public static ShearProvider ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness, final float sizeBaseHeight) {
+        return new ShearProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }
 
     /**
@@ -154,10 +159,10 @@ public class CaptchaKit {
      *
      * @param width  宽
      * @param height 高
-     * @return {@link GifCaptcha}
+     * @return {@link GifProvider}
      */
-    public static GifCaptcha ofGifCaptcha(final int width, final int height) {
-        return new GifCaptcha(width, height);
+    public static GifProvider ofGifCaptcha(final int width, final int height) {
+        return new GifProvider(width, height);
     }
 
     /**
@@ -166,10 +171,10 @@ public class CaptchaKit {
      * @param width     宽
      * @param height    高
      * @param codeCount 字符个数
-     * @return {@link GifCaptcha}
+     * @return {@link GifProvider}
      */
-    public static GifCaptcha ofGifCaptcha(final int width, final int height, final int codeCount) {
-        return new GifCaptcha(width, height, codeCount);
+    public static GifProvider ofGifCaptcha(final int width, final int height, final int codeCount) {
+        return new GifProvider(width, height, codeCount);
     }
 
     /**
@@ -180,11 +185,11 @@ public class CaptchaKit {
      * @param codeCount      字符个数
      * @param thickness      验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
-     * @return {@link GifCaptcha}
+     * @return {@link GifProvider}
      */
-    public static GifCaptcha ofGifCaptcha(final int width, final int height, final int codeCount,
-                                          final int thickness, final float sizeBaseHeight) {
-        return new GifCaptcha(width, height, codeCount, thickness, sizeBaseHeight);
+    public static GifProvider ofGifCaptcha(final int width, final int height, final int codeCount,
+                                           final int thickness, final float sizeBaseHeight) {
+        return new GifProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }
 
 }

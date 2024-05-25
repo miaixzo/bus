@@ -53,7 +53,7 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompressKit {
+public class CompressBuilder {
 
     /**
      * 获取压缩输出流，用于压缩指定内容，支持的格式例如：

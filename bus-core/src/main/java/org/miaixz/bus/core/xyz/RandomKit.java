@@ -579,7 +579,7 @@ public class RandomKit {
      * @throws IllegalArgumentException 需要的长度大于给定集合非重复总数
      */
     public static <T> Set<T> randomEleSet(final Collection<T> collection, final int count) {
-        final ArrayList<T> source = CollKit.distinct(collection);
+        final List<T> source = CollKit.distinct(collection);
         if (count > source.size()) {
             throw new IllegalArgumentException("Count is larger than collection distinct size !");
         }

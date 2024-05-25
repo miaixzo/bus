@@ -23,33 +23,44 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha.generator;
+package org.miaixz.bus.extra.captcha;
 
+import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
- * 验证码文字生成器
+ * 验证码接口，提供验证码对象接口定义
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface CodeGenerator extends Serializable {
+public interface CaptchaProvider extends Serializable {
 
     /**
-     * 生成验证码
-     *
-     * @return 验证码
+     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
      */
-    String generate();
+    void create();
 
     /**
-     * 验证用户输入的字符串是否与生成的验证码匹配
-     * 用户通过实现此方法定义验证码匹配方式
+     * 获取验证码的文字内容
      *
-     * @param code          生成的随机验证码
+     * @return 验证码文字内容
+     */
+    String get();
+
+    /**
+     * 验证验证码是否正确，建议忽略大小写
+     *
      * @param userInputCode 用户输入的验证码
-     * @return 是否验证通过
+     * @return 是否与生成的一直
      */
-    boolean verify(String code, String userInputCode);
+    boolean verify(String userInputCode);
+
+    /**
+     * 将验证码写出到目标流中
+     *
+     * @param out 目标流
+     */
+    void write(OutputStream out);
 
 }

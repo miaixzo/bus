@@ -23,13 +23,14 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha;
+package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.extra.captcha.generator.CodeGenerator;
-import org.miaixz.bus.extra.captcha.generator.RandomGenerator;
+import org.miaixz.bus.extra.captcha.AbstractProvider;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
+import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;
@@ -41,7 +42,7 @@ import java.awt.image.BufferedImage;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ShearCaptcha extends AbstractCaptcha {
+public class ShearProvider extends AbstractProvider {
 
     private static final long serialVersionUID = -1L;
 
@@ -51,7 +52,7 @@ public class ShearCaptcha extends AbstractCaptcha {
      * @param width  图片宽
      * @param height 图片高
      */
-    public ShearCaptcha(final int width, final int height) {
+    public ShearProvider(final int width, final int height) {
         this(width, height, 5);
     }
 
@@ -62,7 +63,7 @@ public class ShearCaptcha extends AbstractCaptcha {
      * @param height    图片高
      * @param codeCount 字符个数
      */
-    public ShearCaptcha(final int width, final int height, final int codeCount) {
+    public ShearProvider(final int width, final int height, final int codeCount) {
         this(width, height, codeCount, 4);
     }
 
@@ -74,8 +75,8 @@ public class ShearCaptcha extends AbstractCaptcha {
      * @param codeCount 字符个数
      * @param thickness 干扰线宽度
      */
-    public ShearCaptcha(final int width, final int height, final int codeCount, final int thickness) {
-        this(width, height, new RandomGenerator(codeCount), thickness);
+    public ShearProvider(final int width, final int height, final int codeCount, final int thickness) {
+        this(width, height, new RandomStrategy(codeCount), thickness);
     }
 
     /**
@@ -86,7 +87,7 @@ public class ShearCaptcha extends AbstractCaptcha {
      * @param generator      验证码生成器
      * @param interfereCount 验证码干扰元素个数
      */
-    public ShearCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount) {
+    public ShearProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
@@ -99,8 +100,8 @@ public class ShearCaptcha extends AbstractCaptcha {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public ShearCaptcha(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
-        super(width, height, new RandomGenerator(codeCount), interfereCount, sizeBaseHeight);
+    public ShearProvider(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
+        super(width, height, new RandomStrategy(codeCount), interfereCount, sizeBaseHeight);
     }
 
     @Override

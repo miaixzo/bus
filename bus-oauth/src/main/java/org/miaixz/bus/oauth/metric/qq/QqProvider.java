@@ -104,7 +104,7 @@ public class QqProvider extends DefaultProvider {
     private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("unionid", context.isUnionId() ? 1 : 0)
+                .queryParam("unionid", context.isFlag() ? 1 : 0)
                 .build());
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");

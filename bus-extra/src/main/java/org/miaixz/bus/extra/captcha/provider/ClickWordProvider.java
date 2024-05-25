@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ * Copyright (c) 2015-2023 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,51 +23,43 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha.generator;
+package org.miaixz.bus.extra.captcha.provider;
 
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.captcha.AbstractProvider;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
+
+import java.awt.*;
 
 /**
- * 随机字符验证码生成器
- * 可以通过传入的基础集合和长度随机生成验证码字符
+ * 点选文字验证码
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RandomGenerator extends AbstractGenerator {
+public class ClickWordProvider extends AbstractProvider {
 
-    private static final long serialVersionUID = -1L;
 
-    /**
-     * 构造，使用字母+数字做为基础
-     *
-     * @param count 生成验证码长度
-     */
-    public RandomGenerator(final int count) {
-        super(count);
+    public ClickWordProvider(int width, int height, int codeCount, int interfereCount) {
+        super(width, height, codeCount, interfereCount);
     }
 
-    /**
-     * 构造
-     *
-     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
-     * @param length  生成验证码长度
-     */
-    public RandomGenerator(final String baseStr, final int length) {
-        super(baseStr, length);
+    public ClickWordProvider(int width, int height, CodeStrategy generator, int interfereCount) {
+        super(width, height, generator, interfereCount);
     }
 
     @Override
-    public String generate() {
-        return RandomKit.randomString(this.baseStr, this.length);
+    protected Image createImage(String code) {
+        return null;
     }
 
     @Override
-    public boolean verify(final String code, final String userInputCode) {
-        if (StringKit.isNotBlank(userInputCode)) {
-            return StringKit.equalsIgnoreCase(code, userInputCode);
-        }
+    public String get() {
+        return null;
+    }
+
+    @Override
+    public boolean verify(String inputCode) {
         return false;
     }
+
 }

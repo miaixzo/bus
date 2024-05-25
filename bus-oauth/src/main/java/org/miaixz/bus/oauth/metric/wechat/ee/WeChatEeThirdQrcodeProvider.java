@@ -59,14 +59,14 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
-                .queryParam("usertype", context.getUsertype())
+                .queryParam("usertype", context.getType())
                 .build();
     }
 
     @Override
     public Message login(Callback authCallback) {
         try {
-            if (!context.isIgnoreCheckState()) {
+            if (!context.isIgnoreState()) {
                 Checker.checkState(authCallback.getState(), complex, authorizeCache);
             }
             AccToken accToken = this.getAccessToken(authCallback);

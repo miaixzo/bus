@@ -28,10 +28,14 @@ package org.miaixz.bus.core.center.date;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
@@ -41,6 +45,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.function.Function;
@@ -85,6 +90,14 @@ public class Formatter {
      */
     public static final DateTimeFormatter NORM_DATE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATE);
     /**
+     * 标准时间格式 {@link FormatBuilder}：HH:mm
+     */
+    public static final FormatBuilder NORM_HOUR_MINUTE_FORMAT = FormatBuilder.getInstance(Fields.NORM_HOUR_MINUTE);
+    /**
+     * 标准日期格式 {@link DateTimeFormatter}：HH:mm
+     */
+    public static final DateTimeFormatter NORM_HOUR_MINUTE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_HOUR_MINUTE);
+    /**
      * 标准时间格式 {@link FormatBuilder}：HH:mm:ss
      */
     public static final FormatBuilder NORM_TIME_FORMAT = FormatBuilder.getInstance(Fields.NORM_TIME);
@@ -125,6 +138,14 @@ public class Formatter {
      */
     public static final DateTimeFormatter NORM_DATETIME_COMMA_MS_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATETIME_COMMA_MS);
     /**
+     * 标准日期格式 {@link FormatBuilder}：MM月dd日
+     */
+    public static final FormatBuilder CN_MONTH_FORMAT = FormatBuilder.getInstance(Fields.CN_MONTH);
+    /**
+     * 标准日期格式 {@link DateTimeFormatter}：MM月dd日
+     */
+    public static final DateTimeFormatter CN_MONTH_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.CN_MONTH);
+    /**
      * 标准日期格式 {@link FormatBuilder}：yyyy年MM月dd日
      */
     public static final FormatBuilder CN_DATE_FORMAT = FormatBuilder.getInstance(Fields.CN_DATE);
@@ -148,6 +169,14 @@ public class Formatter {
      * 标准日期格式 {@link DateTimeFormatter}：yyyyMMdd
      */
     public static final DateTimeFormatter PURE_DATE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_DATE);
+    /**
+     * 标准日期格式 {@link FormatBuilder}：HHmm
+     */
+    public static final FormatBuilder PPURE_HOUR_MINUTE_FORMAT = FormatBuilder.getInstance(Fields.PURE_HOUR_MINUTE);
+    /**
+     * 标准日期格式 {@link DateTimeFormatter}：HHmm
+     */
+    public static final DateTimeFormatter PURE_HOUR_MINUTE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_HOUR_MINUTE);
     /**
      * 标准日期格式 {@link FormatBuilder}：HHmmss
      */
@@ -227,6 +256,76 @@ public class Formatter {
      */
     public static final LocalTime MAX_HMS = LocalTime.of(23, 59, 59);
 
+
+    /**
+     * 将指定的日期转换成Unix时间戳
+     *
+     * @param text 需要转换的日期 yyyy-MM-dd HH:mm:ss
+     * @return long 时间戳
+     */
+    public static long format(String text) {
+        return NORM_DATETIME_FORMAT.parse(text).getTime();
+
+    }
+
+    /**
+     * 将Unix时间戳转换成日期
+     *
+     * @param timestamp 时间戳
+     * @return String 日期字符串
+     */
+    public static String format(long timestamp) {
+        return NORM_DATETIME_FORMAT.format(new Date(timestamp));
+    }
+
+    /**
+     * 将Unix时间戳转换成日期
+     *
+     * @param timestamp 时间戳
+     * @param format    格式
+     * @return String 日期字符串
+     */
+    public static String format(long timestamp, String format) {
+        return new SimpleDateFormat(format).format(new Date(timestamp));
+    }
+
+    /**
+     * 将指定的日期转换成Unix时间戳
+     *
+     * @param text   需要转换的日期
+     * @param format 格式
+     * @return long 时间戳
+     */
+    public static long format(String text, String format) {
+        try {
+            return new SimpleDateFormat(format).parse(text).getTime();
+        } catch (ParseException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 格式化日期时间
+     * 格式 yyyy-MM-dd HH:mm:ss
+     *
+     * @param localDateTime 被格式化的日期
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDateTime localDateTime) {
+        return format(localDateTime, Fields.NORM_DATETIME);
+    }
+
+    /**
+     * 根据特定格式格式化日期
+     *
+     * @param localDateTime 被格式化的日期
+     * @param format        日期格式，常用格式见： {@link Fields}
+     * @return 格式化后的字符串
+     */
+    public static String format(final LocalDateTime localDateTime, final String format) {
+        return Formatter.format(localDateTime, format);
+    }
+
     /**
      * 格式化日期时间为指定格式
      * 如果为{@link Month}，调用{@link Month#toString()}
@@ -293,12 +392,30 @@ public class Formatter {
     }
 
     /**
+     * 按照给定的通配模式,格式化成相应的时间字符串
+     *
+     * @param text        原始时间字符串
+     * @param srcPattern  原始时间通配符
+     * @param destPattern 格式化成的时间通配符
+     * @return 格式化成功返回成功后的字符串, 失败返回<b>""</b>
+     */
+    public static String format(String text, String srcPattern, String destPattern) {
+        try {
+            SimpleDateFormat srcSdf = new SimpleDateFormat(srcPattern);
+            SimpleDateFormat dstSdf = new SimpleDateFormat(destPattern);
+            return dstSdf.format(srcSdf.parse(text));
+        } catch (ParseException e) {
+            return Normal.EMPTY;
+        }
+    }
+
+    /**
      * 格式化日期时间为yyyy-MM-dd HH:mm:ss格式
      *
      * @param time {@link LocalDateTime}
      * @return 格式化后的字符串
      */
-    public static String formatNormal(final ChronoLocalDateTime<?> time) {
+    public static String format(final ChronoLocalDateTime<?> time) {
         return format(time, NORM_DATETIME_FORMATTER);
     }
 
@@ -308,10 +425,9 @@ public class Formatter {
      * @param date {@link LocalDate}
      * @return 格式化后的字符串
      */
-    public static String formatNormal(final ChronoLocalDate date) {
+    public static String format(final ChronoLocalDate date) {
         return format(date, NORM_DATE_FORMATTER);
     }
-
 
     /**
      * 格式化时间函数
@@ -319,8 +435,40 @@ public class Formatter {
      * @param dateTimeFormatter {@link DateTimeFormatter}
      * @return 格式化时间的函数
      */
-    public static Function<TemporalAccessor, String> formatFunc(final DateTimeFormatter dateTimeFormatter) {
+    public static Function<TemporalAccessor, String> format(final DateTimeFormatter dateTimeFormatter) {
         return LambdaKit.toFunction(Almanac::format, dateTimeFormatter);
+    }
+
+    /**
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
+     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     *
+     * @param pattern 表达式
+     * @return {@link SimpleDateFormat}
+     */
+    public static SimpleDateFormat newSimpleFormat(final String pattern) {
+        return newSimpleFormat(pattern, null, null);
+    }
+
+    /**
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
+     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     *
+     * @param pattern  表达式
+     * @param locale   {@link Locale}，{@code null}表示默认
+     * @param timeZone {@link TimeZone}，{@code null}表示默认
+     * @return {@link SimpleDateFormat}
+     */
+    public static SimpleDateFormat newSimpleFormat(final String pattern, Locale locale, final TimeZone timeZone) {
+        if (null == locale) {
+            locale = Locale.getDefault(Locale.Category.FORMAT);
+        }
+        final SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
+        if (null != timeZone) {
+            format.setTimeZone(timeZone);
+        }
+        format.setLenient(false);
+        return format;
     }
 
 }

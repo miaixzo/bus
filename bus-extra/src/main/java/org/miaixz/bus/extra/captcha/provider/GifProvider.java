@@ -23,11 +23,12 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha;
+package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.extra.captcha.generator.CodeGenerator;
-import org.miaixz.bus.extra.captcha.generator.RandomGenerator;
+import org.miaixz.bus.extra.captcha.AbstractProvider;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
+import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
 
@@ -36,24 +37,31 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Gif验证码类
+ * Gif验证码
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GifCaptcha extends AbstractCaptcha {
+public class GifProvider extends AbstractProvider {
 
     private static final long serialVersionUID = -1L;
 
-    //量化器取样间隔 - 默认是10ms
+    /**
+     * 量化器取样间隔 - 默认是10ms
+     */
     private int quality = 10;
-    // 帧循环次数
+    /**
+     * 帧循环次数
+     */
     private int repeat = 0;
-    //设置随机颜色时，最小的取色范围
+    /**
+     * 设置随机颜色时，最小的取色范围
+     */
     private int minColor = 0;
-    //设置随机颜色时，最大的取色范围
+    /**
+     * 设置随机颜色时，最大的取色范围
+     */
     private int maxColor = 255;
-
 
     /**
      * 可以设置验证码宽度，高度的构造函数
@@ -61,7 +69,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param width  验证码宽度
      * @param height 验证码高度
      */
-    public GifCaptcha(final int width, final int height) {
+    public GifProvider(final int width, final int height) {
         this(width, height, 5);
     }
 
@@ -70,7 +78,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param height    验证码高度
      * @param codeCount 验证码个数
      */
-    public GifCaptcha(final int width, final int height, final int codeCount) {
+    public GifProvider(final int width, final int height, final int codeCount) {
         this(width, height, codeCount, 10);
     }
 
@@ -80,8 +88,8 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param codeCount      验证码个数
      * @param interfereCount 干扰个数
      */
-    public GifCaptcha(final int width, final int height, final int codeCount, final int interfereCount) {
-        this(width, height, new RandomGenerator(codeCount), interfereCount);
+    public GifProvider(final int width, final int height, final int codeCount, final int interfereCount) {
+        this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
@@ -92,7 +100,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param generator      验证码生成器
      * @param interfereCount 验证码干扰元素个数
      */
-    public GifCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount) {
+    public GifProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
@@ -105,8 +113,8 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public GifCaptcha(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
-        super(width, height, new RandomGenerator(codeCount), interfereCount, sizeBaseHeight);
+    public GifProvider(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
+        super(width, height, new RandomStrategy(codeCount), interfereCount, sizeBaseHeight);
     }
 
     /**
@@ -118,7 +126,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param quality 大于1
      * @return this
      */
-    public GifCaptcha setQuality(int quality) {
+    public GifProvider setQuality(int quality) {
         if (quality < 1) {
             quality = 1;
         }
@@ -134,7 +142,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param repeat 必须大于等于0
      * @return this
      */
-    public GifCaptcha setRepeat(final int repeat) {
+    public GifProvider setRepeat(final int repeat) {
         if (repeat >= 0) {
             this.repeat = repeat;
         }
@@ -147,7 +155,7 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param maxColor 颜色
      * @return this
      */
-    public GifCaptcha setMaxColor(final int maxColor) {
+    public GifProvider setMaxColor(final int maxColor) {
         this.maxColor = maxColor;
         return this;
     }
@@ -158,13 +166,13 @@ public class GifCaptcha extends AbstractCaptcha {
      * @param minColor 颜色
      * @return this
      */
-    public GifCaptcha setMinColor(final int minColor) {
+    public GifProvider setMinColor(final int minColor) {
         this.minColor = minColor;
         return this;
     }
 
     @Override
-    public void createCode() {
+    public void create() {
         generateCode();
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
 

@@ -105,6 +105,11 @@ public class Fields {
     public static final String NORM_DATE = "yyyy-MM-dd";
 
     /**
+     * 格式化通配符: HH:mm
+     */
+    public static final String NORM_HOUR_MINUTE = "HH:mm";
+
+    /**
      * 标准时间格式：HH:mm:ss
      */
     public static final String NORM_TIME = "HH:mm:ss";
@@ -130,6 +135,11 @@ public class Fields {
     public static final String NORM_DATETIME_COMMA_MS = "yyyy-MM-dd HH:mm:ss,SSS";
 
     /**
+     * 中文日期格式: M月d日
+     */
+    public static final String CN_MONTH = "M月d日";
+
+    /**
      * 标准日期格式：yyyy年MM月dd日
      */
     public static final String CN_DATE = "yyyy年MM月dd日";
@@ -144,6 +154,10 @@ public class Fields {
      */
     public static final String PURE_DATE = "yyyyMMdd";
 
+    /**
+     * 标准日期格式: HHmm
+     */
+    public static final String PURE_HOUR_MINUTE = "HHmm";
     /**
      * 标准日期格式：HHmmss
      */

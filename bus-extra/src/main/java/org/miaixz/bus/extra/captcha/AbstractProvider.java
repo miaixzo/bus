@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.extra.captcha.generator.CodeGenerator;
-import org.miaixz.bus.extra.captcha.generator.RandomGenerator;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
+import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;
@@ -50,7 +50,7 @@ import java.io.OutputStream;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractCaptcha implements ICaptcha {
+public abstract class AbstractProvider implements CaptchaProvider {
 
     private static final long serialVersionUID = -1L;
 
@@ -81,7 +81,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
     /**
      * 验证码生成器
      */
-    protected CodeGenerator generator;
+    protected CodeStrategy generator;
     /**
      * 背景色
      */
@@ -99,8 +99,8 @@ public abstract class AbstractCaptcha implements ICaptcha {
      * @param codeCount      字符个数
      * @param interfereCount 验证码干扰元素个数
      */
-    public AbstractCaptcha(final int width, final int height, final int codeCount, final int interfereCount) {
-        this(width, height, new RandomGenerator(codeCount), interfereCount);
+    public AbstractProvider(final int width, final int height, final int codeCount, final int interfereCount) {
+        this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      * @param generator      验证码生成器
      * @param interfereCount 验证码干扰元素个数
      */
-    public AbstractCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount) {
+    public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         this(width, height, generator, interfereCount, Normal.DEFAULT_LOAD_FACTOR);
     }
 
@@ -124,7 +124,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public AbstractCaptcha(final int width, final int height, final CodeGenerator generator, final int interfereCount, final float sizeBaseHeight) {
+    public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount, final float sizeBaseHeight) {
         this.width = width;
         this.height = height;
         this.generator = generator;
@@ -134,7 +134,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
     }
 
     @Override
-    public void createCode() {
+    public void create() {
         generateCode();
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -166,16 +166,16 @@ public abstract class AbstractCaptcha implements ICaptcha {
     protected abstract Image createImage(String code);
 
     @Override
-    public String getCode() {
+    public String get() {
         if (null == this.code) {
-            createCode();
+            create();
         }
         return this.code;
     }
 
     @Override
     public boolean verify(final String userInputCode) {
-        return this.generator.verify(getCode(), userInputCode);
+        return this.generator.verify(get(), userInputCode);
     }
 
     /**
@@ -214,7 +214,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      */
     public byte[] getImageBytes() {
         if (null == this.imageBytes) {
-            createCode();
+            create();
         }
         return this.imageBytes;
     }
@@ -261,7 +261,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      *
      * @return 验证码生成器
      */
-    public CodeGenerator getGenerator() {
+    public CodeStrategy getGenerator() {
         return generator;
     }
 
@@ -270,7 +270,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
      *
      * @param generator 验证码生成器
      */
-    public void setGenerator(final CodeGenerator generator) {
+    public void setGenerator(final CodeStrategy generator) {
         this.generator = generator;
     }
 

@@ -758,7 +758,7 @@ public class DateTime extends Date {
      * @return {@link LocalDateTime}
      */
     public LocalDateTime toLocalDateTime() {
-        return Converter.of(this);
+        return Converter.of(this.toInstant());
     }
 
     /**

@@ -29,7 +29,6 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.AuthorizeProvider;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 import java.util.Arrays;
@@ -81,7 +80,7 @@ public class Authorize {
         return this;
     }
 
-    public AuthorizeProvider build() {
+    public Provider build() {
         if (StringKit.isEmpty(this.source) || null == this.context) {
             throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
         }

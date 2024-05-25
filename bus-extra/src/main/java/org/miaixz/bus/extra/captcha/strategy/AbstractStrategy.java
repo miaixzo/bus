@@ -23,44 +23,56 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.extra.captcha;
+package org.miaixz.bus.extra.captcha.strategy;
 
-import java.io.OutputStream;
-import java.io.Serializable;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 验证码接口，提供验证码对象接口定义
+ * 随机字符验证码生成策略
+ * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ICaptcha extends Serializable {
+public abstract class AbstractStrategy implements CodeStrategy {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
+     * 基础字符集合，用于随机获取字符串的字符集合
      */
-    void createCode();
+    protected final String baseStr;
+    /**
+     * 验证码长度
+     */
+    protected final int length;
 
     /**
-     * 获取验证码的文字内容
+     * 构造，使用字母+数字做为基础
      *
-     * @return 验证码文字内容
+     * @param count 生成验证码长度
      */
-    String getCode();
+    public AbstractStrategy(final int count) {
+        this(Normal.LOWER_ALPHABET_NUMBER, count);
+    }
 
     /**
-     * 验证验证码是否正确，建议忽略大小写
+     * 构造
      *
-     * @param userInputCode 用户输入的验证码
-     * @return 是否与生成的一直
+     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
+     * @param length  生成验证码长度
      */
-    boolean verify(String userInputCode);
+    public AbstractStrategy(final String baseStr, final int length) {
+        this.baseStr = baseStr;
+        this.length = length;
+    }
 
     /**
-     * 将验证码写出到目标流中
+     * 获取长度验证码
      *
-     * @param out 目标流
+     * @return 验证码长度
      */
-    void write(OutputStream out);
-
+    public int getLength() {
+        return this.length;
+    }
 }

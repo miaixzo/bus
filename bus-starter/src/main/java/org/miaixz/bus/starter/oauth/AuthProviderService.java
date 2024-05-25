@@ -29,10 +29,10 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.oauth.Context;
+import org.miaixz.bus.oauth.Provider;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.cache.OauthCache;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.AuthorizeProvider;
 import org.miaixz.bus.oauth.metric.afdian.AfDianProvider;
 import org.miaixz.bus.oauth.metric.alipay.AlipayProvider;
 import org.miaixz.bus.oauth.metric.aliyun.AliyunProvider;
@@ -121,10 +121,10 @@ public class AuthProviderService {
      * 返回type对象
      *
      * @param type {@link Registry}
-     * @return {@link AuthorizeProvider}
+     * @return {@link Provider}
      */
 
-    public AuthorizeProvider require(Registry type) {
+    public Provider require(Registry type) {
         Context context = CACHE.get(type);
         if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(type);

@@ -84,7 +84,7 @@ public class StackOverflowProvider extends DefaultProvider {
         String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("site", "stackoverflow")
-                .queryParam("key", this.context.getStackOverflowKey())
+                .queryParam("key", this.context.getUnionId())
                 .build();
         String response = Httpx.get(userInfoUrl);
         JSONObject object = JSONObject.parseObject(response);

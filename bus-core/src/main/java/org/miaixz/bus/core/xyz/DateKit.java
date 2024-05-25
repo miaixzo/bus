@@ -31,7 +31,6 @@ import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.center.date.format.parser.NormalDateParser;
-import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.center.date.format.parser.RegisterDateParser;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
 import org.miaixz.bus.core.lang.Assert;
@@ -63,6 +62,134 @@ import java.util.stream.Collectors;
  * @since Java 17+
  */
 public class DateKit extends Calendars {
+
+    /**
+     * 是否为上午
+     *
+     * @param date 日期
+     * @return 是否为上午
+     */
+    public static boolean isAM(final Date date) {
+        return DateTime.of(date).isAM();
+    }
+
+    /**
+     * 是否为下午
+     *
+     * @param date 日期
+     * @return 是否为下午
+     */
+    public static boolean isPM(final Date date) {
+        return DateTime.of(date).isPM();
+    }
+
+    /**
+     * 是否为相同时间
+     * 此方法比较两个日期的时间戳是否相同
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为相同时间
+     */
+    public static boolean isSameTime(final Date date1, final Date date2) {
+        return date1.compareTo(date2) == 0;
+    }
+
+    /**
+     * 比较两个日期是否为同一天
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(final Date date1, final Date date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return Calendars.isSameDay(calendar(date1), calendar(date2));
+    }
+
+    /**
+     * 比较两个日期是否为同一周
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @param isMon 是否为周一。国内第一天为星期一，国外第一天为星期日
+     * @return 是否为同一周
+     */
+    public static boolean isSameWeek(final Date date1, final Date date2, final boolean isMon) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return Calendars.isSameWeek(calendar(date1), calendar(date2), isMon);
+    }
+
+    /**
+     * 比较两个日期是否为同一月
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一月
+     */
+    public static boolean isSameMonth(final Date date1, final Date date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return Calendars.isSameMonth(calendar(date1), calendar(date2));
+    }
+
+    /**
+     * 是否闰年
+     *
+     * @param year 年
+     * @return 是否闰年
+     */
+    public static boolean isLeapYear(final int year) {
+        return Year.isLeap(year);
+    }
+
+    /**
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
+     *
+     * @param beginDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 是否在范围内
+     */
+    public boolean isIn(final Date beginDate, final Date endDate) {
+        return new DateTime().isIn(beginDate, endDate);
+    }
+
+    /**
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
+     *
+     * @param date      被检查的日期
+     * @param beginDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 是否在范围内
+     */
+    public static boolean isIn(final Date date, final Date beginDate, final Date endDate) {
+        return isIn(date, beginDate, endDate, true, true);
+    }
+
+    /**
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
+     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true, includeEnd=false，
+     * 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
+     *
+     * @param date         被检查的日期
+     * @param beginDate    起始日期
+     * @param endDate      结束日期
+     * @param includeBegin 时间范围是否包含起始日期
+     * @param includeEnd   时间范围是否包含结束日期
+     * @return 是否在范围内
+     */
+    public static boolean isIn(final Date date, final Date beginDate, final Date endDate,
+                               final boolean includeBegin, final boolean includeEnd) {
+        return new DateTime().isIn(date, beginDate, endDate, includeBegin, includeEnd);
+    }
 
     /**
      * 当前时间，转换为{@link DateTime}对象
@@ -362,7 +489,7 @@ public class DateKit extends Calendars {
 
     /**
      * 获得指定日期的分钟数部分
-     * 例如：10:04:15.250 =》 4
+     * 例如：10:04:15.250 = 4
      *
      * @param date 日期
      * @return 分钟数
@@ -389,26 +516,6 @@ public class DateKit extends Calendars {
      */
     public static int millisecond(final Date date) {
         return DateTime.of(date).millisecond();
-    }
-
-    /**
-     * 是否为上午
-     *
-     * @param date 日期
-     * @return 是否为上午
-     */
-    public static boolean isAM(final Date date) {
-        return DateTime.of(date).isAM();
-    }
-
-    /**
-     * 是否为下午
-     *
-     * @param date 日期
-     * @return 是否为下午
-     */
-    public static boolean isPM(final Date date) {
-        return DateTime.of(date).isPM();
     }
 
     /**
@@ -505,28 +612,6 @@ public class DateKit extends Calendars {
      */
     public static String yearAndQuarter(final Date date) {
         return yearAndQuarter(calendar(date));
-    }
-
-    /**
-     * 格式化日期时间
-     * 格式 yyyy-MM-dd HH:mm:ss
-     *
-     * @param localDateTime 被格式化的日期
-     * @return 格式化后的字符串
-     */
-    public static String formatLocalDateTime(final LocalDateTime localDateTime) {
-        return Formatter.formatNormal(localDateTime);
-    }
-
-    /**
-     * 根据特定格式格式化日期
-     *
-     * @param localDateTime 被格式化的日期
-     * @param format        日期格式，常用格式见： {@link Fields}
-     * @return 格式化后的字符串
-     */
-    public static String format(final LocalDateTime localDateTime, final String format) {
-        return Formatter.format(localDateTime, format);
     }
 
     /**
@@ -671,92 +756,6 @@ public class DateKit extends Calendars {
         }
 
         return Calendars.formatChineseDate(Calendars.calendar(date), withTime);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param dateStr    Date字符串
-     * @param dateFormat 格式化器 {@link SimpleDateFormat}
-     * @return DateTime对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final DateFormat dateFormat) {
-        return new DateTime(dateStr, dateFormat);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param dateStr Date字符串
-     * @param parser  格式化器,{@link FormatBuilder}
-     * @return DateTime对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final PositionDateParser parser) {
-        return new DateTime(dateStr, parser);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param dateStr Date字符串
-     * @param parser  格式化器,{@link FormatBuilder}
-     * @param lenient 是否宽容模式
-     * @return DateTime对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final PositionDateParser parser, final boolean lenient) {
-        return new DateTime(dateStr, parser, lenient);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param dateStr   Date字符串
-     * @param formatter 格式化器,{@link DateTimeFormatter}
-     * @return DateTime对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final DateTimeFormatter formatter) {
-        return new DateTime(dateStr, formatter);
-    }
-
-    /**
-     * 将特定格式的日期转换为Date对象
-     *
-     * @param dateStr 特定格式的日期
-     * @param format  格式，例如yyyy-MM-dd
-     * @return 日期对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final String format) {
-        return new DateTime(dateStr, format);
-    }
-
-    /**
-     * 将特定格式的日期转换为Date对象
-     *
-     * @param dateStr 特定格式的日期
-     * @param format  格式，例如yyyy-MM-dd
-     * @param locale  区域信息
-     * @return 日期对象
-     */
-    public static DateTime parse(final CharSequence dateStr, final String format, final Locale locale) {
-        if (CustomFormat.isCustomFormat(format)) {
-            // 自定义格式化器忽略Locale
-            return new DateTime(CustomFormat.parse(dateStr, format));
-        }
-        return new DateTime(dateStr, newSimpleFormat(format, locale, null));
-    }
-
-    /**
-     * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link DateException}异常
-     *
-     * @param text          日期时间字符串，非空
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Date
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
-     */
-    public static DateTime parse(final String text, final String... parsePatterns) throws DateException {
-        return date(Calendars.parseByPatterns(text, parsePatterns));
     }
 
     /**
@@ -1176,6 +1175,17 @@ public class DateKit extends Calendars {
     }
 
     /**
+     * 偏移年
+     *
+     * @param date   日期
+     * @param offset 偏移月数,正数向未来偏移,负数向历史偏移
+     * @return 偏移后的日期
+     */
+    public static DateTime offsetYear(final Date date, final int offset) {
+        return offset(date, Fields.Type.YEAR, offset);
+    }
+
+    /**
      * 获取指定日期偏移指定时间后的时间，生成的偏移日期不影响原日期
      *
      * @param date   基准日期
@@ -1333,92 +1343,6 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     *
-     * @param date      被检查的日期
-     * @param beginDate 起始日期（包含）
-     * @param endDate   结束日期（包含）
-     * @return 是否在范围内
-     */
-    public static boolean isIn(final Date date, final Date beginDate, final Date endDate) {
-        return isIn(date, beginDate, endDate, true, true);
-    }
-
-    /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true, includeEnd=false，
-     * 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
-     *
-     * @param date         被检查的日期
-     * @param beginDate    起始日期
-     * @param endDate      结束日期
-     * @param includeBegin 时间范围是否包含起始日期
-     * @param includeEnd   时间范围是否包含结束日期
-     * @return 是否在范围内
-     */
-    public static boolean isIn(final Date date, final Date beginDate, final Date endDate,
-                               final boolean includeBegin, final boolean includeEnd) {
-        return new DateTime().isIn(date, beginDate, endDate, includeBegin, includeEnd);
-    }
-
-    /**
-     * 是否为相同时间
-     * 此方法比较两个日期的时间戳是否相同
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @return 是否为相同时间
-     */
-    public static boolean isSameTime(final Date date1, final Date date2) {
-        return date1.compareTo(date2) == 0;
-    }
-
-    /**
-     * 比较两个日期是否为同一天
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @return 是否为同一天
-     */
-    public static boolean isSameDay(final Date date1, final Date date2) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-        return Calendars.isSameDay(calendar(date1), calendar(date2));
-    }
-
-    /**
-     * 比较两个日期是否为同一周
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @param isMon 是否为周一。国内第一天为星期一，国外第一天为星期日
-     * @return 是否为同一周
-     */
-    public static boolean isSameWeek(final Date date1, final Date date2, final boolean isMon) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-        return Calendars.isSameWeek(calendar(date1), calendar(date2), isMon);
-    }
-
-    /**
-     * 比较两个日期是否为同一月
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @return 是否为同一月
-     */
-    public static boolean isSameMonth(final Date date1, final Date date2) {
-        if (date1 == null || date2 == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-        return Calendars.isSameMonth(calendar(date1), calendar(date2));
-    }
-
-    /**
      * 计时，常用于记录某段代码的执行时间，单位：纳秒
      *
      * @param preTime 之前记录的时间
@@ -1520,16 +1444,6 @@ public class DateKit extends Calendars {
      */
     public static int ageOfNow(final Date birthDay) {
         return age(birthDay, now());
-    }
-
-    /**
-     * 是否闰年
-     *
-     * @param year 年
-     * @return 是否闰年
-     */
-    public static boolean isLeapYear(final int year) {
-        return Year.isLeap(year);
     }
 
     /**
@@ -1728,17 +1642,6 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * {@code null}安全的日期比较，{@code null}对象排在末尾
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @return 比较结果，如果date1 &lt; date2，返回数小于0，date1==date2返回0，date1 &gt; date2 大于0
-     */
-    public static int compare(final Date date1, final Date date2) {
-        return CompareKit.compare(date1, date2);
-    }
-
-    /**
      * {@code null}安全的日期比较，并只比较指定格式； {@code null}对象排在末尾, 并指定日期格式；
      *
      * @param date1  日期1
@@ -1814,10 +1717,9 @@ public class DateKit extends Calendars {
      *
      * @param date {@link Date}
      * @return {@link LocalDateTime}
-     * @see Resolver#of(Date)
      */
     public static LocalDateTime toLocalDateTime(final Date date) {
-        return Resolver.of(date);
+        return of(date);
     }
 
     /**
@@ -1842,35 +1744,20 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
-     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     * {@link Date}转{@link LocalDateTime}，使用默认时区
      *
-     * @param pattern 表达式
-     * @return {@link SimpleDateFormat}
+     * @param date Date对象
+     * @return {@link LocalDateTime}
      */
-    public static SimpleDateFormat newSimpleFormat(final String pattern) {
-        return newSimpleFormat(pattern, null, null);
-    }
+    public static LocalDateTime of(final Date date) {
+        if (null == date) {
+            return null;
+        }
 
-    /**
-     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
-     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
-     *
-     * @param pattern  表达式
-     * @param locale   {@link Locale}，{@code null}表示默认
-     * @param timeZone {@link TimeZone}，{@code null}表示默认
-     * @return {@link SimpleDateFormat}
-     */
-    public static SimpleDateFormat newSimpleFormat(final String pattern, Locale locale, final TimeZone timeZone) {
-        if (null == locale) {
-            locale = Locale.getDefault(Locale.Category.FORMAT);
+        if (date instanceof DateTime) {
+            return of(date.toInstant(), ((DateTime) date).getZoneId());
         }
-        final SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
-        if (null != timeZone) {
-            format.setTimeZone(timeZone);
-        }
-        format.setLenient(false);
-        return format;
+        return of(date.toInstant());
     }
 
     /**
@@ -1942,80 +1829,6 @@ public class DateKit extends Calendars {
         return date(date).getLastDayOfMonth();
     }
 
-    /**
-     * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期，空格后为时间：
-     * 将以下字符替换为"-"
-     *
-     * <pre>
-     * "."
-     * "/"
-     * "年"
-     * "月"
-     * </pre>
-     * <p>
-     * 将以下字符去除
-     *
-     * <pre>
-     * "日"
-     * </pre>
-     * <p>
-     * 将以下字符替换为":"
-     *
-     * <pre>
-     * "时"
-     * "分"
-     * "秒"
-     * </pre>
-     * <p>
-     * 当末位是":"时去除之（不存在毫秒时）
-     *
-     * @param dateStr 日期时间字符串
-     * @return 格式化后的日期字符串
-     */
-    private static String normalize(final CharSequence dateStr) {
-        if (StringKit.isBlank(dateStr)) {
-            return StringKit.toString(dateStr);
-        }
-
-        // 日期时间分开处理
-        final List<String> dateAndTime = CharsBacker.splitTrim(dateStr, Symbol.SPACE);
-        final int size = dateAndTime.size();
-        if (size < 1 || size > 2) {
-            // 非可被标准处理的格式
-            return StringKit.toString(dateStr);
-        }
-
-        final StringBuilder builder = StringKit.builder();
-
-        // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
-        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.MINUS);
-        datePart = StringKit.removeSuffix(datePart, "日");
-        builder.append(datePart);
-
-        // 时间部分
-        if (size == 2) {
-            builder.append(Symbol.C_SPACE);
-            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
-            timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
-            //将ISO8601中的逗号替换为.
-            timePart = timePart.replace(',', '.');
-            builder.append(timePart);
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     *
-     * @param beginDate 起始日期（包含）
-     * @param endDate   结束日期（包含）
-     * @return 是否在范围内
-     */
-    public boolean isIn(final Date beginDate, final Date endDate) {
-        return new DateTime().isIn(beginDate, endDate);
-    }
 
     /**
      * {@code java.sql.*}日期时间相关封装

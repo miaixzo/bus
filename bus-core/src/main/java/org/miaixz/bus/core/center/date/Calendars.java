@@ -40,8 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParsePosition;
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -54,6 +53,159 @@ import java.util.TimeZone;
  * @since Java 17+
  */
 public class Calendars extends Almanac {
+
+    /**
+     * 是否为上午
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为上午
+     */
+    public static boolean isAM(final Calendar calendar) {
+        return Calendar.AM == calendar.get(Calendar.AM_PM);
+    }
+
+    /**
+     * 是否为下午
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为下午
+     */
+    public static boolean isPM(final Calendar calendar) {
+        return Calendar.PM == calendar.get(Calendar.AM_PM);
+    }
+
+    /**
+     * 比较两个日期是否为同一天
+     *
+     * @param cal1 日期1
+     * @param cal2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(final Calendar cal1, Calendar cal2) {
+        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
+            // 统一时区
+            cal2 = calendar(cal2, cal1.getTimeZone());
+        }
+        return isSameYear(cal1, cal2) && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    /**
+     * 比较两个日期是否为同一周
+     * 同一个周的意思是：ERA（公元）、year（年）、month（月）、week（周）都一致。
+     *
+     * @param cal1  日期1
+     * @param cal2  日期2
+     * @param isMon 一周的第一天是否为周一。国内第一天为星期一，国外第一天为星期日
+     * @return 是否为同一周
+     */
+    public static boolean isSameWeek(Calendar cal1, Calendar cal2, final boolean isMon) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+
+        // 防止比较前修改原始Calendar对象
+        cal1 = (Calendar) cal1.clone();
+
+        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
+            // 统一时区
+            cal2 = calendar(cal2, cal1.getTimeZone());
+        } else {
+            cal2 = (Calendar) cal2.clone();
+        }
+
+        // 把所传日期设置为其当前周的第一天
+        // 比较设置后的两个日期是否是同一天：true 代表同一周
+        if (isMon) {
+            cal1.setFirstDayOfWeek(Calendar.MONDAY);
+            cal1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            cal2.setFirstDayOfWeek(Calendar.MONDAY);
+            cal2.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        } else {
+            cal1.setFirstDayOfWeek(Calendar.SUNDAY);
+            cal1.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            cal2.setFirstDayOfWeek(Calendar.SUNDAY);
+            cal2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        }
+        return isSameDay(cal1, cal2);
+    }
+
+    /**
+     * 比较两个日期是否为同一月
+     * 同一个月的意思是：ERA（公元）、year（年）、month（月）都一致。
+     *
+     * @param cal1 日期1
+     * @param cal2 日期2
+     * @return 是否为同一月
+     */
+    public static boolean isSameMonth(final Calendar cal1, Calendar cal2) {
+        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
+            // 统一时区
+            cal2 = calendar(cal2, cal1.getTimeZone());
+        }
+
+        return isSameYear(cal1, cal2) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+    }
+
+    /**
+     * 比较两个日期是否为同一年
+     * 同一个年的意思是：ERA（公元）、year（年）都一致。
+     *
+     * @param cal1 日期1
+     * @param cal2 日期2
+     * @return 是否为同一年
+     */
+    public static boolean isSameYear(final Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+
+        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
+            // 统一时区
+            cal2 = calendar(cal2, cal1.getTimeZone());
+        }
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA);
+    }
+
+    /**
+     * 检查两个Calendar时间戳是否相同
+     * 此方法检查两个Calendar的毫秒数时间戳是否相同
+     *
+     * @param date1 时间1
+     * @param date2 时间2
+     * @return 两个Calendar时间戳是否相同。如果两个时间都为{@code null}返回true，否则有{@code null}返回false
+     */
+    public static boolean isSameInstant(final Calendar date1, final Calendar date2) {
+        if (null == date1) {
+            return null == date2;
+        }
+        if (null == date2) {
+            return false;
+        }
+
+        return date1.getTimeInMillis() == date2.getTimeInMillis();
+    }
+
+    /**
+     * 是否为本月第一天
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isFirstDayOfMonth(final Calendar calendar) {
+        return 1 == calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 是否为本月最后一天
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isLastDayOfMonth(final Calendar calendar) {
+        return calendar.get(Calendar.DAY_OF_MONTH) == calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
 
     /**
      * 创建Calendar对象，时间为默认时区的当前时间
@@ -123,26 +275,6 @@ public class Calendars extends Almanac {
         calendar = (Calendar) calendar.clone();
         calendar.setTimeZone(timeZone);
         return calendar;
-    }
-
-    /**
-     * 是否为上午
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为上午
-     */
-    public static boolean isAM(final Calendar calendar) {
-        return Calendar.AM == calendar.get(Calendar.AM_PM);
-    }
-
-    /**
-     * 是否为下午
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为下午
-     */
-    public static boolean isPM(final Calendar calendar) {
-        return Calendar.PM == calendar.get(Calendar.AM_PM);
     }
 
     /**
@@ -390,120 +522,6 @@ public class Calendars extends Almanac {
     }
 
     /**
-     * 比较两个日期是否为同一天
-     *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一天
-     */
-    public static boolean isSameDay(final Calendar cal1, Calendar cal2) {
-        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
-            cal2 = calendar(cal2, cal1.getTimeZone());
-        }
-        return isSameYear(cal1, cal2) && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-    }
-
-    /**
-     * 比较两个日期是否为同一周
-     * 同一个周的意思是：ERA（公元）、year（年）、month（月）、week（周）都一致。
-     *
-     * @param cal1  日期1
-     * @param cal2  日期2
-     * @param isMon 一周的第一天是否为周一。国内第一天为星期一，国外第一天为星期日
-     * @return 是否为同一周
-     */
-    public static boolean isSameWeek(Calendar cal1, Calendar cal2, final boolean isMon) {
-        if (cal1 == null || cal2 == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-
-        // 防止比较前修改原始Calendar对象
-        cal1 = (Calendar) cal1.clone();
-
-        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
-            cal2 = calendar(cal2, cal1.getTimeZone());
-        } else {
-            cal2 = (Calendar) cal2.clone();
-        }
-
-        // 把所传日期设置为其当前周的第一天
-        // 比较设置后的两个日期是否是同一天：true 代表同一周
-        if (isMon) {
-            cal1.setFirstDayOfWeek(Calendar.MONDAY);
-            cal1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            cal2.setFirstDayOfWeek(Calendar.MONDAY);
-            cal2.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        } else {
-            cal1.setFirstDayOfWeek(Calendar.SUNDAY);
-            cal1.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-            cal2.setFirstDayOfWeek(Calendar.SUNDAY);
-            cal2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        }
-        return isSameDay(cal1, cal2);
-    }
-
-    /**
-     * 比较两个日期是否为同一月
-     * 同一个月的意思是：ERA（公元）、year（年）、month（月）都一致。
-     *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一月
-     */
-    public static boolean isSameMonth(final Calendar cal1, Calendar cal2) {
-        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
-            cal2 = calendar(cal2, cal1.getTimeZone());
-        }
-
-        return isSameYear(cal1, cal2) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
-    }
-
-    /**
-     * 比较两个日期是否为同一年
-     * 同一个年的意思是：ERA（公元）、year（年）都一致。
-     *
-     * @param cal1 日期1
-     * @param cal2 日期2
-     * @return 是否为同一年
-     */
-    public static boolean isSameYear(final Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
-            throw new IllegalArgumentException("The date must not be null");
-        }
-
-        if (ObjectKit.notEquals(cal1.getTimeZone(), cal2.getTimeZone())) {
-            // 统一时区
-            cal2 = calendar(cal2, cal1.getTimeZone());
-        }
-
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA);
-    }
-
-    /**
-     * 检查两个Calendar时间戳是否相同
-     * <p>
-     * 此方法检查两个Calendar的毫秒数时间戳是否相同
-     *
-     * @param date1 时间1
-     * @param date2 时间2
-     * @return 两个Calendar时间戳是否相同。如果两个时间都为{@code null}返回true，否则有{@code null}返回false
-     */
-    public static boolean isSameInstant(final Calendar date1, final Calendar date2) {
-        if (null == date1) {
-            return null == date2;
-        }
-        if (null == date2) {
-            return false;
-        }
-
-        return date1.getTimeInMillis() == date2.getTimeInMillis();
-    }
-
-    /**
      * 获得指定日期年份和季度
      * 格式：[20131]表示2013年第一季度
      *
@@ -612,22 +630,6 @@ public class Calendars extends Almanac {
      */
     public static int compare(final Calendar calendar1, final Calendar calendar2) {
         return CompareKit.compare(calendar1, calendar2);
-    }
-
-    /**
-     * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
-     * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
-     * </ul>
-     *
-     * @param birthday      生日
-     * @param dateToCompare 需要对比的日期
-     * @return 年龄
-     */
-    public static int age(final Calendar birthday, final Calendar dateToCompare) {
-        return age(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
     }
 
     /**
@@ -785,6 +787,47 @@ public class Calendars extends Almanac {
     }
 
     /**
+     * 计算年龄
+     *
+     * @param birthDay 生日
+     * @return int 年龄
+     */
+    public static int age(LocalDate birthDay) {
+        Period period = Period.between(birthDay, LocalDate.now());
+        if (period.getYears() < 0) {
+            throw new DateTimeException("birthDay is after now!");
+        } else {
+            return period.getYears();
+        }
+    }
+
+    /**
+     * 计算年龄
+     *
+     * @param birthDay 生日
+     * @return int 年龄
+     */
+    public static int age(LocalDateTime birthDay) {
+        return age(birthDay.toLocalDate());
+    }
+
+    /**
+     * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
+     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * <ul>
+     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * </ul>
+     *
+     * @param birthday      生日
+     * @param dateToCompare 需要对比的日期
+     * @return 年龄
+     */
+    public static int age(final Calendar birthday, final Calendar dateToCompare) {
+        return age(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
+    }
+
+    /**
      * 计算相对于dateToCompare的年龄（周岁），常用于计算指定生日在某年的年龄
      * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
@@ -830,26 +873,6 @@ public class Calendars extends Almanac {
         }
 
         return age;
-    }
-
-    /**
-     * 是否为本月第一天
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为本月最后一天
-     */
-    public static boolean isFirstDayOfMonth(final Calendar calendar) {
-        return 1 == calendar.get(Calendar.DAY_OF_MONTH);
-    }
-
-    /**
-     * 是否为本月最后一天
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为本月最后一天
-     */
-    public static boolean isLastDayOfMonth(final Calendar calendar) {
-        return calendar.get(Calendar.DAY_OF_MONTH) == calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
 }
