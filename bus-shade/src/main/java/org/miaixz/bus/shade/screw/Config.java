@@ -26,8 +26,9 @@
 package org.miaixz.bus.shade.screw;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.shade.screw.engine.EngineConfig;
 import org.miaixz.bus.shade.screw.process.ProcessConfig;
@@ -41,7 +42,8 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 public class Config implements Serializable {

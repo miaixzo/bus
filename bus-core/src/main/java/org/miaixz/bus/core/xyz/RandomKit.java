@@ -748,7 +748,7 @@ public class RandomKit {
      * 以给定日期为基准，随机产生一个日期
      *
      * @param baseDate 基准日期
-     * @param various     偏移的时间字段，例如时、分、秒等
+     * @param various  偏移的时间字段，例如时、分、秒等
      * @param min      偏移最小量，可以为负数表示过去的时间（包含）
      * @param max      偏移最大量，可以为负数表示过去的时间（不包含）
      * @return 随机日期

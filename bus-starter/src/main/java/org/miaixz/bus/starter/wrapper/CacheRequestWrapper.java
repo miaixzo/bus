@@ -30,8 +30,9 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.EscapeKit;
@@ -113,7 +114,8 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         return content;
     }
 
-    @Data
+    @Getter
+    @Setter
     @AllArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     private static class ServletInputStreamWrapper extends ServletInputStream {

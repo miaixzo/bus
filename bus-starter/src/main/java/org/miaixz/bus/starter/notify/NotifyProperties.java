@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.notify;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Registry;
 import org.miaixz.bus.spring.BusXConfig;
@@ -41,7 +42,8 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.NOTIFY)
 public class NotifyProperties {
 

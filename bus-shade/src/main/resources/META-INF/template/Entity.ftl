@@ -24,7 +24,8 @@
 ********************************************************************************/
 package ${entityUrl};
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import entity.base.org.miaixz.bus.BaseEntity;
 import javax.persistence.Table;
 <#if isSwagger=="true" >
@@ -38,7 +39,8 @@ import javax.persistence.Table;
 * @author: ${author}
 * @since Java 17+
 */
-@Data
+@Getter
+@Setter
 @Table(name = "${table}")
 public class ${entityName} extends BaseEntity {
 

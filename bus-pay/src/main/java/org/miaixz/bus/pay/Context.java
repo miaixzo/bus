@@ -1,10 +1,8 @@
 package org.miaixz.bus.pay;
 
 import com.alipay.api.AlipayClient;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
@@ -14,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 上下文配置
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

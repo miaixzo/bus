@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.beans;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -35,7 +36,8 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class PropertyInfo implements Serializable {
 
     private String column;

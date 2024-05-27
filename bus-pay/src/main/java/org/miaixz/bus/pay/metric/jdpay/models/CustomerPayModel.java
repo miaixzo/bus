@@ -2,12 +2,14 @@ package org.miaixz.bus.pay.metric.jdpay.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 商户二维码支付接口
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CustomerPayModel extends JdPayEntity {

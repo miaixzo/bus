@@ -26,7 +26,8 @@
 package org.miaixz.bus.notify.magic;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 返回消息
@@ -34,7 +35,8 @@ import lombok.Data;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class Message {
 

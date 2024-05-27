@@ -54,15 +54,12 @@ public class StringKit extends CharsBacker {
      *     <li>空字符串：{@code ""}</li>
      *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
      * </ol>
-     *
-     * 例：
      * <ul>
      *     <li>{@code StringKit.isBlankIfString(null)     // true}</li>
      *     <li>{@code StringKit.isBlankIfString("")       // true}</li>
      *     <li>{@code StringKit.isBlankIfString(" \t\n")  // true}</li>
      *     <li>{@code StringKit.isBlankIfString("abc")    // false}</li>
      * </ul>
-     *
      * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是：
      * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
      *
@@ -85,8 +82,6 @@ public class StringKit extends CharsBacker {
      *     <li>{@code null}</li>
      *     <li>空字符串：{@code ""}</li>
      * </ol>
-     *
-     * 例：
      * <ul>
      *     <li>{@code StringKit.isEmptyIfString(null)     // true}</li>
      *     <li>{@code StringKit.isEmptyIfString("")       // true}</li>

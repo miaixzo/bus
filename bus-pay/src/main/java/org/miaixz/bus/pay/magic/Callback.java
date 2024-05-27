@@ -1,7 +1,8 @@
 package org.miaixz.bus.pay.magic;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 授权回调时的参数类
@@ -9,7 +10,8 @@ import lombok.Data;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class Callback {
 

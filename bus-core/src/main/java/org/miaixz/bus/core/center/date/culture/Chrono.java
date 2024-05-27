@@ -118,32 +118,6 @@ public enum Chrono {
     _2123("2123", "亥", "人定时分，夜色已深，人们已经停止活动，安歇睡眠了。");
 
     private static final Chrono[] ENUMS = Chrono.values();
-
-    /**
-     * 编码
-     */
-    private final String code;
-    /**
-     * 名称
-     */
-    private final String name;
-    /**
-     * 描述
-     */
-    private String desc;
-
-    Chrono(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
-    Chrono(String code, String name, String desc) {
-        this.code = code;
-        this.name = name;
-        this.desc = desc;
-    }
-
-
     /**
      * 时辰对应的小时范围
      */
@@ -152,7 +126,6 @@ public enum Chrono {
      * 小时到时辰的映射
      */
     private static final Map<Integer, String> HOUR_MAP = new HashMap<>();
-
 
     static {
         int hour = 23;
@@ -166,6 +139,30 @@ public enum Chrono {
 
             hour += 2;
         }
+    }
+
+    /**
+     * 编码
+     */
+    private final String code;
+    /**
+     * 名称
+     */
+    private final String name;
+    /**
+     * 描述
+     */
+    private String desc;
+    Chrono(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+
+    Chrono(String code, String name, String desc) {
+        this.code = code;
+        this.name = name;
+        this.desc = desc;
     }
 
     /**

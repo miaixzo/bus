@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.notify.metric.generic;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,7 +41,8 @@ import java.io.File;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @SuperBuilder
 public class GenericProperty extends Property {
 

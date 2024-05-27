@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.goalie;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
@@ -37,7 +38,8 @@ import java.util.Objects;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Assets {
 
     private String id;

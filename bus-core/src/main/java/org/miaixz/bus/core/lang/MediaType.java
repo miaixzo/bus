@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.xyz.MapKit;
 
 import java.util.*;
@@ -39,7 +40,8 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class MediaType {
 
     /**

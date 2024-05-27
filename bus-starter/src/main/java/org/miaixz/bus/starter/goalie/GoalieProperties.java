@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.goalie;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,7 +37,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(BusXConfig.GOALIE)
 public class GoalieProperties {
 

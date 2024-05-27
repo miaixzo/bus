@@ -2,13 +2,15 @@ package org.miaixz.bus.pay.metric.qqpay.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.pay.magic.Property;
 
 /**
  * 提交付款码支付
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class MicroPayModel extends Property {

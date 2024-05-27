@@ -26,9 +26,9 @@
 package org.miaixz.bus.goalie;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.miaixz.bus.goalie.support.JsonProvider;
 import org.miaixz.bus.goalie.support.XmlProvider;
 import org.springframework.http.MediaType;
@@ -46,7 +46,8 @@ import java.util.Optional;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Context {
 
     /**

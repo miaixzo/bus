@@ -93,6 +93,15 @@ public class ConsoleColorProvider extends ConsoleProvider {
         super(clazz);
     }
 
+    /**
+     * 设置颜色工厂，根据日志级别，定义不同的颜色
+     *
+     * @param colorFactory 颜色工厂函数
+     */
+    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
+        ConsoleColorProvider.colorFactory = colorFactory;
+    }
+
     @Override
     public synchronized void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
         if (!isEnabled(level)) {
@@ -101,15 +110,6 @@ public class ConsoleColorProvider extends ConsoleProvider {
 
         final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
         System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, args));
-    }
-
-    /**
-     * 设置颜色工厂，根据日志级别，定义不同的颜色
-     *
-     * @param colorFactory 颜色工厂函数
-     */
-    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
-        ConsoleColorProvider.colorFactory = colorFactory;
     }
 
 }

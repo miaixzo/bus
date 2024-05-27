@@ -143,18 +143,6 @@ public class DateKit extends Calendars {
      * 当前日期是否在日期指定范围内
      * 起始日期和结束日期可以互换
      *
-     * @param beginDate 起始日期（包含）
-     * @param endDate   结束日期（包含）
-     * @return 是否在范围内
-     */
-    public boolean isIn(final Date beginDate, final Date endDate) {
-        return new DateTime().isIn(beginDate, endDate);
-    }
-
-    /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     *
      * @param date      被检查的日期
      * @param beginDate 起始日期（包含）
      * @param endDate   结束日期（包含）
@@ -1820,6 +1808,17 @@ public class DateKit extends Calendars {
         return date(date).getLastDayOfMonth();
     }
 
+    /**
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
+     *
+     * @param beginDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 是否在范围内
+     */
+    public boolean isIn(final Date beginDate, final Date endDate) {
+        return new DateTime().isIn(beginDate, endDate);
+    }
 
     /**
      * {@code java.sql.*}日期时间相关封装

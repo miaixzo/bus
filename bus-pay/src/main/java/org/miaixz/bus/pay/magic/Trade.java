@@ -1,6 +1,7 @@
 package org.miaixz.bus.pay.magic;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,7 +10,8 @@ import java.util.Date;
 /**
  * 支付订单表
  */
-@Data
+@Getter
+@Setter
 public class Trade implements Serializable {
 
     private static final long serialVersionUID = 1L;

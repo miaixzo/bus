@@ -26,8 +26,9 @@
 package org.miaixz.bus.goalie.metric;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.miaixz.bus.goalie.Assets;
 
 /**
@@ -36,7 +37,8 @@ import org.miaixz.bus.goalie.Assets;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Token {

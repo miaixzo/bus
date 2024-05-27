@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.validate.magic;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -43,7 +44,8 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Property {
 
     private boolean array = false;

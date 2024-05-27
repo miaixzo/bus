@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.metadata;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DataModel
@@ -34,7 +35,8 @@ import lombok.EqualsAndHashCode;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class DataSchema extends DatabaseSchema {
     /**

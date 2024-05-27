@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -42,7 +43,8 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Node {
 
     private final String aet;

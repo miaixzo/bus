@@ -26,7 +26,8 @@
 package org.miaixz.bus.goalie.metric;
 
 import com.google.common.util.concurrent.RateLimiter;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 限流器
@@ -34,7 +35,8 @@ import lombok.Data;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Limiter {
 
     private String ip;

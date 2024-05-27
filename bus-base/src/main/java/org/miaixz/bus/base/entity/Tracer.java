@@ -26,8 +26,9 @@
 package org.miaixz.bus.base.entity;
 
 import jakarta.persistence.Transient;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 访问链路跟踪
@@ -35,7 +36,8 @@ import lombok.EqualsAndHashCode;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Tracer extends OAuth2 {
 

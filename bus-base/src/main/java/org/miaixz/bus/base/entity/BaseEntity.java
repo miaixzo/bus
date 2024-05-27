@@ -26,8 +26,9 @@
 package org.miaixz.bus.base.entity;
 
 import jakarta.persistence.Transient;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.base.normal.Consts;
 import org.miaixz.bus.core.data.ObjectId;
 import org.miaixz.bus.core.lang.Normal;
@@ -42,7 +43,8 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class BaseEntity extends Tracer {
 

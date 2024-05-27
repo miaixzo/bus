@@ -2,13 +2,15 @@ package org.miaixz.bus.pay.metric.unionpay.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.pay.magic.Property;
 
 /**
  * 云闪付-银联 JS 支付获取 userId
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class UnionPayUserIdModel extends Property {

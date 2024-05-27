@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.metric.ApplicationEntity;
 import org.miaixz.bus.image.metric.Connection;
@@ -44,7 +45,8 @@ import java.util.EnumSet;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Args {
 
     public static String[] IVR_LE_FIRST = {

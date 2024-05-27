@@ -1,6 +1,7 @@
 package org.miaixz.bus.pay.metric.wxpay.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
 /**
  * V3 微信申请退款
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class RefundModel {
 

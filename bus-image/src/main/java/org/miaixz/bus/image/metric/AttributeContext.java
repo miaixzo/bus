@@ -25,14 +25,16 @@
  ********************************************************************************/
 package org.miaixz.bus.image.metric;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.image.Node;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class AttributeContext {
 
     private final String tsuid;

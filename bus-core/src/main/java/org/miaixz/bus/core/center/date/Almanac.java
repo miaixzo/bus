@@ -357,19 +357,6 @@ public class Almanac extends Resolver {
     }
 
     /**
-     * 偏移到指定的周几
-     *
-     * @param temporal   日期或者日期时间
-     * @param dayOfWeek  周几
-     * @param <T>        日期类型，如LocalDate或LocalDateTime
-     * @param isPrevious 是否向前偏移，{@code true}向前偏移，{@code false}向后偏移。
-     * @return 偏移后的日期
-     */
-    public <T extends Temporal> T offset(final T temporal, final DayOfWeek dayOfWeek, final boolean isPrevious) {
-        return (T) temporal.with(isPrevious ? TemporalAdjusters.previous(dayOfWeek) : TemporalAdjusters.next(dayOfWeek));
-    }
-
-    /**
      * 获取最大时间，提供参数是否将毫秒归零
      * <ul>
      *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
@@ -381,6 +368,19 @@ public class Almanac extends Resolver {
      */
     public static LocalTime max(final boolean truncateMillisecond) {
         return truncateMillisecond ? MAX_HMS : LocalTime.MAX;
+    }
+
+    /**
+     * 偏移到指定的周几
+     *
+     * @param temporal   日期或者日期时间
+     * @param dayOfWeek  周几
+     * @param <T>        日期类型，如LocalDate或LocalDateTime
+     * @param isPrevious 是否向前偏移，{@code true}向前偏移，{@code false}向后偏移。
+     * @return 偏移后的日期
+     */
+    public <T extends Temporal> T offset(final T temporal, final DayOfWeek dayOfWeek, final boolean isPrevious) {
+        return (T) temporal.with(isPrevious ? TemporalAdjusters.previous(dayOfWeek) : TemporalAdjusters.next(dayOfWeek));
     }
 
 }

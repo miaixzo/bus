@@ -35,7 +35,8 @@
 
 ```java
 
-@Data
+@Getter
+@Setter
 public class Entity {
 
     private String id;

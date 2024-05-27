@@ -26,7 +26,8 @@
 package org.miaixz.bus.shade.screw.engine;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -36,7 +37,8 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class EngineConfig implements Serializable {
     /**

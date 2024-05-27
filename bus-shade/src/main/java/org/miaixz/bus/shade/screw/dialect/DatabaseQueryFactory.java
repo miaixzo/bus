@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.dialect;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 import javax.sql.DataSource;
@@ -40,7 +41,8 @@ import java.sql.SQLException;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class DatabaseQueryFactory implements Serializable {
 
     /**

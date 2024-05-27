@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.sensitive;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
@@ -39,7 +40,8 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Context {
 
     /**

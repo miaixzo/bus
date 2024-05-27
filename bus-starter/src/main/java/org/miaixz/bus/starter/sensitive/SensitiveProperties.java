@@ -26,7 +26,8 @@
 package org.miaixz.bus.starter.sensitive;
 
 import jakarta.annotation.Resource;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -35,7 +36,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
 @ConfigurationProperties(prefix = BusXConfig.SENSITIVE)
 public class SensitiveProperties {
@@ -53,7 +55,8 @@ public class SensitiveProperties {
     /**
      * 加密信息
      */
-    @Data
+    @Getter
+    @Setter
     @ConfigurationProperties(prefix = BusXConfig.SENSITIVE + ".encrypt")
     public class Encrypt {
         private String key;
@@ -63,7 +66,8 @@ public class SensitiveProperties {
     /**
      * 解密信息
      */
-    @Data
+    @Getter
+    @Setter
     @ConfigurationProperties(prefix = BusXConfig.SENSITIVE + ".decrypt")
     public class Decrypt {
         private String key;

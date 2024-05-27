@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.cache;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.BusXConfig;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
@@ -39,7 +40,8 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.CACHE)
 public class CacheProperties {
 

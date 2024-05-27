@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.goalie.metric;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.base.entity.Message;
 import org.miaixz.bus.base.entity.OAuth2;
 import org.miaixz.bus.base.normal.Consts;
@@ -36,7 +37,8 @@ import org.miaixz.bus.base.normal.Consts;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Delegate {
 
     private Message message;

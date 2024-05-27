@@ -1,9 +1,6 @@
 package org.miaixz.bus.pay.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * 统一授权响应类
@@ -11,7 +8,8 @@ import lombok.NoArgsConstructor;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

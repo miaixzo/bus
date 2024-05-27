@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.goalie;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 服务端配置
@@ -33,7 +34,8 @@ import lombok.Data;
  * @author Justubborn
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Config {
 
     /**
@@ -74,7 +76,8 @@ public class Config {
     private String path;
     private int port;
 
-    @Data
+    @Getter
+    @Setter
     public static class Encrypt {
         private boolean enabled;
         private String key;
@@ -82,7 +85,8 @@ public class Config {
         private String offset;
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class Decrypt {
         private boolean enabled;
         private String key;
@@ -90,7 +94,8 @@ public class Config {
         private String offset;
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class Limit {
         private boolean enabled;
     }

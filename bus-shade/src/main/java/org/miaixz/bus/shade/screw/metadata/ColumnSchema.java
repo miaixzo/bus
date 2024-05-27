@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.metadata;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 表列领域对象
@@ -33,7 +34,8 @@ import lombok.Data;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class ColumnSchema {
 
     private static final long serialVersionUID = 1L;

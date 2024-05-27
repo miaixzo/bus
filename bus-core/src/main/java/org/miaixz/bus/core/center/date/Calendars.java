@@ -282,7 +282,7 @@ public class Calendars extends Almanac {
      * 修改日期为某个时间字段起始时间
      *
      * @param calendar {@link Calendar}
-     * @param various     保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
+     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
      * @return 原{@link Calendar}
      */
     public static Calendar truncate(final Calendar calendar, final Various various) {
@@ -293,7 +293,7 @@ public class Calendars extends Almanac {
      * 修改日期为某个时间字段四舍五入时间
      *
      * @param calendar {@link Calendar}
-     * @param various     时间字段，即保留到哪个日期字段
+     * @param various  时间字段，即保留到哪个日期字段
      * @return 原{@link Calendar}
      */
     public static Calendar round(final Calendar calendar, final Various various) {
@@ -304,7 +304,7 @@ public class Calendars extends Almanac {
      * 修改日期为某个时间字段结束时间
      *
      * @param calendar {@link Calendar}
-     * @param various     保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
+     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
      * @return 原{@link Calendar}
      */
     public static Calendar ceiling(final Calendar calendar, final Various various) {
@@ -320,7 +320,7 @@ public class Calendars extends Almanac {
      * </p>
      *
      * @param calendar            {@link Calendar}
-     * @param various                时间字段
+     * @param various             时间字段
      * @param truncateMillisecond 是否毫秒归零
      * @return 原{@link Calendar}
      */
@@ -537,7 +537,7 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar {@link Calendar}
-     * @param various     {@link Various}
+     * @param various  {@link Various}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
@@ -564,7 +564,7 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar {@link Calendar}
-     * @param various     {@link Various}
+     * @param various  {@link Various}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */

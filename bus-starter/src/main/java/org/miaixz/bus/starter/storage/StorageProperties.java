@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.storage;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.BusXConfig;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
@@ -43,7 +44,8 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.STORAGE)
 public class StorageProperties {
 
