@@ -23,62 +23,110 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.core.center.date.chinese;
+package org.miaixz.bus.core.center.date.culture;
+
+import java.time.temporal.ChronoUnit;
 
 /**
- * 农历标准化输出格式枚举
+ * 日期时间单位，每个单位都是以毫秒为基数
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum ChineseDateFormat {
+public enum Units {
+    /**
+     * 一毫秒
+     */
+    MS(1),
+    /**
+     * 一秒的毫秒数
+     */
+    SECOND(1000),
+    /**
+     * 一分钟的毫秒数
+     */
+    MINUTE(SECOND.getMillis() * 60),
+    /**
+     * 一小时的毫秒数
+     */
+    HOUR(MINUTE.getMillis() * 60),
+    /**
+     * 一天的毫秒数
+     */
+    DAY(HOUR.getMillis() * 24),
+    /**
+     * 一周的毫秒数
+     */
+    WEEK(DAY.getMillis() * 7);
 
-    /**
-     * 干支纪年 数序纪月 数序纪日
-     */
-    GSS("干支纪年 数序纪月 数序纪日"),
-    /**
-     * 生肖纪年 数序纪月 数序纪日
-     */
-    XSS("生肖纪年 数序纪月 数序纪日"),
-    /**
-     * 干支生肖纪年 数序纪月（传统表示） 数序纪日
-     */
-    GXSS("干支生肖纪年 数序纪月（传统表示） 数序纪日"),
-    /**
-     * 干支纪年 数序纪月 干支纪日
-     */
-    GSG("干支纪年 数序纪月 干支纪日"),
-    /**
-     * 干支纪年 干支纪月 干支纪日
-     */
-    GGG("干支纪年 干支纪月 干支纪日"),
-    /**
-     * 农历年年首所在的公历年份 干支纪年 数序纪月 数序纪日
-     */
-    MIX("农历年年首所在的公历年份 干支纪年 数序纪月 数序纪日");
+    private final long millis;
 
-    /**
-     * 农历标准化输出格式信息
-     */
-    private final String info;
-
-    /**
-     * 构造
-     *
-     * @param info 输出格式信息
-     */
-    ChineseDateFormat(final String info) {
-        this.info = info;
+    Units(final long millis) {
+        this.millis = millis;
     }
 
     /**
-     * 获取农历日期输出格式相关描述
+     * 单位兼容转换，将{@link ChronoUnit}转换为对应的DateUnit
      *
-     * @return 输出格式信息
+     * @param unit {@link ChronoUnit}
+     * @return Units，null表示不支持此单位
      */
-    public String getName() {
-        return this.info;
+    public static Units of(final ChronoUnit unit) {
+        switch (unit) {
+            case MICROS:
+                return Units.MS;
+            case SECONDS:
+                return Units.SECOND;
+            case MINUTES:
+                return Units.MINUTE;
+            case HOURS:
+                return Units.HOUR;
+            case DAYS:
+                return Units.DAY;
+            case WEEKS:
+                return Units.WEEK;
+        }
+        return null;
+    }
+
+    /**
+     * 单位兼容转换，将DateUnit转换为对应的{@link ChronoUnit}
+     *
+     * @param unit Units
+     * @return {@link ChronoUnit}
+     */
+    public static ChronoUnit toChronoUnit(final Units unit) {
+        switch (unit) {
+            case MS:
+                return ChronoUnit.MICROS;
+            case SECOND:
+                return ChronoUnit.SECONDS;
+            case MINUTE:
+                return ChronoUnit.MINUTES;
+            case HOUR:
+                return ChronoUnit.HOURS;
+            case DAY:
+                return ChronoUnit.DAYS;
+            case WEEK:
+                return ChronoUnit.WEEKS;
+        }
+        return null;
+    }
+
+    /**
+     * @return 单位对应的毫秒数
+     */
+    public long getMillis() {
+        return this.millis;
+    }
+
+    /**
+     * 单位兼容转换，将DateUnit转换为对应的{@link ChronoUnit}
+     *
+     * @return {@link ChronoUnit}
+     */
+    public ChronoUnit toChronoUnit() {
+        return Units.toChronoUnit(this);
     }
 
 }

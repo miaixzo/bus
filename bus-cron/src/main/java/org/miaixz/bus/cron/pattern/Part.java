@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern;
 
+import org.miaixz.bus.core.center.date.culture.Month;
+import org.miaixz.bus.core.center.date.culture.Week;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 
 import java.util.Calendar;
@@ -49,8 +50,8 @@ public enum Part {
     MINUTE(Calendar.MINUTE, 0, 59),
     HOUR(Calendar.HOUR_OF_DAY, 0, 23),
     DAY_OF_MONTH(Calendar.DAY_OF_MONTH, 1, 31),
-    MONTH(Calendar.MONTH, Fields.Month.JANUARY.getValueBaseOne(), Fields.Month.DECEMBER.getValueBaseOne()),
-    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Fields.Week.SUNDAY.ordinal(), Fields.Week.SATURDAY.ordinal()),
+    MONTH(Calendar.MONTH, Month.JANUARY.getIsoValue(), Month.DECEMBER.getIsoValue()),
+    DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Week.SUNDAY.ordinal(), Week.SATURDAY.ordinal()),
     YEAR(Calendar.YEAR, 1970, 2099);
 
     private static final Part[] ENUMS = Part.values();

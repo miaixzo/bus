@@ -25,16 +25,17 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.center.date.culture.Modify;
+import org.miaixz.bus.core.center.date.culture.Month;
+import org.miaixz.bus.core.center.date.culture.Various;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.math.ChineseNumberFormatter;
 import org.miaixz.bus.core.xyz.CompareKit;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -281,33 +282,33 @@ public class Calendars extends Almanac {
      * 修改日期为某个时间字段起始时间
      *
      * @param calendar {@link Calendar}
-     * @param type     保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部归0
+     * @param various     保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
      * @return 原{@link Calendar}
      */
-    public static Calendar truncate(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.TRUNCATE);
+    public static Calendar truncate(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.TRUNCATE);
     }
 
     /**
      * 修改日期为某个时间字段四舍五入时间
      *
      * @param calendar {@link Calendar}
-     * @param type     时间字段，即保留到哪个日期字段
+     * @param various     时间字段，即保留到哪个日期字段
      * @return 原{@link Calendar}
      */
-    public static Calendar round(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.ROUND);
+    public static Calendar round(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.ROUND);
     }
 
     /**
      * 修改日期为某个时间字段结束时间
      *
      * @param calendar {@link Calendar}
-     * @param type     保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
+     * @param various     保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
      * @return 原{@link Calendar}
      */
-    public static Calendar ceiling(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.CEILING);
+    public static Calendar ceiling(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.CEILING);
     }
 
     /**
@@ -319,12 +320,12 @@ public class Calendars extends Almanac {
      * </p>
      *
      * @param calendar            {@link Calendar}
-     * @param type                时间字段
+     * @param various                时间字段
      * @param truncateMillisecond 是否毫秒归零
      * @return 原{@link Calendar}
      */
-    public static Calendar ceiling(final Calendar calendar, final Fields.Type type, final boolean truncateMillisecond) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.CEILING, truncateMillisecond);
+    public static Calendar ceiling(final Calendar calendar, final Various various, final boolean truncateMillisecond) {
+        return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncateMillisecond);
     }
 
     /**
@@ -334,7 +335,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfSecond(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.SECOND);
+        return truncate(calendar, Various.SECOND);
     }
 
     /**
@@ -344,7 +345,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfSecond(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.SECOND);
+        return ceiling(calendar, Various.SECOND);
     }
 
     /**
@@ -354,7 +355,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfHour(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.HOUR_OF_DAY);
+        return truncate(calendar, Various.HOUR_OF_DAY);
     }
 
     /**
@@ -364,7 +365,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfHour(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.HOUR_OF_DAY);
+        return ceiling(calendar, Various.HOUR_OF_DAY);
     }
 
     /**
@@ -374,7 +375,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfMinute(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.MINUTE);
+        return truncate(calendar, Various.MINUTE);
     }
 
     /**
@@ -384,7 +385,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfMinute(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.MINUTE);
+        return ceiling(calendar, Various.MINUTE);
     }
 
     /**
@@ -394,7 +395,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfDay(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.DAY_OF_MONTH);
+        return truncate(calendar, Various.DAY_OF_MONTH);
     }
 
     /**
@@ -404,7 +405,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfDay(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.DAY_OF_MONTH);
+        return ceiling(calendar, Various.DAY_OF_MONTH);
     }
 
     /**
@@ -427,7 +428,7 @@ public class Calendars extends Almanac {
     public static Calendar beginOfWeek(final Calendar calendar, final boolean isMondayAsFirstDay) {
         calendar.setFirstDayOfWeek(isMondayAsFirstDay ? Calendar.MONDAY : Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
-        return truncate(calendar, Fields.Type.WEEK_OF_MONTH);
+        return truncate(calendar, Various.WEEK_OF_MONTH);
     }
 
     /**
@@ -450,7 +451,7 @@ public class Calendars extends Almanac {
     public static Calendar endOfWeek(final Calendar calendar, final boolean isSundayAsLastDay) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? Calendar.MONDAY : Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
-        return ceiling(calendar, Fields.Type.WEEK_OF_MONTH);
+        return ceiling(calendar, Various.WEEK_OF_MONTH);
     }
 
     /**
@@ -460,7 +461,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfMonth(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.MONTH);
+        return truncate(calendar, Various.MONTH);
     }
 
     /**
@@ -470,7 +471,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfMonth(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.MONTH);
+        return ceiling(calendar, Various.MONTH);
     }
 
     /**
@@ -480,7 +481,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfQuarter(final Calendar calendar) {
-        calendar.set(Calendar.MONTH, calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3);
+        calendar.set(Calendar.MONTH, calendar.get(Various.MONTH.getValue()) / 3 * 3);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         return beginOfDay(calendar);
     }
@@ -493,10 +494,10 @@ public class Calendars extends Almanac {
      */
     public static Calendar endOfQuarter(final Calendar calendar) {
         final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3 + 2;
+        final int month = calendar.get(Various.MONTH.getValue()) / 3 * 3 + 2;
 
         final Calendar resultCal = Calendar.getInstance(calendar.getTimeZone());
-        resultCal.set(year, month, Fields.Month.of(month).getLastDay(DateKit.isLeapYear(year)));
+        resultCal.set(year, month, Month.of(month).getLastDay(Almanac.isLeapYear(year)));
 
         return endOfDay(resultCal);
     }
@@ -508,7 +509,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar beginOfYear(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.YEAR);
+        return truncate(calendar, Various.YEAR);
     }
 
     /**
@@ -518,7 +519,7 @@ public class Calendars extends Almanac {
      * @return {@link Calendar}
      */
     public static Calendar endOfYear(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.YEAR);
+        return ceiling(calendar, Various.YEAR);
     }
 
     /**
@@ -536,19 +537,19 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar {@link Calendar}
-     * @param type     {@link Fields.Type}
+     * @param various     {@link Various}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
-    public static int getBeginValue(final Calendar calendar, final Fields.Type type) {
-        return getBeginValue(calendar, type.getValue());
+    public static int getBeginValue(final Calendar calendar, final Various various) {
+        return getBeginValue(calendar, various.getValue());
     }
 
     /**
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.Type}
+     * @param dateField {@link Various}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
@@ -563,19 +564,19 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar {@link Calendar}
-     * @param type     {@link Fields.Type}
+     * @param various     {@link Various}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */
-    public static int getEndValue(final Calendar calendar, final Fields.Type type) {
-        return getEndValue(calendar, type.getValue());
+    public static int getEndValue(final Calendar calendar, final Various various) {
+        return getEndValue(calendar, various.getValue());
     }
 
     /**
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.Type}
+     * @param dateField {@link Various}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */
@@ -591,10 +592,10 @@ public class Calendars extends Almanac {
      * 例如获得年的部分，则使用 getField(DatePart.YEAR)
      *
      * @param calendar {@link Calendar}
-     * @param field    表示日期的哪个部分的枚举 {@link Fields.Type}
+     * @param field    表示日期的哪个部分的枚举 {@link Various}
      * @return 某个部分的值
      */
-    public static int getField(final Calendar calendar, final Fields.Type field) {
+    public static int getField(final Calendar calendar, final Various field) {
         return Assert.notNull(calendar).get(Assert.notNull(field).getValue());
     }
 

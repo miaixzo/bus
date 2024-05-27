@@ -26,8 +26,8 @@
 package org.miaixz.bus.cron.pattern;
 
 import org.miaixz.bus.core.center.date.Calendars;
+import org.miaixz.bus.core.center.date.culture.Week;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
@@ -207,7 +207,7 @@ public class CronPattern {
         final int hour = dateTime.getHour();
         final int dayOfMonth = dateTime.getDayOfMonth();
         final int month = dateTime.getMonthValue();// 月份从1开始
-        final int dayOfWeek = Fields.Week.of(dateTime.getDayOfWeek()).getValue() - 1; // 星期从0开始，0和7都表示周日
+        final int dayOfWeek = Week.of(dateTime.getDayOfWeek()).getCode() - 1; // 星期从0开始，0和7都表示周日
         final int year = dateTime.getYear();
         return new int[]{second, minute, hour, dayOfMonth, month, dayOfWeek, year};
     }

@@ -26,8 +26,8 @@
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.center.date.culture.Various;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.selector.WeightObject;
@@ -741,24 +741,24 @@ public class RandomKit {
      * @return 随机日期（随机天，其它时间不变）
      */
     public static DateTime randomDay(final int min, final int max) {
-        return randomDate(DateKit.now(), Fields.Type.DAY_OF_YEAR, min, max);
+        return randomDate(DateKit.now(), Various.DAY_OF_YEAR, min, max);
     }
 
     /**
      * 以给定日期为基准，随机产生一个日期
      *
      * @param baseDate 基准日期
-     * @param type     偏移的时间字段，例如时、分、秒等
+     * @param various     偏移的时间字段，例如时、分、秒等
      * @param min      偏移最小量，可以为负数表示过去的时间（包含）
      * @param max      偏移最大量，可以为负数表示过去的时间（不包含）
      * @return 随机日期
      */
-    public static DateTime randomDate(Date baseDate, final Fields.Type type, final int min, final int max) {
+    public static DateTime randomDate(Date baseDate, final Various various, final int min, final int max) {
         if (null == baseDate) {
             baseDate = DateKit.now();
         }
 
-        return DateKit.offset(baseDate, type, randomInt(min, max));
+        return DateKit.offset(baseDate, various, randomInt(min, max));
     }
 
 }

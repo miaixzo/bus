@@ -25,13 +25,13 @@
  ********************************************************************************/
 package org.miaixz.bus.core.io.file;
 
+import org.miaixz.bus.core.center.date.culture.Units;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
 import org.miaixz.bus.core.io.watch.WatchKind;
 import org.miaixz.bus.core.io.watch.WatchMonitor;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -102,7 +102,7 @@ public class FileTailer implements Serializable {
      * @param initReadLine 启动时预读取的行数
      */
     public FileTailer(final File file, final ConsumerX<String> lineHandler, final int initReadLine) {
-        this(file, Charset.UTF_8, lineHandler, initReadLine, Fields.Units.SECOND.getMillis());
+        this(file, Charset.UTF_8, lineHandler, initReadLine, Units.SECOND.getMillis());
     }
 
     /**
@@ -113,7 +113,7 @@ public class FileTailer implements Serializable {
      * @param lineHandler 行处理器
      */
     public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
-        this(file, charset, lineHandler, 0, Fields.Units.SECOND.getMillis());
+        this(file, charset, lineHandler, 0, Units.SECOND.getMillis());
     }
 
     /**

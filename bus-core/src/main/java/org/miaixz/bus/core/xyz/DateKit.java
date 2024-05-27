@@ -27,6 +27,7 @@ package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.*;
+import org.miaixz.bus.core.center.date.culture.*;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -136,16 +137,6 @@ public class DateKit extends Calendars {
             throw new IllegalArgumentException("The date must not be null");
         }
         return Calendars.isSameMonth(calendar(date1), calendar(date2));
-    }
-
-    /**
-     * 是否闰年
-     *
-     * @param year 年
-     * @return 是否闰年
-     */
-    public static boolean isLeapYear(final int year) {
-        return Year.isLeap(year);
     }
 
     /**
@@ -376,7 +367,7 @@ public class DateKit extends Calendars {
      * @param date 日期
      * @return 第几个季度枚举
      */
-    public static Fields.Quarter quarterEnum(final Date date) {
+    public static Quarter quarterEnum(final Date date) {
         return DateTime.of(date).quarterEnum();
     }
 
@@ -394,9 +385,9 @@ public class DateKit extends Calendars {
      * 获得月份
      *
      * @param date 日期
-     * @return {@link Fields.Month}
+     * @return {@link Month}
      */
-    public static Fields.Month monthEnum(final Date date) {
+    public static Month monthEnum(final Date date) {
         return DateTime.of(date).monthEnum();
     }
 
@@ -409,7 +400,7 @@ public class DateKit extends Calendars {
      *
      * @param date 日期
      * @return 周
-     * @see DateTime#setFirstDayOfWeek(Fields.Week)
+     * @see DateTime#setFirstDayOfWeek(Week)
      */
     public static int weekOfYear(final Date date) {
         return DateTime.of(date).weekOfYear();
@@ -459,9 +450,9 @@ public class DateKit extends Calendars {
      * 获得指定日期是星期几
      *
      * @param date 日期
-     * @return {@link Fields.Week}
+     * @return {@link Week}
      */
-    public static Fields.Week dayOfWeekEnum(final Date date) {
+    public static Week dayOfWeekEnum(final Date date) {
         return DateTime.of(date).dayOfWeekEnum();
     }
 
@@ -472,8 +463,8 @@ public class DateKit extends Calendars {
      * @return 是否为周末（周六或周日）
      */
     public static boolean isWeekend(final Date date) {
-        final Fields.Week week = dayOfWeekEnum(date);
-        return Fields.Week.SATURDAY == week || Fields.Week.SUNDAY == week;
+        final Week week = dayOfWeekEnum(date);
+        return Week.SATURDAY == week || Week.SUNDAY == week;
     }
 
     /**
@@ -533,9 +524,9 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * @return 当前月份 {@link Fields.Month}
+     * @return 当前月份 {@link Month}
      */
-    public static Fields.Month thisMonthEnum() {
+    public static Month thisMonthEnum() {
         return monthEnum(now());
     }
 
@@ -568,9 +559,9 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * @return 当前日期是星期几 {@link Fields.Week}
+     * @return 当前日期是星期几 {@link Week}
      */
-    public static Fields.Week thisDayOfWeekEnum() {
+    public static Week thisDayOfWeekEnum() {
         return dayOfWeekEnum(now());
     }
 
@@ -814,34 +805,34 @@ public class DateKit extends Calendars {
     /**
      * 修改日期为某个时间字段起始时间
      *
-     * @param date {@link Date}
-     * @param type 保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部归0
+     * @param date    {@link Date}
+     * @param various 保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
      * @return {@link DateTime}
      */
-    public static DateTime truncate(final Date date, final Fields.Type type) {
-        return new DateTime(truncate(calendar(date), type));
+    public static DateTime truncate(final Date date, final Various various) {
+        return new DateTime(truncate(calendar(date), various));
     }
 
     /**
      * 修改日期为某个时间字段四舍五入时间
      *
-     * @param date {@link Date}
-     * @param type 时间字段
+     * @param date    {@link Date}
+     * @param various 时间字段
      * @return {@link DateTime}
      */
-    public static DateTime round(final Date date, final Fields.Type type) {
-        return new DateTime(round(calendar(date), type));
+    public static DateTime round(final Date date, final Various various) {
+        return new DateTime(round(calendar(date), various));
     }
 
     /**
      * 修改日期为某个时间字段结束时间
      *
-     * @param date {@link Date}
-     * @param type 保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
+     * @param date    {@link Date}
+     * @param various 保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
      * @return {@link DateTime}
      */
-    public static DateTime ceiling(final Date date, final Fields.Type type) {
-        return new DateTime(ceiling(calendar(date), type));
+    public static DateTime ceiling(final Date date, final Various various) {
+        return new DateTime(ceiling(calendar(date), various));
     }
 
     /**
@@ -853,12 +844,12 @@ public class DateKit extends Calendars {
      * </p>
      *
      * @param date                {@link Date}
-     * @param type                时间字段
+     * @param various             时间字段
      * @param truncateMillisecond 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime ceiling(final Date date, final Fields.Type type, final boolean truncateMillisecond) {
-        return new DateTime(ceiling(calendar(date), type, truncateMillisecond));
+    public static DateTime ceiling(final Date date, final Various various, final boolean truncateMillisecond) {
+        return new DateTime(ceiling(calendar(date), various, truncateMillisecond));
     }
 
     /**
@@ -1105,7 +1096,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetMillisecond(final Date date, final int offset) {
-        return offset(date, Fields.Type.MILLISECOND, offset);
+        return offset(date, Various.MILLISECOND, offset);
     }
 
     /**
@@ -1116,7 +1107,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetSecond(final Date date, final int offset) {
-        return offset(date, Fields.Type.SECOND, offset);
+        return offset(date, Various.SECOND, offset);
     }
 
     /**
@@ -1127,7 +1118,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetMinute(final Date date, final int offset) {
-        return offset(date, Fields.Type.MINUTE, offset);
+        return offset(date, Various.MINUTE, offset);
     }
 
     /**
@@ -1138,7 +1129,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetHour(final Date date, final int offset) {
-        return offset(date, Fields.Type.HOUR_OF_DAY, offset);
+        return offset(date, Various.HOUR_OF_DAY, offset);
     }
 
     /**
@@ -1149,7 +1140,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetDay(final Date date, final int offset) {
-        return offset(date, Fields.Type.DAY_OF_YEAR, offset);
+        return offset(date, Various.DAY_OF_YEAR, offset);
     }
 
     /**
@@ -1160,7 +1151,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetWeek(final Date date, final int offset) {
-        return offset(date, Fields.Type.WEEK_OF_YEAR, offset);
+        return offset(date, Various.WEEK_OF_YEAR, offset);
     }
 
     /**
@@ -1171,7 +1162,7 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetMonth(final Date date, final int offset) {
-        return offset(date, Fields.Type.MONTH, offset);
+        return offset(date, Various.MONTH, offset);
     }
 
     /**
@@ -1182,19 +1173,19 @@ public class DateKit extends Calendars {
      * @return 偏移后的日期
      */
     public static DateTime offsetYear(final Date date, final int offset) {
-        return offset(date, Fields.Type.YEAR, offset);
+        return offset(date, Various.YEAR, offset);
     }
 
     /**
      * 获取指定日期偏移指定时间后的时间，生成的偏移日期不影响原日期
      *
-     * @param date   基准日期
-     * @param type   偏移的粒度大小（小时、天、月等）{@link Fields.Type}
-     * @param offset 偏移量，正数为向后偏移，负数为向前偏移
+     * @param date    基准日期
+     * @param various 偏移的粒度大小（小时、天、月等）{@link Various}
+     * @param offset  偏移量，正数为向后偏移，负数为向前偏移
      * @return 偏移后的日期
      */
-    public static DateTime offset(final Date date, final Fields.Type type, final int offset) {
-        return dateNew(date).offset(type, offset);
+    public static DateTime offset(final Date date, final Various various, final int offset) {
+        return dateNew(date).offset(various, offset);
     }
 
     /**
@@ -1202,10 +1193,10 @@ public class DateKit extends Calendars {
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param unit      相差的单位：相差 天{@link Fields.Units#DAY}、小时{@link Fields.Units#HOUR} 等
+     * @param unit      相差的单位：相差 天{@link Units#DAY}、小时{@link Units#HOUR} 等
      * @return 日期差
      */
-    public static long between(final Date beginDate, final Date endDate, final Fields.Units unit) {
+    public static long between(final Date beginDate, final Date endDate, final Units unit) {
         return between(beginDate, endDate, unit, true);
     }
 
@@ -1214,11 +1205,11 @@ public class DateKit extends Calendars {
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param unit      相差的单位：相差 天{@link Fields.Units#DAY}、小时{@link Fields.Units#HOUR} 等
+     * @param unit      相差的单位：相差 天{@link Units#DAY}、小时{@link Units#HOUR} 等
      * @param isAbs     日期间隔是否只保留绝对值正数
      * @return 日期差
      */
-    public static long between(final Date beginDate, final Date endDate, final Fields.Units unit, final boolean isAbs) {
+    public static long between(final Date beginDate, final Date endDate, final Units unit, final boolean isAbs) {
         return new Between(beginDate, endDate, isAbs).between(unit);
     }
 
@@ -1230,7 +1221,7 @@ public class DateKit extends Calendars {
      * @return 日期差
      */
     public static long betweenMs(final Date beginDate, final Date endDate) {
-        return new Between(beginDate, endDate).between(Fields.Units.MS);
+        return new Between(beginDate, endDate).between(Units.MS);
     }
 
     /**
@@ -1253,7 +1244,7 @@ public class DateKit extends Calendars {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Fields.Units.DAY);
+        return between(beginDate, endDate, Units.DAY);
     }
 
     /**
@@ -1269,7 +1260,7 @@ public class DateKit extends Calendars {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Fields.Units.WEEK);
+        return between(beginDate, endDate, Units.WEEK);
     }
 
     /**
@@ -1307,7 +1298,7 @@ public class DateKit extends Calendars {
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(final Date beginDate, final Date endDate, final FormatPeriod.Level level) {
-        return formatBetween(between(beginDate, endDate, Fields.Units.MS), level);
+        return formatBetween(between(beginDate, endDate, Units.MS), level);
     }
 
     /**
@@ -1318,7 +1309,7 @@ public class DateKit extends Calendars {
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(final Date beginDate, final Date endDate) {
-        return formatBetween(between(beginDate, endDate, Fields.Units.MS));
+        return formatBetween(between(beginDate, endDate, Units.MS));
     }
 
     /**
@@ -1529,7 +1520,7 @@ public class DateKit extends Calendars {
      * @param unit  步进单位
      * @return {@link Boundary}
      */
-    public static Boundary range(final Date start, final Date end, final Fields.Type unit) {
+    public static Boundary range(final Date start, final Date end, final Various unit) {
         return new Boundary(start, end, unit);
     }
 
@@ -1569,7 +1560,7 @@ public class DateKit extends Calendars {
      * @param <T>   Date经过函数处理结果类型
      * @return 结果列表
      */
-    public static <T> List<T> rangeFunc(final Date start, final Date end, final Fields.Type unit, final Function<Date, T> func) {
+    public static <T> List<T> rangeFunc(final Date start, final Date end, final Various unit, final Function<Date, T> func) {
         if (start == null || end == null || start.after(end)) {
             return Collections.emptyList();
         }
@@ -1588,7 +1579,7 @@ public class DateKit extends Calendars {
      * @param unit     步进单位
      * @param consumer 每次遍历要执行的 consumer
      */
-    public static void rangeConsume(final Date start, final Date end, final Fields.Type unit, final Consumer<Date> consumer) {
+    public static void rangeConsume(final Date start, final Date end, final Various unit, final Consumer<Date> consumer) {
         if (start == null || end == null || start.after(end)) {
             return;
         }
@@ -1603,7 +1594,7 @@ public class DateKit extends Calendars {
      * @param unit  步进单位
      * @return {@link Boundary}
      */
-    public static List<DateTime> rangeToList(final Date start, final Date end, final Fields.Type unit) {
+    public static List<DateTime> rangeToList(final Date start, final Date end, final Various unit) {
         return ListKit.of((Iterable<DateTime>) range(start, end, unit));
     }
 
@@ -1616,7 +1607,7 @@ public class DateKit extends Calendars {
      * @param step  步进
      * @return {@link Boundary}
      */
-    public static List<DateTime> rangeToList(final Date start, final Date end, final Fields.Type unit, final int step) {
+    public static List<DateTime> rangeToList(final Date start, final Date end, final Various unit, final int step) {
         return ListKit.of((Iterable<DateTime>) new Boundary(start, end, unit, step));
     }
 
@@ -1627,8 +1618,8 @@ public class DateKit extends Calendars {
      * @param day   天
      * @return 星座名
      */
-    public static String getZodiac(final int month, final int day) {
-        return Zodiac.getZodiac(month, day);
+    public static String getConstellation(final int month, final int day) {
+        return Constellation.getDesc(month, day);
     }
 
     /**
@@ -1637,8 +1628,8 @@ public class DateKit extends Calendars {
      * @param year 农历年
      * @return 生肖名
      */
-    public static String getChineseZodiac(final int year) {
-        return Zodiac.getChineseZodiac(year);
+    public static String getZodiac(final int year) {
+        return Zodiac.getDesc(year);
     }
 
     /**

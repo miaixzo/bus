@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date.format;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Units;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
@@ -107,12 +107,12 @@ public class FormatPeriod implements Serializable {
     public String format() {
         final StringBuilder sb = new StringBuilder();
         if (betweenMs > 0) {
-            final long day = betweenMs / Fields.Units.DAY.getMillis();
-            final long hour = betweenMs / Fields.Units.HOUR.getMillis() - day * 24;
-            final long minute = betweenMs / Fields.Units.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
+            final long day = betweenMs / Units.DAY.getMillis();
+            final long hour = betweenMs / Units.HOUR.getMillis() - day * 24;
+            final long minute = betweenMs / Units.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
 
             final long BetweenOfSecond = ((day * 24 + hour) * 60 + minute) * 60;
-            final long second = betweenMs / Fields.Units.SECOND.getMillis() - BetweenOfSecond;
+            final long second = betweenMs / Units.SECOND.getMillis() - BetweenOfSecond;
             final long millisecond = betweenMs - (BetweenOfSecond + second) * 1000;
 
             final int level = this.level.ordinal();

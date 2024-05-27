@@ -67,12 +67,27 @@ public class Normal {
      * The number 32
      */
     public static final int _32 = 32;
-
+    /**
+     * The number 24
+     */
+    public static final int _24 = 24;
+    /**
+     * The number 20
+     */
+    public static final int _20 = 20;
+    /**
+     * The number 18
+     */
+    public static final int _18 = 18;
     /**
      * The number 16
      */
     public static final int _16 = 16;
 
+    /**
+     * The number 12
+     */
+    public static final int _12 = 12;
     /**
      * The number 9
      */

@@ -30,7 +30,12 @@ import com.google.zxing.DecodeHintType;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
 import java.awt.*;
@@ -71,16 +76,23 @@ public class QrCodeKit {
      *
      * @param content   内容
      * @param qrConfig  二维码配置，包括宽度、高度、边距、颜色等
-     * @param imageType 图片类型（图片扩展名），见{@link ImageKit}
+     * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @return 图片 Base64 编码字符串
      */
     public static String generateAsBase64DataUri(final String content, final QrConfig qrConfig, final String imageType) {
-        BufferedImage img = null;
-        try {
-            img = generate(content, qrConfig);
-            return ImageKit.toBase64DataUri(img, imageType);
-        } finally {
-            ImageKit.flush(img);
+        switch (imageType) {
+            case QR_TYPE_SVG:
+                return svgToBase64DataUri(generateAsSvg(content, qrConfig));
+            case QR_TYPE_TXT:
+                return txtToBase64DataUri(generateAsAsciiArt(content, qrConfig));
+            default:
+                BufferedImage img = null;
+                try {
+                    img = generate(content, qrConfig);
+                    return ImageKit.toBase64DataUri(img, imageType);
+                } finally {
+                    ImageKit.flush(img);
+                }
         }
     }
 
@@ -115,20 +127,13 @@ public class QrCodeKit {
      * 生成二维码到文件，二维码图片格式取决于文件的扩展名
      *
      * @param content    文本内容
-     * @param width      宽度
-     * @param height     高度
+     * @param width      宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param height     高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
      * @param targetFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
     public static File generate(final String content, final int width, final int height, final File targetFile) {
-        BufferedImage image = null;
-        try {
-            image = generate(content, width, height);
-            ImageKit.write(image, targetFile);
-        } finally {
-            ImageKit.flush(image);
-        }
-        return targetFile;
+        return generate(content, QrConfig.of(width, height), targetFile);
     }
 
     /**
@@ -140,13 +145,24 @@ public class QrCodeKit {
      * @return 目标文件
      */
     public static File generate(final String content, final QrConfig config, final File targetFile) {
-        BufferedImage image = null;
-        try {
-            image = generate(content, config);
-            ImageKit.write(image, targetFile);
-        } finally {
-            ImageKit.flush(image);
+        final String extName = FileName.extName(targetFile);
+        switch (extName) {
+            case QR_TYPE_SVG:
+                FileKit.writeUtf8String(generateAsSvg(content, config), targetFile);
+                break;
+            case QR_TYPE_TXT:
+                FileKit.writeUtf8String(generateAsAsciiArt(content, config), targetFile);
+                break;
+            default:
+                BufferedImage image = null;
+                try {
+                    image = generate(content, config);
+                    ImageKit.write(image, targetFile);
+                } finally {
+                    ImageKit.flush(image);
+                }
         }
+
         return targetFile;
     }
 
@@ -154,19 +170,13 @@ public class QrCodeKit {
      * 生成二维码到输出流
      *
      * @param content   文本内容
-     * @param width     宽度
-     * @param height    高度
-     * @param imageType 图片类型（图片扩展名），见{@link ImageKit}
+     * @param width     宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param height    高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @param out       目标流
      */
     public static void generate(final String content, final int width, final int height, final String imageType, final OutputStream out) {
-        BufferedImage img = null;
-        try {
-            img = generate(content, width, height);
-            ImageKit.write(img, imageType, out);
-        } finally {
-            ImageKit.flush(img);
-        }
+        generate(content, QrConfig.of(width, height), imageType, out);
     }
 
     /**
@@ -178,12 +188,21 @@ public class QrCodeKit {
      * @param out       目标流
      */
     public static void generate(final String content, final QrConfig config, final String imageType, final OutputStream out) {
-        BufferedImage image = null;
-        try {
-            image = generate(content, config);
-            ImageKit.write(image, imageType, out);
-        } finally {
-            ImageKit.flush(image);
+        switch (imageType) {
+            case QR_TYPE_SVG:
+                IoKit.writeUtf8(out, false, generateAsSvg(content, config));
+                break;
+            case QR_TYPE_TXT:
+                IoKit.writeUtf8(out, false, generateAsAsciiArt(content, config));
+                break;
+            default:
+                BufferedImage img = null;
+                try {
+                    img = generate(content, config);
+                    ImageKit.write(img, imageType, out);
+                } finally {
+                    ImageKit.flush(img);
+                }
         }
     }
 
@@ -356,4 +375,26 @@ public class QrCodeKit {
     public static String toAsciiArt(final BitMatrix bitMatrix, final QrConfig qrConfig) {
         return new QrAsciiArt(bitMatrix, qrConfig).toString();
     }
+
+    /**
+     * 将文本转换为Base64编码的Data URI。
+     *
+     * @param txt 需要转换为Base64编码Data URI的文本。
+     * @return 转换后的Base64编码Data URI字符串。
+     */
+    private static String txtToBase64DataUri(final String txt) {
+        return UrlKit.getDataUriBase64("text/plain", Base64.encode(txt));
+    }
+
+    /**
+     * 将SVG字符串转换为Base64数据URI格式。
+     * <p>此方法通过将SVG内容编码为Base64，并将其封装在数据URI中，以便于在HTML或CSS中直接嵌入SVG图像。</p>
+     *
+     * @param svg SVG图像的内容，为字符串形式。
+     * @return 转换后的Base64数据URI字符串，可用于直接在HTML或CSS中显示SVG图像。
+     */
+    private static String svgToBase64DataUri(final String svg) {
+        return UrlKit.getDataUriBase64("image/svg+xml", Base64.encode(svg));
+    }
+
 }

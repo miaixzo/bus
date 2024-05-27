@@ -363,7 +363,6 @@ public class Converter extends Formatter {
         );
     }
 
-
     /**
      * 通过日期时间字符串构建{@link DateTimeFormatter}
      *
@@ -380,19 +379,15 @@ public class Converter extends Formatter {
                 .toFormatter();
     }
 
-
     /**
-     * 获取最大时间，提供参数是否将毫秒归零
-     * <ul>
-     *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
-     *     <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
-     * </ul>
+     * 公历日期转为农历日期
      *
-     * @param truncateMillisecond 是否毫秒归零
-     * @return {@link LocalTime}时间最大值
+     * @param date 日期
+     *             格式 ：20240527｜2024-05-27｜2024/05/27｜2024.05.27｜2024年05月27日
+     * @return {@link DateTimeFormatter}
      */
-    public static LocalTime max(final boolean truncateMillisecond) {
-        return truncateMillisecond ? MAX_HMS : LocalTime.MAX;
+    public static String of(final String date) {
+        return Lunar.of(date);
     }
 
 }

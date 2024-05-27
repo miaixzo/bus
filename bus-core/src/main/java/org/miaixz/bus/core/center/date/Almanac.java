@@ -25,12 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Week;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.*;
@@ -164,6 +161,15 @@ public class Almanac extends Resolver {
     }
 
     /**
+     * 是否闰年
+     *
+     * @return 是否闰年
+     */
+    public static boolean isLeapYear(final int year) {
+        return Year.isLeap(year);
+    }
+
+    /**
      * 日期偏移,根据field不同加不同值（偏移会修改传入的对象）
      *
      * @param time   {@link LocalDateTime}
@@ -203,7 +209,17 @@ public class Almanac extends Resolver {
     }
 
     /**
-     * 修改为一天的结束时间，例如：
+     * 修改为一天的开始时间，例如：2020-02-02 00:00:00,000
+     *
+     * @param date 日期
+     * @return 一天的开始时间
+     */
+    public static LocalDateTime beginOfDay(final LocalDate date) {
+        return date.atStartOfDay();
+    }
+
+    /**
+     * 修改为一天的结束时间
      * <ul>
      * 	<li>毫秒不归零：2020-02-02 23:59:59,999</li>
      * 	<li>毫秒归零：2020-02-02 23:59:59,000</li>
@@ -218,13 +234,38 @@ public class Almanac extends Resolver {
     }
 
     /**
-     * 修改为月初的开始时间，例如：2020-02-01 00:00:00,000
+     * 修改为一天的结束时间
+     * <ul>
+     * 	<li>毫秒不归零：2024-05-01 23:59:59,999</li>
+     * 	<li>毫秒归零：2024-05-01 23:59:59,000</li>
+     * </ul>
+     *
+     * @param date                日期
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 一天的结束时间
+     */
+    public static LocalDateTime endOfDay(final LocalDate date, final boolean truncateMillisecond) {
+        return LocalDateTime.of(date, max(truncateMillisecond));
+    }
+
+    /**
+     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
      *
      * @param time 日期时间
      * @return 月初的开始时间
      */
     public static LocalDateTime beginOfMonth(final LocalDateTime time) {
-        return beginOfDay(time).with(TemporalAdjusters.firstDayOfMonth());
+        return beginOfDay(beginOfMonth(time.toLocalDate()));
+    }
+
+    /**
+     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param date 日期
+     * @return 月初的开始时间
+     */
+    public static LocalDate beginOfMonth(final LocalDate date) {
+        return date.with(TemporalAdjusters.firstDayOfMonth());
     }
 
     /**
@@ -235,17 +276,37 @@ public class Almanac extends Resolver {
      * @return 月底的结束时间
      */
     public static LocalDateTime endOfMonth(final LocalDateTime time, final boolean truncateMillisecond) {
-        return endOfDay(time, truncateMillisecond).with(TemporalAdjusters.lastDayOfMonth());
+        return endOfDay(endOfMonth(time.toLocalDate()), truncateMillisecond);
     }
 
     /**
-     * 修改为一年的开始时间，例如：2020-01-01 00:00:00,000
+     * 修改为月底的结束时间
+     *
+     * @param date 日期
+     * @return 月底的结束时间
+     */
+    public static LocalDate endOfMonth(final LocalDate date) {
+        return date.with(TemporalAdjusters.lastDayOfMonth());
+    }
+
+    /**
+     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
      *
      * @param time 日期时间
      * @return 一年的开始时间
      */
     public static LocalDateTime beginOfYear(final LocalDateTime time) {
-        return beginOfDay(time).with(TemporalAdjusters.firstDayOfYear());
+        return beginOfDay(beginOfYear(time.toLocalDate()));
+    }
+
+    /**
+     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param date 日期
+     * @return 一年的开始时间
+     */
+    public static LocalDate beginOfYear(final LocalDate date) {
+        return date.with(TemporalAdjusters.firstDayOfYear());
     }
 
     /**
@@ -256,17 +317,27 @@ public class Almanac extends Resolver {
      * @return 一年的结束时间
      */
     public static LocalDateTime endOfYear(final LocalDateTime time, final boolean truncateMillisecond) {
-        return endOfDay(time, truncateMillisecond).with(TemporalAdjusters.lastDayOfYear());
+        return endOfDay(endOfYear(time.toLocalDate()), truncateMillisecond);
+    }
+
+    /**
+     * 修改为一年的结束时间
+     *
+     * @param date 日期
+     * @return 一年的结束时间
+     */
+    public static LocalDate endOfYear(final LocalDate date) {
+        return date.with(TemporalAdjusters.lastDayOfYear());
     }
 
     /**
      * 获取{@link LocalDate}对应的星期值
      *
      * @param localDate 日期{@link LocalDate}
-     * @return {@link Fields.Week}
+     * @return {@link Week}
      */
-    public static Fields.Week dayOfWeek(final LocalDate localDate) {
-        return Fields.Week.of(localDate.getDayOfWeek());
+    public static Week dayOfWeek(final LocalDate localDate) {
+        return Week.of(localDate.getDayOfWeek());
     }
 
     /**
@@ -296,6 +367,20 @@ public class Almanac extends Resolver {
      */
     public <T extends Temporal> T offset(final T temporal, final DayOfWeek dayOfWeek, final boolean isPrevious) {
         return (T) temporal.with(isPrevious ? TemporalAdjusters.previous(dayOfWeek) : TemporalAdjusters.next(dayOfWeek));
+    }
+
+    /**
+     * 获取最大时间，提供参数是否将毫秒归零
+     * <ul>
+     *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
+     *     <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
+     * </ul>
+     *
+     * @param truncateMillisecond 是否毫秒归零
+     * @return {@link LocalTime}时间最大值
+     */
+    public static LocalTime max(final boolean truncateMillisecond) {
+        return truncateMillisecond ? MAX_HMS : LocalTime.MAX;
     }
 
 }

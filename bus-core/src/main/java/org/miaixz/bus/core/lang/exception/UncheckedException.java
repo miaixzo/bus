@@ -26,15 +26,17 @@
 package org.miaixz.bus.core.lang.exception;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * 类型: 未受检异常
  */
-@Data
+@Getter
+@Setter
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class UncheckedException extends RuntimeException {

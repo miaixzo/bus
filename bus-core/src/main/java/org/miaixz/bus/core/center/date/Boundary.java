@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Various;
 import org.miaixz.bus.core.lang.range.Range;
 import org.miaixz.bus.core.xyz.DateKit;
 
@@ -48,7 +48,7 @@ public class Boundary extends Range<DateTime> {
      * @param end   结束日期时间（包括）
      * @param unit  步进单位
      */
-    public Boundary(final Date start, final Date end, final Fields.Type unit) {
+    public Boundary(final Date start, final Date end, final Various unit) {
         this(start, end, unit, 1);
     }
 
@@ -60,7 +60,7 @@ public class Boundary extends Range<DateTime> {
      * @param unit  步进单位
      * @param step  步进数
      */
-    public Boundary(final Date start, final Date end, final Fields.Type unit, final int step) {
+    public Boundary(final Date start, final Date end, final Various unit, final int step) {
         this(start, end, unit, step, true, true);
     }
 
@@ -74,7 +74,7 @@ public class Boundary extends Range<DateTime> {
      * @param isIncludeStart 是否包含开始的时间
      * @param isIncludeEnd   是否包含结束的时间
      */
-    public Boundary(final Date start, final Date end, final Fields.Type unit, final int step, final boolean isIncludeStart, final boolean isIncludeEnd) {
+    public Boundary(final Date start, final Date end, final Various unit, final int step, final boolean isIncludeStart, final boolean isIncludeEnd) {
         super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
             final DateTime dt = DateKit.date(start).offsetNew(unit, (index + 1) * step);
             if (dt.isAfter(end1)) {

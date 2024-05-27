@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.center.date.culture.Units;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.DateKit;
 
 import java.io.Serializable;
@@ -184,10 +184,10 @@ public class Between implements Serializable {
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
-     * @param unit 相差的单位：相差 天{@link Fields.Units#DAY}、小时{@link Fields.Units#HOUR} 等
+     * @param unit 相差的单位：相差 天{@link Units#DAY}、小时{@link Units#HOUR} 等
      * @return 时长差
      */
-    public long between(final Fields.Units unit) {
+    public long between(final Units unit) {
         final long diff = end.getTime() - begin.getTime();
         return diff / unit.getMillis();
     }
@@ -280,7 +280,7 @@ public class Between implements Serializable {
      * @param level 级别
      * @return 字符串
      */
-    public String toString(final Fields.Units unit, final FormatPeriod.Level level) {
+    public String toString(final Units unit, final FormatPeriod.Level level) {
         return DateKit.formatBetween(between(unit), level);
     }
 
@@ -291,7 +291,7 @@ public class Between implements Serializable {
      * @return 字符串
      */
     public String toString(final FormatPeriod.Level level) {
-        return toString(Fields.Units.MS, level);
+        return toString(Units.MS, level);
     }
 
     @Override
