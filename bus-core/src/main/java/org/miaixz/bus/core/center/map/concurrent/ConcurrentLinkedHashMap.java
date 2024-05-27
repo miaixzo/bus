@@ -92,10 +92,7 @@ import java.util.function.BiConsumer;
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
- *            ben.manes@gmail.com (Ben Manes)
  * @author Kimi Liu
- * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- * http://code.google.com/p/concurrentlinkedhashmap/</a>
  * @since Java 17+
  */
 public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
@@ -1177,6 +1174,9 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      *     .weigher(Weighers.<Edge>set())
      *     .build();
      * }</pre>
+     *
+     * @param <K> key类型
+     * @param <V> 值类型
      */
     public static final class Builder<K, V> {
 

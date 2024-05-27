@@ -35,6 +35,7 @@ import java.util.function.UnaryOperator;
 /**
  * 无限有序流的Spliterator
  *
+ * @param <T> 对象类型
  * @author Kimi Liu
  * @since Java 17+
  */

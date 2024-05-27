@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.miaixz.bus.core.lang;
 
-import java.time.format.DateTimeFormatter;
-
 /**
  * 日期场景属性
  * 工具类，提供格式化字符串很多，但是对于具体什么含义，不够清晰，这里进行说明：
@@ -51,26 +49,6 @@ import java.time.format.DateTimeFormatter;
  *    <li>EEE MMM dd HH:mm:ss zzz yyyy 示例：周五 8月 05 12:59:00 UTC+08:00 2022,其中z表示UTC时区，但：1~3个z没有任何区别</li>
  *    <li>EEE, dd MMM yyyy HH:mm:ss z  示例：周五, 05 8月 2022 12:59:59 UTC+08:00</li>
  * </ul>
- * <p>
- * 系统提供的，请查看，有大量定义好的格式化对象，可以直接使用，如：
- * {@link DateTimeFormatter#ISO_DATE}
- * {@link DateTimeFormatter#ISO_DATE_TIME}
- * 查看更多，请参阅上述官方文档
- * </p>
- *
- * <p>
- * 特殊说明：UTC时间，世界标准时间，0时区的时间，伦敦时间，可以直接加Z表示不加空格，
- * 如：“09:30 UTC”表示为“09:30Z”或“T0930Z”，其中：Z 是 +00:00 的缩写，意思是 UTC(零时分秒的偏移量).
- * </p>
- * <ul>
- *     <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
- *     <li>2022-08-23T15:20:46UTC</li>
- *     <li>2022-08-23T15:20:46 UTC</li>
- *     <li>2022-08-23T15:20:46+0000</li>
- *     <li>2022-08-23T15:20:46 +0000</li>
- *     <li>2022-08-23T15:20:46Z</li>
- * </ul>
- * <p>
  *
  * @author Kimi Liu
  * @since Java 17+

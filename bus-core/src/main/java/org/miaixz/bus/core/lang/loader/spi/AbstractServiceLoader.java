@@ -37,11 +37,23 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbsServiceLoader<S> implements ServiceLoader<S> {
+public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
 
+    /**
+     * 路径前缀
+     */
     protected final String pathPrefix;
+    /**
+     * 服务类
+     */
     protected final Class<S> serviceClass;
+    /**
+     * 类加载器
+     */
     protected final ClassLoader classLoader;
+    /**
+     * 字符集
+     */
     protected final Charset charset;
 
     /**
@@ -52,8 +64,8 @@ public abstract class AbsServiceLoader<S> implements ServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @param charset      编码，默认UTF-8
      */
-    public AbsServiceLoader(final String pathPrefix, final Class<S> serviceClass,
-                            final ClassLoader classLoader, final Charset charset) {
+    public AbstractServiceLoader(final String pathPrefix, final Class<S> serviceClass,
+                                 final ClassLoader classLoader, final Charset charset) {
         this.pathPrefix = StringKit.addSuffixIfNot(pathPrefix, Symbol.SLASH);
         this.serviceClass = serviceClass;
         this.classLoader = classLoader;

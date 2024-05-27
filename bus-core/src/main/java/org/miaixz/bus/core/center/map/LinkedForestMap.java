@@ -346,6 +346,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * 树节点
      *
      * @param <K> key类型
+     * @param <V> 值类型
      */
     public static class TreeEntryNode<K, V> implements TreeEntry<K, V> {
 

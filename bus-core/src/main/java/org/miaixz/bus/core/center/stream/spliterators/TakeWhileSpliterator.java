@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 /**
  * takeWhile 的 Spliterator
  *
+ * @param <T> 对象类型
  * @author Kimi Liu
  * @since Java 17+
  */

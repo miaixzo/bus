@@ -60,6 +60,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * 写的时候每个key一把锁，降低锁的粒度
      */
     protected final Map<K, Lock> keyLockMap = new SafeConcurrentHashMap<>();
+    /**
+     * Map缓存
+     */
     protected Map<Mutable<K>, CacheObject<K, V>> cacheMap;
     /**
      * 返回缓存容量，{@code 0}表示无大小限制

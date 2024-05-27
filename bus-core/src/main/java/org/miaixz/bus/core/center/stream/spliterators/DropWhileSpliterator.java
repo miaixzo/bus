@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 /**
  * 借鉴自StreamEx
  *
+ * @param <T> 对象类型
  * @author Kimi Liu
  * @since Java 17+
  */
