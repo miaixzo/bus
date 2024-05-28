@@ -87,12 +87,12 @@ public class Morse {
         registerMorse('9', "11110");
         // Punctuation
         registerMorse('.', "010101");
-        registerMorse(',', "110011");
+        registerMorse(Symbol.C_COMMA, "110011");
         registerMorse('?', "001100");
         registerMorse('\'', "011110");
         registerMorse(Symbol.C_NOT, "101011");
         registerMorse('/', "10010");
-        registerMorse('(', "10110");
+        registerMorse(Symbol.C_PARENTHESE_LEFT, "10110");
         registerMorse(')', "101101");
         registerMorse(Symbol.C_AND, "01000");
         registerMorse(Symbol.C_COLON, "111000");

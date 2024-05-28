@@ -1,6 +1,7 @@
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.builder.*;
 import org.miaixz.bus.mapper.entity.EntityColumn;
@@ -75,17 +76,17 @@ public class SaveProvider extends MapperTemplate {
             // 优先使用传入的属性值,当原属性property!=null时，用原属性
             // 自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
-                sql.append(SqlBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
+                sql.append(SqlBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
                 // 其他情况值仍然存在原property中
-                sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
             // 当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
             if (column.isIdentity()) {
-                sql.append(SqlBuilder.getIfCacheIsNull(column, column.getColumnHolder() + ","));
+                sql.append(SqlBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             } else {
                 // 当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
-                sql.append(SqlBuilder.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                sql.append(SqlBuilder.getIfIsNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
         }
         sql.append("</trim>");

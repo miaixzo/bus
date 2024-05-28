@@ -27,6 +27,7 @@ package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 import java.io.Serializable;
@@ -192,7 +193,7 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         builder.append(": ");
         for (int i = 0; i < bytes.length; i++) {
             if (i > 0) {
-                builder.append(",");
+                builder.append(Symbol.COMMA);
             }
             builder.append("0x");
             builder.append(Integer.toHexString(0xFF & bytes[i]).toUpperCase());

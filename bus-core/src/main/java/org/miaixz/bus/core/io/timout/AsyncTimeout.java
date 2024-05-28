@@ -29,6 +29,7 @@ import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.IOException;
@@ -279,7 +280,7 @@ public class AsyncTimeout extends Timeout {
 
             @Override
             public String toString() {
-                return "AsyncTimeout.sink(" + sink + ")";
+                return "AsyncTimeout.sink(" + sink + Symbol.PARENTHESE_RIGHT;
             }
         };
     }
@@ -326,7 +327,7 @@ public class AsyncTimeout extends Timeout {
 
             @Override
             public String toString() {
-                return "AsyncTimeout.source(" + source + ")";
+                return "AsyncTimeout.source(" + source + Symbol.PARENTHESE_RIGHT;
             }
         };
     }

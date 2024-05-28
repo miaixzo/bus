@@ -115,7 +115,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                     String key = split[0].trim();
                     if (key.equals("vendor")) {
                         vendorId = Parsing.getSingleQuoteStringValue(line)
-                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY : " (" + vendorId + ")");
+                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY : " (" + vendorId + Symbol.PARENTHESE_RIGHT);
                     } else if (key.equals("device")) {
                         name = Parsing.getSingleQuoteStringValue(line);
                     }

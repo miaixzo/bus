@@ -132,7 +132,7 @@ public class DouyinProvider extends DefaultProvider {
                 .queryParam("response_type", "code")
                 .queryParam("client_key", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(",", true, this.getDefaultScopes(DouyinScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(DouyinScope.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

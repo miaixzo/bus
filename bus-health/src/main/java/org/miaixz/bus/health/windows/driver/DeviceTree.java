@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
@@ -101,7 +102,7 @@ public final class DeviceTree {
                             name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_CLASS, buf, size);
                             String svc = getDevNodeProperty(node, Cfgmgr32.CM_DRP_SERVICE, buf, size);
                             if (!svc.isEmpty()) {
-                                name = name + " (" + svc + ")";
+                                name = name + " (" + svc + Symbol.PARENTHESE_RIGHT;
                             }
                         }
                         nameMap.put(node, name);

@@ -28,6 +28,7 @@ package org.miaixz.bus.goalie.filter;
 import org.miaixz.bus.base.entity.OAuth2;
 import org.miaixz.bus.base.normal.ErrorCode;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -170,7 +171,7 @@ public class AuthorizeFilter implements WebFilter {
         if (StringKit.isBlank(ip)) {
             ip = exchange.getRequest().getHeaders().getFirst("X-Forwarded-For");
             if (!StringKit.isBlank(ip)) {
-                ip = ip.contains(",") ? ip.split(",")[0] : ip;
+                ip = ip.contains(Symbol.COMMA) ? ip.split(Symbol.COMMA)[0] : ip;
             } else {
                 InetSocketAddress address = exchange.getRequest().getRemoteAddress();
                 if (null != address) {

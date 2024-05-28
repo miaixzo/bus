@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
@@ -119,7 +120,7 @@ public class SlackProvider extends DefaultProvider {
             if (object.containsKey("response_metadata")) {
                 JSONArray array = object.getJSONObject("response_metadata").getJSONArray("messages");
                 if (null != array && array.size() > 0) {
-                    errorMsg += "; " + StringKit.join(",", array.toArray(new String[0]));
+                    errorMsg += "; " + StringKit.join(Symbol.COMMA, array.toArray(new String[0]));
                 }
             }
             throw new AuthorizedException(errorMsg);
@@ -145,7 +146,7 @@ public class SlackProvider extends DefaultProvider {
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("state", getRealState(state))
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(",", true, this.getDefaultScopes(SlackScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(SlackScope.values())))
                 .build();
     }
 

@@ -158,7 +158,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if ((suiteMask & 0x00008000) != 0) {
             suites.add("Home Server");
         }
-        return String.join(",", suites);
+        return String.join(Symbol.COMMA, suites);
     }
 
     private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromPerfCounters() {

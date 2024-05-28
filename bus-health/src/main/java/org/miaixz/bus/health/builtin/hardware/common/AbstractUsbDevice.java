@@ -27,6 +27,7 @@ package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 
 import java.util.Collections;
@@ -74,7 +75,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
         StringBuilder sb = new StringBuilder(String.format(Locale.ROOT, indentFmt, Normal.EMPTY));
         sb.append(usbDevice.getName());
         if (!usbDevice.getVendor().isEmpty()) {
-            sb.append(" (").append(usbDevice.getVendor()).append(')');
+            sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);
         }
         if (!usbDevice.getSerialNumber().isEmpty()) {
             sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');

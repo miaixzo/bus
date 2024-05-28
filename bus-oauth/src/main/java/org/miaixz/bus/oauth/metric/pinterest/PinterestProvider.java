@@ -109,7 +109,7 @@ public class PinterestProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(PinterestScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(PinterestScope.values())))
                 .build();
     }
 

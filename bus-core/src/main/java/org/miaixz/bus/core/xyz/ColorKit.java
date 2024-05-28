@@ -87,9 +87,9 @@ public class ColorKit {
     public static String toCssRgb(final Color color) {
         return StringKit.builder()
                 .append("rgb(")
-                .append(color.getRed()).append(",")
-                .append(color.getGreen()).append(",")
-                .append(color.getBlue()).append(")")
+                .append(color.getRed()).append(Symbol.COMMA)
+                .append(color.getGreen()).append(Symbol.COMMA)
+                .append(color.getBlue()).append(Symbol.PARENTHESE_RIGHT)
                 .toString();
     }
 
@@ -102,10 +102,10 @@ public class ColorKit {
     public static String toCssRgba(final Color color) {
         return StringKit.builder()
                 .append("rgba(")
-                .append(color.getRed()).append(",")
-                .append(color.getGreen()).append(",")
-                .append(color.getBlue()).append(",")
-                .append(color.getAlpha() / 255D).append(")")
+                .append(color.getRed()).append(Symbol.COMMA)
+                .append(color.getGreen()).append(Symbol.COMMA)
+                .append(color.getBlue()).append(Symbol.COMMA)
+                .append(color.getAlpha() / 255D).append(Symbol.PARENTHESE_RIGHT)
                 .toString();
     }
 

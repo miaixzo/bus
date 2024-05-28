@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 public class OpenBsdOSProcess extends AbstractOSProcess {
 
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
-            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
+            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
     private static final int ARGMAX;
 
     static {
@@ -318,7 +318,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         // cpuset: getaffinity: No such process
         String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
-            String[] bits = split[1].split(",");
+            String[] bits = split[1].split(Symbol.COMMA);
             for (String bit : bits) {
                 int bitToSet = Parsing.parseIntOrDefault(bit.trim(), -1);
                 if (bitToSet >= 0) {

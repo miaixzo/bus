@@ -122,7 +122,7 @@ public interface CountSqlParser {
                     //"VARIANCE," +
                     //"VARIANCE_SAMP," +
                     //"VARP," +
-                    "XMLAGG").split(",")));
+                    "XMLAGG").split(Symbol.COMMA)));
 
     /**
      * 添加到聚合函数，可以是逗号隔开的多个函数前缀
@@ -131,7 +131,7 @@ public interface CountSqlParser {
      */
     static void addAggregateFunctions(String functions) {
         if (StringKit.isNotEmpty(functions)) {
-            String[] funs = functions.split(",");
+            String[] funs = functions.split(Symbol.COMMA);
             for (int i = 0; i < funs.length; i++) {
                 AGGREGATE_FUNCTIONS.add(funs[i].toUpperCase());
             }

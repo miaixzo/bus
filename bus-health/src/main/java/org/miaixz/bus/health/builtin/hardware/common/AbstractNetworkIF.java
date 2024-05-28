@@ -233,7 +233,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         StringBuilder sb = new StringBuilder();
         sb.append("Name: ").append(getName());
         if (!getName().equals(getDisplayName())) {
-            sb.append(" (").append(getDisplayName()).append(")");
+            sb.append(" (").append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT);
         }
         if (!getIfAlias().isEmpty()) {
             sb.append(" [IfAlias=").append(getIfAlias()).append("]");

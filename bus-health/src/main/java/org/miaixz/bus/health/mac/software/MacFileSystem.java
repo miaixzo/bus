@@ -42,6 +42,7 @@ import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
@@ -188,9 +189,9 @@ public class MacFileSystem extends AbstractFileSystem {
 
                     StringBuilder options = new StringBuilder((MNT_RDONLY & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
                     if (!moreOptions.isEmpty()) {
-                        options.append(',').append(moreOptions);
+                        options.append(Symbol.C_COMMA).append(moreOptions);
                     }
 
                     String uuid = Normal.EMPTY;

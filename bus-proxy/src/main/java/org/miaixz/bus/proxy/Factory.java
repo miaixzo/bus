@@ -25,140 +25,38 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy;
 
-import org.miaixz.bus.proxy.factory.cglib.CglibFactory;
-import org.miaixz.bus.proxy.factory.javassist.JavassistFactory;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.xyz.SPIKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
- * 这个类使用Java反射。对于更有效的代理， 请尝试使用其中之一
- * {@link  CglibFactory}或 {@link  JavassistFactory}代替
+ * 代理引擎简单工厂
+ * 根据用户引入代理库的不同，产生不同的代理引擎对象
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Factory {
 
-    public boolean canProxy(Class[] proxyClasses) {
-        for (int i = 0; i < proxyClasses.length; i++) {
-            Class proxyClass = proxyClasses[i];
-            if (!proxyClass.isInterface()) {
-                return false;
-            }
-        }
-        return true;
+    /**
+     * 获得单例的ProxyEngine
+     *
+     * @return 单例的ProxyEngine
+     */
+    public static Provider getEngine() {
+        final Provider engine = Instances.get(Provider.class.getName(), Factory::createEngine);
+        Logger.debug("Use [{}] Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+        return engine;
     }
 
-    public Object createDelegatorProxy(Provider delegateProvider, Class[] proxyClasses) {
-        return createDelegatorProxy(Thread.currentThread().getContextClassLoader(), delegateProvider, proxyClasses);
-    }
-
-    public Object createDelegatorProxy(ClassLoader classLoader, Provider delegateProvider,
-                                       Class[] proxyClasses) {
-        return Proxy.newProxyInstance(classLoader, proxyClasses,
-                new DelegatorInvocationHandler(delegateProvider));
-    }
-
-    public Object createInterceptorProxy(Object target, Interceptor interceptor,
-                                         Class[] proxyClasses) {
-        return createInterceptorProxy(Thread.currentThread().getContextClassLoader(), target, interceptor,
-                proxyClasses);
-    }
-
-    public Object createInterceptorProxy(ClassLoader classLoader, Object target, Interceptor interceptor,
-                                         Class[] proxyClasses) {
-        return Proxy
-                .newProxyInstance(classLoader, proxyClasses, new InterceptorInvocationHandler(target, interceptor));
-    }
-
-    public Object createInvokerProxy(Invoker invoker, Class[] proxyClasses) {
-        return createInvokerProxy(Thread.currentThread().getContextClassLoader(), invoker,
-                proxyClasses);
-    }
-
-    public Object createInvokerProxy(ClassLoader classLoader, Invoker invoker,
-                                     Class[] proxyClasses) {
-        return Proxy.newProxyInstance(classLoader, proxyClasses, new InvokerInvocationHandler(invoker));
-    }
-
-    private static class DelegatorInvocationHandler implements InvocationHandler {
-        private final Provider delegateProvider;
-
-        protected DelegatorInvocationHandler(Provider delegateProvider) {
-            this.delegateProvider = delegateProvider;
-        }
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            try {
-                return method.invoke(delegateProvider.getObject(), args);
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            }
-        }
-    }
-
-    private static class InterceptorInvocationHandler implements InvocationHandler {
-        private final Object target;
-        private final Interceptor methodInterceptor;
-
-        public InterceptorInvocationHandler(Object target, Interceptor methodInterceptor) {
-            this.target = target;
-            this.methodInterceptor = methodInterceptor;
-        }
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            final ReflectionInvocation invocation = new ReflectionInvocation(target, method, args);
-            return methodInterceptor.intercept(invocation);
-        }
-    }
-
-    private static class ReflectionInvocation implements Invocation {
-        private final Method method;
-        private final Object[] arguments;
-        private final Object target;
-
-        public ReflectionInvocation(Object target, Method method, Object[] arguments) {
-            this.method = method;
-            this.arguments = (null == arguments ? Builder.EMPTY_ARGUMENTS : arguments);
-            this.target = target;
-        }
-
-        public Object[] getArguments() {
-            return arguments;
-        }
-
-        public Method getMethod() {
-            return method;
-        }
-
-        public Object getProxy() {
-            return target;
-        }
-
-        public Object proceed() throws Throwable {
-            try {
-                return method.invoke(target, arguments);
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            }
-        }
-
-    }
-
-    private static class InvokerInvocationHandler implements InvocationHandler {
-        private final Invoker invoker;
-
-        public InvokerInvocationHandler(Invoker invoker) {
-            this.invoker = invoker;
-        }
-
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            return invoker.invoke(proxy, method, args);
-        }
+    /**
+     * 根据用户引入Cglib与否创建代理工厂
+     *
+     * @return 代理工厂
+     */
+    public static Provider createEngine() {
+        return SPIKit.loadFirstAvailable(Provider.class);
     }
 
 }
-

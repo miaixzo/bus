@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.iterator.TransIterator;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -150,7 +151,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
         @Override
         public String toString() {
-            return "(" + rowKey + "," + columnKey + ")=" + value;
+            return Symbol.PARENTHESE_LEFT + rowKey + Symbol.COMMA + columnKey + ")=" + value;
         }
     }
 

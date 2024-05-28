@@ -76,13 +76,13 @@ public class Calculator {
                     arr[i] = Symbol.C_TILDE;
                 } else {
                     final char c = arr[i - 1];
-                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == '(' || c == 'E' || c == 'e') {
+                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == Symbol.C_PARENTHESE_LEFT || c == 'E' || c == 'e') {
                         arr[i] = Symbol.C_TILDE;
                     }
                 }
             }
         }
-        if (arr[0] == Symbol.C_TILDE && (arr.length > 1 && arr[1] == '(')) {
+        if (arr[0] == Symbol.C_TILDE && (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
             arr[0] = Symbol.C_MINUS;
             return "0" + new String(arr);
         } else {
@@ -131,7 +131,7 @@ public class Calculator {
      */
     private void prepare(final String expression) {
         final Stack<Character> opStack = new Stack<>();
-        opStack.push(',');// 运算符放入栈底元素逗号，此符号优先级最低
+        opStack.push(Symbol.C_COMMA);// 运算符放入栈底元素逗号，此符号优先级最低
         final char[] arr = expression.toCharArray();
         int currentIndex = 0;// 当前字符的位置
         int count = 0;// 上次算术运算符到本次算术运算符的字符的长度便于或者之间的数值
@@ -144,12 +144,12 @@ public class Calculator {
                 }
                 peekOp = opStack.peek();
                 if (currentOp == ')') {// 遇到反括号则将运算符栈中的元素移除到后缀式栈中直到遇到左括号
-                    while (opStack.peek() != '(') {
+                    while (opStack.peek() != Symbol.C_PARENTHESE_LEFT) {
                         postfixStack.push(String.valueOf(opStack.pop()));
                     }
                     opStack.pop();
                 } else {
-                    while (currentOp != '(' && peekOp != ',' && compare(currentOp, peekOp)) {
+                    while (currentOp != Symbol.C_PARENTHESE_LEFT && peekOp != Symbol.C_COMMA && compare(currentOp, peekOp)) {
                         postfixStack.push(String.valueOf(opStack.pop()));
                         peekOp = opStack.peek();
                     }
@@ -165,7 +165,7 @@ public class Calculator {
             postfixStack.push(new String(arr, currentIndex, count));
         }
 
-        while (opStack.peek() != ',') {
+        while (opStack.peek() != Symbol.C_COMMA) {
             postfixStack.push(String.valueOf(opStack.pop()));// 将操作符栈中的剩余的元素添加到后缀式栈中
         }
     }
@@ -177,7 +177,7 @@ public class Calculator {
      * @return 是否为算术符号
      */
     private boolean isOperator(final char c) {
-        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == '(' || c == ')' || c == Symbol.C_PERCENT;
+        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == Symbol.C_PARENTHESE_LEFT || c == ')' || c == Symbol.C_PERCENT;
     }
 
     /**

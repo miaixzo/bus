@@ -69,7 +69,7 @@ public class QrSVG {
         for (int y = 0; y < qrHeight; y++) {
             for (int x = 0; x < qrWidth; x++) {
                 if (matrix.get(x, y)) {
-                    sb.append(" M").append(x).append(",").append(y).append("h1v").append(moduleHeight).append("h-1z");
+                    sb.append(" M").append(x).append(Symbol.COMMA).append(y).append("h1v").append(moduleHeight).append("h-1z");
                 }
             }
         }

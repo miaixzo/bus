@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 通知器,用于发送通知,如: 短信,邮件,语音,微信等s
+ * 通知器,用于发送通知,如: 短信,邮件,语音,微信等
  *
  * @author Justubborn
  * @since Java 17+

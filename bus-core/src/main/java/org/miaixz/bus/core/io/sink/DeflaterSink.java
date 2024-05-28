@@ -29,6 +29,7 @@ import org.miaixz.bus.core.io.LifeCycle;
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 import java.io.IOException;
@@ -162,7 +163,7 @@ public class DeflaterSink implements Sink {
 
     @Override
     public String toString() {
-        return "DeflaterSink(" + sink + ")";
+        return "DeflaterSink(" + sink + Symbol.PARENTHESE_RIGHT;
     }
 
 }

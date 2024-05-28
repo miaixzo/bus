@@ -43,9 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <javassist.version>3.30.2-GA</javassist.version>
-        <hessian.version>4.0.66</hessian.version>
-        <cglib.version>3.3.0</cglib.version>
+        <spring.boot.version>3.2.5</spring.boot.version>
         <aspectj.version>1.9.22</aspectj.version>
     </properties>
 
@@ -62,22 +60,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${javassist.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>${cglib.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>hessian</artifactId>
-            <version>${hessian.version}</version>
-            <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
     </dependencies>
 

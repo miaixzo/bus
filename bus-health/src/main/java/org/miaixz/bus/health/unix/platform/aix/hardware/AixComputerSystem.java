@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.platform.aix.hardware;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -81,7 +82,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
         for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
             if (checkLine.startsWith(fwVersionMarker)) {
                 fwVersion = checkLine.split(fwVersionMarker)[1].trim();
-                int comma = fwVersion.indexOf(',');
+                int comma = fwVersion.indexOf(Symbol.C_COMMA);
                 if (comma > 0 && fwVersion.length() > comma) {
                     fwVendor = fwVersion.substring(0, comma);
                     fwVersion = fwVersion.substring(comma + 1);
@@ -89,7 +90,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 fwVersion = Pattern.SPACES_PATTERN.split(fwVersion)[0];
             } else if (checkLine.startsWith(modelMarker)) {
                 model = checkLine.split(modelMarker)[1].trim();
-                int comma = model.indexOf(',');
+                int comma = model.indexOf(Symbol.C_COMMA);
                 if (comma > 0 && model.length() > comma) {
                     manufacturer = model.substring(0, comma);
                     model = model.substring(comma + 1);

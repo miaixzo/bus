@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 
@@ -68,7 +69,7 @@ public final class WmiKit {
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(props[0].name());
         for (int i = 1; i < props.length; i++) {
-            sb.append(',').append(props[i].name());
+            sb.append(Symbol.C_COMMA).append(props[i].name());
         }
         sb.append(" FROM ").append(query.getWmiClassName());
         return sb.toString();

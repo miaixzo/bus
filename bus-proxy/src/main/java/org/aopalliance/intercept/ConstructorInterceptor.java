@@ -2,11 +2,10 @@ package org.aopalliance.intercept;
 
 /**
  * Intercepts the construction of a new object.
- *
- * <p>The user should implement the {@link
+ * The user should implement the {@link
  * #construct(ConstructorInvocation)} method to modify the original
  * behavior. E.g. the following class implements a singleton
- * intercept (allows only one unique instance for the intercepted
+ * interceptor (allows only one unique instance for the intercepted
  * class):
  *
  * <pre class=code>
@@ -27,15 +26,15 @@ public interface ConstructorInterceptor extends Interceptor {
 
     /**
      * Implement this method to perform extra treatments before and
-     * after the consrution of a new object. Polite implementations
+     * after the construction of a new object. Polite implementations
      * would certainly like to invoke {@link Joinpoint#proceed()}.
      *
      * @param invocation the construction joinpoint
      * @return the newly created object, which is also the result of
-     * the call to {@link Joinpoint#proceed()}, might be replaced by
-     * the intercept.
-     * @throws Throwable if the interceptors or the
-     *                   target-object throws an exception.
+     * the call to {@link Joinpoint#proceed()}; might be replaced by
+     * the interceptor
+     * @throws Throwable if the interceptors or the target object
+     *                   throws an exception
      */
     Object construct(ConstructorInvocation invocation) throws Throwable;
 

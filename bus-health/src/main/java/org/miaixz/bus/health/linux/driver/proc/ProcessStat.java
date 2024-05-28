@@ -57,7 +57,7 @@ public final class ProcessStat {
 
     static {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
-        if (stat.contains(")")) {
+        if (stat.contains(Symbol.PARENTHESE_RIGHT)) {
             // add 3 to account for pid, process name in prarenthesis, and state
             PROC_PID_STAT_LENGTH = Parsing.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
         } else {
@@ -86,8 +86,8 @@ public final class ProcessStat {
             return null;
         }
         // Get process name from between parentheses and state immediately after
-        int nameStart = stat.indexOf('(') + 1;
-        int nameEnd = stat.indexOf(')');
+        int nameStart = stat.indexOf(Symbol.C_PARENTHESE_LEFT) + 1;
+        int nameEnd = stat.indexOf(Symbol.C_PARENTHESE_RIGHT);
         String name = stat.substring(nameStart, nameEnd);
         Character state = stat.charAt(nameEnd + 2);
         // Split everything after the state

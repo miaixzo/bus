@@ -33,6 +33,7 @@ import net.sf.jsqlparser.parser.Token;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.builtin.PageMethod;
 import org.miaixz.bus.pager.parser.CountSqlParser;
@@ -141,7 +142,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
     public Select sqlToCount(Select select, String name) {
         // 是否能简化count查询
         List<SelectItem<?>> COUNT_ITEM = new ArrayList<>();
-        COUNT_ITEM.add(new SelectItem(new Column("count(" + name + ")")));
+        COUNT_ITEM.add(new SelectItem(new Column("count(" + name + Symbol.PARENTHESE_RIGHT)));
         if (select instanceof PlainSelect && isSimpleCount((PlainSelect) select)) {
             ((PlainSelect) select).setSelectItems(COUNT_ITEM);
             return select;

@@ -363,7 +363,7 @@ public class Validator {
         if (min < 0) {
             min = 0;
         }
-        String reg = "^\\w{" + min + "," + max + "}$";
+        String reg = "^\\w{" + min + Symbol.COMMA + max + "}$";
         if (max <= 0) {
             reg = "^\\w{" + min + ",}$";
         }

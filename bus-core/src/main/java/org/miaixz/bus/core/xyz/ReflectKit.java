@@ -258,7 +258,7 @@ public class ReflectKit {
         if (appendName && methodOrConstructor instanceof Method) {
             ret.append(methodOrConstructor.getName());
         }
-        ret.append('(');
+        ret.append(Symbol.C_PARENTHESE_LEFT);
 
         // 参数
         final Class<?>[] parameterTypes = methodOrConstructor.getParameterTypes();
@@ -267,7 +267,7 @@ public class ReflectKit {
         }
 
         // 返回类型或构造标记
-        ret.append(')');
+        ret.append(Symbol.C_PARENTHESE_RIGHT);
         if (methodOrConstructor instanceof Method) {
             ret.append(getDesc(((Method) methodOrConstructor).getReturnType()));
         } else {
@@ -317,7 +317,7 @@ public class ReflectKit {
      * @return 名称
      */
     public static String getName(final Executable executable) {
-        final StringBuilder ret = new StringBuilder("(");
+        final StringBuilder ret = new StringBuilder(Symbol.PARENTHESE_LEFT);
 
         if (executable instanceof Method) {
             ret.append(getName(((Method) executable).getReturnType())).append(Symbol.C_SPACE);
@@ -327,12 +327,12 @@ public class ReflectKit {
         final Class<?>[] parameterTypes = executable.getParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
             if (i > 0) {
-                ret.append(',');
+                ret.append(Symbol.C_COMMA);
             }
             ret.append(getName(parameterTypes[i]));
         }
 
-        ret.append(')');
+        ret.append(Symbol.C_PARENTHESE_RIGHT);
         return ret.toString();
     }
 

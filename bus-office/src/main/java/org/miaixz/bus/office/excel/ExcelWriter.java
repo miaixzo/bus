@@ -38,6 +38,7 @@ import org.miaixz.bus.core.center.map.multi.Table;
 import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.cell.CellEditor;
@@ -1236,7 +1237,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter setRowStyleIfHasData(final int y, final CellStyle style) {
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + ")");
+            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
         }
         final int columnCount = this.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
@@ -1271,10 +1272,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter setColumnStyleIfHasData(final int x, final int y, final CellStyle style) {
         if (x < 0) {
-            throw new IllegalArgumentException("Invalid column number (" + x + ")");
+            throw new IllegalArgumentException("Invalid column number (" + x + Symbol.PARENTHESE_RIGHT);
         }
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + ")");
+            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
         }
         final int rowCount = this.getRowCount();
         for (int i = y; i < rowCount; i++) {

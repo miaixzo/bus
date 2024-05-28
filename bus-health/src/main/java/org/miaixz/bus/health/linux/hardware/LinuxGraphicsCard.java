@@ -111,7 +111,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                     } else if (prefix.equals("Vendor")) {
                         Pair<String, String> pair = Parsing.parseLspciMachineReadable(split[1].trim());
                         if (pair != null) {
-                            vendor = pair.getLeft() + " (0x" + pair.getRight() + ")";
+                            vendor = pair.getLeft() + " (0x" + pair.getRight() + Symbol.PARENTHESE_RIGHT;
                         } else {
                             vendor = split[1].trim();
                         }

@@ -498,11 +498,11 @@ public class SqlBuilder {
                     sql.append(column.getProperty()).append(")\"/>");
                     sql.append(column.getColumn()).append(" = #{").append(column.getProperty()).append("Version},");
                 } else if (column == logicDeleteColumn) {
-                    sql.append(logicDeleteColumnEqualsValue(column, false)).append(",");
+                    sql.append(logicDeleteColumnEqualsValue(column, false)).append(Symbol.COMMA);
                 } else if (notNull) {
-                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + ",", notEmpty));
+                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
-                    sql.append(column.getColumnEqualsHolder(entityName) + ",");
+                    sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
                 }
             }
         }

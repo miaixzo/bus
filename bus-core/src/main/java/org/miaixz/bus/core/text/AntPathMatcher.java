@@ -679,9 +679,9 @@ public class AntPathMatcher {
                         this.variableNames.add(matcher.group(1));
                     } else {
                         final String variablePattern = match.substring(colonIdx + 1, match.length() - 1);
-                        patternBuilder.append('(');
+                        patternBuilder.append(Symbol.C_PARENTHESE_LEFT);
                         patternBuilder.append(variablePattern);
-                        patternBuilder.append(')');
+                        patternBuilder.append(Symbol.C_PARENTHESE_RIGHT);
                         final String variableName = match.substring(1, colonIdx);
                         this.variableNames.add(variableName);
                     }

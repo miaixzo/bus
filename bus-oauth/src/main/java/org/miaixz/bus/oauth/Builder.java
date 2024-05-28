@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.oauth;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -47,6 +48,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
 @Setter
 public class Builder {
 

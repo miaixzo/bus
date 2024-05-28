@@ -25,8 +25,10 @@
  ********************************************************************************/
 package org.miaixz.bus.proxy;
 
+import org.miaixz.bus.core.xyz.ReflectKit;
+
 /**
- * 为委托代理提供对象
+ * 动态代理引擎接口
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -34,11 +36,25 @@ package org.miaixz.bus.proxy;
 public interface Provider {
 
     /**
-     * 返回对象，如果在构造/查找对象时出现任何问题，实现类应该抛出异常
+     * 创建代理
      *
-     * @return 调用方法的对象
+     * @param <T>    代理对象类型
+     * @param target 被代理对象
+     * @param aspect 切面实现
+     * @return 代理对象
      */
-    Object getObject();
+    <T> T proxy(T target, Aspect aspect);
+
+    /**
+     * 创建代理
+     *
+     * @param <T>         代理对象类型
+     * @param target      被代理对象
+     * @param aspectClass 切面实现类，自动实例化
+     * @return 代理对象
+     */
+    default <T> T proxy(final T target, final Class<? extends Aspect> aspectClass) {
+        return proxy(target, ReflectKit.newInstanceIfPossible(aspectClass));
+    }
 
 }
-
