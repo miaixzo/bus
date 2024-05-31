@@ -448,6 +448,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 
     /**
      * 建造者
+     *
      * @param <T> 对象类型
      */
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
