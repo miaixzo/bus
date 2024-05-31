@@ -2,7 +2,7 @@ package org.miaixz.bus.core.center.date.culture.x;
 
 /**
  * 九星
- * 玄空九星、奇门九星都来源于北斗九星，九数、七色、五行、后天八卦方位都是相通的。</p>
+ * 玄空九星、奇门九星都来源于北斗九星，九数、七色、五行、后天八卦方位都是相通的。
  */
 public class NineStar {
 

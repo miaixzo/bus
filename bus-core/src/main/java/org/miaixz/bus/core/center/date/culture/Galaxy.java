@@ -3,9 +3,7 @@ package org.miaixz.bus.core.center.date.culture;
 import org.miaixz.bus.core.center.date.culture.x.Solar;
 
 /**
- * 寿星天文历工具
- *
- * @link http://www.nongli.net/sxwnl/
+ * 寿星天文历工具¬
  */
 public class Galaxy {
 
