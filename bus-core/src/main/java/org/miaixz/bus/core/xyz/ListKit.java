@@ -678,4 +678,51 @@ public class ListKit {
         return resList;
     }
 
+    /**
+     * 对指定List分页取值
+     *
+     * @param <T>      集合元素类型
+     * @param pageNo   页码,从1开始计数,0和1效果相同
+     * @param pageSize 每页的条目数
+     * @param list     列表
+     * @return 分页后的段落内容
+     */
+    public static <T> List<T> page(int pageNo, int pageSize, List<T> list) {
+        if (CollKit.isEmpty(list)) {
+            return new ArrayList<>(0);
+        }
+
+        int resultSize = list.size();
+        // 每页条目数大于总数直接返回所有
+        if (resultSize <= pageSize) {
+            if (pageNo <= 1) {
+                return unmodifiable(list);
+            } else {
+                // 越界直接返回空
+                return new ArrayList<>(0);
+            }
+        }
+
+        if (pageNo < 1) {
+            pageNo = 1;
+        }
+
+        if (pageSize < 1) {
+            pageSize = 0;
+        }
+
+        int start = (pageNo - 1) * pageSize;
+        int end = start + pageSize;
+
+
+        final int[] startEnd = new int[]{start, end};
+        if (startEnd[1] > resultSize) {
+            startEnd[1] = resultSize;
+            if (startEnd[0] > startEnd[1]) {
+                return new ArrayList<>(0);
+            }
+        }
+        return sub(list, startEnd[0], startEnd[1]);
+    }
+
 }

@@ -28,6 +28,7 @@ package org.miaixz.bus.health.builtin.software;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -101,7 +102,7 @@ public class OSSession {
                 : LocalDateTime.ofInstant(Instant.ofEpochMilli(loginTime), ZoneId.systemDefault()).format(LOGIN_FORMAT);
         String hostStr = Normal.EMPTY;
         if (!host.isEmpty() && !host.equals("::") && !host.equals("0.0.0.0")) {
-            hostStr = ", (" + host + ")";
+            hostStr = ", (" + host + Symbol.PARENTHESE_RIGHT;
         }
         return String.format(Locale.ROOT, "%s, %s, %s%s", userName, terminalDevice, loginStr, hostStr);
     }

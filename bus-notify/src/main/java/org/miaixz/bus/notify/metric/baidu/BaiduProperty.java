@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.notify.metric.baidu;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.magic.Property;
 
@@ -35,7 +36,8 @@ import org.miaixz.bus.notify.magic.Property;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @SuperBuilder
 public class BaiduProperty extends Property {
 

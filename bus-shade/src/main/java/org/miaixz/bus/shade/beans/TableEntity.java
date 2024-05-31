@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.beans;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 
 import java.io.Serializable;
@@ -39,7 +40,8 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class TableEntity implements Serializable {
 
     private String project;

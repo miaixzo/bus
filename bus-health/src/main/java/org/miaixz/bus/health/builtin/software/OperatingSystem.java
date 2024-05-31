@@ -28,6 +28,7 @@ package org.miaixz.bus.health.builtin.software;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.unix.driver.Who;
@@ -399,7 +400,7 @@ public interface OperatingSystem {
 
             StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(')');
+                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
             }
             if (!StringKit.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

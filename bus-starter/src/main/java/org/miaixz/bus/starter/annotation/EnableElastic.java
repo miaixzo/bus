@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * <p>@description 启用 ElasticSearch </p>
+ * 启用 ElasticSearch
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+

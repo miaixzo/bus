@@ -1288,16 +1288,25 @@ public enum Registry implements Complex {
             return "https://api.ximalaya.com/profile/user_info";
         }
 
-        @Deprecated
-        @Override
-        public String refresh() {
-            return "https://oauth.aliyun.com/v1/token";
-        }
-
         @Override
         public Class<? extends DefaultProvider> getTargetClass() {
             return XimalayaProvider.class;
         }
+    };
+
+    /**
+     * 根据名称获取第三方授权登录
+     *
+     * @param name 第三方名称简写
+     * @return 第三方授权登录, 找不到时直接抛出异常
+     */
+    public static Registry require(String name) {
+        for (Registry registry : Registry.values()) {
+            if (registry.name().equalsIgnoreCase(name)) {
+                return registry;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported type for " + name);
     }
 
 }

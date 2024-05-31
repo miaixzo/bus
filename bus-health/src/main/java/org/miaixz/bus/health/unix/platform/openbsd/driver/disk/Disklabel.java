@@ -156,7 +156,7 @@ public final class Disklabel {
         int major = 0;
         int minor = 0;
         String majorMinor = Executor.getFirstAnswer("stat -f %Hr,%Lr /dev/" + diskName + name);
-        int comma = majorMinor.indexOf(',');
+        int comma = majorMinor.indexOf(Symbol.C_COMMA);
         if (comma > 0 && comma < majorMinor.length()) {
             major = Parsing.parseIntOrDefault(majorMinor.substring(0, comma), 0);
             minor = Parsing.parseIntOrDefault(majorMinor.substring(comma + 1), 0);

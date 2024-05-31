@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date.printer;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -96,7 +98,7 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
 
     @Override
     public String toString() {
-        return "SimpleDatePrinter[" + pattern + "," + locale + "," + timeZone.getID() + "]";
+        return "SimpleDatePrinter[" + pattern + Symbol.COMMA + locale + Symbol.COMMA + timeZone.getID() + "]";
     }
 
 }

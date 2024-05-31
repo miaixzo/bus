@@ -29,6 +29,7 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
@@ -149,7 +150,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {
-                        vendor = vendor + " (" + idPair.getLeft() + ")";
+                        vendor = vendor + " (" + idPair.getLeft() + Symbol.PARENTHESE_RIGHT;
                     }
                 }
                 String versionInfo = WmiKit.getString(cards, VideoControllerProperty.DRIVERVERSION, index);

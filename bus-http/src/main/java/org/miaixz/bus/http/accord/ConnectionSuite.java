@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.http.accord;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.http.secure.CipherSuite;
 
@@ -232,7 +233,7 @@ public class ConnectionSuite {
                 + "cipherSuites=" + Objects.toString(cipherSuites(), "[all enabled]")
                 + ", tlsVersions=" + Objects.toString(tlsVersions(), "[all enabled]")
                 + ", supportsTlsExtensions=" + supportsTlsExtensions
-                + ")";
+                + Symbol.PARENTHESE_RIGHT;
     }
 
     public static class Builder {

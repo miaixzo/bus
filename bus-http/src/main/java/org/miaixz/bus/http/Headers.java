@@ -200,7 +200,7 @@ public class Headers {
             if (result.isEmpty()) {
                 result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             }
-            for (String varyField : value.split(",")) {
+            for (String varyField : value.split(Symbol.COMMA)) {
                 result.add(varyField.trim());
             }
         }
@@ -336,7 +336,7 @@ public class Headers {
         boolean commaFound = false;
         while (!buffer.exhausted()) {
             byte b = buffer.getByte(0);
-            if (b == ',') {
+            if (b == Symbol.C_COMMA) {
                 buffer.readByte(); // Consume ','.
                 commaFound = true;
             } else if (b == Symbol.C_SPACE || b == '\t') {

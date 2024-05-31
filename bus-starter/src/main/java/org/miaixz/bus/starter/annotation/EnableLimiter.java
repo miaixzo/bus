@@ -26,9 +26,7 @@
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.limiter.LimiterConfiguration;
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.Ordered;
 
 import java.lang.annotation.*;
 
@@ -44,27 +42,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Import(LimiterConfiguration.class)
 public @interface EnableLimiter {
-
-    boolean proxyTargetClass() default false;
-
-    int order() default Ordered.LOWEST_PRECEDENCE;
-
-    /**
-     * 默认有三种组件
-     *
-     * @return the array
-     */
-    String[] annotationParser()
-            default {"LockAnnotationParser",
-            "RateLimiterAnnotationParser",
-            "PeakLimiterAnnotationParser"
-    };
-
-    /**
-     * 代理模型
-     *
-     * @return the object
-     */
-    AdviceMode mode() default AdviceMode.PROXY;
 
 }

@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.notify.metric.upyun;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.notify.magic.Property;
@@ -36,7 +37,8 @@ import org.miaixz.bus.notify.magic.Property;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @SuperBuilder
 public class UpyunProperty extends Property {
 
@@ -49,7 +51,8 @@ public class UpyunProperty extends Property {
     /**
      * 手机号发送短信的结果
      */
-    @Data
+    @Getter
+    @Setter
     public static class MessageId {
 
         /**

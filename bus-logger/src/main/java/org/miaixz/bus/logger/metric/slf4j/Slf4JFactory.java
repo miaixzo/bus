@@ -25,24 +25,26 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.metric.slf4j;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.NOPLoggerFactory;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 /**
- * SLF4J
- * 无缝支持LogBack
+ * slf4j and logback
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Slf4JFactory extends Factory {
+public class Slf4JFactory extends AbstractFactory {
 
+    /**
+     * 构造
+     */
     public Slf4JFactory() {
         this(true);
     }
@@ -50,23 +52,26 @@ public class Slf4JFactory extends Factory {
     /**
      * 构造
      *
-     * @param failIfNOP 如果未找到桥接包是否报错
+     * @param fail 如果未找到桥接包是否报错
      */
-    public Slf4JFactory(boolean failIfNOP) {
+    public Slf4JFactory(final boolean fail) {
         super("Slf4j");
-        checkLogExist(LoggerFactory.class);
-        if (false == failIfNOP) {
+        check(LoggerFactory.class);
+        if (!fail) {
             return;
         }
-
         final StringBuilder buf = new StringBuilder();
         final PrintStream err = System.err;
-        System.setErr(new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) {
-                buf.append((char) b);
-            }
-        }, true, Charset.US_ASCII));
+        try {
+            System.setErr(new PrintStream(new OutputStream() {
+                @Override
+                public void write(final int b) {
+                    buf.append((char) b);
+                }
+            }, true, "US-ASCII"));
+        } catch (final UnsupportedEncodingException e) {
+            throw new Error(e);
+        }
 
         try {
             if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {
@@ -81,13 +86,13 @@ public class Slf4JFactory extends Factory {
     }
 
     @Override
-    public Log createLog(String name) {
-        return new Slf4jLog(name);
+    public Supplier create(final String name) {
+        return new Slf4jProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new Slf4jLog(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new Slf4jProvider(clazz);
     }
 
 }

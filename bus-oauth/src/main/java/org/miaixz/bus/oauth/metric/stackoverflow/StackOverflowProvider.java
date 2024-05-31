@@ -30,6 +30,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.http.Httpx;
@@ -84,7 +85,7 @@ public class StackOverflowProvider extends DefaultProvider {
         String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("site", "stackoverflow")
-                .queryParam("key", this.context.getStackOverflowKey())
+                .queryParam("key", this.context.getUnionId())
                 .build();
         String response = Httpx.get(userInfoUrl);
         JSONObject object = JSONObject.parseObject(response);
@@ -113,7 +114,7 @@ public class StackOverflowProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(StackoverflowScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(StackoverflowScope.values())))
                 .build();
     }
 

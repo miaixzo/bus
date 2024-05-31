@@ -614,18 +614,17 @@ public class BeanKit {
 
     /**
      * 把Bean里面的String属性做trim操作。此方法直接对传入的Bean做修改。
-     * <p>
      * 通常bean直接用来绑定页面的input，用户的输入可能首尾存在空格，通常保存数据库前需要把首尾空格去掉
      *
-     * @param <T>          Bean类型
-     * @param bean         Bean对象
-     * @param ignoreFields 不需要trim的Field名称列表（不区分大小写）
+     * @param <T>         Bean类型
+     * @param bean        Bean对象
+     * @param ignoreField 不需要trim的Field名称列表（不区分大小写）
      * @return 处理后的Bean对象
      */
-    public static <T> T trimStrFields(final T bean, final String... ignoreFields) {
+    public static <T> T trimStringField(final T bean, final String... ignoreField) {
         return edit(bean, (field) -> {
-            if (ignoreFields != null && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
-                // 不处理忽略的Fields
+            if (ignoreField != null && ArrayKit.containsIgnoreCase(ignoreField, field.getName())) {
+                // 不处理忽略的Field
                 return field;
             }
             if (String.class.equals(field.getType())) {

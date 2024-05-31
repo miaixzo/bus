@@ -31,7 +31,9 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -44,7 +46,6 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeMap;
 
 /**
@@ -158,9 +159,9 @@ public class XimalayaProvider extends DefaultProvider {
     public Property getUserInfo(AccToken accToken) {
         Map<String, Object> map = new TreeMap<>();
         map.put("app_key", context.getAppKey());
-        map.put("client_os_type", Optional.ofNullable(context.getClientOsType()).orElse(3).toString());
+        map.put("client_os_type", ObjectKit.defaultIfNull(context.getType(), Normal._3));
         map.put("device_id", context.getDeviceId());
-        map.put("pack_id", context.getPackId());
+        map.put("pack_id", context.getUnionId());
         map.put("access_token", accToken.getAccessToken());
         map.put("sig", sign(map, context.getAppSecret()));
         String rawUserInfo = Httpx.get(complex.userInfo(), map);

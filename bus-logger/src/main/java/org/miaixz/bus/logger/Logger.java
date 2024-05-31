@@ -27,237 +27,241 @@ package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.xyz.CallerKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.magic.Log;
 
 /**
- * 静态日志类,用于在不引入日志对象的情况下打印日志
+ * 静态日志类，用于在不引入日志对象的情况下打印日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Logger {
+public class Logger {
 
     private static final String FQCN = Logger.class.getName();
 
-    private Logger() {
+    /**
+     * 默认构造
+     */
+    public Logger() {
 
     }
 
     /**
-     * Trace等级日志,小于debug
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * Trace等级日志，小于debug
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void trace(String format, Object... arguments) {
-        trace(Factory.get(CallerKit.getCallers()), format, arguments);
+    public static void trace(final String format, final Object... args) {
+        trace(get(), format, args);
     }
 
     /**
-     * Trace等级日志,小于Debug
+     * Trace等级日志，小于Debug
      *
-     * @param log       日志对象
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void trace(Log log, String format, Object... arguments) {
-        log.trace(FQCN, null, format, arguments);
+    public static void trace(final Supplier supplier, final String format, final Object... args) {
+        supplier.trace(FQCN, null, format, args);
     }
 
     /**
-     * Debug等级日志,小于Info
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * Debug等级日志，小于Info
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void debug(String format, Object... arguments) {
-        debug(Factory.get(CallerKit.getCallers()), format, arguments);
+    public static void debug(final String format, final Object... args) {
+        debug(get(), format, args);
     }
 
     /**
-     * Debug等级日志,小于Info
+     * Debug等级日志，小于Info
      *
-     * @param log       日志对象
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void debug(Log log, String format, Object... arguments) {
-        log.debug(FQCN, null, format, arguments);
+    public static void debug(final Supplier supplier, final String format, final Object... args) {
+        supplier.debug(FQCN, null, format, args);
     }
 
     /**
-     * Info等级日志,小于Warn
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * Info等级日志，小于Warn
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void info(String format, Object... arguments) {
-        info(Factory.get(CallerKit.getCallers()), format, arguments);
+    public static void info(final String format, final Object... args) {
+        info(get(), format, args);
     }
 
     /**
-     * Info等级日志,小于Warn
+     * Info等级日志，小于Warn
      *
-     * @param log       日志对象
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void info(Log log, String format, Object... arguments) {
-        log.info(FQCN, null, format, arguments);
+    public static void info(final Supplier supplier, final String format, final Object... args) {
+        supplier.info(FQCN, null, format, args);
     }
 
     /**
-     * Warn等级日志,小于Error
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * Warn等级日志，小于Error
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void warn(String format, Object... arguments) {
-        warn(Factory.get(CallerKit.getCallers()), format, arguments);
+    public static void warn(final String format, final Object... args) {
+        warn(get(), format, args);
     }
 
     /**
-     * Warn等级日志,小于Error
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * Warn等级日志，小于Error
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param e      需在日志中堆栈打印的异常
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void warn(Throwable e, String format, Object... arguments) {
-        warn(Factory.get(CallerKit.getCallers()), e, StringKit.format(format, arguments));
+    public static void warn(final Throwable e, final String format, final Object... args) {
+        warn(get(), e, StringKit.format(format, args));
     }
 
     /**
-     * Warn等级日志,小于Error
+     * Warn等级日志，小于Error
      *
-     * @param log       日志对象
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void warn(Log log, String format, Object... arguments) {
-        warn(log, null, format, arguments);
+    public static void warn(final Supplier supplier, final String format, final Object... args) {
+        warn(supplier, null, format, args);
     }
 
     /**
-     * Warn等级日志,小于Error
+     * Warn等级日志，小于Error
      *
-     * @param log       日志对象
-     * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param e        需在日志中堆栈打印的异常
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void warn(Log log, Throwable e, String format, Object... arguments) {
-        log.warn(FQCN, e, format, arguments);
+    public static void warn(final Supplier supplier, final Throwable e, final String format, final Object... args) {
+        supplier.warn(FQCN, e, format, args);
     }
 
     /**
      * Error等级日志
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
      * @param e 需在日志中堆栈打印的异常
      */
-    public static void error(Throwable e) {
-        error(Factory.get(CallerKit.getCallers()), e);
+    public static void error(final Throwable e) {
+        error(get(), e);
     }
 
     /**
      * Error等级日志
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void error(String format, Object... arguments) {
-        error(Factory.get(CallerKit.getCallers()), format, arguments);
+    public static void error(final String format, final Object... args) {
+        error(get(), format, args);
     }
 
     /**
      * Error等级日志
-     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用
      *
-     * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param e      需在日志中堆栈打印的异常
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void error(Throwable e, String format, Object... arguments) {
-        error(Factory.get(CallerKit.getCallers()), e, format, arguments);
-    }
-
-    /**
-     * Error等级日志
-     *
-     * @param log 日志对象
-     * @param e   需在日志中堆栈打印的异常
-     */
-    public static void error(Log log, Throwable e) {
-        error(log, e, e.getMessage());
+    public static void error(final Throwable e, final String format, final Object... args) {
+        error(get(), e, format, args);
     }
 
     /**
      * Error等级日志
      *
-     * @param log       日志对象
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param e        需在日志中堆栈打印的异常
      */
-    public static void error(Log log, String format, Object... arguments) {
-        error(log, null, format, arguments);
+    public static void error(final Supplier supplier, final Throwable e) {
+        error(supplier, e, e.getMessage());
     }
 
     /**
      * Error等级日志
      *
-     * @param log       日志对象
-     * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param supplier 日志对象
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
      */
-    public static void error(Log log, Throwable e, String format, Object... arguments) {
-        log.error(FQCN, e, format, arguments);
+    public static void error(final Supplier supplier, final String format, final Object... args) {
+        error(supplier, null, format, args);
+    }
+
+    /**
+     * Error等级日志
+     *
+     * @param supplier 日志对象
+     * @param e        需在日志中堆栈打印的异常
+     * @param format   格式文本，{} 代表变量
+     * @param args     变量对应的参数
+     */
+    public static void error(final Supplier supplier, final Throwable e, final String format, final Object... args) {
+        supplier.error(FQCN, e, format, args);
     }
 
     /**
      * 打印日志
      *
-     * @param level     日志级别
-     * @param t         需在日志中堆栈打印的异常
-     * @param format    格式文本,{} 代表变量
-     * @param arguments 变量对应的参数
+     * @param level  日志级别
+     * @param t      需在日志中堆栈打印的异常
+     * @param format 格式文本，{} 代表变量
+     * @param args   变量对应的参数
      */
-    public static void log(Level level, Throwable t, String format, Object... arguments) {
-        Factory.get(CallerKit.getCallers()).log(FQCN, level, t, format, arguments);
+    public static void log(final Level level, final Throwable t, final String format, final Object... args) {
+        get().log(FQCN, level, t, format, args);
     }
 
     /**
-     * 获得Log
+     * 获得日志, 自动判定日志发出者
+     *
+     * @return the supplier
+     */
+    public static Supplier get() {
+        return get(CallerKit.getCallers());
+    }
+
+    /**
+     * 获得日志
      *
      * @param clazz 日志发出的类
-     * @return Log
+     * @return the supplier
      */
-    public static Log get(Class<?> clazz) {
-        return Factory.get(clazz);
+    public static Supplier get(Class<?> clazz) {
+        return Registry.get(clazz);
     }
 
     /**
-     * 获得Log
+     * 获得日志
      *
-     * @param name 自定义的日志发出者名称
-     * @return Log
+     * @param name 日志发出者名称
+     * @return the supplier
      */
-    public static Log get(String name) {
-        return Factory.get(name);
-    }
-
-    /**
-     * @return 获得日志, 自动判定日志发出者
-     */
-    public static Log get() {
-        return get(CallerKit.getCallers());
+    public static Supplier get(String name) {
+        return Registry.get(name);
     }
 
     /**

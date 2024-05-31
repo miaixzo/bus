@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.dialect.postgresql;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.shade.screw.mapping.MappingField;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 
@@ -35,7 +36,8 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class PostgreSqlPrimaryKey implements PrimaryKey {
 
     /**

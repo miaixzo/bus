@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -55,7 +55,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AES extends SymmetricCrypto {
+public class AES extends Crypto {
 
     private static final long serialVersionUID = -1L;
 

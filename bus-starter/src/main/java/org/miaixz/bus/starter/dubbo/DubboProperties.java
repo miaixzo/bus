@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.dubbo;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.dubbo.config.*;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -37,7 +38,8 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.DUBBO)
 public class DubboProperties {
 

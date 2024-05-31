@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Modify;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.DateKit;
 
@@ -66,7 +66,7 @@ public class Modifier {
      * @param modify    修改类型，包括舍去、四舍五入、进一等
      * @return 修改后的{@link Calendar}
      */
-    public static Calendar modify(final Calendar calendar, final int dateField, final Fields.Modify modify) {
+    public static Calendar modify(final Calendar calendar, final int dateField, final Modify modify) {
         return modify(calendar, dateField, modify, false);
     }
 
@@ -75,8 +75,8 @@ public class Modifier {
      * 可选是否归零毫秒
      *
      * <p>
-     * 在{@link Fields.Modify#TRUNCATE}模式下，毫秒始终要归零,
-     * 但是在{@link Fields.Modify#CEILING}和{@link Fields.Modify#ROUND}模式下，
+     * 在{@link Modify#TRUNCATE}模式下，毫秒始终要归零,
+     * 但是在{@link Modify#CEILING}和{@link Modify#ROUND}模式下，
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
      * </p>
      *
@@ -86,7 +86,7 @@ public class Modifier {
      * @param truncateMillisecond 是否归零毫秒
      * @return 修改后的{@link Calendar}
      */
-    public static Calendar modify(final Calendar calendar, final int dateField, final Fields.Modify modify, final boolean truncateMillisecond) {
+    public static Calendar modify(final Calendar calendar, final int dateField, final Modify modify, final boolean truncateMillisecond) {
         // AM_PM上下午特殊处理
         if (Calendar.AM_PM == dateField) {
             final boolean isAM = DateKit.isAM(calendar);
@@ -144,9 +144,9 @@ public class Modifier {
      *
      * @param calendar {@link Calendar}
      * @param field    字段，见{@link Calendar}
-     * @param modify   {@link Fields.Modify}
+     * @param modify   {@link Modify}
      */
-    private static void modifyField(final Calendar calendar, int field, final Fields.Modify modify) {
+    private static void modifyField(final Calendar calendar, int field, final Modify modify) {
         if (Calendar.HOUR == field) {
             // 修正小时。HOUR为12小时制，上午的结束时间为12:00，此处改为HOUR_OF_DAY: 23:59
             field = Calendar.HOUR_OF_DAY;

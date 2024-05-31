@@ -299,8 +299,8 @@ public class ExecCmd {
         String s = ExecCmd.execute(strings);
         assert null != s;
         BufferedReader reader = new BufferedReader(new StringReader(s));
-        String[] keys = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"));
-        String[] values = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"));
+        String[] keys = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"), String.class);
+        String[] values = ArrayKit.ofArray(reader.readLine().split("\\s+|\t"), String.class);
         // 特殊情况
         if (strings[1].equals("-compiler")) {
             for (int i = 0; i < 4; i++) {

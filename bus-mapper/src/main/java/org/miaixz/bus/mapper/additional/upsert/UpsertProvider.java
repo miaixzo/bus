@@ -26,6 +26,7 @@
 package org.miaixz.bus.mapper.additional.upsert;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
@@ -60,7 +61,7 @@ public class UpsertProvider extends MapperTemplate {
                 primaryKeyColumn = column.getColumn();
             }
             if (column.isInsertable()) {
-                sql.append(column.getColumn() + ",");
+                sql.append(column.getColumn() + Symbol.COMMA);
             }
         }
         sql.append("</trim>");
@@ -81,10 +82,10 @@ public class UpsertProvider extends MapperTemplate {
                 continue;
             }
             if (logicDeleteColumn != null && logicDeleteColumn == column) {
-                sql.append(SqlBuilder.getLogicDeletedValue(column, false)).append(",");
+                sql.append(SqlBuilder.getLogicDeletedValue(column, false)).append(Symbol.COMMA);
                 continue;
             }
-            sql.append(column.getColumnHolder() + ",");
+            sql.append(column.getColumnHolder() + Symbol.COMMA);
         }
         sql.append("</trim>");
         sql.append(" ON CONFLICT (" + primaryKeyColumn + ") DO UPDATE ");

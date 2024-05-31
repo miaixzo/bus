@@ -26,6 +26,7 @@
 package org.miaixz.bus.core.lang.loader.classloader;
 
 import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -149,7 +150,7 @@ public class JarClassLoader extends URLClassLoader {
      */
     private static boolean isJarFile(final File file) {
         return FileKit.isFile(file) &&
-                FileName.isType(file.getName(), FileName.EXT_JAR);
+                FileName.isType(file.getName(), Normal.URL_PROTOCOL_JAR);
     }
 
     /**

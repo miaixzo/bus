@@ -163,9 +163,9 @@ public class UrlQuery {
     private static String toString(final Object value) {
         final String result;
         if (value instanceof Iterable) {
-            result = CollKit.join((Iterable<?>) value, ",");
+            result = CollKit.join((Iterable<?>) value, Symbol.COMMA);
         } else if (value instanceof Iterator) {
-            result = IteratorKit.join((Iterator<?>) value, ",");
+            result = IteratorKit.join((Iterator<?>) value, Symbol.COMMA);
         } else {
             result = Convert.toString(value);
         }

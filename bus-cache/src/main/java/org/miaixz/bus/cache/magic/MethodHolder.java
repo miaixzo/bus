@@ -25,13 +25,15 @@
  ********************************************************************************/
 package org.miaixz.bus.cache.magic;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class MethodHolder {
 
     private Class<?> innerReturnType;

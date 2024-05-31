@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Week;
 
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
@@ -93,155 +93,6 @@ public class Almanac extends Resolver {
         return isIn;
     }
 
-
-    /**
-     * 日期偏移,根据field不同加不同值（偏移会修改传入的对象）
-     *
-     * @param time   {@link LocalDateTime}
-     * @param number 偏移量，正数为向后偏移，负数为向前偏移
-     * @param field  偏移单位，见{@link ChronoUnit}，不能为null
-     * @return 偏移后的日期时间
-     */
-    public static LocalDateTime offset(final LocalDateTime time, final long number, final TemporalUnit field) {
-        return offset(time, number, field);
-    }
-
-    /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
-     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
-     *
-     * @param startTimeInclude 开始时间（包含）
-     * @param endTimeExclude   结束时间（不包含）
-     * @return 时间差 {@link Duration}对象
-     * @see Almanac#between(Temporal, Temporal)
-     */
-    public static Duration between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude) {
-        return between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
-     * 返回结果为时间差的long值
-     *
-     * @param startTimeInclude 开始时间（包括）
-     * @param endTimeExclude   结束时间（不包括）
-     * @param unit             时间差单位
-     * @return 时间差
-     */
-    public static long between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude, final ChronoUnit unit) {
-        return between(startTimeInclude, endTimeExclude, unit);
-    }
-
-    /**
-     * 获取两个日期的表象时间差，如果结束时间早于开始时间，获取结果为负。
-     * 比如2011年2月1日，和2021年8月11日，日相差了10天，月相差6月
-     *
-     * @param startTimeInclude 开始时间（包括）
-     * @param endTimeExclude   结束时间（不包括）
-     * @return 时间差
-     */
-    public static Period betweenPeriod(final LocalDate startTimeInclude, final LocalDate endTimeExclude) {
-        return Period.between(startTimeInclude, endTimeExclude);
-    }
-
-    /**
-     * 修改为一天的开始时间，例如：2020-02-02 00:00:00,000
-     *
-     * @param time 日期时间
-     * @return 一天的开始时间
-     */
-    public static LocalDateTime beginOfDay(final LocalDateTime time) {
-        return time.with(LocalTime.MIN);
-    }
-
-    /**
-     * 修改为一天的结束时间，例如：
-     * <ul>
-     * 	<li>毫秒不归零：2020-02-02 23:59:59,999</li>
-     * 	<li>毫秒归零：2020-02-02 23:59:59,000</li>
-     * </ul>
-     *
-     * @param time                日期时间
-     * @param truncateMillisecond 是否毫秒归零
-     * @return 一天的结束时间
-     */
-    public static LocalDateTime endOfDay(final LocalDateTime time, final boolean truncateMillisecond) {
-        return time.with(max(truncateMillisecond));
-    }
-
-    /**
-     * 修改为月初的开始时间，例如：2020-02-01 00:00:00,000
-     *
-     * @param time 日期时间
-     * @return 月初的开始时间
-     */
-    public static LocalDateTime beginOfMonth(final LocalDateTime time) {
-        return beginOfDay(time).with(TemporalAdjusters.firstDayOfMonth());
-    }
-
-    /**
-     * 修改为月底的结束时间
-     *
-     * @param time                日期时间
-     * @param truncateMillisecond 是否毫秒归零
-     * @return 月底的结束时间
-     */
-    public static LocalDateTime endOfMonth(final LocalDateTime time, final boolean truncateMillisecond) {
-        return endOfDay(time, truncateMillisecond).with(TemporalAdjusters.lastDayOfMonth());
-    }
-
-    /**
-     * 修改为一年的开始时间，例如：2020-01-01 00:00:00,000
-     *
-     * @param time 日期时间
-     * @return 一年的开始时间
-     */
-    public static LocalDateTime beginOfYear(final LocalDateTime time) {
-        return beginOfDay(time).with(TemporalAdjusters.firstDayOfYear());
-    }
-
-    /**
-     * 修改为一年的结束时间
-     *
-     * @param time                日期时间
-     * @param truncateMillisecond 是否毫秒归零
-     * @return 一年的结束时间
-     */
-    public static LocalDateTime endOfYear(final LocalDateTime time, final boolean truncateMillisecond) {
-        return endOfDay(time, truncateMillisecond).with(TemporalAdjusters.lastDayOfYear());
-    }
-
-    /**
-     * 是否为周末（周六或周日）
-     *
-     * @param localDateTime 判定的日期{@link LocalDateTime}
-     * @return 是否为周末（周六或周日）
-     */
-    public static boolean isWeekend(final LocalDateTime localDateTime) {
-        return isWeekend(localDateTime.toLocalDate());
-    }
-
-    /**
-     * 是否为周末（周六或周日）
-     *
-     * @param localDate 判定的日期{@link LocalDate}
-     * @return 是否为周末（周六或周日）
-     */
-    public static boolean isWeekend(final LocalDate localDate) {
-        final DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        return DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek;
-    }
-
-    /**
-     * 获取{@link LocalDate}对应的星期值
-     *
-     * @param localDate 日期{@link LocalDate}
-     * @return {@link Fields.Week}
-     */
-    public static Fields.Week dayOfWeek(final LocalDate localDate) {
-        return Fields.Week.of(localDate.getDayOfWeek());
-    }
-
     /**
      * 检查两个时间段是否有时间重叠
      * 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
@@ -267,22 +118,6 @@ public class Almanac extends Resolver {
     }
 
     /**
-     * 获得指定日期是所在年份的第几周，如：
-     * <ul>
-     *     <li>如果一年的第一天是星期一，则第一周从第一天开始，没有零周</li>
-     *     <li>如果一年的第二天是星期一，则第一周从第二天开始，而第一天在零周</li>
-     *     <li>如果一年的第4天是星期一，则第一周从第4天开始，第1至第3天在零周</li>
-     *     <li>如果一年的第5天是星期一，则第二周从第5天开始，第1至第4天在第一周</li>
-     * </ul>
-     *
-     * @param date 日期（{@link LocalDate} 或者 {@link LocalDateTime}等）
-     * @return 所在年的第几周
-     */
-    public static int weekOfYear(final TemporalAccessor date) {
-        return get(date, WeekFields.ISO.weekOfYear());
-    }
-
-    /**
      * 比较两个日期是否为同一天
      *
      * @param date1 日期1
@@ -305,6 +140,48 @@ public class Almanac extends Resolver {
     }
 
     /**
+     * 是否为周末（周六或周日）
+     *
+     * @param localDateTime 判定的日期{@link LocalDateTime}
+     * @return 是否为周末（周六或周日）
+     */
+    public static boolean isWeekend(final LocalDateTime localDateTime) {
+        return isWeekend(localDateTime.toLocalDate());
+    }
+
+    /**
+     * 是否为周末（周六或周日）
+     *
+     * @param localDate 判定的日期{@link LocalDate}
+     * @return 是否为周末（周六或周日）
+     */
+    public static boolean isWeekend(final LocalDate localDate) {
+        final DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek;
+    }
+
+    /**
+     * 是否闰年
+     *
+     * @return 是否闰年
+     */
+    public static boolean isLeapYear(final int year) {
+        return Year.isLeap(year);
+    }
+
+    /**
+     * 日期偏移,根据field不同加不同值（偏移会修改传入的对象）
+     *
+     * @param time   {@link LocalDateTime}
+     * @param number 偏移量，正数为向后偏移，负数为向前偏移
+     * @param field  偏移单位，见{@link ChronoUnit}，不能为null
+     * @return 偏移后的日期时间
+     */
+    public static LocalDateTime offset(final LocalDateTime time, final long number, final TemporalUnit field) {
+        return offset(time, number, field);
+    }
+
+    /**
      * 日期偏移,根据field不同加不同值（偏移会修改传入的对象）
      *
      * @param <T>    日期类型，如LocalDate或LocalDateTime
@@ -322,29 +199,175 @@ public class Almanac extends Resolver {
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
-     * <p>
-     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
+     * 修改为一天的开始时间，例如：2020-02-02 00:00:00,000
      *
-     * @param startTimeInclude 开始时间（包含）
-     * @param endTimeExclude   结束时间（不包含）
-     * @return 时间差 {@link Duration}对象
+     * @param time 日期时间
+     * @return 一天的开始时间
      */
-    public static Duration between(final Temporal startTimeInclude, final Temporal endTimeExclude) {
-        return Duration.between(startTimeInclude, endTimeExclude);
+    public static LocalDateTime beginOfDay(final LocalDateTime time) {
+        return time.with(LocalTime.MIN);
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
-     * 返回结果为时间差的long值
+     * 修改为一天的开始时间，例如：2020-02-02 00:00:00,000
      *
-     * @param startTimeInclude 开始时间（包括）
-     * @param endTimeExclude   结束时间（不包括）
-     * @param unit             时间差单位
-     * @return 时间差
+     * @param date 日期
+     * @return 一天的开始时间
      */
-    public static long between(final Temporal startTimeInclude, final Temporal endTimeExclude, final ChronoUnit unit) {
-        return unit.between(startTimeInclude, endTimeExclude);
+    public static LocalDateTime beginOfDay(final LocalDate date) {
+        return date.atStartOfDay();
+    }
+
+    /**
+     * 修改为一天的结束时间
+     * <ul>
+     * 	<li>毫秒不归零：2020-02-02 23:59:59,999</li>
+     * 	<li>毫秒归零：2020-02-02 23:59:59,000</li>
+     * </ul>
+     *
+     * @param time                日期时间
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 一天的结束时间
+     */
+    public static LocalDateTime endOfDay(final LocalDateTime time, final boolean truncateMillisecond) {
+        return time.with(max(truncateMillisecond));
+    }
+
+    /**
+     * 修改为一天的结束时间
+     * <ul>
+     * 	<li>毫秒不归零：2024-05-01 23:59:59,999</li>
+     * 	<li>毫秒归零：2024-05-01 23:59:59,000</li>
+     * </ul>
+     *
+     * @param date                日期
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 一天的结束时间
+     */
+    public static LocalDateTime endOfDay(final LocalDate date, final boolean truncateMillisecond) {
+        return LocalDateTime.of(date, max(truncateMillisecond));
+    }
+
+    /**
+     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param time 日期时间
+     * @return 月初的开始时间
+     */
+    public static LocalDateTime beginOfMonth(final LocalDateTime time) {
+        return beginOfDay(beginOfMonth(time.toLocalDate()));
+    }
+
+    /**
+     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param date 日期
+     * @return 月初的开始时间
+     */
+    public static LocalDate beginOfMonth(final LocalDate date) {
+        return date.with(TemporalAdjusters.firstDayOfMonth());
+    }
+
+    /**
+     * 修改为月底的结束时间
+     *
+     * @param time                日期时间
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 月底的结束时间
+     */
+    public static LocalDateTime endOfMonth(final LocalDateTime time, final boolean truncateMillisecond) {
+        return endOfDay(endOfMonth(time.toLocalDate()), truncateMillisecond);
+    }
+
+    /**
+     * 修改为月底的结束时间
+     *
+     * @param date 日期
+     * @return 月底的结束时间
+     */
+    public static LocalDate endOfMonth(final LocalDate date) {
+        return date.with(TemporalAdjusters.lastDayOfMonth());
+    }
+
+    /**
+     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param time 日期时间
+     * @return 一年的开始时间
+     */
+    public static LocalDateTime beginOfYear(final LocalDateTime time) {
+        return beginOfDay(beginOfYear(time.toLocalDate()));
+    }
+
+    /**
+     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
+     *
+     * @param date 日期
+     * @return 一年的开始时间
+     */
+    public static LocalDate beginOfYear(final LocalDate date) {
+        return date.with(TemporalAdjusters.firstDayOfYear());
+    }
+
+    /**
+     * 修改为一年的结束时间
+     *
+     * @param time                日期时间
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 一年的结束时间
+     */
+    public static LocalDateTime endOfYear(final LocalDateTime time, final boolean truncateMillisecond) {
+        return endOfDay(endOfYear(time.toLocalDate()), truncateMillisecond);
+    }
+
+    /**
+     * 修改为一年的结束时间
+     *
+     * @param date 日期
+     * @return 一年的结束时间
+     */
+    public static LocalDate endOfYear(final LocalDate date) {
+        return date.with(TemporalAdjusters.lastDayOfYear());
+    }
+
+    /**
+     * 获取{@link LocalDate}对应的星期值
+     *
+     * @param localDate 日期{@link LocalDate}
+     * @return {@link Week}
+     */
+    public static Week dayOfWeek(final LocalDate localDate) {
+        return Week.of(localDate.getDayOfWeek());
+    }
+
+    /**
+     * 获得指定日期是所在年份的第几周，如：
+     * <ul>
+     *     <li>如果一年的第一天是星期一，则第一周从第一天开始，没有零周</li>
+     *     <li>如果一年的第二天是星期一，则第一周从第二天开始，而第一天在零周</li>
+     *     <li>如果一年的第4天是星期一，则第一周从第4天开始，第1至第3天在零周</li>
+     *     <li>如果一年的第5天是星期一，则第二周从第5天开始，第1至第4天在第一周</li>
+     * </ul>
+     *
+     * @param date 日期（{@link LocalDate} 或者 {@link LocalDateTime}等）
+     * @return 所在年的第几周
+     */
+    public static int weekOfYear(final TemporalAccessor date) {
+        return get(date, WeekFields.ISO.weekOfYear());
+    }
+
+    /**
+     * 获取最大时间，提供参数是否将毫秒归零
+     * <ul>
+     *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
+     *     <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
+     * </ul>
+     *
+     * @param truncateMillisecond 是否毫秒归零
+     * @return {@link LocalTime}时间最大值
+     */
+    public static LocalTime max(final boolean truncateMillisecond) {
+        return truncateMillisecond ? MAX_HMS : LocalTime.MAX;
     }
 
     /**

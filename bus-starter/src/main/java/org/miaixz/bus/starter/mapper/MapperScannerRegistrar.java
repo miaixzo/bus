@@ -98,7 +98,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             scanner.setMapperProperties(environment);
         }
         scanner.registerFilters();
-        scanner.doScan(ArrayKit.ofArray(basePackages));
+        scanner.doScan(ArrayKit.ofArray(basePackages, String.class));
     }
 
     @Override

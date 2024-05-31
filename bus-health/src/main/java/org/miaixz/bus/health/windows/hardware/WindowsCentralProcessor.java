@@ -34,6 +34,7 @@ import com.sun.jna.platform.win32.WinReg;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -251,7 +252,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 long maxFreq = this.getMaxFreq();
                 long[] freqs = new long[getLogicalProcessorCount()];
                 for (String instance : instances) {
-                    int cpu = instance.contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
+                    int cpu = instance.contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
                             : Parsing.parseIntOrDefault(instance, 0);
                     if (cpu >= getLogicalProcessorCount()) {
                         continue;
@@ -407,7 +408,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             return ticks;
         }
         for (String instance : instances) {
-            int cpu = instance.contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
+            int cpu = instance.contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
                     : Parsing.parseIntOrDefault(instance, 0);
             if (cpu >= ncpu) {
                 continue;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2023 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,7 +30,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Provider;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 /**
  * 高级加密标准,是下一代的加密算法标准,速度快,安全级别高；
@@ -55,7 +55,7 @@ public class RC4Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InternalException("key is null!");
         }
-        SymmetricCrypto rc4 = new SymmetricCrypto(Algorithm.RC4, key.getBytes());
+        Crypto rc4 = new Crypto(Algorithm.RC4, key.getBytes());
         return rc4.encrypt(StringKit.toString(content, Charset.UTF_8));
     }
 
@@ -70,7 +70,7 @@ public class RC4Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InternalException("key is null!");
         }
-        SymmetricCrypto rc4 = new SymmetricCrypto(Algorithm.RC4, key.getBytes());
+        Crypto rc4 = new Crypto(Algorithm.RC4, key.getBytes());
         return rc4.decrypt(content);
     }
 

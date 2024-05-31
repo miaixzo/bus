@@ -921,7 +921,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
         if (size < byteCount) {
             throw new EOFException("size < " + byteCount + ": " + size
-                    + " (to read code point prefixed 0x" + Integer.toHexString(b0) + ")");
+                    + " (to read code point prefixed 0x" + Integer.toHexString(b0) + Symbol.PARENTHESE_RIGHT);
         }
 
         for (int i = 1; i < byteCount; i++) {

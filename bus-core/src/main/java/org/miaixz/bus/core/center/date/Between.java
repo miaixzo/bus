@@ -25,12 +25,18 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.center.date.culture.Units;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.DateKit;
 
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -112,13 +118,76 @@ public class Between implements Serializable {
     }
 
     /**
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
+     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
+     *
+     * @param startTimeInclude 开始时间（包含）
+     * @param endTimeExclude   结束时间（不包含）
+     * @return 时间差 {@link Duration}对象
+     */
+    public static Duration between(final Temporal startTimeInclude, final Temporal endTimeExclude) {
+        return Duration.between(startTimeInclude, endTimeExclude);
+    }
+
+    /**
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
+     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
+     *
+     * @param startTimeInclude 开始时间（包含）
+     * @param endTimeExclude   结束时间（不包含）
+     * @return 时间差 {@link Duration}对象
+     * @see Between#between(Temporal, Temporal)
+     */
+    public static Duration between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude) {
+        return between(startTimeInclude, endTimeExclude);
+    }
+
+    /**
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
+     * 返回结果为时间差的long值
+     *
+     * @param startTimeInclude 开始时间（包括）
+     * @param endTimeExclude   结束时间（不包括）
+     * @param unit             时间差单位
+     * @return 时间差
+     */
+    public static long between(final Temporal startTimeInclude, final Temporal endTimeExclude, final ChronoUnit unit) {
+        return unit.between(startTimeInclude, endTimeExclude);
+    }
+
+    /**
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
+     * 返回结果为时间差的long值
+     *
+     * @param startTimeInclude 开始时间（包括）
+     * @param endTimeExclude   结束时间（不包括）
+     * @param unit             时间差单位
+     * @return 时间差
+     */
+    public static long between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude, final ChronoUnit unit) {
+        return between(startTimeInclude, endTimeExclude, unit);
+    }
+
+    /**
+     * 获取两个日期的表象时间差，如果结束时间早于开始时间，获取结果为负。
+     * 比如2011年2月1日，和2021年8月11日，日相差了10天，月相差6月
+     *
+     * @param startTimeInclude 开始时间（包括）
+     * @param endTimeExclude   结束时间（不包括）
+     * @return 时间差
+     */
+    public static Period between(final LocalDate startTimeInclude, final LocalDate endTimeExclude) {
+        return Period.between(startTimeInclude, endTimeExclude);
+    }
+
+    /**
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
-     * @param unit 相差的单位：相差 天{@link Fields.Units#DAY}、小时{@link Fields.Units#HOUR} 等
+     * @param unit 相差的单位：相差 天{@link Units#DAY}、小时{@link Units#HOUR} 等
      * @return 时长差
      */
-    public long between(final Fields.Units unit) {
+    public long between(final Units unit) {
         final long diff = end.getTime() - begin.getTime();
         return diff / unit.getMillis();
     }
@@ -211,7 +280,7 @@ public class Between implements Serializable {
      * @param level 级别
      * @return 字符串
      */
-    public String toString(final Fields.Units unit, final FormatPeriod.Level level) {
+    public String toString(final Units unit, final FormatPeriod.Level level) {
         return DateKit.formatBetween(between(unit), level);
     }
 
@@ -222,7 +291,7 @@ public class Between implements Serializable {
      * @return 字符串
      */
     public String toString(final FormatPeriod.Level level) {
-        return toString(Fields.Units.MS, level);
+        return toString(Units.MS, level);
     }
 
     @Override

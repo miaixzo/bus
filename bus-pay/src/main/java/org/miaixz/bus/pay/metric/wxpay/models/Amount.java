@@ -1,12 +1,14 @@
 package org.miaixz.bus.pay.metric.wxpay.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
  * V3 统一下单-订单金额
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class Amount {
 

@@ -87,7 +87,7 @@ public class MethodReflect {
             if (i == 0) {
                 sb.append(Symbol.C_COLON);
             } else {
-                sb.append(',');
+                sb.append(Symbol.C_COMMA);
             }
             sb.append(parameters[i].getName());
         }

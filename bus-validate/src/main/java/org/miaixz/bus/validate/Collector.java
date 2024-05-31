@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.validate;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.magic.Property;
 
@@ -38,7 +39,8 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Collector {
 
     /**

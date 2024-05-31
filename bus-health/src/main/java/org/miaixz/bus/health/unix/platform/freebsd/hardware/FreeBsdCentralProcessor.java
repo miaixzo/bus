@@ -115,7 +115,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 if (m.matches()) {
                     // If csv of hex values like "f,0,0,0", parse the first value
                     String csvMatch = m.group(1);
-                    String[] csvTokens = csvMatch.split(",");
+                    String[] csvTokens = csvMatch.split(Symbol.COMMA);
                     String firstVal = csvTokens[0];
 
                     // Regex guarantees parsing digits so we won't get a

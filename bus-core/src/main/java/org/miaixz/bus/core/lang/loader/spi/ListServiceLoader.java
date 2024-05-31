@@ -65,7 +65,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ListServiceLoader<S> extends AbsServiceLoader<S> {
+public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
 
     private final List<String> serviceNames;
     // data: className, value: service instance

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -43,7 +43,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TDEA extends SymmetricCrypto {
+public class TDEA extends Crypto {
 
     private static final long serialVersionUID = -1L;
 

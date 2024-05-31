@@ -217,8 +217,8 @@ public class PathResolve {
      * @param path 文件对象
      * @throws InternalException IO异常
      */
-    public static void del(final Path path) throws InternalException {
-        PathDeleter.of(path).del();
+    public static void remove(final Path path) throws InternalException {
+        PathRemover.of(path).remove();
     }
 
     /**
@@ -227,7 +227,7 @@ public class PathResolve {
      * @param path 目录路径
      */
     public static void clean(final Path path) {
-        PathDeleter.of(path).clean();
+        PathRemover.of(path).clean();
     }
 
     /**

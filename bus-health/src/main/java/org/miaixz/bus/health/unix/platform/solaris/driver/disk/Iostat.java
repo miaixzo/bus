@@ -28,6 +28,7 @@ package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -86,10 +87,10 @@ public final class Iostat {
         for (int i = 0; i < mountNames.size() && i < mountPoints.size(); i++) {
             // Map disk
             disk = mountNames.get(i);
-            String[] diskSplit = disk.split(",");
+            String[] diskSplit = disk.split(Symbol.COMMA);
             if (diskSplit.length >= 5 && !DEVICE_HEADER.equals(diskSplit[0])) {
                 String mount = mountPoints.get(i);
-                String[] mountSplit = mount.split(",");
+                String[] mountSplit = mount.split(Symbol.COMMA);
                 if (mountSplit.length >= 5 && !DEVICE_HEADER.equals(mountSplit[4])) {
                     deviceMap.put(diskSplit[0], mountSplit[4]);
                 }
@@ -119,7 +120,7 @@ public final class Iostat {
             // The -r switch enables comma delimited for easy parsing!
             // No guarantees on which line the results appear so we'll nest
             // a loop iterating on the comma splits
-            String[] split = line.split(",");
+            String[] split = line.split(Symbol.COMMA);
             for (String keyValue : split) {
                 keyValue = keyValue.trim();
                 // If entry is tne name of a disk, this is beginning of new

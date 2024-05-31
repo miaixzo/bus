@@ -306,7 +306,7 @@ public class TomlReader {
                 pos++;
                 break;
             }
-            if (afterEntry != ',') {
+            if (afterEntry != Symbol.C_COMMA) {
                 throw new InternalException("Invalid array at line " + line + ": expected a comma after each value");
             }
         }
@@ -368,7 +368,7 @@ public class TomlReader {
             final char after = nextUsefulOrLinebreak();
             if (after == '}' || !hasNext()) {
                 return map;
-            } else if (after != ',') {
+            } else if (after != Symbol.C_COMMA) {
                 throw new InternalException("Invalid inline table at line " + line + ": missing comma");
             }
         }
@@ -466,7 +466,7 @@ public class TomlReader {
                     if (pos != 0 && data.charAt(pos - 1) != 'e' && data.charAt(pos - 1) != 'E')
                         maybeInteger = maybeDouble = false;
                     break;
-                case ',':
+                case Symbol.C_COMMA:
                 case Symbol.C_SPACE:
                 case '\t':
                 case '\n':

@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.cors;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.BusXConfig;
@@ -37,7 +38,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(BusXConfig.CORS)
 public class CorsProperties {
 

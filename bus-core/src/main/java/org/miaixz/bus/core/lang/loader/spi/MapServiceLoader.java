@@ -50,7 +50,7 @@ import java.util.Properties;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapServiceLoader<S> extends AbsServiceLoader<S> {
+public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 
     // TODO update const
     private static final String PREFIX = Normal.META_INF + "/bus/";

@@ -342,7 +342,7 @@ public class Condition implements TableNames {
                 return this;
             }
             if (StringKit.isNotEmpty(condition.getOrderByClause())) {
-                condition.setOrderByClause(condition.getOrderByClause() + "," + column);
+                condition.setOrderByClause(condition.getOrderByClause() + Symbol.COMMA + column);
             } else {
                 condition.setOrderByClause(column);
             }

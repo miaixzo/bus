@@ -30,7 +30,7 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-import org.springframework.boot.loader.LaunchedURLClassLoader;
+import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,7 +45,7 @@ import java.util.Enumeration;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BootClassLoader extends LaunchedURLClassLoader {
+public class BootClassLoader extends LaunchedClassLoader {
 
     static {
         ClassLoader.registerAsParallelCapable();
@@ -54,7 +54,7 @@ public class BootClassLoader extends LaunchedURLClassLoader {
     private final BootURLHandler bootURLHandler;
 
     public BootClassLoader(URL[] urls, ClassLoader parent, DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key) throws Exception {
-        super(urls, parent);
+        super(true, urls, parent);
         this.bootURLHandler = new BootURLHandler(decryptorProvider, encryptorProvider, key, this);
     }
 

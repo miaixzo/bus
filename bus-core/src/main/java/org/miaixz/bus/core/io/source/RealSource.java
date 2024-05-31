@@ -573,7 +573,7 @@ public class RealSource implements BufferSource {
 
     @Override
     public String toString() {
-        return "buffer(" + source + ")";
+        return "buffer(" + source + Symbol.PARENTHESE_RIGHT;
     }
 
 }

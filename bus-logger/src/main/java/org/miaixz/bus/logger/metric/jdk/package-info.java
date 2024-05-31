@@ -1,5 +1,5 @@
 /**
- * JDK-Logging的实现封装
+ * java.util.logging 实现封装
  *
  * @author Kimi Liu
  * @since Java 17+

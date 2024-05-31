@@ -176,7 +176,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 case '?':
                 case Symbol.C_STAR:
                 case Symbol.C_PLUS:
-                case '(':
+                case Symbol.C_PARENTHESE_LEFT:
                 case ')':
                 case '[':
                 case '{':
@@ -515,7 +515,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             regex.append("((?iu)");
             lKeyValues = appendDisplayNames(definingCalendar, locale, field, regex);
             regex.setLength(regex.length() - 1);
-            regex.append(")");
+            regex.append(Symbol.PARENTHESE_RIGHT);
             createPattern(regex);
         }
 
@@ -663,7 +663,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             for (final String zoneName : sorted) {
                 simpleQuote(sb.append('|'), zoneName);
             }
-            sb.append(")");
+            sb.append(Symbol.PARENTHESE_RIGHT);
             createPattern(sb);
         }
 

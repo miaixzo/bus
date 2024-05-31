@@ -28,7 +28,6 @@ package org.miaixz.bus.oauth;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.AuthorizeProvider;
 import org.miaixz.bus.oauth.metric.DefaultProvider;
 
 /**
@@ -41,7 +40,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * 注：
  * ①、如需通过扩展实现第三方授权，请参考{@link Registry}自行创建对应的枚举类并实现{@link Complex}接口
  * ②、如果不是使用的枚举类，那么在授权成功后获取用户信息时，需要单独处理source字段的赋值
- * ③、如果扩展了对应枚举类时，在{@link AuthorizeProvider#login(Callback)}中可以通过{@code xx.toString()}获取对应的source
+ * ③、如果扩展了对应枚举类时，在{@link Provider#login(Callback)}中可以通过{@code xx.toString()}获取对应的source
  *
  * @author Kimi Liu
  * @since Java 17+

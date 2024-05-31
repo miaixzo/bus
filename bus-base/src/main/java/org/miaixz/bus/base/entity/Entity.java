@@ -26,7 +26,8 @@
 package org.miaixz.bus.base.entity;
 
 import jakarta.persistence.Id;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -36,7 +37,8 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public abstract class Entity implements Serializable {
 
     private static final long serialVersionUID = 1L;

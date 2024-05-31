@@ -35,8 +35,8 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
-import org.miaixz.bus.crypto.builtin.asymmetric.AsymmetricCrypto;
-import org.miaixz.bus.crypto.builtin.asymmetric.BaseAsymmetric;
+import org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric;
+import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Sign extends BaseAsymmetric<Sign> {
+public class Sign extends Asymmetric<Sign> {
 
     private static final long serialVersionUID = -1L;
 
@@ -372,7 +372,7 @@ public class Sign extends BaseAsymmetric<Sign> {
      * 设置签名
      *
      * @param signature 签名对象 {@link Signature}
-     * @return 自身 {@link AsymmetricCrypto}
+     * @return 自身 {@link Crypto}
      */
     public Sign setSignature(final Signature signature) {
         this.signature = signature;

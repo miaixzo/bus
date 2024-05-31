@@ -171,7 +171,7 @@ public class CacheControl {
                 String directive = value.substring(tokenStart, pos).trim();
                 String parameter;
 
-                if (pos == value.length() || value.charAt(pos) == ',' || value.charAt(pos) == Symbol.C_SEMICOLON) {
+                if (pos == value.length() || value.charAt(pos) == Symbol.C_COMMA || value.charAt(pos) == Symbol.C_SEMICOLON) {
                     pos++; // consume ',' or ';' (if necessary)
                     parameter = null;
                 } else {

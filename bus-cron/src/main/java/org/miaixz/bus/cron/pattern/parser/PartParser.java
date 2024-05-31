@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern.parser;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Month;
+import org.miaixz.bus.core.center.date.culture.Week;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -271,8 +272,8 @@ public class PartParser {
         }
 
         // 周日可以用0或7表示，统一转换为0
-        if (Part.DAY_OF_WEEK.equals(this.part) && Fields.Week.SUNDAY.getIso8601Value() == i) {
-            i = Fields.Week.SUNDAY.ordinal();
+        if (Part.DAY_OF_WEEK.equals(this.part) && Week.SUNDAY.getIsoValue() == i) {
+            i = Week.SUNDAY.ordinal();
         }
 
         return checkValue ? part.checkValue(i) : i;
@@ -298,10 +299,10 @@ public class PartParser {
         switch (this.part) {
             case MONTH:
                 // 月份从1开始
-                return Fields.Month.of(name).getValueBaseOne();
+                return Month.of(name).getIsoValue();
             case DAY_OF_WEEK:
                 // 周从0开始，0表示周日
-                return Fields.Week.of(name).ordinal();
+                return Week.of(name).ordinal();
         }
 
         throw new CrontabException("Invalid alias value: [{}]", name);

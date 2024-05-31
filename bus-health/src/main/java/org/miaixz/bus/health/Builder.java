@@ -170,7 +170,7 @@ public final class Builder {
     public static List<PathMatcher> parseFileSystemConfig(String config) {
         FileSystem fs = FileSystems.getDefault(); // can't be closed
         List<PathMatcher> patterns = new ArrayList<>();
-        for (String item : config.split(",")) {
+        for (String item : config.split(Symbol.COMMA)) {
             if (item.length() > 0) {
                 // Using glob: prefix as the defult unless user has specified glob or regex. See
                 // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-

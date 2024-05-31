@@ -161,7 +161,7 @@ public class MapGets {
      * @param key 键
      * @return 值
      */
-    public static Boolean getBool(final Map<?, ?> map, final Object key) {
+    public static Boolean getBoolean(final Map<?, ?> map, final Object key) {
         return get(map, key, Boolean.class);
     }
 
@@ -173,7 +173,7 @@ public class MapGets {
      * @param defaultValue 默认值
      * @return 值
      */
-    public static Boolean getBool(final Map<?, ?> map, final Object key, final Boolean defaultValue) {
+    public static Boolean getBoolean(final Map<?, ?> map, final Object key, final Boolean defaultValue) {
         return get(map, key, Boolean.class, defaultValue);
     }
 

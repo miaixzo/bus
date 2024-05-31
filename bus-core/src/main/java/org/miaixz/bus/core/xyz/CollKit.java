@@ -47,6 +47,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -238,11 +239,23 @@ public class CollKit extends CollectionStream {
     /**
      * 去重集合
      *
+     * @param <T> 集合元素类型
+     * @param key 属性名
+     * @return {@link List}
+     */
+    public static <T> Predicate<T> distinct(final Function<? super T, ?> key) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(key.apply(t), Boolean.TRUE) == null;
+    }
+
+    /**
+     * 去重集合
+     *
      * @param <T>        集合元素类型
      * @param collection 集合
-     * @return {@link ArrayList}
+     * @return {@link List}
      */
-    public static <T> ArrayList<T> distinct(final Collection<T> collection) {
+    public static <T> List<T> distinct(final Collection<T> collection) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
         } else if (collection instanceof Set) {
@@ -256,19 +269,19 @@ public class CollKit extends CollectionStream {
      * 根据函数生成的KEY去重集合，如根据Bean的某个或者某些字段完成去重。
      * 去重可选是保留最先加入的值还是后加入的值
      *
-     * @param <T>             集合元素类型
-     * @param <K>             唯一键类型
-     * @param collection      集合
-     * @param uniqueGenerator 唯一键生成器
-     * @param override        是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
-     * @return {@link ArrayList}
+     * @param <T>        集合元素类型
+     * @param <K>        唯一键类型
+     * @param collection 集合
+     * @param key        唯一标识
+     * @param override   是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
+     * @return {@link List}
      */
-    public static <T, K> List<T> distinct(final Collection<T> collection, final Function<T, K> uniqueGenerator, final boolean override) {
+    public static <T, K> List<T> distinct(final Collection<T> collection, final Function<T, K> key, final boolean override) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
         }
 
-        final UniqueKeySet<K, T> set = new UniqueKeySet<>(true, uniqueGenerator);
+        final UniqueKeySet<K, T> set = new UniqueKeySet<>(true, key);
         if (override) {
             set.addAll(collection);
         } else {

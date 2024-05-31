@@ -1,6 +1,7 @@
 package org.miaixz.bus.starter.mapper;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.spring.BusXConfig;
@@ -22,7 +23,8 @@ import java.util.Properties;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.MYBATIS)
 public class MybatisProperties {
 

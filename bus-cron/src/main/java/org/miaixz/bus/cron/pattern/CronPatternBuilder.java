@@ -64,7 +64,7 @@ public class CronPatternBuilder implements Builder<String> {
         for (final int value : values) {
             part.checkValue(value);
         }
-        return set(part, ArrayKit.join(values, ","));
+        return set(part, ArrayKit.join(values, Symbol.COMMA));
     }
 
     /**

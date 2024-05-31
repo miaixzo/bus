@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Padding;
-import org.miaixz.bus.crypto.builtin.symmetric.SymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.AES;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
@@ -54,7 +54,7 @@ import java.util.Map;
 public class DecryptFilter implements WebFilter {
 
     private Config.Decrypt decrypt;
-    private SymmetricCrypto crypto;
+    private Crypto crypto;
 
     public DecryptFilter(Config.Decrypt decrypt) {
         this.decrypt = decrypt;

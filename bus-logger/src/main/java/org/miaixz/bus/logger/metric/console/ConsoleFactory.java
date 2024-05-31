@@ -25,29 +25,32 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.metric.console;
 
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 利用System.out.println()打印日志
+ * System.out.println 打印日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConsoleFactory extends Factory {
+public class ConsoleFactory extends AbstractFactory {
 
+    /**
+     * 构造
+     */
     public ConsoleFactory() {
         super("Console Logging");
     }
 
     @Override
-    public Log createLog(String name) {
-        return new ConsoleLog(name);
+    public Supplier create(final String name) {
+        return new ConsoleProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new ConsoleLog(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new ConsoleProvider(clazz);
     }
 
 }

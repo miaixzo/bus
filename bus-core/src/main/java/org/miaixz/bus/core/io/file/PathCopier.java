@@ -87,6 +87,61 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
+     * 复制src到target中
+     * <ul>
+     *     <li>src路径和target路径相同时，不执行操作</li>
+     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
+     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     *     <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
+     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
+     *     <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * </ul>
+     *
+     * @return 目标Path
+     * @throws InternalException IO异常
+     */
+    @Override
+    public Path copy() throws InternalException {
+        if (PathResolve.isDirectory(src)) {
+            if (PathResolve.exists(target, false)) {
+                if (PathResolve.isDirectory(target)) {
+                    return copyContent(src, target.resolve(src.getFileName()), options);
+                } else {
+                    // src目录，target文件，无法拷贝
+                    throw new IllegalArgumentException("Can not copier directory to a file!");
+                }
+            } else {
+                // 目标不存在，按照重命名对待
+                return copyContent(src, target, options);
+            }
+        }
+        return copyFile(src, target, options);
+    }
+
+    /**
+     * 复制src的内容到target中
+     * <ul>
+     *     <li>src路径和target路径相同时，不执行操作</li>
+     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
+     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     *     <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
+     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
+     *     <li>src为目录，target为文件，抛出IO异常</li>
+     * </ul>
+     *
+     * @return 目标Path
+     * @throws InternalException IO异常
+     */
+    public Path copyContent() throws InternalException {
+        if (PathResolve.isDirectory(src, false)) {
+            return copyContent(src, target, options);
+        }
+        return copyFile(src, target, options);
+    }
+
+    /**
      * 拷贝目录下的所有文件或目录到目标目录中，此方法不支持文件对文件的拷贝。
      * <ul>
      *     <li>源文件为目录，目标也为目录或不存在，则拷贝目录下所有文件和目录到目标目录下</li>
@@ -99,7 +154,7 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
      * @return Path
      * @throws InternalException IO异常
      */
-    private static Path _copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
+    private static Path copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
         try {
             Files.walkFileTree(src, new CopyVisitor(src, target, options));
         } catch (final IOException e) {
@@ -130,61 +185,6 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-    }
-
-    /**
-     * 复制src到target中
-     * <ul>
-     *     <li>src路径和target路径相同时，不执行操作</li>
-     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     *     <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
-     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
-     *     <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * </ul>
-     *
-     * @return 目标Path
-     * @throws InternalException IO异常
-     */
-    @Override
-    public Path copy() throws InternalException {
-        if (PathResolve.isDirectory(src)) {
-            if (PathResolve.exists(target, false)) {
-                if (PathResolve.isDirectory(target)) {
-                    return _copyContent(src, target.resolve(src.getFileName()), options);
-                } else {
-                    // src目录，target文件，无法拷贝
-                    throw new IllegalArgumentException("Can not copier directory to a file!");
-                }
-            } else {
-                // 目标不存在，按照重命名对待
-                return _copyContent(src, target, options);
-            }
-        }
-        return copyFile(src, target, options);
-    }
-
-    /**
-     * 复制src的内容到target中
-     * <ul>
-     *     <li>src路径和target路径相同时，不执行操作</li>
-     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     *     <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
-     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
-     *     <li>src为目录，target为文件，抛出IO异常</li>
-     * </ul>
-     *
-     * @return 目标Path
-     * @throws InternalException IO异常
-     */
-    public Path copyContent() throws InternalException {
-        if (PathResolve.isDirectory(src, false)) {
-            return _copyContent(src, target, options);
-        }
-        return copyFile(src, target, options);
     }
 
 }

@@ -378,7 +378,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public ByteString substring(int beginIndex, int endIndex) {
         if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0");
         if (endIndex > data.length) {
-            throw new IllegalArgumentException("endIndex > length(" + data.length + ")");
+            throw new IllegalArgumentException("endIndex > length(" + data.length + Symbol.PARENTHESE_RIGHT);
         }
 
         int subLen = endIndex - beginIndex;

@@ -104,7 +104,7 @@ public class QqProvider extends DefaultProvider {
     private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("unionid", context.isUnionId() ? 1 : 0)
+                .queryParam("unionid", context.isFlag() ? 1 : 0)
                 .build());
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");
@@ -150,7 +150,7 @@ public class QqProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(QqScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(QqScope.values())))
                 .build();
     }
 

@@ -27,6 +27,7 @@ package org.miaixz.bus.oauth.metric.wechat.mp;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -155,7 +156,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
-                .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(WechatMpScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WechatMpScope.values())))
                 .queryParam("state", getRealState(state).concat("#wechat_redirect"))
                 .build();
     }

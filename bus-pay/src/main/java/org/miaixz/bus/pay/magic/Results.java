@@ -1,9 +1,6 @@
 package org.miaixz.bus.pay.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -14,7 +11,8 @@ import java.util.Map;
 /**
  * Http Response
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

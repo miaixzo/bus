@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern.matcher;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Month;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class DayOfMonthMatcher extends BoolArrayMatcher {
      * @return 最后一天
      */
     private static int getLastDay(final int month, final boolean isLeapYear) {
-        return Fields.Month.getLastDay(month - 1, isLeapYear);
+        return Month.getLastDay(month - 1, isLeapYear);
     }
 
     /**

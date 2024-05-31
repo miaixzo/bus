@@ -30,6 +30,7 @@ import com.sun.jna.Native;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -234,7 +235,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
             } else {
                 Matcher n = q.matcher(s);
                 if (n.matches()) {
-                    for (String cacheStr : n.group(1).split(",")) {
+                    for (String cacheStr : n.group(1).split(Symbol.COMMA)) {
                         CentralProcessor.ProcessorCache cache = parseCacheStr(cacheStr);
                         if (cache != null) {
                             caches.add(cache);
@@ -244,7 +245,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
             }
             if (s.startsWith("cpu")) {
                 String[] ss = s.trim().split(": ");
-                if (ss.length == 2 && ss[1].split(",").length > 3) {
+                if (ss.length == 2 && ss[1].split(Symbol.COMMA).length > 3) {
                     featureFlags.add(ss[1]);
                 }
             }

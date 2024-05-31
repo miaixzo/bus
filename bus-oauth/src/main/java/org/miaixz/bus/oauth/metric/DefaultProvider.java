@@ -34,10 +34,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.oauth.Builder;
-import org.miaixz.bus.oauth.Checker;
-import org.miaixz.bus.oauth.Complex;
-import org.miaixz.bus.oauth.Context;
+import org.miaixz.bus.oauth.*;
 import org.miaixz.bus.oauth.cache.OauthCache;
 import org.miaixz.bus.oauth.magic.*;
 
@@ -51,7 +48,7 @@ import java.util.stream.Collectors;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class DefaultProvider implements AuthorizeProvider {
+public abstract class DefaultProvider implements Provider {
 
     protected Context context;
     protected Complex complex;
@@ -130,7 +127,7 @@ public abstract class DefaultProvider implements AuthorizeProvider {
     public Message login(Callback authCallback) {
         try {
             checkCode(authCallback);
-            if (!context.isIgnoreCheckState()) {
+            if (!context.isIgnoreState()) {
                 Checker.checkState(authCallback.getState(), complex, authorizeCache);
             }
 

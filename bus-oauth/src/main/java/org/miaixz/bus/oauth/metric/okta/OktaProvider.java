@@ -31,6 +31,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -139,7 +140,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("response_type", "code")
                 .queryParam("prompt", "consent")
                 .queryParam("client_id", context.getAppKey())
@@ -151,7 +152,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("code", code)
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -160,7 +161,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(String.format(complex.refresh(), context.getPrefix(), context.getAuthServerId()))
+        return Builder.fromUrl(String.format(complex.refresh(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();
@@ -168,12 +169,12 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     protected String revokeUrl(AccToken accToken) {
-        return String.format(complex.revoke(), context.getPrefix(), context.getAuthServerId());
+        return String.format(complex.revoke(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return String.format(complex.userInfo(), context.getPrefix(), context.getAuthServerId());
+        return String.format(complex.userInfo(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
 }

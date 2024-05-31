@@ -25,14 +25,16 @@
  ********************************************************************************/
 package org.miaixz.bus.image.nimble.opencv;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class ImageParameters {
 
     public static final int DEFAULT_TILE_SIZE = Normal._512;

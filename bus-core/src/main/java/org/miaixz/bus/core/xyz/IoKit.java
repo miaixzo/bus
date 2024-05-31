@@ -1053,7 +1053,7 @@ public class IoKit {
 
             @Override
             public String toString() {
-                return "sink(" + out + ")";
+                return "sink(" + out + Symbol.PARENTHESE_RIGHT;
             }
         };
     }
@@ -1143,7 +1143,7 @@ public class IoKit {
 
             @Override
             public String toString() {
-                return "source(" + in + ")";
+                return "source(" + in + Symbol.PARENTHESE_RIGHT;
             }
         };
     }

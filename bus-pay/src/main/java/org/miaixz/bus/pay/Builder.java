@@ -373,7 +373,7 @@ public class Builder {
         params.put("nonce_str", nonceStr);
         params.put("timestamp", timestamp);
         params.put("signature", signature);
-        return authType.concat(Symbol.SPACE).concat(createLinkString(params, ",", false, true));
+        return authType.concat(Symbol.SPACE).concat(createLinkString(params, Symbol.COMMA, false, true));
     }
 
     /**

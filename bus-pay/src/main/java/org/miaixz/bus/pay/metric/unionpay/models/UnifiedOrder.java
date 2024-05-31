@@ -2,13 +2,15 @@ package org.miaixz.bus.pay.metric.unionpay.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.pay.magic.Property;
 
 /**
  * 云闪付-统一下单
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class UnifiedOrder extends Property {

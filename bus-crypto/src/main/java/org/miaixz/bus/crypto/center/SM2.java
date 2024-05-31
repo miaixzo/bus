@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
-import org.miaixz.bus.crypto.builtin.asymmetric.AbstractAsymmetricCrypto;
+import org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto;
 import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 
 import java.math.BigInteger;
@@ -68,7 +68,7 @@ import java.security.PublicKey;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SM2 extends AbstractAsymmetricCrypto<SM2> {
+public class SM2 extends AbstractCrypto<SM2> {
 
     private static final long serialVersionUID = -1L;
 

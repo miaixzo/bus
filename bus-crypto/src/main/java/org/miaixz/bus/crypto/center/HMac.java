@@ -26,8 +26,8 @@
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.crypto.builtin.digest.mac.MacEngine;
-import org.miaixz.bus.crypto.builtin.digest.mac.MacEngineFactory;
+import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
+import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -44,7 +44,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HMac extends Mac {
+public class HMac extends org.miaixz.bus.crypto.center.Mac {
 
     private static final long serialVersionUID = -1L;
 
@@ -105,7 +105,7 @@ public class HMac extends Mac {
      * @param spec      {@link AlgorithmParameterSpec}
      */
     public HMac(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
-        this(MacEngineFactory.createEngine(algorithm, key, spec));
+        this(MacFactory.createEngine(algorithm, key, spec));
     }
 
     /**
@@ -113,7 +113,7 @@ public class HMac extends Mac {
      *
      * @param engine MAC算法实现引擎
      */
-    public HMac(final MacEngine engine) {
+    public HMac(final Mac engine) {
         super(engine);
     }
 

@@ -44,7 +44,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.32</lombok.version>
-        <spring.boot.version>3.0.5</spring.boot.version>
+        <spring.boot.version>3.2.5</spring.boot.version>
         <guice.version>7.0.0</guice.version>
         <jedis.version>5.1.2</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>

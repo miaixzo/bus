@@ -348,14 +348,14 @@ public class ResultBody implements CoverResult.Body {
     private String indexFileName(String fileName, int index) {
         int i = fileName.lastIndexOf(Symbol.C_DOT);
         if (i < 0) {
-            return fileName + Symbol.PARENTHESE_LEFT + index + ")";
+            return fileName + Symbol.PARENTHESE_LEFT + index + Symbol.PARENTHESE_RIGHT;
         }
         String ext = fileName.substring(i);
         if (i > 0) {
             String name = fileName.substring(0, i);
-            return name + Symbol.PARENTHESE_LEFT + index + ")" + ext;
+            return name + Symbol.PARENTHESE_LEFT + index + Symbol.PARENTHESE_RIGHT + ext;
         }
-        return Symbol.PARENTHESE_LEFT + index + ")" + ext;
+        return Symbol.PARENTHESE_LEFT + index + Symbol.PARENTHESE_RIGHT + ext;
     }
 
     private String resolveFileName() {

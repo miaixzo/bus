@@ -36,7 +36,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +47,34 @@ import java.util.concurrent.TimeUnit;
  * @since Java 17+
  */
 public class Converter extends Formatter {
+
+    /**
+     * {@link Calendar}类型时间转为{@link DateTime}
+     * 始终根据已有{@link Calendar} 产生新的{@link DateTime}对象
+     *
+     * @param calendar {@link Calendar}，如果传入{@code null}，返回{@code null}
+     * @return 时间对象
+     */
+    public static DateTime date(final Calendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+        return new DateTime(calendar);
+    }
+
+    /**
+     * {@link TemporalAccessor}类型时间转为{@link DateTime}
+     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     *
+     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、 LocalDate，如果传入{@code null}，返回{@code null}
+     * @return 时间对象
+     */
+    public static DateTime date(final TemporalAccessor temporalAccessor) {
+        if (temporalAccessor == null) {
+            return null;
+        }
+        return new DateTime(temporalAccessor);
+    }
 
     /**
      * 安全获取时间的某个属性，属性不存在返回最小值，一般为0
@@ -266,23 +294,6 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link Date}转{@link LocalDateTime}，使用默认时区
-     *
-     * @param date Date对象
-     * @return {@link LocalDateTime}
-     */
-    public static LocalDateTime of(final Date date) {
-        if (null == date) {
-            return null;
-        }
-
-        if (date instanceof DateTime) {
-            return of(date.toInstant(), ((DateTime) date).getZoneId());
-        }
-        return of(date.toInstant());
-    }
-
-    /**
      * {@link TemporalAccessor}转{@link LocalDateTime}，使用默认时区
      *
      * @param temporalAccessor {@link TemporalAccessor}
@@ -352,7 +363,6 @@ public class Converter extends Formatter {
         );
     }
 
-
     /**
      * 通过日期时间字符串构建{@link DateTimeFormatter}
      *
@@ -369,19 +379,15 @@ public class Converter extends Formatter {
                 .toFormatter();
     }
 
-
     /**
-     * 获取最大时间，提供参数是否将毫秒归零
-     * <ul>
-     *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
-     *     <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
-     * </ul>
+     * 公历日期转为农历日期
      *
-     * @param truncateMillisecond 是否毫秒归零
-     * @return {@link LocalTime}时间最大值
+     * @param date 日期
+     *             格式 ：20240527｜2024-05-27｜2024/05/27｜2024.05.27｜2024年05月27日
+     * @return {@link DateTimeFormatter}
      */
-    public static LocalTime max(final boolean truncateMillisecond) {
-        return truncateMillisecond ? MAX_HMS : LocalTime.MAX;
+    public static String of(final String date) {
+        return Lunar.of(date);
     }
 
 }

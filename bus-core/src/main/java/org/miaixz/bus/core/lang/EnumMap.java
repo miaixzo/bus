@@ -388,11 +388,11 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         /**
          * 名称
          */
-        private final String name;
+        private final String desc;
 
-        Naming(long code, String name) {
+        Naming(long code, String desc) {
             this.code = code;
-            this.name = name;
+            this.desc = desc;
         }
 
         /**
@@ -405,8 +405,8 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         /**
          * @return 对应的名称
          */
-        public String getName() {
-            return this.name;
+        public String getDesc() {
+            return this.desc;
         }
 
     }

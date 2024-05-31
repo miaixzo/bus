@@ -27,9 +27,10 @@ package org.miaixz.bus.goalie.filter;
 
 import org.miaixz.bus.base.entity.OAuth2;
 import org.miaixz.bus.base.normal.ErrorCode;
+import org.miaixz.bus.core.beans.copier.CopyOptions;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.Assets;
 import org.miaixz.bus.goalie.Config;
@@ -48,6 +49,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -89,6 +91,8 @@ public class AuthorizeFilter implements WebFilter {
         checkMethod(exchange.getRequest(), assets);
         //校验参数
         checkTokenIfNecessary(context, assets, params);
+        //校验 appid
+        checkAppId(assets, params);
         //填充Ip
         fillXParam(exchange, params);
 
@@ -131,16 +135,12 @@ public class AuthorizeFilter implements WebFilter {
             if (StringKit.isBlank(context.getToken())) {
                 throw new BusinessException(ErrorCode.EM_100106);
             }
-            Token access = new Token(context.getToken(), context.getChannel().getTokenType());
+            Token access = new Token(context.getToken(), context.getChannel().getTokenType(), assets);
             Delegate delegate = authorize.authorize(access);
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();
-                //api permissions
-                if (!apiPermissions(auth2, assets)) {
-                    throw new BusinessException(ErrorCode.EM_100500, "没有权限");
-                }
-
-                Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
+                Map<String, Object> map = new HashMap<>();
+                BeanKit.beanToMap(auth2, map, CopyOptions.of().setTransientSupport(false).ignoreNullValue());
                 map.forEach((k, v) -> params.put(k, v.toString()));
             } else {
                 throw new BusinessException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
@@ -169,36 +169,33 @@ public class AuthorizeFilter implements WebFilter {
     private void fillXParam(ServerWebExchange exchange, Map<String, String> requestParam) {
         String ip = exchange.getRequest().getHeaders().getFirst("x_remote_ip");
         if (StringKit.isBlank(ip)) {
-            InetSocketAddress address = exchange.getRequest().getRemoteAddress();
-            if (null != address) {
-                ip = address.getAddress().getHostAddress();
+            ip = exchange.getRequest().getHeaders().getFirst("X-Forwarded-For");
+            if (!StringKit.isBlank(ip)) {
+                ip = ip.contains(Symbol.COMMA) ? ip.split(Symbol.COMMA)[0] : ip;
+            } else {
+                InetSocketAddress address = exchange.getRequest().getRemoteAddress();
+                if (null != address) {
+                    ip = address.getAddress().getHostAddress();
+                }
             }
+            requestParam.put("x_remote_ip", ip);
         }
-        requestParam.put("x_remote_ip", ip);
     }
 
     /**
-     * 是否有权限
+     * 设置appid
      *
-     * @param oAuth2 认证
-     * @param assets 路由
-     * @return 是否
+     * @param assets       资源
+     * @param requestParam 参数
      */
-    private boolean apiPermissions(OAuth2 oAuth2, Assets assets) {
-        if (CollKit.isEmpty(assets.getRoleIds())) {
-            return false;
+    private void checkAppId(Assets assets, Map<String, String> requestParam) {
+        String appId = assets.getMethod().split("\\.")[0];
+        requestParam.putIfAbsent("x_app_id", appId);
+        String xAppId = requestParam.get("x_app_id");
+        if (StringKit.isNotBlank(xAppId) && !appId.equals(xAppId)) {
+            throw new BusinessException(ErrorCode.EM_100511);
         }
-        if (StringKit.isEmpty(oAuth2.getX_role_id())) {
-            return false;
-        }
-        boolean result = false;
-        for (String roleId : assets.getRoleIds()) {
-            if (oAuth2.getX_role_id().contains(roleId)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+
     }
 
 }

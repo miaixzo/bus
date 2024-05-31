@@ -1,6 +1,5 @@
 /**
- * tinylog的实现封装
- * 封装包括TinyLog和TinyLog2
+ * tinylog 实现封装
  *
  * @author Kimi Liu
  * @since Java 17+

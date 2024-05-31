@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.elastic;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.BusXConfig;
@@ -41,7 +42,8 @@ import java.util.List;
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.ELASTIC)
 public class ElasticProperties {
     /**

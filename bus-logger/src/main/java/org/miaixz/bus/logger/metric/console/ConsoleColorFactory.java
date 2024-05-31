@@ -25,29 +25,32 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.metric.console;
 
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 利用System.out.println()打印彩色日志
+ * System.out.println 打印彩色日志
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConsoleColorFactory extends Factory {
+public class ConsoleColorFactory extends AbstractFactory {
 
+    /**
+     * 构造
+     */
     public ConsoleColorFactory() {
-        super("Console Ansi4BitColor Logging");
+        super("Console Color Logging");
     }
 
     @Override
-    public Log createLog(String name) {
-        return new ConsoleColorLog(name);
+    public Supplier create(final String name) {
+        return new ConsoleColorProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new ConsoleColorLog(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new ConsoleColorProvider(clazz);
     }
 
 }

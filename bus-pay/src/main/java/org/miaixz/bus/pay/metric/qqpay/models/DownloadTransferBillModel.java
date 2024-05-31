@@ -2,13 +2,15 @@ package org.miaixz.bus.pay.metric.qqpay.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.pay.magic.Property;
 
 /**
  * 企业付款对账单下载
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class DownloadTransferBillModel extends Property {

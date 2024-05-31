@@ -32,6 +32,7 @@ import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
@@ -168,9 +169,9 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
                     StringBuilder options = new StringBuilder((FILE_READ_ONLY_VOLUME & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
                     if (!moreOptions.isEmpty()) {
-                        options.append(',').append(moreOptions);
+                        options.append(Symbol.C_COMMA).append(moreOptions);
                     }
                     Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
                     // Parse uuid from volume name

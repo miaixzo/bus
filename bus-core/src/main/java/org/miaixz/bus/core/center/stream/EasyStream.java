@@ -448,6 +448,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
 
     /**
      * 建造者
+     * @param <T> 对象类型
      */
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
 
@@ -458,11 +459,6 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
          * @return {@code this} builder
          * @throws IllegalStateException if the builder has already transitioned to
          *                               the built state
-         *                               The default implementation behaves as if:
-         *                               <pre>{@code
-         *                                                                                                                                                       										    accept(t)
-         *                                                                                                                                                       										    return this;
-         *                                                                                                                                                                                          }</pre>
          */
         default Builder<T> add(final T t) {
             accept(t);

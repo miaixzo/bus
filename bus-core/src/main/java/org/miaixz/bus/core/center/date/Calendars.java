@@ -25,23 +25,23 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.center.date.culture.Modify;
+import org.miaixz.bus.core.center.date.culture.Month;
+import org.miaixz.bus.core.center.date.culture.Various;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.math.ChineseNumberFormatter;
 import org.miaixz.bus.core.xyz.CompareKit;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParsePosition;
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -54,76 +54,6 @@ import java.util.TimeZone;
  * @since Java 17+
  */
 public class Calendars extends Almanac {
-
-    /**
-     * 创建Calendar对象，时间为默认时区的当前时间
-     *
-     * @return Calendar对象
-     */
-    public static Calendar calendar() {
-        return Calendar.getInstance();
-    }
-
-    /**
-     * 转换为Calendar对象
-     *
-     * @param date 日期对象
-     * @return Calendar对象
-     */
-    public static Calendar calendar(final Date date) {
-        if (date instanceof DateTime) {
-            return ((DateTime) date).toCalendar();
-        } else {
-            return calendar(date.getTime());
-        }
-    }
-
-    /**
-     * 转换为Calendar对象
-     *
-     * @param calendar 日期对象
-     * @return Calendar对象
-     */
-    public static Calendar calendar(final XMLGregorianCalendar calendar) {
-        return calendar.toGregorianCalendar();
-    }
-
-    /**
-     * 转换为Calendar对象，使用当前默认时区
-     *
-     * @param millis 时间戳
-     * @return Calendar对象
-     */
-    public static Calendar calendar(final long millis) {
-        return calendar(millis, TimeZone.getDefault());
-    }
-
-    /**
-     * 转换为Calendar对象
-     *
-     * @param millis   时间戳
-     * @param timeZone 时区
-     * @return Calendar对象
-     */
-    public static Calendar calendar(final long millis, final TimeZone timeZone) {
-        final Calendar cal = Calendar.getInstance(timeZone);
-        cal.setTimeInMillis(millis);
-        return cal;
-    }
-
-    /**
-     * 转换为指定时区的Calendar，返回新的Calendar
-     *
-     * @param calendar 时间
-     * @param timeZone 新时区
-     * @return 指定时区的新的calendar对象
-     */
-    public static Calendar calendar(Calendar calendar, final TimeZone timeZone) {
-        // 转换到统一时区，例如UTC
-        calendar = (Calendar) calendar.clone();
-        calendar.setTimeZone(timeZone);
-        return calendar;
-    }
 
     /**
      * 是否为上午
@@ -143,250 +73,6 @@ public class Calendars extends Almanac {
      */
     public static boolean isPM(final Calendar calendar) {
         return Calendar.PM == calendar.get(Calendar.AM_PM);
-    }
-
-    /**
-     * 修改日期为某个时间字段起始时间
-     *
-     * @param calendar {@link Calendar}
-     * @param type     保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部归0
-     * @return 原{@link Calendar}
-     */
-    public static Calendar truncate(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.TRUNCATE);
-    }
-
-    /**
-     * 修改日期为某个时间字段四舍五入时间
-     *
-     * @param calendar {@link Calendar}
-     * @param type     时间字段，即保留到哪个日期字段
-     * @return 原{@link Calendar}
-     */
-    public static Calendar round(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.ROUND);
-    }
-
-    /**
-     * 修改日期为某个时间字段结束时间
-     *
-     * @param calendar {@link Calendar}
-     * @param type     保留到的时间字段，如定义为 {@link Fields.Type#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
-     * @return 原{@link Calendar}
-     */
-    public static Calendar ceiling(final Calendar calendar, final Fields.Type type) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.CEILING);
-    }
-
-    /**
-     * 修改日期为某个时间字段结束时间
-     * 可选是否归零毫秒。
-     *
-     * <p>
-     * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
-     * </p>
-     *
-     * @param calendar            {@link Calendar}
-     * @param type                时间字段
-     * @param truncateMillisecond 是否毫秒归零
-     * @return 原{@link Calendar}
-     */
-    public static Calendar ceiling(final Calendar calendar, final Fields.Type type, final boolean truncateMillisecond) {
-        return Modifier.modify(calendar, type.getValue(), Fields.Modify.CEILING, truncateMillisecond);
-    }
-
-    /**
-     * 修改秒级别的开始时间，即忽略毫秒部分
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfSecond(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.SECOND);
-    }
-
-    /**
-     * 修改秒级别的结束时间，即毫秒设置为999
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfSecond(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.SECOND);
-    }
-
-    /**
-     * 修改某小时的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfHour(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.HOUR_OF_DAY);
-    }
-
-    /**
-     * 修改某小时的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfHour(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.HOUR_OF_DAY);
-    }
-
-    /**
-     * 修改某分钟的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfMinute(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.MINUTE);
-    }
-
-    /**
-     * 修改某分钟的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfMinute(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.MINUTE);
-    }
-
-    /**
-     * 修改某天的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfDay(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.DAY_OF_MONTH);
-    }
-
-    /**
-     * 修改某天的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfDay(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.DAY_OF_MONTH);
-    }
-
-    /**
-     * 修改给定日期当前周的开始时间，周一定为一周的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfWeek(final Calendar calendar) {
-        return beginOfWeek(calendar, true);
-    }
-
-    /**
-     * 修改给定日期当前周的开始时间
-     *
-     * @param calendar           日期 {@link Calendar}
-     * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfWeek(final Calendar calendar, final boolean isMondayAsFirstDay) {
-        calendar.setFirstDayOfWeek(isMondayAsFirstDay ? Calendar.MONDAY : Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
-        return truncate(calendar, Fields.Type.WEEK_OF_MONTH);
-    }
-
-    /**
-     * 修改某周的结束时间，周日定为一周的结束
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfWeek(final Calendar calendar) {
-        return endOfWeek(calendar, true);
-    }
-
-    /**
-     * 修改某周的结束时间
-     *
-     * @param calendar          日期 {@link Calendar}
-     * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfWeek(final Calendar calendar, final boolean isSundayAsLastDay) {
-        calendar.setFirstDayOfWeek(isSundayAsLastDay ? Calendar.MONDAY : Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
-        return ceiling(calendar, Fields.Type.WEEK_OF_MONTH);
-    }
-
-    /**
-     * 修改某月的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfMonth(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.MONTH);
-    }
-
-    /**
-     * 修改某月的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfMonth(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.MONTH);
-    }
-
-    /**
-     * 修改某季度的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfQuarter(final Calendar calendar) {
-        calendar.set(Calendar.MONTH, calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        return beginOfDay(calendar);
-    }
-
-    /**
-     * 获取某季度的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfQuarter(final Calendar calendar) {
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3 + 2;
-
-        final Calendar resultCal = Calendar.getInstance(calendar.getTimeZone());
-        resultCal.set(year, month, Fields.Month.of(month).getLastDay(DateKit.isLeapYear(year)));
-
-        return endOfDay(resultCal);
-    }
-
-    /**
-     * 修改某年的开始时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar beginOfYear(final Calendar calendar) {
-        return truncate(calendar, Fields.Type.YEAR);
-    }
-
-    /**
-     * 修改某年的结束时间
-     *
-     * @param calendar 日期 {@link Calendar}
-     * @return {@link Calendar}
-     */
-    public static Calendar endOfYear(final Calendar calendar) {
-        return ceiling(calendar, Fields.Type.YEAR);
     }
 
     /**
@@ -485,7 +171,6 @@ public class Calendars extends Almanac {
 
     /**
      * 检查两个Calendar时间戳是否相同
-     * <p>
      * 此方法检查两个Calendar的毫秒数时间戳是否相同
      *
      * @param date1 时间1
@@ -504,6 +189,340 @@ public class Calendars extends Almanac {
     }
 
     /**
+     * 是否为本月第一天
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isFirstDayOfMonth(final Calendar calendar) {
+        return 1 == calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 是否为本月最后一天
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isLastDayOfMonth(final Calendar calendar) {
+        return calendar.get(Calendar.DAY_OF_MONTH) == calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 创建Calendar对象，时间为默认时区的当前时间
+     *
+     * @return Calendar对象
+     */
+    public static Calendar calendar() {
+        return Calendar.getInstance();
+    }
+
+    /**
+     * 转换为Calendar对象
+     *
+     * @param date 日期对象
+     * @return Calendar对象
+     */
+    public static Calendar calendar(final Date date) {
+        if (date instanceof DateTime) {
+            return ((DateTime) date).toCalendar();
+        } else {
+            return calendar(date.getTime());
+        }
+    }
+
+    /**
+     * 转换为Calendar对象
+     *
+     * @param calendar 日期对象
+     * @return Calendar对象
+     */
+    public static Calendar calendar(final XMLGregorianCalendar calendar) {
+        return calendar.toGregorianCalendar();
+    }
+
+    /**
+     * 转换为Calendar对象，使用当前默认时区
+     *
+     * @param millis 时间戳
+     * @return Calendar对象
+     */
+    public static Calendar calendar(final long millis) {
+        return calendar(millis, TimeZone.getDefault());
+    }
+
+    /**
+     * 转换为Calendar对象
+     *
+     * @param millis   时间戳
+     * @param timeZone 时区
+     * @return Calendar对象
+     */
+    public static Calendar calendar(final long millis, final TimeZone timeZone) {
+        final Calendar cal = Calendar.getInstance(timeZone);
+        cal.setTimeInMillis(millis);
+        return cal;
+    }
+
+    /**
+     * 转换为指定时区的Calendar，返回新的Calendar
+     *
+     * @param calendar 时间
+     * @param timeZone 新时区
+     * @return 指定时区的新的calendar对象
+     */
+    public static Calendar calendar(Calendar calendar, final TimeZone timeZone) {
+        // 转换到统一时区，例如UTC
+        calendar = (Calendar) calendar.clone();
+        calendar.setTimeZone(timeZone);
+        return calendar;
+    }
+
+    /**
+     * 修改日期为某个时间字段起始时间
+     *
+     * @param calendar {@link Calendar}
+     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
+     * @return 原{@link Calendar}
+     */
+    public static Calendar truncate(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.TRUNCATE);
+    }
+
+    /**
+     * 修改日期为某个时间字段四舍五入时间
+     *
+     * @param calendar {@link Calendar}
+     * @param various  时间字段，即保留到哪个日期字段
+     * @return 原{@link Calendar}
+     */
+    public static Calendar round(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.ROUND);
+    }
+
+    /**
+     * 修改日期为某个时间字段结束时间
+     *
+     * @param calendar {@link Calendar}
+     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
+     * @return 原{@link Calendar}
+     */
+    public static Calendar ceiling(final Calendar calendar, final Various various) {
+        return Modifier.modify(calendar, various.getValue(), Modify.CEILING);
+    }
+
+    /**
+     * 修改日期为某个时间字段结束时间
+     * 可选是否归零毫秒。
+     *
+     * <p>
+     * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
+     * </p>
+     *
+     * @param calendar            {@link Calendar}
+     * @param various             时间字段
+     * @param truncateMillisecond 是否毫秒归零
+     * @return 原{@link Calendar}
+     */
+    public static Calendar ceiling(final Calendar calendar, final Various various, final boolean truncateMillisecond) {
+        return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncateMillisecond);
+    }
+
+    /**
+     * 修改秒级别的开始时间，即忽略毫秒部分
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfSecond(final Calendar calendar) {
+        return truncate(calendar, Various.SECOND);
+    }
+
+    /**
+     * 修改秒级别的结束时间，即毫秒设置为999
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfSecond(final Calendar calendar) {
+        return ceiling(calendar, Various.SECOND);
+    }
+
+    /**
+     * 修改某小时的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfHour(final Calendar calendar) {
+        return truncate(calendar, Various.HOUR_OF_DAY);
+    }
+
+    /**
+     * 修改某小时的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfHour(final Calendar calendar) {
+        return ceiling(calendar, Various.HOUR_OF_DAY);
+    }
+
+    /**
+     * 修改某分钟的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfMinute(final Calendar calendar) {
+        return truncate(calendar, Various.MINUTE);
+    }
+
+    /**
+     * 修改某分钟的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfMinute(final Calendar calendar) {
+        return ceiling(calendar, Various.MINUTE);
+    }
+
+    /**
+     * 修改某天的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfDay(final Calendar calendar) {
+        return truncate(calendar, Various.DAY_OF_MONTH);
+    }
+
+    /**
+     * 修改某天的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfDay(final Calendar calendar) {
+        return ceiling(calendar, Various.DAY_OF_MONTH);
+    }
+
+    /**
+     * 修改给定日期当前周的开始时间，周一定为一周的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfWeek(final Calendar calendar) {
+        return beginOfWeek(calendar, true);
+    }
+
+    /**
+     * 修改给定日期当前周的开始时间
+     *
+     * @param calendar           日期 {@link Calendar}
+     * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfWeek(final Calendar calendar, final boolean isMondayAsFirstDay) {
+        calendar.setFirstDayOfWeek(isMondayAsFirstDay ? Calendar.MONDAY : Calendar.SUNDAY);
+        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        return truncate(calendar, Various.WEEK_OF_MONTH);
+    }
+
+    /**
+     * 修改某周的结束时间，周日定为一周的结束
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfWeek(final Calendar calendar) {
+        return endOfWeek(calendar, true);
+    }
+
+    /**
+     * 修改某周的结束时间
+     *
+     * @param calendar          日期 {@link Calendar}
+     * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfWeek(final Calendar calendar, final boolean isSundayAsLastDay) {
+        calendar.setFirstDayOfWeek(isSundayAsLastDay ? Calendar.MONDAY : Calendar.SUNDAY);
+        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        return ceiling(calendar, Various.WEEK_OF_MONTH);
+    }
+
+    /**
+     * 修改某月的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfMonth(final Calendar calendar) {
+        return truncate(calendar, Various.MONTH);
+    }
+
+    /**
+     * 修改某月的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfMonth(final Calendar calendar) {
+        return ceiling(calendar, Various.MONTH);
+    }
+
+    /**
+     * 修改某季度的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfQuarter(final Calendar calendar) {
+        calendar.set(Calendar.MONTH, calendar.get(Various.MONTH.getValue()) / 3 * 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return beginOfDay(calendar);
+    }
+
+    /**
+     * 获取某季度的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfQuarter(final Calendar calendar) {
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Various.MONTH.getValue()) / 3 * 3 + 2;
+
+        final Calendar resultCal = Calendar.getInstance(calendar.getTimeZone());
+        resultCal.set(year, month, Month.of(month).getLastDay(Almanac.isLeapYear(year)));
+
+        return endOfDay(resultCal);
+    }
+
+    /**
+     * 修改某年的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfYear(final Calendar calendar) {
+        return truncate(calendar, Various.YEAR);
+    }
+
+    /**
+     * 修改某年的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfYear(final Calendar calendar) {
+        return ceiling(calendar, Various.YEAR);
+    }
+
+    /**
      * 获得指定日期年份和季度
      * 格式：[20131]表示2013年第一季度
      *
@@ -518,19 +537,19 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar {@link Calendar}
-     * @param type     {@link Fields.Type}
+     * @param various  {@link Various}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
-    public static int getBeginValue(final Calendar calendar, final Fields.Type type) {
-        return getBeginValue(calendar, type.getValue());
+    public static int getBeginValue(final Calendar calendar, final Various various) {
+        return getBeginValue(calendar, various.getValue());
     }
 
     /**
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.Type}
+     * @param dateField {@link Various}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
@@ -545,19 +564,19 @@ public class Calendars extends Almanac {
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar {@link Calendar}
-     * @param type     {@link Fields.Type}
+     * @param various  {@link Various}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */
-    public static int getEndValue(final Calendar calendar, final Fields.Type type) {
-        return getEndValue(calendar, type.getValue());
+    public static int getEndValue(final Calendar calendar, final Various various) {
+        return getEndValue(calendar, various.getValue());
     }
 
     /**
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.Type}
+     * @param dateField {@link Various}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */
@@ -573,10 +592,10 @@ public class Calendars extends Almanac {
      * 例如获得年的部分，则使用 getField(DatePart.YEAR)
      *
      * @param calendar {@link Calendar}
-     * @param field    表示日期的哪个部分的枚举 {@link Fields.Type}
+     * @param field    表示日期的哪个部分的枚举 {@link Various}
      * @return 某个部分的值
      */
-    public static int getField(final Calendar calendar, final Fields.Type field) {
+    public static int getField(final Calendar calendar, final Various field) {
         return Assert.notNull(calendar).get(Assert.notNull(field).getValue());
     }
 
@@ -612,22 +631,6 @@ public class Calendars extends Almanac {
      */
     public static int compare(final Calendar calendar1, final Calendar calendar2) {
         return CompareKit.compare(calendar1, calendar2);
-    }
-
-    /**
-     * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
-     * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
-     * </ul>
-     *
-     * @param birthday      生日
-     * @param dateToCompare 需要对比的日期
-     * @return 年龄
-     */
-    public static int age(final Calendar birthday, final Calendar dateToCompare) {
-        return age(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
     }
 
     /**
@@ -785,6 +788,47 @@ public class Calendars extends Almanac {
     }
 
     /**
+     * 计算年龄
+     *
+     * @param birthDay 生日
+     * @return int 年龄
+     */
+    public static int age(LocalDate birthDay) {
+        Period period = Period.between(birthDay, LocalDate.now());
+        if (period.getYears() < 0) {
+            throw new DateTimeException("birthDay is after now!");
+        } else {
+            return period.getYears();
+        }
+    }
+
+    /**
+     * 计算年龄
+     *
+     * @param birthDay 生日
+     * @return int 年龄
+     */
+    public static int age(LocalDateTime birthDay) {
+        return age(birthDay.toLocalDate());
+    }
+
+    /**
+     * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
+     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * <ul>
+     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * </ul>
+     *
+     * @param birthday      生日
+     * @param dateToCompare 需要对比的日期
+     * @return 年龄
+     */
+    public static int age(final Calendar birthday, final Calendar dateToCompare) {
+        return age(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
+    }
+
+    /**
      * 计算相对于dateToCompare的年龄（周岁），常用于计算指定生日在某年的年龄
      * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
@@ -830,26 +874,6 @@ public class Calendars extends Almanac {
         }
 
         return age;
-    }
-
-    /**
-     * 是否为本月第一天
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为本月最后一天
-     */
-    public static boolean isFirstDayOfMonth(final Calendar calendar) {
-        return 1 == calendar.get(Calendar.DAY_OF_MONTH);
-    }
-
-    /**
-     * 是否为本月最后一天
-     *
-     * @param calendar {@link Calendar}
-     * @return 是否为本月最后一天
-     */
-    public static boolean isLastDayOfMonth(final Calendar calendar) {
-        return calendar.get(Calendar.DAY_OF_MONTH) == calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
 }

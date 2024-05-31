@@ -26,6 +26,7 @@
 package org.miaixz.bus.spring.banner;
 
 import org.miaixz.bus.core.Version;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.BusXBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;
@@ -43,18 +44,25 @@ import java.io.PrintStream;
  */
 public class BusBanner implements Banner {
 
-    private static final String SPRING_BOOT = "::Spring Boot::";
-
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        for (Object line : BusXBuilder.BUS_BANNER) {
+        printStream.println();
+        for (String line : BusXBuilder.BUS_BANNER) {
             printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
         }
 
-        printStream.println();
+        String springVersion = BusXBuilder.SPRING_BOOT + String.format("(v%s)", SpringBootVersion.getVersion());
+        String busVersion = BusXBuilder.BUS_BOOT + String.format("(v%s)", Version.all());
+
+        StringBuilder padding = new StringBuilder();
+        while (padding.length() < 70 - (springVersion.length() + busVersion.length())) {
+            padding.append(Symbol.SPACE);
+        }
+
         printStream.println(AnsiOutput.toString(
-                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.all())));
+                AnsiColor.BRIGHT_MAGENTA, springVersion,
+                padding.toString(),
+                AnsiColor.BRIGHT_MAGENTA, busVersion));
         printStream.println();
     }
 

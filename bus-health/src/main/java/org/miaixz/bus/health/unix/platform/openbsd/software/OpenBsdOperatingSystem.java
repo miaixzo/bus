@@ -52,13 +52,13 @@ import java.util.stream.Collectors;
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
-            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(","));
+            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
     private static final long BOOTTIME = querySystemBootTime();
 
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
         return Parsing.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
                 System.currentTimeMillis() / 1000);
     }
 

@@ -31,6 +31,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.Assets;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.Context;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -46,8 +47,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.annotation.NonNull;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -105,12 +108,18 @@ public class ApiRouterHandler {
                 }
             }
         }
-        return bodySpec.retrieve().toEntity(DataBuffer.class)
+        long start_time = System.currentTimeMillis();
+        return bodySpec.httpRequest(clientHttpRequest -> {
+                    //设置超时
+                    HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
+                }).retrieve().toEntity(DataBuffer.class)
                 .flatMap(responseEntity -> ServerResponse.ok().headers(headers -> {
                     headers.addAll(responseEntity.getHeaders());
                     headers.remove(HttpHeaders.CONTENT_LENGTH);
                 }).body(null == responseEntity.getBody() ? BodyInserters.empty()
-                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody()))));
+                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody()))))
+                .doOnTerminate(() -> Logger.info("method:{} 请求耗时:{} ms", context.getAssets().getMethod(), System.currentTimeMillis() - start_time));
     }
 
 }

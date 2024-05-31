@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.Locale;
@@ -73,7 +74,7 @@ public class RFC2822DateParser extends DefaultDatePrinter implements PredicateDa
 
     @Override
     public DateTime parse(final String source) {
-        if (StringKit.contains(source, ',')) {
+        if (StringKit.contains(source, Symbol.C_COMMA)) {
             if (StringKit.contains(source, KEYWORDS_LOCALE_CHINA)) {
                 // 例如：星期四, 28 三月 2024 14:33:49 GMT
                 return new DateTime(source, FormatBuilder.getInstance(Fields.HTTP_DATETIME, Locale.CHINA));

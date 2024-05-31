@@ -26,7 +26,8 @@
 package org.miaixz.bus.starter.image;
 
 import jakarta.annotation.Resource;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -37,7 +38,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @EnableConfigurationProperties(value = {ImageProperties.Node.class})
 @ConfigurationProperties(prefix = BusXConfig.IMAGE)
 public class ImageProperties {
@@ -65,7 +67,8 @@ public class ImageProperties {
     /**
      * 服务器信息
      */
-    @Data
+    @Getter
+    @Setter
     @ConfigurationProperties(prefix = BusXConfig.IMAGE + ".node")
     public class Node {
 

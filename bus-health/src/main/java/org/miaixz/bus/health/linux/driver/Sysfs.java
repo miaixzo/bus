@@ -27,6 +27,7 @@ package org.miaixz.bus.health.linux.driver;
 
 import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -68,7 +69,7 @@ public final class Sysfs {
             }
         } else {
             if (!productVersion.isEmpty() && !"None".equals(productVersion)) {
-                return productName + " (version: " + productVersion + ")";
+                return productName + " (version: " + productVersion + Symbol.PARENTHESE_RIGHT;
             }
             return productName;
         }
@@ -192,7 +193,7 @@ public final class Sysfs {
     public static String queryBiosVersion(String biosRevision) {
         final String biosVersion = Builder.getStringFromFile(SysPath.DMI_ID + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
-            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
+            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + Symbol.PARENTHESE_RIGHT);
         }
         return null;
     }

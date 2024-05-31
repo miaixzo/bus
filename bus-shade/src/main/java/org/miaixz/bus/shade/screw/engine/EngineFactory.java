@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.engine;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
@@ -39,7 +40,8 @@ import java.lang.reflect.InvocationTargetException;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class EngineFactory implements Serializable {
 
     private EngineConfig engineConfig;

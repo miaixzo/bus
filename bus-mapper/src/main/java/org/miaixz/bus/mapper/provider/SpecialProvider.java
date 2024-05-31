@@ -26,6 +26,7 @@
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
@@ -66,7 +67,7 @@ public class SpecialProvider extends MapperTemplate {
         //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isId() && column.isInsertable()) {
-                sql.append(column.getColumnHolder("record") + ",");
+                sql.append(column.getColumnHolder("record") + Symbol.COMMA);
             }
         }
         sql.append("</trim>");

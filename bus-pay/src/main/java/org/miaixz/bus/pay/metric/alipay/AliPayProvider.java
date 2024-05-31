@@ -1,6 +1,5 @@
 package org.miaixz.bus.pay.metric.alipay;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.*;
 import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
@@ -8,6 +7,7 @@ import com.alipay.api.response.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -357,8 +357,7 @@ public class AliPayProvider {
      */
     public static void wapPay(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
         String form = wapPayString(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         PrintWriter out = response.getWriter();
         out.write(form);
         out.flush();
@@ -402,10 +401,9 @@ public class AliPayProvider {
     public static void wapPayByOutputStream(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken)
             throws AlipayApiException, IOException {
         String form = wapPayString(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(charset));
+        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
         response.getOutputStream().flush();
     }
 
@@ -443,10 +441,9 @@ public class AliPayProvider {
      */
     public static void wapPayByOutputStream(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
         String form = wapPayString(alipayClient, model, returnUrl, notifyUrl);
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(charset));
+        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
         response.getOutputStream().flush();
     }
 
@@ -683,31 +680,6 @@ public class AliPayProvider {
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         return execute(alipayClient, request, null, appAuthToken);
-    }
-
-    /**
-     * 单笔转账到支付宝账户
-     *
-     * @param alipayClient {@link AlipayClient}
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundTransToaccountTransferModel}
-     * @return 转账是否成功
-     * @throws AlipayApiException 支付宝 Api 异常
-     */
-    @Deprecated
-    public static boolean transfer(AlipayClient alipayClient, Boolean certModel, AlipayFundTransToaccountTransferModel model) throws AlipayApiException {
-        AlipayFundTransToaccountTransferResponse response = transferToResponse(model);
-        String result = response.getBody();
-        if (response.isSuccess()) {
-            return true;
-        } else {
-            // 调用查询接口查询数据
-            JSONObject jsonObject = JSONObject.parseObject(result);
-            String outBizNo = jsonObject.getJSONObject("alipay_fund_trans_toaccount_transfer_response").getString("out_biz_no");
-            AlipayFundTransOrderQueryModel queryModel = new AlipayFundTransOrderQueryModel();
-            model.setOutBizNo(outBizNo);
-            return transferQuery(alipayClient, certModel, queryModel);
-        }
     }
 
     /**
@@ -1495,8 +1467,7 @@ public class AliPayProvider {
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
         String form = pageExecute(alipayClient, request).getBody();
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         PrintWriter out = response.getWriter();
         out.write(form);
         out.flush();
@@ -1547,8 +1518,7 @@ public class AliPayProvider {
         request.setReturnUrl(returnUrl);
         request.putOtherTextParam("app_auth_token", appAuthToken);
         String form = pageExecute(alipayClient, request).getBody();
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         PrintWriter out = response.getWriter();
         out.write(form);
         out.flush();
@@ -1594,10 +1564,9 @@ public class AliPayProvider {
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
         String form = pageExecute(alipayClient, request).getBody();
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(charset));
+        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
         response.getOutputStream().flush();
     }
 
@@ -1646,10 +1615,9 @@ public class AliPayProvider {
         request.setReturnUrl(returnUrl);
         request.putOtherTextParam("app_auth_token", appAuthToken);
         String form = pageExecute(alipayClient, request).getBody();
-        String charset = "UTF-8";
-        response.setContentType("text/html;charset=" + charset);
+        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(charset));
+        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
         response.getOutputStream().flush();
     }
 
@@ -2144,7 +2112,7 @@ public class AliPayProvider {
 
     public static void batchTrans(Map<String, String> params, String privateKey, String signType, HttpServletResponse response) throws IOException {
         params.put("service", "batch_trans_notify");
-        params.put("_input_charset", "UTF-8");
+        params.put("_input_charset", Charset.DEFAULT_UTF_8);
         params.put("pay_date", DateKit.format(new Date(), "YYYYMMDD"));
         Map<String, String> param = AlipayCore.buildRequestPara(params, privateKey, signType);
         response.sendRedirect(API_GATEWAY_URL.concat(AlipayCore.createLinkString(param)));
@@ -2164,7 +2132,7 @@ public class AliPayProvider {
             String[] values = requestParams.get(name);
             String valueStr = "";
             for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + Symbol.COMMA;
             }
             params.put(name, valueStr);
         }

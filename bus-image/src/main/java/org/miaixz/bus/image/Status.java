@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -40,7 +41,8 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Status {
 
     public static final int Success = 0x0000;

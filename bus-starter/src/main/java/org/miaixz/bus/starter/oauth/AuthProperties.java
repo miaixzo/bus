@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.oauth;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.spring.BusXConfig;
@@ -43,7 +44,8 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.OAUTH)
 public class AuthProperties {
 

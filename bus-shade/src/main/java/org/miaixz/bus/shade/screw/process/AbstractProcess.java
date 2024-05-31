@@ -26,22 +26,17 @@
 package org.miaixz.bus.shade.screw.process;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.EscapeKit;
 import org.miaixz.bus.shade.screw.Config;
 import org.miaixz.bus.shade.screw.engine.EngineFileType;
 import org.miaixz.bus.shade.screw.metadata.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -195,115 +190,43 @@ public abstract class AbstractProcess implements Process {
      */
     public void optimizeData(DataSchema dataModel) {
         // trim
-        BeanKit.trimStrFields(dataModel);
+        BeanKit.trimStringField(dataModel);
         // tables
         List<TableSchema> tables = dataModel.getTables();
         // columns
         tables.forEach(i -> {
             // table escape xml
-            BeanKit.trimStrFields(i);
+            BeanKit.trimStringField(i);
             List<ColumnSchema> columns = i.getColumns();
             // columns escape xml
-            columns.forEach(BeanKit::trimStrFields);
+            columns.forEach(BeanKit::trimStringField);
         });
         // if file type is word
         if (config.getEngineConfig().getFileType().equals(EngineFileType.WORD)) {
             // escape xml
-            trimAllFields(dataModel);
+            BeanKit.trimStringField(dataModel);
             // tables
             tables.forEach(i -> {
                 // table escape xml
-                trimAllFields(i);
+                BeanKit.trimStringField(i);
                 List<ColumnSchema> columns = i.getColumns();
                 // columns escape xml
-                columns.forEach(AbstractProcess::trimAllFields);
+                columns.forEach(BeanKit::trimStringField);
             });
         }
         // if file type is markdown
         if (config.getEngineConfig().getFileType().equals(EngineFileType.MD)) {
             //escape xml
-            replaceStrFields(dataModel);
+            BeanKit.trimStringField(dataModel);
             // columns
             tables.forEach(i -> {
                 //table escape xml
-                replaceStrFields(i);
+                BeanKit.trimStringField(i);
                 List<ColumnSchema> columns = i.getColumns();
                 // columns escape xml
-                columns.forEach(AbstractProcess::replaceStrFields);
+                columns.forEach(BeanKit::trimStringField);
             });
         }
-    }
-
-
-    /**
-     * 转义bean中所有属性为字符串的
-     *
-     * @param bean {@link Object}
-     */
-    public static void trimAllFields(Object bean) {
-        try {
-            if (null != bean) {
-                // 获取所有的字段包括public,private,protected,private
-                Field[] fields = bean.getClass().getDeclaredFields();
-                for (Field f : fields) {
-                    if ("java.lang.String".equals(f.getType().getName())) {
-                        // 获取字段名
-                        String key = f.getName();
-                        Object value = BeanKit.getFieldValue(bean, key);
-
-                        if (null == value) {
-                            continue;
-                        }
-                        BeanKit.setFieldValue(bean, key, EscapeKit.escapeXml(value.toString()));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * bean 中所有属性为字符串的进行\n\t\s处理
-     *
-     * @param bean {@link Object}
-     */
-    public static void replaceStrFields(Object bean) {
-        try {
-            if (null != bean) {
-                // 获取所有的字段包括public,private,protected,private
-                Field[] fields = bean.getClass().getDeclaredFields();
-                for (Field f : fields) {
-                    if ("java.lang.String".equals(f.getType().getName())) {
-                        // 获取字段名
-                        String key = f.getName();
-                        Object value = BeanKit.getFieldValue(bean, key);
-                        if (null == value) {
-                            continue;
-                        }
-                        BeanKit.setFieldValue(bean, key, replace(value.toString()));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 替换字符串中的空格、回车、换行符、制表符
-     *
-     * @param text 字符串信息
-     * @return 替换后的字符串
-     */
-    public static String replace(CharSequence text) {
-        String val = Normal.EMPTY;
-        if (null != text) {
-            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            java.util.regex.Matcher m = p.matcher(text);
-            val = m.replaceAll(Normal.EMPTY);
-        }
-        return val;
     }
 
 }

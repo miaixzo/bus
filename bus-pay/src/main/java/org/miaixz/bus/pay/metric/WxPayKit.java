@@ -506,23 +506,6 @@ public class WxPayKit {
     /**
      * 验证签名
      *
-     * @param map      接口请求返回的 Map
-     * @param certPath 平台证书路径
-     * @return 签名结果
-     * @throws Exception 异常信息
-     */
-    @Deprecated
-    public static boolean verifySignature(Map<String, Object> map, String certPath) throws Exception {
-        String signature = (String) map.get("signature");
-        String body = (String) map.get("body");
-        String nonceStr = (String) map.get("nonceStr");
-        String timestamp = (String) map.get("timestamp");
-        return verifySignature(signature, body, nonceStr, timestamp, FileKit.getInputStream(certPath));
-    }
-
-    /**
-     * 验证签名
-     *
      * @param response 接口请求返回的 {@link Results}
      * @param certPath 平台证书路径
      * @return 签名结果

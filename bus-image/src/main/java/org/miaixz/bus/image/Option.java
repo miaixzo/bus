@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.image;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
@@ -38,7 +39,8 @@ import java.util.EnumSet;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class Option {
 
     /**

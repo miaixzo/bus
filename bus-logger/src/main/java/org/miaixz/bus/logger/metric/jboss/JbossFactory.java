@@ -25,30 +25,33 @@
  ********************************************************************************/
 package org.miaixz.bus.logger.metric.jboss;
 
-import org.miaixz.bus.logger.Factory;
-import org.miaixz.bus.logger.magic.Log;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * Jboss-Logging
+ * jboss-logging
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JbossFactory extends Factory {
+public class JbossFactory extends AbstractFactory {
 
+    /**
+     * 构造
+     */
     public JbossFactory() {
         super("JBoss Logging");
-        checkLogExist(org.jboss.logging.Logger.class);
+        check(org.jboss.logging.Logger.class);
     }
 
     @Override
-    public Log createLog(String name) {
-        return new JbossLog(name);
+    public Supplier create(final String name) {
+        return new JbossProvider(name);
     }
 
     @Override
-    public Log createLog(Class<?> clazz) {
-        return new JbossLog(clazz);
+    public Supplier create(final Class<?> clazz) {
+        return new JbossProvider(clazz);
     }
 
 }

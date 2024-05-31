@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.dialect.sqlserver;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.shade.screw.mapping.MappingField;
 import org.miaixz.bus.shade.screw.metadata.Column;
 
@@ -35,7 +36,8 @@ import org.miaixz.bus.shade.screw.metadata.Column;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class SqlServerColumn implements Column {
     /**
      * 表名称，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）

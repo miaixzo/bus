@@ -700,8 +700,8 @@ public class FileKit extends PathResolve {
      * @param fullFileOrDirPath 文件或者目录的路径
      * @throws InternalException IO异常
      */
-    public static void del(final String fullFileOrDirPath) throws InternalException {
-        del(file(fullFileOrDirPath));
+    public static void remove(final String fullFileOrDirPath) throws InternalException {
+        remove(file(fullFileOrDirPath));
     }
 
     /**
@@ -713,9 +713,9 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      * @see Files#delete(Path)
      */
-    public static void del(final File file) throws InternalException {
+    public static void remove(final File file) throws InternalException {
         Assert.notNull(file, "File must be not null!");
-        del(file.toPath());
+        remove(file.toPath());
     }
 
     /**

@@ -28,6 +28,7 @@ package org.miaixz.bus.health.mac.driver;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 import org.miaixz.bus.health.mac.CFKit;
@@ -103,7 +104,7 @@ public final class WindowInfo {
                         if (windowName.isEmpty()) {
                             windowName = windowOwnerName;
                         } else {
-                            windowName = windowName + "(" + windowOwnerName + ")";
+                            windowName = windowName + Symbol.PARENTHESE_LEFT + windowOwnerName + Symbol.PARENTHESE_RIGHT;
                         }
 
                         windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,

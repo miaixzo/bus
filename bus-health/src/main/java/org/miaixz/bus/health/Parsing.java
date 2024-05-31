@@ -979,7 +979,7 @@ public final class Parsing {
      */
     public static List<Integer> parseHyphenatedIntList(String str) {
         List<Integer> result = new ArrayList<>();
-        String[] csvTokens = str.split(",");
+        String[] csvTokens = str.split(Symbol.COMMA);
         for (String csvToken : csvTokens) {
             csvToken = csvToken.trim();
             for (String s : Regex.SPACES.split(csvToken)) {

@@ -25,10 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.storage.magic;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Map;
 
@@ -38,10 +35,11 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Property {
 
     /**

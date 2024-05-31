@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.center.date.culture.Units;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -45,11 +45,11 @@ public class CronTimer extends Thread implements Serializable {
     /**
      * 定时单元：秒
      */
-    private final long TIMER_UNIT_SECOND = Fields.Units.SECOND.getMillis();
+    private final long TIMER_UNIT_SECOND = Units.SECOND.getMillis();
     /**
      * 定时单元：分
      */
-    private final long TIMER_UNIT_MINUTE = Fields.Units.MINUTE.getMillis();
+    private final long TIMER_UNIT_MINUTE = Units.MINUTE.getMillis();
     private final Scheduler scheduler;
     /**
      * 定时任务是否已经被强制关闭

@@ -99,9 +99,9 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 parent = line.substring(11);
             } else if (line.startsWith("addr ")) {
                 // addr 01: 8086:0000 Intel, EHCI root hub
-                if (line.indexOf(Symbol.C_COLON) == 7 && line.indexOf(',') >= 18) {
+                if (line.indexOf(Symbol.C_COLON) == 7 && line.indexOf(Symbol.C_COMMA) >= 18) {
                     key = parent + line.substring(0, 7);
-                    String[] split = line.substring(8).trim().split(",");
+                    String[] split = line.substring(8).trim().split(Symbol.COMMA);
                     if (split.length > 1) {
                         // 0 = vid:pid vendor
                         String vendorStr = split[0].trim();

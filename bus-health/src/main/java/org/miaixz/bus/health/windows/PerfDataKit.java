@@ -35,6 +35,7 @@ import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
@@ -263,7 +264,7 @@ public final class PerfDataKit {
             StringBuilder sb = new StringBuilder();
             sb.append('\\').append(object);
             if (instance != null) {
-                sb.append('(').append(instance).append(')');
+                sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
             }
             sb.append('\\').append(counter);
             return sb.toString();

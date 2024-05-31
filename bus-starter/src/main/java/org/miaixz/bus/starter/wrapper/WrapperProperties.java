@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.starter.wrapper;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -41,7 +42,8 @@ import java.util.Set;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 @ConfigurationProperties(prefix = BusXConfig.WRAPPER)
 public class WrapperProperties {
 

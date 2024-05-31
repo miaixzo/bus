@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.shade.screw.dialect.cachedb;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.shade.screw.metadata.Database;
 
 /**
@@ -34,7 +35,8 @@ import org.miaixz.bus.shade.screw.metadata.Database;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
+@Getter
+@Setter
 public class CacheDbDatabase implements Database {
 
     /**

@@ -27,6 +27,7 @@ package org.miaixz.bus.oauth.metric.kujiale;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -61,7 +62,7 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, this.getDefaultScopes(KujialeScope.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(KujialeScope.values())))
                 .build();
     }
 

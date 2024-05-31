@@ -26,7 +26,10 @@
 package org.miaixz.bus.goalie.metric;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.miaixz.bus.goalie.Assets;
 
 /**
  * token参数
@@ -34,12 +37,27 @@ import lombok.Data;
  * @author Justubborn
  * @since Java 17+
  */
+@Getter
+@Setter
 @AllArgsConstructor
-@Data
+@RequiredArgsConstructor
 public class Token {
 
-    String token;
-
-    int channel;
+    /**
+     * 授权标识
+     */
+    public final String token;
+    /**
+     * 授权
+     */
+    public final int channel;
+    /**
+     * 资源信息
+     */
+    public final Assets assets;
+    /**
+     * 租户
+     */
+    public transient String orgId;
 
 }
