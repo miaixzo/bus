@@ -87,6 +87,52 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
+     * 拷贝目录下的所有文件或目录到目标目录中，此方法不支持文件对文件的拷贝。
+     * <ul>
+     *     <li>源文件为目录，目标也为目录或不存在，则拷贝目录下所有文件和目录到目标目录下</li>
+     *     <li>源文件为文件，目标为目录或不存在，则拷贝文件到目标目录下</li>
+     * </ul>
+     *
+     * @param src     源文件路径，如果为目录只在目标中创建新目录
+     * @param target  目标目录，如果为目录使用与源文件相同的文件名
+     * @param options {@link StandardCopyOption}
+     * @return Path
+     * @throws InternalException IO异常
+     */
+    private static Path copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
+        try {
+            Files.walkFileTree(src, new CopyVisitor(src, target, options));
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+        return target;
+    }
+
+    /**
+     * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
+     * 此方法不支持递归拷贝目录，如果src传入是目录，只会在目标目录中创建空目录
+     *
+     * @param src     源文件路径，如果为目录只在目标中创建新目录
+     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
+     * @param options {@link StandardCopyOption}
+     * @return Path
+     * @throws InternalException IO异常
+     */
+    private static Path copyFile(final Path src, final Path target, final CopyOption... options) throws InternalException {
+        Assert.notNull(src, "Source file is null !");
+        Assert.notNull(target, "Target file or directory is null !");
+
+        final Path targetPath = PathResolve.isDirectory(target) ? target.resolve(src.getFileName()) : target;
+        // 创建级联父目录
+        PathResolve.mkParentDirs(targetPath);
+        try {
+            return Files.copy(src, targetPath, options);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
      * 复制src到target中
      * <ul>
      *     <li>src路径和target路径相同时，不执行操作</li>
@@ -139,52 +185,6 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
             return copyContent(src, target, options);
         }
         return copyFile(src, target, options);
-    }
-
-    /**
-     * 拷贝目录下的所有文件或目录到目标目录中，此方法不支持文件对文件的拷贝。
-     * <ul>
-     *     <li>源文件为目录，目标也为目录或不存在，则拷贝目录下所有文件和目录到目标目录下</li>
-     *     <li>源文件为文件，目标为目录或不存在，则拷贝文件到目标目录下</li>
-     * </ul>
-     *
-     * @param src     源文件路径，如果为目录只在目标中创建新目录
-     * @param target  目标目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
-     */
-    private static Path copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
-        try {
-            Files.walkFileTree(src, new CopyVisitor(src, target, options));
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-        return target;
-    }
-
-    /**
-     * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
-     * 此方法不支持递归拷贝目录，如果src传入是目录，只会在目标目录中创建空目录
-     *
-     * @param src     源文件路径，如果为目录只在目标中创建新目录
-     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
-     */
-    private static Path copyFile(final Path src, final Path target, final CopyOption... options) throws InternalException {
-        Assert.notNull(src, "Source file is null !");
-        Assert.notNull(target, "Target file or directory is null !");
-
-        final Path targetPath = PathResolve.isDirectory(target) ? target.resolve(src.getFileName()) : target;
-        // 创建级联父目录
-        PathResolve.mkParentDirs(targetPath);
-        try {
-            return Files.copy(src, targetPath, options);
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
     }
 
 }
