@@ -113,8 +113,8 @@ public enum Zodiac {
      * @param date 出生日期（年需农历）
      * @return 星座名
      */
-    public static String getDesc(final Date date) {
-        return getDesc(DateKit.calendar(date));
+    public static String getName(final Date date) {
+        return getName(DateKit.calendar(date));
     }
 
     /**
@@ -123,11 +123,11 @@ public enum Zodiac {
      * @param calendar 出生日期（年需农历）
      * @return 星座名
      */
-    public static String getDesc(final Calendar calendar) {
+    public static String getName(final Calendar calendar) {
         if (null == calendar) {
             return null;
         }
-        return getDesc(calendar.get(Calendar.YEAR));
+        return getName(calendar.get(Calendar.YEAR));
     }
 
     /**
@@ -136,7 +136,7 @@ public enum Zodiac {
      * @param year 农历年
      * @return 生肖名
      */
-    public static String getDesc(final int year) {
+    public static String getName(final int year) {
         return ENUMS[year % Normal._12].name;
     }
 

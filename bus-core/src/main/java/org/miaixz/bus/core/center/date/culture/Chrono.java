@@ -152,12 +152,7 @@ public enum Chrono {
     /**
      * 描述
      */
-    private String desc;
-    Chrono(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
+    private final String desc;
 
     Chrono(String code, String name, String desc) {
         this.code = code;
@@ -202,6 +197,18 @@ public enum Chrono {
      */
     public static String toChrono(final int hour) {
         return HOUR_MAP.getOrDefault(hour, "未知");
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 
 }

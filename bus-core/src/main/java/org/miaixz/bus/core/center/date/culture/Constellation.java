@@ -27,6 +27,8 @@ package org.miaixz.bus.core.center.date.culture;
 
 import org.miaixz.bus.core.xyz.DateKit;
 
+import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -39,56 +41,53 @@ import java.util.Date;
 public enum Constellation {
 
     /**
-     * 白羊
+     * 白羊座
      */
-    ARIES(0, "白羊"),
-
+    ARIES(0, "白羊", MonthDay.of(3, 21), MonthDay.of(4, 19)),
     /**
-     * 金牛
+     * 金牛座
      */
-    TAURUS(1, "金牛"),
-
+    TAURUS(1, "金牛", MonthDay.of(4, 20), MonthDay.of(5, 20)),
     /**
-     * 双子
+     * 双子座
      */
-    GEMINI(2, "双子"),
-
+    GEMINI(2, "双子", MonthDay.of(5, 21), MonthDay.of(6, 21)),
     /**
-     * 巨蟹
+     * 巨蟹座
      */
-    CANCER(3, "巨蟹"),
+    CANCER(3, "巨蟹", MonthDay.of(6, 22), MonthDay.of(7, 22)),
     /**
-     * 狮子
+     * 狮子座
      */
-    LEO(4, "狮子"),
+    LEO(4, "狮子", MonthDay.of(7, 23), MonthDay.of(8, 22)),
     /**
-     * 处女
+     * 处女座
      */
-    VIRGO(5, "处女"),
+    VIRGO(5, "处女", MonthDay.of(8, 23), MonthDay.of(9, 22)),
     /**
-     * 天秤
+     * 天秤座
      */
-    LIBRA(6, "天秤"),
+    LIBRA(6, "天秤", MonthDay.of(9, 23), MonthDay.of(10, 23)),
     /**
-     * 天蝎
+     * 天蝎座
      */
-    SCORPIO(7, "天蝎"),
+    SCORPIO(7, "天蝎", MonthDay.of(10, 24), MonthDay.of(11, 22)),
     /**
-     * 射手
+     * 射手座
      */
-    SAGITTARIUS(8, "射手"),
+    SAGITTARIUS(8, "射手", MonthDay.of(11, 23), MonthDay.of(12, 21)),
     /**
-     * 摩羯
+     * 摩羯座
      */
-    CAPRICORN(9, "摩羯"),
+    CAPRICORN(9, "摩羯", MonthDay.of(12, 22), MonthDay.of(1, 19)),
     /**
-     * 水瓶
+     * 水瓶座
      */
-    AQUARIUS(10, "水瓶"),
+    AQUARIUS(10, "水瓶", MonthDay.of(1, 20), MonthDay.of(2, 18)),
     /**
-     * 双鱼
+     * 双鱼座
      */
-    PISCES(11, "双鱼");
+    PISCES(11, "双鱼", MonthDay.of(2, 19), MonthDay.of(3, 20));
 
     private static final Constellation[] ENUMS = Constellation.values();
 
@@ -101,71 +100,68 @@ public enum Constellation {
      */
     private final String name;
 
-    Constellation(long code, String name) {
+    /**
+     * 开始月日(包含)
+     */
+    private final MonthDay begin;
+
+    /**
+     * 结束月日(包含)
+     */
+    private final MonthDay end;
+
+    Constellation(long code, String name, MonthDay begin, MonthDay end) {
         this.code = code;
         this.name = name;
+        this.begin = begin;
+        this.end = end;
     }
 
     /**
-     * 通过生日计算星座
+     * 按宫位获取星座
      *
-     * @param month 月，从0开始计数，见{@link Month#getValue()}
-     * @param day   天
-     * @return 星座名
+     * @param code 编码
+     * @return this
      */
-    public static int getCode(int month, int day) {
-        int code = 0;
-        switch (month) {
-            case 1:
-                // Capricorn 摩羯座（12月22日～1月20日）
-                code = day <= 20 ? 11 : 0;
-                break;
-            case 2:
-                // Aquarius 水瓶座（1月21日～2月19日）
-                code = day <= 19 ? 0 : 1;
-                break;
-            case 3:
-                // Pisces 双鱼座（2月20日～3月20日）
-                code = day <= 20 ? 1 : 2;
-                break;
-            case 4:
-                // Aries 白羊座 3月21日～4月20日
-                code = day <= 20 ? 2 : 3;
-                break;
-            case 5:
-                // Taurus 金牛座 4月21～5月21日
-                code = day <= 21 ? 3 : 4;
-                break;
-            case 6:
-                // Gemini 双子座 5月22日～6月21日
-                code = day <= 21 ? 4 : 5;
-                break;
-            case 7:
-                // Cancer 巨蟹座（6月22日～7月22日）
-                code = day <= 22 ? 5 : 6;
-                break;
-            case 8:
-                // Leo 狮子座（7月23日～8月23日）
-                code = day <= 23 ? 6 : 7;
-                break;
-            case 9:
-                // Virgo 处女座（8月24日～9月23日）
-                code = day <= 23 ? 7 : 8;
-                break;
-            case 10:
-                // Libra 天秤座（9月24日～10月23日）
-                code = day <= 23 ? 8 : 9;
-                break;
-            case 11:
-                // Scorpio 天蝎座（10月24日～11月22日）
-                code = day <= 22 ? 9 : 10;
-                break;
-            case 12:
-                // Sagittarius 射手座（11月23日～12月21日）
-                code = day <= 21 ? 10 : 11;
-                break;
+    public static Constellation get(int code) {
+        if (code < 1 || code > 12) {
+            throw new IllegalArgumentException();
         }
-        return code;
+        return ENUMS[(code + 2) % 12];
+    }
+
+    /**
+     * 按日期获取星座
+     *
+     * @param date 日期
+     * @return this
+     */
+    public static Constellation get(LocalDate date) {
+        return get(date.getMonthValue(), date.getDayOfMonth());
+    }
+
+    /**
+     * 按月日获取星座
+     *
+     * @param month 月份
+     * @param day   日期
+     * @return this
+     */
+    public static Constellation get(int month, int day) {
+        return get(MonthDay.of(month, day));
+    }
+
+    /**
+     * 按月日获取星座
+     *
+     * @param monthDay 月份
+     * @return this
+     */
+    public static Constellation get(MonthDay monthDay) {
+        int month = monthDay.getMonthValue();
+        int day = monthDay.getDayOfMonth();
+        Constellation zodiac = ENUMS[month - 1];
+        return day <= zodiac.end.getDayOfMonth() ? zodiac : ENUMS[month % 12];
     }
 
     /**
@@ -174,8 +170,8 @@ public enum Constellation {
      * @param date 出生日期
      * @return 星座名
      */
-    public static String getDesc(final Date date) {
-        return getDesc(DateKit.calendar(date));
+    public static String getName(final Date date) {
+        return getName(DateKit.calendar(date));
     }
 
     /**
@@ -184,11 +180,11 @@ public enum Constellation {
      * @param calendar 出生日期
      * @return 星座名
      */
-    public static String getDesc(final Calendar calendar) {
+    public static String getName(final Calendar calendar) {
         if (null == calendar) {
             return null;
         }
-        return getDesc(calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        return getName(calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
@@ -198,8 +194,8 @@ public enum Constellation {
      * @param day   天
      * @return 星座名
      */
-    public static String getDesc(final Month month, final int day) {
-        return getDesc(month.getValue(), day);
+    public static String getName(final Month month, final int day) {
+        return getName(month.getValue(), day);
     }
 
     /**
@@ -209,9 +205,15 @@ public enum Constellation {
      * @param day   天
      * @return 星座名
      */
-    public static String getDesc(int month, int day) {
-        int code = getCode(month, day);
-        return ENUMS[code].name;
+    public static String getName(final int month, final int day) {
+        return get(month, day).name;
+    }
+
+    /**
+     * @return 对应的名称
+     */
+    public String getName(final int code) {
+        return this.name;
     }
 
     /**
@@ -225,13 +227,6 @@ public enum Constellation {
      * @return 对应的名称
      */
     public String getName() {
-        return this.name;
-    }
-
-    /**
-     * @return 对应的名称
-     */
-    public String getDesc(int code) {
         return this.name;
     }
 

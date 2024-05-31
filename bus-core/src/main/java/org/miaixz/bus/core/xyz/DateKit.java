@@ -1607,7 +1607,7 @@ public class DateKit extends Calendars {
      * @return 星座名
      */
     public static String getConstellation(final int month, final int day) {
-        return Constellation.getDesc(month, day);
+        return Constellation.getName(month, day);
     }
 
     /**
@@ -1617,7 +1617,7 @@ public class DateKit extends Calendars {
      * @return 生肖名
      */
     public static String getZodiac(final int year) {
-        return Zodiac.getDesc(year);
+        return Zodiac.getName(year);
     }
 
     /**

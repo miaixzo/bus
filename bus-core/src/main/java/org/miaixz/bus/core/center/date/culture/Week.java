@@ -82,7 +82,7 @@ public enum Week {
      */
     private final int code;
     /**
-     * 星期对应描述
+     * 星期对应名称
      */
     private final String name;
 
@@ -184,7 +184,7 @@ public enum Week {
      * @param prefix 表示星期的前缀，例如前缀为“星期”，则返回结果为“星期一”；前缀为”周“，结果为“周一”
      * @return 星期的中文名
      */
-    public static String getDesc(final int code, String prefix) {
+    public static String getName(final int code, String prefix) {
         return prefix + ENUMS[code].name;
     }
 
@@ -225,7 +225,7 @@ public enum Week {
      * @param prefix 表示星期的前缀，例如前缀为“星期”，则返回结果为“星期一”；前缀为”周“，结果为“周一”
      * @return 星期的中文名
      */
-    public String getDesc(final String prefix) {
+    public String getName(final String prefix) {
         switch (this) {
             case SUNDAY:
                 return prefix + "日";

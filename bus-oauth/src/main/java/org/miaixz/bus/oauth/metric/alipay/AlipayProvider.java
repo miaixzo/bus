@@ -34,6 +34,7 @@ import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -58,84 +59,50 @@ public class AlipayProvider extends DefaultProvider {
      * 支付宝公钥：当选择支付宝登录时，该值可用
      * 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
      */
-    private final String alipayPublicKey;
     private final AlipayClient alipayClient;
 
     /**
-     * @see AlipayProvider#AlipayProvider(Context, java.lang.String)
-     * @deprecated 请使用带有"alipayPublicKey"参数的构造方法
-     */
-    @Deprecated
-    public AlipayProvider(Context context) {
-        this(context, (String) null);
-    }
-
-    /**
-     * @see AlipayProvider#AlipayProvider(Context, java.lang.String, ExtendCache)
-     * @deprecated 请使用带有"alipayPublicKey"参数的构造方法
-     */
-    @Deprecated
-    public AlipayProvider(Context context, ExtendCache authorizeCache) {
-        this(context, null, authorizeCache);
-    }
-
-    /**
-     * @see AlipayProvider#AlipayProvider(Context, java.lang.String, ExtendCache, java.lang.String, java.lang.Integer)
-     * @deprecated 请使用带有"alipayPublicKey"参数的构造方法
-     */
-    @Deprecated
-    public AlipayProvider(Context context, ExtendCache authorizeCache, String proxyHost, Integer proxyPort) {
-        this(context, null, authorizeCache, proxyHost, proxyPort);
-    }
-
-    /**
      * 构造方法，需要设置"alipayPublicKey"
      *
-     * @param context         公共的OAuth配置
-     * @param alipayPublicKey 支付宝公钥
+     * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context)
      */
-    public AlipayProvider(Context context, String alipayPublicKey) {
+    public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
-        this.alipayPublicKey = alipayPublicKey;
         check(context);
-        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json", "UTF-8", this.alipayPublicKey, "RSA2");
+        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
     }
 
     /**
      * 构造方法，需要设置"alipayPublicKey"
      *
-     * @param context         公共的OAuth配置
-     * @param alipayPublicKey 支付宝公钥
+     * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache)
      */
-    public AlipayProvider(Context context, String alipayPublicKey, ExtendCache authorizeCache) {
+    public AlipayProvider(Context context, ExtendCache authorizeCache) {
         super(context, Registry.ALIPAY, authorizeCache);
-        this.alipayPublicKey = alipayPublicKey;
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
-                "json", "UTF-8", this.alipayPublicKey, "RSA2");
+                "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
     }
 
     /**
      * 构造方法，需要设置"alipayPublicKey"
      *
-     * @param context         公共的OAuth配置
-     * @param alipayPublicKey 支付宝公钥
+     * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache, java.lang.String, java.lang.Integer)
      */
-    public AlipayProvider(Context context, String alipayPublicKey, ExtendCache authorizeCache, String proxyHost, Integer proxyPort) {
+    public AlipayProvider(Context context, ExtendCache authorizeCache, String proxyHost, Integer proxyPort) {
         super(context, Registry.ALIPAY, authorizeCache);
-        this.alipayPublicKey = alipayPublicKey;
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
-                "json", "UTF-8", this.alipayPublicKey, "RSA2", proxyHost, proxyPort);
+                "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2", proxyHost, proxyPort);
     }
 
     protected void check(Context context) {
         Checker.checkConfig(context, Registry.ALIPAY);
 
-        if (!StringKit.isNotEmpty(alipayPublicKey)) {
+        if (!StringKit.isNotEmpty(context.getUnionId())) {
             throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode(), Registry.ALIPAY);
         }
 
