@@ -1,5 +1,6 @@
 package org.miaixz.bus.core.center.date.culture.x;
 
+import org.miaixz.bus.core.center.date.culture.Chrono;
 import org.miaixz.bus.core.center.date.culture.x.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.x.lunar.LunarTime;
 import org.miaixz.bus.core.center.date.culture.x.lunar.LunarYear;
@@ -279,7 +280,7 @@ public class Lunar {
      * @return 时辰(地支)，如子
      */
     public static String convertTime(String hm) {
-        return Literal.LUNAR_ZHI[getTimeZhiIndex(hm)];
+        return Chrono.NAMES[getTimeZhiIndex(hm)];
     }
 
     /**
@@ -526,7 +527,7 @@ public class Lunar {
      */
     protected static int getXunIndex(String ganZhi) {
         int ganIndex = find(ganZhi.substring(0, 1), Literal.LUNAR_GAN, 0);
-        int zhiIndex = find(ganZhi.substring(1), Literal.LUNAR_ZHI, 0);
+        int zhiIndex = find(ganZhi.substring(1), Chrono.NAMES, 0);
         int diff = ganIndex - zhiIndex;
         if (diff < 0) {
             diff += 12;
@@ -767,7 +768,7 @@ public class Lunar {
      * @return 地支，如亥
      */
     public String getYearZhi() {
-        return Literal.LUNAR_ZHI[yearZhiIndex];
+        return Chrono.NAMES[yearZhiIndex];
     }
 
     /**
@@ -776,7 +777,7 @@ public class Lunar {
      * @return 地支，如亥
      */
     public String getYearZhiByLiChun() {
-        return Literal.LUNAR_ZHI[yearZhiIndexByLiChun];
+        return Chrono.NAMES[yearZhiIndexByLiChun];
     }
 
     /**
@@ -785,7 +786,7 @@ public class Lunar {
      * @return 地支，如亥
      */
     public String getYearZhiExact() {
-        return Literal.LUNAR_ZHI[yearZhiIndexExact];
+        return Chrono.NAMES[yearZhiIndexExact];
     }
 
     /**
@@ -861,7 +862,7 @@ public class Lunar {
      * @return 月地支，如卯
      */
     public String getMonthZhi() {
-        return Literal.LUNAR_ZHI[monthZhiIndex];
+        return Chrono.NAMES[monthZhiIndex];
     }
 
     /**
@@ -870,7 +871,7 @@ public class Lunar {
      * @return 月地支，如卯
      */
     public String getMonthZhiExact() {
-        return Literal.LUNAR_ZHI[monthZhiIndexExact];
+        return Chrono.NAMES[monthZhiIndexExact];
     }
 
     /**
@@ -933,7 +934,7 @@ public class Lunar {
      * @return 日地支，如卯
      */
     public String getDayZhi() {
-        return Literal.LUNAR_ZHI[dayZhiIndex];
+        return Chrono.NAMES[dayZhiIndex];
     }
 
     /**
@@ -942,7 +943,7 @@ public class Lunar {
      * @return 日地支，如卯
      */
     public String getDayZhiExact() {
-        return Literal.LUNAR_ZHI[dayZhiIndexExact];
+        return Chrono.NAMES[dayZhiIndexExact];
     }
 
     /**
@@ -951,7 +952,7 @@ public class Lunar {
      * @return 日地支，如卯
      */
     public String getDayZhiExact2() {
-        return Literal.LUNAR_ZHI[dayZhiIndexExact2];
+        return Chrono.NAMES[dayZhiIndexExact2];
     }
 
     /**
@@ -1046,7 +1047,7 @@ public class Lunar {
      * @return 时辰（地支）
      */
     public String getTimeZhi() {
-        return Literal.LUNAR_ZHI[timeZhiIndex];
+        return Chrono.NAMES[timeZhiIndex];
     }
 
     /**
@@ -1903,8 +1904,8 @@ public class Lunar {
      */
     public String getDayChongShengXiao() {
         String chong = getDayChong();
-        for (int i = 0, j = Literal.LUNAR_ZHI.length; i < j; i++) {
-            if (Literal.LUNAR_ZHI[i].equals(chong)) {
+        for (int i = 0, j = Chrono.NAMES.length; i < j; i++) {
+            if (Chrono.NAMES[i].equals(chong)) {
                 return Literal.LUNAR_SHENGXIAO[i];
             }
         }
@@ -1954,8 +1955,8 @@ public class Lunar {
      */
     public String getTimeChongShengXiao() {
         String chong = getTimeChong();
-        for (int i = 0, j = Literal.LUNAR_ZHI.length; i < j; i++) {
-            if (Literal.LUNAR_ZHI[i].equals(chong)) {
+        for (int i = 0, j = Chrono.NAMES.length; i < j; i++) {
+            if (Chrono.NAMES[i].equals(chong)) {
                 return Literal.LUNAR_SHENGXIAO[i];
             }
         }

@@ -1,6 +1,7 @@
 package org.miaixz.bus.core.center.date.culture.x;
 
 import org.miaixz.bus.core.center.date.Holiday;
+import org.miaixz.bus.core.center.date.culture.Chrono;
 import org.miaixz.bus.core.center.date.culture.x.solar.SolarMonth;
 
 import java.util.ArrayList;
@@ -293,7 +294,7 @@ public class Solar {
         sect = (1 == sect) ? 1 : 2;
         List<Solar> l = new ArrayList<Solar>();
         // 月地支距寅月的偏移值
-        int m = Lunar.find(monthGanZhi.substring(1), Literal.LUNAR_ZHI, -1) - 2;
+        int m = Lunar.find(monthGanZhi.substring(1), Chrono.NAMES, -1) - 2;
         if (m < 0) {
             m += 12;
         }
@@ -310,7 +311,7 @@ public class Solar {
         // 节令偏移值
         m *= 2;
         // 时辰地支转时刻，子时按零点算
-        int h = Lunar.find(timeGanZhi.substring(1), Literal.LUNAR_ZHI, -1) * 2;
+        int h = Lunar.find(timeGanZhi.substring(1), Chrono.NAMES, -1) * 2;
         int[] hours = {h};
         if (0 == h && 2 == sect) {
             hours = new int[]{0, 23};

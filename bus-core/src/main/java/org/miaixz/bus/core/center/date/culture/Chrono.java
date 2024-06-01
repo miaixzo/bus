@@ -27,6 +27,7 @@ package org.miaixz.bus.core.center.date.culture;
 
 import org.miaixz.bus.core.center.date.Between;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.EnumKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.time.LocalDateTime;
@@ -36,26 +37,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 时辰转换器，支持宋以后的二十四时辰制度。
- * <p>本转换器提供以下功能：
- * <ul>
- * <li>处理包含“时”、“初”或“正”后缀的时辰描述，并自动返回相应的现代时间段。
- * “初”和“正”分别对应每个时辰的前半段和后半段，而不带后缀的“时”描述则涵盖该时辰的完整时间段。</li>
- * <li>根据小时数转换为相应的时辰描述，通过{@code isAbs}参数控制是否包含“初”或“正”。</li>
- * </ul>
- * <p>
+ * 时辰/地支 转换器，支持宋以后的二十四时辰制度。
  * 异常情况：
  * <ul>
- * <li>如果输入的时辰描述无效或不被识别，{@code toModernTime} 方法将抛出 {@code IllegalArgumentException}。</li>
- * <li>同样，如果{@code toShiChen}方法接收到无效的小时数，将返回“未知”。</li>
+ * <li>如果输入的时辰描述无效或不被识别，{@code of} 方法将抛出 {@code IllegalArgumentException}。</li>
+ * <li>同样，如果{@code get}方法接收到无效的小时数，将返回“未知”。</li>
  * </ul>
  * 示例：
  * <ul>
- * <li>{@code toModernTime("子时")} 返回的时间段从23点开始到1点结束。</li>
- * <li>{@code toModernTime("子初")} 返回的时间段从23点开始到0点结束。</li>
- * <li>{@code toModernTime("子正")} 返回的时间段从0点开始到1点结束。</li>
- * <li>{@code toShiChen(0, false)} 返回“子正”。</li>
- * <li>{@code toShiChen(0, true)} 返回“子时”。</li>
+ * <li>{@code of("子时")} 返回的时间段从23点开始到1点结束。</li>
+ * <li>{@code get(0)} 返回“子时”。</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -117,7 +108,8 @@ public enum Chrono {
      */
     _2123("2123", "亥", "人定时分，夜色已深，人们已经停止活动，安歇睡眠了。");
 
-    private static final Chrono[] ENUMS = Chrono.values();
+    public static final Chrono[] ENUMS = Chrono.values();
+    public static final String[] NAMES = getNames();
     /**
      * 时辰对应的小时范围
      */
@@ -167,7 +159,7 @@ public enum Chrono {
      * @return {@link Between} 对象，表示起始和结束时间。
      * @throws IllegalArgumentException 如果输入的时辰描述无效。
      */
-    public static Between toTime(final String chrono) {
+    public static Between of(final String chrono) {
         if (StringKit.isEmpty(chrono)) {
             throw new IllegalArgumentException("Invalid args for : " + chrono);
         }
@@ -195,8 +187,26 @@ public enum Chrono {
      * @param hour 小时数，应在0到23之间。
      * @return 时辰描述，如果小时数无效，则返回“未知”。
      */
-    public static String toChrono(final int hour) {
+    public static String get(final int hour) {
         return HOUR_MAP.getOrDefault(hour, "未知");
+    }
+
+    /**
+     * 获取枚举属性信息
+     *
+     * @param fieldName 属性名称
+     * @return the string[]
+     */
+    public static String[] get(String fieldName) {
+        return EnumKit.getFieldValues(Chrono.class, fieldName).toArray(String[]::new);
+    }
+
+    public static String[] getNames() {
+        return get("name");
+    }
+
+    public String getDesc() {
+        return desc;
     }
 
     public String getCode() {
@@ -205,10 +215,6 @@ public enum Chrono {
 
     public String getName() {
         return name;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 
 }

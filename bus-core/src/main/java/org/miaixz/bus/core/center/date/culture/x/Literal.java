@@ -1,6 +1,7 @@
 package org.miaixz.bus.core.center.date.culture.x;
 
 import org.miaixz.bus.core.center.date.culture.x.lunar.LunarYear;
+import org.miaixz.bus.core.lang.Normal;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public class Literal {
     /**
      * 月份地支偏移量，因正月起寅
      */
-    public static final int LUNAR_BASE_MONTH_ZHI_INDEX = 2;
+    public static final int LUNAR_BASE_MONTH_ZHI_INDEX = Normal._2;
     /**
      * 旬
      */
@@ -84,10 +85,6 @@ public class Literal {
      * 逐月胎神方位
      */
     public static final String[] LUNAR_POSITION_TAI_MONTH = {"占房床", "占户窗", "占门堂", "占厨灶", "占房床", "占床仓", "占碓磨", "占厕户", "占门房", "占房床", "占灶炉", "占房床"};
-    /**
-     * 地支
-     */
-    public static final String[] LUNAR_ZHI = {"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"};
     /**
      * 六十甲子
      */

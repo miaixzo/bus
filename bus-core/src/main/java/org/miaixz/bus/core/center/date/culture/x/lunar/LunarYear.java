@@ -1,5 +1,6 @@
 package org.miaixz.bus.core.center.date.culture.x.lunar;
 
+import org.miaixz.bus.core.center.date.culture.Chrono;
 import org.miaixz.bus.core.center.date.culture.Galaxy;
 import org.miaixz.bus.core.center.date.culture.x.Literal;
 import org.miaixz.bus.core.center.date.culture.x.Lunar;
@@ -275,7 +276,7 @@ public class LunarYear {
      * @return 地支
      */
     public String getZhi() {
-        return Literal.LUNAR_ZHI[zhiIndex];
+        return Chrono.NAMES[zhiIndex];
     }
 
     /**

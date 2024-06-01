@@ -1,5 +1,6 @@
 package org.miaixz.bus.core.center.date.culture.x.lunar;
 
+import org.miaixz.bus.core.center.date.culture.Chrono;
 import org.miaixz.bus.core.center.date.culture.x.Literal;
 import org.miaixz.bus.core.center.date.culture.x.Lunar;
 import org.miaixz.bus.core.center.date.culture.x.NineStar;
@@ -61,7 +62,7 @@ public class LunarTime {
      * @return 地支
      */
     public String getZhi() {
-        return Literal.LUNAR_ZHI[zhiIndex];
+        return Chrono.NAMES[zhiIndex];
     }
 
     /**
@@ -253,8 +254,8 @@ public class LunarTime {
      */
     public String getChongShengXiao() {
         String chong = getChong();
-        for (int i = 0, j = Literal.LUNAR_ZHI.length; i < j; i++) {
-            if (Literal.LUNAR_ZHI[i].equals(chong)) {
+        for (int i = 0, j = Chrono.NAMES.length; i < j; i++) {
+            if (Chrono.NAMES[i].equals(chong)) {
                 return Literal.LUNAR_SHENGXIAO[i];
             }
         }

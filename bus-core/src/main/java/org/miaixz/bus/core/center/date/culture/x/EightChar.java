@@ -1,5 +1,7 @@
 package org.miaixz.bus.core.center.date.culture.x;
 
+import org.miaixz.bus.core.center.date.culture.Chrono;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -425,7 +427,7 @@ public class EightChar {
         if (zhiIndex >= 12) {
             zhiIndex -= 12;
         }
-        return Literal.LUNAR_GAN[ganIndex + 1] + Literal.LUNAR_ZHI[zhiIndex];
+        return Literal.LUNAR_GAN[ganIndex + 1] + Chrono.NAMES[zhiIndex];
     }
 
     /**
@@ -490,7 +492,7 @@ public class EightChar {
      */
     public String getShenGong() {
         int monthZhiIndex = Lunar.find(getMonthZhi(), Literal.EIGHTCHAR_MONTH_ZHI, 0);
-        int timeZhiIndex = Lunar.find(getTimeZhi(), Literal.LUNAR_ZHI, 0);
+        int timeZhiIndex = Lunar.find(getTimeZhi(), Chrono.NAMES, 0);
         int offset = monthZhiIndex + timeZhiIndex;
         while (offset > 12) {
             offset -= 12;
