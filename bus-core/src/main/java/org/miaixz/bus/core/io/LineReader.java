@@ -45,13 +45,6 @@ import java.util.Iterator;
  *     <li>如果想读取转义符，必须定义为'\\'</li>
  *     <li>多行转义后的换行符和空格都会被忽略</li>
  * </ul>
- * <p>
- * 例子：
- * <pre>
- * a=1\
- *   2
- * </pre>
- * 读出后就是{@code a=12}
  *
  * @author Kimi Liu
  * @since Java 17+

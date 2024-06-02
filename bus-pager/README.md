@@ -333,7 +333,7 @@ getId());
 assertEquals(10,list.size());
 
 //分页时，实际返回的结果list类型是Page<E>，如果想取出分页信息，需要强制转换为Page<E>，
-//或者使用Page类（下面的例子有介绍）
+//或者使用Page类（下面的示例有介绍）
 assertEquals(182,((Page)list).
 
 getTotal());

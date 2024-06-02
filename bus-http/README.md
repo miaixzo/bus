@@ -279,7 +279,7 @@ interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加
 RealCall#getResponseWithInterceptorChain() 方法。通过
 Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 
-这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的
+这里举一个简单的示例，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的
 interceptor 在拦截器链头去做。
 
 ```java
@@ -697,7 +697,7 @@ get();
 
 ### 实现断点续传
 
-Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的例子可以看到，Httpv
+Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的示例可以看到，Httpv
 通过一个失败回调拿到 **断点**，便将复杂的问题变得简单：
 
 ```java

@@ -1442,9 +1442,6 @@ public class FileKit extends PathResolve {
      * <li>4. .. 和 . 转换为绝对路径，当..多于已有路径时，直接返回根路径</li>
      * <li>5. SMB路径保留，如\\127.0.0.0\a\b.zip</li>
      * </ol>
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * "/foo//" = "/foo/"
      * "/foo/./" = "/foo/"
@@ -1472,9 +1469,6 @@ public class FileKit extends PathResolve {
 
     /**
      * 获得相对子路径
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc         =    ccc
      * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt     =    ccc.txt
@@ -1494,9 +1488,6 @@ public class FileKit extends PathResolve {
 
     /**
      * 获得相对子路径，忽略大小写
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc        =    ccc
      * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt    =    ccc.txt

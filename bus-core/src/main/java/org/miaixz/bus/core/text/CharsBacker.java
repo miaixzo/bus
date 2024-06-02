@@ -552,12 +552,12 @@ public class CharsBacker extends StringValidator {
     /**
      * 指定字符是否在字符串中出现过
      *
-     * @param text       字符串
-     * @param searchChar 被查找的字符
+     * @param text 字符串
+     * @param args 被查找的字符
      * @return 是否包含
      */
-    public static boolean contains(final CharSequence text, final char searchChar) {
-        return indexOf(text, searchChar) > -1;
+    public static boolean contains(final CharSequence text, final char args) {
+        return indexOf(text, args) > -1;
     }
 
     /**
@@ -605,11 +605,13 @@ public class CharsBacker extends StringValidator {
     }
 
     /**
-     * 检查指定字符串中是否只包含给定的字符
+     * 检查指定字符串中是否只包含给定的字符<br>
+     * 这里的containsOnly并不是必须全部给定的args都需要有，而是一个子集。
+     * args是个限定集合，检查字符串中的字符是否在这个限定集合中。
      * <ul>
-     *     <li>text 是 null，testChars 也是 null，直接返回 true</li>
-     *     <li>text 是 null，testChars 不是 null，直接返回 true</li>
-     *     <li>text 不是 null，testChars 是 null，直接返回 false</li>
+     *     <li>text 是 null，args 也是 null，直接返回 true</li>
+     *     <li>text 是 null，args 不是 null，直接返回 true</li>
+     *     <li>text 不是 null，args 是 null，直接返回 false</li>
      * </ul>
      *
      * @param text 字符串
@@ -920,7 +922,7 @@ public class CharsBacker extends StringValidator {
      * 如果 text1=null 或 args=null 或 ordinal&le;0 则返回-1
      * 此方法来自：Apache-Commons-Lang
      * <p>
-     * 例子（*代表任意字符）：
+     * 示例（*代表任意字符）：
      *
      * <pre>
      * ordinalIndexOf(null, *, *)          = -1
@@ -969,7 +971,7 @@ public class CharsBacker extends StringValidator {
      * @return 移除后的字符串
      */
     public static String removeAll(final CharSequence text, final CharSequence args) {
-        // strToRemove如果为空， 也不用继续后面的逻辑
+        // args如果为空， 也不用继续后面的逻辑
         if (isEmpty(text) || isEmpty(args)) {
             return toString(text);
         }
@@ -1654,9 +1656,6 @@ public class CharsBacker extends StringValidator {
 
     /**
      * 截取指定字符串中间部分，不包括标识字符串
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * subBetween("wx[b]yz", "[", "]") = "b"
      * subBetween(null, *, *)          = null
@@ -1696,9 +1695,6 @@ public class CharsBacker extends StringValidator {
 
     /**
      * 截取指定字符串中间部分，不包括标识字符串
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * subBetween(null, *)            = null
      * subBetween("", "")             = ""
@@ -1718,9 +1714,6 @@ public class CharsBacker extends StringValidator {
 
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
      * subBetweenAll(null, *, *)          			= []
@@ -1771,9 +1764,6 @@ public class CharsBacker extends StringValidator {
 
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
-     * <p>
-     * 栗子：
-     *
      * <pre>
      * subBetweenAll(null, *)          			= []
      * subBetweenAll(*, null)          			= []
