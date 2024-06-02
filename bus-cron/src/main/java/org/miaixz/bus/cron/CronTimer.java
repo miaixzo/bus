@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.center.date.culture.Units;
+import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 

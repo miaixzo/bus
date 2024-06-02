@@ -1,9 +1,35 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
 package org.miaixz.bus.core.center.date.culture;
 
-import org.miaixz.bus.core.center.date.culture.x.Solar;
-
 /**
- * 寿星天文历工具¬
+ * 寿星天文历工具
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class Galaxy {
 
@@ -343,7 +369,7 @@ public class Galaxy {
         t /= 10;
         double v = 0, tn = 1;
         int n1, n2;
-        double m;
+        int m;
         double c;
         int pn = 1;
         double n0, m0 = XL0[pn + 1] - XL0[pn];
@@ -378,8 +404,7 @@ public class Galaxy {
     }
 
     public static double mLon(double t, int n) {
-        double[][] ob = XL1;
-        int obl = ob[0].length;
+        int obl = XL1[0].length;
         double tn = 1;
         double v = 0;
         int j;
@@ -402,8 +427,8 @@ public class Galaxy {
         if (n < 0) {
             n = obl;
         }
-        for (int i = 0, x = ob.length; i < x; i++, tn *= t) {
-            double[] f = ob[i];
+        for (int i = 0, x = XL1.length; i < x; i++, tn *= t) {
+            double[] f = XL1[i];
             int l = f.length;
             int m = (int) (n * l / obl + 0.5);
             if (i > 0) {
@@ -474,8 +499,8 @@ public class Galaxy {
     }
 
     public static double saLonT(double w) {
-        double t, v = 628.3319653318;
-        t = (w - 1.75347 - Math.PI) / v;
+        double v = 628.3319653318;
+        double t = (w - 1.75347 - Math.PI) / v;
         v = ev(t);
         t += (w - saLon(t, 10)) / v;
         v = ev(t);
@@ -488,8 +513,8 @@ public class Galaxy {
     }
 
     public static double msaLonT(double w) {
-        double t, v = 7771.37714500204;
-        t = (w + 1.08472) / v;
+        double v = 7771.37714500204;
+        double t = (w + 1.08472) / v;
         t += (w - msaLon(t, 3, 3)) / v;
         v = mv(t) - ev(t);
         t += (w - msaLon(t, 20, 10)) / v;
@@ -506,12 +531,12 @@ public class Galaxy {
     }
 
     public static double msaLonT2(double w) {
-        double t, v = 7771.37714500204;
-        t = (w + 1.08472) / v;
-        double l, t2 = t * t;
+        double v = 7771.37714500204;
+        double t = (w + 1.08472) / v;
+        double t2 = t * t;
         t -= (-0.00003309 * t2 + 0.10976 * Math.cos(0.784758 + 8328.6914246 * t + 0.000152292 * t2) + 0.02224 * Math.cos(0.18740 + 7214.0628654 * t - 0.00021848 * t2) - 0.03342 * Math.cos(4.669257 + 628.307585 * t)) / v;
         t2 = t * t;
-        l = mLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2 + 0.0334166 * Math.cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.cos(2.67823 + 628.307585 * t) * t + 0.000349 * Math.cos(4.6261 + 1256.61517 * t) - 20.5 / SECOND_PER_RAD);
+        double l = mLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2 + 0.0334166 * Math.cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.cos(2.67823 + 628.307585 * t) * t + 0.000349 * Math.cos(4.6261 + 1256.61517 * t) - 20.5 / SECOND_PER_RAD);
         v = 7771.38 - 914 * Math.sin(0.7848 + 8328.691425 * t + 0.0001523 * t2) - 179 * Math.sin(2.543 + 15542.7543 * t) - 160 * Math.sin(0.1874 + 7214.0629 * t);
         t += (w - l) / v;
         return t;
@@ -557,7 +582,7 @@ public class Galaxy {
         int size = SHUO_KB.length;
         double d = 0;
         int pc = 14, i;
-        jd += Solar.J2000;
+        jd += 2451545;
         double f1 = SHUO_KB[0] - pc, f2 = SHUO_KB[size - 1] - pc, f3 = 2436935;
         if (jd < f1 || jd >= f3) {
             d = Math.floor(shuoHigh(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
@@ -572,7 +597,7 @@ public class Galaxy {
             if (d == 1683460) {
                 d++;
             }
-            d -= Solar.J2000;
+            d -= 2451545;
         } else if (jd >= f2) {
             d = Math.floor(shuoLow(Math.floor((jd + pc - 2451551) / 29.5306) * PI_2) + 0.5);
             int from = (int) ((jd - f2) / 29.5306);
@@ -590,7 +615,7 @@ public class Galaxy {
         int size = QI_KB.length;
         double d = 0;
         int pc = 7, i;
-        jd += Solar.J2000;
+        jd += 2451545;
         double f1 = QI_KB[0] - pc, f2 = QI_KB[size - 1] - pc, f3 = 2436935;
         if (jd < f1 || jd >= f3) {
             d = Math.floor(qiHigh(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
@@ -605,7 +630,7 @@ public class Galaxy {
             if (d == 1683460) {
                 d++;
             }
-            d -= Solar.J2000;
+            d -= 2451545;
         } else if (jd >= f2) {
             d = Math.floor(qiLow(Math.floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
             int from = (int) ((jd - f2) / 365.2422 * 24);

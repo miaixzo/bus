@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.center.date.culture.Units;
+import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -37,7 +37,6 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -200,16 +199,16 @@ public class Between implements Serializable {
      * @return 相差月数
      */
     public long betweenMonth(final boolean isReset) {
-        final Calendar beginCal = DateKit.calendar(begin);
-        final Calendar endCal = DateKit.calendar(end);
+        final java.util.Calendar beginCal = DateKit.calendar(begin);
+        final java.util.Calendar endCal = DateKit.calendar(end);
 
-        final int betweenYear = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
-        final int betweenMonthOfYear = endCal.get(Calendar.MONTH) - beginCal.get(Calendar.MONTH);
+        final int betweenYear = endCal.get(java.util.Calendar.YEAR) - beginCal.get(java.util.Calendar.YEAR);
+        final int betweenMonthOfYear = endCal.get(java.util.Calendar.MONTH) - beginCal.get(java.util.Calendar.MONTH);
 
         final int result = betweenYear * 12 + betweenMonthOfYear;
         if (!isReset) {
-            endCal.set(Calendar.YEAR, beginCal.get(Calendar.YEAR));
-            endCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH));
+            endCal.set(java.util.Calendar.YEAR, beginCal.get(java.util.Calendar.YEAR));
+            endCal.set(java.util.Calendar.MONTH, beginCal.get(java.util.Calendar.MONTH));
             final long between = endCal.getTimeInMillis() - beginCal.getTimeInMillis();
             if (between < 0) {
                 return result - 1;
@@ -226,27 +225,27 @@ public class Between implements Serializable {
      * @return 相差年数
      */
     public long betweenYear(final boolean isReset) {
-        final Calendar beginCal = DateKit.calendar(begin);
-        final Calendar endCal = DateKit.calendar(end);
+        final java.util.Calendar beginCal = DateKit.calendar(begin);
+        final java.util.Calendar endCal = DateKit.calendar(end);
 
-        final int result = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
+        final int result = endCal.get(java.util.Calendar.YEAR) - beginCal.get(java.util.Calendar.YEAR);
         if (false == isReset) {
-            final int beginMonthBase0 = beginCal.get(Calendar.MONTH);
-            final int endMonthBase0 = endCal.get(Calendar.MONTH);
+            final int beginMonthBase0 = beginCal.get(java.util.Calendar.MONTH);
+            final int endMonthBase0 = endCal.get(java.util.Calendar.MONTH);
             if (beginMonthBase0 < endMonthBase0) {
                 return result;
             } else if (beginMonthBase0 > endMonthBase0) {
                 return result - 1;
-            } else if (Calendar.FEBRUARY == beginMonthBase0
-                    && Calendars.isLastDayOfMonth(beginCal)
-                    && Calendars.isLastDayOfMonth(endCal)) {
+            } else if (java.util.Calendar.FEBRUARY == beginMonthBase0
+                    && Calendar.isLastDayOfMonth(beginCal)
+                    && Calendar.isLastDayOfMonth(endCal)) {
                 // 考虑闰年的2月情况
                 // 两个日期都位于2月的最后一天，此时月数按照相等对待，此时都设置为1号
-                beginCal.set(Calendar.DAY_OF_MONTH, 1);
-                endCal.set(Calendar.DAY_OF_MONTH, 1);
+                beginCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
+                endCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
             }
 
-            endCal.set(Calendar.YEAR, beginCal.get(Calendar.YEAR));
+            endCal.set(java.util.Calendar.YEAR, beginCal.get(java.util.Calendar.YEAR));
             final long between = endCal.getTimeInMillis() - beginCal.getTimeInMillis();
             if (between < 0) {
                 return result - 1;

@@ -379,15 +379,4 @@ public class Converter extends Formatter {
                 .toFormatter();
     }
 
-    /**
-     * 公历日期转为农历日期
-     *
-     * @param date 日期
-     *             格式 ：20240527｜2024-05-27｜2024/05/27｜2024.05.27｜2024年05月27日
-     * @return {@link DateTimeFormatter}
-     */
-    public static String of(final String date) {
-        return Lunar.of(date);
-    }
-
 }

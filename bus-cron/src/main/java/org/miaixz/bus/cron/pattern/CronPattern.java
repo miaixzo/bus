@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.cron.pattern;
 
-import org.miaixz.bus.core.center.date.Calendars;
-import org.miaixz.bus.core.center.date.culture.Week;
+import org.miaixz.bus.core.center.date.Calendar;
+import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -126,7 +126,7 @@ public class CronPattern {
      * @return 日期
      */
     public static Date nextDateAfter(final CronPattern pattern, final Date start) {
-        return DateKit.date(pattern.nextMatchAfter(Calendars.calendar(start)));
+        return DateKit.date(pattern.nextMatchAfter(Calendar.calendar(start)));
     }
 
     /**
@@ -181,7 +181,7 @@ public class CronPattern {
 
         final List<Date> result = new ArrayList<>(count);
 
-        Calendar calendar = pattern.nextMatchAfter(Calendars.calendar(start));
+        java.util.Calendar calendar = pattern.nextMatchAfter(Calendar.calendar(start));
         while (calendar.getTimeInMillis() < end) {
             result.add(DateKit.date(calendar));
             if (result.size() >= count) {
@@ -197,7 +197,7 @@ public class CronPattern {
      * 获取处理后的字段列表
      * 月份从1开始，周从0开始
      *
-     * @param dateTime      {@link Calendar}
+     * @param dateTime      {@link java.util.Calendar}
      * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
      * @return 字段值列表
      */
@@ -216,18 +216,18 @@ public class CronPattern {
      * 获取处理后的字段列表
      * 月份从1开始，周从0开始
      *
-     * @param calendar      {@link Calendar}
+     * @param calendar      {@link java.util.Calendar}
      * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
      * @return 字段值列表
      */
-    static int[] getFields(final Calendar calendar, final boolean isMatchSecond) {
-        final int second = isMatchSecond ? calendar.get(Calendar.SECOND) : -1;
-        final int minute = calendar.get(Calendar.MINUTE);
-        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        final int monthBase1 = calendar.get(Calendar.MONTH) + 1;// 月份从1开始
-        final int dayOfWeekBase0 = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
-        final int year = calendar.get(Calendar.YEAR);
+    static int[] getFields(final java.util.Calendar calendar, final boolean isMatchSecond) {
+        final int second = isMatchSecond ? calendar.get(java.util.Calendar.SECOND) : -1;
+        final int minute = calendar.get(java.util.Calendar.MINUTE);
+        final int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
+        final int dayOfMonth = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+        final int monthBase1 = calendar.get(java.util.Calendar.MONTH) + 1;// 月份从1开始
+        final int dayOfWeekBase0 = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
+        final int year = calendar.get(java.util.Calendar.YEAR);
         return new int[]{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year};
     }
 
@@ -263,7 +263,7 @@ public class CronPattern {
      * @param isMatchSecond 是否匹配秒
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    public boolean match(final Calendar calendar, final boolean isMatchSecond) {
+    public boolean match(final java.util.Calendar calendar, final boolean isMatchSecond) {
         return match(getFields(calendar, isMatchSecond));
     }
 
@@ -284,18 +284,18 @@ public class CronPattern {
      * @param calendar 时间
      * @return 匹配到的下一个时间
      */
-    public Calendar nextMatchAfter(Calendar calendar) {
+    public java.util.Calendar nextMatchAfter(java.util.Calendar calendar) {
         // 当提供的时间已经匹配表达式时，增加1秒以匹配下一个时间
         if (match(calendar, true)) {
-            final Calendar newCalendar = Calendar.getInstance(calendar.getTimeZone());
+            final java.util.Calendar newCalendar = java.util.Calendar.getInstance(calendar.getTimeZone());
             newCalendar.setTimeInMillis(calendar.getTimeInMillis() + 1000);
             calendar = newCalendar;
         }
 
-        Calendar next = nextMatchAfter(getFields(calendar, true), calendar.getTimeZone());
+        java.util.Calendar next = nextMatchAfter(getFields(calendar, true), calendar.getTimeZone());
         if (!match(next, true)) {
-            next.set(Calendar.DAY_OF_MONTH, next.get(Calendar.DAY_OF_MONTH) + 1);
-            next = Calendars.beginOfDay(next);
+            next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
+            next = Calendar.beginOfDay(next);
             return nextMatchAfter(next);
         }
         return next;
@@ -343,10 +343,10 @@ public class CronPattern {
      *
      * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
      * @param zone   时区
-     * @return {@link Calendar}，毫秒数为0
+     * @return {@link java.util.Calendar}，毫秒数为0
      */
-    private Calendar nextMatchAfter(final int[] values, final TimeZone zone) {
-        Calendar minMatch = null;
+    private java.util.Calendar nextMatchAfter(final int[] values, final TimeZone zone) {
+        java.util.Calendar minMatch = null;
         for (final PatternMatcher matcher : matchers) {
             if (null == minMatch) {
                 minMatch = matcher.nextMatchAfter(values, zone);

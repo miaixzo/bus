@@ -41,8 +41,6 @@ public interface Builder<T> extends Serializable {
      *
      * @return 被构建的对象
      */
-    default T build() {
-        return (T) this;
-    }
+     T build();
 
 }

@@ -134,7 +134,7 @@ public class Resolver extends Converter {
      * @throws DateException            if none of the date patterns were suitable
      */
     public static DateTime parse(final String text, final String... parsePatterns) throws DateException {
-        return date(Calendars.parseByPatterns(text, parsePatterns));
+        return date(Calendar.parseByPatterns(text, parsePatterns));
     }
 
     /**
