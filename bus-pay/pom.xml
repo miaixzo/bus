@@ -46,7 +46,6 @@
         <lombok.version>1.18.32</lombok.version>
         <servlet.version>6.1.0-M2</servlet.version>
         <zxing.version>3.5.3</zxing.version>
-        <bouncycastle.version>1.78.1</bouncycastle.version>
         <spring.boot.version>3.2.5</spring.boot.version>
         <weixin.pay.version>4.4.5.B</weixin.pay.version>
         <alipay.version>4.39.42.ALL</alipay.version>
@@ -75,12 +74,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
