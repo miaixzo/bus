@@ -436,7 +436,7 @@ public class Formatter {
      * @return 格式化时间的函数
      */
     public static Function<TemporalAccessor, String> format(final DateTimeFormatter dateTimeFormatter) {
-        return LambdaKit.toFunction(Almanac::format, dateTimeFormatter);
+        return LambdaKit.toFunction(Formatter::format, dateTimeFormatter);
     }
 
     /**

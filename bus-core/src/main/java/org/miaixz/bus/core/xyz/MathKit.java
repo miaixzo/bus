@@ -1110,12 +1110,31 @@ public class MathKit extends NumberValidator {
 
     /**
      * 提供精确的幂运算
+     * 如果n为负数，则返回1/a的-n次方，默认四舍五入
      *
      * @param number 底数
-     * @param n      指数
+     * @param n      指数，如果为负数，则返回1/a的-n次方
      * @return 幂的积
      */
     public static BigDecimal pow(final BigDecimal number, final int n) {
+        return pow(number, n, 2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 提供精确的幂运算
+     * 如果n为负数，则返回1/a的-n次方，默认四舍五入
+     *
+     * @param number       底数
+     * @param scale        保留小数位数
+     * @param roundingMode 舍入模式
+     * @param n            指数，如果为负数，则返回1/a的-n次方
+     * @return 幂的积
+     */
+    public static BigDecimal pow(final BigDecimal number, final int n, final int scale, final RoundingMode roundingMode) {
+        if (n < 0) {
+            // a的n次方，如果n为负数，则返回1/a的-n次方
+            return BigDecimal.ONE.divide(pow(number, -n), scale, roundingMode);
+        }
         return number.pow(n);
     }
 

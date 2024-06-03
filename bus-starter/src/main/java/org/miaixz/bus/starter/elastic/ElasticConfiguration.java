@@ -94,4 +94,5 @@ public class ElasticConfiguration {
                         .setMaxConnPerRoute(this.elasticProperties.getMaxConnectPerRoute()));
         return new RestHighLevelClient(restClientBuilder);
     }
+    
 }

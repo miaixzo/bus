@@ -375,15 +375,6 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
      * <li>[]表达式，可以获取集合等对象中对应index的值</li>
      * </ol>
-     * <p>
-     * 表达式栗子：
-     *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * </pre>
      *
      * @param <T>        目标类型
      * @param expression 表达式
@@ -400,16 +391,6 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
      * <li>[]表达式，可以获取集合等对象中对应index的值</li>
      * </ol>
-     * <p>
-     * 表达式栗子：
-     *
-     * <pre>
-     * persion
-     * persion.name
-     * persons[3]
-     * person.friends[5].name
-     * </pre>
-     * <p>
      * 获取表达式对应值后转换为对应类型的值
      *
      * @param <T>        返回值类型

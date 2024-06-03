@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.center.date.culture.Month;
-import org.miaixz.bus.core.center.date.culture.*;
+import org.miaixz.bus.core.center.date.culture.en.Month;
+import org.miaixz.bus.core.center.date.culture.en.*;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -47,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -123,9 +122,9 @@ public class DateTime extends Date {
     /**
      * 给定日期的构造
      *
-     * @param calendar {@link Calendar}，不能为{@code null}
+     * @param calendar {@link java.util.Calendar}，不能为{@code null}
      */
-    public DateTime(final Calendar calendar) {
+    public DateTime(final java.util.Calendar calendar) {
         this(calendar.getTime(), calendar.getTimeZone());
         this.setFirstDayOfWeek(Week.of(calendar.getFirstDayOfWeek()));
     }
@@ -311,12 +310,12 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转换 {@link Calendar} 为 DateTime
+     * 转换 {@link java.util.Calendar} 为 DateTime
      *
-     * @param calendar {@link Calendar}
+     * @param calendar {@link java.util.Calendar}
      * @return DateTime
      */
-    public static DateTime of(final Calendar calendar) {
+    public static DateTime of(final java.util.Calendar calendar) {
         return new DateTime(calendar);
     }
 
@@ -369,13 +368,13 @@ public class DateTime extends Date {
      * @param dateStr 日期字符串
      * @param parser  {@link FormatBuilder}
      * @param lenient 是否宽容模式
-     * @return {@link Calendar}
+     * @return {@link java.util.Calendar}
      */
-    private static Calendar parse(final CharSequence dateStr, final PositionDateParser parser, final boolean lenient) {
+    private static java.util.Calendar parse(final CharSequence dateStr, final PositionDateParser parser, final boolean lenient) {
         Assert.notNull(parser, "Parser or DateFromat must be not null !");
         Assert.notBlank(dateStr, "Date String must be not blank !");
 
-        final Calendar calendar = Calendars.parse(dateStr, lenient, parser);
+        final java.util.Calendar calendar = Calendar.parse(dateStr, lenient, parser);
         if (null == calendar) {
             throw new DateException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
         }
@@ -397,7 +396,7 @@ public class DateTime extends Date {
             throw new IllegalArgumentException("ERA is not support offset!");
         }
 
-        final Calendar cal = toCalendar();
+        final java.util.Calendar cal = toCalendar();
         cal.add(datePart.getValue(), offset);
 
         final DateTime dt = mutable ? this : ObjectKit.clone(this);
@@ -413,7 +412,7 @@ public class DateTime extends Date {
      * @return 如果此对象为可变对象，返回自身，否则返回新对象
      */
     public DateTime offsetNew(final Various datePart, final int offset) {
-        final Calendar cal = toCalendar();
+        final java.util.Calendar cal = toCalendar();
         cal.add(datePart.getValue(), offset);
         return ObjectKit.clone(this).setTimeInternal(cal.getTimeInMillis());
     }
@@ -433,7 +432,7 @@ public class DateTime extends Date {
      * 获得日期的某个部分
      * 例如获得年的部分，则使用 getField(Calendar.YEAR)
      *
-     * @param field 表示日期的哪个部分的int值 {@link Calendar}
+     * @param field 表示日期的哪个部分的int值 {@link java.util.Calendar}
      * @return 某个部分的值
      */
     public int getField(final int field) {
@@ -456,12 +455,12 @@ public class DateTime extends Date {
      * 设置日期的某个部分
      * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
-     * @param field 表示日期的哪个部分的int值 {@link Calendar}
+     * @param field 表示日期的哪个部分的int值 {@link java.util.Calendar}
      * @param value 值
      * @return this
      */
     public DateTime setField(final int field, final int value) {
-        final Calendar calendar = toCalendar();
+        final java.util.Calendar calendar = toCalendar();
         calendar.set(field, value);
 
         DateTime dt = this;
@@ -527,7 +526,7 @@ public class DateTime extends Date {
 
     /**
      * 获得月份，从1开始计数
-     * 由于{@link Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
+     * 由于{@link java.util.Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
      *
      * @return 月份
      */
@@ -660,7 +659,7 @@ public class DateTime extends Date {
      * @return 是否为上午
      */
     public boolean isAM() {
-        return Calendar.AM == getField(Various.AM_PM);
+        return java.util.Calendar.AM == getField(Various.AM_PM);
     }
 
     /**
@@ -669,7 +668,7 @@ public class DateTime extends Date {
      * @return 是否为下午
      */
     public boolean isPM() {
-        return Calendar.PM == getField(Various.AM_PM);
+        return java.util.Calendar.PM == getField(Various.AM_PM);
     }
 
     /**
@@ -679,7 +678,7 @@ public class DateTime extends Date {
      */
     public boolean isWeekend() {
         final int dayOfWeek = dayOfWeek();
-        return Calendar.SATURDAY == dayOfWeek || Calendar.SUNDAY == dayOfWeek;
+        return java.util.Calendar.SATURDAY == dayOfWeek || java.util.Calendar.SUNDAY == dayOfWeek;
     }
 
     /**
@@ -694,9 +693,9 @@ public class DateTime extends Date {
     /**
      * 转换为Calendar, 默认 {@link Locale}
      *
-     * @return {@link Calendar}
+     * @return {@link java.util.Calendar}
      */
-    public Calendar toCalendar() {
+    public java.util.Calendar toCalendar() {
         return toCalendar(Locale.getDefault(Locale.Category.FORMAT));
     }
 
@@ -704,9 +703,9 @@ public class DateTime extends Date {
      * 转换为Calendar
      *
      * @param locale 地域 {@link Locale}
-     * @return {@link Calendar}
+     * @return {@link java.util.Calendar}
      */
-    public Calendar toCalendar(final Locale locale) {
+    public java.util.Calendar toCalendar(final Locale locale) {
         return toCalendar(this.timeZone, locale);
     }
 
@@ -714,9 +713,9 @@ public class DateTime extends Date {
      * 转换为Calendar
      *
      * @param zone 时区 {@link TimeZone}
-     * @return {@link Calendar}
+     * @return {@link java.util.Calendar}
      */
-    public Calendar toCalendar(final TimeZone zone) {
+    public java.util.Calendar toCalendar(final TimeZone zone) {
         return toCalendar(zone, Locale.getDefault(Locale.Category.FORMAT));
     }
 
@@ -725,13 +724,13 @@ public class DateTime extends Date {
      *
      * @param zone   时区 {@link TimeZone}
      * @param locale 地域 {@link Locale}
-     * @return {@link Calendar}
+     * @return {@link java.util.Calendar}
      */
-    public Calendar toCalendar(final TimeZone zone, Locale locale) {
+    public java.util.Calendar toCalendar(final TimeZone zone, Locale locale) {
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
-        final Calendar cal = (null != zone) ? Calendar.getInstance(zone, locale) : Calendar.getInstance(locale);
+        final java.util.Calendar cal = (null != zone) ? java.util.Calendar.getInstance(zone, locale) : java.util.Calendar.getInstance(locale);
         cal.setFirstDayOfWeek(firstDayOfWeek.getCode());
         if (minimalDaysInFirstWeek > 0) {
             cal.setMinimalDaysInFirstWeek(minimalDaysInFirstWeek);

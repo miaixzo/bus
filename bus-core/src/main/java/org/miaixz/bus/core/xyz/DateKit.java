@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.miaixz.bus.core.xyz;
 
+import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.*;
-import org.miaixz.bus.core.center.date.culture.*;
+import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+import org.miaixz.bus.core.center.date.culture.en.*;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
@@ -62,7 +64,7 @@ import java.util.stream.Collectors;
  * @see Fields 日期常用格式工具类
  * @since Java 17+
  */
-public class DateKit extends Calendars {
+public class DateKit extends Calendar {
 
     /**
      * 是否为上午
@@ -107,7 +109,7 @@ public class DateKit extends Calendars {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return Calendars.isSameDay(calendar(date1), calendar(date2));
+        return Calendar.isSameDay(calendar(date1), calendar(date2));
     }
 
     /**
@@ -122,7 +124,7 @@ public class DateKit extends Calendars {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return Calendars.isSameWeek(calendar(date1), calendar(date2), isMon);
+        return Calendar.isSameWeek(calendar(date1), calendar(date2), isMon);
     }
 
     /**
@@ -136,7 +138,7 @@ public class DateKit extends Calendars {
         if (date1 == null || date2 == null) {
             throw new IllegalArgumentException("The date must not be null");
         }
-        return Calendars.isSameMonth(calendar(date1), calendar(date2));
+        return Calendar.isSameMonth(calendar(date1), calendar(date2));
     }
 
     /**
@@ -185,7 +187,7 @@ public class DateKit extends Calendars {
      * @return 当天开始的时间
      */
     public static DateTime today() {
-        return new DateTime(beginOfDay(Calendar.getInstance()));
+        return new DateTime(beginOfDay(java.util.Calendar.getInstance()));
     }
 
     /**
@@ -266,13 +268,13 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * {@link Calendar}类型时间转为{@link DateTime}
-     * 始终根据已有{@link Calendar} 产生新的{@link DateTime}对象
+     * {@link java.util.Calendar}类型时间转为{@link DateTime}
+     * 始终根据已有{@link java.util.Calendar} 产生新的{@link DateTime}对象
      *
-     * @param calendar {@link Calendar}，如果传入{@code null}，返回{@code null}
+     * @param calendar {@link java.util.Calendar}，如果传入{@code null}，返回{@code null}
      * @return 时间对象
      */
-    public static DateTime date(final Calendar calendar) {
+    public static DateTime date(final java.util.Calendar calendar) {
         if (calendar == null) {
             return null;
         }
@@ -718,7 +720,7 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * 格式化为中文日期格式，如果isUppercase为false，则返回类似：2018年10月24日，否则返回二〇一八年十月二十四日
+     * 格式化为中文日期格式，如果isUppercase为false，则返回类似：2024年05月20日，否则返回二〇二四年五月二十日
      *
      * @param date        被格式化的日期
      * @param isUppercase 是否采用大写形式
@@ -734,7 +736,7 @@ public class DateKit extends Calendars {
             return (withTime ? Formatter.CN_DATE_TIME_FORMAT : Formatter.CN_DATE_FORMAT).format(date);
         }
 
-        return Calendars.formatChineseDate(Calendars.calendar(date), withTime);
+        return Calendar.formatChineseDate(Calendar.calendar(date), withTime);
     }
 
     /**
@@ -1611,7 +1613,7 @@ public class DateKit extends Calendars {
     }
 
     /**
-     * 计算生肖，只计算1900年后出生的人
+     * 计算生肖
      *
      * @param year 农历年
      * @return 生肖名
@@ -1677,7 +1679,7 @@ public class DateKit extends Calendars {
      * @return {@link Instant}对象
      */
     public static Instant toInstant(final TemporalAccessor temporalAccessor) {
-        return Almanac.toInstant(temporalAccessor);
+        return Calculate.toInstant(temporalAccessor);
     }
 
     /**

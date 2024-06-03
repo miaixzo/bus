@@ -65,37 +65,6 @@ public class PathRemover {
     }
 
     /**
-     * 删除文件或者文件夹，不追踪软链
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
-     *
-     * @throws InternalException IO异常
-     */
-    public void remove() throws InternalException {
-        final Path path = this.path;
-        if (Files.notExists(path)) {
-            return;
-        }
-
-        if (PathResolve.isDirectory(path)) {
-            remove(path);
-        } else {
-            removeFile(path);
-        }
-    }
-
-    /**
-     * 清空目录
-     */
-    public void clean() {
-        try (final Stream<Path> list = Files.list(this.path)) {
-            list.forEach(PathResolve::remove);
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
      * 删除目录
      *
      * @param path 目录路径
@@ -124,6 +93,37 @@ public class PathRemover {
                     return;
                 }
             }
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 删除文件或者文件夹，不追踪软链
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 某个文件删除失败会终止删除操作
+     *
+     * @throws InternalException IO异常
+     */
+    public void remove() throws InternalException {
+        final Path path = this.path;
+        if (Files.notExists(path)) {
+            return;
+        }
+
+        if (PathResolve.isDirectory(path)) {
+            remove(path);
+        } else {
+            removeFile(path);
+        }
+    }
+
+    /**
+     * 清空目录
+     */
+    public void clean() {
+        try (final Stream<Path> list = Files.list(this.path)) {
+            list.forEach(PathResolve::remove);
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }

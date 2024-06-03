@@ -25,17 +25,16 @@
  ********************************************************************************/
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.center.date.Calendars;
+import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.exception.DateException;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 /**
  * 通过给定的日期格式解析日期时间字符串。
- * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象，否则抛出{@link DateException}异常。
+ * 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -95,7 +94,7 @@ public class PatternsDateParser extends DefaultDatePrinter implements DateParser
 
     @Override
     public DateTime parse(final String source) {
-        return new DateTime(Calendars.parseByPatterns(source, this.locale, this.parsePatterns));
+        return new DateTime(Calendar.parseByPatterns(source, this.locale, this.parsePatterns));
     }
 
 }

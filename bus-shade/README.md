@@ -168,7 +168,7 @@ XEntryFilter and=Builder.and()
         .mix(new AntEntryFilter("com/company/project/**"))
         .mix(new AntEntryFilter("mapper/*Mapper.xml"));
 
-// 3. 非运算，即除此之外都满足，该例子中即排除项目或其他模块和第三方依赖jar中的静态文件。
+// 3. 非运算，即除此之外都满足，该示例中即排除项目或其他模块和第三方依赖jar中的静态文件。
         XEntryFilter not=Builder.not(
         XKit.or()
         .mix(new AntEntryFilter("static/**"))
