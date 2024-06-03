@@ -53,7 +53,7 @@
         <mybatis.version>3.5.16</mybatis.version>
         <mybatis.spring.version>3.0.3</mybatis.spring.version>
         <dubbo.version>3.2.11</dubbo.version>
-        <elasticsearch.version>7.17.20</elasticsearch.version>
+        <elasticsearch.version>7.17.21</elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -266,16 +266,16 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
             <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.zaxxer</groupId>
-                    <artifactId>HikariCP</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
             <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
@@ -313,14 +313,6 @@
             <version>${elasticsearch.version}</version>
             <optional>true</optional>
             <exclusions>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpcore</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
