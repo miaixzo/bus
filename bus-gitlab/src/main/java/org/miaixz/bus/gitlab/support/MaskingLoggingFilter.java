@@ -27,7 +27,6 @@ package org.miaixz.bus.gitlab.support;
 
 import org.glassfish.jersey.message.MessageUtils;
 
-import javax.annotation.Priority;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
@@ -54,7 +53,6 @@ import java.util.logging.Logger;
  * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in
  * such a way that it could be sub-classed and have its behavior modified.
  */
-@Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
 
     /**

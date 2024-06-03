@@ -44,10 +44,10 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <mybatis.version>3.5.16</mybatis.version>
-        <guava.version>33.1.0-jre</guava.version>
+        <guava.version>33.2.1-jre</guava.version>
         <jsqlparser.version>4.9</jsqlparser.version>
         <hikaricp.version>5.1.0</hikaricp.version>
-        <druid.version>1.2.22</druid.version>
+        <druid.version>1.2.23</druid.version>
     </properties>
 
     <dependencies>
@@ -80,16 +80,22 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${hikaricp.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
