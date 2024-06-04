@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Class AnimatedGifEncoder - Encodes a GIF file consisting of one or
- * more frames.
+ * Gif编码压缩
  * <pre>
- * Example:
  *    AnimatedGifEncoder e = new AnimatedGifEncoder();
  *    e.start(outputFileName);
  *    e.setDelay(1000);   // 1 frame per sec
@@ -20,25 +18,32 @@ import java.io.OutputStream;
  *    e.addFrame(image2);
  *    e.finish();
  * </pre>
- * No copyright asserted on the source code of this class.  May be used
- * for any purpose, however, refer to the Unisys LZW patent for restrictions
- * on use of the associated LZWEncoder class.  Please forward any corrections
- * to questions at fmsware.com.
  */
-
 public class AnimatedGifEncoder {
 
-    protected int width; // image size
+    /**
+     * 图片帧的宽度
+     */
+    protected int width;
+    /**
+     * 图片帧的高度
+     */
     protected int height;
     protected Color transparent = null; // transparent color if given
     protected boolean transparentExactMatch = false; // transparent color will be found by looking for the closest color
     // or for the exact color if transparentExactMatch == true
     protected Color background = null;  // background color if given
     protected int transIndex; // transparent index in color table
-    protected int repeat = -1; // no repeat
+    /**
+     * 重复设置，0表示无限重复
+     */
+    protected int repeat = -1;
     protected int delay = 0; // frame delay (hundredths)
     protected boolean started = false; // ready to output frames
     protected OutputStream out;
+    /**
+     * 当前帧
+     */
     protected BufferedImage image; // current frame
     protected byte[] pixels; // BGR byte array from frame
     protected byte[] indexedPixels; // converted frame indexed to palette

@@ -1,2 +1,0 @@
-ProviderTranceFilter=dubbo.binding.tracer.org.miaixz.bus.ProviderTraceFilter
-ConsumeTraceFilter=dubbo.binding.tracer.org.miaixz.bus.ConsumerTraceFilter
