@@ -507,7 +507,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * @return 当前月份
+     * @return 当前月份，从0开始计数
      */
     public static int thisMonth() {
         return month(now());

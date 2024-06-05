@@ -161,7 +161,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 
         // 获取共享字符串表
         // POI-5.2.0开始返回值有所变更，导致实际使用时提示方法未找到，此处使用反射调用，解决不同版本返回值变更问题
-        //this.handler.sharedStrings = xssfReader.getSharedStringsTable();
+        // this.handler.sharedStrings = xssfReader.getSharedStringsTable();
         this.handler.sharedStrings = MethodKit.invoke(xssfReader, "getSharedStringsTable");
 
         return readSheets(xssfReader, idOrRidOrSheetName);
@@ -252,7 +252,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
             }
         }
 
-        throw new IllegalArgumentException("Invalid rId or data or sheetName: " + idOrRidOrSheetName);
+        throw new IllegalArgumentException("Invalid rId or id or sheetName: " + idOrRidOrSheetName);
     }
 
 }

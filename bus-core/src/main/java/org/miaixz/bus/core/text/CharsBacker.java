@@ -605,7 +605,7 @@ public class CharsBacker extends StringValidator {
     }
 
     /**
-     * 检查指定字符串中是否只包含给定的字符<br>
+     * 检查指定字符串中是否只包含给定的字符
      * 这里的containsOnly并不是必须全部给定的args都需要有，而是一个子集。
      * args是个限定集合，检查字符串中的字符是否在这个限定集合中。
      * <ul>

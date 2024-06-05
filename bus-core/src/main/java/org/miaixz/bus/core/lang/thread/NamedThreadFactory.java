@@ -69,6 +69,15 @@ public class NamedThreadFactory implements ThreadFactory {
     /**
      * 构造
      *
+     * @param prefix 线程名前缀
+     */
+    public NamedThreadFactory(String prefix) {
+        this(prefix, true);
+    }
+
+    /**
+     * 构造
+     *
      * @param prefix   线程名前缀
      * @param isDaemon 是否守护线程
      */

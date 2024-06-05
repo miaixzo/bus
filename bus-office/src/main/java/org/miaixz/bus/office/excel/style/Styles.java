@@ -26,6 +26,9 @@
 package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -79,30 +82,30 @@ public class Styles {
      *
      * @param cellStyle  {@link CellStyle}
      * @param borderSize 边框粗细{@link BorderStyle}枚举
-     * @param colorIndex 颜色的short值
+     * @param colorIndex 预定义颜色的short值，见{@link IndexedColors}枚举
      * @return {@link CellStyle}
      */
     public static CellStyle setBorder(final CellStyle cellStyle, final BorderStyle borderSize, final IndexedColors colorIndex) {
-        cellStyle.setBorderBottom(borderSize);
-        cellStyle.setBottomBorderColor(colorIndex.index);
+        return setBorder(cellStyle, CellBorderStyle.of(borderSize, colorIndex));
+    }
 
-        cellStyle.setBorderLeft(borderSize);
-        cellStyle.setLeftBorderColor(colorIndex.index);
-
-        cellStyle.setBorderRight(borderSize);
-        cellStyle.setRightBorderColor(colorIndex.index);
-
-        cellStyle.setBorderTop(borderSize);
-        cellStyle.setTopBorderColor(colorIndex.index);
-
-        return cellStyle;
+    /**
+     * 设置cell的四个边框粗细和颜色
+     *
+     * @param cellStyle       {@link CellStyle}
+     * @param cellBorderStyle {@link CellBorderStyle}单元格边框样式和颜色
+     *                        }
+     * @return {@link CellStyle}
+     */
+    public static CellStyle setBorder(final CellStyle cellStyle, final CellBorderStyle cellBorderStyle) {
+        return cellBorderStyle.setTo(cellStyle);
     }
 
     /**
      * 给cell设置颜色
      *
      * @param cellStyle   {@link CellStyle}
-     * @param color       背景颜色
+     * @param color       预定义的背景颜色，见{@link IndexedColors}枚举
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
@@ -111,16 +114,30 @@ public class Styles {
     }
 
     /**
-     * 给cell设置颜色
+     * 给cell设置颜色（即单元格背景色）
+     *
+     * @param cellStyle   {@link CellStyle}
+     * @param color       预定义的背景颜色，见{@link IndexedColors}枚举
+     * @param fillPattern 填充方式 {@link FillPatternType}枚举
+     * @return {@link CellStyle}
+     */
+    public static CellStyle setColor(final CellStyle cellStyle, final short color, final FillPatternType fillPattern) {
+        cellStyle.setFillForegroundColor(color);
+        cellStyle.setFillPattern(ObjectKit.defaultIfNull(fillPattern, FillPatternType.SOLID_FOREGROUND));
+        return cellStyle;
+    }
+
+    /**
+     * 给cell设置颜色（即单元格背景色）
      *
      * @param cellStyle   {@link CellStyle}
      * @param color       背景颜色
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setColor(final CellStyle cellStyle, final short color, final FillPatternType fillPattern) {
+    public static CellStyle setColor(final XSSFCellStyle cellStyle, final XSSFColor color, final FillPatternType fillPattern) {
         cellStyle.setFillForegroundColor(color);
-        cellStyle.setFillPattern(fillPattern);
+        cellStyle.setFillPattern(ObjectKit.defaultIfNull(fillPattern, FillPatternType.SOLID_FOREGROUND));
         return cellStyle;
     }
 

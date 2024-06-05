@@ -27,8 +27,9 @@ package org.miaixz.bus.office.excel;
 
 import org.apache.poi.common.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.miaixz.bus.core.center.map.TableMap;
@@ -43,7 +44,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.cell.CellLocation;
+import org.miaixz.bus.office.excel.style.DefaultStyleSet;
+import org.miaixz.bus.office.excel.style.StyleSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -182,7 +184,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter(final Sheet sheet) {
         super(sheet);
-        this.styleSet = new StyleSet(workbook);
+        this.styleSet = new DefaultStyleSet(workbook);
         this.currentRow = new AtomicInteger(0);
     }
 
@@ -325,27 +327,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter setStyleSet(final StyleSet styleSet) {
         this.styleSet = styleSet;
         return this;
-    }
-
-    /**
-     * 获取头部样式，获取样式后可自定义样式
-     *
-     * @return 头部样式
-     */
-    public CellStyle getHeadCellStyle() {
-        return this.styleSet.headCellStyle;
-    }
-
-    /**
-     * 获取单元格样式，获取样式后可自定义样式
-     *
-     * @return 单元格样式
-     */
-    public CellStyle getCellStyle() {
-        if (null == this.styleSet) {
-            return null;
-        }
-        return this.styleSet.cellStyle;
     }
 
     /**
@@ -554,11 +535,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      * @throws UnsupportedOperationException 如果sheet不是XSSFSheet
      */
-    public ExcelWriter addIgnoredErrors(final CellRangeAddress cellRangeAddress, final IgnoredErrorType... ignoredErrorTypes) throws UnsupportedOperationException {
+    public ExcelWriter addIgnoredErrors(final org.apache.poi.ss.util.CellRangeAddress cellRangeAddress, final IgnoredErrorType... ignoredErrorTypes) throws UnsupportedOperationException {
         final Sheet sheet = this.sheet;
         if (sheet instanceof XSSFSheet) {
             ((XSSFSheet) sheet).addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
             return this;
+        } else if (sheet instanceof SXSSFSheet) {
+            // SXSSFSheet并未提供忽略错误方法，获得其内部_sh字段设置
+            final XSSFSheet xssfSheet = (XSSFSheet) FieldKit.getFieldValue(sheet, "_sh");
+            if (null != xssfSheet) {
+                xssfSheet.addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
+            }
         }
 
         throw new UnsupportedOperationException("Only XSSFSheet supports addIgnoredErrors");
@@ -614,7 +601,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 合并当前行的单元格
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
      * @return this
@@ -626,7 +612,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 合并当前行的单元格，并写入对象到单元格
      * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
      * @param content    合并单元格后的内容
@@ -639,7 +624,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 合并某行的单元格，并写入对象到单元格
      * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn       合并到的最后一个列号
      * @param content          合并单元格后的内容
@@ -650,7 +634,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
 
         final int rowIndex = this.currentRow.get();
-        merge(rowIndex, rowIndex, 0, lastColumn, content, isSetHeaderStyle);
+        merge(CellKit.ofSingleRow(rowIndex, lastColumn), content, isSetHeaderStyle);
 
         // 设置内容后跳到下一行
         if (null != content) {
@@ -661,47 +645,40 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 合并某行的单元格，并写入对象到单元格
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
-     * @param firstRow         起始行，0开始
-     * @param lastRow          结束行，0开始
-     * @param firstColumn      起始列，0开始
-     * @param lastColumn       结束列，0开始
+     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
      * @param content          合并单元格后的内容
      * @param isSetHeaderStyle 是否为合并后的单元格设置默认标题样式，只提取边框样式
      * @return this
      */
-    public ExcelWriter merge(final int firstRow, final int lastRow, final int firstColumn, final int lastColumn, final Object content, final boolean isSetHeaderStyle) {
+    public ExcelWriter merge(final org.apache.poi.ss.util.CellRangeAddress cellRangeAddress, final Object content, final boolean isSetHeaderStyle) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
 
         CellStyle style = null;
         if (null != this.styleSet) {
-            style = styleSet.getStyleByValueType(content, isSetHeaderStyle);
+            style = styleSet.getStyleFor(new CellReference(cellRangeAddress.getFirstRow(), cellRangeAddress.getFirstColumn()), content, isSetHeaderStyle);
         }
 
-        return merge(firstRow, lastRow, firstColumn, lastColumn, content, style);
+        return merge(cellRangeAddress, content, style);
     }
 
     /**
      * 合并单元格，并写入对象到单元格,使用指定的样式
      * 指定样式传入null，则不使用任何样式
      *
-     * @param firstRow    起始行，0开始
-     * @param lastRow     结束行，0开始
-     * @param firstColumn 起始列，0开始
-     * @param lastColumn  结束列，0开始
-     * @param content     合并单元格后的内容
-     * @param cellStyle   合并后单元格使用的样式，可以为null
+     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
+     * @param content          合并单元格后的内容
+     * @param cellStyle        合并后单元格使用的样式，可以为null
      * @return this
      */
-    public ExcelWriter merge(final int firstRow, final int lastRow, final int firstColumn, final int lastColumn, final Object content, final CellStyle cellStyle) {
+    public ExcelWriter merge(final org.apache.poi.ss.util.CellRangeAddress cellRangeAddress, final Object content, final CellStyle cellStyle) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
 
-        CellKit.mergingCells(this.getSheet(), firstRow, lastRow, firstColumn, lastColumn, cellStyle);
+        CellKit.mergingCells(this.getSheet(), cellRangeAddress, cellStyle);
 
         // 设置内容
         if (null != content) {
-            final Cell cell = getOrCreateCell(firstColumn, firstRow);
+            final Cell cell = getOrCreateCell(cellRangeAddress.getFirstColumn(), cellRangeAddress.getFirstRow());
             CellKit.setCellValue(cell, content, cellStyle, this.cellEditor);
         }
         return this;
@@ -710,7 +687,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      * 默认的，当当前行号为0时，写出标题（如果为Map或Bean），否则不写标题
      *
      * <p>
@@ -733,7 +709,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * <p>
      * data中元素支持的类型有：
@@ -764,7 +739,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      * data中元素支持的类型有：
      *
      * <p>
@@ -805,7 +779,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param col2    指定结束的列，下标从0开始
      * @param row2    指定结束的行，下标从0开始
      * @return this
-     * vhukze
      */
     public ExcelWriter writeImg(final File imgFile, final int col1, final int row1, final int col2, final int row2) {
         return this.writeImg(imgFile, 0, 0, 0, 0, col1, row1, col2, row2);
@@ -825,7 +798,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param col2    指定结束的列，下标从0开始
      * @param row2    指定结束的行，下标从0开始
      * @return this
-     * vhukze
      */
     public ExcelWriter writeImg(final File imgFile, final int dx1, final int dy1, final int dx2, final int dy2, final int col1, final int row1,
                                 final int col2, final int row2) {
@@ -847,7 +819,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param col2    指定结束的列，下标从0开始
      * @param row2    指定结束的行，下标从0开始
      * @return this
-     * vhukze
      */
     public ExcelWriter writeImg(final File imgFile, final int imgType, final int dx1, final int dy1, final int dx2,
                                 final int dy2, final int col1, final int row1, final int col2, final int row2) {
@@ -870,7 +841,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param col2        指定结束的列，下标从0开始
      * @param row2        指定结束的行，下标从0开始
      * @return this
-     * vhukze
      */
     public ExcelWriter writeImg(final byte[] pictureData, final int imgType, final int dx1, final int dy1, final int dx2,
                                 final int dy2, final int col1, final int row1, final int col2, final int row2) {
@@ -893,7 +863,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 写出一行标题数据
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
      * @return this
@@ -917,7 +886,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 写出复杂标题的第二行标题数据
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * <p>
      * 此方法的逻辑是：将一行数据写出到当前行，遇到已存在的单元格跳过，不存在的创建并赋值。
@@ -978,7 +946,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         } else if (rowBean instanceof Hyperlink) {
             // Hyperlink当成一个值
             return writeRow(ListKit.of(rowBean), isWriteKeyAsHead);
-        } else if (BeanKit.isWritableBean(rowBean.getClass())) {
+        } else if (BeanKit.isReadableBean(rowBean.getClass())) {
             if (MapKit.isEmpty(this.headerAlias)) {
                 rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
@@ -1044,7 +1012,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 写出一行数据
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
      * @return this
@@ -1059,7 +1026,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 从第1列开始按列写入数据(index 从0开始)
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param colMap           一列的数据
      * @param isWriteKeyAsHead 是否将Map的Key作为表头输出，如果为True第一行为表头，紧接着为values
@@ -1073,7 +1039,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 从指定列开始按列写入数据(index 从0开始)
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param colMap           一列的数据
      * @param startColIndex    起始的列号，从0开始
@@ -1096,7 +1061,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 为第一列写入数据
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param headerVal       表头名称,如果为null则不写入
      * @param colData         需要写入的列数据
@@ -1111,7 +1075,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 为第指定列写入数据
      * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param headerVal       表头名称,如果为null则不写入
      * @param colIndex        列index
@@ -1144,8 +1107,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter writeCellValue(final String locationRef, final Object value) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return writeCellValue(cellLocation.getX(), cellLocation.getY(), value);
+        final CellReference cellReference = new CellReference(locationRef);
+        return writeCellValue(cellReference.getCol(), cellReference.getRow(), value);
     }
 
     /**
@@ -1179,8 +1142,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 设置某个单元格的样式
      * 此方法用于多个单元格共享样式的情况
      * 可以调用{@link #getOrCreateCellStyle(int, int)} 方法创建或取得一个样式对象。
-     *
-     * <p>
      * 需要注意的是，共享样式会共享同一个{@link CellStyle}，一个单元格样式改变，全部改变。
      *
      * @param style       单元格样式
@@ -1188,16 +1149,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter setStyle(final CellStyle style, final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return setStyle(style, cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return setStyle(style, cellReference.getCol(), cellReference.getRow());
     }
 
     /**
      * 设置某个单元格的样式
      * 此方法用于多个单元格共享样式的情况
      * 可以调用{@link #getOrCreateCellStyle(int, int)} 方法创建或取得一个样式对象。
-     *
-     * <p>
      * 需要注意的是，共享样式会共享同一个{@link CellStyle}，一个单元格样式改变，全部改变。
      *
      * @param style 单元格样式
@@ -1226,7 +1185,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 对数据行整行加自定义样式 仅对数据单元格设置 write后调用
-     * <p>
      * {@link ExcelWriter#setRowStyle(int, org.apache.poi.ss.usermodel.CellStyle)}
      * 这个方法加的样式会使整行没有数据的单元格也有样式
      * 特别是加背景色时很不美观 且有数据的单元格样式会被StyleSet中的样式覆盖掉
@@ -1237,7 +1195,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter setRowStyleIfHasData(final int y, final CellStyle style) {
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
+            throw new IllegalArgumentException("Invalid row number (" + y + ")");
         }
         final int columnCount = this.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
@@ -1260,7 +1218,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 设置整个列的样式 仅对数据单元格设置 write后调用
-     * <p>
      * {@link ExcelWriter#setColumnStyle(int, org.apache.poi.ss.usermodel.CellStyle)}
      * 这个方法加的样式会使整列没有数据的单元格也有样式
      * 特别是加背景色时很不美观 且有数据的单元格样式会被StyleSet中的样式覆盖掉

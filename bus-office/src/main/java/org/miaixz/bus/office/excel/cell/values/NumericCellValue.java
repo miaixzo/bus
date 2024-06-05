@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.office.excel.ExcelDate;
+import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.cell.CellValue;
 
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ public class NumericCellValue implements CellValue<Object> {
         final CellStyle style = cell.getCellStyle();
         if (null != style) {
             // 判断是否为日期
-            if (ExcelDate.isDateFormat(cell)) {
+            if (Builder.isDateFormat(cell)) {
                 final LocalDateTime date = cell.getLocalDateTimeCellValue();
                 // 1899年写入会导致数据错乱，读取到1899年证明这个单元格的信息不关注年月日
                 if (1899 == date.getYear()) {

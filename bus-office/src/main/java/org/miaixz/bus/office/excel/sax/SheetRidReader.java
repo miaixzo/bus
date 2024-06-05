@@ -44,10 +44,9 @@ import java.util.Map;
 /**
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系，类似于:
  * <pre>
- * &lt;sheet name="Sheet6" sheetId="4" r:data="rId6"/&gt;
+ *  sheet name="Sheet6" sheetId="4" r:id="rId6"
  * </pre>
  * 读取结果为：
- *
  * <pre>
  *     {"4": "6"}
  * </pre>
@@ -57,10 +56,10 @@ import java.util.Map;
  */
 public class SheetRidReader extends DefaultHandler {
 
-    private static final String TAG_NAME = "sheet";
-    private static final String RID_ATTR = "r:data";
-    private static final String SHEET_ID_ATTR = "sheetId";
-    private static final String NAME_ATTR = "name";
+    private final static String TAG_NAME = "sheet";
+    private final static String RID_ATTR = "r:id";
+    private final static String SHEET_ID_ATTR = "sheetId";
+    private final static String NAME_ATTR = "name";
     private final Map<Integer, Integer> ID_RID_MAP = new LinkedHashMap<>();
     private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
 
@@ -85,9 +84,7 @@ public class SheetRidReader extends DefaultHandler {
         try {
             workbookData = xssfReader.getWorkbookData();
             ExcelSax.readFrom(workbookData, this);
-        } catch (final InvalidFormatException e) {
-            throw new InternalException(e);
-        } catch (final IOException e) {
+        } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(workbookData);

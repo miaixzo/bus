@@ -399,6 +399,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * 内部Buffer
      */
     private static class Buffer implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         final char[] buf;

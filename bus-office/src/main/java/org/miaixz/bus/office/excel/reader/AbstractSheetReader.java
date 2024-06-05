@@ -28,9 +28,9 @@ package org.miaixz.bus.office.excel.reader;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.office.excel.ExcelKit;
 import org.miaixz.bus.office.excel.RowKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.cell.CellKit;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -149,7 +149,7 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
      */
     protected String aliasHeader(final Object headerObj, final int index) {
         if (null == headerObj) {
-            return ExcelKit.indexToColName(index);
+            return CellKit.indexToColName(index);
         }
 
         final String header = headerObj.toString();

@@ -36,10 +36,11 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.office.excel.ExcelDate;
+import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -183,9 +184,9 @@ public class ExcelSax {
      * @param handler      文档内容处理接口，实现此接口用于回调处理数据
      * @throws DependencyException 依赖异常
      * @throws InternalException   POI异常，包装了SAXException
-     * @throws InternalException   IO异常，如流关闭或异常等
+     * @throws RevisedException    IO异常，如流关闭或异常等
      */
-    public static void readFrom(final InputStream xmlDocStream, final ContentHandler handler) throws DependencyException, InternalException, InternalException {
+    public static void readFrom(final InputStream xmlDocStream, final ContentHandler handler) throws DependencyException, InternalException, RevisedException {
         final XMLReader xmlReader;
         try {
             xmlReader = XMLHelper.newXMLReader();
@@ -200,7 +201,7 @@ public class ExcelSax {
         try {
             xmlReader.parse(new InputSource(xmlDocStream));
         } catch (final IOException e) {
-            throw new InternalException(e);
+            throw new RevisedException(e);
         } catch (final SAXException e) {
             throw new InternalException(e);
         }
@@ -225,10 +226,10 @@ public class ExcelSax {
      * @param formatIndex  格式索引，一般用于内建格式
      * @param formatString 格式字符串
      * @return 是否为日期格式
-     * @see ExcelDate#isDateFormat(int, String)
+     * @see Builder#isDateFormat(int, String)
      */
     public static boolean isDateFormat(final int formatIndex, final String formatString) {
-        return ExcelDate.isDateFormat(formatIndex, formatString);
+        return Builder.isDateFormat(formatIndex, formatString);
     }
 
     /**
@@ -292,7 +293,6 @@ public class ExcelSax {
         // 普通数字
         if (null != numFmtString && !StringKit.contains(numFmtString, Symbol.C_DOT)) {
             final long longPart = (long) numValue;
-            //noinspection RedundantIfStatement
             if (longPart == numValue) {
                 // 对于无小数部分的数字类型，转为Long
                 return longPart;

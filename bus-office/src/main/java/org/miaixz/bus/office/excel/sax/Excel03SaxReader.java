@@ -83,7 +83,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
     private boolean isOutputNextStringRecord;
-    // 存储行记录的容器
+    /**
+     * 存储行记录的容器
+     */
     private List<Object> rowCellList = new ArrayList<>();
     /**
      * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
@@ -380,7 +382,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @return sheet索引，从0开始
      */
     private int getSheetIndex(final String idOrRidOrSheetName) {
-        Assert.notBlank(idOrRidOrSheetName, "data or rid or sheetName must be not blank!");
+        Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
 
         // rid直接处理
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {

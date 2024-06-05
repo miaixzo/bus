@@ -196,4 +196,5 @@ public class BigExcelWriter extends ExcelWriter {
         ((SXSSFWorkbook) this.workbook).dispose();
         super.closeWithoutFlush();
     }
+
 }

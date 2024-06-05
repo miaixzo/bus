@@ -334,7 +334,7 @@ public class Secure {
     }
 
     /**
-     * 从字符串中加载私钥<br>
+     * 从字符串中加载私钥
      * 加载时使用的是PKCS8EncodedKeySpec（PKCS#8编码的Key指令）。
      *
      * @param privateKeyStr 私钥

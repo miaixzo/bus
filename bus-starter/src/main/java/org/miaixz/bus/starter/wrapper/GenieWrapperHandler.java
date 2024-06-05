@@ -61,7 +61,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * </pre>
      *
      * <p>
-     * otherHeaderNames参数用于自定义检测的Header<br>
+     * otherHeaderNames参数用于自定义检测的Header
      * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
      * </p>
      *

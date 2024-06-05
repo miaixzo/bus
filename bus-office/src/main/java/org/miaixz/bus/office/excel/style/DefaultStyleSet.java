@@ -23,11 +23,11 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import org.miaixz.bus.office.excel.style.Styles;
+import org.apache.poi.ss.util.CellReference;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -36,44 +36,46 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 样式集合，此样式集合汇集了整个工作簿的样式，用于减少样式的创建和冗余
+ * 默认样式集合，定义了标题、数字、日期等默认样式
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StyleSet implements Serializable {
+public class DefaultStyleSet implements StyleSet, Serializable {
+
     private static final long serialVersionUID = -1L;
-    /**
-     * 标题样式
-     */
-    protected final CellStyle headCellStyle;
-    /**
-     * 默认样式
-     */
-    protected final CellStyle cellStyle;
-    /**
-     * 默认数字样式
-     */
-    protected final CellStyle cellStyleForNumber;
-    /**
-     * 默认日期样式
-     */
-    protected final CellStyle cellStyleForDate;
-    /**
-     * 默认链接样式
-     */
-    protected final CellStyle cellStyleForHyperlink;
+
     /**
      * 工作簿引用
      */
     private final Workbook workbook;
+    /**
+     * 标题样式
+     */
+    private final CellStyle headCellStyle;
+    /**
+     * 默认样式
+     */
+    private final CellStyle cellStyle;
+    /**
+     * 默认数字样式
+     */
+    private final CellStyle cellStyleForNumber;
+    /**
+     * 默认日期样式
+     */
+    private final CellStyle cellStyleForDate;
+    /**
+     * 默认链接样式
+     */
+    private final CellStyle cellStyleForHyperlink;
 
     /**
      * 构造
      *
      * @param workbook 工作簿
      */
-    public StyleSet(final Workbook workbook) {
+    public DefaultStyleSet(final Workbook workbook) {
         this.workbook = workbook;
         this.headCellStyle = Styles.createHeadCellStyle(workbook);
         this.cellStyle = Styles.createDefaultCellStyle(workbook);
@@ -91,10 +93,44 @@ public class StyleSet implements Serializable {
 
         // 默认链接样式
         this.cellStyleForHyperlink = Styles.cloneCellStyle(workbook, this.cellStyle);
-        final Font font = this.workbook.createFont();
+        final Font font = workbook.createFont();
         font.setUnderline((byte) 1);
         font.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
         this.cellStyleForHyperlink.setFont(font);
+    }
+
+
+    @Override
+    public CellStyle getStyleFor(final CellReference reference, final Object cellValue, final boolean isHeader) {
+        CellStyle style = null;
+
+        if (isHeader && null != this.headCellStyle) {
+            style = headCellStyle;
+        } else if (null != cellStyle) {
+            style = cellStyle;
+        }
+
+        if (cellValue instanceof Date
+                || cellValue instanceof TemporalAccessor
+                || cellValue instanceof Calendar) {
+            // 日期单独定义格式
+            if (null != this.cellStyleForDate) {
+                style = this.cellStyleForDate;
+            }
+        } else if (cellValue instanceof Number) {
+            // 数字单独定义格式
+            if ((cellValue instanceof Double || cellValue instanceof Float || cellValue instanceof BigDecimal) &&
+                    null != this.cellStyleForNumber) {
+                style = this.cellStyleForNumber;
+            }
+        } else if (cellValue instanceof Hyperlink) {
+            // 自定义超链接样式
+            if (null != this.cellStyleForHyperlink) {
+                style = this.cellStyleForHyperlink;
+            }
+        }
+
+        return style;
     }
 
     /**
@@ -137,6 +173,7 @@ public class StyleSet implements Serializable {
      * 获取链接单元格样式，获取后可以定义整体链接样式
      *
      * @return 链接单元格样式
+     * @since 5.7.13
      */
     public CellStyle getCellStyleForHyperlink() {
         return this.cellStyleForHyperlink;
@@ -148,8 +185,9 @@ public class StyleSet implements Serializable {
      * @param borderSize 边框粗细{@link BorderStyle}枚举
      * @param colorIndex 颜色的short值
      * @return this
+     * @since 4.0.0
      */
-    public StyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
+    public DefaultStyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
         Styles.setBorder(this.headCellStyle, borderSize, colorIndex);
         Styles.setBorder(this.cellStyle, borderSize, colorIndex);
         Styles.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
@@ -164,8 +202,9 @@ public class StyleSet implements Serializable {
      * @param halign 横向位置
      * @param valign 纵向位置
      * @return this
+     * @since 4.0.0
      */
-    public StyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
+    public DefaultStyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
         Styles.setAlign(this.headCellStyle, halign, valign);
         Styles.setAlign(this.cellStyle, halign, valign);
         Styles.setAlign(this.cellStyleForNumber, halign, valign);
@@ -180,8 +219,9 @@ public class StyleSet implements Serializable {
      * @param backgroundColor 背景色
      * @param withHeadCell    是否也定义头部样式
      * @return this
+     * @since 4.0.0
      */
-    public StyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
+    public DefaultStyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
         if (withHeadCell) {
             Styles.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         }
@@ -201,7 +241,7 @@ public class StyleSet implements Serializable {
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
-    public StyleSet setFont(final short color, final short fontSize, final String fontName, final boolean ignoreHead) {
+    public DefaultStyleSet setFont(final short color, final short fontSize, final String fontName, final boolean ignoreHead) {
         final Font font = Styles.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);
     }
@@ -212,8 +252,9 @@ public class StyleSet implements Serializable {
      * @param font       字体，可以通过{@link Styles#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
+     * @since 4.1.0
      */
-    public StyleSet setFont(final Font font, final boolean ignoreHead) {
+    public DefaultStyleSet setFont(final Font font, final boolean ignoreHead) {
         if (!ignoreHead) {
             this.headCellStyle.setFont(font);
         }
@@ -228,52 +269,13 @@ public class StyleSet implements Serializable {
      * 设置单元格文本自动换行
      *
      * @return this
+     * @since 4.5.16
      */
-    public StyleSet setWrapText() {
+    public DefaultStyleSet setWrapText() {
         this.cellStyle.setWrapText(true);
         this.cellStyleForNumber.setWrapText(true);
         this.cellStyleForDate.setWrapText(true);
         this.cellStyleForHyperlink.setWrapText(true);
         return this;
     }
-
-    /**
-     * 获取值对应的公共单元格样式
-     *
-     * @param value    值
-     * @param isHeader 是否为标题单元格
-     * @return 值对应单元格样式
-     */
-    public CellStyle getStyleByValueType(final Object value, final boolean isHeader) {
-        CellStyle style = null;
-
-        if (isHeader && null != this.headCellStyle) {
-            style = headCellStyle;
-        } else if (null != cellStyle) {
-            style = cellStyle;
-        }
-
-        if (value instanceof Date
-                || value instanceof TemporalAccessor
-                || value instanceof Calendar) {
-            // 日期单独定义格式
-            if (null != this.cellStyleForDate) {
-                style = this.cellStyleForDate;
-            }
-        } else if (value instanceof Number) {
-            // 数字单独定义格式
-            if ((value instanceof Double || value instanceof Float || value instanceof BigDecimal) &&
-                    null != this.cellStyleForNumber) {
-                style = this.cellStyleForNumber;
-            }
-        } else if (value instanceof Hyperlink) {
-            // 自定义超链接样式
-            if (null != this.cellStyleForHyperlink) {
-                style = this.cellStyleForHyperlink;
-            }
-        }
-
-        return style;
-    }
-
 }
