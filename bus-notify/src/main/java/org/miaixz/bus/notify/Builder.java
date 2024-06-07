@@ -25,11 +25,9 @@
  ********************************************************************************/
 package org.miaixz.bus.notify;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * 构造信息
@@ -41,18 +39,8 @@ import org.miaixz.bus.core.lang.Symbol;
 @Setter
 public class Builder {
 
-    @Getter
-    @AllArgsConstructor
-    public enum ErrorCode {
-
-        SUCCESS(Symbol.ZERO, "Success"),
-        FAILURE("-1", "Failure"),
-        UNSUPPORTED("5003", "Unsupported operation");
-
-        private String code;
-        private String msg;
-
-    }
+    private static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded;charset=UTF-8";
+    private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
 
     /**
      * 缓存类型

@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -74,8 +74,8 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
             Logger.error(message);
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getMsg())
                 .build();
     }
 

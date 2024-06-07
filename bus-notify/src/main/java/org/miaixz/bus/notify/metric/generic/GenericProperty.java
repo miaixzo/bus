@@ -27,7 +27,6 @@ package org.miaixz.bus.notify.metric.generic;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,7 +42,6 @@ import java.io.File;
  */
 @Getter
 @Setter
-@SuperBuilder
 public class GenericProperty extends Property {
 
     private static final String SMTP_HOST = "mail.smtp.host";

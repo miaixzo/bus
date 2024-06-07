@@ -29,8 +29,8 @@ import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -83,7 +83,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
         String curTime = String.valueOf((new Date()).getTime() / 1000L);
         HashMap<String, String> map = new HashMap<>();
         map.put("AppKey", context.getAppKey());
-        map.put("Nonce", context.getAppNonce());
+        map.put("Nonce", context.getNonce());
         map.put("CurTime", curTime);
         map.put("CheckSum", getCheckSum(curTime));
         return map;
@@ -96,7 +96,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
         Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(String.valueOf(Http.HTTP_OK).equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
+                .errcode(String.valueOf(Http.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
     }
 
@@ -107,7 +107,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
      * @return 结果
      */
     private String getCheckSum(String curTime) {
-        return encode(context.getAppSecret() + context.getAppNonce() + curTime);
+        return encode(context.getAppSecret() + context.getNonce() + curTime);
     }
 
 }

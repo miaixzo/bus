@@ -27,7 +27,6 @@ package org.miaixz.bus.notify.magic;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
@@ -39,7 +38,6 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@SuperBuilder
 public class Property {
 
     /**
@@ -54,6 +52,7 @@ public class Property {
 
     /**
      * 接收者
+     * 采用','风格
      */
     protected String receive;
 

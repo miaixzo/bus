@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
@@ -68,13 +68,13 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
         Collection<UpyunProperty.MessageId> list = JsonKit.toList(response, UpyunProperty.MessageId.class);
         if (CollKit.isEmpty(list)) {
             return Message.builder()
-                    .errcode(Builder.ErrorCode.FAILURE.getCode())
-                    .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                    .errcode(ErrorCode.FAILURE.getCode())
+                    .errmsg(ErrorCode.FAILURE.getMsg())
                     .build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunProperty.MessageId::succeed);
-        String errcode = succeed ? Builder.ErrorCode.SUCCESS.getCode() : Builder.ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? Builder.ErrorCode.SUCCESS.getMsg() : Builder.ErrorCode.FAILURE.getMsg();
+        String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
 
         return Message.builder()
                 .errcode(errcode)

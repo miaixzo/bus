@@ -27,10 +27,10 @@ package org.miaixz.bus.starter.notify;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
 import org.miaixz.bus.notify.Registry;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.aliyun.AliyunEmailProvider;
 import org.miaixz.bus.notify.metric.aliyun.AliyunSmsProvider;
 import org.miaixz.bus.notify.metric.aliyun.AliyunVmsProvider;
@@ -132,7 +132,7 @@ public class NotifyProviderService {
         } else if (Registry.YUNPIAN_SMS.equals(registry)) {
             return new YunpianSmsProvider(context);
         }
-        throw new InternalException(Builder.ErrorCode.UNSUPPORTED.getMsg());
+        throw new InternalException(ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }

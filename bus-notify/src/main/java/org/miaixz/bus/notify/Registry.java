@@ -50,9 +50,21 @@ public enum Registry {
      */
     BAIDU_SMS,
     /**
+     * 容连云
+     */
+    CLOOPEN_SMS,
+    /**
+     * 天翼云
+     */
+    CTYUN_SMS,
+    /**
      * 企业钉钉
      */
     DINGTALK,
+    /**
+     * 亿美软通
+     */
+    EMAY_SMS,
     /**
      * 系统邮件
      */
@@ -82,6 +94,10 @@ public enum Registry {
      */
     TENCENT_SMS,
     /**
+     * 合一
+     */
+    UNI_SMS,
+    /**
      * 又拍云短信
      */
     UPYUN_SMS,
@@ -104,6 +120,10 @@ public enum Registry {
     /**
      * 云片短信
      */
-    YUNPIAN_SMS
+    YUNPIAN_SMS,
+    /**
+     * 助通
+     */
+    ZHUTONG_SMS
 
 }

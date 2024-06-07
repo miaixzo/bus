@@ -31,8 +31,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
@@ -74,7 +74,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
         String response = Httpx.post(entity.getUrl(), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
-                .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? Builder.ErrorCode.SUCCESS.getCode() : errcode)
+                .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg"))
                 .build();
     }

@@ -27,7 +27,6 @@ package org.miaixz.bus.notify.metric.netease;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -38,7 +37,6 @@ import org.miaixz.bus.notify.magic.Property;
  */
 @Getter
 @Setter
-@SuperBuilder
 public class NeteaseProperty extends Property {
 
 }

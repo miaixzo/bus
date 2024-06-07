@@ -27,7 +27,6 @@ package org.miaixz.bus.notify.metric.upyun;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.notify.magic.Property;
 
@@ -39,7 +38,6 @@ import org.miaixz.bus.notify.magic.Property;
  */
 @Getter
 @Setter
-@SuperBuilder
 public class UpyunProperty extends Property {
 
     /**

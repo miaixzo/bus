@@ -27,7 +27,6 @@ package org.miaixz.bus.notify.metric.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -38,7 +37,6 @@ import org.miaixz.bus.notify.magic.Property;
  */
 @Getter
 @Setter
-@SuperBuilder
 public class DingTalkProperty extends Property {
 
     /**
@@ -57,6 +55,10 @@ public class DingTalkProperty extends Property {
      * 是否发送给企业全部用户 true,false
      */
     private boolean toAllUser;
+    /**
+     * 白名单列表
+     */
+    private String whiteList;
     /**
      * json字符串
      */

@@ -61,10 +61,8 @@ public class Context {
     private String corpId;
 
     /**
-     * 黑名单列表
+     * 随机字符串
      */
-    private String whiteList;
-
-    private String appNonce;
+    private String nonce;
 
 }

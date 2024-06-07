@@ -4,8 +4,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
@@ -33,8 +33,8 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuProperty, Context> {
         String response = Httpx.post(entity.getUrl(), bodys);
         int status = JsonKit.getValue(response, "status");
 
-        String errcode = status == 200 ? Builder.ErrorCode.SUCCESS.getCode() : Builder.ErrorCode.FAILURE.getCode();
-        String errmsg = status == 200 ? Builder.ErrorCode.SUCCESS.getMsg() : Builder.ErrorCode.FAILURE.getMsg();
+        String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
+        String errmsg = status == 200 ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
 
         return Message.builder()
                 .errcode(errcode)

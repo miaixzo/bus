@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
@@ -125,7 +125,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     protected Message checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
+                .errcode(SUCCESS_RESULT.equals(code) ? ErrorCode.SUCCESS.getCode() : code)
                 .errmsg(code).build();
     }
 
