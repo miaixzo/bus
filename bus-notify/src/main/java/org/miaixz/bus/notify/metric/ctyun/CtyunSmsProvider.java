@@ -94,7 +94,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunProperty, Context> {
         bodys.put("templateParam", entity.getParams());
         bodys.put("templateCode", entity.getTemplate());
 
-        String response = Httpx.post(entity.getUrl(), bodys, signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
+        String response = Httpx.post(this.getUrl(entity), bodys, signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
 
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()

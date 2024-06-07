@@ -40,7 +40,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushProperty, Context> {
         headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put(Header.AUTHORIZATION, "Basic " + getSign());
 
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();

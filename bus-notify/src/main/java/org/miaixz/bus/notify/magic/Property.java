@@ -44,7 +44,6 @@ public class Property {
      * 地址
      */
     protected String url;
-
     /**
      * 发送者
      */

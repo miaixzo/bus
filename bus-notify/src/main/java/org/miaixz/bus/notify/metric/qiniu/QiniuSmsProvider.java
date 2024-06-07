@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public class QiniuSmsProvider extends AbstractProvider<QiniuProperty, Context> {
 
-    public QiniuSmsProvider(Context properties) {
-        super(properties);
+    public QiniuSmsProvider(Context context) {
+        super(context);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuProperty, Context> {
         bodys.put("template_id", entity.getTemplate());
         bodys.put("parameters", StringKit.split(entity.getParams(), Symbol.COMMA));
         bodys.put("mobiles", entity.getReceive());
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         int status = JsonKit.getValue(response, "status");
 
         String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();

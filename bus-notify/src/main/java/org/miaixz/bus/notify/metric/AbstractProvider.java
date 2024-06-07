@@ -26,6 +26,7 @@
 package org.miaixz.bus.notify.metric;
 
 import lombok.AllArgsConstructor;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
 import org.miaixz.bus.notify.magic.Message;
@@ -52,6 +53,14 @@ public abstract class AbstractProvider<T extends Property, K extends Context> im
     @Override
     public Message send(T entity, List<String> mobile) {
         return null;
+    }
+
+    protected String getUrl(T property) {
+        return getUrl(this.context, property);
+    }
+
+    protected String getUrl(K context, T entity) {
+        return ObjectKit.defaultIfNull(context.getEndpoint(), entity.getUrl());
     }
 
 }

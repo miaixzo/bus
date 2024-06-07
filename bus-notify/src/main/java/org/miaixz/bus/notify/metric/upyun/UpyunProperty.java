@@ -28,6 +28,7 @@ package org.miaixz.bus.notify.metric.upyun;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -45,6 +46,14 @@ public class UpyunProperty extends Property {
      */
     private String token;
 
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = " https://sms-api.upyun.com/api/messages/";
+    }
 
     /**
      * 手机号发送短信的结果

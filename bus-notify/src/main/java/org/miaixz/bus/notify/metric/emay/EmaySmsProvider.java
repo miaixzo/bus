@@ -75,7 +75,7 @@ public class EmaySmsProvider extends AbstractProvider<EmayProperty, Context> {
         Map<String, String> headers = MapKit.newHashMap(1, true);
         headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
 
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)

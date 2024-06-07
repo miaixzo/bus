@@ -56,7 +56,7 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianProperty, Contex
         bodys.put("tpl_id", entity.getTemplate());
         bodys.put("tpl_value", entity.getParams());
 
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();

@@ -23,14 +23,14 @@ import java.util.Map;
  */
 public class JdcloudSmsProvider extends AbstractProvider<JdcloudProperty, Context> {
 
-    public JdcloudSmsProvider(Context properties) {
-        super(properties);
+    public JdcloudSmsProvider(Context context) {
+        super(context);
     }
 
     @Override
     public Message send(JdcloudProperty entity) {
         Map<String, Object> bodys = new HashMap<>();
-        bodys.put("regionId", entity.getEndpoint());
+        bodys.put("regionId", this.getUrl(entity));
         bodys.put("templateId", entity.getTemplate());
         bodys.put("params", StringKit.split(entity.getParams(), Symbol.COMMA));
         bodys.put("phoneList", entity.getReceive());
@@ -39,7 +39,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudProperty, Contex
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
         String errcode = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();

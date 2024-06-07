@@ -27,6 +27,7 @@ package org.miaixz.bus.notify.metric.ctyun;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -45,13 +46,17 @@ public class CtyunProperty extends Property {
     private String templateName;
 
     /**
-     * 请求地址
-     */
-    private String requestUrl = "https://sms-global.ctapi.ctyun.cn/sms/api/v1";
-
-    /**
      * 接口名称
      */
     private String action = "SendSms";
+
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://sms-global.ctapi.ctyun.cn/sms/api/v1/";
+    }
 
 }

@@ -35,8 +35,8 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
      */
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
 
-    public HuaweiSmsProvider(Context properties) {
-        super(properties);
+    public HuaweiSmsProvider(Context context) {
+        super(context);
     }
 
     private static String byte2Hex(byte[] bytes) {
@@ -66,7 +66,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
         headers.put(Header.AUTHORIZATION, AUTH_HEADER_VALUE);
         headers.put("X-WSSE", buildWsseHeader());
 
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
         return Message.builder()
                 .errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)

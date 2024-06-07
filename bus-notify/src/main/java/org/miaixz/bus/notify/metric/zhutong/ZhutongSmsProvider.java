@@ -80,7 +80,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
      * 发送 自定义短信：https://doc.zthysms.com/web/#/1/14
      */
     protected Message sendForCustom(ZhutongProperty entity) {
-        String requestUrl = entity.getUrl();
+        String requestUrl = this.getUrl(entity);
         String username = this.context.getAppKey();
         String password = this.context.getAppSecret();
 
@@ -102,7 +102,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
         }
 
 
-        String url = entity.getUrl() + "v2/sendSms";
+        String url = this.getUrl(entity) + "v2/sendSms";
         long tKey = System.currentTimeMillis() / 1000;
         Map<String, Object> bodys = new HashMap<>(5);
         //账号
@@ -135,7 +135,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
      * 发送 模板短信：https://doc.zthysms.com/web/#/1/13
      */
     protected Message sendForTemplate(ZhutongProperty entity) {
-        validator(entity.getUrl(), this.context.getAppKey(), this.context.getAppSecret());
+        validator(this.getUrl(entity), this.context.getAppKey(), this.context.getAppSecret());
         if (StringKit.isBlank(entity.getSignature())) {
             throw new InternalException("助通短信：模板短信中已报备的签名signature不能为空！");
         }
@@ -145,7 +145,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
         }
 
         //地址
-        String url = entity.getUrl() + "v2/sendSmsTp";
+        String url = this.getUrl(entity) + "v2/sendSmsTp";
         //请求入参
         Map<String, Object> bodys = new HashMap<>();
         //账号

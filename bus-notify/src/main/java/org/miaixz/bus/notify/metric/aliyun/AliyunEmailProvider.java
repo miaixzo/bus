@@ -102,7 +102,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
         for (String val : bodys.keySet()) {
             map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }
-        return checkResponse(Httpx.get(entity.getUrl(), map));
+        return checkResponse(Httpx.get(this.getUrl(entity), map));
     }
 
 }

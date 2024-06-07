@@ -55,7 +55,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenProperty, Contex
         bodys.put("templateId", entity.getTemplate());
         bodys.put("datas", entity.getContent());
 
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)

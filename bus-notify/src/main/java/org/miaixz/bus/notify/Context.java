@@ -51,9 +51,9 @@ public class Context {
     private String appSecret;
 
     /**
-     * 授权方的网页应用ID
+     * 对应各平台的api地址
      */
-    private String agentId;
+    private String endpoint;
 
     /**
      * 企业ID

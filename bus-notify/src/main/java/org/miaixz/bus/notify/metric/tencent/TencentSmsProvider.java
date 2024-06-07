@@ -45,8 +45,8 @@ import java.util.Map;
  */
 public class TencentSmsProvider extends AbstractProvider<TencentProperty, Context> {
 
-    public TencentSmsProvider(Context properties) {
-        super(properties);
+    public TencentSmsProvider(Context context) {
+        super(context);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TencentSmsProvider extends AbstractProvider<TencentProperty, Contex
         bodys.put("TemplateParamSet", StringKit.splitToArray(entity.getParams(), Symbol.COMMA));
         bodys.put("PhoneNumberSet", StringKit.splitToArray(entity.getReceive(), Symbol.COMMA));
 
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         int status = JsonKit.getValue(response, "status");
 
         String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();

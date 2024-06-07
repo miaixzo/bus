@@ -27,6 +27,7 @@ package org.miaixz.bus.notify.metric.jdcloud;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -40,8 +41,12 @@ import org.miaixz.bus.notify.magic.Property;
 public class JdcloudProperty extends Property {
 
     /**
-     * 服务端点
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
      */
-    private String endpoint;
+    @Override
+    public String getUrl() {
+        return this.url = "https://sms.jdcloud-api.com/";
+    }
 
 }

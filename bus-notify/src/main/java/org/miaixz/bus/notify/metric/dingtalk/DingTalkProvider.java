@@ -54,8 +54,8 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
     private long refreshTokenTime;
     private long tokenTimeOut = Duration.ofSeconds(7000).toMillis();
 
-    public DingTalkProvider(Context properties) {
-        super(properties);
+    public DingTalkProvider(Context context) {
+        super(context);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
             bodys.put("dept_id_list", entity.getDeptIdList());
         }
         bodys.put("to_all_user", entity.isToAllUser());
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)

@@ -49,8 +49,8 @@ import java.util.Objects;
  */
 public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
 
-    public UpyunSmsProvider(Context properties) {
-        super(properties);
+    public UpyunSmsProvider(Context context) {
+        super(context);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
         Map<String, String> headers = new HashMap<>();
         headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put(Header.AUTHORIZATION, entity.getToken());
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
 
         Collection<UpyunProperty.MessageId> list = JsonKit.toList(response, UpyunProperty.MessageId.class);
         if (CollKit.isEmpty(list)) {

@@ -83,7 +83,7 @@ public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
         headers.put("Accept", MediaType.APPLICATION_JSON);
         String url;
         if (entity.isSimple()) {
-            url = entity.getEndpoint() + "?action=" + action + "&accessKeyId=" + this.context.getAppKey();
+            url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey();
         } else {
             Map<String, Object> query = new HashMap<>();
             if (this.context.getAppSecret() != null) {
@@ -102,7 +102,7 @@ public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
                 }
                 query.put("signature", Builder.hmacSha256(this.context.getAppSecret().getBytes()).digest(sb.toString()));
             }
-            url = entity.getEndpoint() + "?action=" + action + "&accessKeyId=" + this.context.getAppKey() + "&algorithm=" + query.get("algorithm") +
+            url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey() + "&algorithm=" + query.get("algorithm") +
                     "&timestamp=" + query.get("timestamp") + "&nonce=" + query.get("nonce") + "&signature=" + query.get("signature");
         }
 

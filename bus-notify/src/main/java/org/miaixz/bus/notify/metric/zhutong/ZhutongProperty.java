@@ -27,6 +27,7 @@ package org.miaixz.bus.notify.metric.zhutong;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -45,10 +46,14 @@ public class ZhutongProperty extends Property {
      * 允许为空，为空，使用无模板形式，发送短信
      */
     private String templateName;
+
     /**
-     * 默认请求地址
-     * 不同区域，可切换请求地址，也可以不修改，请参考官方文档：https://doc.zthysms.com/web/#/1/236
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
      */
-    private String endpoint = "https://api.mix2.zthysms.com/";
+    @Override
+    public String getUrl() {
+        return this.url = "https://api.mix2.zthysms.com/";
+    }
 
 }

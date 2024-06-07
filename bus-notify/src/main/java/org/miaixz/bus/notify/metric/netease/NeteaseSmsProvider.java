@@ -25,7 +25,7 @@ public class NeteaseSmsProvider extends NeteaseProvider<NeteaseProperty, Context
         bodys.put("templateid", entity.getTemplate());
         bodys.put("mobiles", entity.getReceive());
         bodys.put("params", JsonKit.toJsonString(entity.getParams()));
-        return post(entity.getUrl(), bodys);
+        return post(this.getUrl(entity), bodys);
     }
 
 }

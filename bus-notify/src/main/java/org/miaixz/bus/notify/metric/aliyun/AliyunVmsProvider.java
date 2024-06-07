@@ -74,7 +74,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunProperty, Context> {
         for (String text : bodys.keySet()) {
             map.put(specialUrlEncode(text), specialUrlEncode(bodys.get(text)));
         }
-        return checkResponse(Httpx.get(entity.getUrl(), map));
+        return checkResponse(Httpx.get(this.getUrl(entity), map));
     }
 
 }

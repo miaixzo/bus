@@ -29,7 +29,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduProperty, Context> {
         bodys.put("template", entity.getTemplate());
         bodys.put("signatureId", entity.getSignature());
         bodys.put("contentVar", entity.getParams());
-        String response = Httpx.post(entity.getUrl(), bodys);
+        String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)

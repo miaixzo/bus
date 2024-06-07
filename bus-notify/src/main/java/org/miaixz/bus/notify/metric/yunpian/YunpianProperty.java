@@ -27,6 +27,7 @@ package org.miaixz.bus.notify.metric.yunpian;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -43,5 +44,14 @@ public class YunpianProperty extends Property {
      * apikey
      */
     private String apikey;
+
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://sms.yunpian.com/v2/";
+    }
 
 }

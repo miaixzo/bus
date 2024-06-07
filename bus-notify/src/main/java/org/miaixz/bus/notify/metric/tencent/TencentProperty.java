@@ -27,6 +27,7 @@ package org.miaixz.bus.notify.metric.tencent;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Property;
 
 /**
@@ -43,5 +44,14 @@ public class TencentProperty extends Property {
      * 短信应用ID.
      */
     private String smsAppId;
+
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://sms.tencentcloudapi.com/";
+    }
 
 }
