@@ -38,7 +38,7 @@ import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
 /**
  * 农历日
@@ -205,7 +205,7 @@ public class LunarDay extends Loops {
     public SixtyCycle getYearSixtyCycle() {
         SolarDay solarDay = getSolarDay();
         int solarYear = solarDay.getMonth().getYear().getYear();
-        SolarDay springSolarDay = SolarTerm.fromIndex(solarYear, 3).getJulianDay().getSolarDay();
+        SolarDay springSolarDay = SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarDay();
         LunarYear lunarYear = month.getYear();
         int year = lunarYear.getYear();
         SixtyCycle sixtyCycle = lunarYear.getSixtyCycle();
@@ -229,9 +229,9 @@ public class LunarDay extends Loops {
     public SixtyCycle getMonthSixtyCycle() {
         SolarDay solarDay = getSolarDay();
         int year = solarDay.getMonth().getYear().getYear();
-        SolarTerm term = solarDay.getTerm();
+        SolarTerms term = solarDay.getTerm();
         int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarDay().isAfter(SolarTerm.fromIndex(year, 3).getJulianDay().getSolarDay())) {
+        if (index < 0 && term.getJulianDay().getSolarDay().isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarDay())) {
             index += 24;
         }
         return LunarMonth.fromYm(year, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2));
@@ -272,9 +272,9 @@ public class LunarDay extends Loops {
      */
     public NineStar getNineStar() {
         SolarDay solar = getSolarDay();
-        SolarTerm dongZhi = SolarTerm.fromIndex(solar.getMonth().getYear().getYear(), 0);
-        SolarTerm xiaZhi = dongZhi.next(12);
-        SolarTerm dongZhi2 = dongZhi.next(24);
+        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getMonth().getYear().getYear(), 0);
+        SolarTerms xiaZhi = dongZhi.next(12);
+        SolarTerms dongZhi2 = dongZhi.next(24);
         SolarDay dongZhiSolar = dongZhi.getJulianDay().getSolarDay();
         SolarDay xiaZhiSolar = xiaZhi.getJulianDay().getSolarDay();
         SolarDay dongZhiSolar2 = dongZhi2.getJulianDay().getSolarDay();

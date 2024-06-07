@@ -28,7 +28,7 @@ package org.miaixz.bus.core.center.date.culture.cn.birth;
 import org.miaixz.bus.core.center.date.culture.cn.Opposite;
 import org.miaixz.bus.core.center.date.culture.cn.birth.provider.ChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.cn.birth.provider.impl.DefaultChildLimitProvider;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;
 
@@ -72,7 +72,7 @@ public class ChildLimit {
         boolean yang = Opposite.YANG == eightChar.getYear().getHeavenStem().getOpposite();
         boolean man = Gender.MALE == gender;
         forward = (yang && man) || (!yang && !man);
-        SolarTerm term = birthTime.getTerm();
+        SolarTerms term = birthTime.getTerm();
         if (!term.isJie()) {
             term = term.next(-1);
         }

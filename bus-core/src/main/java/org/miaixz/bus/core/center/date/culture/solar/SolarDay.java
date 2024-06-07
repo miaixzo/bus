@@ -205,8 +205,8 @@ public class SolarDay extends Loops {
      *
      * @return 节气
      */
-    public SolarTerm getTerm() {
-        SolarTerm term = SolarTerm.fromIndex(month.getYear().getYear() + 1, 0);
+    public SolarTerms getTerm() {
+        SolarTerms term = SolarTerms.fromIndex(month.getYear().getYear() + 1, 0);
         while (isBefore(term.getJulianDay().getSolarDay())) {
             term = term.next(-1);
         }
@@ -231,7 +231,7 @@ public class SolarDay extends Loops {
      * @return 七十二候
      */
     public ClimateDay getPhenologyDay() {
-        SolarTerm term = getTerm();
+        SolarTerms term = getTerm();
         int dayIndex = subtract(term.getJulianDay().getSolarDay());
         int index = dayIndex / 5;
         if (index > 2) {
@@ -247,7 +247,7 @@ public class SolarDay extends Loops {
      * @return 三伏天
      */
     public DogDay getDogDay() {
-        SolarTerm xiaZhi = SolarTerm.fromIndex(month.getYear().getYear(), 12);
+        SolarTerms xiaZhi = SolarTerms.fromIndex(month.getYear().getYear(), 12);
         // 第1个庚日
         SolarDay start = xiaZhi.getJulianDay().getSolarDay();
         int add = 6 - start.getLunarDay().getSixtyCycle().getHeavenStem().getIndex();
@@ -295,9 +295,9 @@ public class SolarDay extends Loops {
      */
     public NineDay getNineDay() {
         int year = month.getYear().getYear();
-        SolarDay start = SolarTerm.fromIndex(year + 1, 0).getJulianDay().getSolarDay();
+        SolarDay start = SolarTerms.fromIndex(year + 1, 0).getJulianDay().getSolarDay();
         if (isBefore(start)) {
-            start = SolarTerm.fromIndex(year, 0).getJulianDay().getSolarDay();
+            start = SolarTerms.fromIndex(year, 0).getJulianDay().getSolarDay();
         }
         SolarDay end = start.next(81);
         if (isBefore(start) || !isBefore(end)) {

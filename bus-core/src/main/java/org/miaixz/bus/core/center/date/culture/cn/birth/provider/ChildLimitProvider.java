@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.date.culture.cn.birth.provider;
 
 import org.miaixz.bus.core.center.date.culture.cn.birth.ChildLimitInfo;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
@@ -44,5 +44,5 @@ public interface ChildLimitProvider {
      * @param term      节令
      * @return 童限信息
      */
-    ChildLimitInfo getInfo(SolarTime birthTime, SolarTerm term);
+    ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term);
 }

@@ -26,7 +26,7 @@
 package org.miaixz.bus.core.center.date.culture.lunar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.EnumMap;
 
 import java.util.regex.Matcher;
@@ -65,17 +65,17 @@ public class LunarFestival extends Loops {
     /**
      * 节气
      */
-    protected SolarTerm solarTerm;
+    protected SolarTerms solarTerms;
 
     /**
      * 名称
      */
     protected String name;
 
-    public LunarFestival(EnumMap.Festival type, LunarDay day, SolarTerm solarTerm, String data) {
+    public LunarFestival(EnumMap.Festival type, LunarDay day, SolarTerms solarTerms, String data) {
         this.type = type;
         this.day = day;
-        this.solarTerm = solarTerm;
+        this.solarTerms = solarTerms;
         index = Integer.parseInt(data.substring(1, 3), 10);
         name = NAMES[index];
     }
@@ -92,8 +92,8 @@ public class LunarFestival extends Loops {
                 case DAY:
                     return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6), 10)), null, data);
                 case TERM:
-                    SolarTerm solarTerm = SolarTerm.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-                    return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
+                    SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+                    return new LunarFestival(type, solarTerms.getJulianDay().getSolarDay().getLunarDay(), solarTerms, data);
                 case EVE:
                     return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
                 default:
@@ -110,11 +110,11 @@ public class LunarFestival extends Loops {
         matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
         while (matcher.find()) {
             String data = matcher.group();
-            SolarTerm solarTerm = SolarTerm.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            LunarDay lunarDay = solarTerm.getJulianDay().getSolarDay().getLunarDay();
+            SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+            LunarDay lunarDay = solarTerms.getJulianDay().getSolarDay().getLunarDay();
             LunarMonth lunarMonth = lunarDay.getMonth();
             if (lunarMonth.getYear().getYear() == year && lunarMonth.getMonth() == month && lunarDay.getDay() == day) {
-                return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerm, data);
+                return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerms, data);
             }
         }
         matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
@@ -175,8 +175,8 @@ public class LunarFestival extends Loops {
      *
      * @return 节气
      */
-    public SolarTerm getSolarTerm() {
-        return solarTerm;
+    public SolarTerms getSolarTerm() {
+        return solarTerms;
     }
 
     public String getName() {

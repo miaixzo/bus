@@ -29,7 +29,7 @@ import org.miaixz.bus.core.center.date.culture.cn.birth.ChildLimitInfo;
 import org.miaixz.bus.core.center.date.culture.cn.birth.provider.ChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
@@ -41,7 +41,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class China95ChildLimitProvider implements ChildLimitProvider {
 
     @Override
-    public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerm term) {
+    public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
         // 出生时刻和节令时刻相差的分钟数
         int minutes = Math.abs(term.getJulianDay().getSolarTime().subtract(birthTime)) / 60;
         int year = minutes / 4320;

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class LunarMonth extends Loops {
         }
 
         // 冬至
-        SolarTerm dongZhi = SolarTerm.fromIndex(year, 0);
+        SolarTerms dongZhi = SolarTerms.fromIndex(year, 0);
         double dongZhiJd = dongZhi.getCursoryJulianDay();
 
         // 冬至前的初一，今年首朔的日月黄经差

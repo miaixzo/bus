@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 import java.util.ArrayList;
@@ -205,7 +205,7 @@ public class EightChar extends Tradition {
         while (y <= endYear) {
             if (y >= baseYear) {
                 // 立春为寅月的开始
-                SolarTerm term = SolarTerm.fromIndex(y, 3);
+                SolarTerms term = SolarTerms.fromIndex(y, 3);
                 // 节令推移，年干支和月干支就都匹配上了
                 if (m > 0) {
                     term = term.next(m);

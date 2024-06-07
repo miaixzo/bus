@@ -175,8 +175,8 @@ public class SolarTime extends Loops {
      *
      * @return 节气
      */
-    public SolarTerm getTerm() {
-        SolarTerm term = SolarTerm.fromIndex(day.getMonth().getYear().getYear() + 1, 0);
+    public SolarTerms getTerm() {
+        SolarTerms term = SolarTerms.fromIndex(day.getMonth().getYear().getYear() + 1, 0);
         while (isBefore(term.getJulianDay().getSolarTime())) {
             term = term.next(-1);
         }
