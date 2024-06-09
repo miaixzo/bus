@@ -45,6 +45,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = BusXConfig.SOCKET)
 public class SocketProperties {
 
-    private int port = 8080;
+    private int port = 7890;
 
 }

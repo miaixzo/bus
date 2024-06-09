@@ -28,41 +28,42 @@
 package org.miaixz.bus.socket;
 
 /**
+ * 群组
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface GroupIo {
 
     /**
-     * 将AioSession加入群组group
+     * 将Session加入群组group
      *
      * @param group   群组信息
      * @param session 会话
      */
-    void join(String group, AioSession session);
-
-
-    /**
-     * 将AioSession从群众group中移除
-     *
-     * @param group   群组信息
-     * @param session 会话
-     */
-    void remove(String group, AioSession session);
-
-    /**
-     * AioSession从所有群组中退出
-     *
-     * @param session 会话
-     */
-    void remove(AioSession session);
+    void join(String group, Session session);
 
     /**
      * 群发消息
      *
      * @param group 群组信息
-     * @param t     发送内容
+     * @param data  发送内容
      */
-    void writeToGroup(String group, byte[] t);
+    void write(String group, byte[] data);
+
+    /**
+     * 将Session从群众group中移除
+     *
+     * @param group   群组信息
+     * @param session 会话
+     */
+    void remove(String group, Session session);
+
+    /**
+     * Session从所有群组中退出
+     *
+     * @param session 会话
+     */
+    void remove(Session session);
 
 }

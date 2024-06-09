@@ -7,25 +7,25 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
 要求Java 17+
 
 *
-* 通常情况下仅需实现{@link socket.org.miaixz.bus.Protocol}、{@link process.socket.org.miaixz.bus.MessageProcessor}即可
-* 如需仅需通讯层面的监控，bus-socket提供了接口{@link socket.org.miaixz.bus.NetMonitor}以供使用
+* 通常情况下仅需实现{@link org.miaixz.bus.socket.Protocol}、{@link org.miaixz.bus.socket.Handler}即可
+* 如需仅需通讯层面的监控，bus-socket提供了接口{@link socket.org.miaixz.bus.Monitor}以供使用
 *
-* 完成本package的接口开发后，便可使用{@link socket.org.miaixz.bus.AioQuickClient} / {@link
-  socket.org.miaixz.bus.AioQuickServer}提供AIO的客户端/服务端通信服务
+* 完成本package的接口开发后，便可使用{@link org.miaixz.bus.socket.accord.AioClient} / {@link
+  org.miaixz.bus.socket.accord.AioServer}提供AIO的客户端/服务端通信服务
 *
 
 服务端开发主要分两步：
 
-1.构造服务端对象AioQuickServer。该类的构造方法有以下几个入参： port，服务端监听端口号；
+1.构造服务端对象AioServer。该类的构造方法有以下几个入参： port，服务端监听端口号；
 Protocol，协议解码类，正是上一步骤实现的解码算法类：StringProtocol；
-MessageProcessor，消息处理器，对Protocol解析出来的消息进行业务处理。 因为只是个简单示例，采用匿名内部类的形式做演示。实际业务场景中可能涉及到更复杂的逻辑，开发同学自行把控。
+Handler，消息处理器，对Protocol解析出来的消息进行业务处理。 因为只是个简单示例，采用匿名内部类的形式做演示。实际业务场景中可能涉及到更复杂的逻辑，开发同学自行把控。
 
 ```java
  public class AioServer {
 
     public static void main(String[] args) {
-        AioQuickServer<String> server = new AioQuickServer<String>(8080, new DemoProtocol(), new DemoService() {
-            public void process(AioSession<String> session, String msg) {
+        AioServer<String> server = new AioServer<String>(8080, new DemoProtocol(), new DemoService() {
+            public void process(Session<String> session, String msg) {
                 System.out.println("接受到客户端消息:" + msg);
 
                 byte[] response = "Hi Client!".getBytes();
@@ -38,7 +38,7 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
                 }
             }
 
-            public void stateEvent(AioSession<String> session, SocketStatus SocketStatus, Throwable throwable) {
+            public void stateEvent(Session<String> session, Status Status, Throwable throwable) {
             }
         });
         server.start();
@@ -46,7 +46,7 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
 
     class DemoProtocol implements Protocol<byte[]> {
 
-        public byte[] decode(ByteBuffer readBuffer, AioSession<byte[]> session) {
+        public byte[] decode(ByteBuffer readBuffer, Session<byte[]> session) {
             if (readBuffer.remaining() > 0) {
                 byte[] data = new byte[readBuffer.remaining()];
                 readBuffer.get(data);
@@ -55,7 +55,7 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
             return null;
         }
 
-        public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
+        public ByteBuffer encode(byte[] msg, Session<byte[]> session) {
             ByteBuffer buffer = ByteBuffer.allocate(msg.length);
             buffer.put(msg);
             buffer.flip();
@@ -64,8 +64,8 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
     }
 
 
-    class DemoService implements MessageProcessor<byte[]>, Runnable {
-        private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
+    class DemoService implements Handler<byte[]>, Runnable {
+        private HashMap<String, Session<byte[]>> clients = new HashMap<>();
         private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
 
         public DemoService() {
@@ -74,7 +74,7 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
 
         public void run() {
             if (this.clients.isEmpty()) return;
-            for (AioSession<byte[]> session : this.clients.values()) {
+            for (Session<byte[]> session : this.clients.values()) {
                 try {
                     session.write("Hey! bus-socket it's work...".getBytes());
                 } catch (IOException e) {
@@ -83,7 +83,7 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
             }
         }
 
-        public void process(AioSession<byte[]> session, byte[] msg) {
+        public void process(Session<byte[]> session, byte[] msg) {
             JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
             System.out.println(jsonObject.getString("content"));
             try {
@@ -93,40 +93,40 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
             }
         }
 
-        public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
-            switch (SocketStatus) {
+        public void stateEvent(Session<byte[]> session, Status Status, Throwable throwable) {
+            switch (Status) {
                 case NEW_SESSION:
-                    System.out.println("SocketStatus.NEW_SESSION");
+                    System.out.println("Status.NEW_SESSION");
                     break;
                 case INPUT_SHUTDOWN:
-                    System.out.println("SocketStatus.INPUT_SHUTDOWN");
+                    System.out.println("Status.INPUT_SHUTDOWN");
                     break;
                 case PROCESS_EXCEPTION:
-                    System.out.println("SocketStatus.PROCESS_EXCEPTION");
+                    System.out.println("Status.PROCESS_EXCEPTION");
                     break;
                 case DECODE_EXCEPTION:
-                    System.out.println("SocketStatus.DECODE_EXCEPTION");
+                    System.out.println("Status.DECODE_EXCEPTION");
                     break;
                 case INPUT_EXCEPTION:
-                    System.out.println("SocketStatus.INPUT_EXCEPTION");
+                    System.out.println("Status.INPUT_EXCEPTION");
                     break;
                 case OUTPUT_EXCEPTION:
-                    System.out.println("SocketStatus.OUTPUT_EXCEPTION");
+                    System.out.println("Status.OUTPUT_EXCEPTION");
                     break;
                 case SESSION_CLOSING:
-                    System.out.println("SocketStatus.SESSION_CLOSING");
+                    System.out.println("Status.SESSION_CLOSING");
                     break;
                 case SESSION_CLOSED:
-                    System.out.println("SocketStatus.SESSION_CLOSED");
+                    System.out.println("Status.SESSION_CLOSED");
                     break;
                 case FLOW_LIMIT:
-                    System.out.println("SocketStatus.FLOW_LIMIT");
+                    System.out.println("Status.FLOW_LIMIT");
                     break;
                 case RELEASE_FLOW_LIMIT:
-                    System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
+                    System.out.println("Status.RELEASE_FLOW_LIMIT");
                     break;
                 default:
-                    System.out.println("SocketStatus.default");
+                    System.out.println("Status.default");
             }
         }
     }
@@ -138,23 +138,23 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
 public class AioClient {
 
     public static void main(String[] args) throws Exception {
-        AioQuickClient<String> aioQuickClient = new AioQuickClient<>("localhost", 8888, new ClientProtocol(), new ClientProcessor());
-        AioSession session = aioQuickClient.start();
+        AioClient<String> client = new AioClient<>("localhost", 8888, new ClientProtocol(), new ClientProcessor());
+        Session session = client.start();
         session.writeBuffer().writeInt(1);
-        aioQuickClient.shutdownNow();
+      client.shutdownNow();
     }
 
-  static class ClientProcessor implements MessageProcessor<String> {
+  static class ClientProcessor implements Handler<String> {
 
     @Override
-    public void process(AioSession session, String msg) {
+    public void process(Session session, String msg) {
       System.out.println("Receive data from server：" + msg);
     }
 
     @Override
-    public void stateEvent(AioSession session, StateMachineEnum socketStatus, Throwable throwable) {
-      System.out.println("State:" + socketStatus);
-      if (socketStatus == StateMachineEnum.OUTPUT_EXCEPTION) {
+    public void stateEvent(Session session, Status Status, Throwable throwable) {
+      System.out.println("State:" + Status);
+      if (Status == StateMachineEnum.OUTPUT_EXCEPTION) {
         throwable.printStackTrace();
       }
     }
@@ -163,7 +163,7 @@ public class AioClient {
   static class ClientProtocol implements Protocol<String> {
 
     @Override
-    public String decode(ByteBuffer data, AioSession session) {
+    public String decode(ByteBuffer data, Session session) {
       int remaining = data.remaining();
             if (remaining < 4) {
                 return null;
@@ -181,92 +181,6 @@ public class AioClient {
             return new String(b);
         }
 
-    }
-
-}
-```
-
-```java
-public class NioServer {
-
-    public static void main(String[] args) {
-        QuickNioServer server = new QuickNioServer(8080);
-        server.setChannelHandler((sc) -> {
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-            try {
-                //从channel读数据到缓冲区
-                int readBytes = sc.read(readBuffer);
-                if (readBytes > 0) {
-                    //Flips this buffer.  The limit is set to the current position and then
-                    // the position is set to zero，就是表示要从起始位置开始读取数据
-                    readBuffer.flip();
-                    //eturns the number of elements between the current position and the  limit.
-                    // 要读取的字节长度
-                    byte[] bytes = new byte[readBuffer.remaining()];
-                    //将缓冲区的数据读到bytes数组
-                    readBuffer.get(bytes);
-                    String body = StringKit.toString(bytes);
-                    Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
-
-                    doWrite(sc, body);
-                } else if (readBytes < 0) {
-                    IoKit.close(sc);
-                }
-            } catch (IOException e) {
-                throw new InternalException(e);
-            }
-        });
-        server.listen();
-    }
-
-    public static void doWrite(SocketChannel channel, String response) throws IOException {
-        response = "收到消息：" + response;
-        //将缓冲数据写入渠道，返回给客户端
-        channel.write(BufferKit.create(response));
-    }
-
-}
-
-```
-
-```java
- public class NioClient {
-
-    public static void main(String[] args) {
-        QuickNioClient client = new QuickNioClient("127.0.0.1", 8080);
-        client.setChannelHandler((sc) -> {
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-            //从channel读数据到缓冲区
-            int readBytes = sc.read(readBuffer);
-            if (readBytes > 0) {
-                //Flips this buffer.  The limit is set to the current position and then
-                // the position is set to zero，就是表示要从起始位置开始读取数据
-                readBuffer.flip();
-                //returns the number of elements between the current position and the  limit.
-                // 要读取的字节长度
-                byte[] bytes = new byte[readBuffer.remaining()];
-                //将缓冲区的数据读到bytes数组
-                readBuffer.get(bytes);
-                String body = StringKit.toString(bytes);
-                Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
-            } else if (readBytes < 0) {
-                sc.close();
-            }
-        });
-
-        client.listen();
-        client.write(BufferKit.create("你好。\n"));
-        client.write(BufferKit.create("你好2。"));
-
-        // 在控制台向服务器端发送数据
-        Logger.info("请输入发送的消息：");
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNextLine()) {
-            String request = scanner.nextLine();
-            if (null != request && request.trim().length() > 0) {
-                client.write(BufferKit.create(request));
-            }
-        }
     }
 
 }
