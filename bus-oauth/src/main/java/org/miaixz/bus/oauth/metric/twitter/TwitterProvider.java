@@ -97,7 +97,7 @@ public class TwitterProvider extends DefaultProvider {
      * @return BASE64 encoded signature string
      */
     public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
-        TreeMap<String, Object> map = new TreeMap<>(params);
+        TreeMap<String, String> map = new TreeMap<>(params);
         String str = Builder.parseMapToString(map, true);
         String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(str);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
@@ -165,7 +165,7 @@ public class TwitterProvider extends DefaultProvider {
         header.put("Authorization", buildHeader(headerMap));
         header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        Map<String, Object> form = new HashMap<>(3);
+        Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", authCallback.getOauth_verifier());
         String response = Httpx.post(complex.accessToken(), form, header);
 

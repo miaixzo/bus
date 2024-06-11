@@ -59,7 +59,7 @@ public class LineProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", authCallback.getCode());
         params.put("redirect_uri", context.getRedirectUri());
@@ -100,7 +100,7 @@ public class LineProvider extends DefaultProvider {
 
     @Override
     public Message revoke(AccToken accToken) {
-        Map<String, Object> form = new HashMap<>(5);
+        Map<String, String> form = new HashMap<>(5);
         form.put("access_token", accToken.getAccessToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
@@ -113,7 +113,7 @@ public class LineProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>();
+        Map<String, String> form = new HashMap<>();
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", oldToken.getRefreshToken());
         form.put("client_id", context.getAppKey());

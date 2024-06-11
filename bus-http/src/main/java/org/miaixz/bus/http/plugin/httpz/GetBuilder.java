@@ -46,18 +46,18 @@ public class GetBuilder extends RequestBuilder<GetBuilder> {
 
     @Override
     public RequestCall build() {
-        if (null != params) {
-            url = appendParams(url, params);
+        if (null != formMap) {
+            url = append(url, formMap);
         }
-        return new GetRequest(url, tag, params, headers, id).build(httpd);
+        return new GetRequest(url, tag, formMap, headerMap, id).build(httpd);
     }
 
-    protected String appendParams(String url, Map<String, String> params) {
-        if (null == url || null == params || params.isEmpty()) {
+    protected String append(String url, Map<String, String> formMap) {
+        if (null == url || null == formMap || formMap.isEmpty()) {
             return url;
         }
         StringBuilder builder = new StringBuilder();
-        params.forEach((k, v) -> {
+        formMap.forEach((k, v) -> {
             if (builder.length() == 0) {
                 builder.append(Symbol.QUESTION_MARK);
             } else if (builder.length() > 0) {

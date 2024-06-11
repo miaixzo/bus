@@ -62,7 +62,7 @@ public class TeambitionProvider extends DefaultProvider {
      */
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("code", authCallback.getCode());
@@ -112,7 +112,7 @@ public class TeambitionProvider extends DefaultProvider {
         String uid = oldToken.getUid();
         String refreshToken = oldToken.getRefreshToken();
 
-        Map<String, Object> form = new HashMap<>(4);
+        Map<String, String> form = new HashMap<>(4);
         form.put("_userId", uid);
         form.put("refresh_token", refreshToken);
         String response = Httpx.post(complex.refresh(), form);

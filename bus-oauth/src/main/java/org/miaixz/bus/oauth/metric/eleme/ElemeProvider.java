@@ -93,7 +93,7 @@ public class ElemeProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("redirect_uri", context.getRedirectUri());
         form.put("code", authCallback.getCode());
@@ -116,7 +116,7 @@ public class ElemeProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>(4);
+        Map<String, String> form = new HashMap<>(4);
         form.put("refresh_token", oldToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 

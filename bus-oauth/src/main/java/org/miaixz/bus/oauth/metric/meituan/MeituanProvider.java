@@ -59,7 +59,7 @@ public class MeituanProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
         form.put("code", authCallback.getCode());
@@ -79,7 +79,7 @@ public class MeituanProvider extends DefaultProvider {
 
     @Override
     protected Property getUserInfo(AccToken accToken) {
-        Map<String, Object> form = new HashMap<>(5);
+        Map<String, String> form = new HashMap<>(5);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
         form.put("access_token", accToken.getAccessToken());
@@ -103,7 +103,7 @@ public class MeituanProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
         form.put("refresh_token", oldToken.getRefreshToken());

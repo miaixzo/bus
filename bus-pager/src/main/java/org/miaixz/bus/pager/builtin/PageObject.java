@@ -54,7 +54,7 @@ public abstract class PageObject {
 
     static {
         try {
-            requestClass = Class.forName("javax.servlet.ServletRequest");
+            requestClass = Class.forName("jakarta.servlet.ServletRequest");
             getParameterMap = requestClass.getMethod("getParameterMap");
             hasRequest = true;
         } catch (Throwable e) {

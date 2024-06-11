@@ -58,8 +58,8 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
         return new PutRequest(
                 url,
                 tag,
-                params,
-                headers,
+                formMap,
+                headerMap,
                 fileInfos,
                 body,
                 multipartBody,

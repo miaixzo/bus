@@ -92,7 +92,7 @@ public class JdProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
         form.put("grant_type", "authorization_code");
@@ -126,7 +126,7 @@ public class JdProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
         form.put("grant_type", "refresh_token");

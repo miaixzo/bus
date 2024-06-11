@@ -53,34 +53,34 @@ public abstract class HttpRequest {
 
     protected String id;
     protected String url;
-    protected Map<String, String> params;
-    protected Map<String, String> encodedParams;
-    protected Map<String, String> headers;
+    protected Map<String, String> formMap;
+    protected Map<String, String> encodedForm;
+    protected Map<String, String> headerMap;
     protected String body;
     protected List<PostRequest.FileInfo> fileInfos;
     protected MultipartBody multipartBody;
     protected Request.Builder builder = new Request.Builder();
 
-    protected HttpRequest(String url, Object tag, Map<String, String> params,
-                          Map<String, String> headers,
+    protected HttpRequest(String url, Object tag, Map<String, String> formMap,
+                          Map<String, String> headerMap,
                           List<PostRequest.FileInfo> fileInfos,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
-        this(url, tag, params, null, headers, fileInfos, body, multipartBody, id);
+        this(url, tag, formMap, null, headerMap, fileInfos, body, multipartBody, id);
     }
 
-    protected HttpRequest(String url, Object tag, Map<String, String> params,
-                          Map<String, String> encodedParams,
-                          Map<String, String> headers,
+    protected HttpRequest(String url, Object tag, Map<String, String> formMap,
+                          Map<String, String> encodedForm,
+                          Map<String, String> headerMap,
                           List<PostRequest.FileInfo> fileInfos,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
         this.url = url;
-        this.params = params;
-        this.encodedParams = encodedParams;
-        this.headers = headers;
+        this.formMap = formMap;
+        this.encodedForm = encodedForm;
+        this.headerMap = headerMap;
         this.fileInfos = fileInfos;
         this.body = body;
         this.multipartBody = multipartBody;
@@ -138,10 +138,10 @@ public abstract class HttpRequest {
 
     protected void appendHeaders() {
         Headers.Builder headerBuilder = new Headers.Builder();
-        if (null == headers || headers.isEmpty())
+        if (null == headerMap || headerMap.isEmpty())
             return;
-        for (String key : headers.keySet()) {
-            headerBuilder.add(key, headers.get(key));
+        for (String key : headerMap.keySet()) {
+            headerBuilder.add(key, headerMap.get(key));
         }
         builder.headers(headerBuilder.build());
     }

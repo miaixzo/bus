@@ -59,9 +59,9 @@ public class PostBuilder extends RequestBuilder<PostBuilder> {
         return new PostRequest(
                 url,
                 tag,
-                params,
-                encodedParams,
-                headers,
+                formMap,
+                encodedForm,
+                headerMap,
                 fileInfos,
                 postBody,
                 multipartBody,

@@ -74,8 +74,8 @@ public class XimalayaProvider extends DefaultProvider {
      * @param clientSecret 平台应用的授权key
      * @return Signature
      */
-    private static String sign(Map<String, Object> params, String clientSecret) {
-        TreeMap<String, Object> map = new TreeMap<>(params);
+    private static String sign(Map<String, String> params, String clientSecret) {
+        TreeMap<String, String> map = new TreeMap<>(params);
         String baseStr = Base64.encode(Builder.parseMapToString(map, false));
         byte[] sign = Builder.sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
         MessageDigest md5;
@@ -102,7 +102,7 @@ public class XimalayaProvider extends DefaultProvider {
      */
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> map = new HashMap<>(9);
+        Map<String, String> map = new HashMap<>(9);
         map.put("code", authCallback.getCode());
         map.put("client_id", context.getAppKey());
         map.put("client_secret", context.getAppSecret());
@@ -159,9 +159,9 @@ public class XimalayaProvider extends DefaultProvider {
      */
     @Override
     public Property getUserInfo(AccToken accToken) {
-        Map<String, Object> map = new TreeMap<>();
+        Map<String, String> map = new TreeMap<>();
         map.put("app_key", context.getAppKey());
-        map.put("client_os_type", ObjectKit.defaultIfNull(context.getType(), Normal._3));
+        map.put("client_os_type", (String) ObjectKit.defaultIfNull(context.getType(), Normal._3));
         map.put("device_id", context.getDeviceId());
         map.put("pack_id", context.getUnionId());
         map.put("access_token", accToken.getAccessToken());

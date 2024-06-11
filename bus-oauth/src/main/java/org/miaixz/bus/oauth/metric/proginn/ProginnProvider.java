@@ -62,7 +62,7 @@ public class ProginnProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("code", authCallback.getCode());
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());

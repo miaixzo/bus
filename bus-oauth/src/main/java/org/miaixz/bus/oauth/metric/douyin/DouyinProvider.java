@@ -183,4 +183,5 @@ public class DouyinProvider extends DefaultProvider {
                 .queryParam("grant_type", "refresh_token")
                 .build();
     }
+
 }

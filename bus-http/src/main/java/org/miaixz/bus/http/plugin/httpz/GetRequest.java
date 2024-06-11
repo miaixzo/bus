@@ -40,15 +40,15 @@ import java.util.Map;
  */
 public class GetRequest extends HttpRequest {
 
-    public GetRequest(String url, Object tag, Map<String, String> params,
-                      Map<String, String> headers, String id) {
-        super(url, tag, params, headers, null, null, null, id);
+    public GetRequest(String url, Object tag, Map<String, String> formMap,
+                      Map<String, String> headerMap, String id) {
+        super(url, tag, formMap, headerMap, null, null, null, id);
     }
 
-    public GetRequest(String url, Object tag, Map<String, String> params,
-                      Map<String, String> encodedParams,
-                      Map<String, String> headers, String id) {
-        super(url, tag, params, encodedParams, headers, null, null, null, id);
+    public GetRequest(String url, Object tag, Map<String, String> formMap,
+                      Map<String, String> encodedForm,
+                      Map<String, String> headerMap, String id) {
+        super(url, tag, formMap, encodedForm, headerMap, null, null, null, id);
     }
 
     @Override

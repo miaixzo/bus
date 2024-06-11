@@ -54,7 +54,7 @@ import java.util.*;
 @Setter
 public class Builder {
 
-    private final Map<String, Object> params = new LinkedHashMap<>(7);
+    private final Map<String, String> params = new LinkedHashMap<>(7);
     private String baseUrl;
 
     private Builder() {
@@ -78,7 +78,7 @@ public class Builder {
      * @param encode 是否转码
      * @return the {@link String}
      */
-    public static String parseMapToString(Map<String, Object> map, boolean encode) {
+    public static String parseMapToString(Map<String, String> map, boolean encode) {
         if (null == map || map.isEmpty()) {
             return Normal.EMPTY;
         }
@@ -87,7 +87,7 @@ public class Builder {
             if (null == v) {
                 paramList.add(k + Symbol.EQUAL);
             } else {
-                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(String.valueOf(v)) : v));
+                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(v) : v));
             }
         });
         return String.join(Symbol.AND, paramList);

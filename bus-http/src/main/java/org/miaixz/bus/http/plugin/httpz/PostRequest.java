@@ -51,15 +51,15 @@ import java.util.Map;
  */
 public class PostRequest extends HttpRequest {
 
-    public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
+    public PostRequest(String url, Object tag, Map<String, String> formMap, Map<String, String> headerMap,
                        List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody, String id) {
-        super(url, tag, params, headers, fileInfos, postBody, multipartBody, id);
+        super(url, tag, formMap, headerMap, fileInfos, postBody, multipartBody, id);
     }
 
-    public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> encodeParams,
-                       Map<String, String> headers, List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody,
+    public PostRequest(String url, Object tag, Map<String, String> formMap, Map<String, String> encodeForm,
+                       Map<String, String> headerMap, List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody,
                        String id) {
-        super(url, tag, params, encodeParams, headers, fileInfos, postBody, multipartBody, id);
+        super(url, tag, formMap, encodeForm, headerMap, fileInfos, postBody, multipartBody, id);
     }
 
     @Override
@@ -87,8 +87,8 @@ public class PostRequest extends HttpRequest {
             return builder.build();
         } else if (null != body && body.length() > 0) {
             MediaType mediaType;
-            if (headers.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
+            if (headerMap.containsKey(Header.CONTENT_TYPE)) {
+                mediaType = MediaType.valueOf(headerMap.get(Header.CONTENT_TYPE));
             } else {
                 mediaType = MediaType.TEXT_PLAIN_TYPE;
             }
@@ -106,17 +106,17 @@ public class PostRequest extends HttpRequest {
     }
 
     private void addParams(FormBody.Builder builder) {
-        if (null != params) {
-            params.forEach((k, v) -> builder.add(k, v));
+        if (null != formMap) {
+            formMap.forEach((k, v) -> builder.add(k, v));
         }
-        if (null != encodedParams) {
-            encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
+        if (null != encodedForm) {
+            encodedForm.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
     private void addParams(MultipartBody.Builder builder) {
-        if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+        if (null != formMap && !formMap.isEmpty()) {
+            formMap.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
                     RequestBody.create(null, v)));
         }
     }

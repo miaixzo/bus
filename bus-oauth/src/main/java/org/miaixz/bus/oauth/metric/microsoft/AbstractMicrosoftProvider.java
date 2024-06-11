@@ -74,7 +74,7 @@ public abstract class AbstractMicrosoftProvider extends DefaultProvider {
      * @return token对象
      */
     private AccToken getToken(String accessTokenUrl) {
-        Map<String, Object> form = new HashMap<>();
+        Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         String response = Httpx.post(accessTokenUrl, form);

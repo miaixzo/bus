@@ -67,7 +67,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(8);
+        Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
         form.put("code", authCallback.getAuthorization_code());
         form.put("client_id", context.getAppKey());
@@ -87,7 +87,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     protected Property getUserInfo(AccToken accToken) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("nsp_ts", System.currentTimeMillis() + "");
         form.put("access_token", accToken.getAccessToken());
         form.put("nsp_fmt", "JS");
@@ -120,7 +120,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     public Message refresh(AccToken accToken) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("refresh_token", accToken.getRefreshToken());

@@ -51,16 +51,14 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     public static Base58Provider INSTANCE = new Base58Provider();
 
     /**
-     * Divides a number, represented as an array of bytes each containing a single digit
-     * in the specified base, by the given divisor. The given number is modified in-place
-     * to contain the quotient, and the return value is the remainder.
+     * 将一个数字（表示为一个字节数组，每个字节包含指定基数的一位数字）除以给定的除数。
+     * 给定的数字被修改以包含商，返回值为余数。
      *
-     * @param number     the number to divide
-     * @param firstDigit the index within the array of the first non-zero digit
-     *                   (this is used for optimization by skipping the leading zeros)
-     * @param base       the base in which the number's digits are represented (up to 256)
-     * @param divisor    the number to divide by (up to 256)
-     * @return the remainder of the division operation
+     * @param number     要除的数
+     * @param firstDigit 数组中第一个非零数字的索引（用于通过跳过前导零进行优化）
+     * @param base       数字的位数表示基数（最多256）
+     * @param divisor   要除以的数字（最多 256）
+     * @return 除法运算的余数
      */
     public static byte divmod(final byte[] number, final int firstDigit, final int base, final int divisor) {
         // this is just long division which accounts for the base of the input digits

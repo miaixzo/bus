@@ -19,7 +19,6 @@ final Request request = new Request.Builder()
         .get()//默认就是GET请求，可以不写
         .build();
 NewCall call = httpd.newCall(request);
-    call.
 
 enqueue(new Callback() {
     @Override
@@ -45,7 +44,6 @@ final Request request = new Request.Builder()
         .url(url)
         .build();
 final NewCall call = httpd.newCall(request);
-    new
 
 Thread(new Runnable() {
     @Override
@@ -74,9 +72,8 @@ Request request = new Request.Builder()
         .post(RequestBody.create(mediaType, requestBody))
         .build();
 Httpd httpd = new Httpd();
-    httpd.
 
-newCall(request).
+newCall(request)
 
 enqueue(new Callback() {
     @Override

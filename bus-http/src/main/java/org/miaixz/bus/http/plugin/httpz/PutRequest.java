@@ -50,13 +50,13 @@ public class PutRequest extends HttpRequest {
 
     public PutRequest(String url,
                       Object tag,
-                      Map<String, String> params,
-                      Map<String, String> headers,
+                      Map<String, String> formMap,
+                      Map<String, String> headerMap,
                       List<PostRequest.FileInfo> fileInfos,
                       String body,
                       MultipartBody multipartBody,
                       String id) {
-        super(url, tag, params, headers, fileInfos, body, multipartBody, id);
+        super(url, tag, formMap, headerMap, fileInfos, body, multipartBody, id);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class PutRequest extends HttpRequest {
             return multipartBody;
         } else if (null != fileInfos && fileInfos.size() > 0) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
-            addParams(builder);
+            form(builder);
             fileInfos.forEach(fileInfo -> {
                 RequestBody fileBody;
                 if (null != fileInfo.file) {
@@ -84,15 +84,15 @@ public class PutRequest extends HttpRequest {
             return builder.build();
         } else if (null != body && body.length() > 0) {
             MediaType mediaType;
-            if (headers.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
+            if (headerMap.containsKey(Header.CONTENT_TYPE)) {
+                mediaType = MediaType.valueOf(headerMap.get(Header.CONTENT_TYPE));
             } else {
                 mediaType = MediaType.TEXT_PLAIN_TYPE;
             }
             return RequestBody.create(mediaType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
-            addParams(builder);
+            form(builder);
             return builder.build();
         }
     }
@@ -102,18 +102,18 @@ public class PutRequest extends HttpRequest {
         return builder.put(requestBody).build();
     }
 
-    private void addParams(FormBody.Builder builder) {
-        if (null != params) {
-            params.forEach((k, v) -> builder.add(k, v));
+    private void form(FormBody.Builder builder) {
+        if (null != formMap) {
+            formMap.forEach((k, v) -> builder.add(k, v));
         }
-        if (null != encodedParams) {
-            encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
+        if (null != encodedForm) {
+            encodedForm.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
-    private void addParams(MultipartBody.Builder builder) {
-        if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) ->
+    private void form(MultipartBody.Builder builder) {
+        if (null != formMap && !formMap.isEmpty()) {
+            formMap.forEach((k, v) ->
                     builder.addPart(Headers.of(
                                     Header.CONTENT_DISPOSITION,
                                     "form-data; name=" + k + Symbol.DOUBLE_QUOTES),

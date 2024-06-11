@@ -115,4 +115,5 @@ public class GiteeProvider extends DefaultProvider {
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(GiteeScope.values())))
                 .build();
     }
+
 }

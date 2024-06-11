@@ -66,7 +66,7 @@ public class StackOverflowProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
         String accessTokenUrl = accessTokenUrl(authCallback.getCode());
-        Map<String, Object> form = new HashMap<>();
+        Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();

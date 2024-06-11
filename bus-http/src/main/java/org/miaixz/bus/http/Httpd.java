@@ -186,7 +186,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this(new Builder());
     }
 
-    Httpd(Builder builder) {
+    public Httpd(Builder builder) {
         this.dispatcher = builder.dispatcher;
         this.proxy = builder.proxy;
         this.protocols = builder.protocols;

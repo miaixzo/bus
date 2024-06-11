@@ -106,7 +106,7 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
             source = quotient.toByteArray();
         }
 
-        // pad output with zeroes corresponding to the number of leading zeroes in the message
+        // 使用与消息中与之数量相对应的‘0’来填充输出
         for (int i = 0; i < message.length - 1 && message[i] == 0; i++) {
             out.write(0);
         }

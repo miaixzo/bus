@@ -60,7 +60,7 @@ public class AfDianProvider extends DefaultProvider {
 
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());

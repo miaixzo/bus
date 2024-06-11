@@ -123,7 +123,7 @@ public class OktaProvider extends DefaultProvider {
 
     @Override
     public Message revoke(AccToken accToken) {
-        Map<String, Object> params = new HashMap<>(4);
+        Map<String, String> params = new HashMap<>(4);
         params.put("token", accToken.getAccessToken());
         params.put("token_type_hint", "access_token");
 

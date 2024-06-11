@@ -70,6 +70,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <lombok.version>1.18.32</lombok.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
     </properties>
 
@@ -78,6 +79,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

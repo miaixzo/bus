@@ -134,7 +134,7 @@ public class AmazonProvider extends DefaultProvider {
      */
     @Override
     protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(9);
+        Map<String, String> form = new HashMap<>(9);
         form.put("grant_type", "authorization_code");
         form.put("code", authCallback.getCode());
         form.put("redirect_uri", context.getRedirectUri());
@@ -151,7 +151,7 @@ public class AmazonProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken accToken) {
-        Map<String, Object> form = new HashMap<>(7);
+        Map<String, String> form = new HashMap<>(7);
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", accToken.getRefreshToken());
         form.put("client_id", context.getAppKey());
@@ -163,7 +163,7 @@ public class AmazonProvider extends DefaultProvider {
 
     }
 
-    private AccToken getToken(Map<String, Object> param, String url) {
+    private AccToken getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(Header.HOST, "api.amazon.com");
         header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
