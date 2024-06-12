@@ -33,6 +33,7 @@ import org.miaixz.bus.core.center.date.printer.SimpleDatePrinter;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -52,9 +53,9 @@ import java.util.regex.Pattern;
  */
 public class FastDateParser extends SimpleDatePrinter implements PositionDateParser {
 
-    static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
-
     private static final long serialVersionUID = -1L;
+
+    private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     // comparator used to sort regex alternatives
     // alternatives should be ordered longer first, and shorter last. ('february' before 'feb')
     // all entries must be lowercase by locale.
@@ -114,7 +115,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     private final int century;
     private final int startYear;
     // derived fields
-    private transient List<StrategyAndWidth> patterns;
+    private transient List<StrategyAndWidth> list;
 
     /**
      * <p>
@@ -237,7 +238,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * @param definingCalendar the {@link java.util.Calendar} instance used to initialize this FastDateParser
      */
     private void init(final Calendar definingCalendar) {
-        patterns = new ArrayList<>();
+        list = new ArrayList<>();
 
         final StrategyParser fm = new StrategyParser(definingCalendar);
         for (; ; ) {
@@ -245,7 +246,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             if (field == null) {
                 break;
             }
-            patterns.add(field);
+            list.add(field);
         }
     }
 
@@ -264,7 +265,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     @Override
-    public Date parse(final String source) throws DateException {
+    public Date parse(final CharSequence source) throws DateException {
         final ParsePosition pp = new ParsePosition(0);
         final Date date = parse(source, pp);
         if (date == null) {
@@ -279,7 +280,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     @Override
-    public Date parse(final String source, final ParsePosition pos) {
+    public Date parse(final CharSequence source, final ParsePosition pos) {
         // timing tests indicate getting new instance is 19% faster than cloning
         final Calendar cal = Calendar.getInstance(timeZone, locale);
         cal.clear();
@@ -288,8 +289,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     @Override
-    public boolean parse(final String source, final ParsePosition pos, final Calendar calendar) {
-        final ListIterator<StrategyAndWidth> lt = patterns.listIterator();
+    public boolean parse(final CharSequence source, final ParsePosition pos, final Calendar calendar) {
+        final ListIterator<StrategyAndWidth> lt = list.listIterator();
         while (lt.hasNext()) {
             final StrategyAndWidth strategyAndWidth = lt.next();
             final int maxWidth = strategyAndWidth.getMaxWidth(lt);
@@ -427,7 +428,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             return false;
         }
 
-        abstract boolean parse(FastDateParser parser, Calendar calendar, String source, ParsePosition pos, int maxWidth);
+        abstract boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos, int maxWidth);
     }
 
     /**
@@ -446,8 +447,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final String source, final ParsePosition pos, final int maxWidth) {
-            final Matcher matcher = pattern.matcher(source.substring(pos.getIndex()));
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
+            final Matcher matcher = pattern.matcher(source.subSequence(pos.getIndex(), source.length()));
             if (!matcher.lookingAt()) {
                 pos.setErrorIndex(pos.getIndex());
                 return false;
@@ -477,7 +478,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final String source, final ParsePosition pos, final int maxWidth) {
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
             for (int idx = 0; idx < formatField.length(); ++idx) {
                 final int sIdx = idx + pos.getIndex();
                 if (sIdx == source.length()) {
@@ -549,7 +550,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final String source, final ParsePosition pos, final int maxWidth) {
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
             int idx = pos.getIndex();
             int last = source.length();
 
@@ -581,7 +582,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 return false;
             }
 
-            final int value = Integer.parseInt(source.substring(pos.getIndex(), idx));
+            final int value = Integer.parseInt(StringKit.sub(source, pos.getIndex(), idx));
             pos.setIndex(idx);
 
             calendar.set(field, modify(parser, value));

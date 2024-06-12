@@ -774,24 +774,24 @@ public class DateKit extends Calendar {
         if (StringKit.isBlank(dateCharSequence)) {
             return null;
         }
-        String dateStr = dateCharSequence.toString();
+        String date = dateCharSequence.toString();
         // 去掉两边空格并去掉中文日期中的“日”和“秒”，以规范长度
-        dateStr = StringKit.removeAll(dateStr.trim(), '日', '秒');
+        date = StringKit.removeAll(date.trim(), '日', '秒');
 
-        final Date result = RegisterDateParser.INSTANCE.parse(dateStr);
+        final Date result = RegisterDateParser.INSTANCE.parse(date);
         if (null != result) {
             return date(result);
         }
 
         //标准日期格式（包括单个数字的日期时间）
-        dateStr = normalize(dateStr);
+        date = normalize(date);
 
-        if (NormalDateParser.INSTANCE.test(dateStr)) {
-            return NormalDateParser.INSTANCE.parse(dateStr);
+        if (NormalDateParser.INSTANCE.test(date)) {
+            return NormalDateParser.INSTANCE.parse(date);
         }
 
         // 没有更多匹配的时间格式
-        throw new DateException("No format fit for date String [{}] !", dateStr);
+        throw new DateException("No format fit for date String [{}] !", date);
     }
 
     /**

@@ -81,6 +81,8 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
+     * 缓存容量
+     *
      * @return 缓存容量（byte数）
      */
     public int capacity() {
@@ -88,6 +90,8 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
+     * 已使用空间大小
+     *
      * @return 已使用空间大小（byte数）
      */
     public int getUsedSize() {
@@ -95,6 +99,8 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
+     * 允许被缓存文件的最大byte数
+     *
      * @return 允许被缓存文件的最大byte数
      */
     public int maxFileSize() {
@@ -109,6 +115,8 @@ public abstract class AbstractFileCache implements Serializable {
     }
 
     /**
+     * 超时时间
+     *
      * @return 超时时间
      */
     public long timeout() {

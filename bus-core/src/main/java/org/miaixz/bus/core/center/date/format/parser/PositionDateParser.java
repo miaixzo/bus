@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import org.miaixz.bus.core.center.date.printer.DatePrinter;
+
 import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,7 +39,7 @@ import java.util.Date;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface PositionDateParser extends DateParser {
+public interface PositionDateParser extends DateParser, DatePrinter {
 
     /**
      * 将日期字符串解析并转换为  {@link Date} 对象
@@ -47,20 +49,18 @@ public interface PositionDateParser extends DateParser {
      * @param pos    {@link ParsePosition}
      * @return {@link Date}
      */
-    Date parse(String source, ParsePosition pos);
+    Date parse(CharSequence source, ParsePosition pos);
 
     /**
      * 根据给定格式更新{@link Calendar}
-     * Upon success, the ParsePosition index is updated to indicate how much of the source text was consumed.
-     * Not all source text needs to be consumed.
-     * Upon parse failure, ParsePosition error index is updated to the offset of the source text which does not match the supplied format.
+     * 解析成功后，{@link ParsePosition#getIndex()}更新成转换到的位置
+     * 失败则{@link ParsePosition#getErrorIndex()}更新到解析失败的位置
      *
      * @param source   被转换的日期字符串
      * @param pos      定义开始转换的位置，转换结束后更新转换到的位置
-     * @param calendar The calendar into which to set parsed fields.
-     * @return true, if source has been parsed (pos parsePosition is updated); otherwise false (and pos errorIndex is updated)
-     * @throws IllegalArgumentException when Calendar has been set to be not lenient, and a parsed field is out of range.
+     * @param calendar 解析并更新的{@link Calendar}
+     * @return 解析成功返回 {@code true}，否则返回{@code false}
      */
-    boolean parse(String source, ParsePosition pos, Calendar calendar);
+    boolean parse(CharSequence source, ParsePosition pos, Calendar calendar);
 
 }

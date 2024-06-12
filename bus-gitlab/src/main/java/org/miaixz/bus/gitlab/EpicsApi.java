@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.*;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -37,10 +39,10 @@ import java.util.stream.Stream;
 
 /**
  * This class implements the client side API for the GitLab Epics and Epic Issues API calls.
- * <p>
+ *
  * NOTE:
- * - If a user is not a member of a group and the group is private, a GET request on that group will result to a 404 status code.
- * - Epics are available only in Ultimate. If epics feature is not available a 403 status code will be returned.
+ *  - If a user is not a member of a group and the group is private, a GET request on that group will result to a 404 status code.
+ *  - Epics are available only in Ultimate. If epics feature is not available a 403 status code will be returned.
  *
  * @see <a href="https://docs.gitlab.com/ee/api/epics.html">GitLab Epics API Documentaion</a>
  * @see <a href="https://docs.gitlab.com/ee/api/epic_issues.html">GitLab Epic Issues API Documentation</a>
@@ -70,8 +72,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of epics per page
+     * @param page the page to get
+     * @param perPage the number of epics per page
      * @return a list of all epics of the requested group and its subgroups in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -87,7 +89,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of epics per page
+     * @param itemsPerPage the number of epics per page
      * @return the Pager of all epics of the requested group and its subgroups
      * @throws GitLabApiException if any exception occurs
      */
@@ -114,12 +116,12 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param authorId      returns epics created by the given user id
-     * @param labels        return epics matching a comma separated list of labels names.
-     *                      Label names from the epic group or a parent group can be used
-     * @param orderBy       return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
-     * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
-     * @param search        search epics against their title and description
+     * @param authorId returns epics created by the given user id
+     * @param labels return epics matching a comma separated list of labels names.
+     *        Label names from the epic group or a parent group can be used
+     * @param orderBy return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
+     * @param sortOrder return epics sorted in ASC or DESC order. Default is DESC
+     * @param search search epics against their title and description
      * @return a list of matching epics of the requested group and its subgroups
      * @throws GitLabApiException if any exception occurs
      */
@@ -134,14 +136,14 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param authorId      returns epics created by the given user id
-     * @param labels        return epics matching a comma separated list of labels names
-     *                      Label names from the epic group or a parent group can be used
-     * @param orderBy       return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
-     * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
-     * @param search        search epics against their title and description
-     * @param page          the page to get
-     * @param perPage       the number of epics per page
+     * @param authorId returns epics created by the given user id
+     * @param labels return epics matching a comma separated list of labels names
+     *        Label names from the epic group or a parent group can be used
+     * @param orderBy return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
+     * @param sortOrder return epics sorted in ASC or DESC order. Default is DESC
+     * @param search search epics against their title and description
+     * @param page the page to get
+     * @param perPage the number of epics per page
      * @return a list of matching epics of the requested group and its subgroups in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -157,7 +159,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param filter        epic filter
+     * @param filter epic filter
      * @return a list of matching epics of the requested group and its subgroups in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -171,13 +173,13 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param authorId      returns epics created by the given user id
-     * @param labels        return epics matching a comma separated list of labels names.
-     *                      Label names from the epic group or a parent group can be used
-     * @param itemsPerPage  the number of epics per page
-     * @param orderBy       return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
-     * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
-     * @param search        search epics against their title and description
+     * @param authorId returns epics created by the given user id
+     * @param labels return epics matching a comma separated list of labels names.
+     *        Label names from the epic group or a parent group can be used
+     * @param itemsPerPage the number of epics per page
+     * @param orderBy return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
+     * @param sortOrder return epics sorted in ASC or DESC order. Default is DESC
+     * @param search search epics against their title and description
      * @return the Pager of matching epics of the requested group and its subgroups
      * @throws GitLabApiException if any exception occurs
      */
@@ -193,8 +195,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param filter        epic filter
-     * @param itemsPerPage  the number of epics per page
+     * @param filter epic filter
+     * @param itemsPerPage the number of epics per page
      * @return a list of matching epics of the requested group and its subgroups in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -217,12 +219,12 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param authorId      returns epics created by the given user id
-     * @param labels        return epics matching a comma separated list of labels names.
-     *                      Label names from the epic group or a parent group can be used
-     * @param orderBy       return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
-     * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
-     * @param search        search epics against their title and description
+     * @param authorId returns epics created by the given user id
+     * @param labels return epics matching a comma separated list of labels names.
+     *        Label names from the epic group or a parent group can be used
+     * @param orderBy return epics ordered by CREATED_AT or UPDATED_AT. Default is CREATED_AT
+     * @param sortOrder return epics sorted in ASC or DESC order. Default is DESC
+     * @param search search epics against their title and description
      * @return a Stream of matching epics of the requested group and its subgroups
      * @throws GitLabApiException if any exception occurs
      */
@@ -237,7 +239,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get
+     * @param epicIid the IID of the epic to get
      * @return an Epic instance for the specified Epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -252,7 +254,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get
+     * @param epicIid the IID of the epic to get
      * @return an Optional instance with the specified Epic as a value
      */
     public Optional<Epic> getOptionalEpic(Object groupIdOrPath, Long epicIid) {
@@ -269,11 +271,11 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param title         the title of the epic (required)
-     * @param labels        comma separated list of labels (optional)
-     * @param description   the description of the epic (optional)
-     * @param startDate     the start date of the epic (optional)
-     * @param endDate       the end date of the epic (optional)
+     * @param title the title of the epic (required)
+     * @param labels comma separated list of labels (optional)
+     * @param description the description of the epic (optional)
+     * @param startDate the start date of the epic (optional)
+     * @param endDate the end date of the epic (optional)
      * @return an Epic instance containing info on the newly created epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -304,7 +306,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epic          the Epic instance with information for the new epic
+     * @param epic the Epic instance with information for the new epic
      * @return an Epic instance containing info on the newly created epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -326,12 +328,12 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/epics/:epic_iid</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to update
-     * @param title         the title of the epic (optional)
-     * @param labels        comma separated list of labels (optional)
-     * @param description   the description of the epic (optional)
-     * @param startDate     the start date of the epic (optional)
-     * @param endDate       the end date of the epic (optional)
+     * @param epicIid the IID of the epic to update
+     * @param title the title of the epic (optional)
+     * @param labels comma separated list of labels (optional)
+     * @param description the description of the epic (optional)
+     * @param startDate the start date of the epic (optional)
+     * @param endDate the end date of the epic (optional)
      * @return an Epic instance containing info on the newly created epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -361,8 +363,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/epics/:epic_iid</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to update
-     * @param epic          the Epic instance with update information
+     * @param epicIid the IID of the epic to update
+     * @param epic the Epic instance with update information
      * @return an Epic instance containing info on the updated epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -384,7 +386,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/epics/:epic_iid</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to delete
+     * @param epicIid the IID of the epic to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteEpic(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
@@ -397,7 +399,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/issues</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get issues for
+     * @param epicIid the IID of the epic to get issues for
      * @return a list of all issues belonging to the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -412,9 +414,9 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/issues</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get issues for
-     * @param page          the page to get
-     * @param perPage       the number of epics per page
+     * @param epicIid the IID of the epic to get issues for
+     * @param page the page to get
+     * @param perPage the number of epics per page
      * @return a list of all issues belonging to the specified epic in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -430,8 +432,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/issues</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get issues for
-     * @param itemsPerPage  the number of epics per page
+     * @param epicIid the IID of the epic to get issues for
+     * @param itemsPerPage the number of epics per page
      * @return the Pager of all issues belonging to the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -445,7 +447,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/issues</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get issues for
+     * @param epicIid the IID of the epic to get issues for
      * @return a Stream of all issues belonging to the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -460,8 +462,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics/:epic_iid/issues/:issue_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID to assign the issue to
-     * @param issueId       the issue ID of the issue to assign to the epic
+     * @param epicIid the Epic IID to assign the issue to
+     * @param issueId the issue ID of the issue to assign to the epic
      * @return an EpicIssue instance containing info on the newly assigned epic issue
      * @throws GitLabApiException if any exception occurs
      */
@@ -477,8 +479,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID to remove the issue from
-     * @param epicIssueId   the ID of the "issue - epic" association of the issue to remove from the epic
+     * @param epicIid the Epic IID to remove the issue from
+     * @param epicIssueId the ID of the "issue - epic" association of the issue to remove from the epic
      * @return an EpicIssueLink instance containing info on the removed issue
      * @throws GitLabApiException if any exception occurs
      */
@@ -494,10 +496,10 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID that the issue is assigned to
-     * @param epicIssueId   the ID of the "issue - epic" association
-     * @param moveBeforeId  the ID of the "issue - epic" association that should be placed before the link in the question (optional)
-     * @param moveAfterId   the ID of the "issue - epic" association that should be placed after the link in the question (optional)
+     * @param epicIid the Epic IID that the issue is assigned to
+     * @param epicIssueId the ID of the "issue - epic" association
+     * @param moveBeforeId the ID of the "issue - epic" association that should be placed before the link in the question (optional)
+     * @param moveAfterId the ID of the "issue - epic" association that should be placed after the link in the question (optional)
      * @return a list of all issues belonging to the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -517,7 +519,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
+     * @param epicIid the IID of the epic to get child epics for
      * @return a list of all child epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -531,8 +533,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
-     * @param itemsPerPage  the number of child epics per page
+     * @param epicIid the IID of the epic to get child epics for
+     * @param itemsPerPage the number of child epics per page
      * @return the Pager of all child epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -546,7 +548,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
+     * @param epicIid the IID of the epic to get child epics for
      * @return a Stream of all child epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -560,8 +562,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics/:epic_iid/epics/:child_epic_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID to assign the child epic to
-     * @param childEpicId   the global ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
+     * @param epicIid the Epic IID to assign the child epic to
+     * @param childEpicId the global ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
      * @return an ChildEpic instance containing info on the newly assigned child epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -577,9 +579,9 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics/:epic_iid/epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID to assign the child epic to (of the future parent epic)
-     * @param title         the title of a newly created epic
-     * @param confidential  whether the epic should be confidential (optional)
+     * @param epicIid the Epic IID to assign the child epic to (of the future parent epic)
+     * @param title the title of a newly created epic
+     * @param confidential whether the epic should be confidential (optional)
      * @return an ChildEpic instance containing info on the newly created and assigned child epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -598,10 +600,10 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID that the child epic is assigned to
-     * @param childEpicId   the ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
-     * @param moveBeforeId  the ID of a sibling epic that should be placed before the child epic (optional)
-     * @param moveAfterId   the ID of a sibling epic that should be placed after the child epic (optional)
+     * @param epicIid the Epic IID that the child epic is assigned to
+     * @param childEpicId the ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
+     * @param moveBeforeId the ID of a sibling epic that should be placed before the child epic (optional)
+     * @param moveAfterId the ID of a sibling epic that should be placed after the child epic (optional)
      * @return a list of all child epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -621,8 +623,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the Epic IID to remove the child epic from
-     * @param childEpicId   the ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
+     * @param epicIid the Epic IID to remove the child epic from
+     * @param childEpicId the ID of the child epic. Epic IID can’t be used because they can conflict with epics from other groups.
      * @return an ChildEpic instance containing info on the removed child epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -638,7 +640,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/related_epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
+     * @param epicIid the IID of the epic to get child epics for
      * @return a list of all related epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -652,8 +654,8 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/related_epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
-     * @param itemsPerPage  the number of child epics per page
+     * @param epicIid the IID of the epic to get child epics for
+     * @param itemsPerPage the number of child epics per page
      * @return the Pager of all related epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -667,7 +669,7 @@ public class EpicsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/epics/:epic_iid/related_epics</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid       the IID of the epic to get child epics for
+     * @param epicIid the IID of the epic to get child epics for
      * @return a Stream of all related epics of the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -680,11 +682,11 @@ public class EpicsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups/:id/epics/:epic_iid/related_epics</code></pre>
      *
-     * @param groupIdOrPath       the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid             the Epic IID to assign the child epic to
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param epicIid the Epic IID to assign the child epic to
      * @param targetGroupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path of the target group’s epic
-     * @param targetEpicIid       the Epic IID of the target group’s epic.
-     * @param linkType            the type of the relation (optional), defaults to {@link LinkType#RELATES_TO}.
+     * @param targetEpicIid the Epic IID of the target group’s epic.
+     * @param linkType the type of the relation (optional), defaults to {@link LinkType#RELATES_TO}.
      * @return an RelatedEpic instance containing info on the newly assigned child epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -703,8 +705,8 @@ public class EpicsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id</code></pre>
      *
-     * @param groupIdOrPath     the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param epicIid           the Epic IID to remove the child epic from
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param epicIid the Epic IID to remove the child epic from
      * @param relatedEpicLinkId the ID a related epic link.
      * @return an RelatedEpicLink instance containing info on the removed related epic
      * @throws GitLabApiException if any exception occurs

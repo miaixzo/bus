@@ -29,13 +29,14 @@ package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
+
+import java.io.Serializable;
 
 /**
  * 时间日期字符串，日期默认为当天，支持格式类似于；
@@ -47,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TimeParser extends DefaultDatePrinter implements PredicateDateParser {
+public class TimeParser implements PredicateDateParser, Serializable {
     /**
      * 单例
      */
@@ -55,12 +56,12 @@ public class TimeParser extends DefaultDatePrinter implements PredicateDateParse
     private static final long serialVersionUID = -1L;
 
     @Override
-    public boolean test(final CharSequence dateStr) {
-        return PatternKit.isMatch(Pattern.TIME_PATTERN, dateStr);
+    public boolean test(final CharSequence date) {
+        return PatternKit.isMatch(Pattern.TIME_PATTERN, date);
     }
 
     @Override
-    public DateTime parse(String source) {
+    public DateTime parse(CharSequence source) {
         source = StringKit.replaceChars(source, "时分秒", Symbol.COLON);
 
         source = StringKit.format("{} {}", DateKit.formatToday(), source);

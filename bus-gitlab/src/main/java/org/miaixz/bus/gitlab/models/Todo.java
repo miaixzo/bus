@@ -1,40 +1,41 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.miaixz.bus.gitlab.Constants.TodoAction;
-import org.miaixz.bus.gitlab.Constants.TodoState;
-import org.miaixz.bus.gitlab.Constants.TodoType;
+import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.io.IOException;
@@ -47,15 +48,15 @@ public class Todo implements Serializable {
     private Long id;
     private Project project;
     private Author author;
-    private TodoAction actionName;
-    private TodoType targetType;
+    private Constants.TodoAction actionName;
+    private Constants.TodoType targetType;
 
     @JsonDeserialize(using = TargetDeserializer.class)
     private Object target;
 
     private String targetUrl;
     private String body;
-    private TodoState state;
+    private Constants.TodoState state;
     private Date createdAt;
 
     public Long getId() {
@@ -82,19 +83,19 @@ public class Todo implements Serializable {
         this.author = author;
     }
 
-    public TodoAction getActionName() {
+    public Constants.TodoAction getActionName() {
         return actionName;
     }
 
-    public void setActionName(TodoAction actionName) {
+    public void setActionName(Constants.TodoAction actionName) {
         this.actionName = actionName;
     }
 
-    public TodoType getTargetType() {
+    public Constants.TodoType getTargetType() {
         return targetType;
     }
 
-    public void setTargetType(TodoType targetType) {
+    public void setTargetType(Constants.TodoType targetType) {
         this.targetType = targetType;
     }
 
@@ -122,11 +123,11 @@ public class Todo implements Serializable {
         this.body = body;
     }
 
-    public TodoState getState() {
+    public Constants.TodoState getState() {
         return state;
     }
 
-    public void setState(TodoState state) {
+    public void setState(Constants.TodoState state) {
         this.state = state;
     }
 
@@ -140,22 +141,22 @@ public class Todo implements Serializable {
 
     @JsonIgnore
     public Issue getIssueTarget() {
-        return (targetType == TodoType.ISSUE ? (Issue) target : null);
+        return (targetType == Constants.TodoType.ISSUE ? (Issue) target : null);
     }
 
     @JsonIgnore
     public MergeRequest getMergeRequestTarget() {
-        return (targetType == TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
+        return (targetType == Constants.TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
     }
 
     @JsonIgnore
     public boolean isIssueTodo() {
-        return (targetType == TodoType.ISSUE);
+        return (targetType == Constants.TodoType.ISSUE);
     }
 
     @JsonIgnore
     public boolean isMergeRequestTodo() {
-        return (targetType == TodoType.MERGE_REQUEST);
+        return (targetType == Constants.TodoType.MERGE_REQUEST);
     }
 
     @Override
@@ -168,10 +169,10 @@ public class Todo implements Serializable {
 
         @Override
         public Object deserialize(JsonParser jp, DeserializationContext context)
-                throws IOException {
+                throws IOException, JsonProcessingException {
 
             ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-            ObjectNode root = mapper.readTree(jp);
+            ObjectNode root = (ObjectNode) mapper.readTree(jp);
             boolean isMergeRequestTarget = root.has("source_branch");
             if (isMergeRequestTarget) {
                 return mapper.treeToValue(root, MergeRequest.class);

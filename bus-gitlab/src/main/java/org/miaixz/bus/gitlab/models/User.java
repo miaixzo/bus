@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -129,12 +131,12 @@ public class User extends AbstractUser<User> {
         this.external = external;
     }
 
-    public String getExternUid() {
-        return this.externUid;
-    }
-
     public void setExternUid(String externUid) {
         this.externUid = externUid;
+    }
+
+    public String getExternUid() {
+        return this.externUid;
     }
 
     public Integer getExtraSharedRunnersMinutesLimit() {
@@ -456,32 +458,6 @@ public class User extends AbstractUser<User> {
     public User withCustomAttributes(List<CustomAttribute> customAttributes) {
         this.customAttributes = customAttributes;
         return this;
-    }
-
-    /**
-     * Fluent method to set the projects_limit setting.
-     *
-     * @param projectsLimit the value for the projects_limit setting
-     * @return the value of this instance
-     * @see #withProjectsLimit(Integer)
-     * @deprecated Replaced by {@link #withProjectsLimit(Integer)}
-     */
-    @Deprecated
-    public User withProjectLimit(Integer projectsLimit) {
-        return withProjectsLimit(projectsLimit);
-    }
-
-    /**
-     * Fluent method to set the shared_projects_minutes_limit setting.
-     *
-     * @param sharedRunnersMinuteLimit the value for the shared_projects_minutes_limit setting
-     * @return the value of this instance
-     * @see #withSharedRunnersMinutesLimit(Integer)
-     * @deprecated Replaced by {@link #withSharedRunnersMinutesLimit(Integer)}
-     */
-    @Deprecated
-    public User withSharedRunnersMinuteLimit(Integer sharedRunnersMinuteLimit) {
-        return withSharedRunnersMinutesLimit(sharedRunnersMinuteLimit);
     }
 
     @Override

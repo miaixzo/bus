@@ -699,10 +699,10 @@ public class Calendar extends Calculate {
      * @param text          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final String text, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final String... parsePatterns) throws DateException {
         return parseByPatterns(text, null, parsePatterns);
     }
 
@@ -715,10 +715,10 @@ public class Calendar extends Calculate {
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final String text, final Locale locale, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final String... parsePatterns) throws DateException {
         return parseByPatterns(text, locale, true, parsePatterns);
     }
 
@@ -732,11 +732,11 @@ public class Calendar extends Calculate {
      * @param lenient       日期时间解析是否使用严格模式
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      * @see java.util.Calendar#isLenient()
      */
-    public static java.util.Calendar parseByPatterns(final String text, final Locale locale, final boolean lenient, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final boolean lenient, final String... parsePatterns) throws DateException {
         if (text == null || parsePatterns == null) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
@@ -764,7 +764,7 @@ public class Calendar extends Calculate {
                     return calendar;
                 }
             } catch (final IllegalArgumentException ignore) {
-                // leniency is preventing calendar from being set
+                // 宽大处理是防止日历被设定
             }
             pos.setIndex(0);
         }

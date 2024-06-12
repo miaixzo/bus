@@ -312,7 +312,7 @@ public class Httpx {
      * @param formMap  查询参数
      * @param callback 回调信息
      */
-    public static void post(String url, Map<String, Object> formMap, Callback callback) {
+    public static void post(String url, Map<String, String> formMap, Callback callback) {
         StringBuilder data = new StringBuilder();
         if (ObjectKit.isNotEmpty(formMap)) {
             Set<String> keys = formMap.keySet();

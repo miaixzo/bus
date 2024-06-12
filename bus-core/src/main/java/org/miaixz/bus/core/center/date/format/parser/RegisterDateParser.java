@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ListKit;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -41,20 +41,20 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RegisterDateParser extends DefaultDatePrinter implements DateParser {
+public class RegisterDateParser implements DateParser, Serializable {
 
+    private static final long serialVersionUID = -1L;
     /**
      * 单例
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
-    private static final long serialVersionUID = -1L;
-    private final List<PredicateDateParser> parserList;
+    private final List<PredicateDateParser> list;
 
     /**
      * 构造
      */
     public RegisterDateParser() {
-        parserList = ListKit.of(
+        list = ListKit.of(
                 // 纯数字形式
                 PureDateParser.INSTANCE,
                 // HH:mm:ss 或者 HH:mm 时间格式匹配单独解析
@@ -72,8 +72,8 @@ public class RegisterDateParser extends DefaultDatePrinter implements DateParser
     }
 
     @Override
-    public Date parse(final String source) throws DateException {
-        return parserList
+    public Date parse(final CharSequence source) throws DateException {
+        return list
                 .stream()
                 .filter(predicateDateParser -> predicateDateParser.test(source))
                 .findFirst()
@@ -84,11 +84,11 @@ public class RegisterDateParser extends DefaultDatePrinter implements DateParser
      * 注册自定义的{@link PredicateDateParser}
      * 通过此方法，用户可以自定义日期字符串的匹配和解析，通过循环匹配，找到合适的解析器，解析之。
      *
-     * @param dateParser {@link PredicateDateParser}
+     * @param parser {@link PredicateDateParser}
      * @return this
      */
-    public RegisterDateParser register(final PredicateDateParser dateParser) {
-        this.parserList.add(dateParser);
+    public RegisterDateParser register(final PredicateDateParser parser) {
+        this.list.add(parser);
         return this;
     }
 

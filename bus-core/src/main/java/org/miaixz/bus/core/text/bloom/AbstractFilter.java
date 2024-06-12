@@ -39,7 +39,13 @@ public abstract class AbstractFilter implements BloomFilter {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 增长向量
+     */
     private final BitSet bitSet;
+    /**
+     * 容量
+     */
     protected int size;
 
 

@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.hooks.web;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class WebHookManager implements HookManager {
 
-    private static final Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(WebHookManager.class.getName());
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
@@ -51,13 +53,13 @@ public class WebHookManager implements HookManager {
     private String secretToken;
 
     /**
-     * Create a HookManager to handle GitLab web events.
+     * Create a HookManager to handle GitLab webhook events.
      */
     public WebHookManager() {
     }
 
     /**
-     * Create a HookManager to handle GitLab web events which will be verified
+     * Create a HookManager to handle GitLab webhook events which will be verified
      * against the specified secretToken.
      *
      * @param secretToken the secret token to verify against
@@ -101,7 +103,7 @@ public class WebHookManager implements HookManager {
      *
      * @param request the HttpServletRequest to read the Event instance from
      * @return the Event instance that was read from the request body, null if the request
-     * not contain a web event
+     * not contain a webhook event
      * @throws GitLabApiException if the parsed event is not supported
      */
     public Event handleRequest(HttpServletRequest request) throws GitLabApiException {
@@ -143,7 +145,7 @@ public class WebHookManager implements HookManager {
         try {
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(HttpRequest.getShortRequestDump(eventName + " web", true, request));
+                LOGGER.fine(HttpRequest.getShortRequestDump(eventName + " webhook", true, request));
                 String postData = HttpRequest.getPostDataAsString(request);
                 LOGGER.fine("Raw POST data:\n" + postData);
                 event = jacksonJson.unmarshal(Event.class, postData);

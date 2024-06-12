@@ -29,10 +29,11 @@ package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.MathKit;
+
+import java.io.Serializable;
 
 /**
  * 纯数字的日期字符串解析，支持格式包括；
@@ -47,7 +48,7 @@ import org.miaixz.bus.core.xyz.MathKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PureDateParser extends DefaultDatePrinter implements PredicateDateParser {
+public class PureDateParser implements PredicateDateParser, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -57,12 +58,12 @@ public class PureDateParser extends DefaultDatePrinter implements PredicateDateP
     public static PureDateParser INSTANCE = new PureDateParser();
 
     @Override
-    public boolean test(final CharSequence dateStr) {
-        return MathKit.isNumber(dateStr);
+    public boolean test(final CharSequence date) {
+        return MathKit.isNumber(date);
     }
 
     @Override
-    public DateTime parse(final String source) throws DateException {
+    public DateTime parse(final CharSequence source) throws DateException {
         final int length = source.length();
         // 纯数字形式
         if (length == Fields.PURE_DATETIME.length()) {
@@ -75,7 +76,7 @@ public class PureDateParser extends DefaultDatePrinter implements PredicateDateP
             return new DateTime(source, Formatter.PURE_TIME_FORMAT);
         } else if (length >= 11 && length <= 13) {
             // 时间戳
-            return new DateTime(MathKit.parseLong(source));
+            return new DateTime(MathKit.parseLong(String.valueOf(source)));
         }
 
         throw new DateException("No pure format fit for date String [{}] !", source);

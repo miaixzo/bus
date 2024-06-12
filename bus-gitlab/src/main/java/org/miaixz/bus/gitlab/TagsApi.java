@@ -1,38 +1,40 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.ProtectedTag;
 import org.miaixz.bus.gitlab.models.Release;
 import org.miaixz.bus.gitlab.models.Tag;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +44,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
- *
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
  */
@@ -50,6 +51,19 @@ public class TagsApi extends AbstractApi {
 
     public TagsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
+    }
+
+    /**
+     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @return the list of tags for the specified project ID
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
+        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
     }
 
     /**
@@ -68,26 +82,13 @@ public class TagsApi extends AbstractApi {
     }
 
     /**
-     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @return the list of tags for the specified project ID
-     * @throws GitLabApiException if any exception occurs
-     */
-    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
-        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
-    }
-
-    /**
      * Get a list of repository tags from a project, sorted by name in reverse alphabetical order and in the specified page range.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param page            the page to get
-     * @param perPage         the number of Tag instances per page
+     * @param page the page to get
+     * @param perPage the number of Tag instances per page
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -96,20 +97,6 @@ public class TagsApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags");
         return (response.readEntity(new GenericType<List<Tag>>() {
         }));
-    }
-
-    /**
-     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
-     * @return the Pager of tags for the specified project ID
-     * @throws GitLabApiException if any exception occurs
-     */
-    public Pager<Tag> getTags(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Tag>(this, Tag.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags"));
     }
 
     /**
@@ -131,9 +118,23 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param orderBy         return tags ordered by name or updated fields. Default is updated
-     * @param sortOrder       return tags sorted in asc or desc order. Default is desc
-     * @param search          return list of tags matching the search criteria
+     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @return the Pager of tags for the specified project ID
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Tag> getTags(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+        return (new Pager<Tag>(this, Tag.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags"));
+    }
+
+    /**
+     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param orderBy return tags ordered by name or updated fields. Default is updated
+     * @param sortOrder return tags sorted in asc or desc order. Default is desc
+     * @param search return list of tags matching the search criteria
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 11.8
@@ -148,11 +149,11 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param orderBy         return tags ordered by name or updated fields. Default is updated
-     * @param sortOrder       return tags sorted in asc or desc order. Default is desc
-     * @param search          return list of tags matching the search criteria
-     * @param page            the page to get
-     * @param perPage         the number of Tag instances per page
+     * @param orderBy return tags ordered by name or updated fields. Default is updated
+     * @param sortOrder return tags sorted in asc or desc order. Default is desc
+     * @param search return list of tags matching the search criteria
+     * @param page the page to get
+     * @param perPage the number of Tag instances per page
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 11.8
@@ -176,10 +177,10 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param orderBy         return tags ordered by name or updated fields. Default is updated
-     * @param sortOrder       return tags sorted in asc or desc order. Default is desc
-     * @param search          return list of tags matching the search criteria
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @param orderBy return tags ordered by name or updated fields. Default is updated
+     * @param sortOrder return tags sorted in asc or desc order. Default is desc
+     * @param search return list of tags matching the search criteria
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return the Pager of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 11.8
@@ -198,9 +199,9 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param orderBy         return tags ordered by name or updated fields. Default is updated
-     * @param sortOrder       return tags sorted in asc or desc order. Default is desc
-     * @param search          return list of tags matching the search criteria
+     * @param orderBy return tags ordered by name or updated fields. Default is updated
+     * @param sortOrder return tags sorted in asc or desc order. Default is desc
+     * @param search return list of tags matching the search criteria
      * @return a Stream of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 11.8
@@ -215,7 +216,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags/:tagName</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of the tag to fetch the info for
+     * @param tagName the name of the tag to fetch the info for
      * @return a Tag instance with info on the specified tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -230,7 +231,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tags/:tagName</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of the tag to fetch the info for
+     * @param tagName the name of the tag to fetch the info for
      * @return an Optional instance with the specified project tag as the value
      * @throws GitLabApiException if any exception occurs
      */
@@ -248,8 +249,8 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         The name of the tag Must be unique for the project
-     * @param ref             the git ref to place the tag on
+     * @param tagName The name of the tag Must be unique for the project
+     * @param ref the git ref to place the tag on
      * @return a Tag instance containing info on the newly created tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -263,10 +264,10 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         The name of the tag Must be unique for the project
-     * @param ref             the git ref to place the tag on
-     * @param message         the message to included with the tag (optional)
-     * @param releaseNotes    the release notes for the tag (optional)
+     * @param tagName The name of the tag Must be unique for the project
+     * @param ref the git ref to place the tag on
+     * @param message the message to included with the tag (optional)
+     * @param releaseNotes the release notes for the tag (optional)
      * @return a Tag instance containing info on the newly created tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -289,10 +290,10 @@ public class TagsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/tags</code></pre>
      *
-     * @param projectIdOrPath  id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName          the name of the tag, must be unique for the project
-     * @param ref              the git ref to place the tag on
-     * @param message          the message to included with the tag (optional)
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param tagName the name of the tag, must be unique for the project
+     * @param ref the git ref to place the tag on
+     * @param message the message to included with the tag (optional)
      * @param releaseNotesFile a whose contents are the release notes (optional)
      * @return a Tag instance containing info on the newly created tag
      * @throws GitLabApiException if any exception occurs
@@ -319,7 +320,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/tags/:tag_name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         The name of the tag to delete
+     * @param tagName The name of the tag to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
@@ -333,8 +334,8 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/tags/:tagName/release</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of a tag
-     * @param releaseNotes    release notes with markdown support
+     * @param tagName the name of a tag
+     * @param releaseNotes release notes with markdown support
      * @return a Tag instance containing info on the newly created tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -351,8 +352,8 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/tags/:tagName/release</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of a tag
-     * @param releaseNotes    release notes with markdown support
+     * @param tagName the name of a tag
+     * @param releaseNotes release notes with markdown support
      * @return a Tag instance containing info on the newly created tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -382,8 +383,8 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param page            the page to get
-     * @param perPage         the number of Tag instances per page
+     * @param page the page to get
+     * @param perPage the number of Tag instances per page
      * @return a List of tags for the specified project ID and page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -400,7 +401,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_tags</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return the Pager of protected tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -427,7 +428,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_tags/:name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param name            the name of the tag or wildcard
+     * @param name the name of the tag or wildcard
      * @return a ProtectedTag instance with info on the specified protected tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -442,7 +443,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_tags/:name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param name            the name of the tag or wildcard
+     * @param name the name of the tag or wildcard
      * @return an Optional instance with the specified protected tag as the value
      * @throws GitLabApiException if any exception occurs
      */
@@ -459,8 +460,8 @@ public class TagsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_tags</code></pre>
      *
-     * @param projectIdOrPath   id, path of the project, or a Project instance holding the project ID or path
-     * @param name              the name of the tag or wildcard
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param name the name of the tag or wildcard
      * @param createAccessLevel the access level allowed to create
      * @return a ProtectedTag instance
      * @throws GitLabApiException if any exception occurs
@@ -477,7 +478,7 @@ public class TagsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_tags/:name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param name            the name of the tag or wildcard
+     * @param name the name of the tag or wildcard
      * @throws GitLabApiException if any exception occurs
      */
     public void unprotectTag(Object projectIdOrPath, String name) throws GitLabApiException {

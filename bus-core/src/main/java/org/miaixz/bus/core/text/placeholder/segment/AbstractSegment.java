@@ -42,6 +42,11 @@ public abstract class AbstractSegment implements StringSegment {
      */
     private final String placeholder;
 
+    /**
+     * 构造
+     *
+     * @param placeholder 占位符
+     */
     protected AbstractSegment(final String placeholder) {
         this.placeholder = placeholder;
     }

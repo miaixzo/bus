@@ -25,59 +25,80 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.pay.metric.wxpay.enums;
+package org.miaixz.bus.core.center.date.format.parser;
+
+import org.miaixz.bus.core.lang.exception.DateException;
+import org.miaixz.bus.core.xyz.ListKit;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * 微信支付可用域名
+ * 使用正则列表方式的日期解析器
+ * 通过定义若干的日期正则，遍历匹配到给定正则后，按照正则方式解析为日期
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public enum WxDomain {
+public class RegexListDateParser implements DateParser, Serializable {
+
+    private static final long serialVersionUID = -1L;
+    private final List<Pattern> list;
 
     /**
-     * 中国国内
+     * 构造
+     *
+     * @param list 正则列表
      */
-    CHINA("https://api.mch.weixin.qq.com"),
-    /**
-     * 中国国内(备用域名)
-     */
-    CHINA2("https://api2.mch.weixin.qq.com"),
-    /**
-     * 东南亚
-     */
-    HK("https://apihk.mch.weixin.qq.com"),
-    /**
-     * 其它
-     */
-    US("https://apius.mch.weixin.qq.com"),
-    /**
-     * 获取公钥
-     */
-    FRAUD("https://fraud.mch.weixin.qq.com"),
-    /**
-     * 活动
-     */
-    ACTION("https://action.weixin.qq.com"),
-    /**
-     * 刷脸支付
-     * PAY_APP
-     */
-    PAY_APP("https://payapp.weixin.qq.com");
-
-    /**
-     * 域名
-     */
-    private final String value;
-
-    WxDomain(String value) {
-        this.value = value;
+    public RegexListDateParser(final List<Pattern> list) {
+        this.list = list;
     }
 
-    public String getType() {
-        return value;
+    /**
+     * 根据给定的正则列表创建
+     *
+     * @param args 正则列表
+     * @return this
+     */
+    public static RegexListDateParser of(final Pattern... args) {
+        return new RegexListDateParser(ListKit.of(args));
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param regex 日期正则
+     * @return this
+     */
+    public RegexListDateParser addRegex(final String regex) {
+        // 日期正则忽略大小写
+        return addPattern(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param pattern 日期正则
+     * @return this
+     */
+    public RegexListDateParser addPattern(final Pattern pattern) {
+        this.list.add(pattern);
+        return this;
     }
 
     @Override
-    public String toString() {
-        return value;
+    public Date parse(final CharSequence source) throws DateException {
+        Matcher matcher;
+        for (final Pattern pattern : this.list) {
+            matcher = pattern.matcher(source);
+            if (matcher.matches()) {
+                return RegexDateParser.parse(matcher);
+            }
+        }
+        throw new DateException("No valid pattern for date string: [{}]", source);
     }
 
 }

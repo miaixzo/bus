@@ -33,6 +33,7 @@ import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
 import org.miaixz.bus.core.beans.path.BeanPath;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.RecordConverter;
 import org.miaixz.bus.core.lang.exception.BeanException;
@@ -713,6 +714,12 @@ public class BeanKit {
         if (null == clazz) {
             return false;
         }
+
+        // 排除定义setXXX的预定义类
+        if (Dictionary.class == clazz) {
+            return false;
+        }
+
         return hasSetter(clazz) || hasPublicField(clazz);
     }
 
@@ -724,6 +731,14 @@ public class BeanKit {
      * @return 是否为Bean对象
      */
     public static boolean hasSetter(final Class<?> clazz) {
+        if (null == clazz) {
+            return false;
+        }
+        // 排除定义setXXX的预定义类
+        if (Dictionary.class == clazz) {
+            return false;
+        }
+
         if (ClassKit.isNormalClass(clazz)) {
             for (final Method method : clazz.getMethods()) {
                 if (method.getParameterCount() == 1 && method.getName().startsWith("set")) {

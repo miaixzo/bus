@@ -29,12 +29,12 @@ package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NormalDateParser extends DefaultDatePrinter implements PredicateDateParser {
+public class NormalDateParser implements PredicateDateParser, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -62,12 +62,12 @@ public class NormalDateParser extends DefaultDatePrinter implements PredicateDat
     public static NormalDateParser INSTANCE = new NormalDateParser();
 
     @Override
-    public boolean test(final CharSequence dateStr) {
-        return PatternKit.isMatch(patternNorm, dateStr);
+    public boolean test(final CharSequence date) {
+        return PatternKit.isMatch(patternNorm, date);
     }
 
     @Override
-    public DateTime parse(String source) throws DateException {
+    public DateTime parse(CharSequence source) throws DateException {
         final int colonCount = StringKit.count(source, Symbol.C_COLON);
         switch (colonCount) {
             case 0:

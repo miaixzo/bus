@@ -1,37 +1,41 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.JobStatus;
 import org.miaixz.bus.gitlab.models.Runner;
+import org.miaixz.bus.gitlab.models.Runner.RunnerStatus;
+import org.miaixz.bus.gitlab.models.Runner.RunnerType;
 import org.miaixz.bus.gitlab.models.RunnerDetail;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -100,12 +104,12 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners</code></pre>
      *
-     * @param type   the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
      * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public List<Runner> getRunners(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getRunners(type, status, getDefaultPerPage()).all());
     }
 
@@ -114,14 +118,14 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners</code></pre>
      *
-     * @param type    the type of runners to show, one of: instance_type, group_type, project_type, or null
-     * @param status  the status of runners to show, one of: active, paused, online, offline, or null
-     * @param page    the page offset of runners
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param status the status of runners to show, one of: active, paused, online, offline, or null
+     * @param page the page offset of runners
      * @param perPage the number of runners to get after the page offset
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status, int page, int perPage) throws GitLabApiException {
+    public List<Runner> getRunners(RunnerType type, RunnerStatus status, int page, int perPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(page, perPage)
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -135,13 +139,13 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners</code></pre>
      *
-     * @param type         the type of runners to show, one of: instance_type, group_type, project_type, or null
-     * @param status       the status of runners to show, one of: active, paused, online, offline, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @param itemsPerPage The number of Runner instances that will be fetched per page
      * @return a Pager containing the Runners for the user
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status, int itemsPerPage) throws GitLabApiException {
+    public Pager<Runner> getRunners(RunnerType type, RunnerStatus status, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -153,12 +157,12 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners</code></pre>
      *
-     * @param type   the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
      * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @return Stream of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Runner> getRunnersStream(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public Stream<Runner> getRunnersStream(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getRunners(type, status, getDefaultPerPage()).stream());
     }
 
@@ -218,12 +222,12 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners/all</code></pre>
      *
-     * @param type   the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
      * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @return a List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public List<Runner> getAllRunners(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getAllRunners(type, status, getDefaultPerPage()).all());
     }
 
@@ -232,14 +236,14 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners/all</code></pre>
      *
-     * @param type    the type of runners to show, one of: instance_type, group_type, project_type, or null
-     * @param status  the status of runners to show, one of: active, paused, online, offline, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @param page    The page offset of runners
      * @param perPage The number of runners to get after the page offset
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status, int page, int perPage) throws GitLabApiException {
+    public List<Runner> getAllRunners(RunnerType type, RunnerStatus status, int page, int perPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(page, perPage)
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -253,13 +257,13 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners/all</code></pre>
      *
-     * @param type         the type of runners to show, one of: instance_type, group_type, project_type, or null
-     * @param status       the status of runners to show, one of: active, paused, online, offline, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @param itemsPerPage The number of Runner instances that will be fetched per page
      * @return a Pager containing the Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status, int itemsPerPage) throws GitLabApiException {
+    public Pager<Runner> getAllRunners(RunnerType type, RunnerStatus status, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -271,12 +275,12 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /runners/all</code></pre>
      *
-     * @param type   the type of runners to show, one of: instance_type, group_type, project_type, or null
+     * @param type the type of runners to show, one of: instance_type, group_type, project_type, or null
      * @param status the status of runners to show, one of: active, paused, online, offline, or null
      * @return a Stream of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Runner> getAllRunnersStream(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public Stream<Runner> getAllRunnersStream(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getAllRunners(type, status, getDefaultPerPage()).stream());
     }
 
@@ -472,7 +476,7 @@ public class RunnersApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/runners</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return Pager of all Runner available in the project
      * @throws GitLabApiException if any exception occurs
      */
@@ -487,7 +491,7 @@ public class RunnersApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/runners</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param runnerId        The ID of a runner
+     * @param runnerId  The ID of a runner
      * @return Runner instance of the Runner enabled
      * @throws GitLabApiException if any exception occurs
      */
@@ -505,7 +509,7 @@ public class RunnersApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/runners/:runner_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param runnerId        The ID of a runner
+     * @param runnerId  The ID of a runner
      * @return Runner instance of the Runner disabled
      * @throws GitLabApiException if any exception occurs
      */
@@ -520,12 +524,12 @@ public class RunnersApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /runners/</code></pre>
      *
-     * @param token          the token of the project (for project specific runners) or the token from the admin page
-     * @param description    The description of a runner
-     * @param active         The state of a runner; can be set to true or false
-     * @param tagList        The list of tags for a runner; put array of tags, that should be finally assigned to a runner
-     * @param runUntagged    Flag indicating the runner can execute untagged jobs
-     * @param locked         Flag indicating the runner is locked
+     * @param token       the token of the project (for project specific runners) or the token from the admin page
+     * @param description The description of a runner
+     * @param active      The state of a runner; can be set to true or false
+     * @param tagList     The list of tags for a runner; put array of tags, that should be finally assigned to a runner
+     * @param runUntagged Flag indicating the runner can execute untagged jobs
+     * @param locked      Flag indicating the runner is locked
      * @param maximumTimeout the maximum timeout set when this Runner will handle the job
      * @return RunnerDetail instance.
      * @throws GitLabApiException if any exception occurs

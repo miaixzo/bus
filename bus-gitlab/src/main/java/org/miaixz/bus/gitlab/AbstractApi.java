@@ -1,37 +1,39 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import org.miaixz.bus.gitlab.models.*;
 
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -251,7 +253,7 @@ public abstract class AbstractApi implements Constants {
 
     /**
      * Encode a string to be used as in-path argument for a gitlab api request.
-     * <p>
+     *
      * Standard URL encoding changes spaces to plus signs, but for arguments that are part of the path,
      * like the :file_path in a "Get raw file" request, gitlab expects spaces to be encoded with %20.
      *
@@ -279,8 +281,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -297,9 +299,9 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param accepts        if non-empty will set the Accepts header to this value
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param accepts if non-empty will set the Accepts header to this value
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -316,8 +318,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param queryParams multivalue map of request parameters
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -334,8 +336,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -352,8 +354,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -370,8 +372,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param queryParams multivalue map of request parameters
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -388,8 +390,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param formData       the Form containing the name/value pairs for the POST data
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param formData the Form containing the name/value pairs for the POST data
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -406,8 +408,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param payload        the object instance that will be serialized to JSON and used as the POST data
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param payload the object instance that will be serialized to JSON and used as the POST data
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -424,9 +426,9 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param stream         the StreamingOutput that will be used for the POST data
-     * @param mediaType      the content-type for the streamed data
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param stream the StreamingOutput that will be used for the POST data
+     * @param mediaType the content-type for the streamed data
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -443,8 +445,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -461,8 +463,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param formData       the Form containing the name/value pairs for the POST data
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param formData the Form containing the name/value pairs for the POST data
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -479,10 +481,10 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param mediaType      unused; will be removed in the next major version
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param name the name for the form field that contains the file name
+     * @param fileToUpload a File instance pointing to the file to upload
+     * @param mediaType unused; will be removed in the next major version
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -507,10 +509,10 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param mediaType      unused; will be removed in the next major version
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param name the name for the form field that contains the file name
+     * @param fileToUpload a File instance pointing to the file to upload
+     * @param mediaType unused; will be removed in the next major version
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -527,11 +529,11 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param mediaType      unused; will be removed in the next major version
-     * @param formData       the Form containing the name/value pairs
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param name the name for the form field that contains the file name
+     * @param fileToUpload a File instance pointing to the file to upload
+     * @param mediaType unused; will be removed in the next major version
+     * @param formData the Form containing the name/value pairs
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -549,8 +551,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -567,8 +569,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param queryParams multivalue map of request parameters
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -585,8 +587,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param payload        the object instance that will be serialized to JSON and used as the PUT data
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param payload the object instance that will be serialized to JSON and used as the PUT data
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -603,8 +605,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param formData       the Form containing the name/value pairs for the POST data
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param formData the Form containing the name/value pairs for the POST data
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -622,9 +624,9 @@ public abstract class AbstractApi implements Constants {
      * returning a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param name the name for the form field that contains the file name
+     * @param fileToUpload a File instance pointing to the file to upload
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -641,9 +643,9 @@ public abstract class AbstractApi implements Constants {
      * returning a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param name           the name for the form field that contains the file name
-     * @param fileToUpload   a File instance pointing to the file to upload
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param name the name for the form field that contains the file name
+     * @param fileToUpload a File instance pointing to the file to upload
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -660,8 +662,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param pathArgs       variable list of arguments used to build the URI
+     * @param queryParams multivalue map of request parameters
+     * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -678,8 +680,8 @@ public abstract class AbstractApi implements Constants {
      * a ClientResponse instance with the data returned from the endpoint.
      *
      * @param expectedStatus the HTTP status that should be returned from the server
-     * @param queryParams    multivalue map of request parameters
-     * @param url            the fully formed path to the GitLab API endpoint
+     * @param queryParams multivalue map of request parameters
+     * @param url the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -695,8 +697,8 @@ public abstract class AbstractApi implements Constants {
      * Convenience method for adding query and form parameters to a get() or post() call.
      *
      * @param formData the Form containing the name/value pairs
-     * @param name     the name of the field/attribute to add
-     * @param value    the value of the field/attribute to add
+     * @param name the name of the field/attribute to add
+     * @param value the value of the field/attribute to add
      */
     protected void addFormParam(Form formData, String name, Object value) throws IllegalArgumentException {
         addFormParam(formData, name, value, false);
@@ -707,8 +709,8 @@ public abstract class AbstractApi implements Constants {
      * If required is true and value is null, will throw an IllegalArgumentException.
      *
      * @param formData the Form containing the name/value pairs
-     * @param name     the name of the field/attribute to add
-     * @param value    the value of the field/attribute to add
+     * @param name the name of the field/attribute to add
+     * @param value the value of the field/attribute to add
      * @param required the field is required flag
      * @throws IllegalArgumentException if a required parameter is null or empty
      */
@@ -788,7 +790,7 @@ public abstract class AbstractApi implements Constants {
     /**
      * Creates a MultivaluedMap instance containing "page" and "per_page" params.
      *
-     * @param page    the page to get
+     * @param page the page to get
      * @param perPage the number of projects per page
      * @return a MultivaluedMap instance containing "page" and "per_page" params
      */
@@ -799,8 +801,8 @@ public abstract class AbstractApi implements Constants {
     /**
      * Creates a MultivaluedMap instance containing "page" and "per_page" params.
      *
-     * @param page                    the page to get
-     * @param perPage                 the number of projects per page
+     * @param page the page to get
+     * @param perPage the number of projects per page
      * @param customAttributesEnabled enables customAttributes for this query
      * @return a MultivaluedMap instance containing "page" and "per_page" params
      */
@@ -836,5 +838,4 @@ public abstract class AbstractApi implements Constants {
 
         return (form.asMap());
     }
-
 }

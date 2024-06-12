@@ -1,36 +1,38 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -64,29 +66,31 @@ import java.util.stream.StreamSupport;
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
-    private static final JacksonJson jacksonJson = new JacksonJson();
-    private static final ObjectMapper mapper = jacksonJson.getObjectMapper();
-    private final AbstractApi api;
-    private final MultivaluedMap<String, String> queryParams;
-    private final Object[] pathArgs;
-    private final JavaType javaType;
     private int itemsPerPage;
     private int totalPages;
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
+
     private List<String> pageParam = new ArrayList<>(1);
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
 
+    private static JacksonJson jacksonJson = new JacksonJson();
+    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
+    private AbstractApi api;
+    private MultivaluedMap<String, String> queryParams;
+    private Object[] pathArgs;
+    private JavaType javaType;
+
     /**
      * Creates a Pager instance to access the API through the specified path and query parameters.
      *
-     * @param api          the AbstractApi implementation to communicate through
-     * @param type         the GitLab4J type that will be contained in the List
+     * @param api the AbstractApi implementation to communicate through
+     * @param type the GitLab4J type that will be contained in the List
      * @param itemsPerPage items per page
-     * @param queryParams  HTTP query params
-     * @param pathArgs     HTTP path arguments
+     * @param queryParams HTTP query params
+     * @param pathArgs HTTP path arguments
      * @throws GitLabApiException if any error occurs
      */
     public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams, Object... pathArgs) throws GitLabApiException {
@@ -156,7 +160,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Get the specified header value from the Response instance.
      *
      * @param response the Response instance to get the value from
-     * @param key      the HTTP header key to get the value for
+     * @param key the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
      * @throws GitLabApiException if any error occurs
      */
@@ -175,7 +179,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Get the specified integer header value from the Response instance.
      *
      * @param response the Response instance to get the value from
-     * @param key      the HTTP header key to get the value for
+     * @param key the HTTP header key to get the value for
      * @return the specified integer header value from the Response instance, or -1 if the header is not present
      * @throws GitLabApiException if any error occurs
      */
@@ -254,7 +258,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return the next List in the iteration
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
+     * @throws RuntimeException if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
      */
     @Override
     public List<T> next() {
@@ -319,7 +323,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param pageNumber the page to get
      * @return the specified page of List
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
+     * @throws RuntimeException if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
      */
     public List<T> page(int pageNumber) {
 
@@ -382,7 +386,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
-     * @throws GitLabApiException    if any other error occurs
+     * @throws GitLabApiException if any other error occurs
      */
     public Stream<T> stream() throws GitLabApiException, IllegalStateException {
 

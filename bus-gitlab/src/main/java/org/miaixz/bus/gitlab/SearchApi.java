@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
 import org.miaixz.bus.gitlab.models.*;
@@ -32,7 +34,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API Search API calls.
- *
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  */
 public class SearchApi extends AbstractApi {
@@ -46,8 +47,8 @@ public class SearchApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code></pre>
      *
-     * @param scope  search the expression within the specified scope. Currently these scopes are supported:
-     *               projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a List containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
@@ -62,8 +63,8 @@ public class SearchApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code></pre>
      *
-     * @param scope  search the expression within the specified scope. Currently these scopes are supported:
-     *               projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a Stream containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
@@ -78,9 +79,9 @@ public class SearchApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /search?scope=:scope&amp;search=:search-query</code></pre>
      *
-     * @param scope        search the expression within the specified scope. Currently these scopes are supported:
-     *                     projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
-     * @param search       the search query
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
+     * @param search the search query
      * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
@@ -135,9 +136,9 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param scope         search the expression within the specified scope. Currently these scopes are supported:
-     *                      projects, issues, merge_requests, milestones, users
-     * @param search        the search query
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, users
+     * @param search the search query
      * @return a List containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -153,9 +154,9 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param scope         search the expression within the specified scope. Currently these scopes are supported:
-     *                      projects, issues, merge_requests, milestones, users
-     * @param search        the search query
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, users
+     * @param search the search query
      * @return a Stream containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -171,10 +172,10 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:groupId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param scope         search the expression within the specified scope. Currently these scopes are supported:
-     *                      projects, issues, merge_requests, milestones, users
-     * @param search        the search query
-     * @param itemsPerPage  the number of items that will be fetched per page
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *              projects, issues, merge_requests, milestones, users
+     * @param search the search query
+     * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -231,9 +232,9 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
      * @return a List containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -249,11 +250,11 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
-     * @param ref             the name of a repository branch or tag to search on. The project’s default branch is used by
-     *                        default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
+     * @param ref the name of a repository branch or tag to search on. The project’s default branch is used by 
+     *             default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a List containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -269,9 +270,9 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
      * @return a Stream containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -287,11 +288,11 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
-     * @param ref             the name of a repository branch or tag to search on. The project’s default branch is used by
-     *                        default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
+     * @param ref the name of a repository branch or tag to search on. The project’s default branch is used by 
+     *             default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a Stream containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -308,10 +309,10 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
-     * @param itemsPerPage    the number of items that will be fetched per page
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
+     * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5
@@ -328,12 +329,12 @@ public class SearchApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /project/:projectId/search?scope=:scope&amp;search=:search-query&amp;ref=ref</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param scope           search the expression within the specified scope. Currently these scopes are supported:
-     *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
-     * @param search          the search query
-     * @param ref             the name of a repository branch or tag to search on. The project’s default branch is used by
-     *                        default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
-     * @param itemsPerPage    the number of items that will be fetched per page
+     * @param scope search the expression within the specified scope. Currently these scopes are supported:
+     *               issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
+     * @param search the search query
+     * @param ref the name of a repository branch or tag to search on. The project’s default branch is used by 
+     *             default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
+     * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.5

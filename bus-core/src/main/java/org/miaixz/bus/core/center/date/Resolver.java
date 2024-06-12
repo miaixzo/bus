@@ -56,103 +56,103 @@ public class Resolver extends Converter {
     /**
      * 构建DateTime对象
      *
-     * @param dateStr    Date字符串
-     * @param dateFormat 格式化器 {@link SimpleDateFormat}
+     * @param date    Date字符串
+     * @param format 格式化器 {@link SimpleDateFormat}
      * @return DateTime对象
      */
-    public static DateTime parse(final CharSequence dateStr, final DateFormat dateFormat) {
-        return new DateTime(dateStr, dateFormat);
+    public static DateTime parse(final CharSequence date, final DateFormat format) {
+        return new DateTime(date, format);
     }
 
     /**
      * 构建DateTime对象
      *
-     * @param dateStr Date字符串
+     * @param date Date字符串
      * @param parser  格式化器,{@link FormatBuilder}
      * @return DateTime对象
      */
-    public static DateTime parse(final CharSequence dateStr, final PositionDateParser parser) {
-        return new DateTime(dateStr, parser);
+    public static DateTime parse(final CharSequence date, final PositionDateParser parser) {
+        return new DateTime(date, parser);
     }
 
     /**
      * 构建DateTime对象
      *
-     * @param dateStr Date字符串
+     * @param date Date字符串
      * @param parser  格式化器,{@link FormatBuilder}
      * @param lenient 是否宽容模式
      * @return DateTime对象
      */
-    public static DateTime parse(final CharSequence dateStr, final PositionDateParser parser, final boolean lenient) {
-        return new DateTime(dateStr, parser, lenient);
+    public static DateTime parse(final CharSequence date, final PositionDateParser parser, final boolean lenient) {
+        return new DateTime(date, parser, lenient);
     }
 
     /**
      * 构建DateTime对象
      *
-     * @param dateStr   Date字符串
+     * @param date   Date字符串
      * @param formatter 格式化器,{@link DateTimeFormatter}
      * @return DateTime对象
      */
-    public static DateTime parse(final CharSequence dateStr, final DateTimeFormatter formatter) {
-        return new DateTime(dateStr, formatter);
+    public static DateTime parse(final CharSequence date, final DateTimeFormatter formatter) {
+        return new DateTime(date, formatter);
     }
 
     /**
      * 将特定格式的日期转换为Date对象
      *
-     * @param dateStr 特定格式的日期
+     * @param date 特定格式的日期
      * @param format  格式，例如yyyy-MM-dd
      * @return 日期对象
      */
-    public static DateTime parse(final CharSequence dateStr, final String format) {
-        return new DateTime(dateStr, format);
+    public static DateTime parse(final CharSequence date, final String format) {
+        return new DateTime(date, format);
     }
 
     /**
      * 将特定格式的日期转换为Date对象
      *
-     * @param dateStr 特定格式的日期
+     * @param date 特定格式的日期
      * @param format  格式，例如yyyy-MM-dd
      * @param locale  区域信息
      * @return 日期对象
      */
-    public static DateTime parse(final CharSequence dateStr, final String format, final Locale locale) {
+    public static DateTime parse(final CharSequence date, final String format, final Locale locale) {
         if (CustomFormat.isCustomFormat(format)) {
             // 自定义格式化器忽略Locale
-            return new DateTime(CustomFormat.parse(dateStr, format));
+            return new DateTime(CustomFormat.parse(date, format));
         }
-        return new DateTime(dateStr, newSimpleFormat(format, locale, null));
+        return new DateTime(date, newSimpleFormat(format, locale, null));
     }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link DateException}异常
      *
-     * @param text          日期时间字符串，非空
+     * @param date          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Date
      * @throws IllegalArgumentException if the date string or pattern array is null
      * @throws DateException            if none of the date patterns were suitable
      */
-    public static DateTime parse(final String text, final String... parsePatterns) throws DateException {
-        return date(Calendar.parseByPatterns(text, parsePatterns));
+    public static DateTime parse(final String date, final String... parsePatterns) throws DateException {
+        return date(Calendar.parseByPatterns(date, parsePatterns));
     }
 
     /**
      * 解析日期时间字符串为{@link LocalDateTime}
      *
-     * @param text   日期时间字符串
+     * @param date   日期时间字符串
      * @param format 日期格式，类似于yyyy-MM-dd HH:mm:ss,SSS
      * @return {@link LocalDateTime}
      */
-    public static LocalDateTime parseTime(CharSequence text, final String format) {
-        if (StringKit.isBlank(text)) {
+    public static LocalDateTime parseTime(CharSequence date, final String format) {
+        if (StringKit.isBlank(date)) {
             return null;
         }
 
         if (CustomFormat.isCustomFormat(format)) {
-            return of(CustomFormat.parse(text, format).toInstant());
+            return of(CustomFormat.parse(date, format).toInstant());
         }
 
         DateTimeFormatter formatter = null;
@@ -163,7 +163,7 @@ public class Resolver extends Converter {
                 final int paddingWidth = 3 - (format.length() - Fields.PURE_DATETIME.length());
                 if (paddingWidth > 0) {
                     // 将yyyyMMddHHmmssS、yyyyMMddHHmmssSS的日期统一替换为yyyyMMddHHmmssSSS格式，用0补
-                    text += StringKit.repeat('0', paddingWidth);
+                    date += StringKit.repeat('0', paddingWidth);
                 }
                 formatter = Formatter.PURE_DATETIME_MS_FORMATTER;
             } else {
@@ -171,68 +171,68 @@ public class Resolver extends Converter {
             }
         }
 
-        return parseTime(text, formatter);
+        return parseTime(date, formatter);
     }
 
     /**
      * 解析日期时间字符串为{@link LocalDateTime}，格式支持日期时间、日期、时间
      * 如果formatter为{@code null}，则使用{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME}
      *
-     * @param text      日期时间字符串
+     * @param date      日期时间字符串
      * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
      * @return {@link LocalDateTime}
      */
-    public static LocalDateTime parseTime(final CharSequence text, final DateTimeFormatter formatter) {
-        if (StringKit.isBlank(text)) {
+    public static LocalDateTime parseTime(final CharSequence date, final DateTimeFormatter formatter) {
+        if (StringKit.isBlank(date)) {
             return null;
         }
         if (null == formatter) {
-            return LocalDateTime.parse(text);
+            return LocalDateTime.parse(date);
         }
 
-        return of(formatter.parse(text));
+        return of(formatter.parse(date));
     }
 
     /**
      * 解析日期字符串为{@link LocalDate}
      *
-     * @param text   日期字符串
+     * @param date   日期字符串
      * @param format 日期格式，类似于yyyy-MM-dd
      * @return {@link LocalDateTime}
      */
-    public static LocalDate parseDate(final CharSequence text, final String format) {
-        if (StringKit.isBlank(text)) {
+    public static LocalDate parseDate(final CharSequence date, final String format) {
+        if (StringKit.isBlank(date)) {
             return null;
         }
-        return parseDate(text, DateTimeFormatter.ofPattern(format));
+        return parseDate(date, DateTimeFormatter.ofPattern(format));
     }
 
     /**
      * 解析日期时间字符串为{@link LocalDate}，格式支持日期
      *
-     * @param text      日期时间字符串
+     * @param date      日期时间字符串
      * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
      * @return {@link LocalDate}
      */
-    public static LocalDate parseDate(final CharSequence text, final DateTimeFormatter formatter) {
-        if (StringKit.isBlank(text)) {
+    public static LocalDate parseDate(final CharSequence date, final DateTimeFormatter formatter) {
+        if (StringKit.isBlank(date)) {
             return null;
         }
         if (null == formatter) {
-            return LocalDate.parse(text);
+            return LocalDate.parse(date);
         }
 
-        return ofDate(formatter.parse(text));
+        return ofDate(formatter.parse(date));
     }
 
     /**
      * 解析日期时间字符串为{@link LocalDate}，仅支持yyyy-MM-dd'T'HH:mm:ss格式，例如：2007-12-03T10:15:30
      *
-     * @param text 日期时间字符串
+     * @param date 日期时间字符串
      * @return {@link LocalDate}
      */
-    public static LocalDate parseDateByISO(final CharSequence text) {
-        return parseDate(text, (DateTimeFormatter) null);
+    public static LocalDate parseDateByISO(final CharSequence date) {
+        return parseDate(date, (DateTimeFormatter) null);
     }
 
     /**
@@ -242,14 +242,14 @@ public class Resolver extends Converter {
      *     <li>yyyy-MM-dd HH:mm:ss</li>
      * </ul>
      *
-     * @param text 日期时间字符串
+     * @param date 日期时间字符串
      * @return {@link LocalDateTime}
      */
-    public static LocalDateTime parseTimeByISO(final CharSequence text) {
-        if (StringKit.contains(text, 'T')) {
-            return parseTime(text, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public static LocalDateTime parseTimeByISO(final CharSequence date) {
+        if (StringKit.contains(date, 'T')) {
+            return parseTime(date, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         } else {
-            return parseTime(text, Formatter.NORM_DATETIME_FORMATTER);
+            return parseTime(date, Formatter.NORM_DATETIME_FORMATTER);
         }
     }
 
@@ -280,20 +280,20 @@ public class Resolver extends Converter {
      * <p>
      * 当末位是":"时去除之（不存在毫秒时）
      *
-     * @param dateStr 日期时间字符串
+     * @param date 日期时间字符串
      * @return 格式化后的日期字符串
      */
-    public static String normalize(final CharSequence dateStr) {
-        if (StringKit.isBlank(dateStr)) {
-            return StringKit.toString(dateStr);
+    public static String normalize(final CharSequence date) {
+        if (StringKit.isBlank(date)) {
+            return StringKit.toString(date);
         }
 
         // 日期时间分开处理
-        final List<String> dateAndTime = CharsBacker.splitTrim(dateStr, Symbol.SPACE);
+        final List<String> dateAndTime = CharsBacker.splitTrim(date, Symbol.SPACE);
         final int size = dateAndTime.size();
         if (size < 1 || size > 2) {
             // 非可被标准处理的格式
-            return StringKit.toString(dateStr);
+            return StringKit.toString(date);
         }
 
         final StringBuilder builder = StringKit.builder();

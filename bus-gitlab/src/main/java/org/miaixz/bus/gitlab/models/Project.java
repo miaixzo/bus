@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,9 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.miaixz.bus.gitlab.Constants.AutoDevopsDeployStrategy;
-import org.miaixz.bus.gitlab.Constants.BuildGitStrategy;
-import org.miaixz.bus.gitlab.Constants.SquashOption;
+import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.ProjectLicense;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
@@ -44,6 +44,9 @@ import java.util.Map;
 
 public class Project implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    private List<SharedGroup> sharedWithGroups;
+
     private Integer approvalsBeforeMerge;
     private Boolean archived;
     private String avatarUrl;
@@ -79,10 +82,11 @@ public class Project implements Serializable {
     private Boolean requestAccessEnabled;
     private String runnersToken;
     private Boolean sharedRunnersEnabled;
-    private List<ProjectSharedGroup> sharedWithGroups;
+    private Constants.BuildGitStrategy buildGitStrategy;
     private Boolean snippetsEnabled;
     private String sshUrlToRepo;
     private Integer starCount;
+
     private List<String> tagList;
     private List<String> topics;
     private Integer visibilityLevel;
@@ -100,7 +104,7 @@ public class Project implements Serializable {
     private ProjectLicense license;
     private List<CustomAttribute> customAttributes;
     private String buildCoverageRegex;
-    private BuildGitStrategy buildGitStrategy;
+    private Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy;
     private String readmeUrl;
     private Boolean canCreateMergeRequestIn;
     private ImportStatus.Status importStatus;
@@ -109,33 +113,22 @@ public class Project implements Serializable {
     private String ciConfigPath;
     private Boolean removeSourceBranchAfterMerge;
     private Boolean autoDevopsEnabled;
-    private AutoDevopsDeployStrategy autoDevopsDeployStrategy;
+    private Constants.SquashOption squashOption;
     private Boolean autocloseReferencedIssues;
     private Boolean emailsDisabled;
     private String suggestionCommitMessage;
-    private SquashOption squashOption;
+
+    public static final boolean isValid(Project project) {
+        return (project != null && project.getId() != null);
+    }
     private String mergeCommitTemplate;
     private String squashCommitTemplate;
     private String issueBranchTemplate;
     @JsonProperty("_links")
     private Map<String, String> links;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
-
-    public static final boolean isValid(Project project) {
-        return (project != null && project.getId() != null);
-    }
-
-    /**
-     * Formats a fully qualified project path based on the provided namespace and project path.
-     *
-     * @param namespace the namespace, either a user name or group name
-     * @param path      the project path
-     * @return a fully qualified project path based on the provided namespace and project path
-     */
-    public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
-    }
 
     public Integer getApprovalsBeforeMerge() {
         return approvalsBeforeMerge;
@@ -523,12 +516,19 @@ public class Project implements Serializable {
         this.sharedRunnersEnabled = sharedRunnersEnabled;
     }
 
-    public List<ProjectSharedGroup> getSharedWithGroups() {
-        return sharedWithGroups;
+    /**
+     * Formats a fully qualified project path based on the provided namespace and project path.
+     *
+     * @param namespace the namespace, either a user name or group name
+     * @param path      the project path
+     * @return a fully qualified project path based on the provided namespace and project path
+     */
+    public static final String getPathWithNammespace(String namespace, String path) {
+        return (namespace.trim() + "/" + path.trim());
     }
 
-    public void setSharedWithGroups(List<ProjectSharedGroup> sharedWithGroups) {
-        this.sharedWithGroups = sharedWithGroups;
+    public List<SharedGroup> getSharedWithGroups() {
+        return sharedWithGroups;
     }
 
     public Project withSharedRunnersEnabled(boolean sharedRunnersEnabled) {
@@ -563,31 +563,6 @@ public class Project implements Serializable {
 
     public void setStarCount(Integer starCount) {
         this.starCount = starCount;
-    }
-
-    /**
-     * Tags will be removed in API v5
-     */
-    @Deprecated
-    public List<String> getTagList() {
-        return tagList;
-    }
-
-    /**
-     * Tags will be removed in API v5
-     */
-    @Deprecated
-    public void setTagList(List<String> tagList) {
-        this.tagList = tagList;
-    }
-
-    /**
-     * Tags will be removed in API v5
-     */
-    @Deprecated
-    public Project withTagList(List<String> tagList) {
-        this.tagList = tagList;
-        return (this);
     }
 
     public List<String> getTopics() {
@@ -768,9 +743,17 @@ public class Project implements Serializable {
         this.customAttributes = customAttributes;
     }
 
+    public void setSharedWithGroups(List<SharedGroup> sharedWithGroups) {
+        this.sharedWithGroups = sharedWithGroups;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public Constants.BuildGitStrategy getBuildGitStrategy() {
+        return buildGitStrategy;
     }
 
     public String getBuildCoverageRegex() {
@@ -786,17 +769,17 @@ public class Project implements Serializable {
         return this;
     }
 
-    public BuildGitStrategy getBuildGitStrategy() {
-        return buildGitStrategy;
-    }
-
-    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
     }
 
-    public Project withBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+    public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
+    }
+
+    public Constants.AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
+        return autoDevopsDeployStrategy;
     }
 
     public String getReadmeUrl() {
@@ -868,12 +851,12 @@ public class Project implements Serializable {
         this.autoDevopsEnabled = autoDevopsEnabled;
     }
 
-    public AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
-        return autoDevopsDeployStrategy;
+    public void setAutoDevopsDeployStrategy(Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
     }
 
-    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
-        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
+    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
     }
 
     public Boolean getAutocloseReferencedIssues() {
@@ -901,26 +884,45 @@ public class Project implements Serializable {
         return this.suggestionCommitMessage;
     }
 
-    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
-        this.suggestionCommitMessage = suggestionCommitMessage;
-    }
-
     public Project withSuggestionCommitMessage(String suggestionCommitMessage) {
         this.suggestionCommitMessage = suggestionCommitMessage;
         return this;
     }
 
-    public SquashOption getSquashOption() {
+    public Constants.SquashOption getSquashOption() {
         return squashOption;
     }
 
-    public void setSquashOption(SquashOption squashOption) {
+    public void setSquashOption(Constants.SquashOption squashOption) {
         this.squashOption = squashOption;
     }
 
-    public Project withSquashOption(SquashOption squashOption) {
+    public Project withSquashOption(Constants.SquashOption squashOption) {
         this.squashOption = squashOption;
         return this;
+    }
+
+    // Enum for the merge_method of the Project instance.
+    public enum MergeMethod {
+
+        MERGE, REBASE_MERGE, FF;
+
+        private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
+
+        @JsonCreator
+        public static MergeMethod forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     public String getMergeCommitTemplate() {
@@ -962,28 +964,5 @@ public class Project implements Serializable {
         }
 
         return (links.get(name));
-    }
-
-    // Enum for the merge_method of the Project instance.
-    public enum MergeMethod {
-
-        MERGE, REBASE_MERGE, FF;
-
-        private static final JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
-
-        @JsonCreator
-        public static MergeMethod forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 }

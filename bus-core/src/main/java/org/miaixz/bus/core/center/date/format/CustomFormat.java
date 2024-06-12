@@ -63,10 +63,10 @@ public class CustomFormat {
 
         // 预设的几种自定义格式
         putFormatter(FORMAT_SECONDS, (date) -> String.valueOf(Math.floorDiv(date.getTime(), 1000L)));
-        putParser(FORMAT_SECONDS, (dateStr) -> DateKit.date(Math.multiplyExact(Long.parseLong(dateStr.toString()), 1000L)));
+        putParser(FORMAT_SECONDS, (date) -> DateKit.date(Math.multiplyExact(Long.parseLong(date.toString()), 1000L)));
 
         putFormatter(FORMAT_MILLISECONDS, (date) -> String.valueOf(date.getTime()));
-        putParser(FORMAT_MILLISECONDS, (dateStr) -> DateKit.date(Long.parseLong(dateStr.toString())));
+        putParser(FORMAT_MILLISECONDS, (date) -> DateKit.date(Long.parseLong(date.toString())));
     }
 
     /**
@@ -135,15 +135,15 @@ public class CustomFormat {
     /**
      * 使用自定义格式解析日期
      *
-     * @param dateStr 日期字符串
-     * @param format  自定义格式
+     * @param date   日期字符串
+     * @param format 自定义格式
      * @return 格式化后的日期
      */
-    public static Date parse(final CharSequence dateStr, final String format) {
+    public static Date parse(final CharSequence date, final String format) {
         if (null != parserMap) {
             final Function<CharSequence, Date> func = parserMap.get(format);
             if (null != func) {
-                return func.apply(dateStr);
+                return func.apply(date);
             }
         }
 

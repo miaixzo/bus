@@ -201,5 +201,11 @@ public class Fields {
      * ISO8601时间：yyyy-MM-dd'T'HH:mm:ss.SSSXXX
      */
     public static final String ISO8601_MS_WITH_XXX_OFFSET = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+    /**
+     * ISO8601时间：yyyy-MM-dd HH:mm:ss 'UTC'
+     */
+    public static final String ISO8601_MS_WITH_UTC = "yyyy-MM-dd HH:mm:ss 'UTC'";
+
     
 }

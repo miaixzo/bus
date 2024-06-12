@@ -53,10 +53,12 @@ public final class DateBuilder {
     private int year;
     /**
      * 月份
+     * 从1开始
      */
     private int month;
     /**
      * 周数
+     * SO8601规范，1代表Monday，2代表Tuesday，以此类推。
      */
     private int week;
     /**

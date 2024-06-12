@@ -118,6 +118,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * 获取命中数
+     *
      * @return 命中数
      */
     public long getHitCount() {
@@ -125,6 +127,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * 获取丢失数
+     *
      * @return 丢失数
      */
     public long getMissCount() {

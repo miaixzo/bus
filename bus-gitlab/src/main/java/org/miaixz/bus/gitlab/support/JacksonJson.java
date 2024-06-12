@@ -1,45 +1,43 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
 import org.miaixz.bus.gitlab.models.User;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
 import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
@@ -50,10 +48,9 @@ import java.util.*;
  * Jackson JSON Configuration and utility class.
  */
 @Produces(MediaType.APPLICATION_JSON)
-public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResolver<ObjectMapper> {
+public class JacksonJson implements ContextResolver<ObjectMapper> {
 
     private static final SimpleDateFormat iso8601UtcFormat;
-
     static {
         iso8601UtcFormat = new SimpleDateFormat(ISO8601.UTC_PATTERN);
         iso8601UtcFormat.setLenient(true);
@@ -78,8 +75,20 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
         module.addSerializer(Date.class, new JsonDateSerializer());
         module.addDeserializer(Date.class, new JsonDateDeserializer());
         objectMapper.registerModule(module);
+    }
 
-        setMapper(objectMapper);
+    @Override
+    public ObjectMapper getContext(Class<?> objectType) {
+        return (objectMapper);
+    }
+
+    /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
     }
 
     /**
@@ -106,28 +115,14 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
         return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
     }
 
-    @Override
-    public ObjectMapper getContext(Class<?> objectType) {
-        return (objectMapper);
-    }
-
-    /**
-     * Gets the ObjectMapper contained by this instance.
-     *
-     * @return the ObjectMapper contained by this instance
-     */
-    public ObjectMapper getObjectMapper() {
-        return (objectMapper);
-    }
-
     /**
      * Reads and parses the String containing JSON data and returns a JsonNode tree representation.
      *
      * @param postData a String holding the POST data
      * @return a JsonNode instance containing the parsed JSON
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public JsonNode readTree(String postData) throws JsonParseException, JsonMappingException, IOException {
         return (objectMapper.readTree(postData));
@@ -138,9 +133,9 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      *
      * @param reader the Reader instance that contains the JSON data
      * @return a JsonNode instance containing the parsed JSON
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public JsonNode readTree(Reader reader) throws JsonParseException, JsonMappingException, IOException {
         return (objectMapper.readTree(reader));
@@ -149,13 +144,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JsonNode (tree) to an instance of the provided class.
      *
-     * @param <T>        the generics type for the return value
+     * @param <T> the generics type for the return value
      * @param returnType an instance of this type class will be returned
-     * @param tree       the JsonNode instance that contains the JSON data
+     * @param tree the JsonNode instance that contains the JSON data
      * @return an instance of the provided class containing the  data from the tree
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> T unmarshal(Class<T> returnType, JsonNode tree) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
@@ -165,13 +160,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data on the specified Reader instance to an instance of the provided class.
      *
-     * @param <T>        the generics type for the return value
+     * @param <T> the generics type for the return value
      * @param returnType an instance of this type class will be returned
-     * @param reader     the Reader instance that contains the JSON data
+     * @param reader the Reader instance that contains the JSON data
      * @return an instance of the provided class containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> T unmarshal(Class<T> returnType, Reader reader) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
@@ -181,13 +176,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data contained by the string and populate an instance of the provided returnType class.
      *
-     * @param <T>        the generics type for the return value
+     * @param <T> the generics type for the return value
      * @param returnType an instance of this type class will be returned
-     * @param postData   a String holding the POST data
+     * @param postData a String holding the POST data
      * @return an instance of the provided class containing the parsed data from the string
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> T unmarshal(Class<T> returnType, String postData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
@@ -197,13 +192,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data on the specified Reader instance and populate a List of instances of the provided returnType class.
      *
-     * @param <T>        the generics type for the List
+     * @param <T> the generics type for the List
      * @param returnType an instance of this type class will be contained in the returned List
-     * @param reader     the Reader instance that contains the JSON data
+     * @param reader the Reader instance that contains the JSON data
      * @return a List of the provided class containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> List<T> unmarshalList(Class<T> returnType, Reader reader) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
@@ -214,13 +209,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data contained by the string and populate a List of instances of the provided returnType class.
      *
-     * @param <T>        the generics type for the List
+     * @param <T> the generics type for the List
      * @param returnType an instance of this type class will be contained in the returned List
-     * @param postData   a String holding the POST data
+     * @param postData a String holding the POST data
      * @return a List of the provided class containing the parsed data from the string
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> List<T> unmarshalList(Class<T> returnType, String postData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
@@ -231,13 +226,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data on the specified Reader instance and populate a Map of String keys and values of the provided returnType class.
      *
-     * @param <T>        the generics type for the Map value
+     * @param <T> the generics type for the Map value
      * @param returnType an instance of this type class will be contained the values of the Map
-     * @param reader     the Reader instance that contains the JSON data
+     * @param reader the Reader instance that contains the JSON data
      * @return a Map containing the parsed data from the Reader
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> Map<String, T> unmarshalMap(Class<T> returnType, Reader reader) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
@@ -248,13 +243,13 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Unmarshal the JSON data and populate a Map of String keys and values of the provided returnType class.
      *
-     * @param <T>        the generics type for the Map value
+     * @param <T> the generics type for the Map value
      * @param returnType an instance of this type class will be contained the values of the Map
-     * @param jsonData   the String containing the JSON data
+     * @param jsonData the String containing the JSON data
      * @return a Map containing the parsed data from the String
-     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonParseException when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
-     * @throws IOException          if an error occurs reading the JSON data
+     * @throws IOException if an error occurs reading the JSON data
      */
     public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
@@ -265,7 +260,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Marshals the supplied object out as a formatted JSON string.
      *
-     * @param <T>    the generics type for the provided object
+     * @param <T> the generics type for the provided object
      * @param object the object to output as a JSON string
      * @return a String containing the JSON for the specified object
      */
@@ -297,7 +292,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class DateOnlySerializer extends JsonSerializer<Date> {
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException, JsonProcessingException {
             String dateString = ISO8601.dateOnly(date);
             gen.writeString(dateString);
         }
@@ -309,7 +304,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class JsonDateSerializer extends JsonSerializer<Date> {
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException, JsonProcessingException {
             String iso8601String = ISO8601.toString(date);
             gen.writeString(iso8601String);
         }
@@ -321,7 +316,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class JsonDateDeserializer extends JsonDeserializer<Date> {
 
         @Override
-        public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
+        public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException, JsonProcessingException {
 
             try {
                 return (ISO8601.toDate(jsonparser.getText()));
@@ -332,13 +327,27 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     }
 
     /**
+     * This class is used to create a thread-safe singleton instance of JacksonJson customized
+     * to be used by
+     */
+    private static class JacksonJsonSingletonHelper {
+        private static final JacksonJson JACKSON_JSON = new JacksonJson();
+
+        static {
+            JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
+            JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
+        }
+    }
+
+    /**
      * Serializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      */
     public static class UserListSerializer extends JsonSerializer<List<User>> {
 
         @Override
         public void serialize(List<User> value, JsonGenerator jgen,
-                              SerializerProvider provider) throws IOException {
+                              SerializerProvider provider) throws IOException,
+                JsonProcessingException {
 
             jgen.writeStartArray();
             for (User user : value) {
@@ -359,7 +368,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
 
         @Override
         public List<User> deserialize(JsonParser jsonParser, DeserializationContext context)
-                throws IOException {
+                throws IOException, JsonProcessingException {
 
             JsonNode tree = jsonParser.readValueAsTree();
             int numUsers = tree.size();
@@ -372,19 +381,6 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
             }
 
             return (users);
-        }
-    }
-
-    /**
-     * This class is used to create a thread-safe singleton instance of JacksonJson customized
-     * to be used by
-     */
-    private static class JacksonJsonSingletonHelper {
-        private static final JacksonJson JACKSON_JSON = new JacksonJson();
-
-        static {
-            JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
-            JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
         }
     }
 }

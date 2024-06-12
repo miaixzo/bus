@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.center.date.printer.DatePrinter;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 import java.util.Date;
@@ -39,16 +38,15 @@ import java.util.Date;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface DateParser extends DatePrinter {
+public interface DateParser {
 
     /**
      * 将日期字符串解析并转换为  {@link Date} 对象
-     * 等价于 {@link java.text.DateFormat#parse(String)}
      *
      * @param source 被解析的日期字符串
      * @return {@link Date}对象
      * @throws DateException 转换异常，被转换的字符串格式错误。
      */
-    Date parse(String source) throws DateException;
+    Date parse(CharSequence source) throws DateException;
 
 }

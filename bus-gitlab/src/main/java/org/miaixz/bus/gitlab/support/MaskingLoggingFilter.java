@@ -1,41 +1,44 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.support;
 
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.client.ClientResponseFilter;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 import org.glassfish.jersey.message.MessageUtils;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
 import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -49,10 +52,11 @@ import java.util.logging.Logger;
 /**
  * This class logs request and response info masking HTTP header values that are known to
  * contain sensitive information.
- * <p>
+ *
  * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in
  * such a way that it could be sub-classed and have its behavior modified.
  */
+@Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
 
     /**
@@ -72,7 +76,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     protected static final String RESPONSE_PREFIX = "< ";
 
     /**
-     * Prefix that marks the beginning of a request or response section.
+     * Prefix that marks the beginning of a request or response section. 
      */
     protected static final String SECTION_PREFIX = "- ";
 
@@ -96,7 +100,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Creates a masking logging filter for the specified logger with entity logging disabled.
      *
      * @param logger the logger to log messages to
-     * @param level  level at which the messages will be logged
+     * @param level level at which the messages will be logged
      */
     public MaskingLoggingFilter(final Logger logger, final Level level) {
         this(logger, level, 0, null);
@@ -105,11 +109,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger        the logger to log messages to
-     * @param level         level at which the messages will be logged
+     * @param logger the logger to log messages to
+     * @param level level at which the messages will be logged
      * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     *                      is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     *                      the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
+     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize) {
         this(logger, level, maxEntitySize, null);
@@ -118,8 +122,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger with entity logging disabled.
      *
-     * @param logger            the logger to log messages to
-     * @param level             level at which the messages will be logged
+     * @param logger the logger to log messages to
+     * @param level level at which the messages will be logged
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final List<String> maskedHeaderNames) {
@@ -129,11 +133,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger            the logger to log messages to
-     * @param level             level at which the messages will be logged
-     * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     *                          is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     *                          the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param logger the logger to log messages to
+     * @param level level at which the messages will be logged
+     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
+     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
+     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize, final List<String> maskedHeaderNames) {
@@ -150,7 +154,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Set the list of header names to mask values for. If null, will clear the header names to mask.
      *
      * @param maskedHeaderNames a list of header names that should have the values masked, if null, will clear
-     *                          the header names to mask
+     * the header names to mask
      */
     public void setMaskedHeaderNames(final List<String> maskedHeaderNames) {
         this.maskedHeaderNames.clear();
@@ -182,7 +186,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
-        sb.append(id).append(' ');
+        sb.append(Long.toString(id)).append(' ');
         return (sb);
     }
 
@@ -200,7 +204,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                 .append(note)
                 .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
         appendId(sb, id).append(RESPONSE_PREFIX)
-                .append(status)
+                .append(Integer.toString(status))
                 .append('\n');
     }
 
@@ -215,9 +219,9 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Logs each of the HTTP headers, masking the value of the header if the header key is
      * in the list of masked header names.
      *
-     * @param sb      the StringBuilder to build up the logging info in
-     * @param id      the ID for the logging line
-     * @param prefix  the logging line prefix character
+     * @param sb the StringBuilder to build up the logging info in
+     * @param id the ID for the logging line
+     * @param prefix the logging line prefix character
      * @param headers a MultiValue map holding the header keys and values
      */
     protected void printHeaders(final StringBuilder sb,
@@ -245,7 +249,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                     headerBuf.append(isMaskedHeader ? "********" : value.toString());
                 }
 
-                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append('\n');
             }
         });
     }

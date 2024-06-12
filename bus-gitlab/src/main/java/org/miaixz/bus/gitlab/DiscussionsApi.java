@@ -1,36 +1,38 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Discussion;
 import org.miaixz.bus.gitlab.models.Note;
 import org.miaixz.bus.gitlab.models.Position;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +54,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the internal ID of the issue
+     * @param issueIid the internal ID of the issue
      * @return a list containing all the discussions for the specified issue
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -67,8 +69,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the internal ID of the issue
-     * @param maxItems        the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the issue
+     * @param issueIid the internal ID of the issue
+     * @param maxItems the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the issue
      * @return a list containing the discussions for the specified issue
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -89,8 +91,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the internal ID of the issue
-     * @param itemsPerPage    the number of Discussion instances that will be fetched per page
+     * @param issueIid the internal ID of the issue
+     * @param itemsPerPage the number of Discussion instances that will be fetched per page
      * @return a Pager containing the Discussion instances for the specified issue
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -105,7 +107,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the internal ID of the issue
+     * @param issueIid the internal ID of the issue
      * @return a Stream instance containing the Discussion instances for the specified issue
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -120,7 +122,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param snippetId       the ID of the snippet
+     * @param snippetId the ID of the snippet
      * @return a list containing all the discussions for the specified snippet
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -135,8 +137,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param snippetId       the ID of the snippet
-     * @param maxItems        the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the snippet
+     * @param snippetId the ID of the snippet
+     * @param maxItems the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the snippet
      * @return a list containing the discussions for the specified snippet
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -157,8 +159,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param snippetId       the ID of the snippet
-     * @param itemsPerPage    the number of Discussion instances that will be fetched per page
+     * @param snippetId the ID of the snippet
+     * @param itemsPerPage the number of Discussion instances that will be fetched per page
      * @return a Pager containing the Discussion instances for the specified snippet
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -173,7 +175,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param snippetId       the ID of the snippet
+     * @param snippetId the ID of the snippet
      * @return a Stream instance containing the Discussion instances for the specified snippet
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -189,7 +191,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param epicId          the internal ID of the epic
+     * @param epicId the internal ID of the epic
      * @return a list containing all the discussions for the specified epic
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -204,8 +206,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param epicId          the internal ID of the epic
-     * @param maxItems        the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the epic
+     * @param epicId the internal ID of the epic
+     * @param maxItems the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the epic
      * @return a list containing the discussions for the specified epic
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -226,8 +228,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param epicId          the internal ID of the epic
-     * @param itemsPerPage    the number of Discussion instances that will be fetched per page
+     * @param epicId the internal ID of the epic
+     * @param itemsPerPage the number of Discussion instances that will be fetched per page
      * @return a Pager containing the Discussion instances for the specified epic
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -242,7 +244,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param epicId          the internal ID of the epic
+     * @param epicId the internal ID of the epic
      * @return a Stream instance containing the Discussion instances for the specified epic
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -273,7 +275,7 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
-     * @param maxItems        the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the merge request
+     * @param maxItems the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the merge request
      * @return a list containing the discussions for the specified merge request
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -295,7 +297,7 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
-     * @param itemsPerPage    the number of Discussion instances that will be fetched per page
+     * @param itemsPerPage the number of Discussion instances that will be fetched per page
      * @return a Pager containing the Discussion instances for the specified merge request
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -327,10 +329,10 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param body            the content of a discussion
-     * @param createdAt       date the discussion was created (requires admin or project/group owner rights)
-     * @param positionHash    position when creating a diff note
-     * @param position        a Position instance holding the position attributes
+     * @param body the content of a discussion
+     * @param createdAt date the discussion was created (requires admin or project/group owner rights)
+     * @param positionHash position when creating a diff note
+     * @param position a Position instance holding the position attributes
      * @return a Discussion instance containing the newly created discussion
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -369,8 +371,8 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param discussionId    the ID of a discussion
-     * @param resolved        resolve/unresolve the discussion
+     * @param discussionId the ID of a discussion
+     * @param resolved resolve/unresolve the discussion
      * @return the updated DIscussion instance
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -389,8 +391,8 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to delete
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to delete
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deleteMergeRequestDiscussionNote(Object projectIdOrPath, Long mergeRequestIid,
@@ -405,7 +407,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
+     * @param commitSha the SHA of the commit to get discussions for
      * @return a list containing all the discussions for the specified commit
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -420,8 +422,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
-     * @param maxItems        the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the commit
+     * @param commitSha the SHA of the commit to get discussions for
+     * @param maxItems the maximum number of Discussion instances to get, if &lt; 1 will fetch all Discussion instances for the commit
      * @return a list containing the discussions for the specified commit
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -442,8 +444,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
-     * @param itemsPerPage    the number of Discussion instances that will be fetched per page
+     * @param commitSha the SHA of the commit to get discussions for
+     * @param itemsPerPage the number of Discussion instances that will be fetched per page
      * @return a Pager containing the Discussion instances for the specified commit
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -458,7 +460,7 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
+     * @param commitSha the SHA of the commit to get discussions for
      * @return a Stream instance containing the Discussion instances for the specified commit
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -473,8 +475,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
-     * @param discussionId    the ID of the discussion
+     * @param commitSha the SHA of the commit to get discussions for
+     * @param discussionId the ID of the discussion
      * @return the Discussion instance specified by discussionId for the specified commit
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -490,8 +492,8 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the SHA of the commit to get discussions for
-     * @param discussionId    the ID of the discussion
+     * @param commitSha the SHA of the commit to get discussions for
+     * @param discussionId the ID of the discussion
      * @return an Optional instance with the specified Discussion instance as a value
      */
     public Optional<Discussion> getOptionalCommitDiscussion(Object projectIdOrPath, String commitSha, String discussionId) {
@@ -509,11 +511,11 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/commits/:commit_sha/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the commit SHA to create the discussion for
-     * @param body            the content of a discussion
-     * @param createdAt       date the discussion was created (requires admin or project/group owner rights)
-     * @param positionHash    position when creating a diff note
-     * @param position        a Position instance holding the position attributes
+     * @param commitSha the commit SHA to create the discussion for
+     * @param body the content of a discussion
+     * @param createdAt date the discussion was created (requires admin or project/group owner rights)
+     * @param positionHash position when creating a diff note
+     * @param position a Position instance holding the position attributes
      * @return a Discussion instance containing the newly created discussion
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -552,10 +554,10 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id/notes</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the commit SHA to create the discussion for
-     * @param discussionId    the ID of a discussion
-     * @param body            the content of a discussion
-     * @param createdAt       date the discussion was created (requires admin or project/group owner rights)
+     * @param commitSha the commit SHA to create the discussion for
+     * @param discussionId the ID of a discussion
+     * @param body the content of a discussion
+     * @param createdAt date the discussion was created (requires admin or project/group owner rights)
      * @return a Note instance containing the newly created discussion note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -578,10 +580,10 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id/notes</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the commit SHA to delete the discussion from
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to modify
-     * @param body            the content of a discussion
+     * @param commitSha the commit SHA to delete the discussion from
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to modify
+     * @param body the content of a discussion
      * @return a Note instance containing the updated discussion note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -601,10 +603,10 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id/notes</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the commit SHA to delete the discussion from
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to resolve or unresolve
-     * @param resolved        if true will resolve the note, false will unresolve the note
+     * @param commitSha the commit SHA to delete the discussion from
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to resolve or unresolve
+     * @param resolved if true will resolve the note, false will unresolve the note
      * @return a Note instance containing the updated discussion note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -624,9 +626,9 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/commits/:commit_sha/discussions/:discussion_id/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param commitSha       the commit SHA to delete the discussion from
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to delete
+     * @param commitSha the commit SHA to delete the discussion from
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to delete
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deleteCommitDiscussionNote(Object projectIdOrPath, String commitSha,
@@ -642,9 +644,9 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param discussionId    the ID of a discussion
-     * @param body            the content of a discussion
-     * @param createdAt       date the discussion was created (requires admin or project/group owner rights)
+     * @param discussionId the ID of a discussion
+     * @param body the content of a discussion
+     * @param createdAt date the discussion was created (requires admin or project/group owner rights)
      * @return a Note instance containing the newly created discussion note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -667,10 +669,10 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to modify
-     * @param body            the content of a discussion
-     * @param resolved        if true will resolve the note, false will unresolve the note
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to modify
+     * @param body the content of a discussion
+     * @param resolved if true will resolve the note, false will unresolve the note
      * @return a Note instance containing the updated discussion note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -691,8 +693,8 @@ public class DiscussionsApi extends AbstractApi {
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
-     * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to delete
+     * @param discussionId the ID of a discussion
+     * @param noteId the note ID to delete
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deleteMergeRequestThreadNote(Object projectIdOrPath, Long mergeRequestIid,
@@ -707,9 +709,9 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/discussions</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        The IID of an issue
-     * @param body            the content of the discussion
-     * @param createdAt       (optional) date the discussion was created (requires admin or project/group owner rights)
+     * @param issueIid The IID of an issue
+     * @param body the content of the discussion
+     * @param createdAt (optional) date the discussion was created (requires admin or project/group owner rights)
      * @return a Discussion instance containing the newly created discussion
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -728,10 +730,10 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        The IID of an issue
-     * @param discussionId    the id of discussion
-     * @param body            the content of the note
-     * @param createdAt       (optional) date the discussion was created (requires admin or project/group owner rights)
+     * @param issueIid The IID of an issue
+     * @param discussionId the id of discussion
+     * @param body the content of the note
+     * @param createdAt (optional) date the discussion was created (requires admin or project/group owner rights)
      * @return a Note instance containing the newly created note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -751,10 +753,10 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        The IID of an issue
-     * @param discussionId    the id of discussion
-     * @param noteId          the id of the note
-     * @param body            the content of the note
+     * @param issueIid The IID of an issue
+     * @param discussionId the id of discussion
+     * @param noteId the id of the note
+     * @param body the content of the note
      * @return a Note instance containing the modified note
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -773,9 +775,9 @@ public class DiscussionsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        The IID of an issue
-     * @param discussionId    the id of discussion
-     * @param noteId          the id of the note
+     * @param issueIid The IID of an issue
+     * @param discussionId the id of discussion
+     * @param noteId the id of the note
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deleteIssueThreadNote(Object projectIdOrPath, Long issueIid,

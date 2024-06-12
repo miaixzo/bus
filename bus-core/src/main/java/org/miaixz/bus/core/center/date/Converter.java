@@ -352,6 +352,12 @@ public class Converter extends Formatter {
             return null;
         }
 
+        try {
+            return LocalDate.from(temporalAccessor);
+        } catch (final Exception ignore) {
+            //ignore
+        }
+
         if (temporalAccessor instanceof LocalDateTime) {
             return ((LocalDateTime) temporalAccessor).toLocalDate();
         } else if (temporalAccessor instanceof Instant) {
@@ -362,6 +368,43 @@ public class Converter extends Formatter {
                 get(temporalAccessor, ChronoField.YEAR),
                 get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
                 get(temporalAccessor, ChronoField.DAY_OF_MONTH)
+        );
+    }
+
+    /**
+     * {@link TemporalAccessor}转{@link ZonedDateTime}
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @param zoneId           时区ID
+     * @return {@link ZonedDateTime}
+     */
+    public static ZonedDateTime ofZoned(final TemporalAccessor temporalAccessor, ZoneId zoneId) {
+        if (null == temporalAccessor) {
+            return null;
+        }
+        if (null == zoneId) {
+            zoneId = ZoneId.systemDefault();
+        }
+
+        if (temporalAccessor instanceof Instant) {
+            return ZonedDateTime.ofInstant((Instant) temporalAccessor, zoneId);
+        } else if (temporalAccessor instanceof LocalDateTime) {
+            return ZonedDateTime.of((LocalDateTime) temporalAccessor, zoneId);
+        } else if (temporalAccessor instanceof LocalDate) {
+            return ZonedDateTime.of((LocalDate) temporalAccessor, LocalTime.MIN, zoneId);
+        } else if (temporalAccessor instanceof LocalTime) {
+            return ZonedDateTime.of(LocalDate.now(), (LocalTime) temporalAccessor, zoneId);
+        }
+
+        return ZonedDateTime.of(
+                get(temporalAccessor, ChronoField.YEAR),
+                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
+                get(temporalAccessor, ChronoField.DAY_OF_MONTH),
+                get(temporalAccessor, ChronoField.HOUR_OF_DAY),
+                get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
+                get(temporalAccessor, ChronoField.NANO_OF_SECOND),
+                zoneId
         );
     }
 

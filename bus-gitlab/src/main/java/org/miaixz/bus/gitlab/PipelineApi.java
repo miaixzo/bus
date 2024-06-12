@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.*;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,8 +70,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of Pipeline instances per page
+     * @param page the page to get
+     * @param perPage the number of Pipeline instances per page
      * @return a list containing the pipelines for the specified project ID in the specified page range
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -86,7 +88,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of Pipeline instances that will be fetched per page
+     * @param itemsPerPage the number of Pipeline instances that will be fetched per page
      * @return a Pager containing the pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -114,7 +116,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          a PipelineFilter instance used to filter the results
+     * @param filter a PipelineFilter instance used to filter the results
      * @return a list containing the pipelines for the specified project ID and matching the provided filter
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -128,8 +130,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          a PipelineFilter instance used to filter the results
-     * @param itemsPerPage    the number of Pipeline instances that will be fetched per page
+     * @param filter a PipelineFilter instance used to filter the results
+     * @param itemsPerPage the number of Pipeline instances that will be fetched per page
      * @return a Pager containing the pipelines for the specified project ID and matching the provided filter
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -145,7 +147,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          a PipelineFilter instance used to filter the results
+     * @param filter a PipelineFilter instance used to filter the results
      * @return a Stream containing the pipelines for the specified project ID and matching the provided filter
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -159,14 +161,14 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param scope           the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
-     * @param status          the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
-     * @param ref             the ref of pipelines
-     * @param yamlErrors      returns pipelines with invalid configurations
-     * @param name            the name of the user who triggered pipelines
-     * @param username        the username of the user who triggered pipelines
-     * @param orderBy         order pipelines by ID, STATUS, REF, USER_ID (default: ID)
-     * @param sort            sort pipelines in ASC or DESC order (default: DESC)
+     * @param scope the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
+     * @param status the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
+     * @param ref the ref of pipelines
+     * @param yamlErrors returns pipelines with invalid configurations
+     * @param name the name of the user who triggered pipelines
+     * @param username the username of the user who triggered pipelines
+     * @param orderBy order pipelines by ID, STATUS, REF, USER_ID (default: ID)
+     * @param sort sort pipelines in ASC or DESC order (default: DESC)
      * @return a list containing the pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -183,16 +185,16 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param scope           the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
-     * @param status          the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
-     * @param ref             the ref of pipelines
-     * @param yamlErrors      returns pipelines with invalid configurations
-     * @param name            the name of the user who triggered pipelines
-     * @param username        the username of the user who triggered pipelines
-     * @param orderBy         order pipelines by ID, STATUS, REF, USER_ID (default: ID)
-     * @param sort            sort pipelines in ASC or DESC order (default: DESC)
-     * @param page            the page to get
-     * @param perPage         the number of Pipeline instances per page
+     * @param scope the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
+     * @param status the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
+     * @param ref the ref of pipelines
+     * @param yamlErrors returns pipelines with invalid configurations
+     * @param name the name of the user who triggered pipelines
+     * @param username the username of the user who triggered pipelines
+     * @param orderBy order pipelines by ID, STATUS, REF, USER_ID (default: ID)
+     * @param sort sort pipelines in ASC or DESC order (default: DESC)
+     * @param page the page to get
+     * @param perPage the number of Pipeline instances per page
      * @return a list containing the pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -222,14 +224,14 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param scope           the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
-     * @param status          the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
-     * @param ref             the ref of pipelines
-     * @param yamlErrors      returns pipelines with invalid configurations
-     * @param name            the name of the user who triggered pipelines
-     * @param username        the username of the user who triggered pipelines
-     * @param orderBy         order pipelines by ID, STATUS, REF, USER_ID (default: ID)
-     * @param sort            sort pipelines in ASC or DESC order (default: DESC)
+     * @param scope the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
+     * @param status the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
+     * @param ref the ref of pipelines
+     * @param yamlErrors returns pipelines with invalid configurations
+     * @param name the name of the user who triggered pipelines
+     * @param username the username of the user who triggered pipelines
+     * @param orderBy order pipelines by ID, STATUS, REF, USER_ID (default: ID)
+     * @param sort sort pipelines in ASC or DESC order (default: DESC)
      * @return a Stream containing the pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -246,15 +248,15 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param scope           the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
-     * @param status          the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
-     * @param ref             the ref of pipelines
-     * @param yamlErrors      returns pipelines with invalid configurations
-     * @param name            the name of the user who triggered pipelines
-     * @param username        the username of the user who triggered pipelines
-     * @param orderBy         order pipelines by ID, STATUS, REF, USER_ID (default: ID)
-     * @param sort            sort pipelines in ASC or DESC order (default: DESC)
-     * @param itemsPerPage    the number of Pipeline instances that will be fetched per page
+     * @param scope the scope of pipelines, one of: RUNNING, PENDING, FINISHED, BRANCHES, TAGS
+     * @param status the status of pipelines, one of: RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED
+     * @param ref the ref of pipelines
+     * @param yamlErrors returns pipelines with invalid configurations
+     * @param name the name of the user who triggered pipelines
+     * @param username the username of the user who triggered pipelines
+     * @param orderBy order pipelines by ID, STATUS, REF, USER_ID (default: ID)
+     * @param sort sort pipelines in ASC or DESC order (default: DESC)
+     * @param itemsPerPage the number of Pipeline instances that will be fetched per page
      * @return a list containing the pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -280,7 +282,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param pipelineId      the pipeline ID to get
+     * @param pipelineId the pipeline ID to get
      * @return a single pipelines for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -295,7 +297,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipeline</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param ref             reference to commit
+     * @param ref reference to commit
      * @return a Pipeline instance with the newly created pipeline info
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -309,8 +311,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipeline</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param ref             reference to commit
-     * @param variables       a Map containing the variables available in the pipeline
+     * @param ref reference to commit
+     * @param variables a Map containing the variables available in the pipeline
      * @return a Pipeline instance with the newly created pipeline info
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -324,8 +326,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipeline</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param ref             reference to commit
-     * @param variables       a Map containing the variables available in the pipeline
+     * @param ref reference to commit
+     * @param variables a Map containing the variables available in the pipeline
      * @return a Pipeline instance with the newly created pipeline info
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -344,9 +346,10 @@ public class PipelineApi extends AbstractApi implements Constants {
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
         class CreatePipelineForm {
-            public final String ref;
-            public final List<Variable> variables;
-
+            @SuppressWarnings("unused")
+            public String ref;
+            @SuppressWarnings("unused")
+            public List<Variable> variables;
             CreatePipelineForm(String ref, List<Variable> variables) {
                 this.ref = ref;
                 this.variables = variables;
@@ -364,7 +367,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/pipelines/:pipeline_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param pipelineId      the pipeline ID to delete
+     * @param pipelineId the pipeline ID to delete
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deletePipeline(Object projectIdOrPath, long pipelineId) throws GitLabApiException {
@@ -377,7 +380,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipelines/:pipeline_id/retry</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param pipelineId      the pipeline ID to retry a job from
+     * @param pipelineId the pipeline ID to retry a job from
      * @return pipeline instance which just retried
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -393,7 +396,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipelines/:pipeline_id/cancel</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param pipelineId      the pipeline ID to cancel jobs
+     * @param pipelineId the pipeline ID to cancel jobs
      * @return pipeline instance which just canceled
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -422,8 +425,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipeline_schedules</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param page            the page to get
-     * @param perPage         the number of PipelineSchedule instances per page
+     * @param page the page to get
+     * @param perPage the number of PipelineSchedule instances per page
      * @return a list of project pipeline_schedules for the specified project in the specified page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -439,7 +442,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipeline_schedule</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param itemsPerPage    the number of PipelineSchedule instances that will be fetched per page
+     * @param itemsPerPage the number of PipelineSchedule instances that will be fetched per page
      * @return a Pager of project pipeline_schedules for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -465,7 +468,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>GET /projects/:id/pipeline_schedules/:pipeline_schedule_id</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the ID of the pipeline schedule to get
      * @return the project PipelineSchedule
      * @throws GitLabApiException if any exception occurs
@@ -480,7 +483,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>GET /projects/:id/pipeline_schedules/:pipeline_schedule_id</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the ID of the hook to get
      * @return the project PipelineSchedule as an Optional instance
      */
@@ -497,7 +500,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>POST /projects/:id/pipeline_schedules</code></pre>
      *
-     * @param projectIdOrPath  projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineSchedule a PipelineSchedule instance to create
      * @return the added PipelineSchedule instance
      * @throws GitLabApiException if any exception occurs
@@ -520,7 +523,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the project schedule ID to delete
      * @throws GitLabApiException if any exception occurs
      */
@@ -534,7 +537,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id</code></pre>
      *
-     * @param projectIdOrPath  projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineSchedule the pipelineSchedule instance that contains the pipelineSchedule info to modify
      * @return the modified project schedule
      * @throws GitLabApiException if any exception occurs
@@ -557,7 +560,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the pipelineSchedule instance id that ownership has to be taken of
      * @return the modified project schedule
      * @throws GitLabApiException if any exception occurs
@@ -573,7 +576,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the pipelineSchedule instance id which should run immediately
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -586,10 +589,10 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the pipelineSchedule ID
-     * @param key                the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed
-     * @param value              the value for the variable
+     * @param key the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed
+     * @param value the value for the variable
      * @return a Pipeline instance with the newly created pipeline schedule variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -609,10 +612,10 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the pipelineSchedule ID
-     * @param key                the key of an existing pipeline schedule variable
-     * @param value              the new value for the variable
+     * @param key the key of an existing pipeline schedule variable
+     * @param value the new value for the variable
      * @return a Pipeline instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -630,9 +633,9 @@ public class PipelineApi extends AbstractApi implements Constants {
      *
      * <pre><code>DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key</code></pre>
      *
-     * @param projectIdOrPath    projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @param pipelineScheduleId the pipeline schedule ID
-     * @param key                the key of an existing pipeline schedule variable
+     * @param key the key of an existing pipeline schedule variable
      * @throws GitLabApiException if any exception occurs
      */
     public void deletePipelineScheduleVariable(Object projectIdOrPath, Long pipelineScheduleId, String key) throws GitLabApiException {
@@ -660,8 +663,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/triggers</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param page            the page to get
-     * @param perPage         the number of Trigger instances per page
+     * @param page the page to get
+     * @param perPage the number of Trigger instances per page
      * @return a list of project pipeline triggers for the specified project in the specified page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -677,7 +680,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipeline_schedule</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of project pipeline triggers for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -704,7 +707,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/triggers/:trigger_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param triggerId       the ID of the trigger to get
+     * @param triggerId the ID of the trigger to get
      * @return the project pipeline trigger
      * @throws GitLabApiException if any exception occurs
      */
@@ -719,7 +722,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/triggers/:trigger_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param triggerId       the ID of the trigger to get
+     * @param triggerId the ID of the trigger to get
      * @return the project pipeline trigger as an Optional instance
      */
     public Optional<Trigger> getOptionalPipelineTrigger(Object projectIdOrPath, Long triggerId) {
@@ -736,7 +739,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>POST /projects/:id/triggers</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param description     the trigger description
+     * @param description the trigger description
      * @return the created Trigger instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -752,8 +755,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>PUT /projects/:id/triggers/:trigger_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param triggerId       the trigger ID to update
-     * @param description     the new trigger description
+     * @param triggerId the trigger ID to update
+     * @param description the new trigger description
      * @return the updated Trigger instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -769,7 +772,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>DELETE /projects/:id/triggers/:trigger_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param triggerId       the project trigger ID to delete
+     * @param triggerId the project trigger ID to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deletePipelineTrigger(Object projectIdOrPath, Long triggerId) throws GitLabApiException {
@@ -782,7 +785,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>PUT /projects/:id/triggers/:trigger_id/take_ownership</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param triggerId       the trigger ID to take opwnership of
+     * @param triggerId the trigger ID to take opwnership of
      * @return the updated Trigger instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -798,9 +801,9 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>POST /projects/:id/trigger/pipeline</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param trigger         the Trigger instance holding the trigger token
-     * @param ref             the ref that the pipeline is to be triggered for
-     * @param variables       a List of variables to be passed with the trigger
+     * @param trigger the Trigger instance holding the trigger token
+     * @param ref the ref that the pipeline is to be triggered for
+     * @param variables a List of variables to be passed with the trigger
      * @return a Pipeline instance holding information on the triggered pipeline
      * @throws GitLabApiException if any exception occurs
      */
@@ -819,9 +822,9 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>POST /projects/:id/trigger/pipeline</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param token           the trigger token
-     * @param ref             the ref that the pipeline is to be triggered for
-     * @param variables       a List of variables to be passed with the trigger
+     * @param token the trigger token
+     * @param ref the ref that the pipeline is to be triggered for
+     * @param variables a List of variables to be passed with the trigger
      * @return a Pipeline instance holding information on the triggered pipeline
      * @throws GitLabApiException if any exception occurs
      */
@@ -841,7 +844,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipelines/:pipeline_id/variables</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param pipelineId      the pipeline ID
+     * @param pipelineId the pipeline ID
      * @return a List of pipeline variables
      * @throws GitLabApiException if any exception occurs
      */
@@ -855,8 +858,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipelines/:pipeline_id/variables</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param pipelineId      the pipeline ID
-     * @param itemsPerPage    the number of Pipeline instances that will be fetched per page
+     * @param pipelineId the pipeline ID
+     * @param itemsPerPage the number of Pipeline instances that will be fetched per page
      * @return a Pager of pipeline variables
      * @throws GitLabApiException if any exception occurs
      */
@@ -871,12 +874,41 @@ public class PipelineApi extends AbstractApi implements Constants {
      * <pre><code>GET /projects/:id/pipelines/:pipeline_id/variables</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param pipelineId      the pipeline ID
+     * @param pipelineId the pipeline ID
      * @return a Stream of pipeline variables
      * @throws GitLabApiException if any exception occurs
      */
     public Stream<Variable> getPipelineVariablesStream(Object projectIdOrPath, Long pipelineId) throws GitLabApiException {
         return (getPipelineVariables(projectIdOrPath, pipelineId, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get a List of bridges in a pipeline.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/bridges </code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
+     * @param pipelineId      the pipeline ID to get the list of bridges for
+     * @return a list containing the bridges for the specified project ID and pipeline ID
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public List<Bridge> getBridgesForPipeline(Object projectIdOrPath, long pipelineId) throws GitLabApiException {
+        return (getBridgesForPipeline(projectIdOrPath, pipelineId, getDefaultPerPage(), null).all());
+    }
+
+    /**
+     * Get a List of bridges in a pipeline.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/bridges </code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
+     * @param pipelineId      the pipeline ID to get the list of bridges for
+     * @param scope           the scope of the jobs to list
+     * @return a list containing the bridges for the specified project ID and pipeline ID
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public List<Bridge> getBridgesForPipeline(Object projectIdOrPath, long pipelineId, JobScope scope) throws GitLabApiException {
+        return (getBridgesForPipeline(projectIdOrPath, pipelineId, getDefaultPerPage(), scope).all());
     }
 
     /**
@@ -887,6 +919,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
      * @param pipelineId      the pipeline ID to get the list of bridges for
      * @param itemsPerPage    the number of Bridge instances that will be fetched per page
+     * @param scope           the scope of the jobs to list
      * @return a list containing the bridges for the specified project ID and pipeline ID
      * @throws GitLabApiException if any exception occurs during execution
      */

@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.*;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
-import javax.ws.rs.core.*;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
@@ -36,7 +38,6 @@ import java.util.stream.Stream;
 
 /**
  * This class implements the client side API for the GitLab groups calls.
- *
  * @see <a href="https://docs.gitlab.com/ce/api/groups.html">Groups API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html">Group and project access requests API</a>
@@ -77,7 +78,7 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups</code></pre>
      *
-     * @param page    the page to get
+     * @param page the page to get
      * @param perPage the number of Group instances per page
      * @return the list of groups viewable by the authenticated userin the specified page range
      * @throws GitLabApiException if any exception occurs
@@ -127,8 +128,8 @@ public class GroupApi extends AbstractApi {
     /**
      * Get all groups that match your string in their name or path.
      *
-     * @param search  the group name or path search criteria
-     * @param page    the page to get
+     * @param search the group name or path search criteria
+     * @param page the page to get
      * @param perPage the number of Group instances per page
      * @return a List containing matching Group instances
      * @throws GitLabApiException if any exception occurs
@@ -143,7 +144,7 @@ public class GroupApi extends AbstractApi {
     /**
      * Get all groups that match your string in their name or path.
      *
-     * @param search       the group name or path search criteria
+     * @param search the group name or path search criteria
      * @param itemsPerPage the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
@@ -182,7 +183,7 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups</code></pre>
      *
-     * @param filter       the GroupFilter to match against
+     * @param filter the GroupFilter to match against
      * @param itemsPerPage the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
@@ -225,7 +226,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/subgroups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param itemsPerPage  the number of Group instances that will be fetched per page
+     * @param itemsPerPage the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.3.0
@@ -254,13 +255,13 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/subgroups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param skipGroups    skip the group IDs passed
-     * @param allAvailable  show all the groups you have access to (defaults to false for authenticated users)
-     * @param search        return the list of authorized groups matching the search criteria
-     * @param orderBy       order groups by NAME or PATH. Default is NAME
-     * @param sortOrder     order groups in ASC or DESC order. Default is ASC
-     * @param statistics    include group statistics (admins only)
-     * @param owned         limit to groups owned by the current user
+     * @param skipGroups skip the group IDs passed
+     * @param allAvailable show all the groups you have access to (defaults to false for authenticated users)
+     * @param search return the list of authorized groups matching the search criteria
+     * @param orderBy order groups by NAME or PATH. Default is NAME
+     * @param sortOrder order groups in ASC or DESC order. Default is ASC
+     * @param statistics include group statistics (admins only)
+     * @param owned limit to groups owned by the current user
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.3.0
@@ -276,15 +277,15 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/subgroups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param skipGroups    skip the group IDs passed
-     * @param allAvailable  show all the groups you have access to (defaults to false for authenticated users)
-     * @param search        return the list of authorized groups matching the search criteria
-     * @param orderBy       order groups by NAME or PATH. Default is NAME
-     * @param sortOrder     order groups in ASC or DESC order. Default is ASC
-     * @param statistics    include group statistics (admins only)
-     * @param owned         limit to groups owned by the current user
-     * @param page          the page to get
-     * @param perPage       the number of Group instances per page
+     * @param skipGroups skip the group IDs passed
+     * @param allAvailable show all the groups you have access to (defaults to false for authenticated users)
+     * @param search return the list of authorized groups matching the search criteria
+     * @param orderBy order groups by NAME or PATH. Default is NAME
+     * @param sortOrder order groups in ASC or DESC order. Default is ASC
+     * @param statistics include group statistics (admins only)
+     * @param owned limit to groups owned by the current user
+     * @param page the page to get
+     * @param perPage the number of Group instances per page
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.3.0
@@ -313,14 +314,14 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/subgroups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param skipGroups    skip the group IDs passed
-     * @param allAvailable  show all the groups you have access to (defaults to false for authenticated users)
-     * @param search        return the list of authorized groups matching the search criteria
-     * @param orderBy       order groups by NAME or PATH. Default is NAME
-     * @param sortOrder     order groups in ASC or DESC order. Default is ASC
-     * @param statistics    include group statistics (admins only)
-     * @param owned         limit to groups owned by the current user
-     * @param itemsPerPage  the number of Group instances that will be fetched per page
+     * @param skipGroups skip the group IDs passed
+     * @param allAvailable show all the groups you have access to (defaults to false for authenticated users)
+     * @param search return the list of authorized groups matching the search criteria
+     * @param orderBy order groups by NAME or PATH. Default is NAME
+     * @param sortOrder order groups in ASC or DESC order. Default is ASC
+     * @param statistics include group statistics (admins only)
+     * @param owned limit to groups owned by the current user
+     * @param itemsPerPage the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.3.0
@@ -344,13 +345,13 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/subgroups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param skipGroups    skip the group IDs passed
-     * @param allAvailable  show all the groups you have access to (defaults to false for authenticated users)
-     * @param search        return the list of authorized groups matching the search criteria
-     * @param orderBy       order groups by NAME or PATH. Default is NAME
-     * @param sortOrder     order groups in ASC or DESC order. Default is ASC
-     * @param statistics    include group statistics (admins only)
-     * @param owned         limit to groups owned by the current user
+     * @param skipGroups skip the group IDs passed
+     * @param allAvailable show all the groups you have access to (defaults to false for authenticated users)
+     * @param search return the list of authorized groups matching the search criteria
+     * @param orderBy order groups by NAME or PATH. Default is NAME
+     * @param sortOrder order groups in ASC or DESC order. Default is ASC
+     * @param statistics include group statistics (admins only)
+     * @param owned limit to groups owned by the current user
      * @return a Stream&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
      * @since GitLab 10.3.0
@@ -366,7 +367,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/descendant_groups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param filter        the GroupFilter to match against
+     * @param filter the GroupFilter to match against
      * @return a List&lt;Group&gt; of the matching groups
      * @throws GitLabApiException if any exception occurs
      */
@@ -380,8 +381,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/descendant_groups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param filter        the GroupFilter to match against
-     * @param itemsPerPage  the number of Group instances that will be fetched per page
+     * @param filter the GroupFilter to match against
+     * @param itemsPerPage the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
      */
@@ -396,7 +397,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/descendant_groups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param filter        the GroupFilter to match against
+     * @param filter the GroupFilter to match against
      * @return a Stream&lt;Group&gt; of the matching groups
      * @throws GitLabApiException if any exception occurs
      */
@@ -410,7 +411,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/projects</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param filter        the GroupProjectsFilter instance holding the filter values for the query
+     * @param filter the GroupProjectsFilter instance holding the filter values for the query
      * @return a List containing Project instances that belong to the group and match the provided filter
      * @throws GitLabApiException if any exception occurs
      */
@@ -424,8 +425,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/projects</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param filter        the GroupProjectsFilter instance holding the filter values for the query
-     * @param itemsPerPage  the number of Project instances that will be fetched per page
+     * @param filter the GroupProjectsFilter instance holding the filter values for the query
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager containing Project instances that belong to the group and match the provided filter
      * @throws GitLabApiException if any exception occurs
      */
@@ -440,7 +441,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/projects</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param filter        the GroupProjectsFilter instance holding the filter values for the query
+     * @param filter the GroupProjectsFilter instance holding the filter values for the query
      * @return a Stream containing Project instances that belong to the group and match the provided filter
      * @throws GitLabApiException if any exception occurs
      */
@@ -467,8 +468,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/projects</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of Project instances per page
+     * @param page the page to get
+     * @param perPage the number of Project instances per page
      * @return a list of projects belonging to the specified group ID in the specified page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -484,7 +485,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/projects</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of Project instances that will be fetched per page
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of projects belonging to the specified group ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -555,7 +556,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param params        the GroupParams instance holding the properties to update
+     * @param params the GroupParams instance holding the properties to update
      * @return updated Group instance
      * @throws GitLabApiException at any exception
      */
@@ -602,13 +603,13 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups</code></pre>
      *
-     * @param name                 the name of the group to add
-     * @param path                 the path for the group
-     * @param description          (optional) - The group's description
-     * @param visibility           (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled           (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
+     * @param name the name of the group to add
+     * @param path the path for the group
+     * @param description (optional) - The group's description
+     * @param visibility (optional) - The group's visibility. Can be private, internal, or public.
+     * @param lfsEnabled (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
      * @param requestAccessEnabled (optional) - Allow users to request member access
-     * @param parentId             (optional) - The parent group id for creating nested group
+     * @param parentId (optional) - The parent group id for creating nested group
      * @return the created Group instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -654,14 +655,14 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /groups</code></pre>
      *
-     * @param groupIdOrPath        the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param name                 the name of the group to add
-     * @param path                 the path for the group
-     * @param description          (optional) - The group's description
-     * @param visibility           (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled           (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param name the name of the group to add
+     * @param path the path for the group
+     * @param description (optional) - The group's description
+     * @param visibility (optional) - The group's visibility. Can be private, internal, or public.
+     * @param lfsEnabled (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
      * @param requestAccessEnabled (optional) - Allow users to request member access
-     * @param parentId             (optional) - The parent group id for creating nested group
+     * @param parentId (optional) - The parent group id for creating nested group
      * @return the updated Group instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -676,87 +677,6 @@ public class GroupApi extends AbstractApi {
                 .withParam("lfs_enabled", lfsEnabled)
                 .withParam("request_access_enabled", requestAccessEnabled)
                 .withParam("parent_id", isApiVersion(GitLabApi.ApiVersion.V3) ? null : parentId);
-        Response response = put(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath));
-        return (response.readEntity(Group.class));
-    }
-
-    /**
-     * Creates a new project group. Available only for users who can create groups.
-     *
-     * <pre><code>GitLab Endpoint: POST /groups</code></pre>
-     *
-     * @param name                      the name of the group to add
-     * @param path                      the path for the group
-     * @param description               (optional) - The group's description
-     * @param membershipLock            (optional, boolean) - Prevent adding new members to project membership within this group
-     * @param shareWithGroupLock        (optional, boolean) - Prevent sharing a project with another group within this group
-     * @param visibility                (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled                (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
-     * @param requestAccessEnabled      (optional) - Allow users to request member access.
-     * @param parentId                  (optional) - The parent group id for creating nested group.
-     * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
-     * @return the created Group instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 6.0, replaced by {@link #addGroup(String, String, String, Visibility,
-     * Boolean, Boolean, Long)}
-     */
-    @Deprecated
-    public Group addGroup(String name, String path, String description, Boolean membershipLock,
-                          Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,
-                          Long parentId, Integer sharedRunnersMinutesLimit) throws GitLabApiException {
-
-        Form formData = new GitLabApiForm()
-                .withParam("name", name)
-                .withParam("path", path)
-                .withParam("description", description)
-                .withParam("membership_lock", membershipLock)
-                .withParam("share_with_group_lock", shareWithGroupLock)
-                .withParam("visibility", visibility)
-                .withParam("lfs_enabled", lfsEnabled)
-                .withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", parentId)
-                .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit);
-        Response response = post(Response.Status.CREATED, formData, "groups");
-        return (response.readEntity(Group.class));
-    }
-
-    /**
-     * Updates a project group. Available only for users who can create groups.
-     *
-     * <pre><code>GitLab Endpoint: PUT /groups</code></pre>
-     *
-     * @param groupIdOrPath             the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param name                      the name of the group to add
-     * @param path                      the path for the group
-     * @param description               (optional) - The group's description
-     * @param membershipLock            (optional, boolean) - Prevent adding new members to project membership within this group
-     * @param shareWithGroupLock        (optional, boolean) - Prevent sharing a project with another group within this group
-     * @param visibility                (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled                (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
-     * @param requestAccessEnabled      (optional) - Allow users to request member access
-     * @param parentId                  (optional) - The parent group id for creating nested group
-     * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
-     * @return the updated Group instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 6.0, replaced by {@link #updateGroup(Object, String, String, String,
-     * Visibility, Boolean, Boolean, Long)}
-     */
-    @Deprecated
-    public Group updateGroup(Object groupIdOrPath, String name, String path, String description, Boolean membershipLock,
-                             Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,
-                             Long parentId, Integer sharedRunnersMinutesLimit) throws GitLabApiException {
-
-        Form formData = new GitLabApiForm()
-                .withParam("name", name)
-                .withParam("path", path)
-                .withParam("description", description)
-                .withParam("membership_lock", membershipLock)
-                .withParam("share_with_group_lock", shareWithGroupLock)
-                .withParam("visibility", visibility)
-                .withParam("lfs_enabled", lfsEnabled)
-                .withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", parentId)
-                .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit);
         Response response = put(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath));
         return (response.readEntity(Group.class));
     }
@@ -792,9 +712,9 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/members</code></pre>
      *
-     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of Member instances per page
+     *@param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param page the page to get
+     * @param perPage the number of Member instances per page
      * @return a list of group members viewable by the authenticated user in the specified page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -810,7 +730,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of Member instances that will be fetched per page
+     * @param itemsPerPage the number of Member instances that will be fetched per page
      * @return a list of group members viewable by the authenticated user
      * @throws GitLabApiException if any exception occurs
      */
@@ -837,7 +757,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/:id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the member ID of the member to get
+     * @param userId the member ID of the member to get
      * @return a member viewable by the authenticated user
      * @throws GitLabApiException if any exception occurs
      */
@@ -851,7 +771,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/:id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the member ID of the member to get
+     * @param userId the member ID of the member to get
      * @return a member viewable by the authenticated user as an Optional instance
      */
     public Optional<Member> getOptionalMember(Object groupIdOrPath, long userId) {
@@ -867,8 +787,8 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all/:user_id</code></pre>
      *
-     * @param groupIdOrPath    the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId           the user ID of the member
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param userId the user ID of the member
      * @param includeInherited if true will the member even if inherited thru an ancestor group
      * @return the member specified by the project ID/user ID pair
      * @throws GitLabApiException if any exception occurs
@@ -888,8 +808,8 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all/:user_id</code></pre>
      *
-     * @param groupIdOrPath    the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId           the user ID of the member
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param userId the user ID of the member
      * @param includeInherited if true will the member even if inherited thru an ancestor group
      * @return the member specified by the group ID/user ID pair as the value of an Optional
      */
@@ -918,29 +838,6 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
-     * Gets a list of group members viewable by the authenticated user, including inherited members
-     * through ancestor groups. Returns multiple times the same user (with different member attributes)
-     * when the user is a member of the group and of one or more ancestor group.
-     *
-     * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
-     *
-     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of Member instances per page
-     * @return a list of group members viewable by the authenticated user, including inherited members
-     * through ancestor groups in the specified page range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 6.0
-     */
-    @Deprecated
-    public List<Member> getAllMembers(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "groups", getGroupIdOrPath(groupIdOrPath), "members", "all");
-        return (response.readEntity(new GenericType<List<Member>>() {
-        }));
-    }
-
-    /**
      * Gets a Pager of group members viewable by the authenticated user, including inherited members
      * through ancestor groups. Returns multiple times the same user (with different member attributes)
      * when the user is a member of the group and of one or more ancestor group.
@@ -948,7 +845,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of Member instances that will be fetched per page
+     * @param itemsPerPage the number of Member instances that will be fetched per page
      * @return a Pager of group members viewable by the authenticated user, including inherited members
      * through ancestor groups
      * @throws GitLabApiException if any exception occurs
@@ -982,8 +879,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param query         a query string to search for members
-     * @param userIds       filter the results on the given user IDs
+     * @param query a query string to search for members
+     * @param userIds filter the results on the given user IDs
      * @return the group members viewable by the authenticated user, including inherited members through ancestor groups
      * @throws GitLabApiException if any exception occurs
      */
@@ -999,9 +896,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param query         a query string to search for members
-     * @param userIds       filter the results on the given user IDs
-     * @param itemsPerPage  the number of Project instances that will be fetched per page
+     * @param query a query string to search for members
+     * @param userIds filter the results on the given user IDs
+     * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of the group members viewable by the authenticated user,
      * including inherited members through ancestor groups
      * @throws GitLabApiException if any exception occurs
@@ -1020,8 +917,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param query         a query string to search for members
-     * @param userIds       filter the results on the given user IDs
+     * @param query a query string to search for members
+     * @param userIds filter the results on the given user IDs
      * @return a Stream of the group members viewable by the authenticated user,
      * including inherited members through ancestor groups
      * @throws GitLabApiException if any exception occurs
@@ -1036,8 +933,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/members</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the user ID of the member to add, required
-     * @param accessLevel   the access level for the new member, required
+     * @param userId the user ID of the member to add, required
+     * @param accessLevel the access level for the new member, required
      * @return a Member instance for the added user
      * @throws GitLabApiException if any exception occurs
      */
@@ -1051,8 +948,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/members</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the user ID of the member to add, required
-     * @param accessLevel   the access level for the new member, required
+     * @param userId the user ID of the member to add, required
+     * @param accessLevel the access level for the new member, required
      * @return a Member instance for the added user
      * @throws GitLabApiException if any exception occurs
      */
@@ -1066,9 +963,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/members</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to add, required
-     * @param accessLevel   the access level for the new member, required
-     * @param expiresAt     the date the membership in the group will expire, optional
+     * @param userId the user ID of the member to add, required
+     * @param accessLevel the access level for the new member, required
+     * @param expiresAt the date the membership in the group will expire, optional
      * @return a Member instance for the added user
      * @throws GitLabApiException if any exception occurs
      */
@@ -1082,9 +979,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/members</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to add, required
-     * @param accessLevel   the access level for the new member, required
-     * @param expiresAt     the date the membership in the group will expire, optional
+     * @param userId the user ID of the member to add, required
+     * @param accessLevel the access level for the new member, required
+     * @param expiresAt the date the membership in the group will expire, optional
      * @return a Member instance for the added user
      * @throws GitLabApiException if any exception occurs
      */
@@ -1104,8 +1001,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:groupId/members/:userId</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to update, required
-     * @param accessLevel   the new access level for the member, required
+     * @param userId the user ID of the member to update, required
+     * @param accessLevel the new access level for the member, required
      * @return the updated member
      * @throws GitLabApiException if any exception occurs
      */
@@ -1119,8 +1016,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:groupId/members/:userId</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to update, required
-     * @param accessLevel   the new access level for the member, required
+     * @param userId the user ID of the member to update, required
+     * @param accessLevel the new access level for the member, required
      * @return the updated member
      * @throws GitLabApiException if any exception occurs
      */
@@ -1134,9 +1031,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:groupId/members/:userId</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to update, required
-     * @param accessLevel   the new access level for the member, required
-     * @param expiresAt     the date the membership in the group will expire, optional
+     * @param userId the user ID of the member to update, required
+     * @param accessLevel the new access level for the member, required
+     * @param expiresAt the date the membership in the group will expire, optional
      * @return the updated member
      * @throws GitLabApiException if any exception occurs
      */
@@ -1150,9 +1047,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:groupId/members/:userId</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to update, required
-     * @param accessLevel   the new access level for the member, required
-     * @param expiresAt     the date the membership in the group will expire, optional
+     * @param userId the user ID of the member to update, required
+     * @param accessLevel the new access level for the member, required
+     * @param expiresAt the date the membership in the group will expire, optional
      * @return the updated member
      * @throws GitLabApiException if any exception occurs
      */
@@ -1170,7 +1067,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/members/:user_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param userId        the user ID of the member to remove
+     * @param userId the user ID of the member to remove
      * @throws GitLabApiException if any exception occurs
      */
     public void removeMember(Object groupIdOrPath, Long userId) throws GitLabApiException {
@@ -1211,9 +1108,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/ldap_group_links</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param cn            the CN of a LDAP group
-     * @param groupAccess   the minimum access level for members of the LDAP group
-     * @param provider      the LDAP provider for the LDAP group
+     * @param cn the CN of a LDAP group
+     * @param groupAccess the minimum access level for members of the LDAP group
+     * @param provider the LDAP provider for the LDAP group
      * @throws GitLabApiException if any exception occurs
      */
     public void addLdapGroupLink(Object groupIdOrPath, String cn, AccessLevel groupAccess, String provider) throws GitLabApiException {
@@ -1231,9 +1128,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/ldap_group_links</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param cn            the CN of a LDAP group
-     * @param groupAccess   the minimum access level for members of the LDAP group
-     * @param provider      the LDAP provider for the LDAP group
+     * @param cn the CN of a LDAP group
+     * @param groupAccess the minimum access level for members of the LDAP group
+     * @param provider the LDAP provider for the LDAP group
      * @throws GitLabApiException if any exception occurs
      */
     public void addLdapGroupLink(Object groupIdOrPath, String cn, Integer groupAccess, String provider) throws GitLabApiException {
@@ -1250,7 +1147,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/ldap_group_links/:cn</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param cn            the CN of the LDAP group link to delete
+     * @param cn the CN of the LDAP group link to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteLdapGroupLink(Object groupIdOrPath, String cn) throws GitLabApiException {
@@ -1268,8 +1165,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/ldap_group_links/:provider/:cn</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param cn            the CN of the LDAP group link to delete
-     * @param provider      the name of the LDAP provider
+     * @param cn the CN of the LDAP group link to delete
+     * @param provider the name of the LDAP provider
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteLdapGroupLink(Object groupIdOrPath, String cn, String provider) throws GitLabApiException {
@@ -1307,7 +1204,7 @@ public class GroupApi extends AbstractApi {
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param samlGroupName the name of the SAML group
-     * @param groupAccess   the minimum access level for members of the SAML group
+     * @param groupAccess the minimum access level for members of the SAML group
      * @throws GitLabApiException if any exception occurs
      */
     public void addSamlGroupLink(Object groupIdOrPath, String samlGroupName, AccessLevel groupAccess) throws GitLabApiException {
@@ -1327,12 +1224,48 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param samlGroupName the name of the SAML group
      * @param groupAccess   the minimum access level for members of the SAML group
+     * @param memberRoleId  the id of the custom member role to assign
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void addSamlGroupLink(Object groupIdOrPath, String samlGroupName, AccessLevel groupAccess, int memberRoleId) throws GitLabApiException {
+
+        if (groupAccess == null) {
+            throw new RuntimeException("groupAccess cannot be null or empty");
+        }
+
+        addSamlGroupLink(groupIdOrPath, samlGroupName, groupAccess.toValue(), memberRoleId);
+    }
+
+    /**
+     * Adds an SAML group link.
+     *
+     * <pre><code>GitLab Endpoint: POST /groups/:id/saml_group_links</code></pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param samlGroupName the name of the SAML group
+     * @param groupAccess the minimum access level for members of the SAML group
      * @throws GitLabApiException if any exception occurs
      */
     public void addSamlGroupLink(Object groupIdOrPath, String samlGroupName, Integer groupAccess) throws GitLabApiException {
+        addSamlGroupLink(groupIdOrPath, samlGroupName, groupAccess, null);
+    }
+
+    /**
+     * Adds an SAML group link.
+     *
+     * <pre><code>GitLab Endpoint: POST /groups/:id/saml_group_links</code></pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param samlGroupName the name of the SAML group
+     * @param groupAccess   the minimum access level for members of the SAML group
+     * @param memberRoleId  the id of the custom member role to assign
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void addSamlGroupLink(Object groupIdOrPath, String samlGroupName, Integer groupAccess, Integer memberRoleId) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("saml_group_name", samlGroupName, true)
-                .withParam("access_level", groupAccess, true);
+                .withParam("access_level", groupAccess, true)
+                .withParam("member_role_id", memberRoleId);
         post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath), "saml_group_links");
     }
 
@@ -1373,8 +1306,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/variables</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of Variable instances per page
+     * @param page the page to get
+     * @param perPage the number of Variable instances per page
      * @return a list of variables belonging to the specified group in the specified page range
      * @throws GitLabApiException if any exception occurs
      */
@@ -1390,7 +1323,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/variables</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of Variable instances that will be fetched per page
+     * @param itemsPerPage the number of Variable instances that will be fetched per page
      * @return a Pager of variables belonging to the specified group
      * @throws GitLabApiException if any exception occurs
      */
@@ -1417,7 +1350,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/variables/:key</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param key           the key of an existing variable, required
+     * @param key the key of an existing variable, required
      * @return the Variable instance for the specified group variable
      * @throws GitLabApiException if any exception occurs
      */
@@ -1432,7 +1365,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/variables/:key</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param key           the key of an existing variable, required
+     * @param key the key of an existing variable, required
      * @return the Variable for the specified group variable as an Optional instance
      */
     public Optional<Variable> getOptionalVariable(Object groupIdOrPath, String key) {
@@ -1449,9 +1382,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/variables</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param key           the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed, required
-     * @param value         the value for the variable, required
-     * @param isProtected   whether the variable is protected, optional
+     * @param key the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed, required
+     * @param value the value for the variable, required
+     * @param isProtected whether the variable is protected, optional
      * @return a Variable instance with the newly created variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -1466,10 +1399,10 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/variables</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param key           the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed, required
-     * @param value         the value for the variable, required
-     * @param isProtected   whether the variable is protected, optional
-     * @param masked        whether the variable is masked, optional
+     * @param key the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed, required
+     * @param value the value for the variable, required
+     * @param isProtected whether the variable is protected, optional
+     * @param masked whether the variable is masked, optional
      * @return a Variable instance with the newly created variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -1490,9 +1423,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/variables/:key</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param key           the key of an existing variable, required
-     * @param value         the value for the variable, required
-     * @param isProtected   whether the variable is protected, optional
+     * @param key the key of an existing variable, required
+     * @param value the value for the variable, required
+     * @param isProtected whether the variable is protected, optional
      * @return a Variable instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -1507,10 +1440,10 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/variables/:key</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param key           the key of an existing variable, required
-     * @param value         the value for the variable, required
-     * @param isProtected   whether the variable is protected, optional
-     * @param masked        whether the variable is masked, optional
+     * @param key the key of an existing variable, required
+     * @param value the value for the variable, required
+     * @param isProtected whether the variable is protected, optional
+     * @param masked whether the variable is masked, optional
      * @return a Variable instance with the updated variable
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -1530,7 +1463,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/variables/:key</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
-     * @param key           the key of an existing variable, required
+     * @param key the key of an existing variable, required
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteVariable(Object groupIdOrPath, String key) throws GitLabApiException {
@@ -1542,7 +1475,7 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups/:id/projects/:project_id</code></pre>
      *
-     * @param groupIdOrPath   the group ID, path of the group, or a Group instance holding the group ID or path, required
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
      * @return the transferred Project instance
      * @throws GitLabApiException if any exception occurs during execution
@@ -1558,8 +1491,8 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GET /groups/:id/audit_events</code></pre>
      *
-     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param created_after  Group audit events created on or after the given time.
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after Group audit events created on or after the given time.
      * @param created_before Group audit events created on or before the given time.
      * @return a List of group Audit events
      * @throws GitLabApiException if any exception occurs
@@ -1573,10 +1506,10 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GET /groups/:id/audit_events</code></pre>
      *
-     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param created_after  Group audit events created on or after the given time.
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after Group audit events created on or after the given time.
      * @param created_before Group audit events created on or before the given time.
-     * @param itemsPerPage   the number of Audit Event instances that will be fetched per page
+     * @param itemsPerPage the number of Audit Event instances that will be fetched per page
      * @return a Pager of group Audit events
      * @throws GitLabApiException if any exception occurs
      */
@@ -1593,8 +1526,8 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GET /groups/:id/audit_events</code></pre>
      *
-     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param created_after  Group audit events created on or after the given time.
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after Group audit events created on or after the given time.
      * @param created_before Group audit events created on or before the given time.
      * @return a Stream of group Audit events
      * @throws GitLabApiException if any exception occurs
@@ -1609,7 +1542,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/audit_events/:id_audit_event</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param auditEventId  the auditEventId, required
+     * @param auditEventId the auditEventId, required
      * @return the group Audit event
      * @throws GitLabApiException if any exception occurs
      */
@@ -1637,7 +1570,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GET /groups/:id/access_requests</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param itemsPerPage  the number of AccessRequest instances that will be fetched per page
+     * @param itemsPerPage the number of AccessRequest instances that will be fetched per page
      * @return a Pager of group AccessRequest instances accessible by the authenticated user
      * @throws GitLabApiException if any exception occurs
      */
@@ -1679,8 +1612,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>PUT /groups/:id/access_requests/:user_id/approve</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the user ID to approve access for
-     * @param accessLevel   the access level the user is approved for, if null will be developer (30)
+     * @param userId the user ID to approve access for
+     * @param accessLevel the access level the user is approved for, if null will be developer (30)
      * @return the approved AccessRequest instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -1697,7 +1630,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>DELETE /groups/:id/access_requests/:user_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param userId        the user ID to deny access for
+     * @param userId the user ID to deny access for
      * @throws GitLabApiException if any exception occurs
      */
     public void denyAccessRequest(Object groupIdOrPath, Long userId) throws GitLabApiException {
@@ -1724,7 +1657,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/badges?name=:name</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeName     The name to filter on (case-sensitive), ignored if null.
+     * @param badgeName The name to filter on (case-sensitive), ignored if null.
      * @return All badges of the GitLab item, case insensitively filtered on name.
      * @throws GitLabApiException If any problem is encountered
      */
@@ -1741,7 +1674,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/badges/:badge_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeId       the ID of the badge to get
+     * @param badgeId the ID of the badge to get
      * @return a Badge instance for the specified group/badge ID pair
      * @throws GitLabApiException if any exception occurs
      */
@@ -1756,7 +1689,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/badges/:badge_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeId       the ID of the badge to get
+     * @param badgeId the ID of the badge to get
      * @return an Optional instance with the specified badge as the value
      */
     public Optional<Badge> getOptionalBadge(Object groupIdOrPath, Long badgeId) {
@@ -1773,8 +1706,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/badges</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param linkUrl       the URL of the badge link
-     * @param imageUrl      the URL of the image link
+     * @param linkUrl the URL of the badge link
+     * @param imageUrl the URL of the image link
      * @return a Badge instance for the added badge
      * @throws GitLabApiException if any exception occurs
      */
@@ -1788,9 +1721,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/badges</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param name          The name to give the badge (may be null)
-     * @param linkUrl       the URL of the badge link
-     * @param imageUrl      the URL of the image link
+     * @param name The name to give the badge (may be null)
+     * @param linkUrl the URL of the badge link
+     * @param imageUrl the URL of the image link
      * @return A Badge instance for the added badge
      * @throws GitLabApiException if any exception occurs
      */
@@ -1809,9 +1742,9 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/badges</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeId       the ID of the badge to get
-     * @param linkUrl       the URL of the badge link
-     * @param imageUrl      the URL of the image link
+     * @param badgeId the ID of the badge to get
+     * @param linkUrl the URL of the badge link
+     * @param imageUrl the URL of the image link
      * @return a Badge instance for the editted badge
      * @throws GitLabApiException if any exception occurs
      */
@@ -1825,10 +1758,10 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/badges</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeId       the ID of the badge to edit
-     * @param name          The name of the badge to edit (may be null)
-     * @param linkUrl       the URL of the badge link
-     * @param imageUrl      the URL of the image link
+     * @param badgeId the ID of the badge to edit
+     * @param name The name of the badge to edit (may be null)
+     * @param linkUrl the URL of the badge link
+     * @param imageUrl the URL of the image link
      * @return a Badge instance for the edited badge
      * @throws GitLabApiException if any exception occurs
      */
@@ -1847,7 +1780,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/badges/:badge_id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param badgeId       the ID of the badge to remove
+     * @param badgeId the ID of the badge to remove
      * @throws GitLabApiException if any exception occurs
      */
     public void removeBadge(Object groupIdOrPath, Long badgeId) throws GitLabApiException {
@@ -1860,8 +1793,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/badges/render</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param linkUrl       the URL of the badge link
-     * @param imageUrl      the URL of the image link
+     * @param linkUrl the URL of the badge link
+     * @param imageUrl the URL of the image link
      * @return a Badge instance for the rendered badge
      * @throws GitLabApiException if any exception occurs
      */
@@ -1879,7 +1812,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id</code></pre>
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param avatarFile    the File instance of the avatar file to upload
+     * @param avatarFile the File instance of the avatar file to upload
      * @return the updated Group instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -1912,10 +1845,10 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups/:id/share</code></pre>
      *
-     * @param groupIdOrPath    the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param shareWithGroupId the ID of the group to share with, required
-     * @param groupAccess      the access level to grant the group, required
-     * @param expiresAt        expiration date of the share, optional
+     * @param groupAccess the access level to grant the group, required
+     * @param expiresAt expiration date of the share, optional
      * @return a Group instance holding the details of the shared group
      * @throws GitLabApiException if any exception occurs
      */
@@ -1933,7 +1866,7 @@ public class GroupApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/share/:group_id</code></pre>
      *
-     * @param groupIdOrPath     the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param sharedWithGroupId the ID of the group to unshare with, required
      * @throws GitLabApiException if any exception occurs
      */
@@ -1961,7 +1894,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/custom_attributes</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param itemsPerPage  the number of items per page
+     * @param itemsPerPage the number of items per page
      * @return a Pager of group's custom attributes
      * @throws GitLabApiException if any exception occurs
      */
@@ -1989,7 +1922,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/custom_attributes/:key</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param key           the key for the custom attribute
+     * @param key the key for the custom attribute
      * @return a CustomAttribute instance for the specified key
      * @throws GitLabApiException if any exception occurs
      */
@@ -2005,7 +1938,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/custom_attributes/:key</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance, required
-     * @param key           the key for the custom attribute, required
+     * @param key the key for the custom attribute, required
      * @return an Optional instance with the value for a single custom attribute for the specified group
      */
     public Optional<CustomAttribute> geOptionalCustomAttribute(final Object groupIdOrPath, final String key) {
@@ -2023,8 +1956,8 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /groups/:id/custom_attributes/:key</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param key           the key for the custom attribute
-     * @param value         the value for the customAttribute
+     * @param key the key for the custom attribute
+     * @param value the value for the customAttribute
      * @return a CustomAttribute instance for the updated or created custom attribute
      * @throws GitLabApiException if any exception occurs
      */
@@ -2049,7 +1982,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/custom_attributes/:key</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param key           the key of the custom attribute to delete
+     * @param key the key of the custom attribute to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteCustomAttribute(final Object groupIdOrPath, final String key) throws GitLabApiException {
@@ -2067,7 +2000,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/iterations</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param filter        the iteration filter
+     * @param filter the iteration filter
      * @return the list of group iterations
      * @throws GitLabApiException if any exception occurs
      */
@@ -2099,7 +2032,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/access_tokens/:token_id</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param tokenId       ID of the group access token
+     * @param tokenId ID of the group access token
      * @return the GroupAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -2114,10 +2047,10 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/access_tokens</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param name          the name of the group access token, required
-     * @param expiresAt     the expiration date of the group access token, optional
-     * @param scopes        an array of scopes of the group access token
-     * @param accessLevel   Access level. Valid values are {@link AccessLevel#GUEST}, {@link AccessLevel#REPORTER}, {@link AccessLevel#DEVELOPER}, {@link AccessLevel#MAINTAINER}, and {@link AccessLevel#OWNER}.
+     * @param name the name of the group access token, required
+     * @param expiresAt the expiration date of the group access token, optional
+     * @param scopes an array of scopes of the group access token
+     * @param accessLevel Access level. Valid values are {@link AccessLevel#GUEST}, {@link AccessLevel#REPORTER}, {@link AccessLevel#DEVELOPER}, {@link AccessLevel#MAINTAINER}, and {@link AccessLevel#OWNER}.
      * @return the created GroupAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -2129,7 +2062,7 @@ public class GroupApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("name", name, true)
                 .withParam("scopes", Arrays.asList(scopes))
-                .withParam("expires_at", expiresAt)
+                .withParam("expires_at", ISO8601.dateOnly(expiresAt))
                 .withParam("access_level", accessLevel);
 
         Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens");
@@ -2142,14 +2075,34 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/access_tokens/:token_id/rotate</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param tokenId       ID of the group access token
+     * @param tokenId ID of the group access token
      * @return the updated GroupAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
     public GroupAccessToken rotateGroupAccessToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {
-        Response response = post(Response.Status.OK, (Form) null, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens", tokenId, "rotate");
+        return rotateGroupAccessToken(groupIdOrPath, tokenId, null);
+    }
+
+
+    /**
+     * Rotate a group access token. Revokes the previous token and creates a new token that expires in one week.
+     *
+     * <pre><code>GitLab Endpoint: POST /groups/:id/access_tokens/:token_id/rotate</code></pre>
+     *
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
+     * @param tokenId       ID of the group access token
+     * @param expiresAt     Expiration date of the access token
+     * @return the updated GroupAccessToken instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public GroupAccessToken rotateGroupAccessToken(Object groupIdOrPath, Long tokenId, Date expiresAt) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("expires_at", ISO8601.dateOnly(expiresAt));
+
+        Response response = post(Response.Status.OK, formData, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens", tokenId, "rotate");
         return (response.readEntity(GroupAccessToken.class));
     }
+
 
     /**
      * Revoke a group access token.
@@ -2157,7 +2110,7 @@ public class GroupApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/access_tokens/:token_id</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param tokenId       ID of the group access token
+     * @param tokenId ID of the group access token
      * @throws GitLabApiException if any exception occurs
      */
     public void revokeGroupAccessToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {

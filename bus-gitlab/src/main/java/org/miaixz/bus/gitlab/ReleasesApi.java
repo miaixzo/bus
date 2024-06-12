@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Release;
 import org.miaixz.bus.gitlab.models.ReleaseParams;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,7 +38,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab Releases API calls.
- *
  * @see <a href="https://docs.gitlab.com/ce/api/releases">Releases API at GitLab</a>
  */
 public class ReleasesApi extends AbstractApi {
@@ -64,7 +65,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/releases</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of Release instances that will be fetched per page
+     * @param itemsPerPage the number of Release instances that will be fetched per page
      * @return the Pager of Release instances for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -91,7 +92,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/releases/:tagName</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of the tag to fetch the Release for
+     * @param tagName the name of the tag to fetch the Release for
      * @return a Releases instance with info on the specified tag
      * @throws GitLabApiException if any exception occurs
      */
@@ -106,7 +107,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/releases/:tagName</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param tagName         the name of the tag to fetch the Release for
+     * @param tagName the name of the tag to fetch the Release for
      * @return an Optional instance with the specified Release as the value
      * @throws GitLabApiException if any exception occurs
      */
@@ -124,7 +125,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/releases</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param params          a ReleaseParams instance holding the parameters for the release
+     * @param params a ReleaseParams instance holding the parameters for the release
      * @return a Release instance containing the newly created Release info
      * @throws GitLabApiException if any exception occurs
      */
@@ -140,7 +141,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/releases/:tag_name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param params          a ReleaseParams instance holding the parameters for the release
+     * @param params a ReleaseParams instance holding the parameters for the release
      * @return a Release instance containing info on the updated Release
      * @throws GitLabApiException if any exception occurs
      */
@@ -162,7 +163,7 @@ public class ReleasesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/releases/:tag_name</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param tagName         the tag name that the release was created from
+     * @param tagName the tag name that the release was created from
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteRelease(Object projectIdOrPath, String tagName) throws GitLabApiException {

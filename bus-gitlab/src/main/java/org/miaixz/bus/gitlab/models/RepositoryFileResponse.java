@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,78 +25,36 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.pay.metric;
+package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.cache.metric.MemoryCache;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
-/**
- * 默认缓存实现
- *
- * @author Kimi Liu
- * @since Java 17+
- */
-public enum PayCache implements ExtendCache {
+import java.io.Serializable;
 
-    /**
-     * 当前实例
-     */
-    INSTANCE;
+public class RepositoryFileResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private final CacheX cache;
+    private String filePath; // full path to file. Ex. lib/class.rb
+    private String branch;
 
-    PayCache() {
-        cache = new MemoryCache();
+    public String getFilePath() {
+        return filePath;
     }
 
-    /**
-     * 存入缓存
-     *
-     * @param key   缓存key
-     * @param value 缓存内容
-     */
-    @Override
-    public void cache(String key, Object value) {
-        cache.write(key, value, 3 * 60 * 1000);
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
-    /**
-     * 存入缓存
-     *
-     * @param key     缓存key
-     * @param value   缓存内容
-     * @param timeout 指定缓存过期时间(毫秒)
-     */
-    @Override
-    public void cache(String key, Object value, long timeout) {
-        cache.write(key, value, timeout);
+    public String getBranch() {
+        return branch;
     }
 
-    /**
-     * 获取缓存内容
-     *
-     * @param key 缓存key
-     * @return 缓存内容
-     */
-    @Override
-    public Object get(String key) {
-        return cache.read(key);
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 
     @Override
-    public boolean containsKey(String key) {
-        return false;
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
-
-    @Override
-    public void remove(String key) {
-        cache.remove(key);
-    }
-
-    @Override
-    public void pruneCache() {
-        ExtendCache.super.pruneCache();
-    }
-
 }

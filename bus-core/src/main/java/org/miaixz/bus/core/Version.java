@@ -34,6 +34,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,7 +73,11 @@ public class Version implements Comparable<Version>, Serializable {
         Assert.notNull(v, "Null version string");
         final int n = v.length();
         if (n == 0) {
-            throw new IllegalArgumentException("Empty version string");
+            this.version = v;
+            this.sequence = Collections.emptyList();
+            this.pre = Collections.emptyList();
+            this.build = Collections.emptyList();
+            return;
         }
         this.version = v;
         this.sequence = new ArrayList<>(4);

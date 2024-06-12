@@ -106,7 +106,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
 
         String url = this.getUrl(entity) + "v2/sendSms";
         long tKey = System.currentTimeMillis() / 1000;
-        Map<String, Object> bodys = new HashMap<>(5);
+        Map<String, String> bodys = new HashMap<>(5);
         //账号
         bodys.put("username", username);
         //密码
@@ -149,12 +149,12 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
         //地址
         String url = this.getUrl(entity) + "v2/sendSmsTp";
         //请求入参
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         //账号
         bodys.put("username", this.context.getAppKey());
         //tKey
         long tKey = System.currentTimeMillis() / 1000;
-        bodys.put("tKey", tKey);
+        bodys.put("tKey", String.valueOf(tKey));
         //明文密码
         bodys.put("password", Builder.md5(Builder.md5(this.context.getAppSecret()) + tKey));
         //模板ID

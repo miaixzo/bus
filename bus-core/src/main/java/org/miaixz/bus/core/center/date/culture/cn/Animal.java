@@ -38,28 +38,55 @@ import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightSt
  */
 public class Animal extends Samsara {
 
-    public static final String[] NAMES = {
-            "蛟", "龙", "貉", "兔", "狐", "虎", "豹", "獬", "牛", "蝠",
-            "鼠", "燕", "猪", "獝", "狼", "狗", "彘", "鸡", "乌", "猴",
-            "猿", "犴", "羊", "獐", "马", "鹿", "蛇", "蚓"
-    };
+    /**
+     * 动物
+     */
+    public static final String[] NAMES = {"蛟", "龙", "貉", "兔", "狐", "虎", "豹", "獬", "牛", "蝠", "鼠", "燕", "猪", "獝", "狼", "狗", "彘", "鸡", "乌", "猴", "猿", "犴", "羊", "獐", "马", "鹿", "蛇", "蚓"};
 
+    /**
+     * 构造
+     *
+     * @param index 索引
+     */
     public Animal(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * 构造
+     *
+     * @param name 名称
+     */
     public Animal(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * 根据索引获取对象
+     *
+     * @param index 索引
+     * @return this
+     */
     public static Animal fromIndex(int index) {
         return new Animal(index);
     }
 
+    /**
+     * 根据名称获取对象
+     *
+     * @param name 名称
+     * @return this
+     */
     public static Animal fromName(String name) {
         return new Animal(name);
     }
 
+    /**
+     * 获取对象
+     *
+     * @param n 推移步数
+     * @return this
+     */
     public Animal next(int n) {
         return fromIndex(nextIndex(n));
     }

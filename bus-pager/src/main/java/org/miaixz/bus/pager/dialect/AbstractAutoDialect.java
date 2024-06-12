@@ -25,7 +25,6 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-
 package org.miaixz.bus.pager.dialect;
 
 import org.apache.ibatis.mapping.MappedStatement;

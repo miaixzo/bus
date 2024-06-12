@@ -964,55 +964,21 @@ public class PatternKit {
     }
 
     /**
-     * 正则表达式和正则标识位的包装
+     * 根据提供的匹配器和组名尝试获取匹配的字符串
+     * 此方法旨在方便地从匹配器中提取指定名称的组匹配的字符串。如果指定的组不存在，则通过捕获异常并返回null来优雅地处理错误。
+     *
+     * @param matcher 匹配器对象，用于查找和匹配文本。
+     * @param name    组的名称，用于指定要提取的匹配字符串的组。
+     * @return 如果找到并成功提取了指定组的匹配字符串，则返回该字符串；如果组不存在，则返回null。
      */
-    private static class RegexWithFlag {
-
-        private final String regex;
-        private final int flag;
-
-        /**
-         * 构造
-         *
-         * @param regex 正则
-         * @param flag  标识
-         */
-        public RegexWithFlag(final String regex, final int flag) {
-            this.regex = regex;
-            this.flag = flag;
+    public static String group(final Matcher matcher, final String name) {
+        try {
+            // 尝试根据组名获取匹配的字符串。
+            return matcher.group(name);
+        } catch (final IllegalArgumentException e) {
+            // 如果组名无效，捕获异常并返回null。
+            return null;
         }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + flag;
-            result = prime * result + ((regex == null) ? 0 : regex.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final RegexWithFlag other = (RegexWithFlag) obj;
-            if (flag != other.flag) {
-                return false;
-            }
-            if (regex == null) {
-                return other.regex == null;
-            } else {
-                return regex.equals(other.regex);
-            }
-        }
-
     }
 
 }

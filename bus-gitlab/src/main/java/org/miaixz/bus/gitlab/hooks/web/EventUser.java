@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,62 +25,60 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.pay.metric.paypal;
+package org.miaixz.bus.gitlab.hooks.web;
 
-/**
- * PayPal 支付接口枚举
- */
-public enum PayPalApiUrl {
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
-    /**
-     * 沙箱环境
-     */
-    SANDBOX_GATEWAY("https://api.sandbox.paypal.com"),
-    /**
-     * 线上环境
-     */
-    LIVE_GATEWAY("https://api.paypal.com"),
-    /**
-     * 获取 Access Token
-     */
-    GET_TOKEN("/v1/oauth2/token"),
-    /**
-     * 订单
-     */
-    CHECKOUT_ORDERS("/v2/checkout/orders"),
-    /**
-     * 确认订单
-     */
-    CAPTURE_ORDER("/v2/checkout/orders/%s/capture"),
-    /**
-     * 查询已确认订单
-     */
-    CAPTURE_QUERY("/v2/payments/captures/%s"),
-    /**
-     * 退款
-     */
-    REFUND("/v2/payments/captures/%s/refund"),
-    /**
-     * 退款查询
-     */
-    REFUND_QUERY("/v2/payments/refunds/%s");
+public class EventUser {
 
-    /**
-     * 类型
-     */
-    private final String url;
+    private Long id;
+    private String name;
+    private String username;
+    private String avatarUrl;
+    private String email;
 
-    PayPalApiUrl(String url) {
-        this.url = url;
+    public Long getId() {
+        return id;
     }
 
-    public String getUrl() {
-        return url;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
     public String toString() {
-        return url;
+        return (JacksonJson.toJsonString(this));
     }
-
 }

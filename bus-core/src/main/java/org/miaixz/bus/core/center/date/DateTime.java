@@ -213,67 +213,67 @@ public class DateTime extends Date {
      * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
      * </ol>
      *
-     * @param dateStr Date字符串
+     * @param date 日期字符串
      */
-    public DateTime(final CharSequence dateStr) {
-        this(DateKit.parse(dateStr));
+    public DateTime(final CharSequence date) {
+        this(DateKit.parse(date));
     }
 
     /**
      * 构造
      *
-     * @param dateStr Date字符串
-     * @param format  格式
+     * @param date   日期字符串
+     * @param format 格式
      * @see Fields
      */
-    public DateTime(final CharSequence dateStr, final String format) {
+    public DateTime(final CharSequence date, final String format) {
         this(CustomFormat.isCustomFormat(format)
-                ? CustomFormat.parse(dateStr, format)
-                : parse(dateStr, DateKit.newSimpleFormat(format)));
+                ? CustomFormat.parse(date, format)
+                : parse(date, DateKit.newSimpleFormat(format)));
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
-     * @param dateFormat 格式化器 {@link SimpleDateFormat}
+     * @param date   日期字符串
+     * @param format 格式化器 {@link SimpleDateFormat}
      * @see Fields
      */
-    public DateTime(final CharSequence dateStr, final DateFormat dateFormat) {
-        this(parse(dateStr, dateFormat), dateFormat.getTimeZone());
+    public DateTime(final CharSequence date, final DateFormat format) {
+        this(parse(date, format), format.getTimeZone());
     }
 
     /**
      * 构建DateTime对象
      *
-     * @param dateStr   Date字符串
+     * @param date      日期字符串
      * @param formatter 格式化器,{@link DateTimeFormatter}
      */
-    public DateTime(final CharSequence dateStr, final DateTimeFormatter formatter) {
-        this(Converter.toInstant(formatter.parse(dateStr)), formatter.getZone());
+    public DateTime(final CharSequence date, final DateTimeFormatter formatter) {
+        this(Converter.toInstant(formatter.parse(date)), formatter.getZone());
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
+     * @param date       日期字符串
      * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
      * @see Fields
      */
-    public DateTime(final CharSequence dateStr, final PositionDateParser dateParser) {
-        this(dateStr, dateParser, Keys.getBoolean(Keys.DATE_LENIENT, true));
+    public DateTime(final CharSequence date, final PositionDateParser dateParser) {
+        this(date, dateParser, Keys.getBoolean(Keys.DATE_LENIENT, true));
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
-     * @param lenient    是否宽容模式
+     * @param date    日期字符串
+     * @param parser  格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
+     * @param lenient 是否宽容模式
      * @see Fields
      */
-    public DateTime(final CharSequence dateStr, final PositionDateParser dateParser, final boolean lenient) {
-        this(parse(dateStr, dateParser, lenient));
+    public DateTime(final CharSequence date, final PositionDateParser parser, final boolean lenient) {
+        this(parse(date, parser, lenient));
     }
 
     /**
@@ -324,13 +324,13 @@ public class DateTime extends Date {
     /**
      * 构造
      *
-     * @param dateStr Date字符串
-     * @param format  格式
+     * @param date   日期字符串
+     * @param format 格式
      * @return this
      * @see Fields
      */
-    public static DateTime of(final String dateStr, final String format) {
-        return new DateTime(dateStr, format);
+    public static DateTime of(final String date, final String format) {
+        return new DateTime(date, format);
     }
 
     /**
@@ -345,40 +345,40 @@ public class DateTime extends Date {
     /**
      * 转换字符串为Date
      *
-     * @param dateStr    日期字符串
-     * @param dateFormat {@link SimpleDateFormat}
+     * @param date   日期字符串
+     * @param format {@link SimpleDateFormat}
      * @return {@link Date}
      */
-    private static Date parse(final CharSequence dateStr, final DateFormat dateFormat) {
-        Assert.notBlank(dateStr, "Date String must be not blank !");
+    private static Date parse(final CharSequence date, final DateFormat format) {
+        Assert.notBlank(date, "Date String must be not blank !");
         try {
-            return dateFormat.parse(dateStr.toString());
+            return format.parse(date.toString());
         } catch (final Exception e) {
             final String pattern;
-            if (dateFormat instanceof SimpleDateFormat) {
-                pattern = ((SimpleDateFormat) dateFormat).toPattern();
+            if (format instanceof SimpleDateFormat) {
+                pattern = ((SimpleDateFormat) format).toPattern();
             } else {
-                pattern = dateFormat.toString();
+                pattern = format.toString();
             }
-            throw new DateException(StringKit.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
+            throw new DateException(StringKit.format("Parse [{}] with format [{}] error!", date, pattern), e);
         }
     }
 
     /**
      * 转换字符串为Date
      *
-     * @param dateStr 日期字符串
+     * @param date    日期字符串
      * @param parser  {@link FormatBuilder}
      * @param lenient 是否宽容模式
      * @return {@link java.util.Calendar}
      */
-    private static java.util.Calendar parse(final CharSequence dateStr, final PositionDateParser parser, final boolean lenient) {
+    private static java.util.Calendar parse(final CharSequence date, final PositionDateParser parser, final boolean lenient) {
         Assert.notNull(parser, "Parser or DateFromat must be not null !");
-        Assert.notBlank(dateStr, "Date String must be not blank !");
+        Assert.notBlank(date, "Date String must be not blank !");
 
-        final java.util.Calendar calendar = Calendar.parse(dateStr, lenient, parser);
+        final java.util.Calendar calendar = Calendar.parse(date, lenient, parser);
         if (null == calendar) {
-            throw new DateException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
+            throw new DateException("Parse [{}] with format [{}] error!", date, parser.getPattern());
         }
 
         calendar.setFirstDayOfWeek(Week.MONDAY.getCode());

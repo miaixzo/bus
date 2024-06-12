@@ -1,35 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.*;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
@@ -49,9 +50,9 @@ public class MergeRequestFilter implements Serializable {
     private Long projectId;
     private Long groupId;
     private List<Long> iids;
-    private MergeRequestState state;
-    private MergeRequestOrderBy orderBy;
-    private SortOrder sort;
+    private Constants.MergeRequestState state;
+    private Constants.MergeRequestOrderBy orderBy;
+    private Constants.SortOrder sort;
     private String milestone;
     private Boolean simpleView;
     private List<String> labels;
@@ -59,7 +60,7 @@ public class MergeRequestFilter implements Serializable {
     private Date createdBefore;
     private Date updatedAfter;
     private Date updatedBefore;
-    private MergeRequestScope scope;
+    private Constants.MergeRequestScope scope;
 
     /**
      * Filter MR by created by the given user id. Combine with scope=all or scope=assigned_to_me
@@ -70,9 +71,13 @@ public class MergeRequestFilter implements Serializable {
     private String sourceBranch;
     private String targetBranch;
     private String search;
-    private MergeRequestSearchIn in;
+    private Constants.MergeRequestSearchIn in;
     private Boolean wip;
     private Map<MergeRequestField, Object> not;
+
+    public Constants.MergeRequestState getState() {
+        return state;
+    }
 
     public Long getProjectId() {
         return projectId;
@@ -100,43 +105,43 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public MergeRequestState getState() {
-        return state;
-    }
-
-    public void setState(MergeRequestState state) {
+    public void setState(Constants.MergeRequestState state) {
         this.state = state;
     }
 
-    public MergeRequestFilter withState(MergeRequestState state) {
+    public MergeRequestFilter withState(Constants.MergeRequestState state) {
         this.state = state;
         return (this);
     }
 
-    public MergeRequestOrderBy getOrderBy() {
+    public Constants.MergeRequestOrderBy getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(MergeRequestOrderBy orderBy) {
+    public void setOrderBy(Constants.MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
-    public MergeRequestFilter withOrderBy(MergeRequestOrderBy orderBy) {
+    public MergeRequestFilter withOrderBy(Constants.MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
 
-    public SortOrder getSort() {
+    public Constants.SortOrder getSort() {
         return sort;
     }
 
-    public void setSort(SortOrder sort) {
+    public void setSort(Constants.SortOrder sort) {
         this.sort = sort;
     }
 
-    public MergeRequestFilter withSort(SortOrder sort) {
+    public MergeRequestFilter withSort(Constants.SortOrder sort) {
         this.sort = sort;
         return (this);
+    }
+
+    public Constants.MergeRequestScope getScope() {
+        return scope;
     }
 
     public String getMilestone() {
@@ -230,17 +235,17 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public MergeRequestScope getScope() {
-        return scope;
-    }
-
-    public void setScope(MergeRequestScope scope) {
+    public void setScope(Constants.MergeRequestScope scope) {
         this.scope = scope;
     }
 
-    public MergeRequestFilter withScope(MergeRequestScope scope) {
+    public MergeRequestFilter withScope(Constants.MergeRequestScope scope) {
         this.scope = scope;
         return (this);
+    }
+
+    public Constants.MergeRequestSearchIn getIn() {
+        return in;
     }
 
     public Long getAuthorId() {
@@ -321,17 +326,34 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public MergeRequestSearchIn getIn() {
-        return in;
-    }
-
-    public void setIn(MergeRequestSearchIn in) {
+    public void setIn(Constants.MergeRequestSearchIn in) {
         this.in = in;
     }
 
-    public MergeRequestFilter withIn(MergeRequestSearchIn in) {
+    public MergeRequestFilter withIn(Constants.MergeRequestSearchIn in) {
         this.in = in;
         return (this);
+    }
+
+    public enum MergeRequestField {
+        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME, MY_REACTION_EMOJI;
+
+        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestField.class);
+
+        @JsonCreator
+        public static MergeRequestField forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     public Boolean getWip() {
@@ -446,6 +468,7 @@ public class MergeRequestFilter implements Serializable {
         return withNot(MergeRequestField.REVIEWER_USERNAME, reviewerUsername);
     }
 
+
     /**
      * Add my_reaction_emoji to the 'not' filter entry.
      *
@@ -528,26 +551,4 @@ public class MergeRequestFilter implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
-    public enum MergeRequestField {
-        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME, MY_REACTION_EMOJI;
-
-        private static final JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestField.class);
-
-        @JsonCreator
-        public static MergeRequestField forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
 }

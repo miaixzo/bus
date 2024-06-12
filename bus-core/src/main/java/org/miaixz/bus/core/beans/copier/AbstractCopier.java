@@ -40,7 +40,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public abstract class AbstractCopier<S, T> implements Copier<T> {
 
+    /**
+     * 源对象
+     */
     protected final S source;
+    /**
+     * 目标对象
+     */
     protected final T target;
     /**
      * 拷贝选项

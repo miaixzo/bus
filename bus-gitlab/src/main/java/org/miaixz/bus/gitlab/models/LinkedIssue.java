@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,47 +25,53 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.pay.metric.wxpay.enums;
+package org.miaixz.bus.gitlab.models;
 
-/**
- * 分账接收方类型
- */
-public enum ReceiverType {
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
-    /**
-     * 商户ID
-     */
-    MERCHANT("MERCHANT_ID"),
-    /**
-     * 个人微信号
-     */
-    WECHATID("PERSONAL_WECHATID"),
-    /**
-     * 个人 openId（由父商户 appId 转换得到）
-     */
-    OPENID("PERSONAL_OPENID"),
-    /**
-     * 个人 sub_openid（由子商户 appId 转换得到）
-     */
-    SUB_OPENID("PERSONAL_SUB_OPENID");
+import java.util.Date;
 
+public class LinkedIssue extends AbstractIssue {
 
-    /**
-     * 类型
-     */
-    private final String type;
+    private Long issueLinkId;
+    private LinkType linkType;
+    private Date linkCreatedAt;
+    private Date linkUpdatedAt;
 
-    ReceiverType(String type) {
-        this.type = type;
+    public Long getIssueLinkId() {
+        return issueLinkId;
     }
 
-    public String getType() {
-        return type;
+    public void setIssueLinkId(Long issueLinkId) {
+        this.issueLinkId = issueLinkId;
+    }
+
+    public LinkType getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(LinkType linkType) {
+        this.linkType = linkType;
+    }
+
+    public Date getLinkCreatedAt() {
+        return linkCreatedAt;
+    }
+
+    public void setLinkCreatedAt(Date linkCreatedAt) {
+        this.linkCreatedAt = linkCreatedAt;
+    }
+
+    public Date getLinkUpdatedAt() {
+        return linkUpdatedAt;
+    }
+
+    public void setLinkUpdatedAt(Date linkUpdatedAt) {
+        this.linkUpdatedAt = linkUpdatedAt;
     }
 
     @Override
     public String toString() {
-        return type;
+        return (JacksonJson.toJsonString(this));
     }
-
 }

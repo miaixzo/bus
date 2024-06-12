@@ -40,6 +40,8 @@ import java.io.Serializable;
 public interface BloomFilter extends Serializable {
 
     /**
+     * 否包含字符
+     *
      * @param text 字符串
      * @return 判断一个字符串是否bitMap中存在
      */

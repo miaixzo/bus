@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.DeployKey;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -56,12 +58,12 @@ public class DeployKeysApi extends AbstractApi {
     }
 
     /**
-     * Get a list of all deploy keys across all projects of the GitLab instance using the specified page and per page settings.
+     * Get a list of all deploy keys across all projects of the GitLab instance using the specified page and per page settings. 
      * This method requires admin access.
      *
      * <pre><code>GitLab Endpoint: GET /deploy_keys</code></pre>
      *
-     * @param page    the page to get
+     * @param page the page to get
      * @param perPage the number of deploy keys per page
      * @return the list of DeployKey in the specified range
      * @throws GitLabApiException if any exception occurs
@@ -111,14 +113,14 @@ public class DeployKeysApi extends AbstractApi {
     }
 
     /**
-     * Get a list of the deploy keys for the specified project using the specified page and per page settings.
+     * Get a list of the deploy keys for the specified project using the specified page and per page settings. 
      * This method requires admin access.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_keys</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of deploy keys per page
+     * @param page the page to get
+     * @param perPage the number of deploy keys per page
      * @return the list of DeployKey in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -135,7 +137,7 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_keys</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance@param projectId the ID of the project
-     * @param itemsPerPage    the number of DeployKey instances that will be fetched per page
+     * @param itemsPerPage the number of DeployKey instances that will be fetched per page
      * @return a Pager of DeployKey
      * @throws GitLabApiException if any exception occurs
      */
@@ -163,7 +165,7 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_keys/:key_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param keyId           the ID of the deploy key to delete
+     * @param keyId the ID of the deploy key to delete
      * @return the DeployKey instance for the specified project ID and key ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -184,7 +186,7 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_keys/:key_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param keyId           the ID of the deploy key to delete
+     * @param keyId the ID of the deploy key to delete
      * @return the DeployKey for the specified project ID and key ID as an Optional instance
      */
     public Optional<DeployKey> getOptionalDeployKey(Object projectIdOrPath, Long keyId) {
@@ -201,9 +203,9 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/deploy_keys</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param title           the new deploy key's title, required
-     * @param key             the new deploy key, required
-     * @param canPush         can deploy key push to the project's repository, optional
+     * @param title the new deploy key's title, required
+     * @param key the new deploy key, required
+     * @param canPush can deploy key push to the project's repository, optional
      * @return an DeployKey instance with info on the added deploy key
      * @throws GitLabApiException if any exception occurs
      */
@@ -224,9 +226,9 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/deploy_keys/:key_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deployKeyId     the ID of the deploy key to update, required
-     * @param title           the title for the deploy key, optional
-     * @param canPush         can deploy key push to the project's repository, optional
+     * @param deployKeyId the ID of the deploy key to update, required
+     * @param title the title for the deploy key, optional
+     * @param canPush can deploy key push to the project's repository, optional
      * @return an updated DeployKey instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -251,7 +253,7 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/deploy_keys/:key_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param keyId           the ID of the deploy key to delete
+     * @param keyId the ID of the deploy key to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteDeployKey(Object projectIdOrPath, Long keyId) throws GitLabApiException {
@@ -269,7 +271,7 @@ public class DeployKeysApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/deploy_keys/:key_id/enable</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param keyId           the ID of the deploy key to enable
+     * @param keyId the ID of the deploy key to enable
      * @return an DeployKey instance with info on the enabled deploy key
      * @throws GitLabApiException if any exception occurs
      */

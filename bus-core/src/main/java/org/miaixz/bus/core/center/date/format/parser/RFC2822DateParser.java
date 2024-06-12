@@ -30,11 +30,11 @@ package org.miaixz.bus.core.center.date.format.parser;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -49,7 +49,7 @@ import java.util.Locale;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RFC2822DateParser extends DefaultDatePrinter implements PredicateDateParser {
+public class RFC2822DateParser implements PredicateDateParser, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -58,10 +58,13 @@ public class RFC2822DateParser extends DefaultDatePrinter implements PredicateDa
     /**
      * java.util.Date EEE MMM zzz 缩写数组
      */
-    private static final String[] wtb = { //
-            "sun", "mon", "tue", "wed", "thu", "fri", "sat", // 星期
-            "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", // 月份
-            "gmt", "ut", "utc", "est", "edt", "cst", "cdt", "mst", "mdt", "pst", "pdt"// 时间标准
+    private static final String[] wtb = {
+            // 星期
+            "sun", "mon", "tue", "wed", "thu", "fri", "sat",
+            // 月份
+            "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
+            // 时间标准
+            "gmt", "ut", "utc", "est", "edt", "cst", "cdt", "mst", "mdt", "pst", "pdt"
     };
 
     /**
@@ -70,12 +73,12 @@ public class RFC2822DateParser extends DefaultDatePrinter implements PredicateDa
     public static RFC2822DateParser INSTANCE = new RFC2822DateParser();
 
     @Override
-    public boolean test(final CharSequence dateStr) {
-        return StringKit.containsAnyIgnoreCase(dateStr, wtb);
+    public boolean test(final CharSequence date) {
+        return StringKit.containsAnyIgnoreCase(date, wtb);
     }
 
     @Override
-    public DateTime parse(final String source) {
+    public DateTime parse(final CharSequence source) {
         if (StringKit.contains(source, Symbol.C_COMMA)) {
             if (StringKit.contains(source, KEYWORDS_LOCALE_CHINA)) {
                 // 例如：星期四, 28 三月 2024 14:33:49 GMT
