@@ -40,8 +40,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 import org.miaixz.bus.storage.magic.Property;
 
@@ -91,55 +91,55 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String format = String.format("%s/%s", path, encodedFileName);
             // FileKit.newFile(format);
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .build();
         } catch (UnsupportedEncodingException e) {
             Logger.error("file download failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message download(String bucket, String fileName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message download(String bucket, String fileName, File file) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message download(String fileName, File file) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -155,13 +155,13 @@ public class QiniuYunOssProvider extends AbstractProvider {
             Response response = uploadManager.put(content, fileName, upToken, null, null);
             if (!response.isOK()) {
                 return Message.builder()
-                        .errcode(Builder.ErrorCode.FAILURE.getCode())
-                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                        .errcode(ErrorCode.FAILURE.getCode())
+                        .errmsg(ErrorCode.FAILURE.getDesc())
                         .build();
             }
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .data(Property.builder()
                             .name(fileName)
                             .size(StringKit.toString(response.body().length))
@@ -171,8 +171,8 @@ public class QiniuYunOssProvider extends AbstractProvider {
             Logger.error("file upload failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -183,13 +183,13 @@ public class QiniuYunOssProvider extends AbstractProvider {
             Response response = uploadManager.put(content, fileName, upToken);
             if (!response.isOK()) {
                 return Message.builder()
-                        .errcode(Builder.ErrorCode.FAILURE.getCode())
-                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                        .errcode(ErrorCode.FAILURE.getCode())
+                        .errmsg(ErrorCode.FAILURE.getDesc())
                         .build();
             }
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .data(Property.builder()
                             .size(StringKit.toString(response.body().length))
                             .name(fileName)
@@ -199,8 +199,8 @@ public class QiniuYunOssProvider extends AbstractProvider {
             Logger.error("file upload failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -212,15 +212,15 @@ public class QiniuYunOssProvider extends AbstractProvider {
             }
             bucketManager.delete(this.context.getBucket(), fileKey);
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -229,15 +229,15 @@ public class QiniuYunOssProvider extends AbstractProvider {
         try {
             bucketManager.delete(bucket, fileName);
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 

@@ -45,13 +45,13 @@ import java.util.List;
  */
 public class PostBuilder extends RequestBuilder<PostBuilder> {
 
-    private List<PostRequest.FileInfo> fileInfos;
-    private String postBody;
+    private String body;
     private MultipartBody multipartBody;
+    private List<MultipartFile> list;
 
     public PostBuilder(Httpd httpd) {
         super(httpd);
-        fileInfos = new ArrayList<>();
+        list = new ArrayList<>();
     }
 
     @Override
@@ -59,18 +59,18 @@ public class PostBuilder extends RequestBuilder<PostBuilder> {
         return new PostRequest(
                 url,
                 tag,
-                formMap,
-                encodedForm,
-                headerMap,
-                fileInfos,
-                postBody,
+                params,
+                encoded,
+                headers,
+                list,
+                body,
                 multipartBody,
                 id).
                 build(httpd);
     }
 
-    public PostBuilder body(String postBody) {
-        this.postBody = postBody;
+    public PostBuilder body(String body) {
+        this.body = body;
         return this;
     }
 
@@ -80,29 +80,29 @@ public class PostBuilder extends RequestBuilder<PostBuilder> {
     }
 
     public PostBuilder addFile(String partName, String fileName, byte[] content) {
-        PostRequest.FileInfo fileInfo = new PostRequest.FileInfo();
-        fileInfo.partName = partName;
-        fileInfo.fileName = fileName;
-        fileInfo.fileContent = content;
-        fileInfos.add(fileInfo);
+        MultipartFile multipartFile = new MultipartFile();
+        multipartFile.part = partName;
+        multipartFile.name = fileName;
+        multipartFile.content = content;
+        list.add(multipartFile);
         return this;
     }
 
     public PostBuilder addFile(String partName, String fileName, InputStream is) {
-        PostRequest.FileInfo fileInfo = new PostRequest.FileInfo();
-        fileInfo.partName = partName;
-        fileInfo.fileName = fileName;
-        fileInfo.fileInputStream = is;
-        fileInfos.add(fileInfo);
+        MultipartFile multipartFile = new MultipartFile();
+        multipartFile.part = partName;
+        multipartFile.name = fileName;
+        multipartFile.in = is;
+        list.add(multipartFile);
         return this;
     }
 
     public PostBuilder addFile(String partName, String fileName, File file) {
-        PostRequest.FileInfo fileInfo = new PostRequest.FileInfo();
-        fileInfo.partName = partName;
-        fileInfo.fileName = fileName;
-        fileInfo.file = file;
-        fileInfos.add(fileInfo);
+        MultipartFile multipartFile = new MultipartFile();
+        multipartFile.part = partName;
+        multipartFile.name = fileName;
+        multipartFile.file = file;
+        list.add(multipartFile);
         return this;
     }
 

@@ -50,33 +50,33 @@ public class PutRequest extends HttpRequest {
 
     public PutRequest(String url,
                       Object tag,
-                      Map<String, String> formMap,
-                      Map<String, String> headerMap,
-                      List<PostRequest.FileInfo> fileInfos,
+                      Map<String, String> params,
+                      Map<String, String> headers,
+                      List<MultipartFile> list,
                       String body,
                       MultipartBody multipartBody,
                       String id) {
-        super(url, tag, formMap, headerMap, fileInfos, body, multipartBody, id);
+        super(url, tag, params, headers, list, body, multipartBody, id);
     }
 
     @Override
     protected RequestBody buildRequestBody() {
         if (null != multipartBody) {
             return multipartBody;
-        } else if (null != fileInfos && fileInfos.size() > 0) {
+        } else if (null != list && list.size() > 0) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
-            form(builder);
-            fileInfos.forEach(fileInfo -> {
+            addParam(builder);
+            list.forEach(file -> {
                 RequestBody fileBody;
-                if (null != fileInfo.file) {
-                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
-                } else if (null != fileInfo.fileInputStream) {
-                    fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
+                if (null != file.file) {
+                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.file);
+                } else if (null != file.in) {
+                    fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(fileInfo.fileName)),
-                            fileInfo.fileContent);
+                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(file.name)),
+                            file.content);
                 }
-                builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);
+                builder.addFormDataPart(file.part, file.name, fileBody);
             });
             if (null != body && body.length() > 0) {
                 builder.addPart(RequestBody.create(MediaType.MULTIPART_FORM_DATA_TYPE, body));
@@ -84,15 +84,15 @@ public class PutRequest extends HttpRequest {
             return builder.build();
         } else if (null != body && body.length() > 0) {
             MediaType mediaType;
-            if (headerMap.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headerMap.get(Header.CONTENT_TYPE));
+            if (headers.containsKey(Header.CONTENT_TYPE)) {
+                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
             } else {
                 mediaType = MediaType.TEXT_PLAIN_TYPE;
             }
             return RequestBody.create(mediaType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
-            form(builder);
+            addParam(builder);
             return builder.build();
         }
     }
@@ -102,18 +102,18 @@ public class PutRequest extends HttpRequest {
         return builder.put(requestBody).build();
     }
 
-    private void form(FormBody.Builder builder) {
-        if (null != formMap) {
-            formMap.forEach((k, v) -> builder.add(k, v));
+    private void addParam(FormBody.Builder builder) {
+        if (null != params) {
+            params.forEach((k, v) -> builder.add(k, v));
         }
-        if (null != encodedForm) {
-            encodedForm.forEach((k, v) -> builder.addEncoded(k, v));
+        if (null != encodedParams) {
+            encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
-    private void form(MultipartBody.Builder builder) {
-        if (null != formMap && !formMap.isEmpty()) {
-            formMap.forEach((k, v) ->
+    private void addParam(MultipartBody.Builder builder) {
+        if (null != params && !params.isEmpty()) {
+            params.forEach((k, v) ->
                     builder.addPart(Headers.of(
                                     Header.CONTENT_DISPOSITION,
                                     "form-data; name=" + k + Symbol.DOUBLE_QUOTES),

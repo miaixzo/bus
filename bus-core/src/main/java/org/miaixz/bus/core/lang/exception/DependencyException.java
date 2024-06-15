@@ -39,6 +39,13 @@ public class DependencyException extends InternalException {
 
     /**
      * 构造
+     */
+    public DependencyException() {
+        super();
+    }
+
+    /**
+     * 构造
      *
      * @param e 异常
      */

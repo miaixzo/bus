@@ -27,11 +27,6 @@
  */
 package org.miaixz.bus.storage;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import org.miaixz.bus.core.lang.Symbol;
-
 /**
  * 框架内预定义的存储信息
  *
@@ -39,38 +34,5 @@ import org.miaixz.bus.core.lang.Symbol;
  * @since Java 17+
  */
 public class Builder {
-
-    @Getter
-    @AllArgsConstructor
-    public enum ErrorCode {
-
-        SUCCESS(Symbol.ZERO, "Success"),
-        FAILURE("-1", "Failure"),
-        UNSUPPORTED("5003", "Unsupported operation");
-
-        private String code;
-        private String msg;
-
-    }
-
-    /**
-     * 缓存类型
-     */
-    @Getter
-    @ToString
-    public enum Type {
-        /**
-         * 使用内置的缓存
-         */
-        DEFAULT,
-        /**
-         * 使用Redis缓存
-         */
-        REDIS,
-        /**
-         * 自定义缓存
-         */
-        CUSTOM
-    }
 
 }

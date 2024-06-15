@@ -42,6 +42,7 @@ import org.bouncycastle.crypto.signers.SM2Signer;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.HexKit;
@@ -74,10 +75,6 @@ public class SM2 extends AbstractCrypto<SM2> {
 
     private static final long serialVersionUID = -1L;
 
-    /**
-     * 算法EC
-     */
-    private static final String ALGORITHM_SM2 = "SM2";
     /**
      * SM2引擎
      */
@@ -195,7 +192,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKey  公钥，可以为null
      */
     public SM2(final ECPrivateKeyParameters privateKey, final ECPublicKeyParameters publicKey) {
-        super(ALGORITHM_SM2, null, null);
+        super(Algorithm.SM2.getValue(), null, null);
         this.privateKeyParams = privateKey;
         this.publicKeyParams = publicKey;
         this.init();
@@ -491,8 +488,8 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKeyParams 公钥参数
      * @return this
      */
-    public SM2 setPublicKeyParams(final ECPublicKeyParameters publicKeyParams) {
-        this.publicKeyParams = publicKeyParams;
+    public SM2 setPublicKeyParams(final ECPublicKeyParameters publicKey) {
+        this.publicKeyParams = publicKey;
         return this;
     }
 

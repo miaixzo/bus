@@ -72,7 +72,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunProperty, Context> {
         bodys.put("TtsCode", entity.getTemplate());
         bodys.put("Signature", getSign(bodys));
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (String text : bodys.keySet()) {
             map.put(specialUrlEncode(text), specialUrlEncode(bodys.get(text)));
         }

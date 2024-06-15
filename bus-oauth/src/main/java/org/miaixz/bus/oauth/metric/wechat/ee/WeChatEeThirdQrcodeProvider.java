@@ -51,8 +51,8 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE_QRCODE_THIRD);
     }
 
-    public WeChatEeThirdQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_EE_QRCODE_THIRD, authorizeCache);
+    public WeChatEeThirdQrcodeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD, cache);
     }
 
     @Override
@@ -66,12 +66,12 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    public Message login(Callback authCallback) {
+    public Message login(Callback callback) {
         try {
             if (!context.isIgnoreState()) {
-                Checker.checkState(authCallback.getState(), complex, authorizeCache);
+                Checker.checkState(callback.getState(), complex, cache);
             }
-            AccToken accToken = this.getAccessToken(authCallback);
+            AccToken accToken = this.getAccessToken(callback);
             Property user = this.getUserInfo(accToken);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         try {
             String response = doGetAuthorizationCode(accessTokenUrl());
             JSONObject object = this.checkResponse(response);

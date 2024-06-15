@@ -28,37 +28,100 @@
 package org.miaixz.bus.core.lang.exception;
 
 /**
- * 类型: 无效的范围要求
+ * 类型: 支付异常
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class InvalidClaimException extends UncheckedException {
+public class PaymentException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
-    public InvalidClaimException() {
+    /**
+     * 构造
+     */
+    public PaymentException() {
         super();
     }
 
-    public InvalidClaimException(Throwable cause) {
-        super(cause);
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public PaymentException(final Throwable e) {
+        super(e);
     }
 
-    public InvalidClaimException(String format, Object... args) {
-        super(format, args);
-    }
-
-    public InvalidClaimException(String message) {
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public PaymentException(final String message) {
         super(message);
     }
 
-    public InvalidClaimException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public PaymentException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public InvalidClaimException(String errcode, String errmsg) {
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public PaymentException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public PaymentException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public PaymentException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public PaymentException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public PaymentException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

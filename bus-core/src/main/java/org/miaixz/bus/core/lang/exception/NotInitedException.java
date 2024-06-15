@@ -37,32 +37,91 @@ public class NotInitedException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 构造
+     */
     public NotInitedException() {
         super();
     }
 
-    public NotInitedException(Throwable cause) {
-        super(cause);
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public NotInitedException(final Throwable e) {
+        super(e);
     }
 
-    public NotInitedException(String format, Object... args) {
-        super(format, args);
-    }
-
-    public NotInitedException(String message) {
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public NotInitedException(final String message) {
         super(message);
     }
 
-    public NotInitedException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public NotInitedException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public NotInitedException(String errcode, String errmsg) {
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public NotInitedException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
     }
 
-    public NotInitedException(String message, Throwable throwable, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, throwable, enableSuppression, writableStackTrace);
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public NotInitedException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public NotInitedException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public NotInitedException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public NotInitedException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

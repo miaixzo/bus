@@ -43,7 +43,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TwitterProvider extends DefaultProvider {
+public class TwitterProvider extends AbstractProvider {
 
     private static final String PREAMBLE = "OAuth";
 
@@ -64,8 +64,8 @@ public class TwitterProvider extends DefaultProvider {
         super(context, Registry.TWITTER);
     }
 
-    public TwitterProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.TWITTER, authorizeCache);
+    public TwitterProvider(Context context, ExtendCache cache) {
+        super(context, Registry.TWITTER, cache);
     }
 
     /**
@@ -154,11 +154,11 @@ public class TwitterProvider extends DefaultProvider {
      * @return access token
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> headerMap = buildOauthParams();
-        headerMap.put("oauth_token", authCallback.getOauth_token());
-        headerMap.put("oauth_verifier", authCallback.getOauth_verifier());
-        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), authCallback
+        headerMap.put("oauth_token", callback.getOauth_token());
+        headerMap.put("oauth_verifier", callback.getOauth_verifier());
+        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), callback
                 .getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
@@ -166,7 +166,7 @@ public class TwitterProvider extends DefaultProvider {
         header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
         Map<String, String> form = new HashMap<>(3);
-        form.put("oauth_verifier", authCallback.getOauth_verifier());
+        form.put("oauth_verifier", callback.getOauth_verifier());
         String response = Httpx.post(complex.accessToken(), form, header);
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);

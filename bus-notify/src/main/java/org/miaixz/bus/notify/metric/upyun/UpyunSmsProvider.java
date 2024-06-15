@@ -57,7 +57,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
 
     @Override
     public Message send(UpyunProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("mobile", entity.getReceive());
         bodys.put("vars", StringKit.split(entity.getParams(), "|").toString());
@@ -71,12 +71,12 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
         if (CollKit.isEmpty(list)) {
             return Message.builder()
                     .errcode(ErrorCode.FAILURE.getCode())
-                    .errmsg(ErrorCode.FAILURE.getMsg())
+                    .errmsg(ErrorCode.FAILURE.getDesc())
                     .build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunProperty.MessageId::succeed);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Map;
 
@@ -48,18 +48,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QqProvider extends DefaultProvider {
+public class QqProvider extends AbstractProvider {
+
     public QqProvider(Context context) {
         super(context, Registry.QQ);
     }
 
-    public QqProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.QQ, authorizeCache);
+    public QqProvider(Context context, ExtendCache cache) {
+        super(context, Registry.QQ, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doGetAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doGetAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 

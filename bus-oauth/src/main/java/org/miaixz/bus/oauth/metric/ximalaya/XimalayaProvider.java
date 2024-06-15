@@ -43,7 +43,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.security.MessageDigest;
 import java.util.HashMap;
@@ -56,14 +56,14 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XimalayaProvider extends DefaultProvider {
+public class XimalayaProvider extends AbstractProvider {
 
     public XimalayaProvider(Context context) {
         super(context, Registry.XIMALAYA);
     }
 
-    public XimalayaProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.XIMALAYA, authorizeCache);
+    public XimalayaProvider(Context context, ExtendCache cache) {
+        super(context, Registry.XIMALAYA, cache);
     }
 
     /**
@@ -96,14 +96,14 @@ public class XimalayaProvider extends DefaultProvider {
     /**
      * 获取access token
      *
-     * @param authCallback 授权成功后的回调参数
+     * @param callback 授权成功后的回调参数
      * @return token
-     * @see DefaultProvider#authorize(String)
+     * @see AbstractProvider#authorize(String)
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> map = new HashMap<>(9);
-        map.put("code", authCallback.getCode());
+        map.put("code", callback.getCode());
         map.put("client_id", context.getAppKey());
         map.put("client_secret", context.getAppSecret());
         map.put("device_id", context.getDeviceId());
@@ -155,7 +155,7 @@ public class XimalayaProvider extends DefaultProvider {
      *
      * @param accToken token信息
      * @return 用户信息
-     * @see DefaultProvider#getAccessToken(Callback)
+     * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
     public Property getUserInfo(AccToken accToken) {

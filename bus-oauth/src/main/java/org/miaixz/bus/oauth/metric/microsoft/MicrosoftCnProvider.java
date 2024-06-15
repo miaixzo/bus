@@ -43,8 +43,8 @@ public class MicrosoftCnProvider extends AbstractMicrosoftProvider {
         super(context, Registry.MICROSOFT_CN);
     }
 
-    public MicrosoftCnProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.MICROSOFT_CN, authorizeCache);
+    public MicrosoftCnProvider(Context context, ExtendCache cache) {
+        super(context, Registry.MICROSOFT_CN, cache);
     }
 
 }

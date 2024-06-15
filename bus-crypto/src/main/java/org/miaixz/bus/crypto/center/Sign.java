@@ -85,12 +85,12 @@ public class Sign extends Asymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm     {@link Algorithm}
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public Sign(final Algorithm algorithm, final String privateKeyStr, final String publicKeyStr) {
-        this(algorithm.getValue(), Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
+    public Sign(final Algorithm algorithm, final String privateKey, final String publicKey) {
+        this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
@@ -132,12 +132,12 @@ public class Sign extends Asymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm        非对称加密算法
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
+     * @param algorithm  非对称加密算法
+     * @param privateKey 私钥Base64
+     * @param publicKey  公钥Base64
      */
-    public Sign(final String algorithm, final String privateKeyBase64, final String publicKeyBase64) {
-        this(algorithm, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
+    public Sign(final String algorithm, final String privateKey, final String publicKey) {
+        this(algorithm, Base64.decode(privateKey), Base64.decode(publicKey));
     }
 
     /**
@@ -150,9 +150,9 @@ public class Sign extends Asymmetric<Sign> {
      * @param publicKey  公钥
      */
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm, //
-                Keeper.generatePrivateKey(algorithm, privateKey), //
-                Keeper.generatePublicKey(algorithm, publicKey)//
+        this(algorithm,
+                Keeper.generatePrivateKey(algorithm, privateKey),
+                Keeper.generatePublicKey(algorithm, publicKey)
         );
     }
 

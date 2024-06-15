@@ -52,7 +52,7 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianProperty, Contex
 
     @Override
     public Message send(YunpianProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("apikey", entity.getApikey());
         bodys.put("mobile", entity.getReceive());
         bodys.put("tpl_id", entity.getTemplate());
@@ -61,7 +61,7 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianProperty, Contex
         String response = Httpx.post(this.getUrl(entity), bodys);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

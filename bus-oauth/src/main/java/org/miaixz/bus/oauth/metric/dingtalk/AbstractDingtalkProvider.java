@@ -44,7 +44,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 钉钉 登录抽象类
@@ -53,15 +53,15 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractDingtalkProvider extends DefaultProvider {
+public abstract class AbstractDingtalkProvider extends AbstractProvider {
 
     public AbstractDingtalkProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
 
-    public AbstractDingtalkProvider(Context context, Complex complex, ExtendCache authorizeCache) {
-        super(context, complex, authorizeCache);
+    public AbstractDingtalkProvider(Context context, Complex complex, ExtendCache cache) {
+        super(context, complex, cache);
     }
 
     /**
@@ -77,8 +77,8 @@ public abstract class AbstractDingtalkProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return AccToken.builder().accessCode(authCallback.getCode()).build();
+    protected AccToken getAccessToken(Callback callback) {
+        return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
     @Override

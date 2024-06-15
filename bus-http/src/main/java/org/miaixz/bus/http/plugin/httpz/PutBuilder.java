@@ -44,13 +44,13 @@ import java.util.List;
  */
 public class PutBuilder extends RequestBuilder<PutBuilder> {
 
-    private List<PostRequest.FileInfo> fileInfos;
     private String body;
     private MultipartBody multipartBody;
+    private List<MultipartFile> list;
 
     public PutBuilder(Httpd httpd) {
         super(httpd);
-        fileInfos = new ArrayList<>();
+        list = new ArrayList<>();
     }
 
     @Override
@@ -58,9 +58,9 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
         return new PutRequest(
                 url,
                 tag,
-                formMap,
-                headerMap,
-                fileInfos,
+                params,
+                headers,
+                list,
                 body,
                 multipartBody,
                 id).
@@ -78,20 +78,20 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
     }
 
     public PutBuilder addFile(String partName, String fileName, byte[] content) {
-        PostRequest.FileInfo fileInfo = new PostRequest.FileInfo();
-        fileInfo.partName = partName;
-        fileInfo.fileName = fileName;
-        fileInfo.fileContent = content;
-        fileInfos.add(fileInfo);
+        MultipartFile multipartFile = new MultipartFile();
+        multipartFile.part = partName;
+        multipartFile.name = fileName;
+        multipartFile.content = content;
+        list.add(multipartFile);
         return this;
     }
 
     public PutBuilder addFile(String partName, String fileName, File file) {
-        PostRequest.FileInfo fileInfo = new PostRequest.FileInfo();
-        fileInfo.partName = partName;
-        fileInfo.fileName = fileName;
-        fileInfo.file = file;
-        fileInfos.add(fileInfo);
+        MultipartFile multipartFile = new MultipartFile();
+        multipartFile.part = partName;
+        multipartFile.name = fileName;
+        multipartFile.file = file;
+        list.add(multipartFile);
         return this;
     }
 

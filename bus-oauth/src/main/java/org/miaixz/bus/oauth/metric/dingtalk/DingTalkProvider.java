@@ -43,8 +43,8 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         super(context, Registry.DINGTALK);
     }
 
-    public DingTalkProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.DINGTALK, authorizeCache);
+    public DingTalkProvider(Context context, ExtendCache cache) {
+        super(context, Registry.DINGTALK, cache);
     }
 
 }

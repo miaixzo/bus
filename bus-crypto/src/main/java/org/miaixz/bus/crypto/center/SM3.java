@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.crypto.center;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.builtin.digest.Digester;
 
 /**
@@ -45,17 +46,13 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
  */
 public class SM3 extends Digester {
 
-    /**
-     * 算法名称：SM3
-     */
-    public static final String ALGORITHM_NAME = "SM3";
     private static final long serialVersionUID = -1L;
 
     /**
      * 构造
      */
     public SM3() {
-        super(ALGORITHM_NAME);
+        super(Algorithm.SM3.getValue());
     }
 
     /**

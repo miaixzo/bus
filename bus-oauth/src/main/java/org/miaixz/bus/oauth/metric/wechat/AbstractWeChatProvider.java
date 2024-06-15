@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.Complex;
 import org.miaixz.bus.oauth.Context;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 微信 登录
@@ -40,15 +40,15 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractWeChatProvider extends DefaultProvider {
+public abstract class AbstractWeChatProvider extends AbstractProvider {
 
     public AbstractWeChatProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
 
-    public AbstractWeChatProvider(Context context, Complex complex, ExtendCache authorizeCache) {
-        super(context, complex, authorizeCache);
+    public AbstractWeChatProvider(Context context, Complex complex, ExtendCache cache) {
+        super(context, complex, cache);
     }
 
 

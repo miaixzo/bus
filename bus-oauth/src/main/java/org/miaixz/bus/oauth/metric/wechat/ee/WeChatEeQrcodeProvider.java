@@ -44,8 +44,8 @@ public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE);
     }
 
-    public WeChatEeQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_EE, authorizeCache);
+    public WeChatEeQrcodeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WECHAT_EE, cache);
     }
 
     @Override

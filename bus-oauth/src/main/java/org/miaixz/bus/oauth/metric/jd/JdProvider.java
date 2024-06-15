@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,14 +52,14 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdProvider extends DefaultProvider {
+public class JdProvider extends AbstractProvider {
 
     public JdProvider(Context context) {
         super(context, Registry.JD);
     }
 
-    public JdProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.JD, authorizeCache);
+    public JdProvider(Context context, ExtendCache cache) {
+        super(context, Registry.JD, cache);
     }
 
     /**
@@ -91,12 +91,12 @@ public class JdProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
         form.put("grant_type", "authorization_code");
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         String response = Httpx.post(complex.accessToken(), form);
         JSONObject object = JSONObject.parseObject(response);
 

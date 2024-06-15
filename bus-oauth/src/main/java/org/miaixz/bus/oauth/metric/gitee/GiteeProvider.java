@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * Gitee 登录
@@ -46,19 +46,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GiteeProvider extends DefaultProvider {
+public class GiteeProvider extends AbstractProvider {
 
     public GiteeProvider(Context context) {
         super(context, Registry.GITEE);
     }
 
-    public GiteeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.GITEE, authorizeCache);
+    public GiteeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.GITEE, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AccToken.builder()

@@ -30,8 +30,6 @@ package org.miaixz.bus.notify.metric.jdcloud;
 import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -56,10 +54,10 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudProperty, Contex
 
     @Override
     public Message send(JdcloudProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("regionId", this.getUrl(entity));
         bodys.put("templateId", entity.getTemplate());
-        bodys.put("params", StringKit.split(entity.getParams(), Symbol.COMMA));
+        bodys.put("params", entity.getParams());
         bodys.put("phoneList", entity.getReceive());
         bodys.put("signId", entity.getSignature());
 
@@ -70,7 +68,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudProperty, Contex
         int status = JsonKit.getValue(response, "statusCode");
 
         String errcode = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

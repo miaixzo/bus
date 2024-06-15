@@ -77,7 +77,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
         }
         return Message.builder()
                 .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getMsg())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .build();
     }
 

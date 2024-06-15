@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.crypto.center;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
@@ -42,10 +43,6 @@ import javax.crypto.spec.IvParameterSpec;
  */
 public class ChaCha20 extends Crypto {
 
-    /**
-     * 算法名称：ChaCha20
-     */
-    public static final String ALGORITHM_NAME = "ChaCha20";
     private static final long serialVersionUID = -1L;
 
     /**
@@ -55,8 +52,8 @@ public class ChaCha20 extends Crypto {
      * @param iv  加盐，12bytes（64bit）
      */
     public ChaCha20(final byte[] key, final byte[] iv) {
-        super(ALGORITHM_NAME,
-                Keeper.generateKey(ALGORITHM_NAME, key),
+        super(Algorithm.CHACHA20.getValue(),
+                Keeper.generateKey(Algorithm.CHACHA20.getValue(), key),
                 generateIvParam(iv));
     }
 

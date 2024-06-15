@@ -33,7 +33,7 @@ package org.miaixz.bus.core.lang.exception;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StatefulException extends InternalException {
+public class StatefulException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
@@ -148,4 +148,5 @@ public class StatefulException extends InternalException {
     public int getStatus() {
         return status;
     }
+
 }

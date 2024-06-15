@@ -125,7 +125,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)
@@ -184,7 +184,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

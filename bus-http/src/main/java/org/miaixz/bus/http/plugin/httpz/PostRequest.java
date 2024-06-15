@@ -38,8 +38,6 @@ import org.miaixz.bus.http.bodys.FormBody;
 import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -51,35 +49,35 @@ import java.util.Map;
  */
 public class PostRequest extends HttpRequest {
 
-    public PostRequest(String url, Object tag, Map<String, String> formMap, Map<String, String> headerMap,
-                       List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody, String id) {
-        super(url, tag, formMap, headerMap, fileInfos, postBody, multipartBody, id);
+    public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
+                       List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
+        super(url, tag, params, headers, list, body, multipartBody, id);
     }
 
-    public PostRequest(String url, Object tag, Map<String, String> formMap, Map<String, String> encodeForm,
-                       Map<String, String> headerMap, List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody,
+    public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> encoded,
+                       Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
                        String id) {
-        super(url, tag, formMap, encodeForm, headerMap, fileInfos, postBody, multipartBody, id);
+        super(url, tag, params, encoded, headers, list, body, multipartBody, id);
     }
 
     @Override
     protected RequestBody buildRequestBody() {
         if (null != multipartBody) {
             return multipartBody;
-        } else if (null != fileInfos && fileInfos.size() > 0) {
+        } else if (null != list && list.size() > 0) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
-            addParams(builder);
-            fileInfos.forEach(fileInfo -> {
+            addParam(builder);
+            list.forEach(file -> {
                 RequestBody fileBody;
-                if (null != fileInfo.file) {
-                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
-                } else if (null != fileInfo.fileInputStream) {
-                    fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
+                if (null != file.file) {
+                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.file);
+                } else if (null != file.in) {
+                    fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
-                            fileInfo.fileContent);
+                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(file.name), MediaType.APPLICATION_OCTET_STREAM)),
+                            file.content);
                 }
-                builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);
+                builder.addFormDataPart(file.part, file.name, fileBody);
             });
             if (null != body && body.length() > 0) {
                 builder.addPart(RequestBody.create(MediaType.MULTIPART_FORM_DATA_TYPE, body));
@@ -87,15 +85,15 @@ public class PostRequest extends HttpRequest {
             return builder.build();
         } else if (null != body && body.length() > 0) {
             MediaType mediaType;
-            if (headerMap.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headerMap.get(Header.CONTENT_TYPE));
+            if (headers.containsKey(Header.CONTENT_TYPE)) {
+                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
             } else {
                 mediaType = MediaType.TEXT_PLAIN_TYPE;
             }
             return RequestBody.create(mediaType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
-            addParams(builder);
+            addParam(builder);
             return builder.build();
         }
     }
@@ -105,28 +103,20 @@ public class PostRequest extends HttpRequest {
         return builder.post(requestBody).build();
     }
 
-    private void addParams(FormBody.Builder builder) {
-        if (null != formMap) {
-            formMap.forEach((k, v) -> builder.add(k, v));
+    private void addParam(FormBody.Builder builder) {
+        if (null != params) {
+            params.forEach((k, v) -> builder.add(k, v));
         }
-        if (null != encodedForm) {
-            encodedForm.forEach((k, v) -> builder.addEncoded(k, v));
+        if (null != encodedParams) {
+            encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
-    private void addParams(MultipartBody.Builder builder) {
-        if (null != formMap && !formMap.isEmpty()) {
-            formMap.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+    private void addParam(MultipartBody.Builder builder) {
+        if (null != params && !params.isEmpty()) {
+            params.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
                     RequestBody.create(null, v)));
         }
-    }
-
-    public static class FileInfo {
-        public String partName;
-        public String fileName;
-        public byte[] fileContent;
-        public File file;
-        public InputStream fileInputStream;
     }
 
 }

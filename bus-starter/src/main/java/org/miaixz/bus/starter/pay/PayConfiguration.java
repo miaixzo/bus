@@ -25,40 +25,36 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.lang.exception;
+package org.miaixz.bus.starter.pay;
+
+import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.pay.Complex;
+import org.miaixz.bus.pay.cache.PayCache;
+import org.miaixz.bus.spring.BusXConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 /**
- * 类型: 支付异常
+ * 集合支付配置
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PayException extends UncheckedException {
+@EnableConfigurationProperties(value = {PayProperties.class})
+public class PayConfiguration {
 
-    private static final long serialVersionUID = -1L;
-
-    public PayException() {
-        super();
+    @Bean
+    public PayProviderService payProviderFactory(PayProperties properties, Complex complex, ExtendCache cache) {
+        return new PayProviderService(properties, complex, cache);
     }
 
-    public PayException(String errcode) {
-        this(errcode, (String) null);
-    }
-
-    public PayException(String format, Object... args) {
-        super(format, args);
-    }
-
-    public PayException(String msg, Throwable e) {
-        super(msg, e);
-    }
-
-    public PayException(Throwable e) {
-        super(e);
-    }
-
-    public PayException(String errcode, String errmsg) {
-        super(errcode, errmsg);
+    @Bean
+    @ConditionalOnMissingBean(ExtendCache.class)
+    @ConditionalOnProperty(name = BusXConfig.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)
+    public ExtendCache cache() {
+        return PayCache.INSTANCE;
     }
 
 }

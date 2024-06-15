@@ -52,19 +52,19 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
         super(context, Registry.WECHAT_MP);
     }
 
-    public WeChatMpProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_MP, authorizeCache);
+    public WeChatMpProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WECHAT_MP, cache);
     }
 
     /**
      * 微信的特殊性，此时返回的信息同时包含 openid 和 access_token
      *
-     * @param authCallback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return this.getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override

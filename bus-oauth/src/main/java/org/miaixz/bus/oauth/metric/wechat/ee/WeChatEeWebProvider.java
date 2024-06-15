@@ -46,8 +46,8 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE_WEB);
     }
 
-    public WeChatEeWebProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_EE_WEB, authorizeCache);
+    public WeChatEeWebProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WECHAT_EE_WEB, cache);
     }
 
     @Override

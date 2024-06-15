@@ -42,7 +42,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +54,7 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ElemeProvider extends DefaultProvider {
+public class ElemeProvider extends AbstractProvider {
 
     private static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded;charset=UTF-8";
     private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
@@ -63,8 +63,8 @@ public class ElemeProvider extends DefaultProvider {
         super(context, Registry.ELEME);
     }
 
-    public ElemeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.ELEME, authorizeCache);
+    public ElemeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.ELEME, cache);
     }
 
     /**
@@ -92,11 +92,11 @@ public class ElemeProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("redirect_uri", context.getRedirectUri());
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
         Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);

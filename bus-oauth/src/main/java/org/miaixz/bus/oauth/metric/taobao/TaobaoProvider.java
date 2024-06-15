@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 淘宝 登录
@@ -46,19 +46,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TaobaoProvider extends DefaultProvider {
+public class TaobaoProvider extends AbstractProvider {
 
     public TaobaoProvider(Context context) {
         super(context, Registry.TAOBAO);
     }
 
-    public TaobaoProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.TAOBAO, authorizeCache);
+    public TaobaoProvider(Context context, ExtendCache cache) {
+        super(context, Registry.TAOBAO, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return AccToken.builder().accessCode(authCallback.getCode()).build();
+    protected AccToken getAccessToken(Callback callback) {
+        return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
     private AccToken getAuthToken(JSONObject object) {

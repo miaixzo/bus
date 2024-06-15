@@ -30,7 +30,7 @@ package org.miaixz.bus.oauth;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * OAuth平台的API地址的统一接口，提供以下方法：
@@ -101,10 +101,10 @@ public interface Complex {
     }
 
     /**
-     * 平台对应的 AuthorizeProvider 实现类，必须继承自 {@link DefaultProvider}
+     * 平台对应的 Provider 实现类，必须继承自 {@link AbstractProvider}
      *
      * @return class
      */
-    Class<? extends DefaultProvider> getTargetClass();
+    Class<? extends AbstractProvider> getTargetClass();
 
 }

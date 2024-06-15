@@ -35,8 +35,8 @@ import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 import org.miaixz.bus.storage.magic.Property;
 
@@ -80,8 +80,8 @@ public class BaiduYunBosProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -94,8 +94,8 @@ public class BaiduYunBosProvider extends AbstractProvider {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
 
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -104,8 +104,8 @@ public class BaiduYunBosProvider extends AbstractProvider {
         ListObjectsResponse objectListing = this.client.listObjects(request);
 
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getContents().stream().map(item -> {
                     Property storageItem = new Property();
                     storageItem.setName(item.getKey());
@@ -124,15 +124,15 @@ public class BaiduYunBosProvider extends AbstractProvider {
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -144,16 +144,16 @@ public class BaiduYunBosProvider extends AbstractProvider {
     public Message upload(String bucket, String fileName, InputStream content) {
         this.client.putObject(bucket, fileName, content);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
         this.client.putObject(bucket, fileName, content);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -165,8 +165,8 @@ public class BaiduYunBosProvider extends AbstractProvider {
     public Message remove(String bucket, String fileName) {
         client.deleteObject(bucket, fileName);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override

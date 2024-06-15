@@ -264,8 +264,26 @@ public enum Algorithm {
     /**
      * 迭代分组密码算法
      */
-    SM4("SM4");
+    SM4("SM4"),
 
+    /******************************* 其他算法 *******************************/
+
+    /**
+     * ECIES（集成加密方案，elliptic curve integrate encrypt scheme）
+     */
+    ECIES("ECIES"),
+    /**
+     * PBKDF2应用一个伪随机函数以导出密钥，PBKDF2简单而言就是将salted hash进行多次重复计算
+     */
+    PBKDF2WITHHMACSHA1("PBKDF2WithHmacSHA1"),
+    /**
+     * ChaCha20
+     */
+    CHACHA20("ChaCha20");
+
+    /**
+     * 算法
+     */
     private final String value;
 
     /**

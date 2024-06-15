@@ -37,7 +37,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 抖音 登录
@@ -45,19 +45,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DouyinProvider extends DefaultProvider {
+public class DouyinProvider extends AbstractProvider {
 
     public DouyinProvider(Context context) {
         super(context, Registry.DOUYIN);
     }
 
-    public DouyinProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.DOUYIN, authorizeCache);
+    public DouyinProvider(Context context, ExtendCache cache) {
+        super(context, Registry.DOUYIN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return this.getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override

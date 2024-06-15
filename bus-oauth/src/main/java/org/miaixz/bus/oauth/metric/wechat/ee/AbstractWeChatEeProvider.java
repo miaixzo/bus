@@ -55,12 +55,12 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
 
-    public AbstractWeChatEeProvider(Context context, Complex complex, ExtendCache authorizeCache) {
-        super(context, complex, authorizeCache);
+    public AbstractWeChatEeProvider(Context context, Complex complex, ExtendCache cache) {
+        super(context, complex, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
 
         JSONObject object = this.checkResponse(response);
@@ -68,7 +68,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
                 .expireIn(object.getIntValue("expires_in"))
-                .code(authCallback.getCode())
+                .code(callback.getCode())
                 .build();
     }
 

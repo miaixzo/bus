@@ -133,14 +133,14 @@ public class Checker {
      *
      * @param state          {@code state}一定不为空
      * @param complex        {@code complex}当前授权平台
-     * @param authorizeCache {@code authorizeCache} state缓存实现
+     * @param cache {@code cache} state缓存实现
      */
-    public static void checkState(String state, Complex complex, ExtendCache authorizeCache) {
+    public static void checkState(String state, Complex complex, ExtendCache cache) {
         // 推特平台不支持回调 code 和 state
         if (complex == Registry.TWITTER) {
             return;
         }
-        if (StringKit.isEmpty(state) || !authorizeCache.containsKey(state)) {
+        if (StringKit.isEmpty(state) || !cache.containsKey(state)) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_STATUS.getCode(), complex);
         }
     }

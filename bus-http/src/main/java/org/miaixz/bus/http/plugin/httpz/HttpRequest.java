@@ -53,35 +53,39 @@ public abstract class HttpRequest {
 
     protected String id;
     protected String url;
-    protected Map<String, String> formMap;
-    protected Map<String, String> encodedForm;
-    protected Map<String, String> headerMap;
     protected String body;
-    protected List<PostRequest.FileInfo> fileInfos;
+    protected Map<String, String> params;
+    protected Map<String, String> encodedParams;
+    protected Map<String, String> headers;
     protected MultipartBody multipartBody;
+    protected List<MultipartFile> list;
     protected Request.Builder builder = new Request.Builder();
 
-    protected HttpRequest(String url, Object tag, Map<String, String> formMap,
-                          Map<String, String> headerMap,
-                          List<PostRequest.FileInfo> fileInfos,
+    protected HttpRequest(String url,
+                          Object tag,
+                          Map<String, String> params,
+                          Map<String, String> headers,
+                          List<MultipartFile> list,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
-        this(url, tag, formMap, null, headerMap, fileInfos, body, multipartBody, id);
+        this(url, tag, params, null, headers, list, body, multipartBody, id);
     }
 
-    protected HttpRequest(String url, Object tag, Map<String, String> formMap,
-                          Map<String, String> encodedForm,
-                          Map<String, String> headerMap,
-                          List<PostRequest.FileInfo> fileInfos,
+    protected HttpRequest(String url,
+                          Object tag,
+                          Map<String, String> params,
+                          Map<String, String> encodedParams,
+                          Map<String, String> headers,
+                          List<MultipartFile> list,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
         this.url = url;
-        this.formMap = formMap;
-        this.encodedForm = encodedForm;
-        this.headerMap = headerMap;
-        this.fileInfos = fileInfos;
+        this.params = params;
+        this.encodedParams = encodedParams;
+        this.headers = headers;
+        this.list = list;
         this.body = body;
         this.multipartBody = multipartBody;
         this.id = id;
@@ -89,7 +93,7 @@ public abstract class HttpRequest {
             throw new IllegalArgumentException("url can not be null.");
         }
         builder.url(url).tag(tag);
-        appendHeaders();
+        headers();
     }
 
     public static RequestBody createRequestBody(final MediaType mediaType, final InputStream is) {
@@ -136,12 +140,12 @@ public abstract class HttpRequest {
         return buildRequest(buildRequestBody());
     }
 
-    protected void appendHeaders() {
+    protected void headers() {
         Headers.Builder headerBuilder = new Headers.Builder();
-        if (null == headerMap || headerMap.isEmpty())
+        if (null == headers || headers.isEmpty())
             return;
-        for (String key : headerMap.keySet()) {
-            headerBuilder.add(key, headerMap.get(key));
+        for (String key : headers.keySet()) {
+            headerBuilder.add(key, headers.get(key));
         }
         builder.headers(headerBuilder.build());
     }

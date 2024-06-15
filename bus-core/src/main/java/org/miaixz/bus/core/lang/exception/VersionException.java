@@ -37,28 +37,84 @@ public class VersionException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
-    public VersionException() {
-        super();
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public VersionException(final Throwable e) {
+        super(e);
     }
 
-    public VersionException(Throwable cause) {
-        super(cause);
-    }
-
-    public VersionException(String format, Object... args) {
-        super(format, args);
-    }
-
-    public VersionException(String message) {
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public VersionException(final String message) {
         super(message);
     }
 
-    public VersionException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public VersionException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public VersionException(String errcode, String errmsg) {
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public VersionException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public VersionException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public VersionException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public VersionException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public VersionException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

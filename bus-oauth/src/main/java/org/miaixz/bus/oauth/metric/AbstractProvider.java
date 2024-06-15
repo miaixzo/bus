@@ -50,32 +50,32 @@ import java.util.stream.Collectors;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class DefaultProvider implements Provider {
+public abstract class AbstractProvider implements Provider {
 
     protected Context context;
     protected Complex complex;
-    protected ExtendCache authorizeCache;
+    protected ExtendCache cache;
 
-    public DefaultProvider(Context context, Complex complex) {
+    public AbstractProvider(Context context, Complex complex) {
         this(context, complex, OauthCache.INSTANCE);
     }
 
-    public DefaultProvider(Context context, Complex complex, ExtendCache authorizeCache) {
-        this.context = this.context;
+    public AbstractProvider(Context context, Complex complex, ExtendCache cache) {
+        this.context = context;
         this.complex = complex;
-        this.authorizeCache = authorizeCache;
-        if (!Checker.isSupportedAuth(this.context, complex)) {
+        this.cache = cache;
+        if (!Checker.isSupportedAuth(this.context, this.complex)) {
             throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
-        Checker.checkConfig(this.context, complex);
+        Checker.checkConfig(this.context, this.complex);
     }
 
     /**
      * 获取 {@link AuthorizeScope} 数组中所有的被标记为 {@code default} 的 scope
      *
      * @param scopes scopes
-     * @return List
+     * @return the list
      */
     public static List<String> getDefaultScopes(AuthorizeScope[] scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -91,7 +91,7 @@ public abstract class DefaultProvider implements Provider {
      * 从 {@link AuthorizeScope} 数组中获取实际的 scope 字符串
      *
      * @param scopes 可变参数，支持传任意 {@link AuthorizeScope}
-     * @return List
+     * @return the list
      */
     public static List<String> getScopes(AuthorizeScope... scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -103,37 +103,37 @@ public abstract class DefaultProvider implements Provider {
     /**
      * 获取access token
      *
-     * @param authCallback 授权成功后的回调参数
+     * @param callback 授权成功后的回调参数
      * @return token
-     * @see DefaultProvider#authorize(String)
+     * @see AbstractProvider#authorize(String)
      */
-    protected abstract AccToken getAccessToken(Callback authCallback);
+    protected abstract AccToken getAccessToken(Callback callback);
 
     /**
      * 使用token换取用户信息
      *
      * @param accToken token信息
      * @return 用户信息
-     * @see DefaultProvider#getAccessToken(Callback)
+     * @see AbstractProvider#getAccessToken(Callback)
      */
     protected abstract Property getUserInfo(AccToken accToken);
 
     /**
-     * 统一的登录入口。当通过{@link DefaultProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中
+     * 统一的登录入口。当通过{@link AbstractProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中
      * 方法的入参可以使用{@code Callback}，{@code Callback}类中封装好了OAuth2授权回调所需要的参数
      *
-     * @param authCallback 用于接收回调参数的实体
-     * @return Message
+     * @param callback 用于接收回调参数的实体
+     * @return the message
      */
     @Override
-    public Message login(Callback authCallback) {
+    public Message login(Callback callback) {
         try {
-            checkCode(authCallback);
+            checkCode(callback);
             if (!context.isIgnoreState()) {
-                Checker.checkState(authCallback.getState(), complex, authorizeCache);
+                Checker.checkState(callback.getState(), complex, cache);
             }
 
-            AccToken accToken = this.getAccessToken(authCallback);
+            AccToken accToken = this.getAccessToken(callback);
             Property user = this.getUserInfo(accToken);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
@@ -142,15 +142,15 @@ public abstract class DefaultProvider implements Provider {
         }
     }
 
-    protected void checkCode(Callback authCallback) {
-        Checker.checkCode(complex, authCallback);
+    protected void checkCode(Callback callback) {
+        Checker.checkCode(complex, callback);
     }
 
     /**
-     * 处理{@link DefaultProvider#login(Callback)} 发生异常的情况，统一响应参数
+     * 处理{@link AbstractProvider#login(Callback)} 发生异常的情况，统一响应参数
      *
      * @param e 具体的异常
-     * @return Message
+     * @return the message
      */
     protected Message responseError(Exception e) {
         String errorCode = ErrorCode.FAILURE.getCode();
@@ -244,7 +244,7 @@ public abstract class DefaultProvider implements Provider {
             state = ID.objectId();
         }
         // 缓存state
-        authorizeCache.cache(state, state);
+        cache.cache(state, state);
         return state;
     }
 
@@ -252,7 +252,7 @@ public abstract class DefaultProvider implements Provider {
      * 通用的 authorizationCode 协议
      *
      * @param code code码
-     * @return Response
+     * @return the response
      */
     protected String doPostAuthorizationCode(String code) {
         return Httpx.post(accessTokenUrl(code));
@@ -262,7 +262,7 @@ public abstract class DefaultProvider implements Provider {
      * 通用的 authorizationCode 协议
      *
      * @param code code码
-     * @return Response
+     * @return the response
      */
     protected String doGetAuthorizationCode(String code) {
         return Httpx.get(accessTokenUrl(code));
@@ -272,7 +272,7 @@ public abstract class DefaultProvider implements Provider {
      * 通用的 用户信息
      *
      * @param accToken token封装
-     * @return Response
+     * @return the response
      */
     protected String doGetUserInfo(AccToken accToken) {
         return Httpx.get(userInfoUrl(accToken));
@@ -282,7 +282,7 @@ public abstract class DefaultProvider implements Provider {
      * 通用的post形式的取消授权方法
      *
      * @param accToken token封装
-     * @return Response
+     * @return the response
      */
     protected String doGetRevoke(AccToken accToken) {
         return Httpx.get(revokeUrl(accToken));
@@ -294,7 +294,7 @@ public abstract class DefaultProvider implements Provider {
      * @param separator     多个 {@code scope} 间的分隔符
      * @param encode        是否 encode 编码
      * @param defaultScopes 默认的 scope， 当客户端没有配置 {@code scopes} 时启用
-     * @return String
+     * @return the string
      */
     protected String getScopes(String separator, boolean encode, List<String> defaultScopes) {
         List<String> scopes = context.getScopes();

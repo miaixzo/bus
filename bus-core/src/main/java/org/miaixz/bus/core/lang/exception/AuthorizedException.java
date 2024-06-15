@@ -47,39 +47,29 @@ public class AuthorizedException extends UncheckedException {
     /**
      * 构造
      *
+     * @param e 异常
+     */
+    public AuthorizedException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * 构造
+     *
      * @param message 消息
      */
-    public AuthorizedException(String message) {
+    public AuthorizedException(final String message) {
         super(message);
     }
 
     /**
      * 构造
      *
-     * @param format 格式
+     * @param format 消息模板
      * @param args   参数
      */
-    public AuthorizedException(String format, Object... args) {
+    public AuthorizedException(final String format, final Object... args) {
         super(format, args);
-    }
-
-    /**
-     * 构造
-     *
-     * @param message 消息
-     * @param cause   异常
-     */
-    public AuthorizedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * 构造
-     *
-     * @param cause 异常
-     */
-    public AuthorizedException(Throwable cause) {
-        super(cause);
     }
 
     /**
@@ -88,8 +78,50 @@ public class AuthorizedException extends UncheckedException {
      * @param errcode 错误码
      * @param errmsg  消息
      */
-    public AuthorizedException(String errcode, String errmsg) {
+    public AuthorizedException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
     }
 
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public AuthorizedException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public AuthorizedException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public AuthorizedException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public AuthorizedException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+    
 }

@@ -43,7 +43,7 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,19 +54,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LinkedinProvider extends DefaultProvider {
+public class LinkedinProvider extends AbstractProvider {
 
     public LinkedinProvider(Context context) {
         super(context, Registry.LINKEDIN);
     }
 
-    public LinkedinProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.LINKEDIN, authorizeCache);
+    public LinkedinProvider(Context context, ExtendCache cache) {
+        super(context, Registry.LINKEDIN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return this.getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override

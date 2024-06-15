@@ -62,7 +62,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
 
     @Override
     public Message send(DingTalkProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("access_token", entity.getToken());
         bodys.put("agent_id", entity.getAgentId());
         bodys.put("msg", entity.getMsg());
@@ -72,7 +72,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
         if (StringKit.isNotBlank(entity.getDeptIdList())) {
             bodys.put("dept_id_list", entity.getDeptIdList());
         }
-        bodys.put("to_all_user", entity.isToAllUser());
+        bodys.put("to_all_user", String.valueOf(entity.isToAllUser()));
         String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
@@ -94,7 +94,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
      * @return 结果
      */
     private String requestToken(String url) {
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, String> paramMap = new HashMap<>();
         paramMap.put("corpid", context.getAppKey());
         paramMap.put("corpsecret", context.getAppSecret());
         String response = Httpx.get(url, paramMap);

@@ -1121,7 +1121,7 @@ public class MapKit extends MapGets {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(final Map<K, V> map, final K... keys) {
+    public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final K... keys) {
         return valuesOfKeys(map, (Iterator<K>) new ArrayIterator<>(keys));
     }
 
@@ -1135,7 +1135,7 @@ public class MapKit extends MapGets {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(final Map<K, V> map, final Iterable<K> keys) {
+    public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final Iterable<K> keys) {
         return valuesOfKeys(map, keys.iterator());
     }
 
@@ -1149,12 +1149,12 @@ public class MapKit extends MapGets {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(final Map<K, V> map, final Iterator<K> keys) {
-        final ArrayList<V> values = new ArrayList<>();
+    public static <K, V> List<V> valuesOfKeys(final Map<K, V> map, final Iterator<K> keys) {
+        final List<V> list = new ArrayList<>();
         while (keys.hasNext()) {
-            values.add(map.get(keys.next()));
+            list.add(map.get(keys.next()));
         }
-        return values;
+        return list;
     }
 
     /**

@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Objects;
 
@@ -49,19 +49,19 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RenrenProvider extends DefaultProvider {
+public class RenrenProvider extends AbstractProvider {
 
     public RenrenProvider(Context context) {
         super(context, Registry.RENREN);
     }
 
-    public RenrenProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.RENREN, authorizeCache);
+    public RenrenProvider(Context context, ExtendCache cache) {
+        super(context, Registry.RENREN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return this.getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override

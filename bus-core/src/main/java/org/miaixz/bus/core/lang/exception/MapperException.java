@@ -37,20 +37,91 @@ public class MapperException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 构造
+     */
     public MapperException() {
         super();
     }
 
-    public MapperException(String message) {
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public MapperException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public MapperException(final String message) {
         super(message);
     }
 
-    public MapperException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public MapperException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public MapperException(Throwable cause) {
-        super(cause);
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public MapperException(final String errcode, final String errmsg) {
+        super(errcode, errmsg);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public MapperException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public MapperException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public MapperException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public MapperException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

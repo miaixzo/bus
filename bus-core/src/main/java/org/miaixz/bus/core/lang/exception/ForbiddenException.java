@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.exception;
 
 /**
- * 类型: 权限不足异常
+ * 类型: 权限异常
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,28 +37,91 @@ public class ForbiddenException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 构造
+     */
     public ForbiddenException() {
         super();
     }
 
-    public ForbiddenException(String message) {
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public ForbiddenException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public ForbiddenException(final String message) {
         super(message);
     }
 
-    public ForbiddenException(String format, Object... args) {
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public ForbiddenException(final String format, final Object... args) {
         super(format, args);
     }
 
-    public ForbiddenException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ForbiddenException(Throwable cause) {
-        super(cause);
-    }
-
-    public ForbiddenException(String errcode, String errmsg) {
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public ForbiddenException(final String errcode, final String errmsg) {
         super(errcode, errmsg);
+    }
+
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public ForbiddenException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public ForbiddenException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public ForbiddenException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public ForbiddenException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

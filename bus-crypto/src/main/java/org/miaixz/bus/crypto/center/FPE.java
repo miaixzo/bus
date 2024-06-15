@@ -60,7 +60,6 @@ public class FPE implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    //
     /**
      * 映射字符表，规定了明文和密文的字符范围
      */

@@ -82,11 +82,6 @@ import java.time.Instant;
  */
 public class TOTP extends HOTP {
 
-    /**
-     * 默认步进 (30秒).
-     */
-    public static final Duration DEFAULT_TIME_STEP = Duration.ofSeconds(30);
-
     private final Duration timeStep;
 
     /**
@@ -95,13 +90,14 @@ public class TOTP extends HOTP {
      * @param key 共享密码，RFC 4226要求最少128位
      */
     public TOTP(final byte[] key) {
-        this(DEFAULT_TIME_STEP, key);
+        this(Duration.ofSeconds(30), key);
     }
 
     /**
      * 构造，使用默认HMAC算法(HmacSHA1)
      *
-     * @param timeStep 日期步进，用于生成移动因子（moving factor）
+     * @param timeStep 日期步进
+     *                 用于生成移动因子（moving factor）,默认步进 (30秒)
      * @param key      共享密码，RFC 4226要求最少128位
      */
     public TOTP(final Duration timeStep, final byte[] key) {

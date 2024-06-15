@@ -81,7 +81,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
 
     @Override
     public Message send(HuaweiProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("from", entity.getSender());
         bodys.put("to", entity.getReceive());
         bodys.put("templateId", entity.getTemplate());

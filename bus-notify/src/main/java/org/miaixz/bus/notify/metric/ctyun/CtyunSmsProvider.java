@@ -89,7 +89,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunProperty, Context> {
 
     @Override
     public Message send(CtyunProperty entity) {
-        Map<String, Object> bodys = new HashMap<>(5);
+        Map<String, String> bodys = new HashMap<>(5);
         bodys.put("action", entity.getAction());
         bodys.put("phoneNumber", entity.getReceive());
         bodys.put("signName", entity.getSignature());

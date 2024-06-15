@@ -51,7 +51,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduProperty, Context> {
 
     @Override
     public Message send(BaiduProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("mobile", entity.getReceive());
         bodys.put("template", entity.getTemplate());
         bodys.put("signatureId", entity.getSignature());

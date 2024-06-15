@@ -29,10 +29,8 @@ package org.miaixz.bus.notify.metric.unisms;
 
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -51,11 +49,9 @@ import java.util.*;
  */
 public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
 
-
     public UniSmsProvider(Context context) {
         super(context);
     }
-
 
     @Override
     public Message send(UniProperty entity) {
@@ -64,7 +60,7 @@ public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
         }
 
         Map<String, Object> data = MapKit.newHashMap(4, true);
-        data.put("to", StringKit.split(entity.getReceive(), Symbol.COMMA));
+        data.put("to", entity.getReceive());
         data.put("signature", entity.getSignature());
         data.put("templateId", entity.getTemplate());
         LinkedHashMap<String, String> map = new LinkedHashMap<>(1);
@@ -108,11 +104,11 @@ public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
                     "&timestamp=" + query.get("timestamp") + "&nonce=" + query.get("nonce") + "&signature=" + query.get("signature");
         }
 
-        String response = Httpx.post(url, bodys, headers);
+        String response = Httpx.post(url, JsonKit.toJsonString(bodys), headers,MediaType.APPLICATION_JSON);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

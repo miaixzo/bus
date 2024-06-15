@@ -100,7 +100,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
         bodys.put("ClickTrace", getSign(bodys));
         bodys.put("Signature", getSign(bodys));
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (String val : bodys.keySet()) {
             map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }

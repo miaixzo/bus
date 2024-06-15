@@ -27,8 +27,6 @@
  */
 package org.miaixz.bus.notify.metric.tencent;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -53,18 +51,18 @@ public class TencentSmsProvider extends AbstractProvider<TencentProperty, Contex
 
     @Override
     public Message send(TencentProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("SmsSdkAppid", entity.getSmsAppId());
         bodys.put("Sign", entity.getSignature());
         bodys.put("TemplateID", entity.getTemplate());
-        bodys.put("TemplateParamSet", StringKit.splitToArray(entity.getParams(), Symbol.COMMA));
-        bodys.put("PhoneNumberSet", StringKit.splitToArray(entity.getReceive(), Symbol.COMMA));
+        bodys.put("TemplateParamSet", entity.getParams());
+        bodys.put("PhoneNumberSet", entity.getReceive());
 
         String response = Httpx.post(this.getUrl(entity), bodys);
         int status = JsonKit.getValue(response, "status");
 
         String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == 200 ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = status == 200 ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

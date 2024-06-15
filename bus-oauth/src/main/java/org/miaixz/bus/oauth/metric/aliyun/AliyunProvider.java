@@ -35,7 +35,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 阿里云登录
@@ -43,19 +43,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliyunProvider extends DefaultProvider {
+public class AliyunProvider extends AbstractProvider {
 
     public AliyunProvider(Context context) {
         super(context, Registry.ALIYUN);
     }
 
-    public AliyunProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.ALIYUN, authorizeCache);
+    public AliyunProvider(Context context, ExtendCache cache) {
+        super(context, Registry.ALIYUN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         return AccToken.builder()
                 .accessToken(accessTokenObject.getString("access_token"))

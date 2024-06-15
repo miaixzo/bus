@@ -46,7 +46,7 @@ import org.miaixz.bus.oauth.Checker;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 支付宝 登录
@@ -54,7 +54,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AlipayProvider extends DefaultProvider {
+public class AlipayProvider extends AbstractProvider {
 
     private static final String GATEWAY = "https://openapi.alipay.com/gateway.do";
     /**
@@ -81,8 +81,8 @@ public class AlipayProvider extends DefaultProvider {
      * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache)
      */
-    public AlipayProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.ALIPAY, authorizeCache);
+    public AlipayProvider(Context context, ExtendCache cache) {
+        super(context, Registry.ALIPAY, cache);
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
                 "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
@@ -94,8 +94,8 @@ public class AlipayProvider extends DefaultProvider {
      * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache, java.lang.String, java.lang.Integer)
      */
-    public AlipayProvider(Context context, ExtendCache authorizeCache, String proxyHost, Integer proxyPort) {
-        super(context, Registry.ALIPAY, authorizeCache);
+    public AlipayProvider(Context context, ExtendCache cache, String proxyHost, Integer proxyPort) {
+        super(context, Registry.ALIPAY, cache);
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
                 "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2", proxyHost, proxyPort);
@@ -116,17 +116,17 @@ public class AlipayProvider extends DefaultProvider {
     }
 
     @Override
-    protected void checkCode(Callback authCallback) {
-        if (StringKit.isEmpty(authCallback.getAuth_code())) {
+    protected void checkCode(Callback callback) {
+        if (StringKit.isEmpty(callback.getAuth_code())) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getCode(), complex);
         }
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("authorization_code");
-        request.setCode(authCallback.getAuth_code());
+        request.setCode(callback.getAuth_code());
         AlipaySystemOauthTokenResponse response;
         try {
             response = this.alipayClient.execute(request);

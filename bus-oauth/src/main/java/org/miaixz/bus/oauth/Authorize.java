@@ -31,7 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -94,7 +94,7 @@ public class Authorize {
                 .findAny()
                 .orElseThrow(() -> new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode()));
 
-        Class<? extends DefaultProvider> targetClass = complex.getTargetClass();
+        Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
         if (null == targetClass) {
             throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
         }

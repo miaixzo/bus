@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.text.MessageFormat;
 
@@ -49,20 +49,20 @@ import java.text.MessageFormat;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MiProvider extends DefaultProvider {
+public class MiProvider extends AbstractProvider {
     private static final String PREFIX = "&&&START&&&";
 
     public MiProvider(Context context) {
         super(context, Registry.MI);
     }
 
-    public MiProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.MI, authorizeCache);
+    public MiProvider(Context context, ExtendCache cache) {
+        super(context, Registry.MI, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return getToken(accessTokenUrl(callback.getCode()));
     }
 
     private AccToken getToken(String accessTokenUrl) {

@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +50,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class OktaProvider extends DefaultProvider {
+public class OktaProvider extends AbstractProvider {
 
     public OktaProvider(Context context) {
         super(context, Registry.OKTA);
     }
 
-    public OktaProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.OKTA, authorizeCache);
+    public OktaProvider(Context context, ExtendCache cache) {
+        super(context, Registry.OKTA, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String tokenUrl = accessTokenUrl(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String tokenUrl = accessTokenUrl(callback.getCode());
         return getAuthToken(tokenUrl);
     }
 

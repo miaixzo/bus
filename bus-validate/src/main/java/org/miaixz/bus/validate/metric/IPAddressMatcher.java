@@ -46,7 +46,7 @@ public class IPAddressMatcher implements Matcher<Object, IPAddress> {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return Validator.isIpv4(object.toString());
+        return Validator.isIpv4(object.toString()) || Validator.isIpv6(object.toString());
     }
 
 }

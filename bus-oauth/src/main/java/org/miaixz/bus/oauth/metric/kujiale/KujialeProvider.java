@@ -36,7 +36,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 酷家乐 登录
@@ -44,14 +44,14 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KujialeProvider extends DefaultProvider {
+public class KujialeProvider extends AbstractProvider {
 
     public KujialeProvider(Context context) {
         super(context, Registry.KUJIALE);
     }
 
-    public KujialeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.KUJIALE, authorizeCache);
+    public KujialeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.KUJIALE, cache);
     }
 
     /**
@@ -69,8 +69,8 @@ public class KujialeProvider extends DefaultProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    public AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 

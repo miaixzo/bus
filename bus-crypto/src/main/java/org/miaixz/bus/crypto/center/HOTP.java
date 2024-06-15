@@ -50,10 +50,7 @@ public class HOTP {
      * 默认密码长度.
      */
     public static final int DEFAULT_PASSWORD_LENGTH = 6;
-    /**
-     * 默认HMAC算法.
-     */
-    public static final Algorithm HOTP_HMAC_ALGORITHM = Algorithm.HMACSHA1;
+
     /**
      * 数子量级
      */
@@ -80,7 +77,7 @@ public class HOTP {
      * @param key            共享密码，RFC 4226要求最少128位
      */
     public HOTP(final int passwordLength, final byte[] key) {
-        this(passwordLength, HOTP_HMAC_ALGORITHM, key);
+        this(passwordLength, Algorithm.HMACSHA1, key);
     }
 
     /**

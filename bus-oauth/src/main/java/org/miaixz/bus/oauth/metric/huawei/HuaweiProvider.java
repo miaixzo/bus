@@ -37,7 +37,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,28 +48,28 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HuaweiProvider extends DefaultProvider {
+public class HuaweiProvider extends AbstractProvider {
 
     public HuaweiProvider(Context context) {
         super(context, Registry.HUAWEI);
     }
 
-    public HuaweiProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.HUAWEI, authorizeCache);
+    public HuaweiProvider(Context context, ExtendCache cache) {
+        super(context, Registry.HUAWEI, cache);
     }
 
     /**
      * 获取access token
      *
-     * @param authCallback 授权成功后的回调参数
+     * @param callback 授权成功后的回调参数
      * @return token
-     * @see DefaultProvider#authorize(String)
+     * @see AbstractProvider#authorize(String)
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
-        form.put("code", authCallback.getAuthorization_code());
+        form.put("code", callback.getAuthorization_code());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("redirect_uri", context.getRedirectUri());
@@ -83,7 +83,7 @@ public class HuaweiProvider extends DefaultProvider {
      *
      * @param accToken token信息
      * @return 用户信息
-     * @see DefaultProvider#getAccessToken(Callback)
+     * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
     protected Property getUserInfo(AccToken accToken) {

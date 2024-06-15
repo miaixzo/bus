@@ -57,7 +57,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushProperty, Context> {
 
     @Override
     public Message send(JpushProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("sign_id", entity.getSignature());
         bodys.put("mobile", entity.getReceive());
         bodys.put("temp_id", entity.getTemplate());
@@ -70,7 +70,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushProperty, Context> {
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = succeed ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

@@ -36,7 +36,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,22 +47,22 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MeituanProvider extends DefaultProvider {
+public class MeituanProvider extends AbstractProvider {
 
     public MeituanProvider(Context context) {
         super(context, Registry.MEITUAN);
     }
 
-    public MeituanProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.MEITUAN, authorizeCache);
+    public MeituanProvider(Context context, ExtendCache cache) {
+        super(context, Registry.MEITUAN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
         String response = Httpx.post(complex.accessToken(), form);

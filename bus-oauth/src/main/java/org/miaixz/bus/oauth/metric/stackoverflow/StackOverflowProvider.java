@@ -42,7 +42,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,19 +53,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StackOverflowProvider extends DefaultProvider {
+public class StackOverflowProvider extends AbstractProvider {
 
     public StackOverflowProvider(Context context) {
         super(context, Registry.STACK_OVERFLOW);
     }
 
-    public StackOverflowProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.STACK_OVERFLOW, authorizeCache);
+    public StackOverflowProvider(Context context, ExtendCache cache) {
+        super(context, Registry.STACK_OVERFLOW, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String accessTokenUrl = accessTokenUrl(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String accessTokenUrl = accessTokenUrl(callback.getCode());
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 

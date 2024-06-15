@@ -51,7 +51,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenProperty, Contex
 
     @Override
     public Message send(CloopenProperty entity) {
-        Map<String, Object> bodys = MapKit.newHashMap(4, true);
+        Map<String, String> bodys = MapKit.newHashMap(4, true);
         bodys.put("to", String.join(",", entity.getReceive()));
         bodys.put("appId", this.context.getAppKey());
         bodys.put("templateId", entity.getTemplate());

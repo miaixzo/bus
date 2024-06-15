@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +50,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GithubProvider extends DefaultProvider {
+public class GithubProvider extends AbstractProvider {
 
     public GithubProvider(Context context) {
         super(context, Registry.GITHUB);
     }
 
-    public GithubProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.GITHUB, authorizeCache);
+    public GithubProvider(Context context, ExtendCache cache) {
+        super(context, Registry.GITHUB, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         Map<String, String> res = Builder.parseStringToMap(response);
 
         this.checkResponse(res.containsKey("error"), res.get("error_description"));

@@ -34,7 +34,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Message;
 
 /**
- * {@code Request}公共接口，所有平台的{@code Request}都需要实现该接口
+ * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口
  * {@link Provider#authorize(String)}
  * {@link Provider#login(Callback)}
  * {@link Provider#revoke(AccToken)}
@@ -58,10 +58,10 @@ public interface Provider {
     /**
      * 第三方登录
      *
-     * @param authCallback 用于接收回调参数的实体
+     * @param callback 用于接收回调参数的实体
      * @return 返回登录成功后的用户信息
      */
-    default Message login(Callback authCallback) {
+    default Message login(Callback callback) {
         throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 

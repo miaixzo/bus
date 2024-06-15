@@ -40,8 +40,8 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 import org.miaixz.bus.storage.magic.Property;
 
@@ -96,7 +96,7 @@ public class JdYunOssProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errcode(ErrorCode.FAILURE.getCode())
                 .errmsg("failure to provide services").build();
     }
 
@@ -109,8 +109,8 @@ public class JdYunOssProvider extends AbstractProvider {
     public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -119,8 +119,8 @@ public class JdYunOssProvider extends AbstractProvider {
         ObjectListing objectListing = client.listObjects(request);
 
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
                     Property storageItem = new Property();
                     storageItem.setName(item.getKey());
@@ -139,15 +139,15 @@ public class JdYunOssProvider extends AbstractProvider {
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errcode(ErrorCode.FAILURE.getCode())
                 .errmsg("failure to provide services").build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -159,15 +159,15 @@ public class JdYunOssProvider extends AbstractProvider {
     public Message upload(String bucket, String fileName, InputStream content) {
         client.putObject(bucket, fileName, content, null);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -179,8 +179,8 @@ public class JdYunOssProvider extends AbstractProvider {
     public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override

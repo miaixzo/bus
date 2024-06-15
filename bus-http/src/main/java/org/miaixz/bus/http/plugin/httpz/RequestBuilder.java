@@ -43,18 +43,20 @@ import java.util.Map;
 public abstract class RequestBuilder<T extends RequestBuilder> {
 
     protected Httpd httpd;
+
     protected String id;
     protected String url;
     protected Object tag;
-    protected Map<String, String> headerMap;
-    protected Map<String, String> formMap;
-    protected Map<String, String> encodedForm;
+
+    protected Map<String, String> headers;
+    protected Map<String, String> params;
+    protected Map<String, String> encoded;
 
     public RequestBuilder(Httpd httpd) {
         this.httpd = httpd;
-        headerMap = new LinkedHashMap<>();
-        formMap = new LinkedHashMap<>();
-        encodedForm = new LinkedHashMap<>();
+        headers = new LinkedHashMap<>();
+        params = new LinkedHashMap<>();
+        encoded = new LinkedHashMap<>();
     }
 
     public T id(String id) {
@@ -72,49 +74,41 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
         return (T) this;
     }
 
-    public T headers(Map<String, String> headers) {
-        this.headerMap = headers;
-        return (T) this;
-    }
-
-    public T addHeaders(Map<String, String> headers) {
-        if (null != headers) {
-            headers.forEach((k, v) -> this.headerMap.put(k, v));
-        }
+    public T addHeader(Map<String, String> headers) {
+        this.headers = headers;
         return (T) this;
     }
 
     public T addHeader(String key, String val) {
-        headerMap.put(key, val);
+        headers.put(key, val);
         return (T) this;
     }
 
-    public T form(Map<String, String> params) {
-        this.formMap = params;
+    public T addParam(Map<String, String> params) {
+        this.params = params;
         return (T) this;
     }
 
-    public T form(String key, String val) {
-        this.formMap.put(key, val);
+    public T addParam(String key, String val) {
+        this.params.put(key, val);
         return (T) this;
     }
 
-    public T form(Object object) {
+    public T addParam(Object object) {
         if (null != object) {
             Map<String, Object> map = BeanKit.beanToMap(object);
-            map.forEach((key, val) -> form(key, (String) val));
+            map.forEach((key, val) -> addParam(key, (String) val));
         }
         return (T) this;
     }
 
-
-    public T encodedForm(Map<String, String> params) {
-        this.encodedForm = params;
+    public T addEncoded(Map<String, String> params) {
+        this.encoded = params;
         return (T) this;
     }
 
-    public T addEncodedForm(String key, String val) {
-        this.encodedForm.put(key, val);
+    public T addEncoded(String key, String val) {
+        this.encoded.put(key, val);
         return (T) this;
     }
 

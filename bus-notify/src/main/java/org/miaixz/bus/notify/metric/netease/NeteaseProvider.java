@@ -91,7 +91,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
         return map;
     }
 
-    public Message post(String routerUrl, Map<String, Object> map) {
+    public Message post(String routerUrl, Map<String, String> map) {
         Map<String, String> header = getPostHeader();
         Logger.debug("netease send：{}", map);
         String response = Httpx.post(routerUrl, map, header);

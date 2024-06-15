@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * Coding 登录
@@ -46,19 +46,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CodingProvider extends DefaultProvider {
+public class CodingProvider extends AbstractProvider {
 
     public CodingProvider(Context context) {
         super(context, Registry.CODING);
     }
 
-    public CodingProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.CODING, authorizeCache);
+    public CodingProvider(Context context, ExtendCache cache) {
+        super(context, Registry.CODING, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doGetAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doGetAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AccToken.builder()

@@ -35,7 +35,7 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,26 +46,26 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TeambitionProvider extends DefaultProvider {
+public class TeambitionProvider extends AbstractProvider {
 
     public TeambitionProvider(Context context) {
         super(context, Registry.TEAMBITION);
     }
 
-    public TeambitionProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.TEAMBITION, authorizeCache);
+    public TeambitionProvider(Context context, ExtendCache cache) {
+        super(context, Registry.TEAMBITION, cache);
     }
 
     /**
-     * @param authCallback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         form.put("grant_type", "code");
 
         String response = Httpx.post(complex.accessToken(), form);

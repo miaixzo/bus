@@ -42,7 +42,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -57,14 +57,14 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AmazonProvider extends DefaultProvider {
+public class AmazonProvider extends AbstractProvider {
 
     public AmazonProvider(Context context) {
         super(context, Registry.AMAZON);
     }
 
-    public AmazonProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.AMAZON, authorizeCache);
+    public AmazonProvider(Context context, ExtendCache cache) {
+        super(context, Registry.AMAZON, cache);
     }
 
     /**
@@ -121,7 +121,7 @@ public class AmazonProvider extends DefaultProvider {
             builder.queryParam("code_challenge", codeChallenge)
                     .queryParam("code_challenge_method", codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
-            this.authorizeCache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
+            this.cache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
 
         return builder.build();
@@ -133,17 +133,17 @@ public class AmazonProvider extends DefaultProvider {
      * @return access token
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(9);
         form.put("grant_type", "authorization_code");
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         form.put("redirect_uri", context.getRedirectUri());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
 
         if (context.isPkce()) {
             String cacheKey = this.complex.getName().concat(":code_verifier:").concat(context.getAppKey());
-            String codeVerifier = String.valueOf(this.authorizeCache.get(cacheKey));
+            String codeVerifier = String.valueOf(this.cache.get(cacheKey));
             form.put("code_verifier", codeVerifier);
         }
         return getToken(form, this.complex.accessToken());

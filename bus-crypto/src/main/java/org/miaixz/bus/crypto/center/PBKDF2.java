@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.crypto.center;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Keeper;
 
@@ -42,7 +43,7 @@ import javax.crypto.spec.PBEKeySpec;
  */
 public class PBKDF2 {
 
-    private String algorithm = "PBKDF2WithHmacSHA1";
+    private String algorithm = Algorithm.PBKDF2WITHHMACSHA1.getValue();
 
     /**
      * 生成密文的长度

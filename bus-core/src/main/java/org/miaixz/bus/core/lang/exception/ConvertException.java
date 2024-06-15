@@ -27,8 +27,6 @@
  */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 /**
  * 类型: 转换异常
  *
@@ -39,24 +37,79 @@ public class ConvertException extends UncheckedException {
 
     private static final long serialVersionUID = -1L;
 
-    public ConvertException(Throwable throwable) {
-        super(throwable);
+    /**
+     * 构造
+     */
+    public ConvertException() {
+        super();
     }
 
-    public ConvertException(String message) {
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public ConvertException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public ConvertException(final String message) {
         super(message);
     }
 
-    public ConvertException(String format, Object... params) {
-        super(StringKit.format(format, params));
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public ConvertException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public ConvertException(String message, Throwable throwable) {
-        super(message, throwable);
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public ConvertException(final String errcode, final String errmsg) {
+        super(errcode, errmsg);
     }
 
-    public ConvertException(Throwable throwable, String format, Object... args) {
-        super(StringKit.format(format, args), throwable);
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public ConvertException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public ConvertException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public ConvertException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
     }
 
     /**

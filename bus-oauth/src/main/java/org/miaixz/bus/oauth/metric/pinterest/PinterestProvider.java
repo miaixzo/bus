@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Objects;
 
@@ -49,7 +49,7 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PinterestProvider extends DefaultProvider {
+public class PinterestProvider extends AbstractProvider {
 
     private static final String FAILURE = "failure";
 
@@ -57,13 +57,13 @@ public class PinterestProvider extends DefaultProvider {
         super(context, Registry.PINTEREST);
     }
 
-    public PinterestProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.PINTEREST, authorizeCache);
+    public PinterestProvider(Context context, ExtendCache cache) {
+        super(context, Registry.PINTEREST, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AccToken.builder()

@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
@@ -58,8 +58,8 @@ public class LocalFileProvider extends AbstractProvider {
     @Override
     public Message download(String fileName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(new File(context.getRegion() + Symbol.SLASH + fileName))
                 .build();
     }
@@ -102,8 +102,8 @@ public class LocalFileProvider extends AbstractProvider {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
                     return Message.builder()
-                            .errcode(Builder.ErrorCode.FAILURE.getCode())
-                            .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                            .errcode(ErrorCode.FAILURE.getCode())
+                            .errmsg(ErrorCode.FAILURE.getDesc()).build();
                 }
             }
             OutputStream out = Files.newOutputStream(dest.toPath());
@@ -111,14 +111,14 @@ public class LocalFileProvider extends AbstractProvider {
             content.close();
             out.close();
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (IOException e) {
             Logger.error("file upload failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override

@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.core.lang.exception;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class RelevantException extends IOException {
 
     private static final long serialVersionUID = -1L;
@@ -53,6 +51,9 @@ public class RelevantException extends IOException {
      */
     protected String errmsg;
 
+    /**
+     * 构造
+     */
     protected RelevantException() {
         super();
     }
@@ -62,7 +63,7 @@ public class RelevantException extends IOException {
      *
      * @param message 打印信息
      */
-    protected RelevantException(String message) {
+    protected RelevantException(final String message) {
         super(message);
     }
 
@@ -71,11 +72,7 @@ public class RelevantException extends IOException {
      *
      * @param cause 抛出对象
      */
-    protected RelevantException(Throwable cause) {
-        super(cause);
-    }
-
-    protected RelevantException(Exception cause) {
+    protected RelevantException(final Throwable cause) {
         super(cause);
     }
 
@@ -85,7 +82,7 @@ public class RelevantException extends IOException {
      * @param message 打印信息
      * @param cause   抛出对象
      */
-    protected RelevantException(String message, Throwable cause) {
+    protected RelevantException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -95,7 +92,7 @@ public class RelevantException extends IOException {
      * @param errcode 错误编码
      * @param errmsg  错误提示
      */
-    protected RelevantException(String errcode, String errmsg) {
+    protected RelevantException(final String errcode, final String errmsg) {
         super(errmsg);
         this.errcode = errcode;
         this.errmsg = errmsg;
@@ -107,7 +104,7 @@ public class RelevantException extends IOException {
      * @param format 格式
      * @param args   参数
      */
-    protected RelevantException(String format, Object... args) {
+    protected RelevantException(final String format, final Object... args) {
         super(String.format(format, args));
     }
 
@@ -118,7 +115,7 @@ public class RelevantException extends IOException {
      * @param fmt  格式
      * @param args 参数
      */
-    protected RelevantException(Throwable e, String fmt, Object... args) {
+    protected RelevantException(final Throwable e, String fmt, final Object... args) {
         super(String.format(fmt, args), e);
     }
 
@@ -140,7 +137,7 @@ public class RelevantException extends IOException {
         return new RelevantException("r u kidding me?! It is impossible!");
     }
 
-    protected static Throwable unwrapThrow(Throwable e) {
+    protected static Throwable unwrapThrow(final Throwable e) {
         if (null == e) {
             return null;
         }
@@ -155,7 +152,7 @@ public class RelevantException extends IOException {
         return e;
     }
 
-    protected static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
+    protected static boolean isCauseBy(final Throwable e, final Class<? extends Throwable> causeType) {
         if (e.getClass() == causeType)
             return true;
         Throwable cause = e.getCause();

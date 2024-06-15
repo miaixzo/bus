@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.storage;
 
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
@@ -84,8 +85,8 @@ public interface Provider {
      */
     default Message list() {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 

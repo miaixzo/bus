@@ -75,7 +75,6 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * 解密的块大小
      */
     protected int decryptBlockSize = -1;
-
     /**
      * 算法参数
      */
@@ -108,11 +107,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm     {@link Algorithm}
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public Crypto(final Algorithm algorithm, final String privateKeyStr, final String publicKeyStr) {
-        this(algorithm.getValue(), Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
+    public Crypto(final Algorithm algorithm, final String privateKey, final String publicKey) {
+        this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
@@ -153,7 +152,6 @@ public class Crypto extends AbstractCrypto<Crypto> {
 
     /**
      * 构造
-     * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
@@ -162,15 +160,14 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @param publicKey  公钥
      */
     public Crypto(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm, //
-                Keeper.generatePrivateKey(algorithm, privateKey), //
-                Keeper.generatePublicKey(algorithm, publicKey)//
+        this(algorithm,
+                Keeper.generatePrivateKey(algorithm, privateKey),
+                Keeper.generatePublicKey(algorithm, publicKey)
         );
     }
 
     /**
      * 构造
-     * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *

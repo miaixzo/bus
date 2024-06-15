@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
+import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Message;
 import org.miaixz.bus.storage.magic.Property;
 
@@ -95,16 +95,16 @@ public class MinioOssProvider extends AbstractProvider {
             InputStream inputStream = this.client.getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .data(bufferedReader)
                     .build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -115,15 +115,15 @@ public class MinioOssProvider extends AbstractProvider {
             OutputStream outputStream = new FileOutputStream(file);
             IoKit.copy(inputStream, outputStream);
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -136,8 +136,8 @@ public class MinioOssProvider extends AbstractProvider {
     public Message list() {
         Iterable<Result<Item>> iterable = this.client.listObjects(ListObjectsArgs.builder().bucket(this.context.getBucket()).build());
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(StreamSupport
                         .stream(iterable.spliterator(), true)
                         .map(itemResult -> {
@@ -159,8 +159,8 @@ public class MinioOssProvider extends AbstractProvider {
                                      ErrorResponseException |
                                      InternalException e) {
                                 return Message.builder()
-                                        .errcode(Builder.ErrorCode.FAILURE.getCode())
-                                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                                        .errcode(ErrorCode.FAILURE.getCode())
+                                        .errmsg(ErrorCode.FAILURE.getDesc())
                                         .build();
                             } catch (ServerException e) {
                                 throw new RuntimeException(e);
@@ -177,16 +177,16 @@ public class MinioOssProvider extends AbstractProvider {
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -206,8 +206,8 @@ public class MinioOssProvider extends AbstractProvider {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .build());
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .data(Property.builder()
                             .name(fileName)
                             .path(this.context.getPrefix() + fileName))
@@ -216,8 +216,8 @@ public class MinioOssProvider extends AbstractProvider {
             Logger.error("file upload failed", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 
@@ -239,15 +239,15 @@ public class MinioOssProvider extends AbstractProvider {
                     .object(fileName)
                     .build());
             return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .errcode(ErrorCode.SUCCESS.getCode())
+                    .errmsg(ErrorCode.SUCCESS.getDesc())
                     .build();
         } catch (Exception e) {
             Logger.error("file remove failed ", e.getMessage());
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .errcode(ErrorCode.FAILURE.getCode())
+                .errmsg(ErrorCode.FAILURE.getDesc())
                 .build();
     }
 

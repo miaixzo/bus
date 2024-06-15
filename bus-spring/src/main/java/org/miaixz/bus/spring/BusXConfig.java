@@ -102,6 +102,10 @@ public class BusXConfig {
      */
     public static final String OFFICE = EXTEND + Symbol.DOT + "office";
     /**
+     * 聚合支付
+     */
+    public static final String PAY = EXTEND + Symbol.DOT + "pay";
+    /**
      * 数据脱敏
      */
     public static final String SENSITIVE = EXTEND + Symbol.DOT + "sensitive";

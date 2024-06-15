@@ -40,7 +40,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,14 +51,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FeishuProvider extends DefaultProvider {
+public class FeishuProvider extends AbstractProvider {
 
     public FeishuProvider(Context context) {
         super(context, Registry.FEISHU);
     }
 
-    public FeishuProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.FEISHU, authorizeCache);
+    public FeishuProvider(Context context, ExtendCache cache) {
+        super(context, Registry.FEISHU, cache);
     }
 
     /**
@@ -71,7 +71,7 @@ public class FeishuProvider extends DefaultProvider {
      */
     private String getAppAccessToken() {
         String cacheKey = this.complex.getName().concat(":app_access_token:").concat(context.getAppKey());
-        String cacheAppAccessToken = String.valueOf(this.authorizeCache.get(cacheKey));
+        String cacheAppAccessToken = String.valueOf(this.cache.get(cacheKey));
         if (StringKit.isNotEmpty(cacheAppAccessToken)) {
             return cacheAppAccessToken;
         }
@@ -88,16 +88,16 @@ public class FeishuProvider extends DefaultProvider {
         this.checkResponse(jsonObject);
         String appAccessToken = jsonObject.getString("app_access_token");
         // 缓存 app access token
-        this.authorizeCache.cache(cacheKey, appAccessToken, jsonObject.getLongValue("expire") * 1000);
+        this.cache.cache(cacheKey, appAccessToken, jsonObject.getLongValue("expire") * 1000);
         return appAccessToken;
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         JSONObject requestObject = new JSONObject();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "authorization_code");
-        requestObject.put("code", authCallback.getCode());
+        requestObject.put("code", callback.getCode());
         return getToken(requestObject, this.complex.accessToken());
 
     }

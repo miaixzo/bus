@@ -36,7 +36,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,21 +47,21 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LineProvider extends DefaultProvider {
+public class LineProvider extends AbstractProvider {
 
     public LineProvider(Context context) {
         super(context, Registry.LINE);
     }
 
-    public LineProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.LINE, authorizeCache);
+    public LineProvider(Context context, ExtendCache cache) {
+        super(context, Registry.LINE, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
-        params.put("code", authCallback.getCode());
+        params.put("code", callback.getCode());
         params.put("redirect_uri", context.getRedirectUri());
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());

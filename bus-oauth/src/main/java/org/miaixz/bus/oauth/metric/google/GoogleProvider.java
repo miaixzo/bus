@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +50,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GoogleProvider extends DefaultProvider {
+public class GoogleProvider extends AbstractProvider {
 
     public GoogleProvider(Context context) {
         super(context, Registry.GOOGLE);
     }
 
-    public GoogleProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.GOOGLE, authorizeCache);
+    public GoogleProvider(Context context, ExtendCache cache) {
+        super(context, Registry.GOOGLE, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AccToken.builder()

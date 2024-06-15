@@ -48,7 +48,7 @@ public class NeteaseSmsProvider extends NeteaseProvider<NeteaseProperty, Context
 
     @Override
     public Message send(NeteaseProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("templateid", entity.getTemplate());
         bodys.put("mobiles", entity.getReceive());
         bodys.put("params", JsonKit.toJsonString(entity.getParams()));

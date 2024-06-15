@@ -39,6 +39,13 @@ public class DateException extends InternalException {
 
     /**
      * 构造
+     */
+    public DateException() {
+        super();
+    }
+
+    /**
+     * 构造
      *
      * @param e 异常
      */

@@ -40,7 +40,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,20 +51,20 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractMicrosoftProvider extends DefaultProvider {
+public abstract class AbstractMicrosoftProvider extends AbstractProvider {
 
     public AbstractMicrosoftProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
 
-    public AbstractMicrosoftProvider(Context context, Complex complex, ExtendCache authorizeCache) {
-        super(context, complex, authorizeCache);
+    public AbstractMicrosoftProvider(Context context, Complex complex, ExtendCache cache) {
+        super(context, complex, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return getToken(accessTokenUrl(authCallback.getCode()));
+    protected AccToken getAccessToken(Callback callback) {
+        return getToken(accessTokenUrl(callback.getCode()));
     }
 
     /**

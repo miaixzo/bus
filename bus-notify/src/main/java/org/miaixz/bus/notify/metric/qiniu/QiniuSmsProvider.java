@@ -27,8 +27,6 @@
  */
 package org.miaixz.bus.notify.metric.qiniu;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -53,15 +51,15 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuProperty, Context> {
 
     @Override
     public Message send(QiniuProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
-        bodys.put("parameters", StringKit.split(entity.getParams(), Symbol.COMMA));
+        bodys.put("parameters", entity.getParams());
         bodys.put("mobiles", entity.getReceive());
         String response = Httpx.post(this.getUrl(entity), bodys);
         int status = JsonKit.getValue(response, "status");
 
         String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == 200 ? ErrorCode.SUCCESS.getMsg() : ErrorCode.FAILURE.getMsg();
+        String errmsg = status == 200 ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

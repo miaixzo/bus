@@ -58,22 +58,9 @@ public class EmaySmsProvider extends AbstractProvider<EmayProperty, Context> {
         super(context);
     }
 
-    private static Map<String, Object> getParamsMap(String appId, String secretKey, String phone, String message) {
-        Map<String, Object> params = new HashMap<>();
-        // 时间戳(必填)  格式：yyyyMMddHHmmss
-        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String sign = Builder.md5(appId + secretKey + timestamp);
-        params.put("appId", appId);
-        params.put("timestamp", timestamp);
-        params.put("sign", sign);
-        params.put("mobiles", phone);
-        params.put("content", UrlEncoder.encodeAll(message, Charset.UTF_8));
-        return params;
-    }
-
     @Override
     public Message send(EmayProperty entity) {
-        Map<String, Object> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(), entity.getContent());
+        Map<String, String> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(), entity.getContent());
         Map<String, String> headers = MapKit.newHashMap(1, true);
         headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -83,6 +70,19 @@ public class EmaySmsProvider extends AbstractProvider<EmayProperty, Context> {
                 .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg"))
                 .build();
+    }
+
+    private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
+        Map<String, String> params = new HashMap<>();
+        // 时间戳(必填)  格式：yyyyMMddHHmmss
+        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String sign = Builder.md5(appId + secretKey + timestamp);
+        params.put("appId", appId);
+        params.put("timestamp", timestamp);
+        params.put("sign", sign);
+        params.put("mobiles", phone);
+        params.put("content", UrlEncoder.encodeAll(message, Charset.UTF_8));
+        return params;
     }
 
 }

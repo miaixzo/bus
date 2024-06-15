@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * Gitlab 登录
@@ -46,19 +46,19 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GitlabProvider extends DefaultProvider {
+public class GitlabProvider extends AbstractProvider {
 
     public GitlabProvider(Context context) {
         super(context, Registry.GITLAB);
     }
 
-    public GitlabProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.GITLAB, authorizeCache);
+    public GitlabProvider(Context context, ExtendCache cache) {
+        super(context, Registry.GITLAB, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

@@ -82,11 +82,11 @@ public class RSA extends Crypto {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public RSA(final String privateKeyStr, final String publicKeyStr) {
-        super(ALGORITHM_RSA, privateKeyStr, publicKeyStr);
+    public RSA(final String privateKey, final String publicKey) {
+        super(ALGORITHM_RSA, privateKey, publicKey);
     }
 
     /**
@@ -95,11 +95,11 @@ public class RSA extends Crypto {
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param rsaAlgorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public RSA(final String rsaAlgorithm, final String privateKeyStr, final String publicKeyStr) {
-        super(rsaAlgorithm, privateKeyStr, publicKeyStr);
+    public RSA(final String rsaAlgorithm, final String privateKey, final String publicKey) {
+        super(rsaAlgorithm, privateKey, publicKey);
     }
 
     /**

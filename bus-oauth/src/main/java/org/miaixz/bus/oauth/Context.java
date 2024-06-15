@@ -30,7 +30,7 @@ package org.miaixz.bus.oauth;
 import lombok.Builder;
 import lombok.*;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.List;
 
@@ -111,7 +111,7 @@ public class Context {
     /**
      * 忽略校验 {@code state}
      * 默认不开启。当 {@code ignoreCheckState} 为 {@code true} 时，
-     * {@link DefaultProvider#login(Callback)} 将不会校验 {@code state} 的合法性。
+     * {@link AbstractProvider#login(Callback)} 将不会校验 {@code state} 的合法性。
      * <p>
      * 使用场景：当且仅当使用自实现 {@code state} 校验逻辑时开启
      * <p>

@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,19 +50,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WeiboProvider extends DefaultProvider {
+public class WeiboProvider extends AbstractProvider {
 
     public WeiboProvider(Context context) {
         super(context, Registry.WEIBO);
     }
 
-    public WeiboProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WEIBO, authorizeCache);
+    public WeiboProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WEIBO, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        String response = doPostAuthorizationCode(authCallback.getCode());
+    protected AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         if (accessTokenObject.containsKey("error")) {
             throw new AuthorizedException(accessTokenObject.getString("error_description"));

@@ -13,6 +13,6 @@ public enum ErrorCode {
     UNSUPPORTED("5003", "Unsupported operation");
 
     private String code;
-    private String msg;
+    private String desc;
 
 }

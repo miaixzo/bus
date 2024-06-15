@@ -43,8 +43,8 @@ public class MicrosoftProvider extends AbstractMicrosoftProvider {
         super(context, Registry.MICROSOFT);
     }
 
-    public MicrosoftProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.MICROSOFT, authorizeCache);
+    public MicrosoftProvider(Context context, ExtendCache cache) {
+        super(context, Registry.MICROSOFT, cache);
     }
 
 }

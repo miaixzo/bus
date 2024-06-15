@@ -39,6 +39,13 @@ public class CloneException extends InternalException {
 
     /**
      * 构造
+     */
+    public CloneException() {
+        super();
+    }
+
+    /**
+     * 构造
      *
      * @param e 异常
      */

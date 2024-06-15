@@ -37,7 +37,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,23 +48,23 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AfDianProvider extends DefaultProvider {
+public class AfDianProvider extends AbstractProvider {
 
     public AfDianProvider(Context context) {
         super(context, Registry.AFDIAN);
     }
 
-    public AfDianProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.AFDIAN, authorizeCache);
+    public AfDianProvider(Context context, ExtendCache cache) {
+        super(context, Registry.AFDIAN, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
-        params.put("code", authCallback.getCode());
+        params.put("code", callback.getCode());
         params.put("redirect_uri", context.getRedirectUri());
 
         String response = Httpx.post(Registry.AFDIAN.accessToken(), params);

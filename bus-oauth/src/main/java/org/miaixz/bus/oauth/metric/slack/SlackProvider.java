@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,21 +50,21 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SlackProvider extends DefaultProvider {
+public class SlackProvider extends AbstractProvider {
 
     public SlackProvider(Context context) {
         super(context, Registry.SLACK);
     }
 
-    public SlackProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.SLACK, authorizeCache);
+    public SlackProvider(Context context, ExtendCache cache) {
+        super(context, Registry.SLACK, cache);
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/x-www-form-urlencoded");
-        String response = Httpx.get(accessTokenUrl(authCallback.getCode()), null, header);
+        String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AccToken.builder()
