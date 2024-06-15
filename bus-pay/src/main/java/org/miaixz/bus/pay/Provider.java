@@ -27,23 +27,16 @@
  */
 package org.miaixz.bus.pay;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 公共接口,交易类型
+ * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口
  *
+ *
+ * @param <T> 全局对象
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider {
-
-    /**
-     * 获取交易类型
-     *
-     * @return 交易类型
-     */
-    default String getChannel() {
-        return Normal.EMPTY;
-    }
+public interface Provider<T extends Material> {
 
 }

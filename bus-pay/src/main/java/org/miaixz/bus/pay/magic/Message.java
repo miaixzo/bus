@@ -28,6 +28,13 @@
 package org.miaixz.bus.pay.magic;
 
 import lombok.*;
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 统一授权响应类
@@ -40,21 +47,75 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class Message implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * 请求返回码,错误为具体返回码,正确为 0
      */
-    String errcode;
+    public String errcode;
 
     /**
      * 请求返回消息
      */
-    String errmsg;
+    public String errmsg;
 
     /**
      * 请求返回数据 JSON
      */
-    Object data;
+    public Object data;
+
+
+    private String body;
+    private byte[] bodyByte;
+    private int status;
+    private Map<String, List<String>> headers;
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public byte[] getBodyByte() {
+        return bodyByte;
+    }
+
+    public void setBodyByte(byte[] bodyByte) {
+        this.bodyByte = bodyByte;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Map<String, List<String>> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, List<String>> headers) {
+        this.headers = headers;
+    }
+
+    public String getHeader(String name) {
+        List<String> values = this.headerList(name);
+        return CollKit.isEmpty(values) ? null : values.get(0);
+    }
+
+    private List<String> headerList(String name) {
+        if (StringKit.isBlank(name)) {
+            return null;
+        } else {
+            CaseInsensitiveMap<String, List<String>> headersIgnoreCase = new CaseInsensitiveMap<>(getHeaders());
+            return headersIgnoreCase.get(name.trim());
+        }
+    }
 
 }

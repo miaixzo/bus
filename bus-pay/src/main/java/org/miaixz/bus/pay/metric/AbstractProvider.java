@@ -27,135 +27,617 @@
  */
 package org.miaixz.bus.pay.metric;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.lang.exception.PageException;
+import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.exception.PaymentException;
+import org.miaixz.bus.core.net.tls.SSLContextBuilder;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pay.Builder;
+import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.pay.Checker;
+import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Provider;
-import org.miaixz.bus.pay.Registry;
+import org.miaixz.bus.pay.cache.PayCache;
+import org.miaixz.bus.pay.magic.ErrorCode;
+import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.magic.Message;
 
-public abstract class AbstractProvider implements Provider {
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    private static final ThreadLocal<String> TL = new ThreadLocal<>();
-    protected Context context;
-    protected Registry source;
-    protected ExtendCache extendCache;
+/**
+ * 相关请求提供者
+ *
+ * @param <T> 全局对象
+ * @param <K> 公用属性
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public abstract class AbstractProvider<T extends Material, K extends Context> implements Provider<T> {
 
-    public AbstractProvider(Context context, Registry source) {
-        this(context, source, PayCache.INSTANCE);
+    /**
+     * 上下文对象
+     */
+    protected K context;
+    /**
+     * API地址支持
+     */
+    protected Complex complex;
+    /**
+     * 缓存支持
+     */
+    protected ExtendCache cache;
+
+    /**
+     * 构造
+     *
+     * @param context 全局信息
+     */
+    public AbstractProvider(K context) {
+        this(context, null);
     }
 
-    public AbstractProvider(Context context, Registry source, ExtendCache extendCache) {
+    /**
+     * 构造
+     *
+     * @param context 全局信息
+     * @param complex API地址
+     */
+    public AbstractProvider(K context, Complex complex) {
+        this(context, complex, PayCache.INSTANCE);
+    }
+
+    /**
+     * 构造
+     *
+     * @param context 全局信息
+     * @param complex API地址
+     * @param cache   缓存支持
+     */
+    public AbstractProvider(K context, Complex complex, ExtendCache cache) {
+        Assert.notNull(context, "[context] is null");
         this.context = context;
-        this.source = source;
-        this.extendCache = extendCache;
-        if (!isSupport(context, source)) {
-            throw new PageException(Builder.ErrorCode.PARAMETER_INCOMPLETE.getCode());
+        this.complex = complex;
+        this.cache = ObjectKit.isEmpty(cache) ? PayCache.INSTANCE : cache;
+        if (!Checker.isSupportedPay(this.context, complex)) {
+            throw new PaymentException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
-        checkContext(context, source);
+        Checker.checkConfig(this.context, complex);
     }
 
     /**
-     * 是否支持第三方支付
+     * 获取 {@link PayScope} 数组中所有的被标记为 {@code default} 的 scope
      *
-     * @param context 上下文信息
-     * @param source  当前平台
-     * @return true or false
+     * @param scopes scopes
+     * @return {@link List}
      */
-    public static boolean isSupport(Context context, Registry source) {
-        boolean isSupported = StringKit.isNotEmpty(context.getAppKey())
-                && StringKit.isNotEmpty(context.getAppSecret());
-
-        return isSupported;
-    }
-
-    /**
-     * 检查配置合法性 针对部分平台
-     *
-     * @param context 上下文信息
-     * @param source  当前平台
-     */
-    public static void checkContext(Context context, Registry source) {
-
-    }
-
-    /**
-     * 移除当前线程中的 appId
-     */
-    public static void remove() {
-        TL.remove();
-    }
-
-    /**
-     * <p>向缓存中设置 AliPayApiConfig </p>
-     * <p>每个 appId 只需添加一次，相同 appId 将被覆盖</p>
-     *
-     * @param context 支付宝支付配置
-     */
-    public void put(Context context) {
-        extendCache.cache(context.getAppId(), context);
-    }
-
-    /**
-     * 通过 appId 移除支付配置
-     *
-     * @param appId 支付宝应用编号
-     */
-    public void remove(String appId) {
-        extendCache.remove(appId);
-    }
-
-    /**
-     * 向当前线程中设置 {@link Context}
-     *
-     * @param context {@link Context} 支付宝配置对象
-     */
-    public void setThread(Context context) {
-        if (StringKit.isNotEmpty(Context.getAppId())) {
-            setThread(Context.getAppId());
+    public static List<String> getDefaultScopes(PayScope[] scopes) {
+        if (null == scopes || scopes.length == 0) {
+            return null;
         }
-        put(context);
+        return Arrays.stream(scopes)
+                .filter((PayScope::isDefault))
+                .map(PayScope::getScope)
+                .collect(Collectors.toList());
     }
 
     /**
-     * 向当前线程中设置 appId
+     * 从 {@link PayScope} 数组中获取实际的 scope 字符串
      *
-     * @param appId 支付宝应用编号
+     * @param scopes 可变参数，支持传任意 {@link PayScope}
+     * @return {@link List}
      */
-    public void setThread(String appId) {
-        if (StringKit.isEmpty(appId)) {
-            appId = (String) this.extendCache.get(appId);
+    public static List<String> getScopes(PayScope... scopes) {
+        if (null == scopes || scopes.length == 0) {
+            return null;
         }
-        TL.set(appId);
+        return Arrays.stream(scopes).map(PayScope::getScope).collect(Collectors.toList());
     }
 
     /**
-     * 获取当前线程中的  appId
+     * get 请求
      *
-     * @return 支付宝应用编号 appId
+     * @param url     请求url
+     * @param formMap 请求参数
+     * @return {@link String} 请求返回的结果
      */
-    public String getAppId() {
-        String appId = TL.get();
-        if (StringKit.isEmpty(appId)) {
-            context = getContext(appId);
-        }
-        return context.getAppId();
+    public static String get(String url, Map<String, String> formMap) {
+        return Httpx.get(url, formMap);
     }
 
     /**
-     * 通过 appId 获取 AliPayApiConfig
+     * post 请求
      *
-     * @param appId 支付宝应用编号
-     * @return {@link Context}
+     * @param url  请求url
+     * @param data 请求参数
+     * @return {@link String} 请求返回的结果
      */
-    public Context getContext(String appId) {
-        Context context = (Context) this.extendCache.get(appId);
-        if (context == null) {
-            throw new IllegalStateException("需事先调用 AliPayApiConfigKit.putApiConfig(aliPayApiConfig) 将 appId对应的 aliPayApiConfig 对象存入，才可以使用 AliPayApiConfigKit.getAliPayApiConfig() 的系列方法");
+    public static String post(String url, String data) {
+        try {
+            return Httpz.post()
+                    .url(url)
+                    .body(data)
+                    .build()
+                    .execute()
+                    .body()
+                    .string();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return context;
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url       请求url
+     * @param data      请求参数
+     * @param headerMap 请求头
+     * @return {@link Message}  请求返回的结果
+     */
+    public static Message post(String url, String data, Map<String, String> headerMap) {
+        try {
+            Response response = postTo(url, headerMap, data);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * get 请求
+     *
+     * @param url       请求url
+     * @param formMap   请求参数
+     * @param headerMap 请求头
+     * @return {@link Message} 请求返回的结果
+     */
+    public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
+        try {
+            Response response = getTo(url, formMap, headerMap);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url       请求url
+     * @param formMap   请求参数
+     * @param headerMap 请求头
+     * @return {@link Message}  请求返回的结果
+     */
+    public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
+        try {
+            Response response = postTo(url, headerMap, formMap);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url       请求url
+     * @param formMap   请求参数
+     * @param headerMap 请求头
+     * @param file      文件
+     * @return {@link Message}  请求返回的结果
+     */
+    public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
+        try {
+            Response response = postTo(url, headerMap, formMap);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url      请求url
+     * @param data     请求参数
+     * @param certPath 证书路径
+     * @param certPass 证书密码
+     * @param protocol 协议
+     * @return {@link String} 请求返回的结果
+     */
+    public static String post(String url, String data, String certPath, String certPass, String protocol) {
+        try {
+            if (StringKit.isEmpty(protocol)) {
+                protocol = Http.TLS_V_10;
+            }
+            Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
+            final Request request = new Request.Builder()
+                    .url(url)
+                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data))
+                    .build();
+            NewCall call = httpd.newCall(request);
+            return call.execute().body().string();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url      请求url
+     * @param data     请求参数
+     * @param certFile 证书文件输入流
+     * @param certPass 证书密码
+     * @param protocol 协议
+     * @return {@link String} 请求返回的结果
+     */
+    public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
+        try {
+            if (StringKit.isEmpty(Http.TLS_V_10)) {
+                protocol = Http.TLS_V_10;
+            }
+            Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
+            final Request request = new Request.Builder()
+                    .url(url)
+                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data))
+                    .build();
+            NewCall call = httpd.newCall(request);
+            return call.execute().body().string();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * put 请求
+     *
+     * @param url       请求url
+     * @param data      请求参数
+     * @param headerMap 请求头
+     * @return {@link Message}  请求返回的结果
+     */
+    public static Message put(String url, String data, Map<String, String> headerMap) {
+        try {
+            Response response = putTo(url, headerMap, data);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param url      请求url
+     * @param data     请求参数
+     * @param certPath 证书路径
+     * @param certPass 证书密码
+     * @param filePath 上传文件路径
+     * @param protocol 协议
+     * @return {@link String}  请求返回的结果
+     */
+    public static String upload(String url, String data, String certPath, String certPass, String filePath, String protocol) {
+
+        SSLSocketFactory sslSocketFactory = getSslSocketFactory(certPath, null, certPass, protocol);
+
+        try {
+            return Httpz.post().url(url)
+                    .addFile(null, null, FileKit.newFile(filePath))
+                    .addHeader("Content-Type", "multipart/form-data;boundary=\"boundary\"")
+                    .build()
+                    .execute().body().string();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param url      请求url
+     * @param data     请求参数
+     * @param certPath 证书路径
+     * @param certPass 证书密码
+     * @param filePath 上传文件路径
+     * @return {@link String}  请求返回的结果
+     */
+    public static String upload(String url, String data, String certPath, String certPass, String filePath) {
+        return upload(url, data, certPath, certPass, filePath, Http.TLS_V_10);
+    }
+
+    /**
+     * get 请求
+     *
+     * @param url       请求url
+     * @param formMap   请求参数
+     * @param headerMap 请求头
+     * @return {@link Response} 请求返回的结果
+     */
+    private static Response getTo(String url, Map<String, String> formMap, Map<String, String> headerMap) {
+        try {
+            return Httpz.get().url(url)
+                    .addHeader(headerMap)
+                    .addParam(formMap)
+                    .build()
+                    .execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url       请求url
+     * @param headerMap 请求头
+     * @param data      请求参数
+     * @return {@link Response} 请求返回的结果
+     */
+    private static Response postTo(String url, Map<String, String> headerMap, String data) {
+        try {
+            return Httpz.post().url(url)
+                    .addHeader(headerMap)
+                    .body(data)
+                    .build()
+                    .execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url       请求url
+     * @param headerMap 请求头
+     * @param formMap   请求参数
+     * @return {@link Response} 请求返回的结果
+     */
+    private static Response postTo(String url, Map<String, String> headerMap, Map<String, String> formMap) {
+        try {
+            return Httpz.post().url(url)
+                    .addHeader(headerMap)
+                    .addParam(formMap)
+                    .build()
+                    .execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * put 请求
+     *
+     * @param url       请求url
+     * @param headerMap 请求头
+     * @param data      请求参数
+     * @return {@link Response} 请求返回的结果
+     */
+    private static Response putTo(String url, Map<String, String> headerMap, String data) {
+        try {
+            return Httpz.put().url(url)
+                    .addHeader(headerMap)
+                    .body(data)
+                    .build()
+                    .execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String readData(HttpServletRequest request) {
+        BufferedReader br = null;
+        try {
+            StringBuilder result = new StringBuilder();
+            br = request.getReader();
+            for (String line; (line = br.readLine()) != null; ) {
+                if (result.length() > 0) {
+                    result.append("\n");
+                }
+                result.append(line);
+            }
+            return result.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 将同步通知的参数转化为Map
+     *
+     * @param request {@link HttpServletRequest}
+     * @return 转化后的 Map
+     */
+    public static Map<String, String> toMap(HttpServletRequest request) {
+        Map<String, String> params = new HashMap<>();
+        Map<String, String[]> requestParams = request.getParameterMap();
+        for (String name : requestParams.keySet()) {
+            String[] values = requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+        return params;
+    }
+
+    @SneakyThrows
+    private static KeyManager[] getKeyManager(String certPass, String certPath, InputStream certFile) {
+        KeyStore clientStore = KeyStore.getInstance("PKCS12");
+        if (certFile != null) {
+            clientStore.load(certFile, certPass.toCharArray());
+        } else {
+            clientStore.load(Files.newInputStream(Paths.get(certPath)), certPass.toCharArray());
+        }
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(clientStore, certPass.toCharArray());
+        return kmf.getKeyManagers();
+    }
+
+    @SneakyThrows
+    private static SSLSocketFactory getSslSocketFactory(String certPath, InputStream certFile, String certPass, String protocol) {
+        SSLContextBuilder sslContextBuilder = SSLContextBuilder.of();
+        sslContextBuilder.setProtocol(protocol);
+        sslContextBuilder.setKeyManagers(getKeyManager(certPass, certPath, certFile));
+        sslContextBuilder.setSecureRandom(new SecureRandom());
+        return sslContextBuilder.buildChecked().getSocketFactory();
+    }
+
+    /**
+     * 处理发生异常的情况，统一响应参数
+     *
+     * @param e 具体的异常
+     * @return Message
+     */
+    protected Message responseError(Exception e) {
+        String errorCode = ErrorCode.FAILURE.getCode();
+        String errorMsg = e.getMessage();
+        if (e instanceof PaymentException) {
+            PaymentException authException = ((PaymentException) e);
+            errorCode = authException.getErrcode();
+            if (StringKit.isNotEmpty(authException.getErrmsg())) {
+                errorMsg = authException.getErrmsg();
+            }
+        }
+        return Message.builder().errcode(errorCode).errmsg(errorMsg).build();
+    }
+
+    /**
+     * 获取以 {@code separator}分割过后的 scope 信息
+     *
+     * @param separator     多个 {@code scope} 间的分隔符
+     * @param encode        是否 encode 编码
+     * @param defaultScopes 默认的 scope， 当客户端没有配置 {@code scopes} 时启用
+     * @return String
+     */
+    protected String getScopes(String separator, boolean encode, List<String> defaultScopes) {
+        List<String> scopes = context.getScopes();
+        if (null == scopes || scopes.isEmpty()) {
+            if (null == defaultScopes || defaultScopes.isEmpty()) {
+                return Normal.EMPTY;
+            }
+            scopes = defaultScopes;
+        }
+        if (null == separator) {
+            // 默认为空格
+            separator = Symbol.SPACE;
+        }
+        String scope = String.join(separator, scopes);
+        return encode ? UrlEncoder.encodeAll(scope) : scope;
+    }
+
+    /**
+     * get 请求
+     *
+     * @param url 请求url
+     * @return {@link String} 请求返回的结果
+     */
+    public String get(String url) {
+        return Httpx.get(url);
+    }
+
+    /**
+     * post 请求
+     *
+     * @param url     请求url
+     * @param formMap 请求参数
+     * @return {@link String} 请求返回的结果
+     */
+    public String post(String url, Map<String, String> formMap) {
+        return Httpx.post(url, formMap);
+    }
+
+    /**
+     * put 请求
+     *
+     * @param url       请求url
+     * @param formMap   请求参数
+     * @param headerMap 请求头
+     * @return {@link Message}  请求返回的结果
+     */
+    public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
+        try {
+            Response response = putTo(url, headerMap, formMap);
+            Message message = new Message();
+            message.setBody(response.body().string());
+            message.setStatus(response.code());
+            message.setHeaders(response.headers().toMultimap());
+            return message;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * put 请求
+     *
+     * @param url       请求url
+     * @param headerMap 请求头
+     * @param formMap   请求参数
+     * @return {@link Response} 请求返回的结果
+     */
+    private Response putTo(String url, Map<String, String> headerMap, Map<String, Object> formMap) {
+        try {
+            return Httpz.put().url(url)
+                    .addHeader(headerMap)
+                    .addParam(formMap)
+                    .build()
+                    .execute();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
+

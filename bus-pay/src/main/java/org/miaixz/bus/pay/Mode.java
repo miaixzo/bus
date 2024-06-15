@@ -29,20 +29,22 @@ package org.miaixz.bus.pay;
 
 /**
  * 平台模式
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public enum Mode {
-
     /**
      * 商户模式
      */
-    BUSINESS_MODEL("BUSINESS_MODEL"),
+    SELLER("SELLER"),
     /**
      * 服务商模式
      */
-    SERVICE_MODE("SERVICE_MODE");
+    SERVICE("SERVICE");
 
     /**
-     * 模式
+     * 对应值
      */
     private final String value;
 

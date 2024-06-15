@@ -27,10 +27,81 @@
  */
 package org.miaixz.bus.pay;
 
+import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.pay.metric.AbstractProvider;
+
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
+ *
+ * 支付平台的API地址的统一接口，提供以下方法：
+ * 1) {@link Complex#sandbox()}: 获取沙箱url. 非必须实现接口（部分平台不支持）
+ * 2) {@link Complex#service()}: 获取生产url. 必须实现
+ * 注：
+ * ①、如需通过扩展实现第三方授权，请参考{@link Registry}自行创建对应的枚举类并实现{@link Complex}接口
+ * ②、如果不是使用的枚举类，需要单独处理source字段的赋值
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Complex {
+
+    /**
+     * 根据 url 获取枚举值
+     *
+     * @param clazz 枚举class
+     * @param url   url
+     * @param <E>   枚举类
+     * @return 枚举值
+     */
+    static <E extends Enum<?> & Complex> Optional<E> of(Class<E> clazz, String url) {
+        return Arrays.stream(clazz.getEnumConstants()).filter(e -> e.method().equals(url)).findFirst();
+    }
+
+    /**
+     * 是否沙箱环境
+     *
+     * @return the string
+     */
+    default boolean isSandbox() {
+        return false;
+    }
+
+    /**
+     * 沙箱环境
+     *
+     * @return the string
+     */
+    default String sandbox() {
+        return Http.HOST_IPV4;
+    }
+
+    /**
+     * 生产环境
+     *
+     * @return the string
+     */
+    default String service() {
+        return Http.HOST_IPV4;
+    }
+
+    /**
+     * 获取接口/方法
+     *
+     * @return the string
+     */
+    default String method() {
+        return Http.NONE;
+    }
+
+    /**
+     * 平台对应的 Provider 实现类，必须继承自 {@link AbstractProvider}
+     *
+     * @return the class
+     */
+    default Class<? extends AbstractProvider> getTargetClass() {
+        return AbstractProvider.class;
+    }
 
 }

@@ -27,19 +27,24 @@
  */
 package org.miaixz.bus.pay.magic;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 授权回调时的参数类
+ * 回调结果检查
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@Builder
-public class Callback {
+public interface Callback {
+    /**
+     * 是否匹配
+     *
+     * @return 匹配结果
+     */
+    boolean matching();
 
+    /**
+     * 获取 JSON
+     *
+     * @return json
+     */
+    String getJson();
 }

@@ -27,48 +27,199 @@
  */
 package org.miaixz.bus.pay;
 
+import org.miaixz.bus.pay.metric.AbstractProvider;
+import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
+import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
+import org.miaixz.bus.pay.metric.paypal.PayPalProvider;
+import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
+import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
+import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
+
 /**
  * 支付平台类型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum Registry {
+public enum Registry implements Complex {
 
     /**
      * 支付宝
      */
-    ALIPAY("ALIPAY"),
+    ALIPAY {
+        @Override
+        public String sandbox() {
+            return "https://openapi.alipaydev.com/gateway.do?";
+        }
+
+        @Override
+        public String service() {
+            // 消息验证地址
+            // return "https://mapi.alipay.com/gateway.do?";
+            return "https://openapi.alipay.com/gateway.do?";
+
+
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return AliPayProvider.class;
+        }
+    },
     /**
-     * 京东
+     * 京东支付
      */
-    JD("JD"),
+    JDPAY {
+        @Override
+        public String sandbox() {
+            return null;
+        }
+
+        @Override
+        public String service() {
+            return "https://paygate.jd.com/service";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return JdPayProvider.class;
+        }
+    },
     /**
      * Paypal
      */
-    PAYPAL("PAYPAL"),
+    PAYPAL {
+        @Override
+        public String sandbox() {
+            return "https://api.sandbox.paypal.com";
+        }
+
+        @Override
+        public String service() {
+            return "https://api.paypal.com";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return PayPalProvider.class;
+        }
+    },
     /**
-     * QQ
+     * QQ钱包
      */
-    QQ("QQ"),
+    TENPAY {
+        @Override
+        public String sandbox() {
+            return null;
+        }
+
+        @Override
+        public String service() {
+            // https://api.qpay.qq.com/cgi-bin
+            return "https://qpay.qq.com/cgi-bin";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return TenpayProvider.class;
+        }
+    },
     /**
-     * 银联
+     * 银联云闪付
      */
-    UNIONPAY("UNIONPAY"),
+    UNIONPAY {
+        @Override
+        public String sandbox() {
+            return null;
+        }
+
+        @Override
+        public String service() {
+            return "https://qr.95516.com/qrcGtwWeb-web/api/userAuth?version=1.0.0&redirectUrl=%s";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return UnionPayProvider.class;
+        }
+    },
     /**
      * 微信
      */
-    WECHAT("WECHAT");
+    WECHAT {
+        @Override
+        public String sandbox() {
+            return null;
+        }
 
+        @Override
+        public String service() {
+            return R.CHINA.url;
+        }
 
-    private final String value;
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return WechatPayProvider.class;
+        }
 
-    Registry(String value) {
-        this.value = value;
-    }
+        /**
+         * 按照区域分地址
+         */
+        enum R {
+            /**
+             * 中国国内
+             */
+            CHINA("https://api.mch.weixin.qq.com"),
+            /**
+             * 中国国内(备用域名)
+             */
+            CHINA2("https://api2.mch.weixin.qq.com"),
+            /**
+             * 东南亚
+             */
+            HK("https://apihk.mch.weixin.qq.com"),
+            /**
+             * 其它
+             */
+            US("https://apius.mch.weixin.qq.com"),
+            /**
+             * 获取公钥
+             */
+            FRAUD("https://fraud.mch.weixin.qq.com"),
+            /**
+             * 活动
+             */
+            ACTION("https://action.weixin.qq.com"),
+            /**
+             * 刷脸支付
+             * PAY_APP
+             */
+            PAY_APP("https://payapp.weixin.qq.com");
 
-    public String getType() {
-        return value;
+            /**
+             * 域名
+             */
+            private final String url;
+
+            R(String url) {
+                this.url = url;
+            }
+        }
+    };
+
+    /**
+     * 根据名称获取第三方支付信息
+     *
+     * @param name 第三方名称简写
+     * @return 第三方支付信息, 找不到时直接抛出异常
+     */
+    public static Registry require(String name) {
+        for (Registry registry : Registry.values()) {
+            if (registry.name().equalsIgnoreCase(name)) {
+                return registry;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported type for " + name);
     }
 
 }

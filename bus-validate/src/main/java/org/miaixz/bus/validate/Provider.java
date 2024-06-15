@@ -52,7 +52,6 @@ public class Provider {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -66,7 +65,6 @@ public class Provider {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -81,7 +79,6 @@ public class Provider {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -96,7 +93,6 @@ public class Provider {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -112,7 +108,6 @@ public class Provider {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
