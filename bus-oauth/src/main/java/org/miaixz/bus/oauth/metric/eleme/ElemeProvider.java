@@ -139,7 +139,7 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, Object> parameters = new HashMap<>(4);
         // 获取商户账号信息的API接口名称
         String action = "eleme.user.getUser";
@@ -178,7 +178,7 @@ public class ElemeProvider extends AbstractProvider {
 
         JSONObject result = object.getJSONObject("result");
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(result)
                 .uuid(result.getString("userId"))
                 .username(result.getString("userName"))

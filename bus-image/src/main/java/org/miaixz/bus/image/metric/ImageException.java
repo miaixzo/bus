@@ -30,7 +30,7 @@ package org.miaixz.bus.image.metric;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.data.ValidationResult;
@@ -84,7 +84,7 @@ public class ImageException extends RelevantException {
 
     public ImageException setErrorComment(String val) {
         if (null != val)
-            rsp.setString(Tag.ErrorComment, VR.LO, Property.truncate(val, 64));
+            rsp.setString(Tag.ErrorComment, VR.LO, Material.truncate(val, 64));
         return this;
     }
 

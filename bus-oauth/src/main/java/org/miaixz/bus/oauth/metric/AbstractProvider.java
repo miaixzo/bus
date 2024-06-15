@@ -116,7 +116,7 @@ public abstract class AbstractProvider implements Provider {
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
-    protected abstract Property getUserInfo(AccToken accToken);
+    protected abstract Material getUserInfo(AccToken accToken);
 
     /**
      * 统一的登录入口。当通过{@link AbstractProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中
@@ -134,7 +134,7 @@ public abstract class AbstractProvider implements Provider {
             }
 
             AccToken accToken = this.getAccessToken(callback);
-            Property user = this.getUserInfo(accToken);
+            Material user = this.getUserInfo(accToken);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
             Logger.error("Failed to login with oauth authorization.", e);

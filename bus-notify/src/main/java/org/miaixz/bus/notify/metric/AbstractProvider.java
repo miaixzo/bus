@@ -31,8 +31,8 @@ import lombok.AllArgsConstructor;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
+import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.magic.Property;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
  * @since Java 17+
  */
 @AllArgsConstructor
-public abstract class AbstractProvider<T extends Property, K extends Context> implements Provider<T> {
+public abstract class AbstractProvider<T extends Material, K extends Context> implements Provider<T> {
 
     protected K context;
 

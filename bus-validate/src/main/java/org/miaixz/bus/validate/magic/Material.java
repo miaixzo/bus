@@ -48,7 +48,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class Property {
+public class Material {
 
     private boolean array = false;
     /**
@@ -88,9 +88,9 @@ public class Property {
     /**
      * 校验属性信息
      */
-    private List<Property> list;
+    private List<Material> list;
 
-    public Property() {
+    public Material() {
         this.list = new ArrayList<>();
         this.param = new HashMap<>();
     }
@@ -98,13 +98,13 @@ public class Property {
     /**
      * 添加父级校验注解属性
      *
-     * @param property 属性
+     * @param material 属性
      */
-    public void addParentProperty(Property property) {
+    public void addParentProperty(Material material) {
         if (CollKit.isEmpty(this.list)) {
             this.list = new ArrayList<>();
         }
-        this.list.add(property);
+        this.list.add(material);
     }
 
     /**

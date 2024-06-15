@@ -155,7 +155,7 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Builder urlBuilder = Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("app_key", context.getAppKey())
@@ -171,7 +171,7 @@ public class JdProvider extends AbstractProvider {
 
         JSONObject data = this.getUserDataJsonObject(object);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(data)
                 .uuid(accToken.getOpenId())
                 .username(data.getString("nickName"))

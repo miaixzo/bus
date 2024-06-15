@@ -65,7 +65,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String openId = accToken.getOpenId();
 
         String response = doGetUserInfo(accToken);
@@ -79,7 +79,7 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
             accToken.setUnionId(object.getString("unionid"));
         }
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))

@@ -39,7 +39,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
 /**
@@ -73,7 +73,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject object = this.checkResponse(response);
 
@@ -85,7 +85,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         String userTicket = object.getString("user_ticket");
         JSONObject userDetail = getUserDetail(accToken.getAccessToken(), userId, userTicket);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userDetail)
                 .username(userDetail.getString("name"))
                 .nickname(userDetail.getString("alias"))

@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -70,15 +70,15 @@ public class ExtendedNegotiate {
 
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  ExtendedNegotiation[")
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    sopClass: ");
         UID.promptTo(cuid, sb)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    info: [");
         for (byte b : info)
             sb.append(b).append(", ");
         return sb.append(']')
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  ]");
     }
 

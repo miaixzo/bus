@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.metric.internal.pdu;
 
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -56,11 +56,11 @@ public class IdentityAC {
 
     StringBuilder promptTo(StringBuilder sb) {
         return sb.append("  UserIdentity[")
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    serverResponse: byte[")
                 .append(serverResponse.length)
                 .append(']')
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  ]");
     }
 

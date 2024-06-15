@@ -37,8 +37,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
+import org.miaixz.bus.storage.magic.Material;
 import org.miaixz.bus.storage.magic.Message;
-import org.miaixz.bus.storage.magic.Property;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -121,15 +121,14 @@ public class AliYunOssProvider extends AbstractProvider {
                 .errcode(ErrorCode.SUCCESS.getCode())
                 .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
-                    Property storageItem = new Property();
-                    storageItem.setName(item.getKey());
-                    storageItem.setSize(StringKit.toString(item.getSize()));
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());
-                    storageItem.setExtend(extend);
-                    return storageItem;
+                    return Material.builder()
+                            .name(item.getKey())
+                            .size(StringKit.toString(item.getSize()))
+                            .extend(extend).build();
                 }).collect(Collectors.toList())).build();
     }
 
@@ -187,7 +186,7 @@ public class AliYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(ErrorCode.SUCCESS.getCode())
                     .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Property.builder().name(fileName).size(Normal.EMPTY + response.getContentLength()).path(response.getUri()))
+                    .data(Material.builder().name(fileName).size(Normal.EMPTY + response.getContentLength()).path(response.getUri()))
                     .build();
 
         } catch (Exception e) {

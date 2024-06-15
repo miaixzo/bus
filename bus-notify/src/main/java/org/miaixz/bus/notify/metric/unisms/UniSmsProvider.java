@@ -47,14 +47,14 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
+public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
 
     public UniSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(UniProperty entity) {
+    public Message send(UniMaterial entity) {
         if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
             throw new ValidateException("配置文件模板id和模板变量不能为空！");
         }
@@ -74,7 +74,7 @@ public class UniSmsProvider extends AbstractProvider<UniProperty, Context> {
      *
      * @param action 接口名称
      */
-    public Message request(final UniProperty entity, final String action, final Map<String, Object> bodys) {
+    public Message request(final UniMaterial entity, final String action, final Map<String, Object> bodys) {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "uni-java-sdk" + "/" + "0.0.4");
         headers.put("Content-Type", MediaType.APPLICATION_JSON);

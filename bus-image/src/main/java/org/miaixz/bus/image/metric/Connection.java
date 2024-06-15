@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Device;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.metric.internal.net.TCPHandler;
 import org.miaixz.bus.image.metric.internal.net.TCPListener;
 import org.miaixz.bus.image.metric.internal.net.UDPHandler;
@@ -837,11 +837,11 @@ public class Connection implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent, "Connection[cn: ", commonName);
-        Property.appendLine(sb, indent2, "host: ", hostname);
-        Property.appendLine(sb, indent2, "port: ", port);
-        Property.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
-        Property.appendLine(sb, indent2, "installed: ", getInstalled());
+        Material.appendLine(sb, indent, "Connection[cn: ", commonName);
+        Material.appendLine(sb, indent2, "host: ", hostname);
+        Material.appendLine(sb, indent2, "port: ", port);
+        Material.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
+        Material.appendLine(sb, indent2, "installed: ", getInstalled());
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
@@ -999,12 +999,12 @@ public class Connection implements Serializable {
             String remoteProxy = remoteConn.getHttpProxy();
             if (null != remoteProxy) {
                 String userauth = null;
-                String[] ss = Property.split(remoteProxy, Symbol.C_AT);
+                String[] ss = Material.split(remoteProxy, Symbol.C_AT);
                 if (ss.length > 1) {
                     userauth = ss[0];
                     remoteProxy = ss[1];
                 }
-                ss = Property.split(remoteProxy, Symbol.C_COLON);
+                ss = Material.split(remoteProxy, Symbol.C_COLON);
                 int proxyPort = ss.length > 1 ? Integer.parseInt(ss[1]) : 8080;
                 s.connect(new InetSocketAddress(ss[0], proxyPort), connectTimeout);
                 try {

@@ -38,7 +38,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Objects;
@@ -73,14 +73,14 @@ public class PinterestProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String userinfoUrl = userInfoUrl(accToken);
         // TODO: 是否需要 .setFollowRedirects(true)
         String response = Httpx.get(userinfoUrl);
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject userObj = object.getJSONObject("data");
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userObj)
                 .uuid(userObj.getString("id"))
                 .avatar(getAvatarUrl(userObj))

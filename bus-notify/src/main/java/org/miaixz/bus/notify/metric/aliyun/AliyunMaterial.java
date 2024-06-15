@@ -25,22 +25,21 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.baidu;
+package org.miaixz.bus.notify.metric.aliyun;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
-/**
- * 百度云短信
- *
- * @author Kimi Liu
- * @since Java 17+
- */
 @Getter
 @Setter
-public class BaiduProperty extends Property {
+public class AliyunMaterial extends Material {
+
+    /**
+     * 播放次数
+     */
+    private String playTimes;
 
     /**
      * API默认请求地址
@@ -48,7 +47,7 @@ public class BaiduProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url;
+        return this.url = "https://dysmsapi.aliyuncs.com/";
     }
 
 }

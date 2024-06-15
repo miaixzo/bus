@@ -56,20 +56,20 @@ public class Checker {
      * 根据指定的校验器校验对象
      *
      * @param verified 被校验对象
-     * @param property 校验器属性
+     * @param material 校验器属性
      * @return 校验结果
      * @throws ValidateException 如果校验环境的fast设置为true, 则校验失败时立刻抛出该异常
      */
-    public Collector object(Verified verified, Property property)
+    public Collector object(Verified verified, Material material)
             throws ValidateException {
         Collector collector = new Collector(verified);
         Context context = verified.getContext();
 
-        if (Provider.isGroup(property.getGroup(), context.getGroup())) {
-            collector.collect(doObject(verified, property));
+        if (Provider.isGroup(material.getGroup(), context.getGroup())) {
+            collector.collect(doObject(verified, material));
         }
-        List<Property> list = property.getList();
-        for (Property p : list) {
+        List<Material> list = material.getList();
+        for (Material p : list) {
             collector.collect(doObject(verified, p));
         }
         return collector;
@@ -133,27 +133,27 @@ public class Checker {
      * 根据校验器属性校验对象
      *
      * @param verified 被校验的对象
-     * @param property 校验器属性
+     * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doObject(Verified verified, Property property) {
-        Matcher matcher = (Matcher) Registry.getInstance().require(property.getName(), property.getClazz());
+    private Collector doObject(Verified verified, Material material) {
+        Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
         if (ObjectKit.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
-                    property.getName(),
-                    null == property.getClazz() ? Normal.NULL : property.getClazz().getName()));
+                    material.getName(),
+                    null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
         }
         Object validatedTarget = verified.getObject();
-        if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {
-            return doArrayObject(verified, property);
-        } else if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isCollection(validatedTarget)) {
-            return doCollection(verified, property);
+        if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isArray(validatedTarget)) {
+            return doArrayObject(verified, material);
+        } else if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isCollection(validatedTarget)) {
+            return doCollection(verified, material);
         } else {
-            boolean result = matcher.on(validatedTarget, property.getAnnotation(), verified.getContext());
+            boolean result = matcher.on(validatedTarget, material.getAnnotation(), verified.getContext());
             if (!result && verified.getContext().isFast()) {
-                throw Provider.resolve(property, verified.getContext());
+                throw Provider.resolve(material, verified.getContext());
             }
-            return new Collector(verified, property, result);
+            return new Collector(verified, material, result);
         }
     }
 
@@ -161,14 +161,14 @@ public class Checker {
      * 校验集合对象元素
      *
      * @param verified 被校验对象
-     * @param property 校验器属性
+     * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doCollection(Verified verified, Property property) {
+    private Collector doCollection(Verified verified, Material material) {
         Collector collector = new Collector(verified);
         Collection<?> collection = (Collection<?>) verified.getObject();
         for (Object item : collection) {
-            Verified itemTarget = new Verified(item, new Annotation[]{property.getAnnotation()},
+            Verified itemTarget = new Verified(item, new Annotation[]{material.getAnnotation()},
                     verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
@@ -181,15 +181,15 @@ public class Checker {
      * 校验数组对象元素
      *
      * @param verified 被校验对象
-     * @param property 校验器属性
+     * @param material 校验器属性
      * @return 校验结果
      */
-    private Collector doArrayObject(Verified verified, Property property) {
+    private Collector doArrayObject(Verified verified, Material material) {
         Collector collector = new Collector(verified);
         Object[] array = (Object[]) verified.getObject();
         for (int i = 0; i < array.length; i++) {
             Verified itemTarget = new Verified(array[i],
-                    new Annotation[]{property.getAnnotation()}, verified.getContext());
+                    new Annotation[]{material.getAnnotation()}, verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
         }

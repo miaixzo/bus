@@ -103,7 +103,7 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -112,7 +112,7 @@ public class FeishuProvider extends AbstractProvider {
         JSONObject object = JSON.parseObject(response);
         this.checkResponse(object);
         JSONObject data = object.getJSONObject("data");
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(data.getString("union_id"))
                 .username(data.getString("name"))

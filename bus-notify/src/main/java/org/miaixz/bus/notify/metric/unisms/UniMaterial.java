@@ -25,50 +25,48 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.dingtalk;
+package org.miaixz.bus.notify.metric.unisms;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 钉钉通知模版
+ * 合一短信
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class DingTalkProperty extends Property {
+public class UniMaterial extends Material {
 
     /**
-     * 应用agentId
+     * 是否为简易模式
      */
-    private String agentId;
-    /**
-     * 接收者的用户userId列表，最大列表长度：100
-     */
-    private String userIdList;
-    /**
-     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
-     */
-    private String deptIdList;
-    /**
-     * 是否发送给企业全部用户 true,false
-     */
-    private boolean toAllUser;
-    /**
-     * 白名单列表
-     */
-    private String whiteList;
-    /**
-     * json字符串
-     */
-    private String msg;
+    private boolean simple = true;
 
     /**
-     * 钉钉token
+     * 模板变量名称
      */
-    private String token;
+    private String templateName;
+    /**
+     * 重试间隔
+     */
+    private int retryInterval;
+    /**
+     * 重试次数
+     */
+    private int maxRetries;
+
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://uni.apistd.com/";
+    }
 
 }

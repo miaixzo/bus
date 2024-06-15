@@ -25,27 +25,22 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.tencent;
+package org.miaixz.bus.notify.metric.qiniu;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 腾讯云
+ * 七牛云短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class TencentProperty extends Property {
-
-    /**
-     * 短信应用ID.
-     */
-    private String smsAppId;
+public class QiniuMaterial extends Material {
 
     /**
      * API默认请求地址
@@ -53,7 +48,7 @@ public class TencentProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.tencentcloudapi.com/";
+        return this.url = "https://sms.qiniuapi.com/v1/message";
     }
 
 }

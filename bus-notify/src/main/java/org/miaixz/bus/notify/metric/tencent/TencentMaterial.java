@@ -25,27 +25,27 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.yunpian;
+package org.miaixz.bus.notify.metric.tencent;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 云片短信
+ * 腾讯云
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class YunpianProperty extends Property {
+public class TencentMaterial extends Material {
 
     /**
-     * apikey
+     * 短信应用ID.
      */
-    private String apikey;
+    private String smsAppId;
 
     /**
      * API默认请求地址
@@ -53,7 +53,7 @@ public class YunpianProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.yunpian.com/v2/";
+        return this.url = "https://sms.tencentcloudapi.com/";
     }
 
 }

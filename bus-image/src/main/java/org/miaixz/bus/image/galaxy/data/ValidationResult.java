@@ -29,7 +29,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -188,16 +188,16 @@ public class ValidationResult {
         StringBuilder sb = new StringBuilder();
         if (null != notAllowedAttributes)
             errorComment(sb, "Not allowed Attribute",
-                    tagsOfNotAllowedAttributes()).append(Property.LINE_SEPARATOR);
+                    tagsOfNotAllowedAttributes()).append(Material.LINE_SEPARATOR);
         if (null != missingAttributes)
             errorComment(sb, "Missing Attribute",
-                    tagsOfMissingAttributes()).append(Property.LINE_SEPARATOR);
+                    tagsOfMissingAttributes()).append(Material.LINE_SEPARATOR);
         if (null != missingAttributeValues)
             errorComment(sb, "Missing Value of Attribute",
-                    tagsOfMissingAttributeValues()).append(Property.LINE_SEPARATOR);
+                    tagsOfMissingAttributeValues()).append(Material.LINE_SEPARATOR);
         if (null != invalidAttributeValues)
             errorComment(sb, "Invalid Attribute",
-                    tagsOfInvalidAttributeValues()).append(Property.LINE_SEPARATOR);
+                    tagsOfInvalidAttributeValues()).append(Material.LINE_SEPARATOR);
 
         return sb.substring(0, sb.length() - 1);
     }
@@ -225,11 +225,11 @@ public class ValidationResult {
     private void appendTextTo(int level, Attributes attrs, String title,
                               List<IOD.DataElement> list, StringBuilder sb) {
         appendPrefixTo(level, sb);
-        sb.append(title).append(Property.LINE_SEPARATOR);
+        sb.append(title).append(Material.LINE_SEPARATOR);
         for (IOD.DataElement el : list) {
             appendAttribute(level, el.tag, sb);
             appendIODRef(el.getLineNumber(), sb);
-            sb.append(Property.LINE_SEPARATOR);
+            sb.append(Material.LINE_SEPARATOR);
         }
     }
 
@@ -242,7 +242,7 @@ public class ValidationResult {
                                               String title, StringBuilder sb) {
         appendPrefixTo(level, sb);
         sb.append(title);
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
         for (InvalidAttributeValue iav : invalidAttributeValues) {
             int tag = iav.dataElement.tag;
             appendAttribute(level, tag, sb);
@@ -258,13 +258,13 @@ public class ValidationResult {
                 sb.append(" Invalid ").append(iav.reason);
                 appendIODRef(iav.dataElement.getLineNumber(), sb);
             }
-            sb.append(Property.LINE_SEPARATOR);
+            sb.append(Material.LINE_SEPARATOR);
             if (null != iav.missingItems) {
                 for (IOD iod : iav.missingItems) {
                     appendPrefixTo(level + 1, sb);
                     sb.append("Missing Item");
                     appendIODRef(iod.getLineNumber(), sb);
-                    sb.append(Property.LINE_SEPARATOR);
+                    sb.append(Material.LINE_SEPARATOR);
                 }
             }
             if (null != iav.itemValidationResults) {
@@ -274,7 +274,7 @@ public class ValidationResult {
                     if (!itemResult.isValid()) {
                         appendPrefixTo(level + 1, sb);
                         sb.append("Invalid Item ").append(i + 1).append(Symbol.C_COLON)
-                                .append(Property.LINE_SEPARATOR);
+                                .append(Material.LINE_SEPARATOR);
                         itemResult.appendTextTo(level + 1, seq.get(i), sb);
                     }
                 }

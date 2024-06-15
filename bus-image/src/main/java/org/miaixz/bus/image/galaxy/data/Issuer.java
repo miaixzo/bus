@@ -29,7 +29,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.io.Serializable;
 
@@ -60,7 +60,7 @@ public class Issuer implements Serializable {
     }
 
     public Issuer(String s, char delim) {
-        String[] ss = Property.split(s, delim);
+        String[] ss = Material.split(s, delim);
         if (ss.length > 3)
             throw new IllegalArgumentException(s);
         this.localNamespaceEntityID = emptyToNull(ss[0]);

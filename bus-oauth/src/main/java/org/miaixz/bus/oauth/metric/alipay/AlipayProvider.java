@@ -176,7 +176,7 @@ public class AlipayProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
         AlipayUserInfoShareResponse response;
@@ -192,7 +192,7 @@ public class AlipayProvider extends AbstractProvider {
         String province = response.getProvince(), city = response.getCity();
         String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(JSONObject.parseObject(JSONObject.toJSONString(response)))
                 .uuid(response.getUserId())
                 .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())

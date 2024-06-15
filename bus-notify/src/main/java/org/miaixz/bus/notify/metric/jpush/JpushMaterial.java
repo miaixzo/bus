@@ -25,32 +25,22 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.ctyun;
+package org.miaixz.bus.notify.metric.jpush;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 天翼云短信
+ * 极光短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class CtyunProperty extends Property {
-
-    /**
-     * 模板变量名称
-     */
-    private String templateName;
-
-    /**
-     * 接口名称
-     */
-    private String action = "SendSms";
+public class JpushMaterial extends Material {
 
     /**
      * API默认请求地址
@@ -58,7 +48,7 @@ public class CtyunProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms-global.ctapi.ctyun.cn/sms/api/v1/";
+        return this.url = "https://api.sms.jpush.cn/v1/messages/";
     }
 
 }

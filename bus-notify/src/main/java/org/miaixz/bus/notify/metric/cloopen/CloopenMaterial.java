@@ -25,22 +25,22 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.jdcloud;
+package org.miaixz.bus.notify.metric.cloopen;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 京东云短信
+ * 容联云短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class JdcloudProperty extends Property {
+public class CloopenMaterial extends Material {
 
     /**
      * API默认请求地址
@@ -48,7 +48,7 @@ public class JdcloudProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.jdcloud-api.com/";
+        return this.url = "https://app.cloopen.com:8883/2013-12-26/";
     }
 
 }

@@ -25,29 +25,27 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.zhutong;
+package org.miaixz.bus.notify.metric.yunpian;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 助通短信
+ * 云片短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class ZhutongProperty extends Property {
+public class YunpianMaterial extends Material {
 
     /**
-     * 模板变量名称
-     * 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement
-     * 允许为空，为空，使用无模板形式，发送短信
+     * apikey
      */
-    private String templateName;
+    private String apikey;
 
     /**
      * API默认请求地址
@@ -55,7 +53,7 @@ public class ZhutongProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://api.mix2.zthysms.com/";
+        return this.url = "https://sms.yunpian.com/v2/";
     }
 
 }

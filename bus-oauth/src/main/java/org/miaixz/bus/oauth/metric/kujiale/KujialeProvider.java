@@ -93,7 +93,7 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     @Override
-    public Property getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String openId = this.getOpenId(accToken);
         String response = Httpx.get(Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
@@ -105,7 +105,7 @@ public class KujialeProvider extends AbstractProvider {
         }
         JSONObject resultObject = object.getJSONObject("d");
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(resultObject)
                 .username(resultObject.getString("userName"))
                 .nickname(resultObject.getString("userName"))

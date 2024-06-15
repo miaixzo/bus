@@ -76,7 +76,7 @@ public class WeiboProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         String uid = accToken.getUid();
         String oauthParam = String.format("uid=%s&access_token=%s", uid, accessToken);
@@ -89,7 +89,7 @@ public class WeiboProvider extends AbstractProvider {
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error"));
         }
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))

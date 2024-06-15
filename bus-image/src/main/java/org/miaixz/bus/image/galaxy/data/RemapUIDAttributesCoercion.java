@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ public class RemapUIDAttributesCoercion implements AttributesCoercion {
 
     @Override
     public String remapUID(String uid) {
-        String remappedUID = null != uidMap ? Property.maskNull(uidMap.get(uid), uid) : uid;
+        String remappedUID = null != uidMap ? Material.maskNull(uidMap.get(uid), uid) : uid;
         return null != next ? next.remapUID(remappedUID) : remappedUID;
     }
 

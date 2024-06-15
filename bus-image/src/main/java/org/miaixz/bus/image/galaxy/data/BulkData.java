@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
@@ -71,8 +71,8 @@ public class BulkData implements Value {
     public static Value deserializeFrom(ObjectInputStream ois)
             throws IOException {
         return new BulkData(
-                Property.maskEmpty(ois.readUTF(), null),
-                Property.maskEmpty(ois.readUTF(), null),
+                Material.maskEmpty(ois.readUTF(), null),
+                Material.maskEmpty(ois.readUTF(), null),
                 ois.readBoolean());
     }
 
@@ -214,8 +214,8 @@ public class BulkData implements Value {
     }
 
     public void serializeTo(ObjectOutputStream oos) throws IOException {
-        oos.writeUTF(Property.maskNull(uuid, Normal.EMPTY));
-        oos.writeUTF(Property.maskNull(uri, Normal.EMPTY));
+        oos.writeUTF(Material.maskNull(uuid, Normal.EMPTY));
+        oos.writeUTF(Material.maskNull(uri, Normal.EMPTY));
         oos.writeBoolean(bigEndian);
     }
 

@@ -71,11 +71,11 @@ public class BaiduProvider extends AbstractProvider {
      * @return Property
      */
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.containsKey("userid") ? object.getString("userid") : object.getString("openid"))
                 .username(object.getString("username"))

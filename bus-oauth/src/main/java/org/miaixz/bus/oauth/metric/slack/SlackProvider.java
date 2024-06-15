@@ -76,7 +76,7 @@ public class SlackProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/x-www-form-urlencoded");
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
@@ -85,7 +85,7 @@ public class SlackProvider extends AbstractProvider {
         this.checkResponse(object);
         JSONObject user = object.getJSONObject("user");
         JSONObject profile = user.getJSONObject("profile");
-        return Property.builder()
+        return Material.builder()
                 .rawJson(user)
                 .uuid(user.getString("id"))
                 .username(user.getString("name"))

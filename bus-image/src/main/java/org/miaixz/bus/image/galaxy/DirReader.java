@@ -118,7 +118,7 @@ public class DirReader implements Closeable {
             return null;
 
         return new File(file.getParent(),
-                Property.concat(fileIDs, File.separatorChar));
+                Material.concat(fileIDs, File.separatorChar));
     }
 
     public String getDescriptorFileCharacterSet() {

@@ -25,22 +25,29 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.cloopen;
+package org.miaixz.bus.notify.metric.zhutong;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 容联云短信
+ * 助通短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class CloopenProperty extends Property {
+public class ZhutongMaterial extends Material {
+
+    /**
+     * 模板变量名称
+     * 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement
+     * 允许为空，为空，使用无模板形式，发送短信
+     */
+    private String templateName;
 
     /**
      * API默认请求地址
@@ -48,7 +55,7 @@ public class CloopenProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://app.cloopen.com:8883/2013-12-26/";
+        return this.url = "https://api.mix2.zthysms.com/";
     }
 
 }

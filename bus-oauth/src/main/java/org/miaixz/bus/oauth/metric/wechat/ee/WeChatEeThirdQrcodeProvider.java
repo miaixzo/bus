@@ -72,7 +72,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
                 Checker.checkState(callback.getState(), complex, cache);
             }
             AccToken accToken = this.getAccessToken(callback);
-            Property user = this.getUserInfo(accToken);
+            Material user = this.getUserInfo(accToken);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
             Logger.error("Failed to login with oauth authorization.", e);
@@ -114,9 +114,9 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         JSONObject response = this.checkResponse(doGetUserInfo(accToken));
-        return Property.builder()
+        return Material.builder()
                 .rawJson(response)
                 .build();
     }

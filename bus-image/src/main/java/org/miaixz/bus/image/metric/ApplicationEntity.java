@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Option;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.acquire.AEExtension;
 import org.miaixz.bus.image.metric.internal.pdu.*;
@@ -251,7 +251,7 @@ public class ApplicationEntity implements Serializable {
 
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
         this.prefTransferSyntaxes =
-                Property.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
+                Material.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
     public String[] getAcceptedCallingAETitles() {
@@ -671,15 +671,15 @@ public class ApplicationEntity implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent, "ApplicationEntity[title: ", aet);
-        Property.appendLine(sb, indent2, "desc: ", description);
-        Property.appendLine(sb, indent2, "acceptor: ", acceptor);
-        Property.appendLine(sb, indent2, "initiator: ", initiator);
-        Property.appendLine(sb, indent2, "installed: ", getInstalled());
+        Material.appendLine(sb, indent, "ApplicationEntity[title: ", aet);
+        Material.appendLine(sb, indent2, "desc: ", description);
+        Material.appendLine(sb, indent2, "acceptor: ", acceptor);
+        Material.appendLine(sb, indent2, "initiator: ", initiator);
+        Material.appendLine(sb, indent2, "installed: ", getInstalled());
         for (Connection conn : conns)
-            conn.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            conn.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         for (TransferCapability tc : getTransferCapabilities())
-            tc.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            tc.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

@@ -42,7 +42,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -70,7 +70,7 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
@@ -89,7 +89,7 @@ public class LinkedinProvider extends AbstractProvider {
 
         // 获取用户邮箱地址
         String email = this.getUserEmail(accessToken);
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userInfoObject)
                 .uuid(userInfoObject.getString("id"))
                 .username(userName)

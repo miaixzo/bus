@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.nimble.Photometric;
 
 import java.io.Serializable;
@@ -43,18 +43,18 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
     private final String commonName;
     private final Condition condition;
     private final String tsuid;
-    private final Property[] imageWriteParams;
+    private final Material[] imageWriteParams;
 
     public CompressionRule(String commonName, String[] pmis, int[] bitsStored,
                            int pixelRepresentation, String[] aeTitles, String[] sopClasses,
                            String[] bodyPartExamined, String tsuid, String... params) {
         this.commonName = commonName;
         this.condition = new Condition(pmis, bitsStored, pixelRepresentation,
-                Property.maskNull(aeTitles),
-                Property.maskNull(sopClasses),
-                Property.maskNull(bodyPartExamined));
+                Material.maskNull(aeTitles),
+                Material.maskNull(sopClasses),
+                Material.maskNull(bodyPartExamined));
         this.tsuid = tsuid;
-        this.imageWriteParams = Property.valueOf(params);
+        this.imageWriteParams = Material.valueOf(params);
     }
 
     public final String getCommonName() {
@@ -89,7 +89,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         return tsuid;
     }
 
-    public Property[] getImageWriteParams() {
+    public Material[] getImageWriteParams() {
         return imageWriteParams;
     }
 

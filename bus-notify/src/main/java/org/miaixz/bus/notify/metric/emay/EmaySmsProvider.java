@@ -52,14 +52,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EmaySmsProvider extends AbstractProvider<EmayProperty, Context> {
+public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
 
     public EmaySmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(EmayProperty entity) {
+    public Message send(EmayMaterial entity) {
         Map<String, String> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(), entity.getContent());
         Map<String, String> headers = MapKit.newHashMap(1, true);
         headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);

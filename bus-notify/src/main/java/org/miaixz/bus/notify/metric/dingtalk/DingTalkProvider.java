@@ -50,7 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since Java 17+
  */
 @Setter
-public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context> {
+public class DingTalkProvider extends AbstractProvider<DingTalkMaterial, Context> {
 
     private AtomicReference<String> accessToken = new AtomicReference<>();
     private long refreshTokenTime;
@@ -61,7 +61,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
     }
 
     @Override
-    public Message send(DingTalkProperty entity) {
+    public Message send(DingTalkMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("access_token", entity.getToken());
         bodys.put("agent_id", entity.getAgentId());

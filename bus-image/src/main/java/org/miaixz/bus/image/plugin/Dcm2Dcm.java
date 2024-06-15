@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Fragments;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -63,7 +63,7 @@ import java.util.concurrent.Executors;
  */
 public class Dcm2Dcm {
 
-    private final List<Property> params = new ArrayList<>();
+    private final List<Material> params = new ArrayList<>();
     private String tsuid;
     private TransferSyntaxType tstype;
     private boolean retainfmi;
@@ -108,7 +108,7 @@ public class Dcm2Dcm {
     }
 
     public void addCompressionParam(String name, Object value) {
-        params.add(new Property(name, value));
+        params.add(new Material(name, value));
     }
 
     public void setMaxThreads(int maxThreads) {
@@ -181,7 +181,7 @@ public class Dcm2Dcm {
                     tsuid = adjustTransferSyntax(tsuid,
                             dataset.getInt(Tag.BitsStored, 8));
                     compressor = new Compressor(dataset, dis.getTransferSyntax());
-                    compressor.compress(tsuid, params.toArray(new Property[params.size()]));
+                    compressor.compress(tsuid, params.toArray(new Material[params.size()]));
                 } else if (pixeldata instanceof Fragments)
                     Decompressor.decompress(dataset, dis.getTransferSyntax());
             }
@@ -207,7 +207,7 @@ public class Dcm2Dcm {
             transcoder.setEncodingOptions(encOpts);
             transcoder.setDestinationTransferSyntax(tsuid);
             if (tstype.isPixeldataEncapsulated())
-                transcoder.setCompressParams(params.toArray(new Property[params.size()]));
+                transcoder.setCompressParams(params.toArray(new Material[params.size()]));
             transcoder.transcode((transcoder1, dataset) -> new FileOutputStream(dest));
         } catch (Exception e) {
             Files.delete(dest.toPath());

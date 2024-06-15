@@ -43,14 +43,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TencentSmsProvider extends AbstractProvider<TencentProperty, Context> {
+public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Context> {
 
     public TencentSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(TencentProperty entity) {
+    public Message send(TencentMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("SmsSdkAppid", entity.getSmsAppId());
         bodys.put("Sign", entity.getSignature());

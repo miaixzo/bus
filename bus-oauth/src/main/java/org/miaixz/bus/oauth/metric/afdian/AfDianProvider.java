@@ -36,7 +36,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -75,8 +75,8 @@ public class AfDianProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
-        return Property.builder()
+    protected Material getUserInfo(AccToken accToken) {
+        return Material.builder()
                 .uuid(accToken.getUserId())
                 .gender(Gender.UNKNOWN)
                 .token(accToken)

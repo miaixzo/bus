@@ -46,7 +46,7 @@ public class ScheduleExpression {
 
     public static ScheduleExpression valueOf(String s) {
         ScheduleExpression result = new ScheduleExpression();
-        for (String s1 : Property.split(s, Symbol.C_SPACE)) {
+        for (String s1 : Material.split(s, Symbol.C_SPACE)) {
             if (s1.startsWith("hour="))
                 try {
                     result.hour(s1.substring(5));
@@ -142,8 +142,8 @@ public class ScheduleExpression {
         if (s.equals(Symbol.STAR))
             return -1;
         int result = -1 << m;
-        for (String s1 : Property.split(s, Symbol.C_COMMA)) {
-            String[] range = Property.split(s1, Symbol.C_MINUS);
+        for (String s1 : Material.split(s, Symbol.C_COMMA)) {
+            String[] range = Material.split(s1, Symbol.C_MINUS);
             if (range.length > 2)
                 throw new IllegalArgumentException(s);
             try {

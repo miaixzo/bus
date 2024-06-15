@@ -61,12 +61,12 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject userInfoObject = JSONObject.parseObject(response);
         this.checkResponse(userInfoObject);
         JSONObject object = userInfoObject.getJSONObject("data");
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("union_id"))
                 .username(object.getString("nickname"))

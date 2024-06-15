@@ -46,7 +46,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context> {
+public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context> {
 
     /**
      * 成功代码.
@@ -80,7 +80,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
     }
 
     @Override
-    public Message send(HuaweiProperty entity) {
+    public Message send(HuaweiMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("from", entity.getSender());
         bodys.put("to", entity.getReceive());

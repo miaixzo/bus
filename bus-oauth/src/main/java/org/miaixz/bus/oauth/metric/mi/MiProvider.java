@@ -87,7 +87,7 @@ public class MiProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         // 获取用户信息
         String userResponse = doGetUserInfo(accToken);
 
@@ -98,7 +98,7 @@ public class MiProvider extends AbstractProvider {
 
         JSONObject object = userProfile.getJSONObject("data");
 
-        Property authUser = Property.builder()
+        Material authUser = Material.builder()
                 .rawJson(object)
                 .uuid(accToken.getOpenId())
                 .username(object.getString("miliaoNick"))

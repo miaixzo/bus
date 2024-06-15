@@ -43,7 +43,7 @@ import org.miaixz.bus.oauth.Complex;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
@@ -82,7 +82,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String code = accToken.getAccessCode();
         JSONObject param = new JSONObject();
         param.put("tmp_auth_code", code);
@@ -96,7 +96,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
                 .openId(object.getString("openid"))
                 .unionId(object.getString("unionid"))
                 .build();
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("unionid"))
                 .nickname(object.getString("nick"))

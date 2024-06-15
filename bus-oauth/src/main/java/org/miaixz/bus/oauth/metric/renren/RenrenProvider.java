@@ -65,11 +65,11 @@ public class RenrenProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject userObj = JSONObject.parseObject(response).getJSONObject("response");
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userObj)
                 .uuid(userObj.getString("id"))
                 .avatar(getAvatarUrl(userObj))

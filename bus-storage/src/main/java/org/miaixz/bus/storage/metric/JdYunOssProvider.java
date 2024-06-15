@@ -42,8 +42,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
+import org.miaixz.bus.storage.magic.Material;
 import org.miaixz.bus.storage.magic.Message;
-import org.miaixz.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -122,16 +122,15 @@ public class JdYunOssProvider extends AbstractProvider {
                 .errcode(ErrorCode.SUCCESS.getCode())
                 .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
-                    Property storageItem = new Property();
-                    storageItem.setName(item.getKey());
-                    storageItem.setOwner(item.getOwner().getDisplayName());
-                    storageItem.setSize(StringKit.toString(item.getSize()));
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());
-                    storageItem.setExtend(extend);
-                    return storageItem;
+                    return Material.builder()
+                            .name(item.getKey())
+                            .owner(item.getOwner().getDisplayName())
+                            .size(StringKit.toString(item.getSize()))
+                            .extend(extend).build();
                 }).collect(Collectors.toList()))
                 .build();
     }

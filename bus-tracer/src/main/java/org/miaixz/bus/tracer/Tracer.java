@@ -28,10 +28,11 @@
 package org.miaixz.bus.tracer;
 
 /**
+ * 链路追踪
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Tracer {
-
 
 }

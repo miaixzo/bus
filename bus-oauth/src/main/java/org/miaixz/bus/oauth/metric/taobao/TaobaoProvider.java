@@ -82,7 +82,7 @@ public class TaobaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String response = doPostAuthorizationCode(accToken.getAccessCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         if (accessTokenObject.containsKey("error")) {
@@ -91,7 +91,7 @@ public class TaobaoProvider extends AbstractProvider {
         accToken = this.getAuthToken(accessTokenObject);
 
         String nick = UrlDecoder.decode(accessTokenObject.getString("taobao_user_nick"));
-        return Property.builder()
+        return Material.builder()
                 .rawJson(accessTokenObject)
                 .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid())
                 .username(nick)

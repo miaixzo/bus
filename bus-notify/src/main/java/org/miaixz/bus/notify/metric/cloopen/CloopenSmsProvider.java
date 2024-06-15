@@ -43,14 +43,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CloopenSmsProvider extends AbstractProvider<CloopenProperty, Context> {
+public class CloopenSmsProvider extends AbstractProvider<CloopenMaterial, Context> {
 
     public CloopenSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(CloopenProperty entity) {
+    public Message send(CloopenMaterial entity) {
         Map<String, String> bodys = MapKit.newHashMap(4, true);
         bodys.put("to", String.join(",", entity.getReceive()));
         bodys.put("appId", this.context.getAppKey());

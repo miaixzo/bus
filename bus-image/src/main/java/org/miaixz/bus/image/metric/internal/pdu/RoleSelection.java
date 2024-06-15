@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -73,14 +73,14 @@ public class RoleSelection {
 
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  RoleSelection[")
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    sopClass: ");
         return UID.promptTo(cuid, sb)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    scu: ").append(scu)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    scp: ").append(scp)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  ]");
     }
 

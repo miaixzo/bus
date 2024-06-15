@@ -30,7 +30,7 @@ package org.miaixz.bus.validate;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.validate.magic.Property;
+import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.Complex;
 
 import java.lang.annotation.Annotation;
@@ -186,22 +186,22 @@ public class Provider {
     /**
      * 解析校验异常
      *
-     * @param property 校验器属性
+     * @param material 校验器属性
      * @param context  校验上下文
      * @return 最终确定的错误码
      */
-    public static ValidateException resolve(Property property, Context context) {
+    public static ValidateException resolve(Material material, Context context) {
         Class<? extends ValidateException> clazz = context.getException();
-        clazz = null == clazz ? property.getException() : clazz;
-        String propertyEcode = property.getErrcode();
+        clazz = null == clazz ? material.getException() : clazz;
+        String propertyEcode = material.getErrcode();
         String globalEcode = context.getErrcode();
         String ecode = Builder.DEFAULT_ERRCODE.equals(propertyEcode) ? globalEcode : propertyEcode;
         if (ObjectKit.isEmpty(clazz)) {
-            return new ValidateException(ecode, property.getFormatted());
+            return new ValidateException(ecode, material.getFormatted());
         } else {
             try {
                 Constructor<? extends ValidateException> constructor = clazz.getConstructor(String.class, int.class);
-                return constructor.newInstance(property.getFormatted(), ecode);
+                return constructor.newInstance(material.getFormatted(), ecode);
             } catch (NoSuchMethodException e) {
                 throw new NoSuchException("非法的自定义校验异常, 没有指定的构造方法: constructor(String, int)");
             } catch (IllegalAccessException e) {

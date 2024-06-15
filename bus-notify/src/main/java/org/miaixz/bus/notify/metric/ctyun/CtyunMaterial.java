@@ -25,20 +25,40 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.wechat;
+package org.miaixz.bus.notify.metric.ctyun;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 微信
+ * 天翼云短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class WechatProperty extends Property {
+public class CtyunMaterial extends Material {
+
+    /**
+     * 模板变量名称
+     */
+    private String templateName;
+
+    /**
+     * 接口名称
+     */
+    private String action = "SendSms";
+
+    /**
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
+     */
+    @Override
+    public String getUrl() {
+        return this.url = "https://sms-global.ctapi.ctyun.cn/sms/api/v1/";
+    }
 
 }

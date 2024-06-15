@@ -78,7 +78,7 @@ public class MeituanProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> form = new HashMap<>(5);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
@@ -89,7 +89,7 @@ public class MeituanProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("openid"))
                 .username(object.getString("nickname"))

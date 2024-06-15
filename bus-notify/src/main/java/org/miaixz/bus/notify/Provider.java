@@ -28,8 +28,8 @@
 package org.miaixz.bus.notify;
 
 import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.magic.Property;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,10 +40,10 @@ import java.util.List;
  * @author Justubborn
  * @since Java 17+
  */
-public interface Provider<T extends Property> {
+public interface Provider<T extends Material> {
 
     /**
-     * 指定模版{@link Property}并发送
+     * 指定模版{@link Material}并发送
      * 注意:不同等服务商使用的模版实现不同
      *
      * @param entity 通知内容

@@ -41,7 +41,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -83,7 +83,7 @@ public class StackOverflowProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("site", "stackoverflow")
@@ -94,7 +94,7 @@ public class StackOverflowProvider extends AbstractProvider {
         this.checkResponse(object);
         JSONObject userObj = object.getJSONArray("items").getJSONObject(0);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userObj)
                 .uuid(userObj.getString("user_id"))
                 .avatar(userObj.getString("profile_image"))

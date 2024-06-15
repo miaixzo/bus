@@ -80,7 +80,7 @@ public class TeambitionProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + accessToken);
@@ -92,7 +92,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         accToken.setUid(object.getString("_id"));
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("_id"))
                 .username(object.getString("name"))

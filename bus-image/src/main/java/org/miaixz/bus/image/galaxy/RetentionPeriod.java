@@ -49,12 +49,12 @@ public class RetentionPeriod implements Comparable<RetentionPeriod> {
     }
 
     public static RetentionPeriod valueOf(String s) {
-        String[] split1 = Property.split(s, Symbol.C_BRACKET_RIGHT);
+        String[] split1 = Material.split(s, Symbol.C_BRACKET_RIGHT);
         switch (split1.length) {
             case 1:
                 return new RetentionPeriod(s, Period.parse(s), null);
             case 2:
-                String[] split2 = Property.split(split1[0], Symbol.C_BRACKET_LEFT);
+                String[] split2 = Material.split(split1[0], Symbol.C_BRACKET_LEFT);
                 if (split2.length == 2)
                     return new RetentionPeriod(s,
                             Period.parse(split1[split1.length - 1]),

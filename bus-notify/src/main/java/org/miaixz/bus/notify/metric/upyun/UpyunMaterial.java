@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
  * 又拍云短信
@@ -41,7 +41,7 @@ import org.miaixz.bus.notify.magic.Property;
  */
 @Getter
 @Setter
-public class UpyunProperty extends Property {
+public class UpyunMaterial extends Material {
 
     /**
      * token

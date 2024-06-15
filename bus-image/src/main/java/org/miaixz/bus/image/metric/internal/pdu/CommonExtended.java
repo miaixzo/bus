@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -77,19 +77,19 @@ public class CommonExtended {
 
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  CommonExtendedNegotiation[")
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    sopClass: ");
         UID.promptTo(sopCUID, sb)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    serviceClass: ");
         UID.promptTo(serviceCUID, sb)
-                .append(Property.LINE_SEPARATOR);
+                .append(Material.LINE_SEPARATOR);
         if (relSopCUIDs.length != 0) {
             sb.append("    relatedSOPClasses:")
-                    .append(Property.LINE_SEPARATOR);
+                    .append(Material.LINE_SEPARATOR);
             for (String uid : relSopCUIDs)
                 UID.promptTo(uid, sb.append("      "))
-                        .append(Property.LINE_SEPARATOR);
+                        .append(Material.LINE_SEPARATOR);
         }
         return sb.append("  ]");
     }

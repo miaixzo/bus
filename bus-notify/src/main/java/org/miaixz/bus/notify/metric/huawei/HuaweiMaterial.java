@@ -25,22 +25,22 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.qiniu;
+package org.miaixz.bus.notify.metric.huawei;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 七牛云短信
+ * 华为云短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class QiniuProperty extends Property {
+public class HuaweiMaterial extends Material {
 
     /**
      * API默认请求地址
@@ -48,7 +48,9 @@ public class QiniuProperty extends Property {
      */
     @Override
     public String getUrl() {
-        return this.url = "https://sms.qiniuapi.com/v1/message";
+        return this.url = "https://smsapi.cn-north-4.myhuaweicloud.com/sms/batchSendSms/v1/";
     }
+
+
 
 }

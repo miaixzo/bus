@@ -103,14 +103,14 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", accToken.getTokenType() + Symbol.SPACE + accToken.getAccessToken());
 
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("userPrincipalName"))

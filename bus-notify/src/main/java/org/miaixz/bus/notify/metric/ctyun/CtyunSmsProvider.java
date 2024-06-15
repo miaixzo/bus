@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CtyunSmsProvider extends AbstractProvider<CtyunProperty, Context> {
+public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
 
     public CtyunSmsProvider(Context context) {
         super(context);
@@ -88,7 +88,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunProperty, Context> {
     }
 
     @Override
-    public Message send(CtyunProperty entity) {
+    public Message send(CtyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>(5);
         bodys.put("action", entity.getAction());
         bodys.put("phoneNumber", entity.getReceive());

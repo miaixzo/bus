@@ -37,7 +37,7 @@ import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
@@ -71,7 +71,7 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String userResponse = doGetUserInfo(accToken);
 
         JSONObject userProfile = JSONObject.parseObject(userResponse);
@@ -83,7 +83,7 @@ public class ToutiaoProvider extends AbstractProvider {
         boolean isAnonymousUser = user.getIntValue("uid_type") == 14;
         String anonymousUserName = "匿名用户";
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(user)
                 .uuid(user.getString("uid"))
                 .username(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))

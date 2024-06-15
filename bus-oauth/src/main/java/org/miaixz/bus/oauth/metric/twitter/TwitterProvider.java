@@ -42,7 +42,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -180,7 +180,7 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> form = buildOauthParams();
         form.put("oauth_token", accToken.getOauthToken());
 
@@ -195,7 +195,7 @@ public class TwitterProvider extends AbstractProvider {
         String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject userInfo = JSONObject.parseObject(response);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userInfo)
                 .uuid(userInfo.getString("id_str"))
                 .username(userInfo.getString("screen_name"))

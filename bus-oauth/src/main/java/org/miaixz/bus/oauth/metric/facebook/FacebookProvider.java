@@ -37,7 +37,7 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
@@ -69,11 +69,11 @@ public class FacebookProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))

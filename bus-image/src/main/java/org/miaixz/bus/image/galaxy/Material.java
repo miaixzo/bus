@@ -42,14 +42,14 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Property implements Serializable {
+public class Material implements Serializable {
 
     public static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private final String name;
     private final Object value;
 
-    public Property(String name, Object value) {
+    public Material(String name, Object value) {
         if (null == name)
             throw new NullPointerException("name");
         if (null == value)
@@ -64,7 +64,7 @@ public class Property implements Serializable {
         this.value = value;
     }
 
-    public Property(String s) {
+    public Material(String s) {
         int endParamName = s.indexOf(Symbol.C_EQUAL);
         name = s.substring(0, endParamName);
         value = valueOf(s.substring(endParamName + 1));
@@ -80,16 +80,16 @@ public class Property implements Serializable {
         }
     }
 
-    public static Property[] valueOf(String[] ss) {
-        Property[] properties = new Property[ss.length];
+    public static Material[] valueOf(String[] ss) {
+        Material[] properties = new Material[ss.length];
         for (int i = 0; i < properties.length; i++) {
-            properties[i] = new Property(ss[i]);
+            properties[i] = new Material(ss[i]);
         }
         return properties;
     }
 
-    public static <T> T getFrom(Property[] props, String name, T defVal) {
-        for (Property prop : props)
+    public static <T> T getFrom(Material[] props, String name, T defVal) {
+        for (Material prop : props)
             if (prop.name.equals(name))
                 return (T) prop.value;
         return defVal;
@@ -443,7 +443,7 @@ public class Property implements Serializable {
         if (getClass() != object.getClass())
             return false;
 
-        Property other = (Property) object;
+        Material other = (Material) object;
         return name.equals(other.name)
                 && value.equals(other.value);
     }

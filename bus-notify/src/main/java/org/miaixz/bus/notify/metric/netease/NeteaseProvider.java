@@ -33,8 +33,8 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
+import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.security.MessageDigest;
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Justubborn
  * @since Java 17+
  */
-public abstract class NeteaseProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
+public abstract class NeteaseProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
 
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};

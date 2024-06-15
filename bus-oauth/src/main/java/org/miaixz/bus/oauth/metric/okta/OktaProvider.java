@@ -101,14 +101,14 @@ public class OktaProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + accToken.getAccessToken());
         String response = Httpx.post(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject address = object.getJSONObject("address");
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("sub"))
                 .username(object.getString("name"))

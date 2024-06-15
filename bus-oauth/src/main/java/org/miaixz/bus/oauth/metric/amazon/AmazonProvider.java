@@ -197,7 +197,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return Property
      */
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         this.checkToken(accessToken);
         Map<String, String> header = new HashMap<>();
@@ -208,7 +208,7 @@ public class AmazonProvider extends AbstractProvider {
         JSONObject jsonObject = JSONObject.parseObject(userInfo);
         this.checkResponse(jsonObject);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(jsonObject)
                 .uuid(jsonObject.getString("user_id"))
                 .username(jsonObject.getString("name"))

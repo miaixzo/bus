@@ -43,14 +43,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QiniuSmsProvider extends AbstractProvider<QiniuProperty, Context> {
+public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
 
     public QiniuSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(QiniuProperty entity) {
+    public Message send(QiniuMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("parameters", entity.getParams());

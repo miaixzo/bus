@@ -49,14 +49,14 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
+public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
 
     public UpyunSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(UpyunProperty entity) {
+    public Message send(UpyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("mobile", entity.getReceive());
@@ -67,14 +67,14 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunProperty, Context> {
         headers.put(Header.AUTHORIZATION, entity.getToken());
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
 
-        Collection<UpyunProperty.MessageId> list = JsonKit.toList(response, UpyunProperty.MessageId.class);
+        Collection<UpyunMaterial.MessageId> list = JsonKit.toList(response, UpyunMaterial.MessageId.class);
         if (CollKit.isEmpty(list)) {
             return Message.builder()
                     .errcode(ErrorCode.FAILURE.getCode())
                     .errmsg(ErrorCode.FAILURE.getDesc())
                     .build();
         }
-        boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunProperty.MessageId::succeed);
+        boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunMaterial.MessageId::succeed);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 

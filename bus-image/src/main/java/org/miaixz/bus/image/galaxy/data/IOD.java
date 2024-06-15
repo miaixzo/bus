@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -608,7 +608,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             String vm = vr == VR.SQ ? items : vmStr;
             if (null != vm) {
                 try {
-                    String[] ss = Property.split(vm, Symbol.C_MINUS);
+                    String[] ss = Material.split(vm, Symbol.C_MINUS);
                     if (ss[0].charAt(0) != 'n') {
                         minVM = Integer.parseInt(ss[0]);
                         if (ss.length > 1) {
@@ -666,7 +666,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         private int[] tagPathOf(String s) throws SAXException {
-            String[] ss = Property.split(s, Symbol.C_SLASH);
+            String[] ss = Material.split(s, Symbol.C_SLASH);
             if (ss.length == 0)
                 throw new SAXException("missing tag attribute");
 

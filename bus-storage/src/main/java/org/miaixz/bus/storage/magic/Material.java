@@ -25,30 +25,78 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.jpush;
+package org.miaixz.bus.storage.magic;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import lombok.*;
+
+import java.util.Map;
 
 /**
- * 极光短信
+ * 附件信息
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class JpushProperty extends Property {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Material {
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * 标识
      */
-    @Override
-    public String getUrl() {
-        return this.url = "https://api.sms.jpush.cn/v1/messages/";
-    }
+    public String key;
+
+    /**
+     * 名称
+     */
+    public String name;
+
+    /**
+     * 路径
+     */
+    public String path;
+
+    /**
+     * 大小
+     */
+    public String size;
+
+    /**
+     * 类型
+     */
+    public String type;
+
+    /**
+     * 状态
+     */
+    public String status;
+
+    /**
+     * 所有者
+     */
+    public String owner;
+
+    /**
+     * hash值
+     */
+    public String hash;
+
+    /**
+     * 缩略图
+     */
+    public String url;
+
+    /**
+     * 存储平台
+     */
+    public String platform;
+
+    /**
+     * 文件扩展字段
+     */
+    public Map<String, Object> extend;
 
 }

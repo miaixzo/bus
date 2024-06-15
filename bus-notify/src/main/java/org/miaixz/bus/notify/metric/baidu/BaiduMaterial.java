@@ -25,110 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.magic;
+package org.miaixz.bus.notify.metric.baidu;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Map;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 消息模版
+ * 百度云短信
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class Property {
+public class BaiduMaterial extends Material {
 
     /**
-     * 地址
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
      */
-    protected String url;
-    /**
-     * 发送者
-     */
-    protected String sender;
-
-    /**
-     * 接收者
-     * 采用','风格
-     */
-    protected String receive;
-
-    /**
-     * 主题
-     */
-    protected String subject;
-
-    /**
-     * 内容  Limit 28K
-     */
-    protected String content;
-
-    /**
-     * 模版/模版ID
-     */
-    protected String template;
-
-    /**
-     * 签名/签名ID
-     */
-    protected String signature;
-
-    /**
-     * 模版参数
-     */
-    protected String params;
-
-    /**
-     * 扩展字段
-     */
-    protected Map<String, Object> extend;
-
-    /**
-     * 内容类型
-     */
-    protected Type type;
-
-    /**
-     * 发送模型
-     */
-    protected Mode mode;
-
-    public enum Type {
-        /**
-         * html
-         */
-        HTML,
-        /**
-         * 文本
-         */
-        TEXT,
-        /**
-         * 语音
-         */
-        VOICE,
-        /**
-         * 文件
-         */
-        FILE,
-        /**
-         * 文件
-         */
-        OTHER
-    }
-
-    public enum Mode {
-        /**
-         * 单发
-         */
-        SINGLE,
-        /**
-         * 批量
-         */
-        BATCH
+    @Override
+    public String getUrl() {
+        return this.url;
     }
 
 }

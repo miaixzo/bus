@@ -32,7 +32,7 @@ import lombok.Setter;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 import java.io.File;
 
@@ -44,7 +44,7 @@ import java.io.File;
  */
 @Getter
 @Setter
-public class GenericProperty extends Property {
+public class GenericMaterial extends Material {
 
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";
@@ -157,7 +157,7 @@ public class GenericProperty extends Property {
      *
      * @return this
      */
-    public GenericProperty defaultIfEmpty() {
+    public GenericMaterial defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
             this.host = StringKit.format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));

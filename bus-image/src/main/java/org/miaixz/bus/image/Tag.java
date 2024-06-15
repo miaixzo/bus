@@ -29,7 +29,7 @@ package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * 文件信息标识
@@ -4923,7 +4923,7 @@ public class Tag {
     }
 
     public static int[] parseTagPath(String tagPath) {
-        String[] names = Property.split(tagPath, Symbol.C_DOT);
+        String[] names = Material.split(tagPath, Symbol.C_DOT);
         int[] tags = new int[names.length];
         for (int i = 0; i < tags.length; i++)
             if ((tags[i] = forName(names[i])) == -1)

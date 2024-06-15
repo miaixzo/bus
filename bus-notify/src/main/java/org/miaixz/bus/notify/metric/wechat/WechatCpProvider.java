@@ -37,14 +37,14 @@ import org.miaixz.bus.notify.metric.AbstractProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WechatCpProvider extends AbstractProvider<WechatProperty, Context> {
+public class WechatCpProvider extends AbstractProvider<WechatMaterial, Context> {
 
     public WechatCpProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(WechatProperty entity) {
+    public Message send(WechatMaterial entity) {
         return null;
     }
 

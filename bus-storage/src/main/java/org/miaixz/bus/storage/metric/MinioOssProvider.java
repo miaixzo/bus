@@ -37,8 +37,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
+import org.miaixz.bus.storage.magic.Material;
 import org.miaixz.bus.storage.magic.Message;
-import org.miaixz.bus.storage.magic.Property;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -142,16 +142,15 @@ public class MinioOssProvider extends AbstractProvider {
                         .stream(iterable.spliterator(), true)
                         .map(itemResult -> {
                             try {
-                                Property storageItem = new Property();
                                 Item item = itemResult.get();
-                                storageItem.setName(item.objectName());
-                                storageItem.setSize(StringKit.toString(item.size()));
                                 Map<String, Object> extend = new HashMap<>();
                                 extend.put("tag", item.etag());
                                 extend.put("storageClass", item.storageClass());
                                 extend.put("lastModified", item.lastModified());
-                                storageItem.setExtend(extend);
-                                return storageItem;
+                                return Material.builder()
+                                        .name(item.objectName())
+                                        .size(StringKit.toString(item.size()))
+                                        .extend(extend).build();
                             } catch (NoSuchAlgorithmException |
                                      InsufficientDataException |
                                      IOException |
@@ -208,7 +207,7 @@ public class MinioOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(ErrorCode.SUCCESS.getCode())
                     .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Property.builder()
+                    .data(Material.builder()
                             .name(fileName)
                             .path(this.context.getPrefix() + fileName))
                     .build();

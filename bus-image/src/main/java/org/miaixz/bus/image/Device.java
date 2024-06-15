@@ -30,7 +30,7 @@ package org.miaixz.bus.image;
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Issuer;
 import org.miaixz.bus.image.metric.*;
@@ -1105,10 +1105,10 @@ public class Device implements Serializable {
             return ret;
         String keyStorePin = keyStorePin();
         km = ret = SSLManagerFactory.createKeyManager(
-                Property.replaceSystemProperties(keyStoreType()),
-                Property.replaceSystemProperties(keyStoreURL),
-                Property.replaceSystemProperties(keyStorePin()),
-                Property.replaceSystemProperties(keyPin(keyStorePin)));
+                Material.replaceSystemProperties(keyStoreType()),
+                Material.replaceSystemProperties(keyStoreURL),
+                Material.replaceSystemProperties(keyStorePin()),
+                Material.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
     }
 
@@ -1167,9 +1167,9 @@ public class Device implements Serializable {
 
         tm = ret = null != trustStoreURL
                 ? SSLManagerFactory.createTrustManager(
-                Property.replaceSystemProperties(trustStoreType()),
-                Property.replaceSystemProperties(trustStoreURL),
-                Property.replaceSystemProperties(trustStorePin()))
+                Material.replaceSystemProperties(trustStoreType()),
+                Material.replaceSystemProperties(trustStoreURL),
+                Material.replaceSystemProperties(trustStorePin()))
                 : SSLManagerFactory.createTrustManager(
                 getAllAuthorizedNodeCertificates());
         return ret;
@@ -1262,13 +1262,13 @@ public class Device implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent, "Device[name: ", deviceName);
-        Property.appendLine(sb, indent2, "desc: ", description);
-        Property.appendLine(sb, indent2, "installed: ", installed);
+        Material.appendLine(sb, indent, "Device[name: ", deviceName);
+        Material.appendLine(sb, indent2, "desc: ", description);
+        Material.appendLine(sb, indent2, "installed: ", installed);
         for (Connection conn : conns)
-            conn.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            conn.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         for (ApplicationEntity ae : aes.values())
-            ae.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            ae.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

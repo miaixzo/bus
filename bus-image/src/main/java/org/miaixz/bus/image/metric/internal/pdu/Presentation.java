@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -125,15 +125,15 @@ public class Presentation {
 
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  PresentationContext[id: ").append(pcid)
-                .append(Property.LINE_SEPARATOR);
+                .append(Material.LINE_SEPARATOR);
         if (null != as)
             UID.promptTo(as, sb.append("    as: "));
         else
             sb.append("    result: ").append(resultAsString(result));
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
         for (String ts : tss)
             UID.promptTo(ts, sb.append("    ts: "))
-                    .append(Property.LINE_SEPARATOR);
+                    .append(Material.LINE_SEPARATOR);
         return sb.append("  ]");
     }
 

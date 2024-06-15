@@ -25,78 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.storage.magic;
+package org.miaixz.bus.notify.metric.netease;
 
-import lombok.*;
-
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 附件信息
+ * 网易云短信模版
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Property {
+public class NeteaseMaterial extends Material {
 
     /**
-     * 标识
+     * API默认请求地址
+     * 当 {@link Context} 中 endpoint 为空时使用地址
      */
-    public String key;
-
-    /**
-     * 名称
-     */
-    public String name;
-
-    /**
-     * 路径
-     */
-    public String path;
-
-    /**
-     * 大小
-     */
-    public String size;
-
-    /**
-     * 类型
-     */
-    public String type;
-
-    /**
-     * 状态
-     */
-    public String status;
-
-    /**
-     * 所有者
-     */
-    public String owner;
-
-    /**
-     * hash值
-     */
-    public String hash;
-
-    /**
-     * 缩略图
-     */
-    public String url;
-
-    /**
-     * 存储平台
-     */
-    public String platform;
-
-    /**
-     * 文件扩展字段
-     */
-    public Map<String, Object> extend;
+    @Override
+    public String getUrl() {
+        return this.url = "https://api.netease.im/sms/";
+    }
 
 }

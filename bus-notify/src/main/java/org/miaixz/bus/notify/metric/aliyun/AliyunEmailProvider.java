@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.metric.generic.GenericProperty;
+import org.miaixz.bus.notify.metric.generic.GenericMaterial;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import java.util.UUID;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context> {
+public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context> {
 
     public AliyunEmailProvider(Context context) {
         super(context);
@@ -61,7 +61,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
      * @throws InternalException 异常信息
      */
     @Override
-    public Message send(AliyunProperty entity) throws InternalException {
+    public Message send(AliyunMaterial entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
             throw new InternalException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
@@ -87,9 +87,9 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
         bodys.put("FromAlias", entity.getSender());
         bodys.put("ToAddress", entity.getReceive());
 
-        if (org.miaixz.bus.notify.metric.generic.GenericProperty.Type.HTML.equals(entity.getType())) {
+        if (GenericMaterial.Type.HTML.equals(entity.getType())) {
             bodys.put("HtmlBody", entity.getContent());
-        } else if (GenericProperty.Type.TEXT.equals(entity.getType())) {
+        } else if (GenericMaterial.Type.TEXT.equals(entity.getType())) {
             bodys.put("TextBody", entity.getContent());
         }
 

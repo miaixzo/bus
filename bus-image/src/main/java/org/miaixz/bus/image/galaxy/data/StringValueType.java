@@ -29,7 +29,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -65,7 +65,7 @@ public enum StringValueType implements ValueType {
 
         @Override
         protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
-            return cs.toText(Property.trimTrailing(s));
+            return cs.toText(Material.trimTrailing(s));
         }
 
         @Override
@@ -76,7 +76,7 @@ public enum StringValueType implements ValueType {
     UR(null, null) {
         @Override
         protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
-            return Property.trimTrailing(s);
+            return Material.trimTrailing(s);
         }
 
         @Override
@@ -115,7 +115,7 @@ public enum StringValueType implements ValueType {
                 double[] ds = (double[]) val;
                 return (valueIndex < ds.length
                         && !Double.isNaN(ds[valueIndex]))
-                        ? Property.formatDS(ds[valueIndex])
+                        ? Material.formatDS(ds[valueIndex])
                         : defVal;
             }
             return super.toString(val, bigEndian, valueIndex, defVal);
@@ -132,11 +132,11 @@ public enum StringValueType implements ValueType {
 
         private Object toStrings(double[] ds) {
             if (ds.length == 1)
-                return Property.formatDS(ds[0]);
+                return Material.formatDS(ds[0]);
 
             String[] ss = new String[ds.length];
             for (int i = 0; i < ds.length; i++)
-                ss[i] = !Double.isNaN(ds[i]) ? Property.formatDS(ds[i]) : Normal.EMPTY;
+                ss[i] = !Double.isNaN(ds[i]) ? Material.formatDS(ds[i]) : Normal.EMPTY;
 
             return ss;
         }
@@ -179,11 +179,11 @@ public enum StringValueType implements ValueType {
                 return Value.NULL;
 
             if (fs.length == 1)
-                return Property.formatDS(fs[0]);
+                return Material.formatDS(fs[0]);
 
             String[] ss = new String[fs.length];
             for (int i = 0; i < fs.length; i++)
-                ss[i] = Property.formatDS(fs[i]);
+                ss[i] = Material.formatDS(fs[i]);
             return ss;
         }
 
@@ -361,7 +361,7 @@ public enum StringValueType implements ValueType {
 
         if (val instanceof String[])
             return cs(cs).encode(
-                    Property.concat((String[]) val, Symbol.C_BACKSLASH), delimiters);
+                    Material.concat((String[]) val, Symbol.C_BACKSLASH), delimiters);
 
         throw new UnsupportedOperationException();
     }
@@ -399,7 +399,7 @@ public enum StringValueType implements ValueType {
     }
 
     protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
-        return Property.splitAndTrim(s, Symbol.C_BACKSLASH);
+        return Material.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
 
     @Override
@@ -495,7 +495,7 @@ public enum StringValueType implements ValueType {
     }
 
     protected Object toMultiValue(String s) {
-        return Property.splitAndTrim(s, Symbol.C_BACKSLASH);
+        return Material.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
 
     @Override

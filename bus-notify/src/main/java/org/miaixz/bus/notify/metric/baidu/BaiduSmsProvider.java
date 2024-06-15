@@ -43,14 +43,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaiduSmsProvider extends AbstractProvider<BaiduProperty, Context> {
+public class BaiduSmsProvider extends AbstractProvider<BaiduMaterial, Context> {
 
     public BaiduSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(BaiduProperty entity) {
+    public Message send(BaiduMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("mobile", entity.getReceive());
         bodys.put("template", entity.getTemplate());

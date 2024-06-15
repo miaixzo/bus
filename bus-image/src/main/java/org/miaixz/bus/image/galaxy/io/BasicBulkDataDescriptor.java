@@ -30,7 +30,7 @@ package org.miaixz.bus.image.galaxy.io;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.AttributesSelector;
 import org.miaixz.bus.image.galaxy.data.ItemPointer;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -195,12 +195,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     public void setLengthsThresholdsFromStrings(String... ss) {
         EnumMap<VR, Integer> tmp = new EnumMap<>(VR.class);
         for (String s : ss) {
-            String[] entry = Property.split(s, Symbol.C_EQUAL);
+            String[] entry = Material.split(s, Symbol.C_EQUAL);
             if (entry.length != 2)
                 throw new IllegalArgumentException(s);
             try {
                 Integer length = Integer.valueOf(entry[1]);
-                for (String vr : Property.split(entry[0], Symbol.C_COMMA)) {
+                for (String vr : Material.split(entry[0], Symbol.C_COMMA)) {
                     tmp.put(VR.valueOf(vr), length);
                 }
             } catch (IllegalArgumentException e) {

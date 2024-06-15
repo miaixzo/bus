@@ -152,7 +152,7 @@ public class DirWriter extends DirReader {
         if (dend == 0 || !fpath.startsWith(dpath))
             throw new IllegalArgumentException("file: " + fpath
                     + " not in directory: " + dfile.getAbsoluteFile());
-        return Property.split(fpath.substring(dend), File.separatorChar);
+        return Material.split(fpath.substring(dend), File.separatorChar);
     }
 
     public ImageEncodingOptions getEncodingOptions() {

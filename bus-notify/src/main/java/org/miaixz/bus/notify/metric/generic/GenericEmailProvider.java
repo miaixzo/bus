@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
+import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.io.File;
@@ -56,14 +56,14 @@ import java.util.List;
  * @author Justubborn
  * @since Java 17+
  */
-public class GenericEmailProvider extends AbstractProvider<GenericProperty, Context> {
+public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Context> {
 
     public GenericEmailProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(GenericProperty entity) {
+    public Message send(GenericMaterial entity) {
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -157,7 +157,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
      * @return {@link MimeMessage}消息
      * @throws MessagingException 消息异常
      */
-    private MimeMessage build(GenericProperty entity) throws MessagingException {
+    private MimeMessage build(GenericMaterial entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
@@ -179,7 +179,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Property.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
+        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
@@ -220,7 +220,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
      * @param template 是否使用单例Session
      * @return 邮件会话 {@link Session}
      */
-    private Session getSession(GenericProperty template) {
+    private Session getSession(GenericMaterial template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
             authenticator = new UserPassAuthenticator(template.getUser(), template.getPass());

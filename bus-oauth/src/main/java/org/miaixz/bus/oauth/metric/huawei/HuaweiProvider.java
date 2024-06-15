@@ -86,7 +86,7 @@ public class HuaweiProvider extends AbstractProvider {
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("nsp_ts", System.currentTimeMillis() + "");
         form.put("access_token", accToken.getAccessToken());
@@ -100,7 +100,7 @@ public class HuaweiProvider extends AbstractProvider {
 
         Gender gender = getRealGender(object);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("userID"))
                 .username(object.getString("userName"))

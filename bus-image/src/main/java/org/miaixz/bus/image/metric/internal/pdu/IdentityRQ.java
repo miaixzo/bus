@@ -29,7 +29,7 @@ package org.miaixz.bus.image.metric.internal.pdu;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 /**
  * @author Kimi Liu
@@ -129,10 +129,10 @@ public class IdentityRQ {
 
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  UserIdentity[")
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("    type: ")
                 .append(typeAsString(type))
-                .append(Property.LINE_SEPARATOR);
+                .append(Material.LINE_SEPARATOR);
         if (type == USERNAME
                 || type == USERNAME_PASSCODE)
             sb.append("    username: ")
@@ -142,17 +142,17 @@ public class IdentityRQ {
                     .append(primaryField.length)
                     .append(']');
         if (type == USERNAME_PASSCODE) {
-            sb.append(Property.LINE_SEPARATOR)
+            sb.append(Material.LINE_SEPARATOR)
                     .append("    passcode: ");
             for (int i = secondaryField.length; --i >= 0; )
                 sb.append(Symbol.C_STAR);
         } else if (secondaryField.length > 0) {
-            sb.append(Property.LINE_SEPARATOR)
+            sb.append(Material.LINE_SEPARATOR)
                     .append("    secondaryField: byte[")
                     .append(secondaryField.length)
                     .append(']');
         }
-        return sb.append(Property.LINE_SEPARATOR)
+        return sb.append(Material.LINE_SEPARATOR)
                 .append("  ]");
     }
 

@@ -40,14 +40,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NeteaseSmsProvider extends NeteaseProvider<NeteaseProperty, Context> {
+public class NeteaseSmsProvider extends NeteaseProvider<NeteaseMaterial, Context> {
 
     public NeteaseSmsProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(NeteaseProperty entity) {
+    public Message send(NeteaseMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("templateid", entity.getTemplate());
         bodys.put("mobiles", entity.getReceive());

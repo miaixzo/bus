@@ -44,14 +44,14 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class YunpianSmsProvider extends AbstractProvider<YunpianProperty, Context> {
+public class YunpianSmsProvider extends AbstractProvider<YunpianMaterial, Context> {
 
     public YunpianSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(YunpianProperty entity) {
+    public Message send(YunpianMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("apikey", entity.getApikey());
         bodys.put("mobile", entity.getReceive());

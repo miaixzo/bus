@@ -30,7 +30,7 @@ package org.miaixz.bus.image.nimble.codec;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
 
@@ -155,9 +155,9 @@ public class ImageReaderFactory implements Serializable {
         Properties props = new Properties();
         props.load(in);
         for (Map.Entry<Object, Object> entry : props.entrySet()) {
-            String[] ss = Property.split((String) entry.getValue(), Symbol.C_COLON);
+            String[] ss = Material.split((String) entry.getValue(), Symbol.C_COLON);
             map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
-                    ss.length > 3 ? Property.split(ss[3], Symbol.C_SEMICOLON) : Normal.EMPTY_STRING_ARRAY));
+                    ss.length > 3 ? Material.split(ss[3], Symbol.C_SEMICOLON) : Normal.EMPTY_STRING_ARRAY));
         }
     }
 
@@ -190,10 +190,10 @@ public class ImageReaderFactory implements Serializable {
         public final String formatName;
         public final String className;
         public final PatchJPEGLS patchJPEGLS;
-        public final Property[] imageReadParams;
+        public final Material[] imageReadParams;
 
         public ImageReaderParam(String formatName, String className,
-                                PatchJPEGLS patchJPEGLS, Property[] imageReadParams) {
+                                PatchJPEGLS patchJPEGLS, Material[] imageReadParams) {
             this.formatName = formatName;
             this.className = nullify(className);
             this.patchJPEGLS = patchJPEGLS;
@@ -206,10 +206,10 @@ public class ImageReaderFactory implements Serializable {
                     null != patchJPEGLS && !patchJPEGLS.isEmpty()
                             ? PatchJPEGLS.valueOf(patchJPEGLS)
                             : null,
-                    Property.valueOf(imageWriteParams));
+                    Material.valueOf(imageWriteParams));
         }
 
-        public Property[] getImageReadParams() {
+        public Material[] getImageReadParams() {
             return imageReadParams;
         }
 

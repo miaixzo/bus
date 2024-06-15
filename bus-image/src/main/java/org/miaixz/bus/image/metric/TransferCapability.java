@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Option;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -149,8 +149,8 @@ public class TransferCapability implements Serializable {
     }
 
     public void setTransferSyntaxes(String... transferSyntaxes) {
-        this.transferSyntaxes = Property.requireContainsNoEmpty(
-                Property.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
+        this.transferSyntaxes = Material.requireContainsNoEmpty(
+                Material.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
                 "empty transferSyntax");
     }
 
@@ -160,11 +160,11 @@ public class TransferCapability implements Serializable {
 
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
         this.prefTransferSyntaxes =
-                Property.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
+                Material.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
     public boolean containsTransferSyntax(String ts) {
-        return Symbol.STAR.equals(transferSyntaxes[0]) || Property.contains(transferSyntaxes, ts);
+        return Symbol.STAR.equals(transferSyntaxes[0]) || Material.contains(transferSyntaxes, ts);
     }
 
     public String selectTransferSyntax(String... transferSyntaxes) {
@@ -216,20 +216,20 @@ public class TransferCapability implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
-        Property.appendLine(sb, indent2, "role: ", role);
+        Material.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
+        Material.appendLine(sb, indent2, "role: ", role);
         sb.append(indent2).append("as: ");
-        UID.promptTo(sopClass, sb).append(Property.LINE_SEPARATOR);
+        UID.promptTo(sopClass, sb).append(Material.LINE_SEPARATOR);
         for (String ts : transferSyntaxes) {
             sb.append(indent2).append("ts: ");
-            UID.promptTo(ts, sb).append(Property.LINE_SEPARATOR);
+            UID.promptTo(ts, sb).append(Material.LINE_SEPARATOR);
         }
         if (null != types)
             sb.append(indent2).append("QueryOptions").append(types)
-                    .append(Property.LINE_SEPARATOR);
+                    .append(Material.LINE_SEPARATOR);
         if (null != storageOptions)
             sb.append(indent2).append(storageOptions)
-                    .append(Property.LINE_SEPARATOR);
+                    .append(Material.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

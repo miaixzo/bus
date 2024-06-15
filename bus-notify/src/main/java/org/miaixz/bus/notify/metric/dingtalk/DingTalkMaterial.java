@@ -25,29 +25,50 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.aliyun;
+package org.miaixz.bus.notify.metric.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
+/**
+ * 钉钉通知模版
+ *
+ * @author Justubborn
+ * @since Java 17+
+ */
 @Getter
 @Setter
-public class AliyunProperty extends Property {
+public class DingTalkMaterial extends Material {
 
     /**
-     * 播放次数
+     * 应用agentId
      */
-    private String playTimes;
+    private String agentId;
+    /**
+     * 接收者的用户userId列表，最大列表长度：100
+     */
+    private String userIdList;
+    /**
+     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
+     */
+    private String deptIdList;
+    /**
+     * 是否发送给企业全部用户 true,false
+     */
+    private boolean toAllUser;
+    /**
+     * 白名单列表
+     */
+    private String whiteList;
+    /**
+     * json字符串
+     */
+    private String msg;
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * 钉钉token
      */
-    @Override
-    public String getUrl() {
-        return this.url = "https://dysmsapi.aliyuncs.com/";
-    }
+    private String token;
 
 }

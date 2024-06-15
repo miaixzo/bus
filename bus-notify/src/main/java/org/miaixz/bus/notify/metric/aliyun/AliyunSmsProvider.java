@@ -44,14 +44,14 @@ import java.util.UUID;
  * @author Justubborn
  * @since Java 17+
  */
-public class AliyunSmsProvider extends AliyunProvider<AliyunProperty, Context> {
+public class AliyunSmsProvider extends AliyunProvider<AliyunMaterial, Context> {
 
     public AliyunSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(AliyunProperty entity) {
+    public Message send(AliyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         // 1. 系统参数
         bodys.put("SignatureMethod", "HMAC-SHA1");

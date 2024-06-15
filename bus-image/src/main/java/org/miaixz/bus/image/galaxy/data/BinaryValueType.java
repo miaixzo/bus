@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -182,7 +182,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
-            return Property
+            return Material
                     .formatDS(ByteKit.bytesToFloat(b, off, bigEndian));
         }
 
@@ -220,7 +220,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
-            return Property
+            return Material
                     .formatDS(ByteKit.bytesToDouble(b, off, bigEndian));
         }
 
@@ -303,7 +303,7 @@ public enum BinaryValueType implements ValueType {
     }
 
     protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
-        return toBytes(Property.parseIS(s), b, off, bigEndian);
+        return toBytes(Material.parseIS(s), b, off, bigEndian);
     }
 
     protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {

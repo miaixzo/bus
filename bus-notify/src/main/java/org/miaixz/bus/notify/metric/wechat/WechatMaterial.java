@@ -25,48 +25,20 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.unisms;
+package org.miaixz.bus.notify.metric.wechat;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 合一短信
+ * 微信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class UniProperty extends Property {
-
-    /**
-     * 是否为简易模式
-     */
-    private boolean simple = true;
-
-    /**
-     * 模板变量名称
-     */
-    private String templateName;
-    /**
-     * 重试间隔
-     */
-    private int retryInterval;
-    /**
-     * 重试次数
-     */
-    private int maxRetries;
-
-    /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
-     */
-    @Override
-    public String getUrl() {
-        return this.url = "https://uni.apistd.com/";
-    }
+public class WechatMaterial extends Material {
 
 }

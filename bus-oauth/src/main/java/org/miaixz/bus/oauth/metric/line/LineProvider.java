@@ -78,14 +78,14 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/x-www-form-urlencoded");
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
 
         String userInfo = Httpx.get(complex.userInfo(), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .uuid(object.getString("userId"))
                 .username(object.getString("displayName"))

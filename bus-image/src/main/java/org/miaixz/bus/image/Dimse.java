@@ -28,7 +28,7 @@
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
@@ -177,7 +177,7 @@ public enum Dimse {
     }
 
     private static void promptUIDTo(String name, String uid, StringBuilder sb) {
-        sb.append(Property.LINE_SEPARATOR).append(name);
+        sb.append(Material.LINE_SEPARATOR).append(name);
         UID.promptTo(uid, sb);
     }
 
@@ -185,7 +185,7 @@ public enum Dimse {
         String aet = cmd.getString(Tag.MoveOriginatorApplicationEntityTitle,
                 null);
         if (null != aet)
-            sb.append(Property.LINE_SEPARATOR)
+            sb.append(Material.LINE_SEPARATOR)
                     .append("  orig=")
                     .append(aet)
                     .append(" >> ")
@@ -199,7 +199,7 @@ public enum Dimse {
         if (null == tags)
             return;
 
-        sb.append(Property.LINE_SEPARATOR).append("  tags=[");
+        sb.append(Material.LINE_SEPARATOR).append("  tags=[");
         if (tags.length > 0) {
             for (int tag : tags)
                 sb.append(Tag.toString(tag)).append(", ");

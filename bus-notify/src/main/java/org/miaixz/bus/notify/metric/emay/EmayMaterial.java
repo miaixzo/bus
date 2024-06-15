@@ -25,32 +25,25 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.metric.huawei;
+package org.miaixz.bus.notify.metric.emay;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Property;
+import org.miaixz.bus.notify.magic.Material;
 
 /**
- * 华为云短信
+ * 亿美短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class HuaweiProperty extends Property {
+public class EmayMaterial extends Material {
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * APP接入地址
      */
-    @Override
-    public String getUrl() {
-        return this.url = "https://smsapi.cn-north-4.myhuaweicloud.com/sms/batchSendSms/v1/";
-    }
-
-
+    private String requestUrl;
 
 }

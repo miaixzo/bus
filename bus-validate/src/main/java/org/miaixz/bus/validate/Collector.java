@@ -30,7 +30,7 @@ package org.miaixz.bus.validate;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.validate.magic.Property;
+import org.miaixz.bus.validate.magic.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ public class Collector {
      */
     private List<Collector> result;
 
-    private Property property;
+    private Material material;
 
     private boolean pass;
 
@@ -71,9 +71,9 @@ public class Collector {
         this.result.add(collector);
     }
 
-    public Collector(Verified target, Property property, boolean pass) {
+    public Collector(Verified target, Material material, boolean pass) {
         this.target = target;
-        this.property = property;
+        this.material = material;
         this.pass = pass;
     }
 

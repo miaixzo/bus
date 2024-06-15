@@ -35,8 +35,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
+import org.miaixz.bus.storage.magic.Material;
 import org.miaixz.bus.storage.magic.Message;
-import org.miaixz.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -99,17 +99,16 @@ public class HuaweiObsProvider extends AbstractProvider {
                 .errcode(ErrorCode.SUCCESS.getCode())
                 .errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjects().stream().map(item -> {
-                    Property storageItem = new Property();
-                    storageItem.setName(item.getObjectKey());
-                    storageItem.setOwner(item.getOwner().getId());
-                    storageItem.setType(item.getMetadata().getContentType());
-                    storageItem.setSize(StringKit.toString(item.getMetadata().getContentLength()));
-                    Map<String, Object> extended = new HashMap<>();
-                    extended.put("tag", item.getMetadata().getEtag());
-                    extended.put("storageClass", item.getMetadata().getObjectStorageClass());
-                    extended.put("lastModified", item.getMetadata().getLastModified());
-                    storageItem.setExtend(extended);
-                    return storageItem;
+                    Map<String, Object> extend = new HashMap<>();
+                    extend.put("tag", item.getMetadata().getEtag());
+                    extend.put("storageClass", item.getMetadata().getObjectStorageClass());
+                    extend.put("lastModified", item.getMetadata().getLastModified());
+                    return Material.builder()
+                            .name(item.getObjectKey())
+                            .owner(item.getOwner().getId())
+                            .type(item.getMetadata().getContentType())
+                            .size(StringKit.toString(item.getMetadata().getContentLength()))
+                            .extend(extend).build();
                 }).collect(Collectors.toList()))
                 .build();
     }

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.*;
 import org.miaixz.bus.image.nimble.BufferedImages;
@@ -458,20 +458,20 @@ public class Transcoder implements Closeable {
             dataset.setValue(Tag.PixelData, vr, new BulkData(null, pixelDataBulkDataURI, false));
     }
 
-    public void setCompressParams(Property... imageWriteParams) {
+    public void setCompressParams(Material... imageWriteParams) {
         if (null == compressorParam) return;
-        for (Property property : imageWriteParams) {
-            String name = property.getName();
+        for (Material material : imageWriteParams) {
+            String name = material.getName();
             if (name.equals("maxPixelValueError"))
-                this.maxPixelValueError = ((Number) property.getValue()).intValue();
+                this.maxPixelValueError = ((Number) material.getValue()).intValue();
             else if (name.equals("avgPixelValueBlockSize"))
-                this.avgPixelValueBlockSize = ((Number) property.getValue()).intValue();
+                this.avgPixelValueBlockSize = ((Number) material.getValue()).intValue();
             else if (name.equals("bitsCompressed"))
-                this.bitsCompressed = ((Number) property.getValue()).intValue();
+                this.bitsCompressed = ((Number) material.getValue()).intValue();
             else {
                 if (compressParam.getCompressionMode() != ImageWriteParam.MODE_EXPLICIT)
                     compressParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                property.setAt(compressParam);
+                material.setAt(compressParam);
             }
         }
         if (maxPixelValueError >= 0) {
@@ -571,7 +571,7 @@ public class Transcoder implements Closeable {
             if (lossyCompression) {
                 dataset.setString(Tag.LossyImageCompression, VR.CS, "01");
                 if ("jpeg2000-cv".equals(compressorParam.formatName)) {
-                    for (Property p : compressorParam.getImageWriteParams()) {
+                    for (Material p : compressorParam.getImageWriteParams()) {
                         if ("compressionRatiofactor".equals(p.getName())) {
                             dataset.setFloat(Tag.LossyImageCompressionRatio, VR.DS, ((Double) p.getValue()).floatValue());
                             break;

@@ -55,10 +55,10 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
         this.commonName = commonName;
         this.condition = new Condition(
-                Property.maskNull(sopClasses),
+                Material.maskNull(sopClasses),
                 dimse,
                 role,
-                Property.maskNull(aeTitles));
+                Material.maskNull(aeTitles));
         this.uri = uri;
     }
 
@@ -70,7 +70,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         for (String cuid : cuids)
             UID.promptTo(cuid, sb).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
     }
 
     private static void promptAETsTo(StringBuilder sb, String indent,
@@ -81,7 +81,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         for (String aet : aets)
             sb.append(aet).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
     }
 
     public final String getCommonName() {
@@ -125,17 +125,17 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent,
+        Material.appendLine(sb, indent,
                 "AttributeCoercion[cn: ", commonName);
-        Property.appendLine(sb, indent2, "dimse: ", condition.dimse);
-        Property.appendLine(sb, indent2, "role: ", condition.role);
+        Material.appendLine(sb, indent2, "dimse: ", condition.dimse);
+        Material.appendLine(sb, indent2, "role: ", condition.role);
         promptCUIDsTo(sb, indent2, condition.sopClasses);
         promptAETsTo(sb, indent2, condition.aeTitles);
-        Property.appendLine(sb, indent2, "cuids: ",
+        Material.appendLine(sb, indent2, "cuids: ",
                 Arrays.toString(condition.sopClasses));
-        Property.appendLine(sb, indent2, "aets: ",
+        Material.appendLine(sb, indent2, "aets: ",
                 Arrays.toString(condition.aeTitles));
-        Property.appendLine(sb, indent2, "uri: ", uri);
+        Material.appendLine(sb, indent2, "uri: ", uri);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

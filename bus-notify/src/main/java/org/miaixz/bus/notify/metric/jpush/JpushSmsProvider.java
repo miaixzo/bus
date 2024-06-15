@@ -49,14 +49,14 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JpushSmsProvider extends AbstractProvider<JpushProperty, Context> {
+public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
 
     public JpushSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(JpushProperty entity) {
+    public Message send(JpushMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("sign_id", entity.getSignature());
         bodys.put("mobile", entity.getReceive());

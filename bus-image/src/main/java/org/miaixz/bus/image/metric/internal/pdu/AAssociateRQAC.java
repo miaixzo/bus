@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.Capacity;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Implementation;
 import org.miaixz.bus.image.metric.Connection;
 
@@ -299,35 +299,35 @@ public abstract class AAssociateRQAC {
 
     protected StringBuilder promptTo(String header, StringBuilder sb) {
         sb.append(header)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  calledAET: ").append(calledAET)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  callingAET: ").append(callingAET)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  applicationContext: ");
         UID.promptTo(applicationContext, sb)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  implClassUID: ").append(implClassUID)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  implVersionName: ").append(implVersionName)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  maxPDULength: ").append(maxPDULength)
-                .append(Property.LINE_SEPARATOR)
+                .append(Material.LINE_SEPARATOR)
                 .append("  maxOpsInvoked/maxOpsPerformed: ")
                 .append(maxOpsInvoked).append(Symbol.SLASH).append(maxOpsPerformed)
-                .append(Property.LINE_SEPARATOR);
+                .append(Material.LINE_SEPARATOR);
         if (null != identityRQ)
-            identityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);
+            identityRQ.promptTo(sb).append(Material.LINE_SEPARATOR);
         if (null != identityAC)
-            identityAC.promptTo(sb).append(Property.LINE_SEPARATOR);
+            identityAC.promptTo(sb).append(Material.LINE_SEPARATOR);
         for (Presentation pc : pcs)
-            pc.promptTo(sb).append(Property.LINE_SEPARATOR);
+            pc.promptTo(sb).append(Material.LINE_SEPARATOR);
         for (RoleSelection rs : roleSelMap.values())
-            rs.promptTo(sb).append(Property.LINE_SEPARATOR);
+            rs.promptTo(sb).append(Material.LINE_SEPARATOR);
         for (ExtendedNegotiate extNeg : extNegMap.values())
-            extNeg.promptTo(sb).append(Property.LINE_SEPARATOR);
+            extNeg.promptTo(sb).append(Material.LINE_SEPARATOR);
         for (CommonExtended extNeg : commonExtNegMap.values())
-            extNeg.promptTo(sb).append(Property.LINE_SEPARATOR);
+            extNeg.promptTo(sb).append(Material.LINE_SEPARATOR);
         return sb.append("]");
     }
 

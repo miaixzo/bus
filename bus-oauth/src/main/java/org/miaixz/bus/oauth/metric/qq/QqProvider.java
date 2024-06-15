@@ -71,7 +71,7 @@ public class QqProvider extends AbstractProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String openId = this.getOpenId(accToken);
         String response = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(response);
@@ -84,7 +84,7 @@ public class QqProvider extends AbstractProvider {
         }
 
         String location = String.format("%s-%s", object.getString("province"), object.getString("city"));
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))

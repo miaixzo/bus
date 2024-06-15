@@ -68,12 +68,12 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String openId = accToken.getOpenId();
 
         String scope = accToken.getScope();
         if (!StringKit.isEmpty(scope) && !scope.contains("snsapi_userinfo")) {
-            return Property.builder()
+            return Material.builder()
                     .rawJson(JSONObject.parseObject(JSONObject.toJSONString(accToken)))
                     .uuid(openId)
                     .snapshotUser(accToken.isSnapshotUser())
@@ -91,7 +91,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
         if (object.containsKey("unionid")) {
             accToken.setUnionId(object.getString("unionid"));
         }
-        return Property.builder()
+        return Material.builder()
                 .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))

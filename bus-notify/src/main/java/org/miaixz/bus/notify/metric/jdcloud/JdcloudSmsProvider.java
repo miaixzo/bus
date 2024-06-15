@@ -46,14 +46,14 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdcloudSmsProvider extends AbstractProvider<JdcloudProperty, Context> {
+public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Context> {
 
     public JdcloudSmsProvider(Context context) {
         super(context);
     }
 
     @Override
-    public Message send(JdcloudProperty entity) {
+    public Message send(JdcloudMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
         bodys.put("regionId", this.getUrl(entity));
         bodys.put("templateId", entity.getTemplate());

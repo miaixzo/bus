@@ -59,7 +59,7 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Context> {
+public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Context> {
 
     /**
      * 构造器，用于构造短信实现模块
@@ -69,7 +69,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
     }
 
     @Override
-    public Message send(ZhutongProperty entity) {
+    public Message send(ZhutongMaterial entity) {
         // 如果模板id为空 or 模板变量名称为空，使用无模板的自定义短信发送
         if (ArrayKit.hasBlank(entity.getSignature(), entity.getTemplate(), entity.getTemplateName())) {
             return sendForCustom(entity);
@@ -81,7 +81,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
     /**
      * 发送 自定义短信：https://doc.zthysms.com/web/#/1/14
      */
-    protected Message sendForCustom(ZhutongProperty entity) {
+    protected Message sendForCustom(ZhutongMaterial entity) {
         String requestUrl = this.getUrl(entity);
         String username = this.context.getAppKey();
         String password = this.context.getAppSecret();
@@ -136,7 +136,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongProperty, Contex
     /**
      * 发送 模板短信：https://doc.zthysms.com/web/#/1/13
      */
-    protected Message sendForTemplate(ZhutongProperty entity) {
+    protected Message sendForTemplate(ZhutongMaterial entity) {
         validator(this.getUrl(entity), this.context.getAppKey(), this.context.getAppSecret());
         if (StringKit.isBlank(entity.getSignature())) {
             throw new InternalException("助通短信：模板短信中已报备的签名signature不能为空！");
