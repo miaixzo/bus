@@ -618,7 +618,7 @@ public class DateKit extends Calendar {
         if (date instanceof DateTime) {
             timeZone = ((DateTime) date).getTimeZone();
         }
-        return format(date, newSimpleFormat(format, null, timeZone));
+        return format(date, FormatBuilder.getInstance(format, timeZone));
     }
 
     /**
@@ -1177,6 +1177,9 @@ public class DateKit extends Calendar {
      * @return 偏移后的日期
      */
     public static DateTime offset(final Date date, final Various various, final int offset) {
+        if (date == null) {
+            return null;
+        }
         return dateNew(date).offset(various, offset);
     }
 

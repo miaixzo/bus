@@ -118,12 +118,13 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
         String manufacturer = Normal.UNKNOWN;
         String memoryType = Normal.UNKNOWN;
         String partNumber = Normal.UNKNOWN;
+        String serialNumber = Normal.UNKNOWN;
         for (String line : sp) {
             if (line.trim().startsWith("BANK")) {
                 // Save previous bank
                 if (bank++ > 0) {
                     pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType,
-                            Normal.UNKNOWN));
+                            Normal.UNKNOWN,serialNumber));
                 }
                 bankLabel = line.trim();
                 int colon = bankLabel.lastIndexOf(Symbol.C_COLON);
@@ -149,13 +150,16 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
                         case "Part Number":
                             partNumber = split[1].trim();
                             break;
+                        case "Serial Number":
+                            serialNumber = split[1].trim();
+                            break;
                         default:
                             break;
                     }
                 }
             }
         }
-        pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber));
+        pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
 
         return pmList;
     }

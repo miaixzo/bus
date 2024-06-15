@@ -208,11 +208,22 @@ public class SolarDay extends Loops {
      * @return 节气
      */
     public SolarTerms getTerm() {
+        return getTermDay().getSolarTerm();
+    }
+
+    /**
+     * 节气第几天
+     *
+     * @return 节气第几天
+     */
+    public SolarTermDay getTermDay() {
         SolarTerms term = SolarTerms.fromIndex(month.getYear().getYear() + 1, 0);
-        while (isBefore(term.getJulianDay().getSolarDay())) {
+        SolarDay day = term.getJulianDay().getSolarDay();
+        while (isBefore(day)) {
             term = term.next(-1);
+            day = term.getJulianDay().getSolarDay();
         }
-        return term;
+        return new SolarTermDay(term, subtract(day));
     }
 
     /**

@@ -116,7 +116,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                     // Save previous bank
                     if (capacity > 0) {
                         pmList.add(new PhysicalMemory(bankLabel + locator, capacity, 0L, "IBM", Normal.UNKNOWN,
-                                Normal.UNKNOWN));
+                                Normal.UNKNOWN, Normal.UNKNOWN));
                     }
                     bankLabel = Normal.UNKNOWN;
                     locator = Normal.EMPTY;
@@ -134,7 +134,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                 } else if (s.startsWith("Physical Location:")) {
                     // Save previous bank
                     if (capacity > 0) {
-                        pmList.add(new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber));
+                        pmList.add(new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber, Normal.UNKNOWN));
                     }
                     partNumber = Normal.UNKNOWN;
                     locator = Normal.EMPTY;

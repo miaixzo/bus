@@ -54,7 +54,7 @@ import java.util.Map;
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
+    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
             if (s.indexOf(Symbol.C_COLON) >= 0) {
@@ -64,7 +64,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                     Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
                     InternetProtocolStats.TcpState state = stateLookup(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
-                    int inode = Parsing.parseIntOrDefault(split[9], 0);
+                    long inode = Parsing.parseLongOrDefault(split[9], 0);
                     conns.add(new InternetProtocolStats.IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
                             state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
                 }
@@ -150,7 +150,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     @Override
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
-        Map<Integer, Integer> pidMap = ProcessStat.querySocketToPidMap();
+        Map<Long, Integer> pidMap = ProcessStat.querySocketToPidMap();
         conns.addAll(queryConnections("tcp", 4, pidMap));
         conns.addAll(queryConnections("tcp", 6, pidMap));
         conns.addAll(queryConnections("udp", 4, pidMap));

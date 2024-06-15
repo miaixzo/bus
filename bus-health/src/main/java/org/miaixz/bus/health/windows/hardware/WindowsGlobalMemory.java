@@ -254,8 +254,9 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                 String memoryType = smBiosMemoryType(
                         WmiKit.getUint32(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.SMBIOSMEMORYTYPE, index));
                 String partNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.PARTNUMBER, index);
+                String serialNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.SERIALNUMBER, index);
                 physicalMemoryList
-                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber));
+                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
             }
         } else {
             WmiResult<Win32PhysicalMemory.PhysicalMemoryPropertyWin8> bankMap = Win32PhysicalMemory.queryphysicalMemoryWin8();
@@ -267,8 +268,9 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
                 String memoryType = memoryType(
                         WmiKit.getUint16(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.MEMORYTYPE, index));
                 String partNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.PARTNUMBER, index);
+                String serialNumber = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.SERIALNUMBER, index);
                 physicalMemoryList
-                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber));
+                        .add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
             }
         }
         return physicalMemoryList;
