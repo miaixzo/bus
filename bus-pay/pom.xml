@@ -110,7 +110,6 @@
             <version>${bouncycastle.version}</version>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
@@ -143,7 +142,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 
     <build>

@@ -112,7 +112,7 @@ public class TOTP extends HOTP {
      * @param key            共享密码，RFC 4226要求最少128位
      */
     public TOTP(final Duration timeStep, final int passwordLength, final byte[] key) {
-        this(timeStep, passwordLength, HOTP_HMAC_ALGORITHM, key);
+        this(timeStep, passwordLength, Algorithm.HMACSHA1, key);
     }
 
     /**

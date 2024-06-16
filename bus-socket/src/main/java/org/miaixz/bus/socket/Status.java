@@ -32,7 +32,8 @@ import java.nio.ByteBuffer;
 /**
  * 列举了当前所关注的各类状态枚举
  *
- * <p>当前枚举的各状态机事件在发生后都会及时触发{@link Handler#stateEvent(Session, Status, Throwable)}方法。
+ * <p>
+ * 当前枚举的各状态机事件在发生后都会及时触发{@link Handler#stateEvent(Session, Status, Throwable)}方法。
  * 因此用户在实现的{@linkplain Handler}接口中可对自己关心的状态机事件进行处理。
  * </p>
  *

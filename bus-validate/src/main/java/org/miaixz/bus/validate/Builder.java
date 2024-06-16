@@ -40,12 +40,17 @@ import java.lang.annotation.Annotation;
  */
 public class Builder extends Validator {
 
-    // 默认错误码
+    /**
+     * 默认错误码
+     */
     public static final String DEFAULT_ERRCODE = "-1";
-    // 默认属性名
+    /**
+     * 默认属性名
+     */
     public static final String DEFAULT_FIELD = "field";
-
-    // 校验对象参数
+    /**
+     * 校验对象参数
+     */
     public static final String VAL = "val";
     public static final String FIELD = "field";
     public static final String GROUP = "group";

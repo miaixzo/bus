@@ -488,8 +488,8 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKeyParams 公钥参数
      * @return this
      */
-    public SM2 setPublicKeyParams(final ECPublicKeyParameters publicKey) {
-        this.publicKeyParams = publicKey;
+    public SM2 setPublicKeyParams(final ECPublicKeyParameters publicKeyParams) {
+        this.publicKeyParams = publicKeyParams;
         return this;
     }
 

@@ -96,11 +96,13 @@
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>${bytebuddy.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-parameter-flow-control</artifactId>
             <version>${sentinel.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
