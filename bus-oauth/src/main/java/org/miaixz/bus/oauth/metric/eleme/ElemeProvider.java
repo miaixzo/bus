@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.oauth.metric.eleme;
 
 import com.alibaba.fastjson.JSON;
@@ -40,7 +42,7 @@ import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +54,7 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ElemeProvider extends DefaultProvider {
+public class ElemeProvider extends AbstractProvider {
 
     private static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded;charset=UTF-8";
     private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
@@ -61,8 +63,8 @@ public class ElemeProvider extends DefaultProvider {
         super(context, Registry.ELEME);
     }
 
-    public ElemeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.ELEME, authorizeCache);
+    public ElemeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.ELEME, cache);
     }
 
     /**
@@ -90,11 +92,11 @@ public class ElemeProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, Object> form = new HashMap<>(7);
+    protected AccToken getAccessToken(Callback callback) {
+        Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("redirect_uri", context.getRedirectUri());
-        form.put("code", authCallback.getCode());
+        form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
         Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);
@@ -114,7 +116,7 @@ public class ElemeProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken oldToken) {
-        Map<String, Object> form = new HashMap<>(4);
+        Map<String, String> form = new HashMap<>(4);
         form.put("refresh_token", oldToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
@@ -137,7 +139,7 @@ public class ElemeProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, Object> parameters = new HashMap<>(4);
         // 获取商户账号信息的API接口名称
         String action = "eleme.user.getUser";
@@ -176,7 +178,7 @@ public class ElemeProvider extends DefaultProvider {
 
         JSONObject result = object.getJSONObject("result");
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(result)
                 .uuid(result.getString("userId"))
                 .username(result.getString("userName"))

@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -39,6 +41,13 @@ import java.util.Map;
 
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unchecked")
+    public E withDescription(String description) {
+        this.description = description;
+        return (E) (this);
+    }
+
     private Long parentIid;
     private String description;
     private EpicState state;
@@ -74,8 +83,9 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.description = description;
     }
 
-    public E withDescription(String description) {
-        this.description = description;
+    @SuppressWarnings("unchecked")
+    public E withAuthor(Author author) {
+        this.author = author;
         return (E) (this);
     }
 
@@ -111,8 +121,9 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.author = author;
     }
 
-    public E withAuthor(Author author) {
-        this.author = author;
+    @SuppressWarnings("unchecked")
+    public E withLabels(List<String> labels) {
+        this.labels = labels;
         return (E) (this);
     }
 
@@ -124,8 +135,9 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.labels = labels;
     }
 
-    public E withLabels(List<String> labels) {
-        this.labels = labels;
+    @SuppressWarnings("unchecked")
+    public E withStartDate(Date startDate) {
+        this.startDate = startDate;
         return (E) (this);
     }
 
@@ -137,8 +149,9 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.startDate = startDate;
     }
 
-    public E withStartDate(Date startDate) {
-        this.startDate = startDate;
+    @SuppressWarnings("unchecked")
+    public E withEndDate(Date endDate) {
+        this.endDate = endDate;
         return (E) (this);
     }
 
@@ -158,9 +171,24 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.endDate = endDate;
     }
 
-    public E withEndDate(Date endDate) {
-        this.endDate = endDate;
-        return (E) (this);
+    public enum EpicState {
+        OPENED, CLOSED, ALL;
+
+        private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
+
+        @JsonCreator
+        public static EpicState forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     public Date getCreatedAt() {
@@ -230,25 +258,5 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
 
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    public enum EpicState {
-        OPENED, CLOSED, ALL;
-
-        private static final JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
-
-        @JsonCreator
-        public static EpicState forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 }

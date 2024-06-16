@@ -1,33 +1,35 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.DeployToken;
 
-import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -35,8 +37,9 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Deploy Tokens API calls.
  * See https://docs.gitlab.com/ee/api/deploy_tokens.html
- * <p>
+ *
  * Since GitLab 12.9
+ *
  */
 public class DeployTokensApi extends AbstractApi {
 
@@ -108,7 +111,7 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_tokens</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance@param projectId the ID of the project
-     * @param itemsPerPage    the number of DeployToken instances that will be fetched per page
+     * @param itemsPerPage the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -136,10 +139,10 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/deploy_tokens</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the new deploy token’s name, required
-     * @param expiresAt       expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
-     * @param username        the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
-     * @param scopes          indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
+     * @param name the new deploy token’s name, required
+     * @param expiresAt expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
+     * @param username the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
+     * @param scopes indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -160,7 +163,7 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/deploy_tokens/:token_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param tokenId         the ID of the deploy token to delete
+     * @param tokenId the ID of the deploy token to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteProjectDeployToken(Object projectIdOrPath, Long tokenId) throws GitLabApiException {
@@ -195,7 +198,7 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /groups/:id/deploy_tokens</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance@param groupId the ID of the group
-     * @param itemsPerPage  the number of DeployToken instances that will be fetched per page
+     * @param itemsPerPage the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -223,10 +226,10 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /groups/:id/deploy_tokens</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param name          the new deploy token’s name, required
-     * @param expiresAt     expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
-     * @param username      the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
-     * @param scopes        indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
+     * @param name the new deploy token’s name, required
+     * @param expiresAt expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
+     * @param username the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
+     * @param scopes indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -247,7 +250,7 @@ public class DeployTokensApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/deploy_tokens/:token_id</code></pre>
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param tokenId       the ID of the deploy token to delete
+     * @param tokenId the ID of the deploy token to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteGroupDeployToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {

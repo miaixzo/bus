@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class NotificationService implements Serializable {
+    public static final String WEBHOOK_PROP = "webhook";
+
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
     public static final String NOTIFY_ONLY_DEFAULT_BRANCH_PROP = "notify_only_default_branch";
     public static final String BRANCHES_TO_BE_NOTIFIED_PROP = "branches_to_be_notified";
@@ -47,7 +51,7 @@ public abstract class NotificationService implements Serializable {
     public static final String TAG_PUSH_CHANNEL_PROP = "tag_push_channel";
     public static final String PIPELINE_CHANNEL_PROP = "pipeline_channel";
     public static final String WIKI_PAGE_CHANNEL_PROP = "wiki_page_channel";
-    public static final String WEBHOOK_PROP = "web";
+    private static final long serialVersionUID = 1L;
     public static final String USERNAME_PROP = "username";
     public static final String DESCRIPTION_PROP = "description";
     public static final String TITLE_PROP = "title";
@@ -55,7 +59,7 @@ public abstract class NotificationService implements Serializable {
     public static final String ISSUES_URL_PROP = "issues_url";
     public static final String PROJECT_URL_PROP = "project_url";
     public static final String PUSH_EVENTS_PROP = "push_events";
-    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String title;
     private String slug;
@@ -288,10 +292,13 @@ public abstract class NotificationService implements Serializable {
     }
 
     @JsonIgnore
+    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
+
         Object value = (properties != null ? properties.get(prop) : null);
+
         // HACK: Sometimes GitLab returns "0" or "1" for true/false
-        if (value != null && defaultValue instanceof Boolean) {
+        if (value != null && Boolean.class.isInstance(defaultValue)) {
             if ("0".equals(value)) {
                 return ((T) Boolean.FALSE);
             } else if ("1".equals(value)) {

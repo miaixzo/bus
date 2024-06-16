@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Snippet;
 import org.miaixz.bus.gitlab.models.Visibility;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -121,7 +123,7 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a specific Snippet.
      *
-     * @param snippetId       the snippet ID to get
+     * @param snippetId the snippet ID to get
      * @param downloadContent indicating whether to download the snippet content
      * @return the snippet with the given id
      * @throws GitLabApiException if any exception occurs
@@ -170,7 +172,7 @@ public class SnippetsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /snippets/:snippet_id</code></pre>
      *
-     * @param snippetId       the ID of the snippet to get the Optional instance for
+     * @param snippetId the ID of the snippet to get the Optional instance for
      * @param downloadContent indicating whether to download the snippet content
      * @return the specified Snippet as an Optional instance
      */
@@ -185,9 +187,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Create a new Snippet.
      *
-     * @param title    the title of the snippet
+     * @param title the title of the snippet
      * @param fileName the file name of the snippet
-     * @param content  the content of the snippet
+     * @param content the content of the snippet
      * @return the created Snippet
      * @throws GitLabApiException if any exception occurs
      */
@@ -203,10 +205,10 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Create a new Snippet.
      *
-     * @param title       the title of the snippet
-     * @param fileName    the file name of the snippet
-     * @param content     the content of the snippet
-     * @param visibility  the visibility (Public, Internal, Private) of the snippet
+     * @param title the title of the snippet
+     * @param fileName the file name of the snippet
+     * @param content the content of the snippet
+     * @param visibility the visibility (Public, Internal, Private) of the snippet
      * @param description the description of the snippet
      * @return the created Snippet
      * @throws GitLabApiException if any exception occurs

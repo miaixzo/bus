@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Note;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -45,58 +47,7 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue ID to get the notes for
-     * @return a list of the issues's notes
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Long)}
-     */
-    @Deprecated
-    public List<Note> getNotes(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid));
-    }
-
-    /**
-     * Get a list of the issue's notes using the specified page and per page settings.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param page            the page to get
-     * @param perPage         the number of notes per page
-     * @return the list of notes in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Long, int, int)}
-     */
-    @Deprecated
-    public List<Note> getNotes(Object projectIdOrPath, Long issueIid, int page, int perPage) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid, page, perPage));
-    }
-
-    /**
-     * Get a Pager of issues's notes.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param itemsPerPage    the number of notes per page
-     * @return the list of notes in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Long, int)}
-     */
-    @Deprecated
-    public Pager<Note> getNotes(Object projectIdOrPath, Long issueIid, int itemsPerPage) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid, itemsPerPage));
-    }
-
-    /**
-     * Get a list of the issues's notes.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue ID to get the notes for
+     * @param issueIid the issue ID to get the notes for
      * @return a list of the issues's notes
      * @throws GitLabApiException if any exception occurs
      */
@@ -110,9 +61,9 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param page            the page to get
-     * @param perPage         the number of notes per page
+     * @param issueIid the issue IID to get the notes for
+     * @param page the page to get
+     * @param perPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -129,8 +80,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param itemsPerPage    the number of notes per page
+     * @param issueIid the issue IID to get the notes for
+     * @param itemsPerPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -145,7 +96,7 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue ID to get the notes for
+     * @param issueIid the issue ID to get the notes for
      * @return a Stream of the issues's notes
      * @throws GitLabApiException if any exception occurs
      */
@@ -159,8 +110,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param noteId          the ID of the Note to get
+     * @param issueIid the issue IID to get the notes for
+     * @param noteId the ID of the Note to get
      * @return a Note instance for the specified IDs
      * @throws GitLabApiException if any exception occurs
      */
@@ -176,8 +127,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance @param projectIdOrPath the project ID to create the issues for
-     * @param issueIid        the issue IID to create the notes for
-     * @param body            the content of note
+     * @param issueIid the issue IID to create the notes for
+     * @param body the content of note
      * @return the created Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -191,9 +142,9 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to create the notes for
-     * @param body            the content of note
-     * @param createdAt       the created time of note
+     * @param issueIid the issue IID to create the notes for
+     * @param body the content of note
+     * @param createdAt the created time of note
      * @return the created Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -207,10 +158,10 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to create the notes for
-     * @param body            the content of note
-     * @param createdAt       the created time of note
-     * @param internal        whether the note shall be marked 'internal'
+     * @param issueIid the issue IID to create the notes for
+     * @param body the content of note
+     * @param createdAt the created time of note
+     * @param internal whether the note shall be marked 'internal'
      * @return the created Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -220,6 +171,7 @@ public class NotesApi extends AbstractApi {
                 .withParam("body", body, true)
                 .withParam("created_at", createdAt)
                 .withParam("internal", internal);
+        ;
         Response response = post(Response.Status.CREATED, formData,
                 "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "notes");
         return (response.readEntity(Note.class));
@@ -231,9 +183,9 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to update the notes for
-     * @param noteId          the ID of the node to update
-     * @param body            the update content for the Note
+     * @param issueIid the issue IID to update the notes for
+     * @param noteId the ID of the node to update
+     * @param body the update content for the Note
      * @return the modified Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -251,8 +203,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to delete the notes for
-     * @param noteId          the ID of the node to delete
+     * @param issueIid the issue IID to delete the notes for
+     * @param noteId the ID of the node to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteIssueNote(Object projectIdOrPath, Long issueIid, Long noteId) throws GitLabApiException {
@@ -291,8 +243,8 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the issue ID to get the notes for
-     * @param sortOrder       return merge request notes sorted in the specified sort order, default is DESC
-     * @param orderBy         return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
+     * @param sortOrder return merge request notes sorted in the specified sort order, default is DESC
+     * @param orderBy return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
      * @return a list of the merge request's notes
      * @throws GitLabApiException if any exception occurs
      */
@@ -307,8 +259,8 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the merge request IID to get the notes for
-     * @param page            the page to get
-     * @param perPage         the number of notes per page
+     * @param page the page to get
+     * @param perPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -323,10 +275,10 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the merge request IID to get the notes for
-     * @param sortOrder       return merge request notes sorted in the specified sort order, default is DESC
-     * @param orderBy         return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
-     * @param page            the page to get
-     * @param perPage         the number of notes per page
+     * @param sortOrder return merge request notes sorted in the specified sort order, default is DESC
+     * @param orderBy return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
+     * @param page the page to get
+     * @param perPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -351,7 +303,7 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the merge request IID to get the notes for
-     * @param itemsPerPage    the number of notes per page
+     * @param itemsPerPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -380,9 +332,9 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the merge request IID to get the notes for
-     * @param sortOrder       return merge request notes sorted in the specified sort order, default is DESC
-     * @param orderBy         return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
-     * @param itemsPerPage    the number of notes per page
+     * @param sortOrder return merge request notes sorted in the specified sort order, default is DESC
+     * @param orderBy return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
+     * @param itemsPerPage the number of notes per page
      * @return the list of notes in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -405,8 +357,8 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the issue ID to get the notes for
-     * @param sortOrder       return merge request notes sorted in the specified sort order, default is DESC
-     * @param orderBy         return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
+     * @param sortOrder return merge request notes sorted in the specified sort order, default is DESC
+     * @param orderBy return merge request notes ordered by CREATED_AT or UPDATED_AT, default is CREATED_AT
      * @return a Stream of the merge request's notes
      * @throws GitLabApiException if any exception occurs
      */
@@ -420,8 +372,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param mergeRequestIid the merge request IID to get the notes for
-     * @param noteId          the ID of the Note to get
+     * @param mergeRequestIid  the merge request IID to get the notes for
+     * @param noteId the ID of the Note to get
      * @return a Note instance for the specified IDs
      * @throws GitLabApiException if any exception occurs
      */
@@ -437,8 +389,8 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param mergeRequestIid the merge request IID to create the notes for
-     * @param body            the content of note
+     * @param mergeRequestIid  the merge request IID to create the notes for
+     * @param body the content of note
      * @return the created Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -455,9 +407,9 @@ public class NotesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param mergeRequestIid the merge request IID to update the notes for
-     * @param noteId          the ID of the node to update
-     * @param body            the update content for the Note
+     * @param mergeRequestIid  the merge request IID to update the notes for
+     * @param noteId the ID of the node to update
+     * @param body the update content for the Note
      * @return the modified Note instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -476,7 +428,7 @@ public class NotesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the merge request IID to delete the notes for
-     * @param noteId          the ID of the node to delete
+     * @param noteId the ID of the node to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMergeRequestNote(Object projectIdOrPath, Long mergeRequestIid, Long noteId) throws GitLabApiException {

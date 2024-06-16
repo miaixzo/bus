@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,11 +43,10 @@ public class SlackService extends NotificationService {
     @Override
     public GitLabApiForm servicePropertiesForm() {
         GitLabApiForm formData = new GitLabApiForm()
-                .withParam("web", getWebhook(), true)
+                .withParam("webhook", getWebhook(), true)
                 .withParam("username", getUsername())
                 .withParam("channel", getDefaultChannel())
                 .withParam("notify_only_broken_pipelines", getNotifyOnlyBrokenPipelines())
-                .withParam("notify_only_default_branch", getNotifyOnlyDefaultBranch())
                 .withParam("push_events", getPushEvents())
                 .withParam("issues_events", getIssuesEvents())
                 .withParam("confidential_issues_events", getConfidentialIssuesEvents())
@@ -109,7 +110,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getWebhook() {
-        return getProperty(WEBHOOK_PROP);
+        return ((String) getProperty(WEBHOOK_PROP));
     }
 
     public void setWebhook(String webhook) {
@@ -123,7 +124,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getUsername() {
-        return getProperty(USERNAME_PROP);
+        return ((String) getProperty(USERNAME_PROP));
     }
 
     public void setUsername(String username) {
@@ -151,7 +152,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public Boolean getNotifyOnlyBrokenPipelines() {
-        return getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE);
+        return ((Boolean) getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE));
     }
 
     public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
@@ -160,31 +161,6 @@ public class SlackService extends NotificationService {
 
     public SlackService withNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
         setNotifyOnlyBrokenPipelines(notifyOnlyBrokenPipelines);
-        return (this);
-    }
-
-    @JsonIgnore
-    @Deprecated
-    public Boolean getNotifyOnlyDefaultBranch() {
-        return getProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, Boolean.FALSE);
-    }
-
-    /**
-     * @param notifyOnlyDefaultBranch
-     * @deprecated use {@link SlackService#setBranchesToBeNotified(BranchesToBeNotified)}
-     */
-    @Deprecated
-    public void setNotifyOnlyDefaultBranch(Boolean notifyOnlyDefaultBranch) {
-        setProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, notifyOnlyDefaultBranch);
-    }
-
-    /**
-     * @param notifyOnlyDefaultBranch
-     * @deprecated use {@link SlackService#withBranchesToBeNotified(BranchesToBeNotified)}
-     */
-    @Deprecated
-    public SlackService withNotifyOnlyDefaultBranch(Boolean notifyOnlyDefaultBranch) {
-        setNotifyOnlyDefaultBranch(notifyOnlyDefaultBranch);
         return (this);
     }
 
@@ -210,7 +186,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getPushChannel() {
-        return getProperty(PUSH_CHANNEL_PROP);
+        return ((String) getProperty(PUSH_CHANNEL_PROP));
     }
 
     public void setPushChannel(String pushChannel) {
@@ -224,7 +200,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getIssueChannel() {
-        return getProperty(ISSUE_CHANNEL_PROP);
+        return ((String) getProperty(ISSUE_CHANNEL_PROP));
     }
 
     public void setIssueChannel(String issueChannel) {
@@ -238,7 +214,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialIssueChannel() {
-        return getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP);
+        return ((String) getProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP));
     }
 
     public void setConfidentialIssueChannel(String confidentialIssueChannel) {
@@ -252,7 +228,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getMergeRequestChannel() {
-        return getProperty(MERGE_REQUEST_CHANNEL_PROP);
+        return ((String) getProperty(MERGE_REQUEST_CHANNEL_PROP));
     }
 
     public void setMergeRequestChannel(String mergeRequestChannel) {
@@ -266,7 +242,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getNoteChannel() {
-        return getProperty(NOTE_CHANNEL_PROP);
+        return ((String) getProperty(NOTE_CHANNEL_PROP));
     }
 
     public void setNoteChannel(String noteChannel) {
@@ -280,7 +256,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getConfidentialNoteChannel() {
-        return getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP);
+        return ((String) getProperty(CONFIDENTIAL_NOTE_CHANNEL_PROP));
     }
 
     public void setConfidentialNoteChannel(String noteChannel) {
@@ -294,7 +270,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getTagPushChannel() {
-        return getProperty(TAG_PUSH_CHANNEL_PROP);
+        return ((String) getProperty(TAG_PUSH_CHANNEL_PROP));
     }
 
     public void setTagPushChannel(String tagPushChannel) {
@@ -308,7 +284,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getPipelineChannel() {
-        return getProperty(PIPELINE_CHANNEL_PROP);
+        return ((String) getProperty(PIPELINE_CHANNEL_PROP));
     }
 
     public void setPipelineChannel(String pipelineChannel) {
@@ -322,7 +298,7 @@ public class SlackService extends NotificationService {
 
     @JsonIgnore
     public String getWikiPageChannel() {
-        return getProperty(WIKI_PAGE_CHANNEL_PROP);
+        return ((String) getProperty(WIKI_PAGE_CHANNEL_PROP));
     }
 
     public void setWikiPageChannel(String wikiPageChannel) {

@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -105,7 +107,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getToken() {
-        return getProperty(TOKEN_PROP);
+        return ((String) getProperty(TOKEN_PROP));
     }
 
     public void setToken(String token) {
@@ -118,7 +120,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getColor() {
-        return getProperty(COLOR_PROP);
+        return ((String) getProperty(COLOR_PROP));
     }
 
     public void setColor(String color) {
@@ -131,7 +133,7 @@ public class HipChatService extends NotificationService {
     }
 
     public Boolean getNotify() {
-        return (getProperty(NOTIFY_PROP, null));
+        return (getProperty(NOTIFY_PROP, (Boolean) null));
     }
 
     public void setNotify(Boolean notify) {
@@ -144,7 +146,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getRoom() {
-        return getProperty(ROOM_PROP);
+        return ((String) getProperty(ROOM_PROP));
     }
 
     public void setRoom(String room) {
@@ -157,7 +159,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getApiVersion() {
-        return getProperty(API_VERSION_PROP);
+        return ((String) getProperty(API_VERSION_PROP));
     }
 
     public void setApiVersion(String apiVersion) {
@@ -170,7 +172,7 @@ public class HipChatService extends NotificationService {
     }
 
     public String getServer() {
-        return getProperty(SERVER_PROP);
+        return ((String) getProperty(SERVER_PROP));
     }
 
     public void setServer(String server) {
@@ -184,7 +186,7 @@ public class HipChatService extends NotificationService {
 
     @JsonIgnore
     public Boolean getNotifyOnlyBrokenPipelines() {
-        return getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE);
+        return ((Boolean) getProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, Boolean.FALSE));
     }
 
     public void setNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {

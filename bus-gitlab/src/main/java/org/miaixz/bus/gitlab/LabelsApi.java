@@ -1,34 +1,35 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Label;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -60,7 +61,7 @@ public class LabelsApi extends AbstractApi {
      * Get a Pager of all labels of the specified project.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of items per page
+     * @param itemsPerPage the number of items per page
      * @return a list of project's labels in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -84,7 +85,7 @@ public class LabelsApi extends AbstractApi {
      * Get a single project label.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return a Label instance holding the information for the group label
      * @throws GitLabApiException if any exception occurs
      */
@@ -98,7 +99,7 @@ public class LabelsApi extends AbstractApi {
      * Get a single project label as the value of an Optional.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
      * @throws GitLabApiException if any exception occurs
      */
@@ -151,8 +152,8 @@ public class LabelsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/labels/:label_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
-     * @param labelConfig     a Label instance holding the label properties to update
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelConfig a Label instance holding the label properties to update
      * @return the updated Label instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -167,7 +168,7 @@ public class LabelsApi extends AbstractApi {
      * Delete the specified project label.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
@@ -178,7 +179,7 @@ public class LabelsApi extends AbstractApi {
      * Subscribe a specified project label.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
      * @throws GitLabApiException if any exception occurs
      */
@@ -192,7 +193,7 @@ public class LabelsApi extends AbstractApi {
      * Unsubscribe a specified project label.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
+     * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
      * @throws GitLabApiException if any exception occurs
      */
@@ -217,7 +218,7 @@ public class LabelsApi extends AbstractApi {
      * Get a Pager of all labels of the specified group.
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
-     * @param itemsPerPage  the number of items per page
+     * @param itemsPerPage the number of items per page
      * @return a list of group's labels in the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -280,7 +281,7 @@ public class LabelsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups/:id/labels</code></pre>
      *
-     * @param groupIdOrPath   the group in the form of an Long(ID), String(path), or Group instance
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelProperties a Label instance holding the properties for the new group label
      * @return the created Label instance
      * @throws GitLabApiException if any exception occurs
@@ -307,7 +308,7 @@ public class LabelsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
-     * @param labelConfig   a Label instance holding the label properties to update
+     * @param labelConfig a Label instance holding the label properties to update
      * @return the updated Label instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -357,234 +358,4 @@ public class LabelsApi extends AbstractApi {
         return (response.readEntity(Label.class));
     }
 
-
-    /**
-     * Get all labels of the specified project.
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return a list of project's labels
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #getProjectLabels(Object)} method.
-     */
-    @Deprecated
-    public List<Label> getLabels(Object projectIdOrPath) throws GitLabApiException {
-        return (getLabels(projectIdOrPath, getDefaultPerPage()).all());
-    }
-
-    /**
-     * Get all labels of the specified project to using the specified page and per page setting
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of items per page
-     * @return a list of project's labels in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in the next major release (6.0.0)
-     */
-    @Deprecated
-    public List<Label> getLabels(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(javax.ws.rs.core.Response.Status.OK, getPageQueryParams(page, perPage),
-                "projects", getProjectIdOrPath(projectIdOrPath), "labels");
-        return (response.readEntity(new GenericType<List<Label>>() {
-        }));
-    }
-
-    /**
-     * Get a Pager of all labels of the specified project.
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of items per page
-     * @return a list of project's labels in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #getProjectLabels(Object, int)} method.
-     */
-    @Deprecated
-    public Pager<Label> getLabels(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Label>(this, Label.class, itemsPerPage, null,
-                "projects", getProjectIdOrPath(projectIdOrPath), "labels"));
-    }
-
-    /**
-     * Get a Stream of all labels of the specified project.
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return a Stream of project's labels
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #getProjectLabelsStream(Object)} method.
-     */
-    @Deprecated
-    public Stream<Label> getLabelsStream(Object projectIdOrPath) throws GitLabApiException {
-        return (getLabels(projectIdOrPath, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Create a label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param color           the color for the label
-     * @param description     the description for the label
-     * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #createProjectLabel(Object, Label)} method.
-     */
-    @Deprecated
-    public Label createLabel(Object projectIdOrPath, String name, String color, String description) throws GitLabApiException {
-        return (createLabel(projectIdOrPath, name, color, description, null));
-    }
-
-    /**
-     * Create a label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param color           the color for the label
-     * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #createProjectLabel(Object, Label)} method.
-     */
-    @Deprecated
-    public Label createLabel(Object projectIdOrPath, String name, String color) throws GitLabApiException {
-        return (createLabel(projectIdOrPath, name, color, null, null));
-    }
-
-    /**
-     * Create a label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param color           the color for the label
-     * @param priority        the priority for the label
-     * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #createProjectLabel(Object, Label)} method.
-     */
-    @Deprecated
-    public Label createLabel(Object projectIdOrPath, String name, String color, Integer priority) throws GitLabApiException {
-        return (createLabel(projectIdOrPath, name, color, null, priority));
-    }
-
-    /**
-     * Create a label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param color           the color for the label
-     * @param description     the description for the label
-     * @param priority        the priority for the label
-     * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #createProjectLabel(Object, Label)} method.
-     */
-    @Deprecated
-    public Label createLabel(Object projectIdOrPath, String name, String color, String description, Integer priority) throws GitLabApiException {
-        Label labelProperties = new Label()
-                .withName(name)
-                .withColor(color)
-                .withDescription(description)
-                .withPriority(priority);
-        return (createProjectLabel(projectIdOrPath, labelProperties));
-    }
-
-    /**
-     * Update the specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param newName         the new name for the label
-     * @param description     the description for the label
-     * @param priority        the priority for the label
-     * @return the modified Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated @deprecated Replaced by the {@link #updateProjectLabel(Object, Object, Label)} method.
-     */
-    @Deprecated
-    public Label updateLabelName(Object projectIdOrPath, String name, String newName, String description, Integer priority) throws GitLabApiException {
-        return (updateLabel(projectIdOrPath, name, newName, null, description, priority));
-    }
-
-    /**
-     * Update the specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param color           the color for the label
-     * @param description     the description for the label
-     * @param priority        the priority for the label
-     * @return the modified Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated @deprecated Replaced by the {@link #updateProjectLabel(Object, Object, Label)} method.
-     */
-    @Deprecated
-    public Label updateLabelColor(Object projectIdOrPath, String name, String color, String description, Integer priority) throws GitLabApiException {
-        return (updateLabel(projectIdOrPath, name, null, color, description, priority));
-    }
-
-    /**
-     * Update the specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @param newName         the new name for the label
-     * @param color           the color for the label
-     * @param description     the description for the label
-     * @param priority        the priority for the label
-     * @return the modified Label instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated @deprecated Replaced by the {@link #updateProjectLabel(Object, Object, Label)} method.
-     */
-    @Deprecated
-    public Label updateLabel(Object projectIdOrPath, String name, String newName, String color, String description, Integer priority) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("name", name, true)
-                .withParam("new_name", newName)
-                .withParam("color", color)
-                .withParam("description", description)
-                .withParam("priority", priority);
-        Response response = put(Response.Status.OK, formData.asMap(),
-                "projects", getProjectIdOrPath(projectIdOrPath), "labels");
-        return (response.readEntity(Label.class));
-    }
-
-    /**
-     * Delete the specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param name            the name for the label
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #deleteProjectLabel(Object, Object)} method.
-     */
-    @Deprecated
-    public void deleteLabel(Object projectIdOrPath, String name) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true);
-        delete(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "labels");
-    }
-
-    /**
-     * Subscribe a specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelId         the label ID
-     * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #subscribeProjectLabel(Object, Object)} method.
-     */
-    @Deprecated
-    public Label subscribeLabel(Object projectIdOrPath, Long labelId) throws GitLabApiException {
-        return (subscribeProjectLabel(projectIdOrPath, labelId));
-    }
-
-    /**
-     * Unsubscribe a specified label
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param labelId         the label ID
-     * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Replaced by the {@link #unsubscribeProjectLabel(Object, Object)} method.
-     */
-    @Deprecated
-    public Label unsubscribeLabel(Object projectIdOrPath, Long labelId) throws GitLabApiException {
-        return (unsubscribeProjectLabel(projectIdOrPath, labelId));
-    }
 }

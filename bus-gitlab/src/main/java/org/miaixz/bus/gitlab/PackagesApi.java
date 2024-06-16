@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************//*
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ *//*
  * The MIT License (MIT)
  *
  * Copyright (c) 2017 Greg Messner <greg@messners.com>
@@ -44,23 +46,22 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Package;
 import org.miaixz.bus.gitlab.models.PackageFile;
 import org.miaixz.bus.gitlab.models.PackageFilter;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Stream;
 
 /**
  * <p>This class implements the client side API for the GitLab Packages API.
  * See <a href="https://docs.gitlab.com/ee/api/packages.html">Packages API at GitLab</a> for more information.</p>
- * <p>
+ *
  * NOTE: This API is not available in the Community edition of GitLab.
  */
 public class PackagesApi extends AbstractApi {
@@ -90,8 +91,8 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of Package instances per page
+     * @param page the page to get
+     * @param perPage the number of Package instances per page
      * @return a list of project packages for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -109,7 +110,7 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of Package instances per page
+     * @param itemsPerPage the number of Package instances per page
      * @return a Pager of project packages for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -124,8 +125,8 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          the PackageFilter instance holding the filter values for the query
-     * @param itemsPerPage    the number of Package instances per page
+     * @param filter the PackageFilter instance holding the filter values for the query
+     * @param itemsPerPage the number of Package instances per page
      * @return a Pager of project packages for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -156,7 +157,7 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          the PackageFilter instance holding the filter values for the query
+     * @param filter the PackageFilter instance holding the filter values for the query
      * @return a Stream of pages in the project's packages
      * @throws GitLabApiException if any exception occurs
      */
@@ -170,7 +171,7 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages/:package_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to get
+     * @param packageId the ID of the package to get
      * @return a Package instance for the specified package ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -186,7 +187,7 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages/:package_id/package_files</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to get the package files for
+     * @param packageId the ID of the package to get the package files for
      * @return a list of PackageFile instances for the specified package ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -200,9 +201,9 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages/:package_id/package_files</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to get the package files for
-     * @param page            the page to get
-     * @param perPage         the number of PackageFile instances per page
+     * @param packageId the ID of the package to get the package files for
+     * @param page the page to get
+     * @param perPage the number of PackageFile instances per page
      * @return a list of PackageFile instances for the specified package ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -214,13 +215,13 @@ public class PackagesApi extends AbstractApi {
     }
 
     /**
-     * Get a Pager of project package files.
+     * Get a Pager of project package files. 
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages/:package_id/package_files</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to get the package files for
-     * @param itemsPerPage    the number of PackageFile instances per page
+     * @param packageId the ID of the package to get the package files for
+     * @param itemsPerPage the number of PackageFile instances per page
      * @return a Pager of PackageFile instances for the specified package ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -230,12 +231,12 @@ public class PackagesApi extends AbstractApi {
     }
 
     /**
-     * Get a Stream of project package files.
+     * Get a Stream of project package files. 
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/packages/:package_id/package_files</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to get the package files for
+     * @param packageId the ID of the package to get the package files for
      * @return a Stream of PackageFile instances for the specified package ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -249,7 +250,7 @@ public class PackagesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/packages/:package_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param packageId       the ID of the package to delete
+     * @param packageId the ID of the package to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deletePackage(Object projectIdOrPath, Long packageId) throws GitLabApiException {

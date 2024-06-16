@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -83,12 +85,12 @@ public class Sign extends Asymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm     {@link Algorithm}
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public Sign(final Algorithm algorithm, final String privateKeyStr, final String publicKeyStr) {
-        this(algorithm.getValue(), Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
+    public Sign(final Algorithm algorithm, final String privateKey, final String publicKey) {
+        this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
@@ -130,12 +132,12 @@ public class Sign extends Asymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm        非对称加密算法
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
+     * @param algorithm  非对称加密算法
+     * @param privateKey 私钥Base64
+     * @param publicKey  公钥Base64
      */
-    public Sign(final String algorithm, final String privateKeyBase64, final String publicKeyBase64) {
-        this(algorithm, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
+    public Sign(final String algorithm, final String privateKey, final String publicKey) {
+        this(algorithm, Base64.decode(privateKey), Base64.decode(publicKey));
     }
 
     /**
@@ -148,9 +150,9 @@ public class Sign extends Asymmetric<Sign> {
      * @param publicKey  公钥
      */
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm, //
-                Keeper.generatePrivateKey(algorithm, privateKey), //
-                Keeper.generatePublicKey(algorithm, publicKey)//
+        this(algorithm,
+                Keeper.generatePrivateKey(algorithm, privateKey),
+                Keeper.generatePublicKey(algorithm, publicKey)
         );
     }
 

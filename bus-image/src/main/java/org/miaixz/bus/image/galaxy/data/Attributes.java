@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -30,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
@@ -566,14 +568,14 @@ public class Attributes implements Serializable {
                 values[index] = Value.NULL;
                 return new double[]{};
             }
-            ds = new double[]{Property.parseDS(s)};
+            ds = new double[]{Material.parseDS(s)};
         } else { // value instanceof String[]
             String[] ss = (String[]) value;
             ds = new double[ss.length];
             for (int i = 0; i < ds.length; i++) {
                 String s = ss[i];
                 ds[i] = (null != s && !s.isEmpty())
-                        ? Property.parseDS(s)
+                        ? Material.parseDS(s)
                         : Double.NaN;
             }
         }
@@ -599,14 +601,14 @@ public class Attributes implements Serializable {
                 values[index] = Value.NULL;
                 return new int[]{};
             }
-            is = new int[]{Property.parseIS(s)};
+            is = new int[]{Material.parseIS(s)};
         } else { // value instanceof String[]
             String[] ss = (String[]) value;
             is = new int[ss.length];
             for (int i = 0; i < is.length; i++) {
                 String s = ss[i];
                 is[i] = (null != s && !s.isEmpty())
-                        ? Property.parseIS(s)
+                        ? Material.parseIS(s)
                         : Integer.MIN_VALUE;
             }
         }
@@ -2805,8 +2807,8 @@ public class Attributes implements Serializable {
                     break;
             }
 
-            if (Property.containsWildCard(keyVal)) {
-                Pattern pattern = Property.compilePattern(keyVal, ignoreCase);
+            if (Material.containsWildCard(keyVal)) {
+                Pattern pattern = Material.compilePattern(keyVal, ignoreCase);
                 for (String val : vals) {
                     if (null == val)
                         if (matchNoValue)
@@ -3383,7 +3385,7 @@ public class Attributes implements Serializable {
     public void replaceSelected(Attributes others, int... selection) {
         for (int i = 0; i < size; i++) {
             if (Arrays.binarySearch(selection, tags[i]) >= 0) {
-                values[i] = Property.maskNull(others.getValue(tags[i]), Value.NULL);
+                values[i] = Material.maskNull(others.getValue(tags[i]), Value.NULL);
             }
         }
     }

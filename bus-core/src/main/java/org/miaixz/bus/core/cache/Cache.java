@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.cache;
 
 import org.miaixz.bus.core.cache.provider.CacheObject;
@@ -76,9 +78,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
 
     /**
      * 从缓存中获得对象，当对象不在缓存中或已经过期返回{@code null}
-     * <p>
      * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
-     * <p>
      * 每次调用此方法会刷新最后访问时间，也就是说会重新计算超时时间。
      *
      * @param key 键
@@ -90,10 +90,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     }
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回SerSupplier回调产生的对象
-     * <p>
-     * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
-     * <p>
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回 {@link SupplierX} 回调产生的对象，否则返回值。
      * 每次调用此方法会刷新最后访问时间，也就是说会重新计算超时时间。
      *
      * @param key      键
@@ -105,10 +102,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     }
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回SerSupplier回调产生的对象
-     * <p>
-     * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
-     * <p>
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回 {@link SupplierX} 回调产生的对象，否则返回值。
      * 每次调用此方法会可选是否刷新最后访问时间，{@code true}表示会重新计算超时时间。
      *
      * @param key                键
@@ -119,10 +113,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     V get(K key, boolean isUpdateLastAccess, SupplierX<V> supplier);
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回SerSupplier回调产生的对象
-     * <p>
-     * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
-     * <p>
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回 {@link SupplierX} 回调产生的对象，否则返回值。
      * 每次调用此方法会可选是否刷新最后访问时间，{@code true}表示会重新计算超时时间。
      *
      * @param key                键
@@ -134,10 +125,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     V get(K key, boolean isUpdateLastAccess, final long timeout, SupplierX<V> supplier);
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回{@code null}
-     * <p>
-     * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
-     * <p>
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回{@code null}，否则返回值。
      * 每次调用此方法会可选是否刷新最后访问时间，{@code true}表示会重新计算超时时间。
      *
      * @param key                键

@@ -1,40 +1,41 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Environment;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API Environments API calls.
- *
  * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  */
 public class EnvironmentsApi extends AbstractApi {
@@ -75,7 +76,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/environments</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of Environment instances that will be fetched per page
+     * @param itemsPerPage the number of Environment instances that will be fetched per page
      * @return a Pager of Environment instances
      * @throws GitLabApiException if any exception occurs
      */
@@ -90,7 +91,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/environments/:environment_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to get
+     * @param environmentId the ID of the environment to get
      * @return an Environment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -106,7 +107,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/environments/:environment_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to get
+     * @param environmentId the ID of the environment to get
      * @return the Environment as an Optional instance
      */
     public Optional<Environment> getOptionalEnvironment(Object projectIdOrPath, Long environmentId) {
@@ -123,8 +124,8 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint:POST /projects/:id/environments</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param name            the name of the environment
-     * @param externalUrl     the place to link to for this environment
+     * @param name the name of the environment
+     * @param externalUrl the place to link to for this environment
      * @return the created Environment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -141,9 +142,9 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint:POST /projects/:id/environments</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to update
-     * @param name            the name of the environment
-     * @param externalUrl     the place to link to for this environment
+     * @param environmentId the ID of the environment to update
+     * @param name the name of the environment
+     * @param externalUrl the place to link to for this environment
      * @return the created Environment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -160,7 +161,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/environments/:environment_id/stop</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to stop
+     * @param environmentId the ID of the environment to stop
      * @return the stopped Environment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -176,7 +177,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/environments/:environment_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to delete
+     * @param environmentId the ID of the environment to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
@@ -190,7 +191,7 @@ public class EnvironmentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint:POST /projects/:id/environments/:environment_id/stop</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param environmentId   the ID of the environment to stop
+     * @param environmentId the ID of the environment to stop
      * @return the Environment instance of the stopped environment
      * @throws GitLabApiException if any exception occurs
      */

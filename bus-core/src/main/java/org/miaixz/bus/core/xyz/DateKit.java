@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.date.Calendar;
@@ -507,7 +509,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * @return 当前月份
+     * @return 当前月份，从0开始计数
      */
     public static int thisMonth() {
         return month(now());
@@ -616,7 +618,7 @@ public class DateKit extends Calendar {
         if (date instanceof DateTime) {
             timeZone = ((DateTime) date).getTimeZone();
         }
-        return format(date, newSimpleFormat(format, null, timeZone));
+        return format(date, FormatBuilder.getInstance(format, timeZone));
     }
 
     /**
@@ -772,24 +774,24 @@ public class DateKit extends Calendar {
         if (StringKit.isBlank(dateCharSequence)) {
             return null;
         }
-        String dateStr = dateCharSequence.toString();
+        String date = dateCharSequence.toString();
         // 去掉两边空格并去掉中文日期中的“日”和“秒”，以规范长度
-        dateStr = StringKit.removeAll(dateStr.trim(), '日', '秒');
+        date = StringKit.removeAll(date.trim(), '日', '秒');
 
-        final Date result = RegisterDateParser.INSTANCE.parse(dateStr);
+        final Date result = RegisterDateParser.INSTANCE.parse(date);
         if (null != result) {
             return date(result);
         }
 
         //标准日期格式（包括单个数字的日期时间）
-        dateStr = normalize(dateStr);
+        date = normalize(date);
 
-        if (NormalDateParser.INSTANCE.test(dateStr)) {
-            return NormalDateParser.INSTANCE.parse(dateStr);
+        if (NormalDateParser.INSTANCE.test(date)) {
+            return NormalDateParser.INSTANCE.parse(date);
         }
 
         // 没有更多匹配的时间格式
-        throw new DateException("No format fit for date String [{}] !", dateStr);
+        throw new DateException("No format fit for date String [{}] !", date);
     }
 
     /**
@@ -1175,6 +1177,9 @@ public class DateKit extends Calendar {
      * @return 偏移后的日期
      */
     public static DateTime offset(final Date date, final Various various, final int offset) {
+        if (date == null) {
+            return null;
+        }
         return dateNew(date).offset(various, offset);
     }
 

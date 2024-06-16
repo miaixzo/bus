@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.miaixz.bus.gitlab.Constants.EpicOrderBy;
 import org.miaixz.bus.gitlab.Constants.SortOrder;
 import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
@@ -39,7 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This class is used to filter Groups when getting lists of epics.
+ *  This class is used to filter Groups when getting lists of epics.
  */
 public class EpicFilter implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -50,7 +53,7 @@ public class EpicFilter implements Serializable {
     private EpicOrderBy orderBy;
     private SortOrder sort;
     private String search;
-    private AbstractEpic.EpicState state;
+    private EpicState state;
     private Date createdAfter;
     private Date updatedAfter;
     private Date updatedBefore;
@@ -58,6 +61,17 @@ public class EpicFilter implements Serializable {
     private Boolean includeDescendantGroups;
     private String myReactionEmoji;
     private Map<EpicField, Object> not;
+
+    /**
+     * Add 'state' filter.
+     *
+     * @param state the 'state' filter
+     * @return the reference to this EpicFilter instance
+     */
+    public EpicFilter withState(EpicState state) {
+        this.state = state;
+        return (this);
+    }
 
     /**
      * Add 'author id' filter.
@@ -125,15 +139,26 @@ public class EpicFilter implements Serializable {
         return (this);
     }
 
-    /**
-     * Add 'state' filter.
-     *
-     * @param state the 'state' filter
-     * @return the reference to this EpicFilter instance
-     */
-    public EpicFilter withState(AbstractEpic.EpicState state) {
-        this.state = state;
-        return (this);
+    public enum EpicField {
+
+        AUTHOR_ID, AUTHOR_USERNAME, LABELS;
+
+        private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
+
+        @JsonCreator
+        public static EpicField forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     /**
@@ -291,27 +316,5 @@ public class EpicFilter implements Serializable {
             result.put(entry.getKey().toString(), entry.getValue());
         }
         return result;
-    }
-
-    public enum EpicField {
-
-        AUTHOR_ID, AUTHOR_USERNAME, LABELS;
-
-        private static final JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
-
-        @JsonCreator
-        public static EpicField forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 }

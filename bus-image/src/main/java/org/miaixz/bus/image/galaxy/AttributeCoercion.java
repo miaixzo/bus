@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.image.galaxy;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -53,10 +55,10 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
         this.commonName = commonName;
         this.condition = new Condition(
-                Property.maskNull(sopClasses),
+                Material.maskNull(sopClasses),
                 dimse,
                 role,
-                Property.maskNull(aeTitles));
+                Material.maskNull(aeTitles));
         this.uri = uri;
     }
 
@@ -68,7 +70,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         for (String cuid : cuids)
             UID.promptTo(cuid, sb).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
     }
 
     private static void promptAETsTo(StringBuilder sb, String indent,
@@ -79,7 +81,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         for (String aet : aets)
             sb.append(aet).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
-        sb.append(Property.LINE_SEPARATOR);
+        sb.append(Material.LINE_SEPARATOR);
     }
 
     public final String getCommonName() {
@@ -123,17 +125,17 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent,
+        Material.appendLine(sb, indent,
                 "AttributeCoercion[cn: ", commonName);
-        Property.appendLine(sb, indent2, "dimse: ", condition.dimse);
-        Property.appendLine(sb, indent2, "role: ", condition.role);
+        Material.appendLine(sb, indent2, "dimse: ", condition.dimse);
+        Material.appendLine(sb, indent2, "role: ", condition.role);
         promptCUIDsTo(sb, indent2, condition.sopClasses);
         promptAETsTo(sb, indent2, condition.aeTitles);
-        Property.appendLine(sb, indent2, "cuids: ",
+        Material.appendLine(sb, indent2, "cuids: ",
                 Arrays.toString(condition.sopClasses));
-        Property.appendLine(sb, indent2, "aets: ",
+        Material.appendLine(sb, indent2, "aets: ",
                 Arrays.toString(condition.aeTitles));
-        Property.appendLine(sb, indent2, "uri: ", uri);
+        Material.appendLine(sb, indent2, "uri: ", uri);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

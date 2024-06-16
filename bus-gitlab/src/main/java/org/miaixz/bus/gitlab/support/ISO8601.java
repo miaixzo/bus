@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.support;
 
 import java.text.ParseException;
@@ -44,9 +46,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ISO8601 {
 
     public static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-    public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-    public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
-    public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
     public static final String PATTERN_MSEC = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     public static final String OUTPUT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -61,6 +60,25 @@ public class ISO8601 {
             .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
             .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
             .toFormatter();
+
+    /**
+     * Get a ISO8601 formatted string for the provided Date instance.
+     *
+     * @param date     the Date instance to get the ISO8601 formatted string for
+     * @param withMsec flag indicating whether to include milliseconds
+     * @return a ISO8601 formatted string for the provided Date instance, or null if date is null
+     */
+    public static String toString(Date date, boolean withMsec) {
+
+        if (date == null) {
+            return (null);
+        }
+
+        long time = date.getTime();
+        return (withMsec && time % 1000 != 0 ?
+                SafeDateFormatter.getDateFormat(OUTPUT_MSEC_PATTERN).format(date) :
+                SafeDateFormatter.getDateFormat(OUTPUT_PATTERN).format(date));
+    }
 
     /**
      * Get a ISO8601 formatted string for the current date and time.
@@ -98,22 +116,34 @@ public class ISO8601 {
     }
 
     /**
-     * Get a ISO8601 formatted string for the provided Date instance.
+     * Parses an ISO8601 formatted string a returns an Instant instance.
      *
-     * @param date     the Date instance to get the ISO8601 formatted string for
-     * @param withMsec flag indicating whether to include milliseconds
-     * @return a ISO8601 formatted string for the provided Date instance, or null if date is null
+     * @param dateTimeString the ISO8601 formatted string
+     * @return an Instant instance for the ISO8601 formatted string
      */
-    public static String toString(Date date, boolean withMsec) {
+    public static Instant toInstant(String dateTimeString) {
 
-        if (date == null) {
+        if (dateTimeString == null) {
             return (null);
         }
 
-        long time = date.getTime();
-        return (withMsec && time % 1000 != 0 ?
-                SafeDateFormatter.getDateFormat(OUTPUT_MSEC_PATTERN).format(date) :
-                SafeDateFormatter.getDateFormat(OUTPUT_PATTERN).format(date));
+        dateTimeString = dateTimeString.trim();
+
+        if (dateTimeString.endsWith("Z")) {
+            return (Instant.parse(dateTimeString));
+        } else {
+
+            // Convert UTC zoned dates to 0 offset date
+            if (dateTimeString.endsWith("UTC")) {
+                dateTimeString = dateTimeString.replace("UTC", "+0000");
+            }
+
+            OffsetDateTime odt = (dateTimeString.length() > 25 ?
+                    OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER) :
+                    OffsetDateTime.parse(dateTimeString, ODT_PARSER));
+
+            return (odt.toInstant());
+        }
     }
 
     /**
@@ -141,35 +171,23 @@ public class ISO8601 {
         return (toString(date, true));
     }
 
-    /**
-     * Parses an ISO8601 formatted string a returns an Instant instance.
-     *
-     * @param dateTimeString the ISO8601 formatted string
-     * @return an Instant instance for the ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
-     */
-    public static Instant toInstant(String dateTimeString) throws ParseException {
+    // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
+    private static final class SafeDateFormatter {
 
-        if (dateTimeString == null) {
-            return (null);
-        }
+        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal.withInitial(() -> (new ConcurrentHashMap<>()));
 
-        dateTimeString = dateTimeString.trim();
+        private static SimpleDateFormat getDateFormat(String formatSpec) {
 
-        if (dateTimeString.endsWith("Z")) {
-            return (Instant.parse(dateTimeString));
-        } else {
-
-            // Convert UTC zoned dates to 0 offset date
-            if (dateTimeString.endsWith("UTC")) {
-                dateTimeString = dateTimeString.replace("UTC", "+0000");
+            Map<String, SimpleDateFormat> formatMap = safeFormats.get();
+            SimpleDateFormat format = formatMap.get(formatSpec);
+            if (format == null) {
+                format = new SimpleDateFormat(formatSpec);
+                format.setLenient(true);
+                format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                formatMap.put(formatSpec, format);
             }
 
-            OffsetDateTime odt = (dateTimeString.length() > 25 ?
-                    OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER) :
-                    OffsetDateTime.parse(dateTimeString, ODT_PARSER));
-
-            return (odt.toInstant());
+            return (format);
         }
     }
 
@@ -204,29 +222,4 @@ public class ISO8601 {
         return (cal);
     }
 
-    // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
-    private static final class SafeDateFormatter {
-
-        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = new ThreadLocal<Map<String, SimpleDateFormat>>() {
-
-            @Override
-            public Map<String, SimpleDateFormat> initialValue() {
-                return (new ConcurrentHashMap<>());
-            }
-        };
-
-        private static SimpleDateFormat getDateFormat(String formatSpec) {
-
-            Map<String, SimpleDateFormat> formatMap = safeFormats.get();
-            SimpleDateFormat format = formatMap.get(formatSpec);
-            if (format == null) {
-                format = new SimpleDateFormat(formatSpec);
-                format.setLenient(true);
-                format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                formatMap.put(formatSpec, format);
-            }
-
-            return (format);
-        }
-    }
 }

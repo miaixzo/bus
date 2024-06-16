@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -71,14 +73,6 @@ public enum Setting {
     ALLOW_GROUP_OWNERS_TO_MANAGE_LDAP(Boolean.class),
 
     /**
-     * Allow requests to the local network from hooks and services.
-     *
-     * @deprecated Use allow_local_requests_from_web_hooks_and_services instead
-     */
-    @Deprecated
-    ALLOW_LOCAL_REQUESTS_FROM_HOOKS_AND_SERVICES(Boolean.class),
-
-    /**
      * Allow requests to the local network from system hooks.
      */
     ALLOW_LOCAL_REQUESTS_FROM_SYSTEM_HOOKS(Boolean.class),
@@ -89,7 +83,7 @@ public enum Setting {
     ALLOW_LOCAL_REQUESTS_FROM_WEB_HOOKS_AND_SERVICES(Boolean.class),
 
     /**
-     * Set the duration for which the jobs will be considered as old and expired.
+     * Set the duration for which the jobs will be considered as old and expired. 
      * Once that time passes, the jobs will be archived and no longer able to be  retried.
      * Make it empty to never expire jobs. It has to be no less than 1 day,
      * for example: 15 days, 1 month, 2 years.
@@ -140,23 +134,6 @@ public enum Setting {
      * or if the project is public.
      */
     CHECK_NAMESPACE_PLAN(Boolean.class),
-
-    /**
-     * required by: {@link #CLIENTSIDE_SENTRY_DSN} Clientside Sentry Data Source Name.
-     * removed by the following commit https://gitlab.com/gitlab-org/gitlab/commit/31c8ca6defd36bd08209ecc8c5913631c316ce37
-     *
-     * @deprecated Will be removed in a future version of gitlab4j-api
-     */
-    @Deprecated
-    CLIENTSIDE_SENTRY_DSN(String.class),
-
-    /**
-     * (<strong>If enabled, requires:</strong> {@link #CLIENTSIDE_SENTRY_DSN}) Enable Sentry error reporting for the client side.
-     *
-     * @deprecated Will be removed in a future version of gitlab4j-api
-     */
-    @Deprecated
-    CLIENTSIDE_SENTRY_ENABLED(Boolean.class),
 
     /**
      * Custom hostname (for private commit emails).
@@ -238,34 +215,16 @@ public enum Setting {
     DOMAIN_BLACKLIST(String[].class),
 
     /**
-     * (<strong>If enabled, requires:</strong>  {@link #DOMAIN_BLACKLIST}) Allows
+     * (<strong>If enabled, requires:</strong>  {@link #DOMAIN_BLACKLIST}) Allows 
      * blocking sign-ups from emails from specific domains.
      */
     DOMAIN_BLACKLIST_ENABLED(Boolean.class),
-
-    /**
-     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
-     *
-     * @deprecated Use {@link Setting#DOMAIN_BLACKLIST} instead. Will be removed in API v5
-     * see https://gitlab.com/gitlab-org/gitlab/commit/85776fa3ffba6f641cf981cb0107f0e4ba882f3e#40f8529fa8ed874d8e312edb04db18420bf06d31_185_185
-     */
-    @Deprecated
-    DOMAIN_BLACKLIST_RAW(String.class),
 
     /**
      * Force people to use only corporate emails for sign-up. Default is null,
      * meaning there is no restriction.
      */
     DOMAIN_WHITELIST(String[].class),
-
-    /**
-     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
-     *
-     * @deprecated Use {@link #DOMAIN_WHITELIST} instead. Will be removed in API v5
-     * see https://gitlab.com/gitlab-org/gitlab/commit/85776fa3ffba6f641cf981cb0107f0e4ba882f3e#40f8529fa8ed874d8e312edb04db18420bf06d31_185_185
-     */
-    @Deprecated
-    DOMAIN_WHITELIST_RAW(String.class),
 
     /**
      * The minimum allowed bit length of an uploaded DSA key. Default is 0 (no
@@ -326,16 +285,6 @@ public enum Setting {
     EKS_SECRET_ACCESS_KEY(String.class),
 
     /**
-     * (PREMIUM | SILVER) Use the experimental elasticsearch indexer. More info:
-     * https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer
-     * Ruby indexer was removed and go indexer is no more experimental.
-     *
-     * @deprecated removed in Gitlab 12.3. see https://gitlab.com/gitlab-org/gitlab/commit/82ba4a6a5c78501413012a9f2a918aa7353917a0?view=parallel#fbf64e6b8170f05f1b940fb05902d29f9eba3633_223_223
-     */
-    @Deprecated
-    ELASTICSEARCH_EXPERIMENTAL_INDEXER(Boolean.class),
-
-    /**
      * (PREMIUM | SILVER) Enable Elasticsearch indexing
      */
     ELASTICSEARCH_INDEXING(Boolean.class),
@@ -347,7 +296,7 @@ public enum Setting {
     ELASTICSEARCH_LIMIT_INDEXING(Boolean.class),
 
     /**
-     * (PREMIUM | SILVER) The namespaces to index via Elasticsearch if
+     * (PREMIUM | SILVER) The namespaces to index via Elasticsearch if 
      * {@link #ELASTICSEARCH_LIMIT_INDEXING} is enabled.
      */
     ELASTICSEARCH_NAMESPACE_IDS(Integer[].class),
@@ -544,7 +493,7 @@ public enum Setting {
     HOUSEKEEPING_BITMAPS_ENABLED(Boolean.class),
 
     /**
-     * (<strong>If enabled, requires:</strong> {@link #HOUSEKEEPING_BITMAPS_ENABLED},
+     * (<strong>If enabled, requires:</strong> {@link #HOUSEKEEPING_BITMAPS_ENABLED}, 
      * {@link #HOUSEKEEPING_FULL_REPACK_PERIOD}, {@link #HOUSEKEEPING_GC_PERIOD}, and
      * {@link #HOUSEKEEPING_INCREMENTAL_REPACK_PERIOD}) Enable or disable Git housekeeping.
      */
@@ -593,7 +542,6 @@ public enum Setting {
     /**
      * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
      * Was added with this commit https://gitlab.com/gitlab-org/gitlab/commit/30e7f01877fd436e21efdf0974d42d8fc83f4883
-     *
      * @since 2019-07-18
      */
     LOGIN_RECAPTCHA_PROTECTION_ENABLED(Boolean.class),
@@ -619,8 +567,8 @@ public enum Setting {
     MAX_PAGES_SIZE(Integer.class),
 
     /**
-     * (<strong>If enabled, requires:</strong> {@link #METRICS_HOST},
-     * {@link #METRICS_METHOD_CALL_THRESHOLD}, {@link #METRICS_PACKET_SIZE},
+     * (<strong>If enabled, requires:</strong> {@link #METRICS_HOST}, 
+     * {@link #METRICS_METHOD_CALL_THRESHOLD}, {@link #METRICS_PACKET_SIZE}, 
      * {@link #METRICS_POOL_SIZE}, {@link #METRICS_PORT}, {@link #METRICS_SAMPLE_INTERVAL} and
      * {@link #METRICS_TIMEOUT}) Enable influxDB metrics.
      */
@@ -707,15 +655,6 @@ public enum Setting {
     PAGES_DOMAIN_VERIFICATION_ENABLED(Boolean.class),
 
     /**
-     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
-     * Present for retro-compatibility purpose. See https://gitlab.com/gitlab-org/gitlab/commit/63b2082979efe182daf78e8269b252ccc73f93fc#958cb0573403da359fda7dac60baf49147a5c538_166_181
-     *
-     * @deprecated Use {@link #PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB} instead.
-     */
-    @Deprecated
-    PASSWORD_AUTHENTICATION_ENABLED(Boolean.class),
-
-    /**
      * Enable authentication for Git over HTTP(S) via a GitLab account password. Default is true.
      */
     PASSWORD_AUTHENTICATION_ENABLED_FOR_GIT(Boolean.class),
@@ -726,25 +665,9 @@ public enum Setting {
     PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB(Boolean.class),
 
     /**
-     * ID of the group that is allowed to toggle the performance bar.
-     *
-     * @deprecated Use {@link #PERFORMANCE_BAR_ALLOWED_GROUP_PATH} instead.
-     */
-    @Deprecated
-    PERFORMANCE_BAR_ALLOWED_GROUP_ID(Integer.class),
-
-    /**
      * Path of the group that is allowed to toggle the performance bar.
      */
     PERFORMANCE_BAR_ALLOWED_GROUP_PATH(String.class),
-
-    /**
-     * Allow enabling the performance bar.
-     *
-     * @deprecated Pass performance_bar_allowed_group_path: nil instead
-     */
-    @Deprecated
-    PERFORMANCE_BAR_ENABLED(Boolean.class),
 
     /**
      * (<strong>If enabled, requires:</strong> {@link #PLANTUML_URL}) Enable PlantUML integration.
@@ -794,14 +717,14 @@ public enum Setting {
 
     /**
      * Number of changes (branches or tags) in a single push to determine whether individual
-     * push events or bulk push events will be created.
+     * push events or bulk push events will be created. 
      * <a href="https://docs.gitlab.com/ee/user/admin_area/settings/push_event_activities_limit.html">
      * Bulk push events will be created</a> if it surpasses that value.
      */
     PUSH_EVENT_ACTIVITIES_LIMIT(Integer.class),
 
     /**
-     * (<strong>If enabled, requires:</strong> {@link #RECAPTCHA_PRIVATE_KEY} and
+     * (<strong>If enabled, requires:</strong> {@link #RECAPTCHA_PRIVATE_KEY} and 
      * {@link #RECAPTCHA_SITE_KEY}) Enable reCAPTCHA.
      */
     RECAPTCHA_ENABLED(Boolean.class),
@@ -890,15 +813,6 @@ public enum Setting {
     SIGN_IN_TEXT(String.class),
 
     /**
-     * Flag indicating if password authentication is enabled for the web interface.
-     * Documentation lists this as a String, but it s a Boolean.
-     *
-     * @deprecated Use {@link #PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB} instead
-     */
-    @Deprecated
-    SIGNIN_ENABLED(Boolean.class),
-
-    /**
      * Enable registration. Default is true.
      */
     SIGNUP_ENABLED(Boolean.class),
@@ -943,7 +857,7 @@ public enum Setting {
     SNOWPLOW_COOKIE_DOMAIN(String.class),
 
     /**
-     * (<strong>If enabled, requires:</strong> {@link #SNOWPLOW_COLLECTOR_HOSTNAME})
+     * (<strong>If enabled, requires:</strong> {@link #SNOWPLOW_COLLECTOR_HOSTNAME}) 
      * Enable snowplow tracking.
      */
     SNOWPLOW_ENABLED(Boolean.class),
@@ -984,7 +898,7 @@ public enum Setting {
     SPAM_CHECK_ENDPOINT_URL(String.class),
 
     /**
-     * required by: {@link #PENDO_ENABLED} The Pendo endpoint url with js snippet.
+     * required by: {@link #PENDO_ENABLED} The Pendo endpoint url with js snippet. 
      * (e.g. https://cdn.pendo.io/agent/static/your-api-key/pendo.js)
      */
     PENDO_URL(String.class),
@@ -1167,16 +1081,16 @@ public enum Setting {
     RAW_BLOB_REQUEST_LIMIT(Integer.class);
 
 
-    private static final JacksonJsonEnumHelper<Setting> enumHelper = new JacksonJsonEnumHelper<>(Setting.class);
+    private static JacksonJsonEnumHelper<Setting> enumHelper = new JacksonJsonEnumHelper<>(Setting.class);
 
     private Class<?> type;
     private Class<?>[] types;
 
-    Setting(Class<?> type) {
+    private Setting(Class<?> type) {
         this.type = type;
     }
 
-    Setting(Class<?>[] types) {
+    private Setting(Class<?>[] types) {
         this.types = types;
     }
 
@@ -1246,7 +1160,7 @@ public enum Setting {
         }
 
         String errorMsg = String.format("'%s' value is of incorrect type, is %s, should be %s",
-                toValue(), value.getClass().getSimpleName(), shouldBe);
+                toValue(), value.getClass().getSimpleName(), shouldBe.toString());
         throw new GitLabApiException(errorMsg);
     }
 }

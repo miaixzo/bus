@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.DateTime;
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.exception.DateException;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -39,44 +41,48 @@ import java.util.Locale;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PatternsDateParser extends DefaultDatePrinter implements DateParser {
+public class PatternsDateParser implements DateParser, Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private String[] parsePatterns;
+    private String[] patterns;
     private Locale locale;
 
     /**
      * 构造
      *
-     * @param parsePatterns 多个日期格式
+     * @param args 多个日期格式
      */
-    public PatternsDateParser(final String... parsePatterns) {
-        this.parsePatterns = parsePatterns;
+    public PatternsDateParser(final String... args) {
+        this.patterns = args;
     }
 
     /**
      * 创建 PatternsDateParser
      *
-     * @param parsePatterns 多个日期格式
+     * @param args 多个日期格式
      * @return PatternsDateParser
      */
-    public static PatternsDateParser of(final String... parsePatterns) {
-        return new PatternsDateParser(parsePatterns);
+    public static PatternsDateParser of(final String... args) {
+        return new PatternsDateParser(args);
     }
 
     /**
      * 设置多个日期格式
      *
-     * @param parsePatterns 日期格式列表
+     * @param patterns 日期格式列表
      * @return this
      */
-    public PatternsDateParser setParsePatterns(final String... parsePatterns) {
-        this.parsePatterns = parsePatterns;
+    public PatternsDateParser setPatterns(final String... patterns) {
+        this.patterns = patterns;
         return this;
     }
 
-    @Override
+    /**
+     * 获取{@link Locale}
+     *
+     * @return {@link Locale}
+     */
     public Locale getLocale() {
         return locale;
     }
@@ -93,8 +99,8 @@ public class PatternsDateParser extends DefaultDatePrinter implements DateParser
     }
 
     @Override
-    public DateTime parse(final String source) {
-        return new DateTime(Calendar.parseByPatterns(source, this.locale, this.parsePatterns));
+    public DateTime parse(final CharSequence source) {
+        return new DateTime(Calendar.parseByPatterns(source, this.locale, this.patterns));
     }
 
 }

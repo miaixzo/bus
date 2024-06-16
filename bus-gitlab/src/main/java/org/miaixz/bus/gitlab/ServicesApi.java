@@ -1,34 +1,34 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.services.*;
-
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.Response;
 
 /**
  * Access for the services API.  Currently only the gitlab-ci, HipChatService, Slack, and JIRA service are supported.
@@ -38,38 +38,6 @@ public class ServicesApi extends AbstractApi {
 
     public ServicesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Activates the gitlab-ci service for a project.
-     *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/services/gitlab-ci</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param token           for authentication
-     * @param projectCIUrl    URL of the GitLab-CI project
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
-     */
-    public void setGitLabCI(Object projectIdOrPath, String token, String projectCIUrl) throws GitLabApiException {
-        final Form formData = new Form();
-        formData.param("token", token);
-        formData.param("project_url", projectCIUrl);
-        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "gitlab-ci");
-    }
-
-    /**
-     * Deletes the gitlab-ci service for a project.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/services/gitlab-ci</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
-     */
-    public void deleteGitLabCI(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
-        delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "gitlab-ci");
     }
 
     /**
@@ -90,7 +58,7 @@ public class ServicesApi extends AbstractApi {
      * Updates the HipChatService notification settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/hipchat</code></pre>
-     * <p>
+     *
      * The following properties on the HipChatService instance are utilized in the update of the settings:
      * <p>
      * pushEvents (optional) - Enable notifications for push events
@@ -118,39 +86,6 @@ public class ServicesApi extends AbstractApi {
         GitLabApiForm formData = hipChat.servicePropertiesForm();
         Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "hipchat");
         return (response.readEntity(HipChatService.class));
-    }
-
-    /**
-     * Activates HipChatService notifications.
-     *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/services/hipchat</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param token           for authentication
-     * @param room            HipChatService Room
-     * @param server          HipChatService Server URL
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #updateHipChatService(Object, HipChatService) updateHipChat} method
-     */
-    public void setHipChat(Object projectIdOrPath, String token, String room, String server) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("token", token)
-                .withParam("room", room)
-                .withParam("server", server);
-        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "hipchat");
-    }
-
-    /**
-     * Deletes the HipChatService service for a project.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/services/hipchat</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #deleteHipChatService(Object) updateHipChat} method
-     */
-    public void deleteHipChat(Object projectIdOrPath) throws GitLabApiException {
-        deleteHipChatService(projectIdOrPath);
     }
 
     /**
@@ -184,10 +119,10 @@ public class ServicesApi extends AbstractApi {
      * Updates the Slack notification settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/slack</code></pre>
-     * <p>
+     *
      * The following properties on the SlackService instance are utilized in the update of the settings:
      * <p>
-     * web (required) - https://hooks.slack.com/services/...
+     * webhook (required) - https://hooks.slack.com/services/...
      * username (optional) - username
      * defaultChannel (optional) - Default channel to use if others are not configured
      * notifyOnlyBrokenPipelines (optional) - Send notifications for broken pipelines
@@ -253,7 +188,7 @@ public class ServicesApi extends AbstractApi {
      * Updates the JIRA service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/jira</code></pre>
-     * <p>
+     *
      * The following properties on the JiraService instance are utilized in the update of the settings:
      * <p>
      * mergeRequestsEvents (optional) - Enable notifications for merge request events
@@ -307,13 +242,13 @@ public class ServicesApi extends AbstractApi {
      * Updates the ExternalWikiService service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/external-wiki</code></pre>
-     * <p>
+     *
      * The following properties on the JiraService instance are utilized in the update of the settings:
      * <p>
      * external_wiki_url (required) - The URL to the External Wiki project which is being linked to this GitLab project, e.g., http://www.wikidot.com/
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param externalWiki    the ExternalWikiService instance holding the settings
+     * @param externalWiki            the ExternalWikiService instance holding the settings
      * @return a ExternalWikiService instance holding the newly updated settings
      * @throws GitLabApiException if any exception occurs
      */
@@ -355,10 +290,10 @@ public class ServicesApi extends AbstractApi {
      * Updates the Mattermost service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/mattermost</code></pre>
-     * <p>
+     *
      * The following properties on the MattermostService instance are utilized in the update of the settings:
      * <p>
-     * web (required) - https://hooks.slack.com/services/...
+     * webhook (required) - https://hooks.slack.com/services/...
      * username (optional) - username
      * defaultChannel (optional) - Default channel to use if others are not configured
      * notifyOnlyBrokenPipelines (optional) - Send notifications for broken pipelines
@@ -382,7 +317,7 @@ public class ServicesApi extends AbstractApi {
      * pipelineChannel (optional) - The name of the channel to receive pipeline events notifications
      * wikiPageChannel (optional) - The name of the channel to receive wiki page events notifications
      *
-     * @param projectIdOrPath         id, path of the project, or a Project instance holding the project ID or path
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mattermostNotifications the MattermostService instance holding the settings
      * @return a MattermostService instance holding the newly updated settings
      * @throws GitLabApiException if any exception occurs
@@ -424,7 +359,7 @@ public class ServicesApi extends AbstractApi {
      * Updates the Bugzilla service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/bugzilla</code></pre>
-     * <p>
+     *
      * The following properties on the BugzillaService instance are utilized in the update of the settings:
      * <p>
      * description (optional), description
@@ -477,7 +412,7 @@ public class ServicesApi extends AbstractApi {
      * Updates the Custom Issue Tracker service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/custom_issue_tracker</code></pre>
-     * <p>
+     *
      * The following properties on the CustomIssueTrackerService instance are utilized in the update of the settings:
      * <p>
      * description (optional), description
@@ -488,7 +423,7 @@ public class ServicesApi extends AbstractApi {
      * title (optional), the title for the custom issue tracker
      * </p>
      *
-     * @param projectIdOrPath    id, path of the project, or a Project instance holding the project ID or path
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param customIssueTracker the CustomIssueTrackerService instance holding the settings
      * @return a CustomIssueTrackerService instance holding the newly updated settings
      * @throws GitLabApiException if any exception occurs
@@ -530,7 +465,7 @@ public class ServicesApi extends AbstractApi {
      * Updates the EmailsOnPush service settings for a project.
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/services/emails-on-push</code></pre>
-     * <p>
+     *
      * The following properties on the EmailOnPushService instance are utilized in the update of the settings:
      * <p>
      * recipients (required), Emails separated by whitespace
@@ -539,12 +474,12 @@ public class ServicesApi extends AbstractApi {
      * push_events (optional), Enable notifications for push events
      * tag_push_events(optional), Enable notifications for tag push events
      * branches_to_be_notified (optional), Branches to send notifications for. Valid options are "all", "default",
-     * "protected", and "default_and_protected". Notifications are always fired
-     * for tag pushes. The default value is "all"
+     *                                     "protected", and "default_and_protected". Notifications are always fired
+     *                                     for tag pushes. The default value is "all"
      * </p>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param emailsOnPush    the EmailOnPushService instance holding the settings
+     * @param emailsOnPush the EmailOnPushService instance holding the settings
      * @return a EmailOnPushService instance holding the newly updated settings
      * @throws GitLabApiException if any exception occurs
      */

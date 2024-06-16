@@ -1,32 +1,34 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.core.center.date.culture.lunar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerm;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.EnumMap;
 
 import java.util.regex.Matcher;
@@ -65,17 +67,17 @@ public class LunarFestival extends Loops {
     /**
      * 节气
      */
-    protected SolarTerm solarTerm;
+    protected SolarTerms solarTerms;
 
     /**
      * 名称
      */
     protected String name;
 
-    public LunarFestival(EnumMap.Festival type, LunarDay day, SolarTerm solarTerm, String data) {
+    public LunarFestival(EnumMap.Festival type, LunarDay day, SolarTerms solarTerms, String data) {
         this.type = type;
         this.day = day;
-        this.solarTerm = solarTerm;
+        this.solarTerms = solarTerms;
         index = Integer.parseInt(data.substring(1, 3), 10);
         name = NAMES[index];
     }
@@ -92,8 +94,8 @@ public class LunarFestival extends Loops {
                 case DAY:
                     return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6), 10)), null, data);
                 case TERM:
-                    SolarTerm solarTerm = SolarTerm.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-                    return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
+                    SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+                    return new LunarFestival(type, solarTerms.getJulianDay().getSolarDay().getLunarDay(), solarTerms, data);
                 case EVE:
                     return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
                 default:
@@ -110,11 +112,11 @@ public class LunarFestival extends Loops {
         matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
         while (matcher.find()) {
             String data = matcher.group();
-            SolarTerm solarTerm = SolarTerm.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-            LunarDay lunarDay = solarTerm.getJulianDay().getSolarDay().getLunarDay();
+            SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+            LunarDay lunarDay = solarTerms.getJulianDay().getSolarDay().getLunarDay();
             LunarMonth lunarMonth = lunarDay.getMonth();
             if (lunarMonth.getYear().getYear() == year && lunarMonth.getMonth() == month && lunarDay.getDay() == day) {
-                return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerm, data);
+                return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerms, data);
             }
         }
         matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
@@ -175,8 +177,8 @@ public class LunarFestival extends Loops {
      *
      * @return 节气
      */
-    public SolarTerm getSolarTerm() {
-        return solarTerm;
+    public SolarTerms getSolarTerm() {
+        return solarTerms;
     }
 
     public String getName() {

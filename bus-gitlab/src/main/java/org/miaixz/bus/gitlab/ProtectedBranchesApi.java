@@ -1,43 +1,44 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.AllowedTo;
 import org.miaixz.bus.gitlab.models.ProtectedBranch;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the Protected Branches API calls.
- *
  * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
  */
 public class ProtectedBranchesApi extends AbstractApi {
@@ -65,7 +66,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_branches</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of instances that will be fetched per page
+     * @param itemsPerPage the number of instances that will be fetched per page
      * @return the Pager of protected branches for the project
      * @throws GitLabApiException if any exception occurs
      */
@@ -93,7 +94,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_branches/:branch_name</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName      the name of the branch or wildcard
+     * @param branchName the name of the branch or wildcard
      * @return a ProtectedBranch instance with info on the protected branch
      * @throws GitLabApiException if any exception occurs
      */
@@ -109,7 +110,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/protected_branches/:branch_name</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName      the name of the branch or wildcard
+     * @param branchName the name of the branch or wildcard
      * @return an Optional instance with the specified protected branch as a value
      */
     public Optional<ProtectedBranch> getOptionalProtectedBranch(Object projectIdOrPath, String branchName) {
@@ -126,7 +127,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/protected_branches/:name</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName      the name of the branch to un-protect, can be a wildcard
+     * @param branchName the name of the branch to un-protect, can be a wildcard
      * @throws GitLabApiException if any exception occurs
      */
     public void unprotectBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
@@ -140,7 +141,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName      the name of the branch to protect, can be a wildcard
+     * @param branchName the name of the branch to protect, can be a wildcard
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
      */
@@ -153,9 +154,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath  the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName       the name of the branch to protect, can be a wildcard
-     * @param pushAccessLevel  Access levels allowed to push (defaults: 40, maintainer access level)
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param pushAccessLevel Access levels allowed to push (defaults: 40, maintainer access level)
      * @param mergeAccessLevel Access levels allowed to merge (defaults: 40, maintainer access level)
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
@@ -169,11 +170,11 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
-     * @param pushAccessLevel           access levels allowed to push (defaults: 40, maintainer access level)
-     * @param mergeAccessLevel          access levels allowed to merge (defaults: 40, maintainer access level)
-     * @param unprotectAccessLevel      access levels allowed to unprotect (defaults: 40, maintainer access level)
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param pushAccessLevel access levels allowed to push (defaults: 40, maintainer access level)
+     * @param mergeAccessLevel access levels allowed to merge (defaults: 40, maintainer access level)
+     * @param unprotectAccessLevel access levels allowed to unprotect (defaults: 40, maintainer access level)
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
@@ -190,13 +191,13 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
-     * @param pushAccessLevel           access levels allowed to push (defaults: 40, maintainer access level)
-     * @param mergeAccessLevel          access levels allowed to merge (defaults: 40, maintainer access level)
-     * @param unprotectAccessLevel      access levels allowed to unprotect (defaults: 40, maintainer access level)
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param pushAccessLevel access levels allowed to push (defaults: 40, maintainer access level)
+     * @param mergeAccessLevel access levels allowed to merge (defaults: 40, maintainer access level)
+     * @param unprotectAccessLevel access levels allowed to unprotect (defaults: 40, maintainer access level)
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
-     * @param allowForcedPush           when enabled, members who can push to this branch can also force push. (default: false)
+     * @param allowForcedPush when enabled, members who can push to this branch can also force push. (default: false)
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
      */
@@ -222,17 +223,17 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
-     * @param allowedToPushUserId       user ID allowed to push, can be null
-     * @param allowedToMergeUserId      user ID allowed to merge, can be null
-     * @param allowedToUnprotectUserId  user ID allowed to unprotect, can be null
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param allowedToPushUserId user ID allowed to push, can be null
+     * @param allowedToMergeUserId user ID allowed to merge, can be null
+     * @param allowedToUnprotectUserId user ID allowed to unprotect, can be null
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
      */
     public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName,
-                                         Integer allowedToPushUserId, Integer allowedToMergeUserId, Integer allowedToUnprotectUserId,
+                                         Long allowedToPushUserId, Long allowedToMergeUserId, Long allowedToUnprotectUserId,
                                          Boolean codeOwnerApprovalRequired) throws GitLabApiException {
         return protectBranch(projectIdOrPath, branchName, allowedToPushUserId, allowedToMergeUserId, allowedToUnprotectUserId, codeOwnerApprovalRequired, null);
     }
@@ -244,18 +245,18 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
-     * @param allowedToPushUserId       user ID allowed to push, can be null
-     * @param allowedToMergeUserId      user ID allowed to merge, can be null
-     * @param allowedToUnprotectUserId  user ID allowed to unprotect, can be null
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param allowedToPushUserId user ID allowed to push, can be null
+     * @param allowedToMergeUserId user ID allowed to merge, can be null
+     * @param allowedToUnprotectUserId user ID allowed to unprotect, can be null
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
-     * @param allowForcedPush           when enabled, members who can push to this branch can also force push. (default: false)
+     * @param allowForcedPush when enabled, members who can push to this branch can also force push. (default: false) 
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
      */
     public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName,
-                                         Integer allowedToPushUserId, Integer allowedToMergeUserId, Integer allowedToUnprotectUserId,
+                                         Long allowedToPushUserId, Long allowedToMergeUserId, Long allowedToUnprotectUserId,
                                          Boolean codeOwnerApprovalRequired, Boolean allowForcedPush) throws GitLabApiException {
 
         Form formData = new GitLabApiForm()
@@ -277,11 +278,11 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
-     * @param allowedToPush             an AllowedTo instance holding the configuration for "allowed_to_push"
-     * @param allowedToMerge            an AllowedTo instance holding the configuration for "allowed_to_merge"
-     * @param allowedToUnprotect        an AllowedTo instance holding the configuration for "allowed_to_unprotect" be null
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
+     * @param allowedToPush an AllowedTo instance holding the configuration for "allowed_to_push"
+     * @param allowedToMerge an AllowedTo instance holding the configuration for "allowed_to_merge"
+     * @param allowedToUnprotect an AllowedTo instance holding the configuration for "allowed_to_unprotect" be null
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
@@ -313,8 +314,8 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PATCH /projects/:id/protected_branches/:branch_name?code_owner_approval_required=true</code></pre>
      *
-     * @param projectIdOrPath           the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName                the name of the branch to protect, can be a wildcard
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param branchName the name of the branch to protect, can be a wildcard
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file.
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs

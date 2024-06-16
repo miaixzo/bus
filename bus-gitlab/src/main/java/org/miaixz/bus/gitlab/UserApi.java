@@ -1,36 +1,38 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.support.EmailChecker;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -146,7 +148,7 @@ public class UserApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /users?active=true</code></pre>
      *
-     * @param page    the page to get
+     * @param page the page to get
      * @param perPage the number of users per page
      * @return the list of active Users in the specified range
      * @throws GitLabApiException if any exception occurs
@@ -394,7 +396,7 @@ public class UserApi extends AbstractApi {
      *
      * @param email the email of the user to get
      * @return the User instance for the specified email, or null if not found
-     * @throws GitLabApiException       if any exception occurs
+     * @throws GitLabApiException if any exception occurs
      * @throws IllegalArgumentException if email is not valid
      */
     public User getUserByEmail(String email) throws GitLabApiException {
@@ -430,7 +432,7 @@ public class UserApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /users?extern_uid=:externalUid&amp;provider=:provider</code></pre>
      *
-     * @param provider    the provider of the external uid
+     * @param provider the provider of the external uid
      * @param externalUid the external UID of the user
      * @return the User instance for the specified external UID, or null if not found
      * @throws GitLabApiException if any exception occurs
@@ -454,7 +456,7 @@ public class UserApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /users?extern_uid=:externUid&amp;provider=:provider</code></pre>
      *
-     * @param provider    the provider of the external uid
+     * @param provider the provider of the external uid
      * @param externalUid the external UID of the user
      * @return the User for the specified external UID as an Optional instance
      */
@@ -526,49 +528,6 @@ public class UserApi extends AbstractApi {
      */
     public Stream<User> findUsersStream(String emailOrUsername) throws GitLabApiException {
         return (findUsers(emailOrUsername, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * <p>Creates a new user. Note only administrators can create new users.
-     * Either password or reset_password should be specified (reset_password takes priority).</p>
-     *
-     * <p>If both the User object's projectsLimit and the parameter projectsLimit is specified
-     * the parameter will take precedence.</p>
-     *
-     * <pre><code>GitLab Endpoint: POST /users</code></pre>
-     *
-     * <p>The following properties of the provided User instance can be set during creation:<pre><code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code></pre>
-     *
-     * @param user          the User instance with the user info to create
-     * @param password      the password for the new user
-     * @param projectsLimit the maximum number of project
-     * @return created User instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 6.0, replaced by {@link #createUser(User, CharSequence, boolean)}
-     */
-    @Deprecated
-    public User createUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
-        Form formData = userToForm(user, projectsLimit, password, null, true);
-        Response response = post(Response.Status.CREATED, formData, "users");
-        return (response.readEntity(User.class));
     }
 
     /**
@@ -646,45 +605,6 @@ public class UserApi extends AbstractApi {
     }
 
     /**
-     * Modifies an existing user. Only administrators can change attributes of a user.
-     *
-     * <pre><code>GitLab Endpoint: PUT /users/:id</code></pre>
-     *
-     * <p>The following properties of the provided User instance can be set during update:<pre><code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code></pre>
-     *
-     * @param user          the User instance with the user info to modify
-     * @param password      the new password for the user
-     * @param projectsLimit the maximum number of project
-     * @return the modified User instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 6.0, replaced by {@link #updateUser(User, CharSequence)}
-     */
-    @Deprecated
-    public User modifyUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
-        Form form = userToForm(user, projectsLimit, password, false, false);
-        Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
-        return (response.readEntity(User.class));
-    }
-
-    /**
      * Deletes a user. Available only for administrators.
      *
      * <pre><code>GitLab Endpoint: DELETE /users/:id</code></pre>
@@ -702,8 +622,8 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /users/:id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param hardDelete       If true, contributions that would usually be moved to the
-     *                         ghost user will be deleted instead, as well as groups owned solely by this user
+     * @param hardDelete If true, contributions that would usually be moved to the
+     *                   ghost user will be deleted instead, as well as groups owned solely by this user
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteUser(Object userIdOrUsername, Boolean hardDelete) throws GitLabApiException {
@@ -863,7 +783,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /users/:id/keys/:key_id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param keyId            the key ID to delete
+     * @param keyId  the key ID to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSshKey(Object userIdOrUsername, Long keyId) throws GitLabApiException {
@@ -895,7 +815,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /users/:id/impersonation_tokens</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param state            the state of impersonation tokens to list (ALL, ACTIVE, INACTIVE)
+     * @param state  the state of impersonation tokens to list (ALL, ACTIVE, INACTIVE)
      * @return a list of a specified user's impersonation tokens
      * @throws GitLabApiException if any exception occurs
      */
@@ -914,7 +834,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /users/:user_id/impersonation_tokens/:impersonation_token_id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param tokenId          the impersonation token ID to get
+     * @param tokenId the impersonation token ID to get
      * @return the specified impersonation token
      * @throws GitLabApiException if any exception occurs
      */
@@ -934,7 +854,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /users/:user_id/impersonation_tokens/:impersonation_token_id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param tokenId          the impersonation token ID to get
+     * @param tokenId the impersonation token ID to get
      * @return the specified impersonation token as an Optional instance
      */
     public Optional<ImpersonationToken> getOptionalImpersonationToken(Object userIdOrUsername, Long tokenId) {
@@ -951,9 +871,9 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /users/:user_id/impersonation_tokens</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param name             the name of the impersonation token, required
-     * @param expiresAt        the expiration date of the impersonation token, optional
-     * @param scopes           an array of scopes of the impersonation token
+     * @param name the name of the impersonation token, required
+     * @param expiresAt the expiration date of the impersonation token, optional
+     * @param scopes an array of scopes of the impersonation token
      * @return the created ImpersonationToken instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -967,7 +887,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param tokenId          the impersonation token ID to revoke
+     * @param tokenId the impersonation token ID to revoke
      * @throws GitLabApiException if any exception occurs
      */
     public void revokeImpersonationToken(Object userIdOrUsername, Long tokenId) throws GitLabApiException {
@@ -986,9 +906,9 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /users/:user_id/personal_access_tokens</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Integer(ID), String(username), or User instance
-     * @param name             the name of the personal access token, required
-     * @param expiresAt        the expiration date of the personal access token, optional
-     * @param scopes           an array of scopes of the personal access token
+     * @param name the name of the personal access token, required
+     * @param expiresAt the expiration date of the personal access token, optional
+     * @param scopes an array of scopes of the personal access token
      * @return the created PersonalAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -1067,7 +987,7 @@ public class UserApi extends AbstractApi {
      * Creates custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param customAttribute  the custom attribute to set
+     * @param customAttribute the custom attribute to set
      * @return the created CustomAttribute
      * @throws GitLabApiException on failure while setting customAttributes
      */
@@ -1082,8 +1002,8 @@ public class UserApi extends AbstractApi {
      * Creates custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param key              for the customAttribute
-     * @param value            or the customAttribute
+     * @param key for the customAttribute
+     * @param value  or the customAttribute
      * @return the created CustomAttribute
      * @throws GitLabApiException on failure while setting customAttributes
      */
@@ -1106,7 +1026,7 @@ public class UserApi extends AbstractApi {
      * Change custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param customAttribute  the custome attribute to change
+     * @param customAttribute the custome attribute to change
      * @return the changed CustomAttribute
      * @throws GitLabApiException on failure while changing customAttributes
      */
@@ -1125,8 +1045,8 @@ public class UserApi extends AbstractApi {
      * Changes custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param key              for the customAttribute
-     * @param value            for the customAttribute
+     * @param key    for the customAttribute
+     * @param value  for the customAttribute
      * @return changedCustomAttribute
      * @throws GitLabApiException on failure while changing customAttributes
      */
@@ -1138,7 +1058,7 @@ public class UserApi extends AbstractApi {
      * Delete a custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param customAttribute  to remove
+     * @param customAttribute to remove
      * @throws GitLabApiException on failure while deleting customAttributes
      */
     public void deleteCustomAttribute(final Object userIdOrUsername, final CustomAttribute customAttribute) throws GitLabApiException {
@@ -1153,7 +1073,7 @@ public class UserApi extends AbstractApi {
      * Delete a custom attribute for the given user
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param key              of the customAttribute to remove
+     * @param key    of the customAttribute to remove
      * @throws GitLabApiException on failure while deleting customAttributes
      */
     public void deleteCustomAttribute(final Object userIdOrUsername, final String key) throws GitLabApiException {
@@ -1183,7 +1103,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>PUT /users/:id</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param avatarFile       the File instance of the avatar file to upload
+     * @param avatarFile the File instance of the avatar file to upload
      * @return the updated User instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -1256,7 +1176,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /user/:id/emails</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param email            the email address to add
+     * @param email the email address to add
      * @param skipConfirmation skip confirmation and assume e-mail is verified - true or false (default)
      * @return the Email instance for the added email
      * @throws GitLabApiException if any exception occurs
@@ -1288,7 +1208,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /user/:id/emails/:emailId</code></pre>
      *
      * @param userIdOrUsername the user in the form of an Long(ID), String(username), or User instance
-     * @param emailId          the email ID to delete
+     * @param emailId the email ID to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteEmail(final Object userIdOrUsername, final Long emailId) throws GitLabApiException {
@@ -1355,7 +1275,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /users/:id/gpg_keys</code></pre>
      *
      * @param userId the user in the form of an Long(ID)
-     * @param key    the ASCII-armored exported public GPG key to add
+     * @param key the ASCII-armored exported public GPG key to add
      * @throws GitLabApiException if any exception occurs
      */
     public GpgKey addGpgKey(final Long userId, final String key) throws GitLabApiException {
@@ -1371,7 +1291,7 @@ public class UserApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /users/:id/gpg_keys/:keyId</code></pre>
      *
      * @param userId the user in the form of an Long(ID)
-     * @param keyId  the key ID  in the form if an Long(ID)
+     * @param keyId the key ID  in the form if an Long(ID)
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteGpgKey(final Long userId, final Long keyId) throws GitLabApiException {
@@ -1394,12 +1314,12 @@ public class UserApi extends AbstractApi {
 
     /**
      * Returns a Pager that lists all projects and groups a user is a member of. (admin only)
-     * <p>
+     *
      * This allows lazy-fetching of huge numbers of memberships.
      *
      * <pre><code>GitLab Endpoint: GET /users/:id/memberships</code></pre>
      *
-     * @param userId       the ID of the user to get the memberships for
+     * @param userId the ID of the user to get the memberships for
      * @param itemsPerPage the number of Membership instances that will be fetched per page
      * @return a Pager of user's memberships
      * @throws GitLabApiException if any exception occurs

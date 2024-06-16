@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.validate;
 
 import lombok.EqualsAndHashCode;
@@ -33,7 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.magic.Checker;
-import org.miaixz.bus.validate.magic.Property;
+import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -58,7 +60,7 @@ public class Verified extends Provider {
     /**
      * 校验者信息
      */
-    private List<Property> list;
+    private List<Material> list;
     /**
      * 被校验属性值
      */
@@ -143,20 +145,20 @@ public class Verified extends Provider {
      * @param annotations 注解信息
      * @return the object
      */
-    private List<Property> resolve(Annotation[] annotations) {
-        List<Property> list = new ArrayList<>();
+    private List<Material> resolve(Annotation[] annotations) {
+        List<Material> list = new ArrayList<>();
         for (Annotation annotation : annotations) {
             if (isAnnotation(annotation)) {
-                Property property = build(annotation, this.object);
-                list.add(property);
+                Material material = build(annotation, this.object);
+                list.add(material);
             }
         }
         if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
             List<Annotation> clazzAnnotations = getAnnotation(clazz);
             for (Annotation annotation : clazzAnnotations) {
-                Property property = build(annotation, this.object);
-                list.add(property);
+                Material material = build(annotation, this.object);
+                list.add(material);
             }
         }
         return list;
@@ -202,7 +204,7 @@ public class Verified extends Provider {
     public Collector access() {
         Collector collector = new Collector(this);
         Checker checker = context.getChecker();
-        for (Property p : this.list) {
+        for (Material p : this.list) {
             Collector result = checker.object(this, p);
             collector.collect(result);
         }
@@ -220,7 +222,7 @@ public class Verified extends Provider {
      * @param object     对象
      * @return 校验器属性对象
      */
-    public Property build(Annotation annotation, Object object) {
+    public Material build(Annotation annotation, Object object) {
         Assert.isTrue(isAnnotation(annotation), "尝试从非校验注解上获取信息:" + annotation);
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {
@@ -229,18 +231,18 @@ public class Verified extends Provider {
             String errcode = (String) annotationType.getMethod(Builder.ERRCODE).invoke(annotation);
             String name = (String) annotationType.getMethod(Builder.FIELD).invoke(annotation);
             this.field = Builder.DEFAULT_FIELD.equals(name) ? this.field : name;
-            Property property = new Property();
-            property.setAnnotation(annotation);
-            property.setErrmsg(errmsg);
-            property.setGroup(groups);
-            property.setField(this.field);
-            property.setErrcode(errcode);
-            property.addParam(Builder.FIELD, this.field);
+            Material material = new Material();
+            material.setAnnotation(annotation);
+            material.setErrmsg(errmsg);
+            material.setGroup(groups);
+            material.setField(this.field);
+            material.setErrcode(errcode);
+            material.addParam(Builder.FIELD, this.field);
 
             if (ObjectKit.isNotEmpty(object) && object.getClass().isArray()) {
-                property.addParam(Builder.VAL, Arrays.toString((Object[]) object));
+                material.addParam(Builder.VAL, Arrays.toString((Object[]) object));
             } else {
-                property.addParam(Builder.VAL, String.valueOf(object));
+                material.addParam(Builder.VAL, String.valueOf(object));
             }
 
             Method[] declaredMethods = annotationType.getDeclaredMethods();
@@ -250,29 +252,29 @@ public class Verified extends Provider {
                     Class<?> returnType = m.getReturnType();
                     Object invoke = m.invoke(annotation);
                     if (returnType.isArray()) {
-                        property.addParam(filler.value(), Arrays.toString((Object[]) invoke));
+                        material.addParam(filler.value(), Arrays.toString((Object[]) invoke));
                     } else {
-                        property.addParam(filler.value(), invoke);
+                        material.addParam(filler.value(), invoke);
                     }
                 }
             }
             Annotation[] parentAnnos = annotationType.getAnnotations();
             for (Annotation anno : parentAnnos) {
                 if (isAnnotation(anno)) {
-                    property.addParentProperty(build(anno, object));
+                    material.addParentProperty(build(anno, object));
                 } else if (anno instanceof Array) {
-                    property.setArray(true);
+                    material.setArray(true);
                 } else if (anno instanceof Complex) {
-                    property.setClazz(((Complex) anno).clazz());
-                    property.setName(((Complex) anno).value());
+                    material.setClazz(((Complex) anno).clazz());
+                    material.setName(((Complex) anno).value());
                 } else if (anno instanceof ValidEx) {
-                    property.setException(((ValidEx) anno).value());
+                    material.setException(((ValidEx) anno).value());
                 }
             }
-            if (ObjectKit.isEmpty(property.getClazz()) || StringKit.isEmpty(property.getName())) {
+            if (ObjectKit.isEmpty(material.getClazz()) || StringKit.isEmpty(material.getName())) {
                 throw new InternalException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
             }
-            return property;
+            return material;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new InternalException("非法的校验注解,没有定义通用的校验属性:" + annotationType.getName(), e);
         }

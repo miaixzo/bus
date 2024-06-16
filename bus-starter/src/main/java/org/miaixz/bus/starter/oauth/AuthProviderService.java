@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.starter.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -93,15 +95,15 @@ public class AuthProviderService {
      */
     private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
     public AuthProperties properties;
-    public ExtendCache extendCache;
+    public ExtendCache cache;
 
     public AuthProviderService(AuthProperties properties) {
         this(properties, OauthCache.INSTANCE);
     }
 
-    public AuthProviderService(AuthProperties properties, ExtendCache extendCache) {
+    public AuthProviderService(AuthProperties properties, ExtendCache cache) {
         this.properties = properties;
-        this.extendCache = extendCache;
+        this.cache = cache;
     }
 
     /**
@@ -130,91 +132,91 @@ public class AuthProviderService {
             context = properties.getType().get(type);
         }
         if (Registry.AFDIAN.equals(type)) {
-            return new AfDianProvider(context, extendCache);
+            return new AfDianProvider(context, cache);
         } else if (Registry.ALIPAY.equals(type)) {
-            return new AlipayProvider(context, extendCache);
+            return new AlipayProvider(context, cache);
         } else if (Registry.ALIYUN.equals(type)) {
-            return new AliyunProvider(context, extendCache);
+            return new AliyunProvider(context, cache);
         } else if (Registry.AMAZON.equals(type)) {
-            return new AmazonProvider(context, extendCache);
+            return new AmazonProvider(context, cache);
         } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduProvider(context, extendCache);
+            return new BaiduProvider(context, cache);
         } else if (Registry.CODING.equals(type)) {
-            return new CodingProvider(context, extendCache);
+            return new CodingProvider(context, cache);
         } else if (Registry.DINGTALK.equals(type)) {
-            return new DingTalkProvider(context, extendCache);
+            return new DingTalkProvider(context, cache);
         } else if (Registry.DOUYIN.equals(type)) {
-            return new DouyinProvider(context, extendCache);
+            return new DouyinProvider(context, cache);
         } else if (Registry.ELEME.equals(type)) {
-            return new ElemeProvider(context, extendCache);
+            return new ElemeProvider(context, cache);
         } else if (Registry.FACEBOOK.equals(type)) {
-            return new FacebookProvider(context, extendCache);
+            return new FacebookProvider(context, cache);
         } else if (Registry.FEISHU.equals(type)) {
-            return new FeishuProvider(context, extendCache);
+            return new FeishuProvider(context, cache);
         } else if (Registry.GITEE.equals(type)) {
-            return new GiteeProvider(context, extendCache);
+            return new GiteeProvider(context, cache);
         } else if (Registry.GITHUB.equals(type)) {
-            return new GithubProvider(context, extendCache);
+            return new GithubProvider(context, cache);
         } else if (Registry.GITLAB.equals(type)) {
-            return new GitlabProvider(context, extendCache);
+            return new GitlabProvider(context, cache);
         } else if (Registry.GOOGLE.equals(type)) {
-            return new GoogleProvider(context, extendCache);
+            return new GoogleProvider(context, cache);
         } else if (Registry.HUAWEI.equals(type)) {
-            return new HuaweiProvider(context, extendCache);
+            return new HuaweiProvider(context, cache);
         } else if (Registry.JD.equals(type)) {
-            return new JdProvider(context, extendCache);
+            return new JdProvider(context, cache);
         } else if (Registry.KUJIALE.equals(type)) {
-            return new KujialeProvider(context, extendCache);
+            return new KujialeProvider(context, cache);
         } else if (Registry.LINE.equals(type)) {
-            return new LineProvider(context, extendCache);
+            return new LineProvider(context, cache);
         } else if (Registry.LINKEDIN.equals(type)) {
-            return new LinkedinProvider(context, extendCache);
+            return new LinkedinProvider(context, cache);
         } else if (Registry.MEITUAN.equals(type)) {
-            return new MeituanProvider(context, extendCache);
+            return new MeituanProvider(context, cache);
         } else if (Registry.MI.equals(type)) {
-            return new MiProvider(context, extendCache);
+            return new MiProvider(context, cache);
         } else if (Registry.MICROSOFT_CN.equals(type)) {
-            return new MicrosoftCnProvider(context, extendCache);
+            return new MicrosoftCnProvider(context, cache);
         } else if (Registry.MICROSOFT.equals(type)) {
-            return new MicrosoftProvider(context, extendCache);
+            return new MicrosoftProvider(context, cache);
         } else if (Registry.OKTA.equals(type)) {
-            return new OktaProvider(context, extendCache);
+            return new OktaProvider(context, cache);
         } else if (Registry.OSCHINA.equals(type)) {
-            return new OschinaProvider(context, extendCache);
+            return new OschinaProvider(context, cache);
         } else if (Registry.PINTEREST.equals(type)) {
-            return new PinterestProvider(context, extendCache);
+            return new PinterestProvider(context, cache);
         } else if (Registry.PROGINN.equals(type)) {
-            return new ProginnProvider(context, extendCache);
+            return new ProginnProvider(context, cache);
         } else if (Registry.QQ.equals(type)) {
-            return new QqProvider(context, extendCache);
+            return new QqProvider(context, cache);
         } else if (Registry.RENREN.equals(type)) {
-            return new RenrenProvider(context, extendCache);
+            return new RenrenProvider(context, cache);
         } else if (Registry.SLACK.equals(type)) {
-            return new SlackProvider(context, extendCache);
+            return new SlackProvider(context, cache);
         } else if (Registry.STACK_OVERFLOW.equals(type)) {
-            return new StackOverflowProvider(context, extendCache);
+            return new StackOverflowProvider(context, cache);
         } else if (Registry.TAOBAO.equals(type)) {
-            return new TaobaoProvider(context, extendCache);
+            return new TaobaoProvider(context, cache);
         } else if (Registry.TEAMBITION.equals(type)) {
-            return new TeambitionProvider(context, extendCache);
+            return new TeambitionProvider(context, cache);
         } else if (Registry.TOUTIAO.equals(type)) {
-            return new ToutiaoProvider(context, extendCache);
+            return new ToutiaoProvider(context, cache);
         } else if (Registry.TWITTER.equals(type)) {
-            return new TwitterProvider(context, extendCache);
+            return new TwitterProvider(context, cache);
         } else if (Registry.WECHAT_EE.equals(type)) {
-            return new WeChatEeQrcodeProvider(context, extendCache);
+            return new WeChatEeQrcodeProvider(context, cache);
         } else if (Registry.WECHAT_EE_QRCODE_THIRD.equals(type)) {
-            return new WeChatEeThirdQrcodeProvider(context, extendCache);
+            return new WeChatEeThirdQrcodeProvider(context, cache);
         } else if (Registry.WECHAT_EE_WEB.equals(type)) {
-            return new WeChatEeWebProvider(context, extendCache);
+            return new WeChatEeWebProvider(context, cache);
         } else if (Registry.WECHAT_MP.equals(type)) {
-            return new WeChatMpProvider(context, extendCache);
+            return new WeChatMpProvider(context, cache);
         } else if (Registry.WECHAT_OPEN.equals(type)) {
-            return new WeChatOpenProvider(context, extendCache);
+            return new WeChatOpenProvider(context, cache);
         } else if (Registry.WEIBO.equals(type)) {
-            return new WeiboProvider(context, extendCache);
+            return new WeiboProvider(context, cache);
         } else if (Registry.XIMALAYA.equals(type)) {
-            return new XimalayaProvider(context, extendCache);
+            return new XimalayaProvider(context, cache);
         }
         throw new InternalException(ErrorCode.UNSUPPORTED.getDesc());
     }

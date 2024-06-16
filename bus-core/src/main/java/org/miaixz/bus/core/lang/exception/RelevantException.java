@@ -1,31 +1,32 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.lang.exception;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = false)
 public class RelevantException extends IOException {
 
     private static final long serialVersionUID = -1L;
@@ -51,6 +51,9 @@ public class RelevantException extends IOException {
      */
     protected String errmsg;
 
+    /**
+     * 构造
+     */
     protected RelevantException() {
         super();
     }
@@ -60,7 +63,7 @@ public class RelevantException extends IOException {
      *
      * @param message 打印信息
      */
-    protected RelevantException(String message) {
+    protected RelevantException(final String message) {
         super(message);
     }
 
@@ -69,11 +72,7 @@ public class RelevantException extends IOException {
      *
      * @param cause 抛出对象
      */
-    protected RelevantException(Throwable cause) {
-        super(cause);
-    }
-
-    protected RelevantException(Exception cause) {
+    protected RelevantException(final Throwable cause) {
         super(cause);
     }
 
@@ -83,7 +82,7 @@ public class RelevantException extends IOException {
      * @param message 打印信息
      * @param cause   抛出对象
      */
-    protected RelevantException(String message, Throwable cause) {
+    protected RelevantException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
@@ -93,7 +92,7 @@ public class RelevantException extends IOException {
      * @param errcode 错误编码
      * @param errmsg  错误提示
      */
-    protected RelevantException(String errcode, String errmsg) {
+    protected RelevantException(final String errcode, final String errmsg) {
         super(errmsg);
         this.errcode = errcode;
         this.errmsg = errmsg;
@@ -105,7 +104,7 @@ public class RelevantException extends IOException {
      * @param format 格式
      * @param args   参数
      */
-    protected RelevantException(String format, Object... args) {
+    protected RelevantException(final String format, final Object... args) {
         super(String.format(format, args));
     }
 
@@ -116,7 +115,7 @@ public class RelevantException extends IOException {
      * @param fmt  格式
      * @param args 参数
      */
-    protected RelevantException(Throwable e, String fmt, Object... args) {
+    protected RelevantException(final Throwable e, String fmt, final Object... args) {
         super(String.format(fmt, args), e);
     }
 
@@ -138,7 +137,7 @@ public class RelevantException extends IOException {
         return new RelevantException("r u kidding me?! It is impossible!");
     }
 
-    protected static Throwable unwrapThrow(Throwable e) {
+    protected static Throwable unwrapThrow(final Throwable e) {
         if (null == e) {
             return null;
         }
@@ -153,7 +152,7 @@ public class RelevantException extends IOException {
         return e;
     }
 
-    protected static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
+    protected static boolean isCauseBy(final Throwable e, final Class<? extends Throwable> causeType) {
         if (e.getClass() == causeType)
             return true;
         Throwable cause = e.getCause();

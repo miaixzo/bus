@@ -1,35 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Deployment;
 import org.miaixz.bus.gitlab.models.DeploymentFilter;
 import org.miaixz.bus.gitlab.models.MergeRequest;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -37,6 +39,7 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Deployments API calls.
  * See https://docs.gitlab.com/ee/api/deployments.html
+ *
  */
 public class DeploymentsApi extends AbstractApi {
 
@@ -63,7 +66,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of Deployments instances that will be fetched per page
+     * @param itemsPerPage the number of Deployments instances that will be fetched per page
      * @return a Pager of Deployment
      * @throws GitLabApiException if any exception occurs
      */
@@ -77,7 +80,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
+     * @param filter  {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
      * @return a Pager of Deployment
      * @throws GitLabApiException if any exception occurs
      */
@@ -91,8 +94,8 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
-     * @param itemsPerPage    the number of Deployments instances that will be fetched per page
+     * @param filter  {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
+     * @param itemsPerPage the number of Deployments instances that will be fetched per page
      * @return a Pager of Deployment
      * @throws GitLabApiException if any exception occurs
      */
@@ -121,7 +124,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
+     * @param filter  {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
      * @return a list of Deployment
      * @throws GitLabApiException if any exception occurs
      */
@@ -135,7 +138,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments/:deployment_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    the ID of a project's deployment
+     * @param deploymentId the ID of a project's deployment
      * @return the specified Deployment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -151,7 +154,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments/:deployment_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    the ID of a project's deployment
+     * @param deploymentId the ID of a project's deployment
      * @return the specified Deployment as an Optional instance
      */
     public Optional<Deployment> getOptionalDeployment(Object projectIdOrPath, Long deploymentId) {
@@ -168,11 +171,11 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/deployments</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param environment     The name of the environment to create the deployment for, required
-     * @param sha             The SHA of the commit that is deployed, required
-     * @param ref             The name of the branch or tag that is deployed, required
-     * @param tag             A boolean that indicates if the deployed ref is a tag (true) or not (false), required
-     * @param status          The status to filter deployments by, required
+     * @param environment The name of the environment to create the deployment for, required
+     * @param sha The SHA of the commit that is deployed, required
+     * @param ref The name of the branch or tag that is deployed, required
+     * @param tag A boolean that indicates if the deployed ref is a tag (true) or not (false), required
+     * @param status The status to filter deployments by, required
      * @return a Deployment instance with info on the added deployment
      * @throws GitLabApiException if any exception occurs
      */
@@ -196,8 +199,8 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/deployments/:key_id</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    The ID of the deployment to update, required
-     * @param status          The new status of the deployment, required
+     * @param deploymentId The ID of the deployment to update, required
+     * @param status The new status of the deployment, required
      * @return an updated Deployment instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -221,7 +224,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments/:deployment_id/merge_requests</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    The ID of the deployment to update, required
+     * @param deploymentId The ID of the deployment to update, required
      * @return a list containing the MergeRequest instances shipped with a given deployment
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
@@ -235,8 +238,8 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments/:deployment_id/merge_requests</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    The ID of the deployment to update, required
-     * @param itemsPerPage    the number of Commit instances that will be fetched per page
+     * @param deploymentId The ID of the deployment to update, required
+     * @param itemsPerPage the number of Commit instances that will be fetched per page
      * @return a Pager containing the MergeRequest instances shipped with a given deployment
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
@@ -251,7 +254,7 @@ public class DeploymentsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/deployments/:deployment_id/merge_requests</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param deploymentId    The ID of the deployment to update, required
+     * @param deploymentId The ID of the deployment to update, required
      * @return a Stream containing the MergeRequest instances shipped with a given deployment
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */

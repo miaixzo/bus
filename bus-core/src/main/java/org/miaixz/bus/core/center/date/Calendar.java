@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Modify;
@@ -697,10 +699,10 @@ public class Calendar extends Calculate {
      * @param text          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final String text, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final String... parsePatterns) throws DateException {
         return parseByPatterns(text, null, parsePatterns);
     }
 
@@ -713,10 +715,10 @@ public class Calendar extends Calculate {
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final String text, final Locale locale, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final String... parsePatterns) throws DateException {
         return parseByPatterns(text, locale, true, parsePatterns);
     }
 
@@ -730,11 +732,11 @@ public class Calendar extends Calculate {
      * @param lenient       日期时间解析是否使用严格模式
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的Calendar
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @throws IllegalArgumentException 如果日期字符串或模式数组为空
+     * @throws DateException            如果没有合适的日期模式
      * @see java.util.Calendar#isLenient()
      */
-    public static java.util.Calendar parseByPatterns(final String text, final Locale locale, final boolean lenient, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final boolean lenient, final String... parsePatterns) throws DateException {
         if (text == null || parsePatterns == null) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
@@ -762,7 +764,7 @@ public class Calendar extends Calculate {
                     return calendar;
                 }
             } catch (final IllegalArgumentException ignore) {
-                // leniency is preventing calendar from being set
+                // 宽大处理是防止日历被设定
             }
             pos.setIndex(0);
         }

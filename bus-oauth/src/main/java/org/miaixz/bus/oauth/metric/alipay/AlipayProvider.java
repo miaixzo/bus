@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.oauth.metric.alipay;
 
 import com.alibaba.fastjson.JSONObject;
@@ -44,7 +46,7 @@ import org.miaixz.bus.oauth.Checker;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.*;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * 支付宝 登录
@@ -52,7 +54,7 @@ import org.miaixz.bus.oauth.metric.DefaultProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AlipayProvider extends DefaultProvider {
+public class AlipayProvider extends AbstractProvider {
 
     private static final String GATEWAY = "https://openapi.alipay.com/gateway.do";
     /**
@@ -79,8 +81,8 @@ public class AlipayProvider extends DefaultProvider {
      * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache)
      */
-    public AlipayProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.ALIPAY, authorizeCache);
+    public AlipayProvider(Context context, ExtendCache cache) {
+        super(context, Registry.ALIPAY, cache);
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
                 "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
@@ -92,8 +94,8 @@ public class AlipayProvider extends DefaultProvider {
      * @param context 公共的OAuth配置
      * @see AlipayProvider#AlipayProvider(Context, ExtendCache, java.lang.String, java.lang.Integer)
      */
-    public AlipayProvider(Context context, ExtendCache authorizeCache, String proxyHost, Integer proxyPort) {
-        super(context, Registry.ALIPAY, authorizeCache);
+    public AlipayProvider(Context context, ExtendCache cache, String proxyHost, Integer proxyPort) {
+        super(context, Registry.ALIPAY, cache);
         check(context);
         this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
                 "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2", proxyHost, proxyPort);
@@ -114,17 +116,17 @@ public class AlipayProvider extends DefaultProvider {
     }
 
     @Override
-    protected void checkCode(Callback authCallback) {
-        if (StringKit.isEmpty(authCallback.getAuth_code())) {
+    protected void checkCode(Callback callback) {
+        if (StringKit.isEmpty(callback.getAuth_code())) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_CODE.getCode(), complex);
         }
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("authorization_code");
-        request.setCode(authCallback.getAuth_code());
+        request.setCode(callback.getAuth_code());
         AlipaySystemOauthTokenResponse response;
         try {
             response = this.alipayClient.execute(request);
@@ -174,7 +176,7 @@ public class AlipayProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
         AlipayUserInfoShareResponse response;
@@ -190,7 +192,7 @@ public class AlipayProvider extends DefaultProvider {
         String province = response.getProvince(), city = response.getCity();
         String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(JSONObject.parseObject(JSONObject.toJSONString(response)))
                 .uuid(response.getUserId())
                 .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())

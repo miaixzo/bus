@@ -1,33 +1,35 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.NotificationSettings;
-
-import javax.ws.rs.core.Response;
+import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
 
 public class NotificationSettingsApi extends AbstractApi {
 
@@ -63,7 +65,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
 
-        NotificationSettings.Events events = settings.getEvents();
+        Events events = settings.getEvents();
         if (events != null) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
@@ -102,7 +104,7 @@ public class NotificationSettingsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /groups/:id/notification_settings</code></pre>
      *
-     * @param groupId  the group ID to update the notification settings for
+     * @param groupId the group ID to update the notification settings for
      * @param settings a NotificationSettings instance with the new settings
      * @return a NotificationSettings instance containing the updated group notification settings
      * @throws GitLabApiException if any exception occurs
@@ -113,7 +115,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
 
-        NotificationSettings.Events events = settings.getEvents();
+        Events events = settings.getEvents();
         if (events != null) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
@@ -153,7 +155,7 @@ public class NotificationSettingsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/notification_settings</code></pre>
      *
      * @param projectId the project ID to update the notification settings for
-     * @param settings  a NotificationSettings instance with the new settings
+     * @param settings a NotificationSettings instance with the new settings
      * @return a NotificationSettings instance containing the updated project notification settings
      * @throws GitLabApiException if any exception occurs
      */
@@ -163,7 +165,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
 
-        NotificationSettings.Events events = settings.getEvents();
+        Events events = settings.getEvents();
         if (events != null) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())

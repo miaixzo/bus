@@ -1,32 +1,35 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.office.excel;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -37,7 +40,6 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.cell.CellLocation;
 import org.miaixz.bus.office.excel.style.Styles;
 
 import java.io.Closeable;
@@ -227,8 +229,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getCell(final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getCell(cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return getCell(cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -249,8 +251,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getOrCreateCell(final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getOrCreateCell(cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return getOrCreateCell(cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -272,8 +274,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getCell(final String locationRef, final boolean isCreateIfNotExist) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getCell(cellLocation.getX(), cellLocation.getY(), isCreateIfNotExist);
+        final CellReference cellReference = new CellReference(locationRef);
+        return getCell(cellReference.getCol(), cellReference.getRow(), isCreateIfNotExist);
     }
 
     /**
@@ -310,8 +312,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link CellStyle}
      */
     public CellStyle getOrCreateCellStyle(final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return getOrCreateCellStyle(cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -333,8 +335,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link CellStyle}
      */
     public CellStyle createCellStyle(final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return createCellStyle(cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return createCellStyle(cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -519,7 +521,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * 获取Content-Disposition头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
      *
      * <pre>
-     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", Charset.CHARSET_UTF_8));
+     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", Charset.UTF_8));
      * </pre>
      *
      * @param fileName 文件名，如果文件名没有扩展名，会自动按照生成Excel类型补齐扩展名，如果提供空，使用随机UUID
@@ -609,4 +611,5 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         this.headerAlias = null;
         return (T) this;
     }
+
 }

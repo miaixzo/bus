@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.culture.Holiday;
@@ -205,12 +207,23 @@ public class SolarDay extends Loops {
      *
      * @return 节气
      */
-    public SolarTerm getTerm() {
-        SolarTerm term = SolarTerm.fromIndex(month.getYear().getYear() + 1, 0);
-        while (isBefore(term.getJulianDay().getSolarDay())) {
+    public SolarTerms getTerm() {
+        return getTermDay().getSolarTerm();
+    }
+
+    /**
+     * 节气第几天
+     *
+     * @return 节气第几天
+     */
+    public SolarTermDay getTermDay() {
+        SolarTerms term = SolarTerms.fromIndex(month.getYear().getYear() + 1, 0);
+        SolarDay day = term.getJulianDay().getSolarDay();
+        while (isBefore(day)) {
             term = term.next(-1);
+            day = term.getJulianDay().getSolarDay();
         }
-        return term;
+        return new SolarTermDay(term, subtract(day));
     }
 
     /**
@@ -231,7 +244,7 @@ public class SolarDay extends Loops {
      * @return 七十二候
      */
     public ClimateDay getPhenologyDay() {
-        SolarTerm term = getTerm();
+        SolarTerms term = getTerm();
         int dayIndex = subtract(term.getJulianDay().getSolarDay());
         int index = dayIndex / 5;
         if (index > 2) {
@@ -247,7 +260,7 @@ public class SolarDay extends Loops {
      * @return 三伏天
      */
     public DogDay getDogDay() {
-        SolarTerm xiaZhi = SolarTerm.fromIndex(month.getYear().getYear(), 12);
+        SolarTerms xiaZhi = SolarTerms.fromIndex(month.getYear().getYear(), 12);
         // 第1个庚日
         SolarDay start = xiaZhi.getJulianDay().getSolarDay();
         int add = 6 - start.getLunarDay().getSixtyCycle().getHeavenStem().getIndex();
@@ -295,9 +308,9 @@ public class SolarDay extends Loops {
      */
     public NineDay getNineDay() {
         int year = month.getYear().getYear();
-        SolarDay start = SolarTerm.fromIndex(year + 1, 0).getJulianDay().getSolarDay();
+        SolarDay start = SolarTerms.fromIndex(year + 1, 0).getJulianDay().getSolarDay();
         if (isBefore(start)) {
-            start = SolarTerm.fromIndex(year, 0).getJulianDay().getSolarDay();
+            start = SolarTerms.fromIndex(year, 0).getJulianDay().getSolarDay();
         }
         SolarDay end = start.next(81);
         if (isBefore(start) || !isBefore(end)) {

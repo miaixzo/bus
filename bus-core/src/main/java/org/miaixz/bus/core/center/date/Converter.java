@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -350,6 +352,12 @@ public class Converter extends Formatter {
             return null;
         }
 
+        try {
+            return LocalDate.from(temporalAccessor);
+        } catch (final Exception ignore) {
+            //ignore
+        }
+
         if (temporalAccessor instanceof LocalDateTime) {
             return ((LocalDateTime) temporalAccessor).toLocalDate();
         } else if (temporalAccessor instanceof Instant) {
@@ -360,6 +368,43 @@ public class Converter extends Formatter {
                 get(temporalAccessor, ChronoField.YEAR),
                 get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
                 get(temporalAccessor, ChronoField.DAY_OF_MONTH)
+        );
+    }
+
+    /**
+     * {@link TemporalAccessor}转{@link ZonedDateTime}
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @param zoneId           时区ID
+     * @return {@link ZonedDateTime}
+     */
+    public static ZonedDateTime ofZoned(final TemporalAccessor temporalAccessor, ZoneId zoneId) {
+        if (null == temporalAccessor) {
+            return null;
+        }
+        if (null == zoneId) {
+            zoneId = ZoneId.systemDefault();
+        }
+
+        if (temporalAccessor instanceof Instant) {
+            return ZonedDateTime.ofInstant((Instant) temporalAccessor, zoneId);
+        } else if (temporalAccessor instanceof LocalDateTime) {
+            return ZonedDateTime.of((LocalDateTime) temporalAccessor, zoneId);
+        } else if (temporalAccessor instanceof LocalDate) {
+            return ZonedDateTime.of((LocalDate) temporalAccessor, LocalTime.MIN, zoneId);
+        } else if (temporalAccessor instanceof LocalTime) {
+            return ZonedDateTime.of(LocalDate.now(), (LocalTime) temporalAccessor, zoneId);
+        }
+
+        return ZonedDateTime.of(
+                get(temporalAccessor, ChronoField.YEAR),
+                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
+                get(temporalAccessor, ChronoField.DAY_OF_MONTH),
+                get(temporalAccessor, ChronoField.HOUR_OF_DAY),
+                get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
+                get(temporalAccessor, ChronoField.NANO_OF_SECOND),
+                zoneId
         );
     }
 

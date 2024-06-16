@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -37,7 +39,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
@@ -49,38 +50,38 @@ import java.util.regex.Pattern;
  * the user's Feed token, and for fetching the current Health Check access token.
  *
  * <p>NOTE: This relies on HTML scraping and has been tested on GitLab-CE 11.0.0 to 11.10.1 for
- * proper functionality.  It may not work on earlier or later versions.</p>
+ *          proper functionality.  It may not work on earlier or later versions.</p>
  */
 public final class AccessToken {
 
-    private static final String USER_AGENT = "GitLab4J Client";
-    private static final String COOKIES_HEADER = "Set-Cookie";
-    private static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
-    private static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
-    private static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
-    private static final Pattern AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(AUTHENTICITY_TOKEN_REGEX);
-    private static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
-    private static final Pattern PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(PERSONAL_ACCESS_TOKEN_REGEX);
-    private static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
-    private static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
-    private static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
-    private static final Pattern FEED_TOKEN_PATTERN = Pattern.compile(FEED_TOKEN_REGEX);
-    private static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
-    private static final Pattern HEALTH_CHECK_ACCESS_TOKEN_PATTERN = Pattern.compile(HEALTH_CHECK_ACCESS_TOKEN_REGEX);
+    protected static final String USER_AGENT = "GitLab4J Client";
+    protected static final String COOKIES_HEADER = "Set-Cookie";
+    protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
+    protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
+    protected static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
+    protected static final Pattern AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(AUTHENTICITY_TOKEN_REGEX);
+    protected static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
+    protected static final Pattern PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(PERSONAL_ACCESS_TOKEN_REGEX);
+    protected static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
+    protected static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
+    protected static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
+    protected static final Pattern FEED_TOKEN_PATTERN = Pattern.compile(FEED_TOKEN_REGEX);
+    protected static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
+    protected static final Pattern HEALTH_CHECK_ACCESS_TOKEN_PATTERN = Pattern.compile(HEALTH_CHECK_ACCESS_TOKEN_REGEX);
 
     /**
      * Create a GitLab personal access token with the provided configuration.
      *
-     * @param baseUrl   the GitLab server base URL
-     * @param username  the user name to create the personal access token for
-     * @param password  the password of the user to create the personal access token for
+     * @param baseUrl the GitLab server base URL
+     * @param username the user name to create the personal access token for
+     * @param password the password of the user to create the personal access token for
      * @param tokenName the name for the new personal access token
-     * @param scopes    an array of scopes for the new personal access token
+     * @param scopes an array of scopes for the new personal access token
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static String createPersonalAccessToken(final String baseUrl, final String username,
-                                                   final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+    public static final String createPersonalAccessToken(final String baseUrl, final String username,
+                                                         final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -92,16 +93,16 @@ public final class AccessToken {
     /**
      * Create a GitLab personal access token with the provided configuration.
      *
-     * @param baseUrl   the GitLab server base URL
-     * @param username  the user name to create the personal access token for
-     * @param password  the password of the user to create the personal access token for
+     * @param baseUrl the GitLab server base URL
+     * @param username the user name to create the personal access token for
+     * @param password the password of the user to create the personal access token for
      * @param tokenName the name for the new personal access token
-     * @param scopes    a List of scopes for the new personal access token
+     * @param scopes a List of scopes for the new personal access token
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static String createPersonalAccessToken(final String baseUrl, final String username,
-                                                   final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+    public static final String createPersonalAccessToken(final String baseUrl, final String username,
+                                                         final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -228,15 +229,15 @@ public final class AccessToken {
     /**
      * Revoke the first matching GitLab personal access token.
      *
-     * @param baseUrl   the GitLab server base URL
-     * @param username  the user name to revoke the personal access token for
-     * @param password  the password of the user to revoke the personal access token for
+     * @param baseUrl the GitLab server base URL
+     * @param username the user name to revoke the personal access token for
+     * @param password the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
-     * @param scopes    an array of scopes of the personal access token to revoke
+     * @param scopes an array of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
-    public static void revokePersonalAccessToken(final String baseUrl, final String username,
-                                                 final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+    public static final void revokePersonalAccessToken(final String baseUrl, final String username,
+                                                       final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -248,15 +249,15 @@ public final class AccessToken {
     /**
      * Revoke the first matching GitLab personal access token.
      *
-     * @param baseUrl   the GitLab server base URL
-     * @param username  the user name to revoke the personal access token for
-     * @param password  the password of the user to revoke the personal access token for
+     * @param baseUrl the GitLab server base URL
+     * @param username the user name to revoke the personal access token for
+     * @param password the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
-     * @param scopes    a List of scopes of the personal access token to revoke
+     * @param scopes a List of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
-    public static void revokePersonalAccessToken(final String baseUrl, final String username,
-                                                 final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+    public static final void revokePersonalAccessToken(final String baseUrl, final String username,
+                                                       final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -395,14 +396,14 @@ public final class AccessToken {
     /**
      * Fetches the user's GitLab Feed token using HTML scraping.
      *
-     * @param baseUrl  the GitLab server base URL
+     * @param baseUrl the GitLab server base URL
      * @param username the user name the user to log in with
      * @param password the password of the provided username
      * @return the fetched Feed token
      * @throws GitLabApiException if any exception occurs
      */
-    public static String getFeedToken(final String baseUrl, final String username,
-                                      final String password) throws GitLabApiException {
+    public static final String getFeedToken(final String baseUrl, final String username,
+                                            final String password) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -468,14 +469,14 @@ public final class AccessToken {
     /**
      * Fetches the GitLab health check access token using HTML scraping.
      *
-     * @param baseUrl  the GitLab server base URL
+     * @param baseUrl the GitLab server base URL
      * @param username the user name of an admin user to log in with
      * @param password the password of the provided username
      * @return the fetched health check access token
      * @throws GitLabApiException if any exception occurs
      */
-    public static String getHealthCheckAccessToken(final String baseUrl, final String username,
-                                                   final String password) throws GitLabApiException {
+    public static final String getHealthCheckAccessToken(final String baseUrl, final String username,
+                                                         final String password) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -541,14 +542,14 @@ public final class AccessToken {
     /**
      * Gets a GitLab session cookie by logging in the specified user.
      *
-     * @param baseUrl  the GitLab server base URL
+     * @param baseUrl the GitLab server base URL
      * @param username the user name to to login for
      * @param password the password of the user to login for
      * @return the GitLab seesion token as a cookie value
      * @throws GitLabApiException if any error occurs
      */
-    private static String login(final String baseUrl, final String username,
-                                final String password) throws GitLabApiException {
+    protected static final String login(final String baseUrl, final String username,
+                                        final String password) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -660,7 +661,7 @@ public final class AccessToken {
      * @param cookies the GitLab session cookie to logout
      * @throws GitLabApiException if any error occurs
      */
-    private static void logout(final String baseUrl, final String cookies) throws GitLabApiException {
+    protected static final void logout(final String baseUrl, final String cookies) throws GitLabApiException {
 
         // Save so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -701,12 +702,12 @@ public final class AccessToken {
      * will create the StringBuilder instance first.
      *
      * @param formData the StringBuilder instance holding the form data, if null will create the StringBuilder
-     * @param name     the form param name
-     * @param value    the form param value
+     * @param name the form param name
+     * @param value the form param value
      * @return the form data StringBuilder
      * @throws GitLabApiException if any error occurs.
      */
-    public static StringBuilder addFormData(StringBuilder formData, String name, String value) throws GitLabApiException {
+    public static final StringBuilder addFormData(StringBuilder formData, String name, String value) throws GitLabApiException {
 
         if (formData == null) {
             formData = new StringBuilder();
@@ -717,7 +718,7 @@ public final class AccessToken {
         formData.append(name);
         formData.append("=");
         try {
-            formData.append(URLEncoder.encode(value, StandardCharsets.UTF_8));
+            formData.append(URLEncoder.encode(value, "UTF-8"));
             return (formData);
         } catch (Exception e) {
             throw new GitLabApiException(e);
@@ -731,7 +732,7 @@ public final class AccessToken {
      * @return the read content as a String
      * @throws GitLabApiException if any error occurs
      */
-    private static String getContent(URLConnection connection) throws GitLabApiException {
+    protected static String getContent(URLConnection connection) throws GitLabApiException {
 
         StringBuilder buf = new StringBuilder();
 
@@ -784,7 +785,7 @@ public final class AccessToken {
          */
         WRITE_REPOSITORY;
 
-        private static final JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
+        private static JacksonJsonEnumHelper<Scope> enumHelper = new JacksonJsonEnumHelper<>(Scope.class);
 
         @JsonCreator
         public static Scope forValue(String value) {
@@ -801,5 +802,4 @@ public final class AccessToken {
             return (enumHelper.toString(this));
         }
     }
-
 }

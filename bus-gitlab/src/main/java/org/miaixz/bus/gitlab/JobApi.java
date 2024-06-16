@@ -1,44 +1,45 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import org.miaixz.bus.gitlab.models.ArtifactsFile;
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.JobAttributes;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +73,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the jobs for
-     * @param page            the page to get
-     * @param perPage         the number of Job instances per page
+     * @param page the page to get
+     * @param perPage the number of Job instances per page
      * @return a list containing the jobs for the specified project ID in the specified page range
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -89,7 +90,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the jobs for
-     * @param itemsPerPage    the number of Job instances that will be fetched per page
+     * @param itemsPerPage the number of Job instances that will be fetched per page
      * @return a Pager containing the jobs for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -116,7 +117,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the jobs for
-     * @param scope           the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
+     * @param scope the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
      * @return a list containing the jobs for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -130,8 +131,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the jobs for
-     * @param scope           the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
-     * @param itemsPerPage    the number of Job instances that will be fetched per page
+     * @param scope the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
+     * @param itemsPerPage the number of Job instances that will be fetched per page
      * @return a list containing the jobs for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -147,7 +148,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the jobs for
-     * @param scope           the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
+     * @param scope the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
      * @return a Stream containing the jobs for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -161,7 +162,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
-     * @param pipelineId      the pipeline ID to get the list of jobs for
+     * @param pipelineId the pipeline ID to get the list of jobs for
      * @return a list containing the jobs for the specified project ID and pipeline ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -175,8 +176,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
-     * @param pipelineId      the pipeline ID to get the list of jobs for
-     * @param includeRetried  Include retried jobs in the response
+     * @param pipelineId the pipeline ID to get the list of jobs for
+     * @param includeRetried Include retried jobs in the response
      * @return a list containing the jobs for the specified project ID and pipeline ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -190,8 +191,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
-     * @param pipelineId      the pipeline ID to get the list of jobs for
-     * @param scope           the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
+     * @param pipelineId the pipeline ID to get the list of jobs for
+     * @param scope the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
      * @return a list containing the jobs for the specified project ID and pipeline ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -205,9 +206,9 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/pipelines/:pipeline_id/jobs</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the pipelines for
-     * @param pipelineId      the pipeline ID to get the list of jobs for
-     * @param scope           the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
-     * @param includeRetried  Include retried jobs in the response
+     * @param pipelineId the pipeline ID to get the list of jobs for
+     * @param scope the scope of jobs, one of: CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL
+     * @param includeRetried Include retried jobs in the response
      * @return a list containing the jobs for the specified project ID and pipeline ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -289,7 +290,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the job for
-     * @param jobId           the job ID to get
+     * @param jobId the job ID to get
      * @return a single job for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -304,7 +305,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path to get the job for
-     * @param jobId           the job ID to get
+     * @param jobId the job ID to get
      * @return a single job for the specified project ID as an Optional intance
      */
     public Optional<Job> getOptionalJob(Object projectIdOrPath, Long jobId) {
@@ -323,9 +324,9 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/artifacts/:ref_name/download?job=name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param ref             the ref from a repository
-     * @param jobName         the name of the job to download the artifacts for
-     * @param directory       the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
+     * @param ref the ref from a repository
+     * @param jobName the name of the job to download the artifacts for
+     * @param directory the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
      * @return a File instance pointing to the download of the specified artifacts file
      * @throws GitLabApiException if any exception occurs
      */
@@ -360,8 +361,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/artifacts/:ref_name/download?job=name</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param ref             the ref from a repository
-     * @param jobName         the name of the job to download the artifacts for
+     * @param ref the ref from a repository
+     * @param jobName the name of the job to download the artifacts for
      * @return an InputStream to read the specified artifacts file from
      * @throws GitLabApiException if any exception occurs
      */
@@ -380,8 +381,8 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the job ID to get the artifacts for
-     * @param directory       the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
+     * @param jobId the job ID to get the artifacts for
+     * @param directory the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
      * @return a File instance pointing to the download of the specified job artifacts file
      * @throws GitLabApiException if any exception occurs
      */
@@ -412,7 +413,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the job ID to get the artifacts for
+     * @param jobId the job ID to get the artifacts for
      * @return an InputStream to read the specified job artifacts file
      * @throws GitLabApiException if any exception occurs
      */
@@ -424,15 +425,15 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     * <p>
+     *
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts/*artifact_path</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the unique job identifier
-     * @param artifactsFile   an ArtifactsFile instance for the artifact to download
-     * @param directory       the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
+     * @param jobId the unique job identifier
+     * @param artifactsFile an ArtifactsFile instance for the artifact to download
+     * @param directory the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
      * @return a File instance pointing to the download of the specified artifacts file
      * @throws GitLabApiException if any exception occurs
      */
@@ -459,14 +460,14 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     * <p>
+     *
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts/*artifact_path</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the unique job identifier
-     * @param artifactsFile   an ArtifactsFile instance for the artifact to download
+     * @param jobId the unique job identifier
+     * @param artifactsFile an ArtifactsFile instance for the artifact to download
      * @return an InputStream to read the specified artifacts file from
      * @throws GitLabApiException if any exception occurs
      */
@@ -478,29 +479,28 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     * <p>
+     *
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts/*artifact_path</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the unique job identifier
-     * @param artifactPath    the Path to a file inside the artifacts archive
-     * @param directory       the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
+     * @param jobId the unique job identifier
+     * @param artifactPath the Path to a file inside the artifacts archive
+     * @param directory the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
      * @return a File instance pointing to the download of the specified artifacts file
      * @throws GitLabApiException if any exception occurs
      */
-    public File downloadSingleArtifactsFile(Object projectIdOrPath, Long jobId, Path artifactPath, File directory) throws GitLabApiException {
+    public File downloadSingleArtifactsFile(Object projectIdOrPath, Long jobId, String artifactPath, File directory) throws GitLabApiException {
 
-        String path = artifactPath.toString().replace("\\", "/");
         Response response = get(Response.Status.OK, getDefaultPerPageParam(),
-                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
+                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", artifactPath);
         try {
 
             if (directory == null)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
-            String filename = artifactPath.getFileName().toString();
+            String filename = artifactPath;
             File file = new File(directory, filename);
 
             InputStream in = response.readEntity(InputStream.class);
@@ -514,21 +514,20 @@ public class JobApi extends AbstractApi implements Constants {
 
     /**
      * Download a single artifact file from within the job's artifacts archive.
-     * <p>
+     *
      * Only a single file is going to be extracted from the archive and streamed to a client.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/jobs/:job_id/artifacts/*artifact_path</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the unique job identifier
-     * @param artifactPath    the Path to a file inside the artifacts archive
+     * @param jobId the unique job identifier
+     * @param artifactPath the Path to a file inside the artifacts archive
      * @return an InputStream to read the specified artifacts file from
      * @throws GitLabApiException if any exception occurs
      */
-    public InputStream downloadSingleArtifactsFile(Object projectIdOrPath, Long jobId, Path artifactPath) throws GitLabApiException {
-        String path = artifactPath.toString().replace("\\", "/");
+    public InputStream downloadSingleArtifactsFile(Object projectIdOrPath, Long jobId, String artifactPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, getDefaultPerPageParam(),
-                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
+                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", artifactPath);
         return (response.readEntity(InputStream.class));
     }
 
@@ -539,7 +538,7 @@ public class JobApi extends AbstractApi implements Constants {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      *                        to get the specified job's trace for
-     * @param jobId           the job ID to get the trace for
+     * @param jobId the job ID to get the trace for
      * @return a String containing the specified job's trace
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -555,23 +554,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/cancel</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to cancel job
-     * @return job instance which just canceled
-     * @throws GitLabApiException if any exception occurs during execution
-     * @deprecated replaced by {@link #cancelJob(Object, Long)}
-     */
-    @Deprecated
-    public Job cancleJob(Object projectIdOrPath, Long jobId) throws GitLabApiException {
-        return (cancelJob(projectIdOrPath, jobId));
-    }
-
-    /**
-     * Cancel specified job in a project.
-     *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/cancel</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to cancel job
+     * @param jobId the ID to cancel job
      * @return job instance which just canceled
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -587,7 +570,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/retry</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to retry job
+     * @param jobId the ID to retry job
      * @return job instance which just retried
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -603,7 +586,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/erase</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to erase job
+     * @param jobId the ID to erase job
      * @return job instance which just erased
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -619,7 +602,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/play</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to play job
+     * @param jobId the ID to play job
      * @return job instance which just played
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -661,7 +644,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/keep</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to keep artifacts for
+     * @param jobId the ID to keep artifacts for
      * @return the Job instance that was just modified
      * @throws GitLabApiException if any exception occurs during execution
      */
@@ -677,7 +660,7 @@ public class JobApi extends AbstractApi implements Constants {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/jobs/:job_id/artifacts</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to delete artifacts for
+     * @param jobId the ID to delete artifacts for
      * @throws GitLabApiException if any exception occurs during execution
      */
     public void deleteArtifacts(Object projectIdOrPath, Long jobId) throws GitLabApiException {

@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.center.date.printer.DefaultDatePrinter;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ListKit;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -39,20 +41,20 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RegisterDateParser extends DefaultDatePrinter implements DateParser {
+public class RegisterDateParser implements DateParser, Serializable {
 
+    private static final long serialVersionUID = -1L;
     /**
      * 单例
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
-    private static final long serialVersionUID = -1L;
-    private final List<PredicateDateParser> parserList;
+    private final List<PredicateDateParser> list;
 
     /**
      * 构造
      */
     public RegisterDateParser() {
-        parserList = ListKit.of(
+        list = ListKit.of(
                 // 纯数字形式
                 PureDateParser.INSTANCE,
                 // HH:mm:ss 或者 HH:mm 时间格式匹配单独解析
@@ -70,8 +72,8 @@ public class RegisterDateParser extends DefaultDatePrinter implements DateParser
     }
 
     @Override
-    public Date parse(final String source) throws DateException {
-        return parserList
+    public Date parse(final CharSequence source) throws DateException {
+        return list
                 .stream()
                 .filter(predicateDateParser -> predicateDateParser.test(source))
                 .findFirst()
@@ -82,11 +84,11 @@ public class RegisterDateParser extends DefaultDatePrinter implements DateParser
      * 注册自定义的{@link PredicateDateParser}
      * 通过此方法，用户可以自定义日期字符串的匹配和解析，通过循环匹配，找到合适的解析器，解析之。
      *
-     * @param dateParser {@link PredicateDateParser}
+     * @param parser {@link PredicateDateParser}
      * @return this
      */
-    public RegisterDateParser register(final PredicateDateParser dateParser) {
-        this.parserList.add(dateParser);
+    public RegisterDateParser register(final PredicateDateParser parser) {
+        this.list.add(parser);
         return this;
     }
 

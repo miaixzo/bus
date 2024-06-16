@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Property;
+import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Issuer;
 import org.miaixz.bus.image.metric.*;
@@ -1103,10 +1105,10 @@ public class Device implements Serializable {
             return ret;
         String keyStorePin = keyStorePin();
         km = ret = SSLManagerFactory.createKeyManager(
-                Property.replaceSystemProperties(keyStoreType()),
-                Property.replaceSystemProperties(keyStoreURL),
-                Property.replaceSystemProperties(keyStorePin()),
-                Property.replaceSystemProperties(keyPin(keyStorePin)));
+                Material.replaceSystemProperties(keyStoreType()),
+                Material.replaceSystemProperties(keyStoreURL),
+                Material.replaceSystemProperties(keyStorePin()),
+                Material.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
     }
 
@@ -1165,9 +1167,9 @@ public class Device implements Serializable {
 
         tm = ret = null != trustStoreURL
                 ? SSLManagerFactory.createTrustManager(
-                Property.replaceSystemProperties(trustStoreType()),
-                Property.replaceSystemProperties(trustStoreURL),
-                Property.replaceSystemProperties(trustStorePin()))
+                Material.replaceSystemProperties(trustStoreType()),
+                Material.replaceSystemProperties(trustStoreURL),
+                Material.replaceSystemProperties(trustStorePin()))
                 : SSLManagerFactory.createTrustManager(
                 getAllAuthorizedNodeCertificates());
         return ret;
@@ -1260,13 +1262,13 @@ public class Device implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Property.appendLine(sb, indent, "Device[name: ", deviceName);
-        Property.appendLine(sb, indent2, "desc: ", description);
-        Property.appendLine(sb, indent2, "installed: ", installed);
+        Material.appendLine(sb, indent, "Device[name: ", deviceName);
+        Material.appendLine(sb, indent2, "desc: ", description);
+        Material.appendLine(sb, indent2, "installed: ", installed);
         for (Connection conn : conns)
-            conn.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            conn.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         for (ApplicationEntity ae : aes.values())
-            ae.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
+            ae.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

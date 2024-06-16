@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.AwardEmoji;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -49,7 +51,7 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID to get the award emojis for
+     * @param issueIid the issue IID to get the award emojis for
      * @return a list of AwardEmoji for the specified issue
      * @throws GitLabApiException if any exception occurs
      */
@@ -61,7 +63,7 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Get a list of award emoji for the specified merge request.
+     *  Get a list of award emoji for the specified merge request.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/award_emoji</code></pre>
      *
@@ -78,12 +80,12 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Get a list of award emoji for the specified snippet.
+     *  Get a list of award emoji for the specified snippet.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param snippetId       the snippet ID to get the award emojis for
+     * @param snippetId the snippet ID to get the award emojis for
      * @return a list of AwardEmoji for the specified snippet
      * @throws GitLabApiException if any exception occurs
      */
@@ -100,8 +102,8 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to get the award emojis for
+     * @param issueIid the issue IID of the issue that owns the note
+     * @param noteId the note ID to get the award emojis for
      * @return a list of AwardEmoji for the specified note
      * @throws GitLabApiException if any exception occurs
      */
@@ -118,8 +120,8 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to get the award emojis for
+     * @param issueIid the issue IID of the issue that owns the note
+     * @param noteId the note ID to get the award emojis for
      * @return a list of AwardEmoji for the specified note
      * @throws GitLabApiException if any exception occurs
      */
@@ -134,7 +136,7 @@ public class AwardEmojiApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID of the merge request that owns the note
-     * @param noteId          the note ID to get the award emojis for
+     * @param noteId the note ID to get the award emojis for
      * @return a list of AwardEmoji for the specified note
      * @throws GitLabApiException if any exception occurs
      */
@@ -151,8 +153,8 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID to get the award emoji for
-     * @param awardId         the ID of the award emoji to get
+     * @param issueIid the issue IID to get the award emoji for
+     * @param awardId the ID of the award emoji to get
      * @return an AwardEmoji instance for the specified award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -169,7 +171,7 @@ public class AwardEmojiApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to get the award emoji for
-     * @param awardId         the ID of the award emoji to get
+     * @param awardId the ID of the award emoji to get
      * @return an AwardEmoji instance for the specified award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -180,13 +182,13 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Get the specified award emoji for the specified snippet.
+     *  Get the specified award emoji for the specified snippet.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param snippetId       the snippet ID to get the award emoji for
-     * @param awardId         the ID of the award emoji to get
+     * @param snippetId the snippet ID to get the award emoji for
+     * @param awardId the ID of the award emoji to get
      * @return an AwardEmoji instance for the specified award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -202,9 +204,9 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to get the award emoji from
-     * @param awardId         the ID of the award emoji to get
+     * @param issueIid the issue IID of the issue that owns the note
+     * @param noteId the note ID to get the award emoji from
+     * @param awardId the ID of the award emoji to get
      * @return an AwardEmoji instance for the specified award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -215,32 +217,14 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Get the specified award emoji for the specified issue note.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to get the award emoji from
-     * @param awardId         the ID of the award emoji to get
-     * @return an AwardEmoji instance for the specified award emoji
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated use {@link #getIssueNoteAwardEmoji(Object, Long, Long, Long)} instead
-     */
-    @Deprecated
-    public AwardEmoji getNoteAwardEmoji(Object projectIdOrPath, Long issueIid, Long noteId, Long awardId) throws GitLabApiException {
-        return getIssueNoteAwardEmoji(projectIdOrPath, issueIid, noteId, awardId);
-    }
-
-    /**
      * Get the specified award emoji for the specified merge request note.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID of the merge request that owns the note
-     * @param noteId          the note ID to get the award emoji from
-     * @param awardId         the ID of the award emoji to get
+     * @param noteId the note ID to get the award emoji from
+     * @param awardId the ID of the award emoji to get
      * @return an AwardEmoji instance for the specified award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -256,8 +240,8 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID to add the award emoji to
-     * @param name            the name of the award emoji to add
+     * @param issueIid the issue IID to add the award emoji to
+     * @param name the name of the award emoji to add
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -275,7 +259,7 @@ public class AwardEmojiApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to add the award emoji to
-     * @param name            the name of the award emoji to add
+     * @param name the name of the award emoji to add
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -287,13 +271,13 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Add an award emoji to the specified snippet.
+     *  Add an award emoji to the specified snippet.
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/snippets/:snippet_id/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param snippetId       the snippet ID to add the award emoji to
-     * @param name            the name of the award emoji to add
+     * @param snippetId the snippet ID to add the award emoji to
+     * @param name the name of the award emoji to add
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -310,9 +294,9 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/notes/:noteId/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to add the award emoji to
-     * @param name            the name of the award emoji to add
+     * @param issueIid the issue IID of the issue that owns the note
+     * @param noteId the note ID to add the award emoji to
+     * @param name the name of the award emoji to add
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -324,32 +308,14 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Add an award emoji for the specified issue note.
-     *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/notes/:noteId/award_emoji</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID of the issue that owns the note
-     * @param noteId          the note ID to add the award emoji to
-     * @param name            the name of the award emoji to add
-     * @return an AwardEmoji instance for the added award emoji
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated use {@link #addIssueNoteAwardEmoji(Object, Long, Long, String)}
-     */
-    @Deprecated
-    public AwardEmoji addNoteAwardEmoji(Object projectIdOrPath, Long issueIid, Long noteId, String name) throws GitLabApiException {
-        return addIssueNoteAwardEmoji(projectIdOrPath, issueIid, noteId, name);
-    }
-
-    /**
      * Add an award emoji for the specified merge request note.
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/notes/:noteId/award_emoji</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID of the merge request that owns the note
-     * @param noteId          the note ID to add the award emoji to
-     * @param name            the name of the award emoji to add
+     * @param noteId the note ID to add the award emoji to
+     * @param name the name of the award emoji to add
      * @return an AwardEmoji instance for the added award emoji
      * @throws GitLabApiException if any exception occurs
      */
@@ -366,8 +332,8 @@ public class AwardEmojiApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
+     * @param issueIid the issue IID to delete the award emoji from
+     * @param awardId the ID of the award emoji to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteIssueAwardEmoji(Object projectIdOrPath, Long issueIid, Long awardId) throws GitLabApiException {
@@ -382,7 +348,7 @@ public class AwardEmojiApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
+     * @param awardId the ID of the award emoji to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMergeRequestAwardEmoji(Object projectIdOrPath, Long mergeRequestIid, Long awardId) throws GitLabApiException {
@@ -391,13 +357,13 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Delete an award emoji from the specified snippet.
+     *  Delete an award emoji from the specified snippet.
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param snippetId       the snippet ID to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
+     * @param snippetId the snippet ID to delete the award emoji from
+     * @param awardId the ID of the award emoji to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSnippetAwardEmoji(Object projectIdOrPath, Long snippetId, Long awardId) throws GitLabApiException {
@@ -406,14 +372,14 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Delete an award emoji from the specified issue note.
+     *  Delete an award emoji from the specified issue note.
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID that owns the note
-     * @param noteId          the note ID of the note to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
+     * @param issueIid the issue IID that owns the note
+     * @param noteId the note ID of the note to delete the award emoji from
+     * @param awardId the ID of the award emoji to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteIssueNoteAwardEmoji(Object projectIdOrPath, Long issueIid, Long noteId, Long awardId) throws GitLabApiException {
@@ -422,31 +388,14 @@ public class AwardEmojiApi extends AbstractApi {
     }
 
     /**
-     * Delete an award emoji from the specified issue note.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the issue IID that owns the note
-     * @param noteId          the note ID of the note to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated use {@link #deleteIssueNoteAwardEmoji(Object, Long, Long, Long)} instead
-     */
-    @Deprecated
-    public void deleteNoteAwardEmoji(Object projectIdOrPath, Long issueIid, Long noteId, Long awardId) throws GitLabApiException {
-        deleteIssueNoteAwardEmoji(projectIdOrPath, issueIid, noteId, awardId);
-    }
-
-    /**
-     * Delete an award emoji from the specified merge request note.
+     *  Delete an award emoji from the specified merge request note.
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/merge_requests/:merge_request_iid/notes/:note_id/award_emoji/:award_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID of the merge request that owns the note
-     * @param noteId          the note ID of the note to delete the award emoji from
-     * @param awardId         the ID of the award emoji to delete
+     * @param noteId the note ID of the note to delete the award emoji from
+     * @param awardId the ID of the award emoji to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMergeRequestNoteAwardEmoji(Object projectIdOrPath, Long mergeRequestIid, Long noteId, Long awardId) throws GitLabApiException {

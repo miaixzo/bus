@@ -1,33 +1,35 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.LabelEvent;
 
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -35,7 +37,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab Resource label events API
- *
  * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
  */
 public class ResourceLabelEventsApi extends AbstractApi {
@@ -50,7 +51,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the IID of the issue
+     * @param issueIid the IID of the issue
      * @return a List of LabelEvent for the specified issue
      * @throws GitLabApiException if any exception occurs
      */
@@ -64,8 +65,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the IID of the issue
-     * @param itemsPerPage    the number of LabelEvent instances that will be fetched per page
+     * @param issueIid the IID of the issue
+     * @param itemsPerPage the number of LabelEvent instances that will be fetched per page
      * @return the Pager of LabelEvent instances for the specified issue IID
      * @throws GitLabApiException if any exception occurs
      */
@@ -80,7 +81,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid        the IID of the issue
+     * @param issueIid the IID of the issue
      * @return a Stream of LabelEvent for the specified issue
      * @throws GitLabApiException if any exception occurs
      */
@@ -93,8 +94,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid             the IID of the issue
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param issueIid the IID of the issue
      * @param resourceLabelEventId the ID of a label event
      * @return LabelEvent instance for the specified project issue
      * @throws GitLabApiException if any exception occurs
@@ -110,8 +111,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param issueIid             the IID of the issue
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param issueIid the IID of the issue
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs
@@ -132,7 +133,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param epicId          the ID of the epic
+     * @param epicId the ID of the epic
      * @return a List of LabelEvent for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -146,8 +147,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param epicId          the ID of the epic
-     * @param itemsPerPage    the number of LabelEvent instances that will be fetched per page
+     * @param epicId the ID of the epic
+     * @param itemsPerPage the number of LabelEvent instances that will be fetched per page
      * @return the Pager of LabelEvent instances for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -162,7 +163,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/resource_label_events</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param epicId          the ID of the epic
+     * @param epicId the ID of the epic
      * @return a Stream of LabelEvent for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
@@ -175,8 +176,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param epicId               the ID of the epic
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param epicId the ID of the epic
      * @param resourceLabelEventId the ID of a label event
      * @return LabelEvent instance for the specified epic label event
      * @throws GitLabApiException if any exception occurs
@@ -192,8 +193,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/epics/:epic_id/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param epicId               the ID of the epic
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param epicId the ID of the epic
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs
@@ -229,7 +230,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the IID of the merge request
-     * @param itemsPerPage    the number of LabelEvent instances that will be fetched per page
+     * @param itemsPerPage the number of LabelEvent instances that will be fetched per page
      * @return the Pager of LabelEvent instances for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
@@ -257,8 +258,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:epic_id/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param mergeRequestIid      the IID of the merge request
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param mergeRequestIid the IID of the merge request
      * @param resourceLabelEventId the ID of a label event
      * @return LabelEvent instance for the specified epic label event
      * @throws GitLabApiException if any exception occurs
@@ -274,8 +275,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:issue_iid/resource_label_events/:resource_label_event_id</code></pre>
      *
-     * @param projectIdOrPath      id, path of the project, or a Project instance holding the project ID or path
-     * @param mergeRequestIid      the IID of the merge request
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param mergeRequestIid the IID of the merge request
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
      * @throws GitLabApiException if any exception occurs

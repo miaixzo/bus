@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.notify.metric.generic;
 
 import jakarta.activation.DataHandler;
@@ -35,10 +37,10 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
+import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.magic.Property;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.io.File;
@@ -54,14 +56,14 @@ import java.util.List;
  * @author Justubborn
  * @since Java 17+
  */
-public class GenericEmailProvider extends AbstractProvider<GenericProperty, Context> {
+public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Context> {
 
     public GenericEmailProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(GenericProperty entity) {
+    public Message send(GenericMaterial entity) {
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -74,8 +76,8 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
             Logger.error(message);
         }
         return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .errcode(ErrorCode.SUCCESS.getCode())
+                .errmsg(ErrorCode.SUCCESS.getDesc())
                 .build();
     }
 
@@ -155,7 +157,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
      * @return {@link MimeMessage}消息
      * @throws MessagingException 消息异常
      */
-    private MimeMessage build(GenericProperty entity) throws MessagingException {
+    private MimeMessage build(GenericMaterial entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
@@ -177,7 +179,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Property.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
+        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
@@ -218,7 +220,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
      * @param template 是否使用单例Session
      * @return 邮件会话 {@link Session}
      */
-    private Session getSession(GenericProperty template) {
+    private Session getSession(GenericMaterial template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
             authenticator = new UserPassAuthenticator(template.getUser(), template.getPass());

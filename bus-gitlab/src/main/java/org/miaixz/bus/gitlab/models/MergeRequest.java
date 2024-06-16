@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -62,19 +64,8 @@ public class MergeRequest implements Serializable {
     private Date latestBuildStartedAt;
     private String mergeCommitSha;
     private String squashCommitSha;
-    /**
-     * @deprecated since 15.6, use {@link #detailedMergeStatus} instead.
-     * see https://docs.gitlab.com/ee/update/deprecations.html#merge_status-api-field
-     */
-    @Deprecated
-    private String mergeStatus;
     private String detailedMergeStatus;
     private Date mergedAt;
-    /**
-     * @deprecated since 14.7, use {@link #mergeUser} instead.
-     * see https://docs.gitlab.com/ee/update/deprecations.html#merged_by-api-field
-     */
-    private Participant mergedBy;
     private Participant mergeUser;
     private Boolean mergeWhenPipelineSucceeds;
     private String mergeError;
@@ -110,10 +101,6 @@ public class MergeRequest implements Serializable {
     @JsonSerialize(using = JacksonJson.UserListSerializer.class)
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;
-
-    public static final boolean isValid(MergeRequest mergeRequest) {
-        return (mergeRequest != null && mergeRequest.getId() != null);
-    }
 
     public Boolean getAllowCollaboration() {
         return allowCollaboration;
@@ -315,22 +302,6 @@ public class MergeRequest implements Serializable {
         this.squashCommitSha = squashCommitSha;
     }
 
-    /**
-     * @deprecated since 15.6, use {@link #getDetailedMergeStatus()} instead.
-     */
-    @Deprecated
-    public String getMergeStatus() {
-        return mergeStatus;
-    }
-
-    /**
-     * @deprecated since 15.6, use {@link #setDetailedMergeStatus(String)} instead.
-     */
-    @Deprecated
-    public void setMergeStatus(String mergeStatus) {
-        this.mergeStatus = mergeStatus;
-    }
-
     public String getDetailedMergeStatus() {
         return detailedMergeStatus;
     }
@@ -345,24 +316,6 @@ public class MergeRequest implements Serializable {
 
     public void setMergedAt(Date mergedAt) {
         this.mergedAt = mergedAt;
-    }
-
-    /**
-     * @deprecated since 14.7, use {@link #getMergeUser()} instead.
-     * see https://docs.gitlab.com/ee/update/deprecations.html#merged_by-api-field
-     */
-    @Deprecated
-    public Participant getMergedBy() {
-        return mergedBy;
-    }
-
-    /**
-     * @deprecated since 14.7, use {@link #setMergeUser(Participant)} instead.
-     * see https://docs.gitlab.com/ee/update/deprecations.html#merged_by-api-field
-     */
-    @Deprecated
-    public void setMergedBy(Participant mergedBy) {
-        this.mergedBy = mergedBy;
     }
 
     public Participant getMergeUser() {
@@ -565,9 +518,13 @@ public class MergeRequest implements Serializable {
         this.workInProgress = workInProgress;
     }
 
+    public static final boolean isValid(MergeRequest mergeRequest) {
+        return (mergeRequest != null && mergeRequest.getId() != null);
+    }
+
     /**
      * Get the number of approvals required for the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @return the number of approvals required for the merge request
@@ -578,7 +535,7 @@ public class MergeRequest implements Serializable {
 
     /**
      * Set the number of approvals required for the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @param approvalsRequired the number of approvals required for the merge request
@@ -589,7 +546,7 @@ public class MergeRequest implements Serializable {
 
     /**
      * Get the number of approvals left for the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @return the number of approvals left for the merge request
@@ -600,7 +557,7 @@ public class MergeRequest implements Serializable {
 
     /**
      * Set the number of approvals missing for the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @param approvalsLeft the number of approvals missing for the merge request
@@ -611,24 +568,13 @@ public class MergeRequest implements Serializable {
 
     /**
      * Get the list of users that have approved the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @return the list of users that have approved the merge request
      */
     public List<User> getApprovedBy() {
         return approvedBy;
-    }
-
-    /**
-     * Set the list of users that have approved the merge request.
-     * <p>
-     * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
-     *
-     * @param approvedBy the list of users that have approved the merge request
-     */
-    public void setApprovedBy(List<User> approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public DiffRef getDiffRefs() {
@@ -645,6 +591,17 @@ public class MergeRequest implements Serializable {
 
     public void setRebaseInProgress(Boolean rebaseInProgress) {
         this.rebaseInProgress = rebaseInProgress;
+    }
+
+    /**
+     * Set the list of users that have approved the merge request.
+     * <p>
+     * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
+     *
+     * @param approvedBy the list of users that have approved the merge request
+     */
+    public void setApprovedBy(List<User> approvedBy) {
+        this.approvedBy = approvedBy;
     }
 
     public List<Reviewer> getReviewers() {

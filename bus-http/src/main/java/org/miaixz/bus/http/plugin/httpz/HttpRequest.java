@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -51,27 +53,31 @@ public abstract class HttpRequest {
 
     protected String id;
     protected String url;
+    protected String body;
     protected Map<String, String> params;
     protected Map<String, String> encodedParams;
     protected Map<String, String> headers;
-    protected String body;
-    protected List<PostRequest.FileInfo> fileInfos;
     protected MultipartBody multipartBody;
+    protected List<MultipartFile> list;
     protected Request.Builder builder = new Request.Builder();
 
-    protected HttpRequest(String url, Object tag, Map<String, String> params,
+    protected HttpRequest(String url,
+                          Object tag,
+                          Map<String, String> params,
                           Map<String, String> headers,
-                          List<PostRequest.FileInfo> fileInfos,
+                          List<MultipartFile> list,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
-        this(url, tag, params, null, headers, fileInfos, body, multipartBody, id);
+        this(url, tag, params, null, headers, list, body, multipartBody, id);
     }
 
-    protected HttpRequest(String url, Object tag, Map<String, String> params,
+    protected HttpRequest(String url,
+                          Object tag,
+                          Map<String, String> params,
                           Map<String, String> encodedParams,
                           Map<String, String> headers,
-                          List<PostRequest.FileInfo> fileInfos,
+                          List<MultipartFile> list,
                           String body,
                           MultipartBody multipartBody,
                           String id) {
@@ -79,7 +85,7 @@ public abstract class HttpRequest {
         this.params = params;
         this.encodedParams = encodedParams;
         this.headers = headers;
-        this.fileInfos = fileInfos;
+        this.list = list;
         this.body = body;
         this.multipartBody = multipartBody;
         this.id = id;
@@ -87,7 +93,7 @@ public abstract class HttpRequest {
             throw new IllegalArgumentException("url can not be null.");
         }
         builder.url(url).tag(tag);
-        appendHeaders();
+        headers();
     }
 
     public static RequestBody createRequestBody(final MediaType mediaType, final InputStream is) {
@@ -134,7 +140,7 @@ public abstract class HttpRequest {
         return buildRequest(buildRequestBody());
     }
 
-    protected void appendHeaders() {
+    protected void headers() {
         Headers.Builder headerBuilder = new Headers.Builder();
         if (null == headers || headers.isEmpty())
             return;

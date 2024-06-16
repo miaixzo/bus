@@ -1,37 +1,40 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheck;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckProtectedBranch;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckResult;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus;
+import org.miaixz.bus.gitlab.models.ExternalStatusCheckStatus.Status;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,7 +68,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/external_status_checks</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of ExternalStatusCheck instances that will be fetched per page
+     * @param itemsPerPage the number of ExternalStatusCheck instances that will be fetched per page
      * @return the Pager of ExternalStatusCheck instances
      * @throws GitLabApiException if any exception occurs
      */
@@ -92,9 +95,9 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/external_status_checks</code></pre>
      *
-     * @param projectIdOrPath    id, path of the project, or a Project instance holding the project ID or path
-     * @param name               Display name of external status check (required)
-     * @param externalUrl        URL of external status check resource (optional)
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param name Display name of external status check (required)
+     * @param externalUrl URL of external status check resource (optional)
      * @param protectedBranchIds IDs of protected branches to scope the rule by (optional)
      * @return an ExternalStatusCheck instance containing info on the newly created externalStatusCheck
      * @throws GitLabApiException if any exception occurs
@@ -120,7 +123,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/external_status_checks</code></pre>
      *
-     * @param projectIdOrPath     id, path of the project, or a Project instance holding the project ID or path
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param externalStatusCheck the ExternalStatusCheck instance with information for the new external status check
      * @return an ExternalStatusCheck instance containing info on the newly created externalStatusCheck
      * @throws GitLabApiException if any exception occurs
@@ -146,10 +149,10 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/external_status_checks/:check_id</code></pre>
      *
-     * @param projectIdOrPath    id, path of the project, or a Project instance holding the project ID or path
-     * @param checkId            ID of an external status check to update (required)
-     * @param name               Display name of external status check (optional)
-     * @param externalUrl        URL of external status check resource (optional)
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param checkId ID of an external status check to update (required)
+     * @param name Display name of external status check (optional)
+     * @param externalUrl URL of external status check resource (optional)
      * @param protectedBranchIds IDs of protected branches to scope the rule by (optional)
      * @return an ExternalStatusCheck instance containing info on the newly created ExternalStatusCheck
      * @throws GitLabApiException if any exception occurs
@@ -175,7 +178,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * </code></pre>
      * <pre><code>GitLab Endpoint: PUT /projects/:id/external_status_checks/:check_id</code></pre>
      *
-     * @param projectIdOrPath     id, path of the project, or a Project instance holding the project ID or path
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param externalStatusCheck the ExternalStatusCheck instance with update information
      * @return an ExternalStatusCheck instance containing info on the updated ExternalStatusCheck
      * @throws GitLabApiException if any exception occurs
@@ -207,7 +210,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/external_status_checks/:check_id</code></pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param checkId         ID of an external status check
+     * @param checkId ID of an external status check
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteExternalStatusCheck(Object projectIdOrPath, Long checkId) throws GitLabApiException {
@@ -235,7 +238,7 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to get the statuses
-     * @param itemsPerPage    the number of ExternalStatusCheckStatus instances that will be fetched per page
+     * @param itemsPerPage the number of ExternalStatusCheckStatus instances that will be fetched per page
      * @return the Pager of ExternalStatusCheckStatus instances
      * @throws GitLabApiException if any exception occurs
      */
@@ -263,15 +266,15 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses</code></pre>
      *
-     * @param projectIdOrPath       id, path of the project, or a Project instance holding the project ID or path
-     * @param mergeRequestIid       the merge request IID to get the statuses
-     * @param sha                   the commit SHA to set the status for (required)
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param mergeRequestIid the merge request IID to get the statuses
+     * @param sha the commit SHA to set the status for (required)
      * @param externalStatusCheckId ID of an external status check (required)
-     * @param status                the status to set (optional)
+     * @param status the status to set (optional)
      * @return an ExternalStatusCheckResult instance containing info on the newly created status
      * @throws GitLabApiException if any exception occurs
      */
-    public ExternalStatusCheckResult setStatusOfExternalStatusCheck(Object projectIdOrPath, Long mergeRequestIid, String sha, Long externalStatusCheckId, ExternalStatusCheckStatus.Status status) throws GitLabApiException {
+    public ExternalStatusCheckResult setStatusOfExternalStatusCheck(Object projectIdOrPath, Long mergeRequestIid, String sha, Long externalStatusCheckId, Status status) throws GitLabApiException {
         Form formData = new GitLabApiForm()
                 .withParam("sha", sha)
                 .withParam("external_status_check_id", externalStatusCheckId)
@@ -286,8 +289,8 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry</code></pre>
      *
-     * @param projectIdOrPath       id, path of the project, or a Project instance holding the project ID or path
-     * @param mergeRequestIid       the merge request IID to get the statuses
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param mergeRequestIid the merge request IID to get the statuses
      * @param externalStatusCheckId ID of an external status check
      * @throws GitLabApiException if any exception occurs
      */

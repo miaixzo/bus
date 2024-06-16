@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************//*
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ *//*
  * The MIT License (MIT)
  *
  * Copyright (c) 2017 Greg Messner <greg@messners.com>
@@ -44,14 +46,12 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.WikiAttachment;
 import org.miaixz.bus.gitlab.models.WikiPage;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -88,7 +88,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage    the number of WikiPage instances that will be fetched per page
+     * @param itemsPerPage the number of WikiPage instances that will be fetched per page
      * @return a Pager of pages in project's wiki for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -110,31 +110,12 @@ public class WikisApi extends AbstractApi {
     }
 
     /**
-     * Get a list of pages in project wiki for the specified page.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of wiki-pages per page
-     * @return a list of pages in project's wiki for the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in a future release, use {@link #getPages(Object, boolean, int)}
-     */
-    public List<WikiPage> getPages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "projects", getProjectIdOrPath(projectIdOrPath), "wikis");
-        return response.readEntity(new GenericType<List<WikiPage>>() {
-        });
-    }
-
-    /**
      * Get a List of pages in project wiki.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param withContent     if true the results will include the pages content
+     * @param withContent if true the results will include the pages content
      * @return a List of pages in project's wiki for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -148,8 +129,8 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param withContent     if true the results will include the pages content
-     * @param itemsPerPage    the number of WikiPage instances that will be fetched per page
+     * @param withContent if true the results will include the pages content
+     * @param itemsPerPage the number of WikiPage instances that will be fetched per page
      * @return a Pager of pages in project's wiki for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -165,7 +146,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param withContent     if true the results will include the pages content
+     * @param withContent if true the results will include the pages content
      * @return a Stream of pages in project's wiki for the specified range
      * @throws GitLabApiException if any exception occurs
      */
@@ -179,7 +160,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis/:slug</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param slug            the slug of the project's wiki page
+     * @param slug the slug of the project's wiki page
      * @return the specified project Snippet
      * @throws GitLabApiException if any exception occurs
      */
@@ -195,7 +176,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/wikis/:slug</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param slug            the slug of the project's wiki page
+     * @param slug the slug of the project's wiki page
      * @return the specified project Snippet as an Optional instance
      */
     public Optional<WikiPage> getOptionalPage(Object projectIdOrPath, String slug) {
@@ -212,8 +193,8 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/wikis</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param title           the title of a snippet, required
-     * @param content         the content of a wiki page, required
+     * @param title the title of a snippet, required
+     * @param content the content of a wiki page, required
      * @return a WikiPage instance with info on the created page
      * @throws GitLabApiException if any exception occurs
      */
@@ -234,9 +215,9 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /projects/:id/wikis/:slug</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param slug            the slug of the project's wiki page, required
-     * @param title           the title of a snippet, optional
-     * @param content         the content of a page, optional. Either title or content must be supplied.
+     * @param slug the slug of the project's wiki page, required
+     * @param title the title of a snippet, optional
+     * @param content the content of a page, optional. Either title or content must be supplied.
      * @return a WikiPage instance with info on the updated page
      * @throws GitLabApiException if any exception occurs
      */
@@ -258,7 +239,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/wikis/:slug</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param slug            the slug of the project's wiki page
+     * @param slug the slug of the project's wiki page
      * @throws GitLabApiException if any exception occurs
      */
     public void deletePage(Object projectIdOrPath, String slug) throws GitLabApiException {
@@ -271,7 +252,7 @@ public class WikisApi extends AbstractApi {
      * <pre><code>POST /projects/:id/wikis/attachments</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param fileToUpload    the File instance of the file to upload, required
+     * @param fileToUpload the File instance of the file to upload, required
      * @return a FileUpload instance with information on the just uploaded file
      * @throws GitLabApiException if any exception occurs
      */
@@ -285,8 +266,8 @@ public class WikisApi extends AbstractApi {
      * <pre><code>POST /projects/:id/wikis/attachments</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance, required
-     * @param fileToUpload    the File instance of the file to upload, required
-     * @param branch          the name of the branch, defaults to the wiki repository default branch, optional
+     * @param fileToUpload the File instance of the file to upload, required
+     * @param branch the name of the branch, defaults to the wiki repository default branch, optional
      * @return a FileUpload instance with information on the just uploaded file
      * @throws GitLabApiException if any exception occurs
      */

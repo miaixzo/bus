@@ -1,42 +1,43 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.office.excel.cell;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.util.SheetUtil;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.office.excel.ExcelKit;
-import org.miaixz.bus.office.excel.StyleSet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.editors.TrimEditor;
 import org.miaixz.bus.office.excel.cell.setters.CellSetterFactory;
-import org.miaixz.bus.office.excel.cell.values.ErrorCellValue;
-import org.miaixz.bus.office.excel.cell.values.NumericCellValue;
+import org.miaixz.bus.office.excel.cell.values.CompositeCellValue;
+import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
  * Excel表格中单元格工具类
@@ -102,46 +103,8 @@ public class CellKit {
      * @param cellEditor 单元格值编辑器。可以通过此编辑器对单元格值做自定义操作
      * @return 值，类型可能为：Date、Double、Boolean、String
      */
-    public static Object getCellValue(Cell cell, CellType cellType, final CellEditor cellEditor) {
-        if (null == cell) {
-            return null;
-        }
-        if (cell instanceof NullCell) {
-            return null == cellEditor ? null : cellEditor.edit(cell, null);
-        }
-        if (null == cellType) {
-            cellType = cell.getCellType();
-        }
-
-        // 尝试获取合并单元格，如果是合并单元格，则重新获取单元格类型
-        final Cell mergedCell = getMergedRegionCell(cell);
-        if (mergedCell != cell) {
-            cell = mergedCell;
-            cellType = cell.getCellType();
-        }
-
-        final Object value;
-        switch (cellType) {
-            case NUMERIC:
-                value = new NumericCellValue(cell).getValue();
-                break;
-            case BOOLEAN:
-                value = cell.getBooleanCellValue();
-                break;
-            case FORMULA:
-                value = getCellValue(cell, cell.getCachedFormulaResultType(), cellEditor);
-                break;
-            case BLANK:
-                value = Normal.EMPTY;
-                break;
-            case ERROR:
-                value = new ErrorCellValue(cell).getValue();
-                break;
-            default:
-                value = cell.getStringCellValue();
-        }
-
-        return null == cellEditor ? value : cellEditor.edit(cell, value);
+    public static Object getCellValue(final Cell cell, final CellType cellType, final CellEditor cellEditor) {
+        return CompositeCellValue.of(cell, cellType, cellEditor).getValue();
     }
 
     /**
@@ -160,11 +123,12 @@ public class CellKit {
             return;
         }
 
+        CellStyle cellStyle = null;
         if (null != styleSet) {
-            cell.setCellStyle(styleSet.getStyleByValueType(value, isHeader));
+            cellStyle = styleSet.getStyleFor(new CellReference(cell), value, isHeader);
         }
 
-        setCellValue(cell, value, cellEditor);
+        setCellValue(cell, value, cellStyle, cellEditor);
     }
 
     /**
@@ -263,51 +227,6 @@ public class CellKit {
     }
 
     /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
-     *
-     * @param sheet       {@link Sheet}
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellRangeAddress}
-     */
-    public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getCellRangeAddress(sheet, cellLocation.getX(), cellLocation.getY());
-    }
-
-    /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
-     *
-     * @param cell {@link Cell}
-     * @return {@link CellRangeAddress}
-     */
-    public static CellRangeAddress getCellRangeAddress(final Cell cell) {
-        return getCellRangeAddress(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
-    }
-
-    /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
-     *
-     * @param sheet {@link Sheet}
-     * @param x     列号，从0开始
-     * @param y     行号，从0开始
-     * @return {@link CellRangeAddress}
-     */
-    public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final int x, final int y) {
-        if (sheet != null) {
-            final int sheetMergeCount = sheet.getNumMergedRegions();
-            CellRangeAddress ca;
-            for (int i = 0; i < sheetMergeCount; i++) {
-                ca = sheet.getMergedRegion(i);
-                if (y >= ca.getFirstRow() && y <= ca.getLastRow()
-                        && x >= ca.getFirstColumn() && x <= ca.getLastColumn()) {
-                    return ca;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * 判断指定的单元格是否是合并单元格
      *
      * @param sheet       {@link Sheet}
@@ -315,8 +234,8 @@ public class CellKit {
      * @return 是否是合并单元格
      */
     public static boolean isMergedRegion(final Sheet sheet, final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return isMergedRegion(sheet, cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return isMergedRegion(sheet, cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -353,36 +272,23 @@ public class CellKit {
     /**
      * 合并单元格，可以根据设置的值来合并行和列
      *
-     * @param sheet       表对象
-     * @param firstRow    起始行，0开始
-     * @param lastRow     结束行，0开始
-     * @param firstColumn 起始列，0开始
-     * @param lastColumn  结束列，0开始
+     * @param sheet            表对象
+     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
      * @return 合并后的单元格号
      */
-    public static int mergingCells(final Sheet sheet, final int firstRow, final int lastRow, final int firstColumn, final int lastColumn) {
-        return mergingCells(sheet, firstRow, lastRow, firstColumn, lastColumn, null);
+    public static int mergingCells(final Sheet sheet, final CellRangeAddress cellRangeAddress) {
+        return mergingCells(sheet, cellRangeAddress, null);
     }
 
     /**
      * 合并单元格，可以根据设置的值来合并行和列
      *
-     * @param sheet       表对象
-     * @param firstRow    起始行，0开始
-     * @param lastRow     结束行，0开始
-     * @param firstColumn 起始列，0开始
-     * @param lastColumn  结束列，0开始
-     * @param cellStyle   单元格样式，只提取边框样式，null表示无样式
+     * @param sheet            表对象
+     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
+     * @param cellStyle        单元格样式，只提取边框样式，null表示无样式
      * @return 合并后的单元格号
      */
-    public static int mergingCells(final Sheet sheet, final int firstRow, final int lastRow, final int firstColumn, final int lastColumn, final CellStyle cellStyle) {
-        final CellRangeAddress cellRangeAddress = new CellRangeAddress(//
-                firstRow, // first row (0-based)
-                lastRow, // last row (0-based)
-                firstColumn, // first column (0-based)
-                lastColumn // last column (0-based)
-        );
-
+    public static int mergingCells(final Sheet sheet, final CellRangeAddress cellRangeAddress, final CellStyle cellStyle) {
         setMergeCellStyle(cellStyle, cellRangeAddress, sheet);
         return sheet.addMergedRegion(cellRangeAddress);
     }
@@ -396,8 +302,8 @@ public class CellKit {
      * @return 合并单元格的值
      */
     public static Object getMergedRegionValue(final Sheet sheet, final String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getMergedRegionValue(sheet, cellLocation.getX(), cellLocation.getY());
+        final CellReference cellReference = new CellReference(locationRef);
+        return getMergedRegionValue(sheet, cellReference.getCol(), cellReference.getRow());
     }
 
     /**
@@ -479,7 +385,6 @@ public class CellKit {
         }
 
         final Comment comment = sheet.createDrawingPatriarch().createCellComment(anchor);
-        // https://stackoverflow.com/questions/28169011/using-sxssfapache-poi-and-adding-comment-does-not-generate-proper-excel-file
         // 修正在XSSFCell中未设置地址导致错位问题
         comment.setAddress(cell.getAddress());
         comment.setString(factory.createRichTextString(commentText));
@@ -525,6 +430,181 @@ public class CellKit {
             RegionUtil.setLeftBorderColor(cellStyle.getLeftBorderColor(), cellRangeAddress, sheet);
             RegionUtil.setBottomBorderColor(cellStyle.getBottomBorderColor(), cellRangeAddress, sheet);
         }
+    }
+
+    /**
+     * 根据字符串表示法创建一个CellRangeAddress对象
+     * 该方法提供了一种通过直接使用字符串引用来创建CellRangeAddress对象的便捷方式
+     * 字符串引用应符合Excel中单元格范围的常规表示法，如"B1" 或 "A1:B2"。
+     *
+     * @param ref 代表单元格范围的字符串，格式为"A1:B2"。
+     * @return 根据给定字符串创建的CellRangeAddress对象。
+     * @see CellRangeAddress#valueOf(String)
+     */
+    public static CellRangeAddress of(final String ref) {
+        return CellRangeAddress.valueOf(ref);
+    }
+
+    /**
+     * 根据给定的行和列索引创建一个CellRangeAddress对象
+     * 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     *
+     * @param firstRow 起始行的索引，从0开始计数。
+     * @param lastRow  结束行的索引，从0开始计数，必须大于firstRow。
+     * @param firstCol 起始列的索引，从0开始计数。
+     * @param lastCol  结束列的索引，从0开始计数，必须大于firstCol。
+     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     */
+    public static CellRangeAddress of(final int firstRow, final int lastRow, final int firstCol, final int lastCol) {
+        return new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+    }
+
+    /**
+     * 根据给定的行和列索引创建一个单行的CellRangeAddress对象，从首列开始。
+     * 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     *
+     * @param row     行的索引，从0开始计数。
+     * @param lastCol 结束列的索引，从0开始计数，必须大于firstCol。
+     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     */
+    public static CellRangeAddress ofSingleRow(final int row, final int lastCol) {
+        return ofSingleRow(row, 0, lastCol);
+    }
+
+    /**
+     * 根据给定的行和列索引创建一个单行的CellRangeAddress对象
+     * 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     *
+     * @param row      行的索引，从0开始计数。
+     * @param firstCol 起始列的索引，从0开始计数。
+     * @param lastCol  结束列的索引，从0开始计数，必须大于firstCol。
+     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     */
+    public static CellRangeAddress ofSingleRow(final int row, final int firstCol, final int lastCol) {
+        return of(row, row, firstCol, lastCol);
+    }
+
+    /**
+     * 根据给定的行和列索引创建一个单列CellRangeAddress对象，从首行开始。
+     * 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     *
+     * @param lastRow 结束行的索引，从0开始计数，必须大于firstRow。
+     * @param col     列的索引，从0开始计数。
+     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     */
+    public static CellRangeAddress ofSingleColumn(final int lastRow, final int col) {
+        return ofSingleColumn(0, lastRow, col);
+    }
+
+    /**
+     * 根据给定的行和列索引创建一个单列CellRangeAddress对象。
+     * 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     *
+     * @param firstRow 起始行的索引，从0开始计数。
+     * @param lastRow  结束行的索引，从0开始计数，必须大于firstRow。
+     * @param col      列的索引，从0开始计数。
+     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     */
+    public static CellRangeAddress ofSingleColumn(final int firstRow, final int lastRow, final int col) {
+        return of(firstRow, lastRow, col, col);
+    }
+
+    /**
+     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     *
+     * @param sheet       {@link Sheet}
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link CellRangeAddress}
+     */
+    public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final String locationRef) {
+        final CellReference cellReference = new CellReference(locationRef);
+        return getCellRangeAddress(sheet, cellReference.getCol(), cellReference.getRow());
+    }
+
+    /**
+     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     *
+     * @param cell {@link Cell}
+     * @return {@link CellRangeAddress}
+     */
+    public static CellRangeAddress getCellRangeAddress(final Cell cell) {
+        return getCellRangeAddress(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
+    }
+
+    /**
+     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     *
+     * @param sheet {@link Sheet}
+     * @param x     列号，从0开始
+     * @param y     行号，从0开始
+     * @return {@link CellRangeAddress}
+     */
+    public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final int x, final int y) {
+        if (sheet != null) {
+            final int sheetMergeCount = sheet.getNumMergedRegions();
+            CellRangeAddress ca;
+            for (int i = 0; i < sheetMergeCount; i++) {
+                ca = sheet.getMergedRegion(i);
+                if (y >= ca.getFirstRow() && y <= ca.getLastRow()
+                        && x >= ca.getFirstColumn() && x <= ca.getLastColumn()) {
+                    return ca;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将Sheet列号变为列名
+     *
+     * @param index 列号, 从0开始
+     * @return 0-A; 1-B...26-AA
+     */
+    public static String indexToColName(int index) {
+        if (index < 0) {
+            return null;
+        }
+        final StringBuilder colName = StringKit.builder();
+        do {
+            if (colName.length() > 0) {
+                index--;
+            }
+            final int remainder = index % 26;
+            colName.append((char) (remainder + 'A'));
+            index = (index - remainder) / 26;
+        } while (index > 0);
+        return colName.reverse().toString();
+    }
+
+    /**
+     * 根据表元的列名转换为列号
+     *
+     * @param colName 列名, 从A开始
+     * @return A1-0; B1-1...AA1-26
+     */
+    public static int colNameToIndex(final String colName) {
+        final int length = colName.length();
+        char c;
+        int index = -1;
+        for (int i = 0; i < length; i++) {
+            c = Character.toUpperCase(colName.charAt(i));
+            if (Character.isDigit(c)) {
+                break;// 确定指定的char值是否为数字
+            }
+            index = (index + 1) * 26 + (int) c - 'A';
+        }
+        return index;
+    }
+
+    /**
+     * 将Excel中地址标识符（例如A11，B5）等转换为行列表示
+     * 例如：A11 - col:0,row:10，B5-col:1,row:4
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return 坐标点
+     */
+    public static CellReference toCellReference(final String locationRef) {
+        return new CellReference(locationRef);
     }
 
 }

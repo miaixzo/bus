@@ -1,3 +1,30 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.notify.metric.huawei;
 
 import org.miaixz.bus.core.lang.*;
@@ -5,8 +32,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
-import org.miaixz.bus.notify.Builder;
 import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
@@ -14,12 +41,12 @@ import java.security.MessageDigest;
 import java.util.*;
 
 /**
- * 七牛云短信
+ * 华为云短信实现
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context> {
+public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context> {
 
     /**
      * 成功代码.
@@ -35,8 +62,8 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
      */
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
 
-    public HuaweiSmsProvider(Context properties) {
-        super(properties);
+    public HuaweiSmsProvider(Context context) {
+        super(context);
     }
 
     private static String byte2Hex(byte[] bytes) {
@@ -53,8 +80,8 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
     }
 
     @Override
-    public Message send(HuaweiProperty entity) {
-        Map<String, Object> bodys = new HashMap<>();
+    public Message send(HuaweiMaterial entity) {
+        Map<String, String> bodys = new HashMap<>();
         bodys.put("from", entity.getSender());
         bodys.put("to", entity.getReceive());
         bodys.put("templateId", entity.getTemplate());
@@ -66,10 +93,10 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
         headers.put(Header.AUTHORIZATION, AUTH_HEADER_VALUE);
         headers.put("X-WSSE", buildWsseHeader());
 
-        String response = Httpx.post(entity.getUrl(), bodys, headers);
+        String response = Httpx.post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
         return Message.builder()
-                .errcode(SUCCESS_CODE.equals(errcode) ? Builder.ErrorCode.SUCCESS.getCode() : errcode)
+                .errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
                 .errmsg(JsonKit.getValue(response, "description"))
                 .build();
     }

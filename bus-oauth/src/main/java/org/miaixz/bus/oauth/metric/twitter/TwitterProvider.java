@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.oauth.metric.twitter;
 
 import com.alibaba.fastjson.JSONObject;
@@ -40,8 +42,8 @@ import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.magic.Property;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.magic.Material;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +56,7 @@ import java.util.TreeMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TwitterProvider extends DefaultProvider {
+public class TwitterProvider extends AbstractProvider {
 
     private static final String PREAMBLE = "OAuth";
 
@@ -62,8 +64,8 @@ public class TwitterProvider extends DefaultProvider {
         super(context, Registry.TWITTER);
     }
 
-    public TwitterProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.TWITTER, authorizeCache);
+    public TwitterProvider(Context context, ExtendCache cache) {
+        super(context, Registry.TWITTER, cache);
     }
 
     /**
@@ -95,7 +97,7 @@ public class TwitterProvider extends DefaultProvider {
      * @return BASE64 encoded signature string
      */
     public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
-        TreeMap<String, Object> map = new TreeMap<>(params);
+        TreeMap<String, String> map = new TreeMap<>(params);
         String str = Builder.parseMapToString(map, true);
         String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(str);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
@@ -152,19 +154,19 @@ public class TwitterProvider extends DefaultProvider {
      * @return access token
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         Map<String, String> headerMap = buildOauthParams();
-        headerMap.put("oauth_token", authCallback.getOauth_token());
-        headerMap.put("oauth_verifier", authCallback.getOauth_verifier());
-        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), authCallback
+        headerMap.put("oauth_token", callback.getOauth_token());
+        headerMap.put("oauth_verifier", callback.getOauth_verifier());
+        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), callback
                 .getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
         header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
-        Map<String, Object> form = new HashMap<>(3);
-        form.put("oauth_verifier", authCallback.getOauth_verifier());
+        Map<String, String> form = new HashMap<>(3);
+        form.put("oauth_verifier", callback.getOauth_verifier());
         String response = Httpx.post(complex.accessToken(), form, header);
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);
@@ -178,7 +180,7 @@ public class TwitterProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         Map<String, String> form = buildOauthParams();
         form.put("oauth_token", accToken.getOauthToken());
 
@@ -193,7 +195,7 @@ public class TwitterProvider extends DefaultProvider {
         String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject userInfo = JSONObject.parseObject(response);
 
-        return Property.builder()
+        return Material.builder()
                 .rawJson(userInfo)
                 .uuid(userInfo.getString("id_str"))
                 .username(userInfo.getString("screen_name"))

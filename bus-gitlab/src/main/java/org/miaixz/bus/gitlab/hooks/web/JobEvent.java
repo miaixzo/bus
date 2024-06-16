@@ -1,40 +1,42 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
 public class JobEvent extends AbstractEvent {
+    private static final long serialVersionUID = 1L;
+
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "job";
-    private static final long serialVersionUID = 1L;
+
     private String ref;
     private Boolean tag;
     private String beforeSha;
@@ -50,7 +52,7 @@ public class JobEvent extends AbstractEvent {
     private String jobFailureReason;
     private Long projectId;
     private String projectName;
-    private User user;
+    private EventUser user;
     private BuildCommit commit;
     private EventRepository repository;
 
@@ -136,51 +138,11 @@ public class JobEvent extends AbstractEvent {
         this.jobStartedAt = jobStartedAt;
     }
 
-    /**
-     * @return the jobstarted at Date
-     * @deprecated Replaced by {@link #getJobStartedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getJobStarted_at() {
-        return jobStartedAt;
-    }
-
-    /**
-     * @param jobStartedAt new jobstarted at value
-     * @deprecated Replaced by {@link #setJobStartedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setJobStarted_at(Date jobStartedAt) {
-        this.jobStartedAt = jobStartedAt;
-    }
-
     public Date getJobFinishedAt() {
         return jobFinishedAt;
     }
 
     public void setJobFinishedAt(Date jobFinishedAt) {
-        this.jobFinishedAt = jobFinishedAt;
-    }
-
-    /**
-     * @return the jobfinished at Date
-     * @deprecated Replaced by {@link #getJobFinishedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getJobFinished_at() {
-        return jobFinishedAt;
-    }
-
-    /**
-     * @param jobFinishedAt new jobfinished at value
-     * @deprecated Replaced by {@link #setJobFinishedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setJobFinished_at(Date jobFinishedAt) {
         this.jobFinishedAt = jobFinishedAt;
     }
 
@@ -224,11 +186,11 @@ public class JobEvent extends AbstractEvent {
         this.projectName = projectName;
     }
 
-    public User getUser() {
+    public EventUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(EventUser user) {
         this.user = user;
     }
 

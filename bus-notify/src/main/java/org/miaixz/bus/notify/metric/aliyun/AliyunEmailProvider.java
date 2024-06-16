@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.notify.metric.aliyun;
 
 import org.miaixz.bus.core.lang.Fields;
@@ -32,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Message;
-import org.miaixz.bus.notify.metric.generic.GenericProperty;
+import org.miaixz.bus.notify.metric.generic.GenericMaterial;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -45,7 +47,7 @@ import java.util.UUID;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context> {
+public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context> {
 
     public AliyunEmailProvider(Context context) {
         super(context);
@@ -59,7 +61,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
      * @throws InternalException 异常信息
      */
     @Override
-    public Message send(AliyunProperty entity) throws InternalException {
+    public Message send(AliyunMaterial entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
             throw new InternalException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
@@ -85,9 +87,9 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
         bodys.put("FromAlias", entity.getSender());
         bodys.put("ToAddress", entity.getReceive());
 
-        if (org.miaixz.bus.notify.metric.generic.GenericProperty.Type.HTML.equals(entity.getType())) {
+        if (GenericMaterial.Type.HTML.equals(entity.getType())) {
             bodys.put("HtmlBody", entity.getContent());
-        } else if (GenericProperty.Type.TEXT.equals(entity.getType())) {
+        } else if (GenericMaterial.Type.TEXT.equals(entity.getType())) {
             bodys.put("TextBody", entity.getContent());
         }
 
@@ -98,11 +100,11 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
         bodys.put("ClickTrace", getSign(bodys));
         bodys.put("Signature", getSign(bodys));
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (String val : bodys.keySet()) {
             map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }
-        return checkResponse(Httpx.get(entity.getUrl(), map));
+        return checkResponse(Httpx.get(this.getUrl(entity), map));
     }
 
 }

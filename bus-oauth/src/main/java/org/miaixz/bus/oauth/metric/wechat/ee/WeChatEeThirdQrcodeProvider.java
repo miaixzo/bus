@@ -1,28 +1,30 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import com.alibaba.fastjson.JSONObject;
@@ -49,8 +51,8 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         super(context, Registry.WECHAT_EE_QRCODE_THIRD);
     }
 
-    public WeChatEeThirdQrcodeProvider(Context context, ExtendCache authorizeCache) {
-        super(context, Registry.WECHAT_EE_QRCODE_THIRD, authorizeCache);
+    public WeChatEeThirdQrcodeProvider(Context context, ExtendCache cache) {
+        super(context, Registry.WECHAT_EE_QRCODE_THIRD, cache);
     }
 
     @Override
@@ -64,13 +66,13 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    public Message login(Callback authCallback) {
+    public Message login(Callback callback) {
         try {
             if (!context.isIgnoreState()) {
-                Checker.checkState(authCallback.getState(), complex, authorizeCache);
+                Checker.checkState(callback.getState(), complex, cache);
             }
-            AccToken accToken = this.getAccessToken(authCallback);
-            Property user = this.getUserInfo(accToken);
+            AccToken accToken = this.getAccessToken(callback);
+            Material user = this.getUserInfo(accToken);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
             Logger.error("Failed to login with oauth authorization.", e);
@@ -79,7 +81,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
+    protected AccToken getAccessToken(Callback callback) {
         try {
             String response = doGetAuthorizationCode(accessTokenUrl());
             JSONObject object = this.checkResponse(response);
@@ -112,9 +114,9 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    protected Material getUserInfo(AccToken accToken) {
         JSONObject response = this.checkResponse(doGetUserInfo(accToken));
-        return Property.builder()
+        return Material.builder()
                 .rawJson(response)
                 .build();
     }

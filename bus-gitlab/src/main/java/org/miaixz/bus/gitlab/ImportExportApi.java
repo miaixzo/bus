@@ -1,37 +1,39 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.ExportStatus;
 import org.miaixz.bus.gitlab.models.ImportStatus;
 import org.miaixz.bus.gitlab.models.Project;
 
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +45,6 @@ import java.util.Map;
 
 /**
  * This class provides an entry point to all the GitLab API project import/export calls.
- *
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  */
 public class ImportExportApi extends AbstractApi {
@@ -70,7 +71,7 @@ public class ImportExportApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: POST /projects/:id/export</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param description     overrides the project description, optional
+     * @param description overrides the project description, optional
      * @throws GitLabApiException if any exception occurs
      */
     public void scheduleExport(Object projectIdOrPath, String description) throws GitLabApiException {
@@ -82,12 +83,12 @@ public class ImportExportApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/export</code></pre>
      *
-     * @param projectIdOrPath  the project in the form of an Long(ID), String(path), or Project instance
-     * @param description      overrides the project description, optional
-     * @param upload           Mao that contains the information to upload the exported project to a web server
-     * @param uploadUrl        the URL to upload the project
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param description overrides the project description, optional
+     * @param upload Mao that contains the information to upload the exported project to a web server
+     * @param uploadUrl the URL to upload the project
      * @param uploadHttpMethod the HTTP method to upload the exported project.
-     *                         Only PUT and POST methods allowed. Default is PUT
+     *                          Only PUT and POST methods allowed. Default is PUT
      * @throws GitLabApiException if any exception occurs
      */
     public void scheduleExport(Object projectIdOrPath, String description,
@@ -121,7 +122,7 @@ public class ImportExportApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/export/download</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param directory       the File instance of the directory to save the export file to, if null will use "java.io.tmpdir"
+     * @param directory the File instance of the directory to save the export file to, if null will use "java.io.tmpdir"
      * @return a File instance pointing to the download of the project export file
      * @throws GitLabApiException if any exception occurs
      */
@@ -135,9 +136,9 @@ public class ImportExportApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: GET /projects/:id/export/download</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param directory       the File instance of the directory to save the export file to, if null will use "java.io.tmpdir"
-     * @param filename        Name to give to the downloaded file. If null then we try to get from Content-Disposition header
-     *                        or to compute one from parameters
+     * @param directory the File instance of the directory to save the export file to, if null will use "java.io.tmpdir"
+     * @param filename Name to give to the downloaded file. If null then we try to get from Content-Disposition header
+     *                 or to compute one from parameters
      * @return a File instance pointing to the download of the project export file
      * @throws GitLabApiException if any exception occurs
      */
@@ -190,7 +191,7 @@ public class ImportExportApi extends AbstractApi {
     /**
      * <p>Import an exported project.  The following properties on the Project instance
      * are utilized in the creation of the new project:</p>
-     * <ul>
+     *<ul>
      * <li>defaultBranch (optional) - master by default</li>
      * <li>description (optional) - short project description</li>
      * <li>visibility (optional) - Limit by visibility public, internal, or private</li>
@@ -214,14 +215,14 @@ public class ImportExportApi extends AbstractApi {
      * <li>resolveOutdatedDiffDiscussions (optional) - Automatically resolve merge request diffs discussions on lines changed with a push</li>
      * <li>initialize_with_readme (optional) - Initialize project with README file</li>
      * <li>packagesEnabled (optional) - Enable or disable mvn packages repository feature</li>
-     * </ul>
+     *</ul>
      * <pre><code>GitLab Endpoint: POST /projects/import</code></pre>
      *
      * @param namespaceIdOrPath the ID or path of the namespace that the project will be imported to. Defaults to the current user’s namespace
-     * @param exportFile        the project export file to be imported
-     * @param path              the name and path for the new project
-     * @param overwrite         if there is a project with the same path the import will overwrite it. Defaults to false
-     * @param overrideParams    overriding project params, supports all fields defined by the ProjectApi, optional
+     * @param exportFile the project export file to be imported
+     * @param path the name and path for the new project
+     * @param overwrite if there is a project with the same path the import will overwrite it. Defaults to false
+     * @param overrideParams overriding project params, supports all fields defined by the ProjectApi, optional
      * @return an Importstatus instance with info for the project being imported to
      * @throws GitLabApiException if any exception occurs
      */

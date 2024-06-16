@@ -1,36 +1,38 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.ApplicationSettings;
 import org.miaixz.bus.gitlab.models.Setting;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
-import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.util.Iterator;
 
@@ -42,6 +44,44 @@ public class ApplicationSettingsApi extends AbstractApi {
 
     public ApplicationSettingsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
+    }
+
+    /**
+     * Get the current application settings of the GitLab instance.
+     *
+     * <pre><code>GitLab Endpoint: GET /api/v4/application/settings</code></pre>
+     *
+     * @return an ApplicationSettings instance containing the current application settings of the GitLab instance.
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings getApplicationSettings() throws GitLabApiException {
+
+        Response response = get(Response.Status.OK, null, "application", "settings");
+        JsonNode root = response.readEntity(JsonNode.class);
+        return (parseApplicationSettings(root));
+    }
+
+    /**
+     * Update the application settings of the GitLab instance with the settings in the
+     * provided ApplicationSettings instance.
+     *
+     * <pre><code>GitLab Endpoint: PUT /api/v4/application/settings</code></pre>
+     *
+     * @param appSettings the ApplicationSettings instance holding the settings and values to update
+     * @return the updated application settings in an ApplicationSettings instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
+
+        if (appSettings == null || appSettings.getSettings().isEmpty()) {
+            throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
+        }
+
+        final GitLabApiForm form = new GitLabApiForm();
+        appSettings.getSettings().forEach((s, v) -> form.withParam(s, v));
+        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
+        JsonNode root = response.readEntity(JsonNode.class);
+        return (parseApplicationSettings(root));
     }
 
     /**
@@ -101,50 +141,12 @@ public class ApplicationSettingsApi extends AbstractApi {
     }
 
     /**
-     * Get the current application settings of the GitLab instance.
-     *
-     * <pre><code>GitLab Endpoint: GET /api/v4/application/settings</code></pre>
-     *
-     * @return an ApplicationSettings instance containing the current application settings of the GitLab instance.
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings getApplicationSettings() throws GitLabApiException {
-
-        Response response = get(Response.Status.OK, null, "application", "settings");
-        JsonNode root = response.readEntity(JsonNode.class);
-        return (parseApplicationSettings(root));
-    }
-
-    /**
-     * Update the application settings of the GitLab instance with the settings in the
-     * provided ApplicationSettings instance.
-     *
-     * <pre><code>GitLab Endpoint: PUT /api/v4/application/settings</code></pre>
-     *
-     * @param appSettings the ApplicationSettings instance holding the settings and values to update
-     * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
-
-        if (appSettings == null || appSettings.getSettings().isEmpty()) {
-            throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
-        }
-
-        final GitLabApiForm form = new GitLabApiForm();
-        appSettings.getSettings().forEach((s, v) -> form.withParam(s, v));
-        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
-        JsonNode root = response.readEntity(JsonNode.class);
-        return (parseApplicationSettings(root));
-    }
-
-    /**
      * Update a single application setting of the GitLab instance with the provided settings and value.
      *
      * <pre><code>GitLab Endpoint: PUT /api/v4/application/settings</code></pre>
      *
      * @param setting the ApplicationSetting to update
-     * @param value   the new value for the application setting
+     * @param value the new value for the application setting
      * @return the updated application settings in an ApplicationSettings instance
      * @throws GitLabApiException if any exception occurs
      */
@@ -163,7 +165,7 @@ public class ApplicationSettingsApi extends AbstractApi {
      * <pre><code>GitLab Endpoint: PUT /api/v4/application/settings</code></pre>
      *
      * @param setting the ApplicationSetting to update
-     * @param value   the new value for the application setting
+     * @param value the new value for the application setting
      * @return the updated application settings in an ApplicationSettings instance
      * @throws GitLabApiException if any exception occurs
      */

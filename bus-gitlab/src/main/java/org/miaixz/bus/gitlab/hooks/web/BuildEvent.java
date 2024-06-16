@@ -1,32 +1,32 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
@@ -36,9 +36,11 @@ import java.util.Date;
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
  */
 public class BuildEvent extends AbstractEvent {
+    private static final long serialVersionUID = 1L;
+
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
     public static final String OBJECT_KIND = "build";
-    private static final long serialVersionUID = 1L;
+
     private String ref;
     private Boolean tag;
     private String beforeSha;
@@ -58,7 +60,7 @@ public class BuildEvent extends AbstractEvent {
 
     private Long pipelineId;
     private String projectName;
-    private User user;
+    private EventUser user;
     private BuildCommit commit;
     private EventRepository repository;
 
@@ -144,51 +146,11 @@ public class BuildEvent extends AbstractEvent {
         this.buildStartedAt = buildStartedAt;
     }
 
-    /**
-     * @return the buildstarted at Date
-     * @deprecated Replaced by {@link #getBuildStartedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getBuildStarted_at() {
-        return buildStartedAt;
-    }
-
-    /**
-     * @param buildStartedAt new buildstarted at value
-     * @deprecated Replaced by {@link #setBuildStartedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setBuildStarted_at(Date buildStartedAt) {
-        this.buildStartedAt = buildStartedAt;
-    }
-
     public Date getBuildFinishedAt() {
         return buildFinishedAt;
     }
 
     public void setBuildFinishedAt(Date buildFinishedAt) {
-        this.buildFinishedAt = buildFinishedAt;
-    }
-
-    /**
-     * @return the buildfinished at Date
-     * @deprecated Replaced by {@link #getBuildFinishedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getBuildFinished_at() {
-        return buildFinishedAt;
-    }
-
-    /**
-     * @param buildFinishedAt new buildfinished at value
-     * @deprecated Replaced by {@link #setBuildFinishedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setBuildFinished_at(Date buildFinishedAt) {
         this.buildFinishedAt = buildFinishedAt;
     }
 
@@ -248,11 +210,11 @@ public class BuildEvent extends AbstractEvent {
         this.projectName = projectName;
     }
 
-    public User getUser() {
+    public EventUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(EventUser user) {
         this.user = user;
     }
 

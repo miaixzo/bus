@@ -1,37 +1,37 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org and other contributors.                    *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.office.excel;
 
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.office.Registry;
-import org.miaixz.bus.office.excel.cell.CellLocation;
-import org.miaixz.bus.office.excel.cell.CellLocationKit;
+import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.sax.ExcelSax;
 import org.miaixz.bus.office.excel.sax.ExcelSaxReader;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
@@ -87,7 +87,7 @@ public class ExcelKit {
      * @param rowHandler 行处理器
      */
     public static void readBySax(final File file, final int rid, final RowHandler rowHandler) {
-        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(ExcelFileKit.isXlsx(file), rowHandler);
+        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(Builder.isXlsx(file), rowHandler);
         reader.read(file, rid);
     }
 
@@ -99,7 +99,7 @@ public class ExcelKit {
      * @param rowHandler         行处理器
      */
     public static void readBySax(final File file, final String idOrRidOrSheetName, final RowHandler rowHandler) {
-        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(ExcelFileKit.isXlsx(file), rowHandler);
+        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(Builder.isXlsx(file), rowHandler);
         reader.read(file, idOrRidOrSheetName);
     }
 
@@ -112,7 +112,7 @@ public class ExcelKit {
      */
     public static void readBySax(InputStream in, final int rid, final RowHandler rowHandler) {
         in = IoKit.toMarkSupport(in);
-        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
+        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(Builder.isXlsx(in), rowHandler);
         reader.read(in, rid);
     }
 
@@ -125,7 +125,7 @@ public class ExcelKit {
      */
     public static void readBySax(InputStream in, final String idOrRidOrSheetName, final RowHandler rowHandler) {
         in = IoKit.toMarkSupport(in);
-        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
+        final ExcelSaxReader<?> reader = ExcelSax.createSaxReader(Builder.isXlsx(in), rowHandler);
         reader.read(in, idOrRidOrSheetName);
     }
 
@@ -162,7 +162,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetIndex);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -177,7 +177,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -192,7 +192,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetIndex);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -207,7 +207,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -234,7 +234,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetIndex);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -250,7 +250,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -265,7 +265,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter();
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -281,7 +281,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(isXlsx);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -295,7 +295,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFilePath);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -309,7 +309,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter((File) null, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -323,7 +323,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFile);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -338,7 +338,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -353,7 +353,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFile, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -368,7 +368,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter();
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -384,7 +384,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(rowAccessWindowSize);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -398,7 +398,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -412,7 +412,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -427,7 +427,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
     }
 
@@ -442,39 +442,8 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile, sheetName);
         } catch (final NoClassDefFoundError e) {
-            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Registry.NO_POI_ERROR_MSG);
+            throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
-    }
-
-    /**
-     * 将Sheet列号变为列名
-     *
-     * @param index 列号, 从0开始
-     * @return 0-A; 1-B...26-AA
-     */
-    public static String indexToColName(final int index) {
-        return CellLocationKit.indexToColName(index);
-    }
-
-    /**
-     * 根据表元的列名转换为列号
-     *
-     * @param colName 列名, 从A开始
-     * @return A1-0; B1-1...AA1-26
-     */
-    public static int colNameToIndex(final String colName) {
-        return CellLocationKit.colNameToIndex(colName);
-    }
-
-    /**
-     * 将Excel中地址标识符（例如A11，B5）等转换为行列表示
-     * 例如：A11 - x:0,y:10，B5-x:1,y:4
-     *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return 坐标点，x表示行，从0开始，y表示列，从0开始
-     */
-    public static CellLocation toLocation(final String locationRef) {
-        return CellLocationKit.toLocation(locationRef);
     }
 
 }

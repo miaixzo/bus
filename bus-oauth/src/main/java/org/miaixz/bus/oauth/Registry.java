@@ -1,34 +1,36 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ */
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.metric.DefaultProvider;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 import org.miaixz.bus.oauth.metric.alipay.AlipayProvider;
 import org.miaixz.bus.oauth.metric.aliyun.AliyunProvider;
 import org.miaixz.bus.oauth.metric.amazon.AmazonProvider;
@@ -101,7 +103,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return ProginnProvider.class;
         }
     },
@@ -125,7 +127,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return AlipayProvider.class;
         }
     },
@@ -154,7 +156,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return AliyunProvider.class;
         }
     },
@@ -183,7 +185,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return AmazonProvider.class;
         }
     },
@@ -217,7 +219,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return BaiduProvider.class;
         }
     },
@@ -241,7 +243,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return CodingProvider.class;
         }
     },
@@ -265,7 +267,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return DingTalkProvider.class;
         }
     },
@@ -289,7 +291,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return DingTalkAccountProvider.class;
         }
     },
@@ -318,7 +320,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return DouyinProvider.class;
         }
     },
@@ -347,7 +349,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return ElemeProvider.class;
         }
     },
@@ -371,7 +373,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return FacebookProvider.class;
         }
     },
@@ -400,7 +402,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return FeishuProvider.class;
         }
     },
@@ -424,7 +426,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return GiteeProvider.class;
         }
     },
@@ -449,7 +451,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return GithubProvider.class;
         }
     },
@@ -473,7 +475,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return GitlabProvider.class;
         }
     },
@@ -497,7 +499,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return GoogleProvider.class;
         }
     },
@@ -526,7 +528,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return HuaweiProvider.class;
         }
     },
@@ -555,7 +557,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return JdProvider.class;
         }
     },
@@ -584,7 +586,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return KujialeProvider.class;
         }
     },
@@ -618,7 +620,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return LineProvider.class;
         }
     },
@@ -647,7 +649,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return LinkedinProvider.class;
         }
     },
@@ -676,7 +678,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return MeituanProvider.class;
         }
     },
@@ -705,7 +707,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return MiProvider.class;
         }
     },
@@ -734,7 +736,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return MicrosoftProvider.class;
         }
     },
@@ -763,7 +765,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return MicrosoftCnProvider.class;
         }
     },
@@ -798,7 +800,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return OktaProvider.class;
         }
     },
@@ -822,7 +824,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return OschinaProvider.class;
         }
     },
@@ -846,7 +848,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return PinterestProvider.class;
         }
     },
@@ -870,7 +872,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return ProginnProvider.class;
         }
     },
@@ -900,7 +902,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return QqProvider.class;
         }
     },
@@ -929,7 +931,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return RenrenProvider.class;
         }
     },
@@ -965,7 +967,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return SlackProvider.class;
         }
     },
@@ -989,7 +991,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return StackOverflowProvider.class;
         }
     },
@@ -1013,7 +1015,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return TaobaoProvider.class;
         }
     },
@@ -1042,7 +1044,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return TeambitionProvider.class;
         }
     },
@@ -1066,7 +1068,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return ToutiaoProvider.class;
         }
     },
@@ -1090,7 +1092,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return TwitterProvider.class;
         }
     },
@@ -1114,7 +1116,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeQrcodeProvider.class;
         }
     },
@@ -1153,7 +1155,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeThirdQrcodeProvider.class;
         }
     },
@@ -1177,7 +1179,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeWebProvider.class;
         }
     },
@@ -1206,7 +1208,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatMpProvider.class;
         }
     },
@@ -1236,7 +1238,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatOpenProvider.class;
         }
     },
@@ -1265,7 +1267,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return WeiboProvider.class;
         }
     },
@@ -1289,7 +1291,7 @@ public enum Registry implements Complex {
         }
 
         @Override
-        public Class<? extends DefaultProvider> getTargetClass() {
+        public Class<? extends AbstractProvider> getTargetClass() {
             return XimalayaProvider.class;
         }
     };
