@@ -34,8 +34,8 @@ import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
-import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -77,7 +77,7 @@ public class Http2Codec implements HttpCodec {
             Header.ENCODING,
             Header.UPGRADE);
 
-    private final Interceptor.Chain chain;
+    private final NewChain chain;
     private final RealConnection realConnection;
     private final Http2Connection connection;
     private final Protocol protocol;
@@ -85,7 +85,7 @@ public class Http2Codec implements HttpCodec {
     private volatile boolean canceled;
 
     public Http2Codec(Httpd client, RealConnection realConnection,
-                      Interceptor.Chain chain, Http2Connection connection) {
+                      NewChain chain, Http2Connection connection) {
         this.realConnection = realConnection;
         this.chain = chain;
         this.connection = connection;

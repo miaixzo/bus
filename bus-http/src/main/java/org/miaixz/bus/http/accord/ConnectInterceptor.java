@@ -32,6 +32,7 @@ import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class ConnectInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Request request = realChain.request();
         Transmitter transmitter = realChain.transmitter();

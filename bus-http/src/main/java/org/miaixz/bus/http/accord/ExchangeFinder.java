@@ -30,7 +30,7 @@ package org.miaixz.bus.http.accord;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.metric.EventListener;
-import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 
 import java.io.IOException;
@@ -83,7 +83,7 @@ final class ExchangeFinder {
     }
 
     public HttpCodec find(
-            Httpd client, Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
+            Httpd client, NewChain chain, boolean doExtensiveHealthChecks) {
         int connectTimeout = chain.connectTimeoutMillis();
         int readTimeout = chain.readTimeoutMillis();
         int writeTimeout = chain.writeTimeoutMillis();

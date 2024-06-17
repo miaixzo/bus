@@ -35,6 +35,7 @@ import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,12 +43,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 承载整个拦截器链的具体拦截器链:
- * 所有应用程序拦截器、Httpd核心、所有网络拦截器，最后是网络调用者.
+ * 所有应用程序拦截器、Http核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RealInterceptorChain implements Interceptor.Chain {
+public class RealInterceptorChain implements NewChain {
 
     private final List<Interceptor> interceptors;
     private final Transmitter transmitter;
@@ -85,7 +86,7 @@ public class RealInterceptorChain implements Interceptor.Chain {
     }
 
     @Override
-    public Interceptor.Chain withConnectTimeout(int timeout, TimeUnit unit) {
+    public NewChain withConnectTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
                 millis, readTimeout, writeTimeout);
@@ -97,7 +98,7 @@ public class RealInterceptorChain implements Interceptor.Chain {
     }
 
     @Override
-    public Interceptor.Chain withReadTimeout(int timeout, TimeUnit unit) {
+    public NewChain withReadTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
                 connectTimeout, millis, writeTimeout);
@@ -109,7 +110,7 @@ public class RealInterceptorChain implements Interceptor.Chain {
     }
 
     @Override
-    public Interceptor.Chain withWriteTimeout(int timeout, TimeUnit unit) {
+    public NewChain withWriteTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
                 connectTimeout, readTimeout, millis);

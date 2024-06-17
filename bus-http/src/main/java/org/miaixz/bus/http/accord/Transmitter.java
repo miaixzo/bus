@@ -33,8 +33,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.metric.EventListener;
-import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 import org.miaixz.bus.http.secure.CertificatePinner;
 
@@ -162,7 +162,7 @@ public class Transmitter {
     /**
      * Returns a new exchange to carry a new request and response.
      */
-    Exchange newExchange(Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
+    Exchange newExchange(NewChain chain, boolean doExtensiveHealthChecks) {
         synchronized (connectionPool) {
             if (noMoreExchanges) {
                 throw new IllegalStateException("released");

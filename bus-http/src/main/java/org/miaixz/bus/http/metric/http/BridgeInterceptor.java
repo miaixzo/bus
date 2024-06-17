@@ -38,6 +38,7 @@ import org.miaixz.bus.http.bodys.RealResponseBody;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.CookieJar;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +59,7 @@ public class BridgeInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Request request = chain.request();
         Request.Builder requestBuilder = request.newBuilder();
 

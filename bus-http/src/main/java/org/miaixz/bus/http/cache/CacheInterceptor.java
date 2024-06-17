@@ -41,6 +41,7 @@ import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RealResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 
 import java.io.IOException;
@@ -129,7 +130,7 @@ public class CacheInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Response cacheCandidate = null != cache
                 ? cache.get(chain.request())
                 : null;

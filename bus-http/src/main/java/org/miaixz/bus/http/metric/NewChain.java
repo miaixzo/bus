@@ -25,31 +25,97 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.lang.thread.threadlocal;
+package org.miaixz.bus.http.metric;
+
+import org.miaixz.bus.http.NewCall;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
+import org.miaixz.bus.http.accord.Connection;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 带有Name标识的 {@link ThreadLocal}，调用toString返回name
+ * 网络调用链
  *
- * @param <T> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NamedThreadLocal<T> extends ThreadLocal<T> {
-
-    private final String name;
+public interface NewChain {
 
     /**
-     * 构造
-     *
-     * @param name 名字
+     * @return 网络请求
      */
-    public NamedThreadLocal(final String name) {
-        this.name = name;
-    }
+    Request request();
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
+    /**
+     * @param request 网络请求
+     * @return {@link Response}
+     * @throws IOException 异常
+     */
+    Response proceed(Request request) throws IOException;
+
+    /**
+     * 返回将执行请求的连接。这只在网络拦截器链中可用;
+     * 对于应用程序拦截器，这总是null
+     *
+     * @return 连接信息
+     */
+    Connection connection();
+
+    /**
+     * 实际调用准备执行的请求
+     *
+     * @return {@link NewCall}
+     */
+    NewCall call();
+
+    /**
+     * 连接超时时间
+     *
+     * @return the int
+     */
+    int connectTimeoutMillis();
+
+    /**
+     * 设置连接超时时间
+     *
+     * @param timeout 超时时间
+     * @param unit    单位
+     * @return {@link NewChain}
+     */
+    NewChain withConnectTimeout(int timeout, TimeUnit unit);
+
+    /**
+     * 读操作超时时间
+     *
+     * @return the int
+     */
+    int readTimeoutMillis();
+
+    /**
+     * 配置读操作超时时间
+     *
+     * @param timeout 超时时间
+     * @param unit    单位
+     * @return {@link NewChain}
+     */
+    NewChain withReadTimeout(int timeout, TimeUnit unit);
+
+    /**
+     * 写操作超时时间
+     *
+     * @return the int
+     */
+    int writeTimeoutMillis();
+
+    /**
+     * 配置写操作超时时间
+     *
+     * @param timeout 超时时间
+     * @param unit    单位
+     * @return {@link NewChain}
+     */
+    NewChain withWriteTimeout(int timeout, TimeUnit unit);
 
 }

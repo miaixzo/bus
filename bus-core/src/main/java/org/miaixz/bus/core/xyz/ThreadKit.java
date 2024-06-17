@@ -655,8 +655,7 @@ public class ThreadKit {
      * @return 线程组
      */
     public static ThreadGroup currentThreadGroup() {
-        final SecurityManager s = System.getSecurityManager();
-        return (null != s) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        return Thread.currentThread().getThreadGroup();
     }
 
     /**

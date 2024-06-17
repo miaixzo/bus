@@ -39,8 +39,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * A source that uses <a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a>
- * to decompress data read from another source.
+ * 使用<a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a> 解压缩从另一个源读取的数据的源。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,9 +50,7 @@ public final class InflaterSource implements Source {
     private final Inflater inflater;
 
     /**
-     * When we call Inflater.setInput(), the inflater keeps our byte array until
-     * it needs input again. This tracks how many bytes the inflater is currently
-     * holding on to.
+     * 当调用 Inflater.setInput() 时，inflater 会保留字节数组，直到再次需要输入。
      */
     private int bufferBytesHeldByInflater;
     private boolean closed;
@@ -63,9 +60,11 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * This package-private constructor shares a buffer with its trusted caller.
-     * In general we can't share a BufferedSource because the inflater holds input
-     * bytes until they are inflated.
+     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。
+     * 一般来说，我们不能共享 BufferedSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
+     *
+     * @param source   缓冲源
+     * @param inflater 缓冲区
      */
     InflaterSource(BufferSource source, Inflater inflater) {
         if (source == null) throw new IllegalArgumentException("source == null");
@@ -84,7 +83,7 @@ public final class InflaterSource implements Source {
         while (true) {
             boolean sourceExhausted = refill();
 
-            // Decompress the inflater's compressed data into the sink.
+            // 将缓冲区的压缩数据解压到接收器中
             try {
                 SectionBuffer tail = sink.writableSegment(1);
                 int toRead = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
@@ -111,9 +110,8 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * Refills the inflater with compressed data if it needs input. (And only if
-     * it needs input). Returns true if the inflater required input but the source
-     * was exhausted.
+     * 如果需要输入，则用压缩数据重新填充缓冲区。（并且仅在需要输入时才有效）
+     * 如果缓冲区需要输入但源已耗尽，则返回 true。
      */
     public boolean refill() throws IOException {
         if (!inflater.needsInput()) return false;
@@ -121,10 +119,12 @@ public final class InflaterSource implements Source {
         releaseInflatedBytes();
         if (inflater.getRemaining() != 0) throw new IllegalStateException("?");
 
-        // If there are compressed bytes in the source, assign them to the inflater.
-        if (source.exhausted()) return true;
+        // 如果源中有压缩字节，则将它们分配给缓冲区
+        if (source.exhausted()) {
+            return true;
+        }
 
-        // Assign buffer bytes to the inflater.
+        // 将缓冲区字节分配给缓冲区
         SectionBuffer head = source.getBuffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);
@@ -132,7 +132,7 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * When the inflater has processed compressed data, remove it from the buffer.
+     * 当缓冲区处理完压缩数据后，将其从缓冲区中移除。
      */
     private void releaseInflatedBytes() throws IOException {
         if (bufferBytesHeldByInflater == 0) return;

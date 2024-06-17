@@ -39,8 +39,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.metric.EventListener;
-import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.*;
 import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.Handshake;
@@ -555,7 +555,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         return true;
     }
 
-    HttpCodec newCodec(Httpd client, Interceptor.Chain chain) throws SocketException {
+    HttpCodec newCodec(Httpd client, NewChain chain) throws SocketException {
         if (http2Connection != null) {
             return new Http2Codec(client, this, chain, http2Connection);
         } else {

@@ -31,7 +31,6 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.ip.IPv4;
-import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
  * ID生成器工具类，此工具类中主要封装：
@@ -226,7 +225,7 @@ public class ID {
         final StringBuilder mpid = new StringBuilder();
         mpid.append(datacenterId);
         try {
-            mpid.append(RuntimeKit.getPid());
+            mpid.append(Pid.INSTANCE.get());
         } catch (final InternalException igonre) {
             //ignore
         }

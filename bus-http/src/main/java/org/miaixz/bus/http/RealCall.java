@@ -35,6 +35,7 @@ import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.cache.CacheInterceptor;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NamedRunnable;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.BridgeInterceptor;
 import org.miaixz.bus.http.metric.http.CallServerInterceptor;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
@@ -172,7 +173,7 @@ public class RealCall implements NewCall {
         }
         interceptors.add(new CallServerInterceptor(forWebSocket));
 
-        Interceptor.Chain chain = new RealInterceptorChain(interceptors, transmitter, null, 0,
+        NewChain chain = new RealInterceptorChain(interceptors, transmitter, null, 0,
                 originalRequest, this, client.connectTimeoutMillis(),
                 client.readTimeoutMillis(), client.writeTimeoutMillis());
 

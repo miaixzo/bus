@@ -37,6 +37,7 @@ import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -70,7 +71,7 @@ public class RetryAndFollowUp implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Request request = chain.request();
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Transmitter transmitter = realChain.transmitter();

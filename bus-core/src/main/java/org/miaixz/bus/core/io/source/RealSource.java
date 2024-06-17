@@ -139,10 +139,8 @@ public class RealSource implements BufferSource {
             int index = buffer.selectPrefix(segmentBuffer, true);
             if (index == -1) return -1;
             if (index == -2) {
-                // We need to grow the buffer. Do that, then try it all again.
                 if (source.read(buffer, SectionBuffer.SIZE) == -1L) return -1;
             } else {
-                // We matched a full byte string: consume it and return it.
                 int selectedSize = segmentBuffer.byteStrings[index].size();
                 buffer.skip(selectedSize);
                 return index;
@@ -172,7 +170,6 @@ public class RealSource implements BufferSource {
         try {
             require(sink.length);
         } catch (EOFException e) {
-            // The underlying source is exhausted. Copy the bytes we got before rethrowing.
             int offset = 0;
             while (buffer.size > 0) {
                 int read = buffer.read(sink, offset, (int) buffer.size);

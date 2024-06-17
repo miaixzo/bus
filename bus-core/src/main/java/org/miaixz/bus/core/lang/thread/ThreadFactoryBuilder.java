@@ -83,8 +83,8 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      * @return {@link ThreadFactory}
      */
     private static ThreadFactory build(final ThreadFactoryBuilder builder) {
-        final ThreadFactory backingThreadFactory = (null != builder.backingThreadFactory)//
-                ? builder.backingThreadFactory //
+        final ThreadFactory backingThreadFactory = (null != builder.backingThreadFactory)
+                ? builder.backingThreadFactory
                 : Executors.defaultThreadFactory();
         final String namePrefix = builder.namePrefix;
         final Boolean daemon = builder.daemon;

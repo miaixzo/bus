@@ -146,7 +146,7 @@ public class ClassKit {
      * 例如：ClassKit这个类
      *
      * <pre>
-     * isSimple为false: "reflect.core.org.miaixz.bus.ClassKit"
+     * isSimple为false: "org.miaixz.bus.ClassKit"
      * isSimple为true: "ClassKit"
      * </pre>
      *

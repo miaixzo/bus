@@ -59,7 +59,7 @@ public enum Pid {
      * @return 进程ID
      * @throws InternalException 进程名称为空
      */
-    private static int getPid() throws InternalException {
+    public static int getPid() throws InternalException {
         final String processName = ManagementFactory.getRuntimeMXBean().getName();
         if (StringKit.isBlank(processName)) {
             throw new InternalException("Process name is blank!");

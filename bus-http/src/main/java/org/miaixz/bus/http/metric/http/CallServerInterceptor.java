@@ -36,6 +36,7 @@ import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -56,7 +57,7 @@ public class CallServerInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Exchange exchange = realChain.exchange();
         Request request = realChain.request();

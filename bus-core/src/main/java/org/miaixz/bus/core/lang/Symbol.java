@@ -142,6 +142,12 @@ public class Symbol {
     public static final String U_TEN = Normal.EMPTY + C_U_TEN;
 
     /**
+     * 符号: X
+     */
+    public static final char C_X = 'X';
+    public static final String X = Normal.EMPTY + C_X;
+
+    /**
      * 符号: 逗号
      */
     public static final char C_COMMA = ',';
