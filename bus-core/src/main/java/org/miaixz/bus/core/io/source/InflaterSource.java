@@ -96,7 +96,7 @@ public final class InflaterSource implements Source {
                 if (inflater.finished() || inflater.needsDictionary()) {
                     releaseInflatedBytes();
                     if (tail.pos == tail.limit) {
-                        // We allocated a tail segment, but didn't end up needing it. Recycle!
+                        // 分配了一个尾段，但最终并不需要它。回收！
                         sink.head = tail.pop();
                         LifeCycle.recycle(tail);
                     }

@@ -28,9 +28,11 @@
 package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * 时长格式化器，用于格式化输出两个日期相差的时长
@@ -47,6 +49,7 @@ import java.io.Serializable;
 public class FormatPeriod implements Serializable {
 
     private static final long serialVersionUID = -1L;
+
     /**
      * 格式化级别的最大个数
      */
@@ -60,10 +63,19 @@ public class FormatPeriod implements Serializable {
      */
     private Level level;
     /**
+     * 格式化器
+     */
+    private Function<Level, String> formatter = Level::getName;
+    /**
      * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分
      * 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
      */
     private boolean simpleMode = true;
+    /**
+     * 分隔符，默认为""
+     * 通过{@link #setSeparator(String)}进行调整
+     */
+    private String separator = Normal.EMPTY;
 
     /**
      * 构造
@@ -122,14 +134,14 @@ public class FormatPeriod implements Serializable {
 
             // 天
             if (isLevelCountValid(levelCount) && day > 0) {
-                sb.append(day).append(Level.DAY.name);
+                sb.append(day).append(formatter.apply(Level.DAY)).append(separator);
                 levelCount++;
             }
 
             // 时
             if (isLevelCountValid(levelCount) && level >= Level.HOUR.ordinal()) {
                 if (hour > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(hour).append(Level.HOUR.name);
+                    sb.append(hour).append(formatter.apply(Level.HOUR)).append(separator);
                     levelCount++;
                 }
             }
@@ -137,7 +149,7 @@ public class FormatPeriod implements Serializable {
             // 分
             if (isLevelCountValid(levelCount) && level >= Level.MINUTE.ordinal()) {
                 if (minute > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(minute).append(Level.MINUTE.name);
+                    sb.append(minute).append(formatter.apply(Level.MINUTE)).append(separator);
                     levelCount++;
                 }
             }
@@ -145,23 +157,24 @@ public class FormatPeriod implements Serializable {
             // 秒
             if (isLevelCountValid(levelCount) && level >= Level.SECOND.ordinal()) {
                 if (second > 0 || (!this.simpleMode && StringKit.isNotEmpty(sb))) {
-                    sb.append(second).append(Level.SECOND.name);
+                    sb.append(second).append(formatter.apply(Level.SECOND)).append(separator);
                     levelCount++;
                 }
             }
 
             // 毫秒
             if (isLevelCountValid(levelCount) && millisecond > 0 && level >= Level.MILLISECOND.ordinal()) {
-                sb.append(millisecond).append(Level.MILLISECOND.name);
-                // levelCount++;
+                sb.append(millisecond).append(formatter.apply(Level.MILLISECOND)).append(separator);
             }
         }
 
         if (StringKit.isEmpty(sb)) {
-            sb.append(0).append(this.level.name);
+            sb.append(0).append(formatter.apply(this.level));
+        } else if (StringKit.isNotEmpty(separator)) {
+            sb.delete(sb.length() - separator.length(), sb.length());
         }
-
-        return sb.toString();
+        // 自定义实现最后可能存在空格
+        return sb.toString().trim();
     }
 
     /**
@@ -213,6 +226,28 @@ public class FormatPeriod implements Serializable {
      */
     public FormatPeriod setSimpleMode(final boolean simpleMode) {
         this.simpleMode = simpleMode;
+        return this;
+    }
+
+    /**
+     * 设置级别格式化器
+     *
+     * @param formatter 级别格式化器
+     * @return this
+     */
+    public FormatPeriod setFormatter(final Function<Level, String> formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    /**
+     * 设置分隔符
+     *
+     * @param separator 分割符
+     * @return this
+     */
+    public FormatPeriod setSeparator(final String separator) {
+        this.separator = StringKit.emptyIfNull(separator);
         return this;
     }
 

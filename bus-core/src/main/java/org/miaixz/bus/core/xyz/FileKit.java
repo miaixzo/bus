@@ -1219,23 +1219,37 @@ public class FileKit extends PathResolve {
 
     /**
      * 检查两个文件是否是同一个文件
-     * 所谓文件相同，是指File对象是否指向同一个文件或文件夹
+     * 所谓文件相同，是指File对象是否指向同一个文件或文件夹，规则为：
+     * <ul>
+     *     <li>当两个文件都为{@code null}时，返回{@code true}</li>
+     *     <li>当两个文件都存在时，检查是否为同一个文件</li>
+     *     <li>当两个文件都不存在时，检查路径是否一致</li>
+     * </ul>
      *
-     * @param file1 文件1
-     * @param file2 文件2
+     * @param file1 文件1，可以为{@code null}
+     * @param file2 文件2，可以为{@code null}
      * @return 是否相同
-     * @throws InternalException IO异常
      */
-    public static boolean equals(final File file1, final File file2) throws InternalException {
-        Assert.notNull(file1);
-        Assert.notNull(file2);
-        if (!file1.exists() || !file2.exists()) {
-            // 两个文件都不存在判断其路径是否相同， 对于一个存在一个不存在的情况，一定不相同
-            return !file1.exists()//
-                    && !file2.exists()//
-                    && pathEquals(file1, file2);
+    public static boolean equals(final File file1, final File file2) {
+        // 两者都为null判定为相同
+        if (null == file1 || null == file2) {
+            return null == file1 && null == file2;
         }
-        return equals(file1.toPath(), file2.toPath());
+
+        final boolean exists1 = file1.exists();
+        final boolean exists2 = file2.exists();
+
+        // 当两个文件都存在时，检查是否为同一个文件
+        if (exists1 && exists2) {
+            return PathResolve.isSameFile(file1.toPath(), file2.toPath());
+        }
+
+        // 都不存在时，检查路径是否相同
+        if (!exists1 && !exists2) {
+            return pathEquals(file1, file2);
+        }
+
+        return false;
     }
 
     /**

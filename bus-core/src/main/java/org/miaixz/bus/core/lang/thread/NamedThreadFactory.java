@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.thread.threadlocal.EnhanceThread;
+import org.miaixz.bus.core.lang.thread.threadlocal.SpecificThread;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -232,7 +232,7 @@ public class NamedThreadFactory implements ThreadFactory {
      * @return 新新线程信息
      */
     protected Thread newThread(Runnable r, String name) {
-        return new EnhanceThread(this.group, r, name);
+        return new SpecificThread(this.group, r, name);
     }
 
 }
