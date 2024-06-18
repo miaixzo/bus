@@ -33,7 +33,7 @@ package org.miaixz.bus.core.lang.thread.threadlocal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EnhanceThread extends Thread {
+public class SpecificThread extends Thread {
 
     /**
      * 变量数据结构
@@ -43,7 +43,7 @@ public class EnhanceThread extends Thread {
     /**
      * 构造
      */
-    public EnhanceThread() {
+    public SpecificThread() {
     }
 
     /**
@@ -51,7 +51,7 @@ public class EnhanceThread extends Thread {
      *
      * @param name 线程名称
      */
-    public EnhanceThread(String name) {
+    public SpecificThread(String name) {
         super(name);
     }
 
@@ -60,7 +60,7 @@ public class EnhanceThread extends Thread {
      *
      * @param r 由新线程实例执行的可运行对象
      */
-    public EnhanceThread(Runnable r) {
+    public SpecificThread(Runnable r) {
         super(r);
     }
 
@@ -70,7 +70,7 @@ public class EnhanceThread extends Thread {
      * @param r    由新线程实例执行的可运行对象
      * @param name 线程名称
      */
-    public EnhanceThread(Runnable r, String name) {
+    public SpecificThread(Runnable r, String name) {
         super(r, name);
     }
 
@@ -80,7 +80,7 @@ public class EnhanceThread extends Thread {
      * @param group 线程组
      * @param name  线程名称
      */
-    public EnhanceThread(ThreadGroup group, String name) {
+    public SpecificThread(ThreadGroup group, String name) {
         super(group, name);
     }
 
@@ -90,7 +90,7 @@ public class EnhanceThread extends Thread {
      * @param group 线程组
      * @param r     由新线程实例执行的可运行对象
      */
-    public EnhanceThread(ThreadGroup group, Runnable r) {
+    public SpecificThread(ThreadGroup group, Runnable r) {
         super(group, r);
     }
 
@@ -101,7 +101,7 @@ public class EnhanceThread extends Thread {
      * @param r     由新线程实例执行的可运行对象
      * @param name  线程名称
      */
-    public EnhanceThread(ThreadGroup group, Runnable r, String name) {
+    public SpecificThread(ThreadGroup group, Runnable r, String name) {
         super(group, r, name);
     }
 
@@ -113,7 +113,7 @@ public class EnhanceThread extends Thread {
      * @param name      线程名称
      * @param stackSize 线程所需的堆栈大小
      */
-    public EnhanceThread(ThreadGroup group, Runnable r, String name, long stackSize) {
+    public SpecificThread(ThreadGroup group, Runnable r, String name, long stackSize) {
         super(group, r, name, stackSize);
     }
 

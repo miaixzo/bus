@@ -35,8 +35,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 存储所有 {@link EnhanceThread} 的 {@link ThreadLocal} 变量的内部数据结构。
- * 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link EnhanceThread}
+ * 存储所有 {@link SpecificThread} 的 {@link ThreadLocal} 变量的内部数据结构。
+ * 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link SpecificThread}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -93,8 +93,8 @@ public final class ThreadLocalMap {
      */
     public static ThreadLocalMap get() {
         Thread thread = Thread.currentThread();
-        if (thread instanceof EnhanceThread) {
-            return fastGet((EnhanceThread) thread);
+        if (thread instanceof SpecificThread) {
+            return fastGet((SpecificThread) thread);
         } else {
             return slowGet();
         }
@@ -106,7 +106,7 @@ public final class ThreadLocalMap {
      * @param thread 快速访问变量
      * @return {@link ThreadLocalMap}
      */
-    private static ThreadLocalMap fastGet(EnhanceThread thread) {
+    private static ThreadLocalMap fastGet(SpecificThread thread) {
         ThreadLocalMap threadLocalMap = thread.getThreadLocalMap();
         if (threadLocalMap == null) {
             thread.setThreadLocalMap(threadLocalMap = new ThreadLocalMap());
@@ -135,8 +135,8 @@ public final class ThreadLocalMap {
      */
     public static ThreadLocalMap getIfSet() {
         Thread thread = Thread.currentThread();
-        if (thread instanceof EnhanceThread) {
-            return ((EnhanceThread) thread).getThreadLocalMap();
+        if (thread instanceof SpecificThread) {
+            return ((SpecificThread) thread).getThreadLocalMap();
         }
         return SLOW_THREAD_LOCAL_MAP.get();
     }
@@ -146,8 +146,8 @@ public final class ThreadLocalMap {
      */
     public static void remove() {
         Thread thread = Thread.currentThread();
-        if (thread instanceof EnhanceThread) {
-            ((EnhanceThread) thread).setThreadLocalMap(null);
+        if (thread instanceof SpecificThread) {
+            ((SpecificThread) thread).setThreadLocalMap(null);
         } else {
             SLOW_THREAD_LOCAL_MAP.remove();
         }

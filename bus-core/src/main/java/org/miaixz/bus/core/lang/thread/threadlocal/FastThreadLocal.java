@@ -33,8 +33,8 @@ import java.util.Set;
 
 /**
  * {@link ThreadLocal} 的一个特殊变体
- * 当从 {@link EnhanceThread} 访问时，可产生更高的访问性能。
- * {@link EnhanceThread} 使用数组中的常量索引（而不是使用哈希码和哈希表）来查找变量。
+ * 当从 {@link SpecificThread} 访问时，可产生更高的访问性能。
+ * {@link SpecificThread} 使用数组中的常量索引（而不是使用哈希码和哈希表）来查找变量。
  * 虽然看似非常微妙，但它比使用哈希表具有轻微的性能优势，并且在频繁访问时很有用。
  *
  * @author Kimi Liu
@@ -51,7 +51,7 @@ public class FastThreadLocal<V> {
      * 构造
      */
     public FastThreadLocal() {
-        index = ThreadLocalMap.nextVariableIndex();
+        this.index = ThreadLocalMap.nextVariableIndex();
     }
 
     /**
@@ -98,7 +98,7 @@ public class FastThreadLocal<V> {
     }
 
     /**
-     * 销毁保存所有从非 {@link EnhanceThread} 访问的 {@link FastThreadLocal} 变量的数据结构
+     * 销毁保存所有从非 {@link SpecificThread} 访问的 {@link FastThreadLocal} 变量的数据结构
      * 当处于容器环境中，并且不想将线程局部变量留在未管理的线程中时，此操作非常有用。
      * 当应用程序从容器中卸载时，请调用此方法。
      */
