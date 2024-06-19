@@ -27,47 +27,68 @@
  */
 package org.miaixz.bus.http.metric.http;
 
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
+
 /**
- * 错误码信息
- *
- * @author Kimi Liu
- * @since Java 17+
+ * HTTP header: the name is an ASCII string, but the value can be UTF-8.
  */
-public enum ErrorCode {
+public class Http2Header {
 
-    NO_ERROR(0),
+    // Special header names defined in HTTP/2 spec.
+    public static final ByteString PSEUDO_PREFIX = ByteString.encodeUtf8(Symbol.COLON);
+    public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(Http.RESPONSE_STATUS_UTF8);
+    public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(Http.TARGET_METHOD_UTF8);
+    public static final ByteString TARGET_PATH = ByteString.encodeUtf8(Http.TARGET_PATH_UTF8);
+    public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(Http.TARGET_SCHEME_UTF8);
+    public static final ByteString TARGET_AUTHORITY = ByteString.encodeUtf8(Http.TARGET_AUTHORITY_UTF8);
 
-    PROTOCOL_ERROR(1),
+    /**
+     * Name in case-insensitive ASCII encoding.
+     */
+    public final ByteString name;
+    /**
+     * Value in UTF-8 encoding.
+     */
+    public final ByteString value;
+    public final int hpackSize;
 
-    INTERNAL_ERROR(2),
-
-    FLOW_CONTROL_ERROR(3),
-
-    REFUSED_STREAM(7),
-
-    CANCEL(8),
-
-    COMPRESSION_ERROR(9),
-
-    CONNECT_ERROR(0xa),
-
-    ENHANCE_YOUR_CALM(0xb),
-
-    INADEQUATE_SECURITY(0xc),
-
-    HTTP_1_1_REQUIRED(0xd);
-
-    public final int httpCode;
-
-    ErrorCode(int httpCode) {
-        this.httpCode = httpCode;
+    // TODO: search for toLowerCase and consider moving logic here.
+    public Http2Header(String name, String value) {
+        this(ByteString.encodeUtf8(name), ByteString.encodeUtf8(value));
     }
 
-    public static ErrorCode fromHttp2(int code) {
-        for (ErrorCode errorCode : ErrorCode.values()) {
-            if (errorCode.httpCode == code) return errorCode;
+    public Http2Header(ByteString name, String value) {
+        this(name, ByteString.encodeUtf8(value));
+    }
+
+    public Http2Header(ByteString name, ByteString value) {
+        this.name = name;
+        this.value = value;
+        this.hpackSize = 32 + name.size() + value.size();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Http2Header) {
+            Http2Header that = (Http2Header) other;
+            return this.name.equals(that.name)
+                    && this.value.equals(that.value);
         }
-        return null;
+        return false;
     }
 
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s", name.utf8(), value.utf8());
+    }
 }

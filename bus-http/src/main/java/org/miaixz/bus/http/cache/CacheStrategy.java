@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;

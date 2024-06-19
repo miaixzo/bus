@@ -28,8 +28,8 @@
 package org.miaixz.bus.notify.metric.emay;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.MapKit;

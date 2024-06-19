@@ -36,7 +36,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;

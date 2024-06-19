@@ -31,11 +31,10 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Headers;
-import org.miaixz.bus.http.Settings;
 import org.miaixz.bus.http.metric.NamedRunnable;
 import org.miaixz.bus.logger.Logger;
 
@@ -100,7 +99,7 @@ public class Http2Connection implements Closeable {
     /**
      * 我们从对等点接收设置.
      */
-    final Settings peerSettings = new Settings();
+    final Http2Settings peerSettings = new Http2Settings();
     final Socket socket;
     final Http2Writer writer;
     final ReaderRunnable readerRunnable;
@@ -127,7 +126,7 @@ public class Http2Connection implements Closeable {
     /**
      * 设置我们与对等点通信
      */
-    Settings settings = new Settings();
+    Http2Settings settings = new Http2Settings();
     private boolean shutdown;
     // Total number of pings send and received of the corresponding types. All guarded by this.
     private long intervalPingsSent = 0L;
@@ -218,7 +217,7 @@ public class Http2Connection implements Closeable {
      * @return http请求流
      * @throws IOException 异常
      */
-    public Http2Stream pushStream(int associatedStreamId, List<Headers.Header> requestHeaders, boolean out)
+    public Http2Stream pushStream(int associatedStreamId, List<Http2Header> requestHeaders, boolean out)
             throws IOException {
         if (client) throw new IllegalStateException("Client cannot push requests.");
         return newStream(associatedStreamId, requestHeaders, out);
@@ -230,12 +229,12 @@ public class Http2Connection implements Closeable {
      * @param out true to create an output stream that we can use to send data to the remote peer.
      *            Corresponds to {@code FLAG_FIN}.
      */
-    public Http2Stream newStream(List<Headers.Header> requestHeaders, boolean out) throws IOException {
+    public Http2Stream newStream(List<Http2Header> requestHeaders, boolean out) throws IOException {
         return newStream(0, requestHeaders, out);
     }
 
     private Http2Stream newStream(
-            int associatedStreamId, List<Headers.Header> requestHeaders, boolean out) throws IOException {
+            int associatedStreamId, List<Http2Header> requestHeaders, boolean out) throws IOException {
         boolean outFinished = !out;
         boolean inFinished = false;
         boolean flushHeaders;
@@ -245,7 +244,7 @@ public class Http2Connection implements Closeable {
         synchronized (writer) {
             synchronized (this) {
                 if (nextStreamId > Integer.MAX_VALUE / 2) {
-                    shutdown(ErrorCode.REFUSED_STREAM);
+                    shutdown(Http2ErrorCode.REFUSED_STREAM);
                 }
                 if (shutdown) {
                     throw new IOException();
@@ -274,7 +273,7 @@ public class Http2Connection implements Closeable {
         return stream;
     }
 
-    void writeHeaders(int streamId, boolean outFinished, List<Headers.Header> alternating)
+    void writeHeaders(int streamId, boolean outFinished, List<Http2Header> alternating)
             throws IOException {
         writer.headers(outFinished, streamId, alternating);
     }
@@ -324,7 +323,7 @@ public class Http2Connection implements Closeable {
         }
     }
 
-    void writeSynResetLater(final int streamId, final ErrorCode errorCode) {
+    void writeSynResetLater(final int streamId, final Http2ErrorCode errorCode) {
         try {
             writerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
                 @Override
@@ -341,7 +340,7 @@ public class Http2Connection implements Closeable {
         }
     }
 
-    void writeSynReset(int streamId, ErrorCode statusCode) throws IOException {
+    void writeSynReset(int streamId, Http2ErrorCode statusCode) throws IOException {
         writer.rstStream(streamId, statusCode);
     }
 
@@ -407,7 +406,7 @@ public class Http2Connection implements Closeable {
      * from the remote peer. Existing streams are not impacted. This is intended to permit an endpoint
      * to gracefully stop accepting new requests without harming previously established streams.
      */
-    public void shutdown(ErrorCode statusCode) throws IOException {
+    public void shutdown(Http2ErrorCode statusCode) throws IOException {
         synchronized (writer) {
             int lastGoodStreamId;
             synchronized (this) {
@@ -427,10 +426,10 @@ public class Http2Connection implements Closeable {
      */
     @Override
     public void close() {
-        close(ErrorCode.NO_ERROR, ErrorCode.CANCEL, null);
+        close(Http2ErrorCode.NO_ERROR, Http2ErrorCode.CANCEL, null);
     }
 
-    void close(ErrorCode connectionCode, ErrorCode streamCode, IOException cause) {
+    void close(Http2ErrorCode connectionCode, Http2ErrorCode streamCode, IOException cause) {
         assert (!Thread.holdsLock(this));
         try {
             shutdown(connectionCode);
@@ -472,7 +471,7 @@ public class Http2Connection implements Closeable {
     }
 
     private void failConnection(IOException e) {
-        close(ErrorCode.PROTOCOL_ERROR, ErrorCode.PROTOCOL_ERROR, e);
+        close(Http2ErrorCode.PROTOCOL_ERROR, Http2ErrorCode.PROTOCOL_ERROR, e);
     }
 
     /**
@@ -502,7 +501,7 @@ public class Http2Connection implements Closeable {
     /**
      * Merges {@code settings} into this peer's settings and sends them to the remote peer.
      */
-    public void setSettings(Settings settings) throws IOException {
+    public void setSettings(Http2Settings settings) throws IOException {
         synchronized (writer) {
             synchronized (this) {
                 if (shutdown) {
@@ -560,10 +559,10 @@ public class Http2Connection implements Closeable {
         return streamId != 0 && (streamId & 1) == 0;
     }
 
-    void pushRequestLater(final int streamId, final List<Headers.Header> requestHeaders) {
+    void pushRequestLater(final int streamId, final List<Http2Header> requestHeaders) {
         synchronized (this) {
             if (currentPushRequests.contains(streamId)) {
-                writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
+                writeSynResetLater(streamId, Http2ErrorCode.PROTOCOL_ERROR);
                 return;
             }
             currentPushRequests.add(streamId);
@@ -576,7 +575,7 @@ public class Http2Connection implements Closeable {
                     boolean cancel = pushObserver.onRequest(streamId, requestHeaders);
                     try {
                         if (cancel) {
-                            writer.rstStream(streamId, ErrorCode.CANCEL);
+                            writer.rstStream(streamId, Http2ErrorCode.CANCEL);
                             synchronized (Http2Connection.this) {
                                 currentPushRequests.remove(streamId);
                             }
@@ -590,7 +589,7 @@ public class Http2Connection implements Closeable {
         }
     }
 
-    void pushHeadersLater(final int streamId, final List<Headers.Header> requestHeaders,
+    void pushHeadersLater(final int streamId, final List<Http2Header> requestHeaders,
                           final boolean inFinished) {
         try {
             pushExecutorExecute(new NamedRunnable(
@@ -599,7 +598,7 @@ public class Http2Connection implements Closeable {
                 public void execute() {
                     boolean cancel = pushObserver.onHeaders(streamId, requestHeaders, inFinished);
                     try {
-                        if (cancel) writer.rstStream(streamId, ErrorCode.CANCEL);
+                        if (cancel) writer.rstStream(streamId, Http2ErrorCode.CANCEL);
                         if (cancel || inFinished) {
                             synchronized (Http2Connection.this) {
                                 currentPushRequests.remove(streamId);
@@ -629,7 +628,7 @@ public class Http2Connection implements Closeable {
             public void execute() {
                 try {
                     boolean cancel = pushObserver.onData(streamId, buffer, byteCount, inFinished);
-                    if (cancel) writer.rstStream(streamId, ErrorCode.CANCEL);
+                    if (cancel) writer.rstStream(streamId, Http2ErrorCode.CANCEL);
                     if (cancel || inFinished) {
                         synchronized (Http2Connection.this) {
                             currentPushRequests.remove(streamId);
@@ -641,7 +640,7 @@ public class Http2Connection implements Closeable {
         });
     }
 
-    void pushResetLater(final int streamId, final ErrorCode errorCode) {
+    void pushResetLater(final int streamId, final Http2ErrorCode errorCode) {
         pushExecutorExecute(new NamedRunnable("Http %s Push Reset[%s]", connectionName, streamId) {
             @Override
             public void execute() {
@@ -723,7 +722,7 @@ public class Http2Connection implements Closeable {
         public static final Listener REFUSE_INCOMING_STREAMS = new Listener() {
             @Override
             public void onStream(Http2Stream stream) throws IOException {
-                stream.close(ErrorCode.REFUSED_STREAM, null);
+                stream.close(Http2ErrorCode.REFUSED_STREAM, null);
             }
         };
 
@@ -804,19 +803,19 @@ public class Http2Connection implements Closeable {
 
         @Override
         protected void execute() {
-            ErrorCode connectionErrorCode = ErrorCode.INTERNAL_ERROR;
-            ErrorCode streamErrorCode = ErrorCode.INTERNAL_ERROR;
+            Http2ErrorCode connectionErrorCode = Http2ErrorCode.INTERNAL_ERROR;
+            Http2ErrorCode streamErrorCode = Http2ErrorCode.INTERNAL_ERROR;
             IOException errorException = null;
             try {
                 reader.readConnectionPreface(this);
                 while (reader.nextFrame(false, this)) {
                 }
-                connectionErrorCode = ErrorCode.NO_ERROR;
-                streamErrorCode = ErrorCode.CANCEL;
+                connectionErrorCode = Http2ErrorCode.NO_ERROR;
+                streamErrorCode = Http2ErrorCode.CANCEL;
             } catch (IOException e) {
                 errorException = e;
-                connectionErrorCode = ErrorCode.PROTOCOL_ERROR;
-                streamErrorCode = ErrorCode.PROTOCOL_ERROR;
+                connectionErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
+                streamErrorCode = Http2ErrorCode.PROTOCOL_ERROR;
             } finally {
                 close(connectionErrorCode, streamErrorCode, errorException);
                 IoKit.close(reader);
@@ -832,7 +831,7 @@ public class Http2Connection implements Closeable {
             }
             Http2Stream dataStream = getStream(streamId);
             if (dataStream == null) {
-                writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
+                writeSynResetLater(streamId, Http2ErrorCode.PROTOCOL_ERROR);
                 updateConnectionFlowControl(length);
                 source.skip(length);
                 return;
@@ -845,7 +844,7 @@ public class Http2Connection implements Closeable {
 
         @Override
         public void headers(boolean inFinished, int streamId, int associatedStreamId,
-                            List<Headers.Header> headerBlock) {
+                            List<Http2Header> headerBlock) {
             if (pushedStream(streamId)) {
                 pushHeadersLater(streamId, headerBlock, inFinished);
                 return;
@@ -879,7 +878,7 @@ public class Http2Connection implements Closeable {
                             } catch (IOException e) {
                                 Logger.info("Http2Connection.Listener failure for " + connectionName, e);
                                 try {
-                                    newStream.close(ErrorCode.PROTOCOL_ERROR, e);
+                                    newStream.close(Http2ErrorCode.PROTOCOL_ERROR, e);
                                 } catch (IOException ignored) {
                                 }
                             }
@@ -894,7 +893,7 @@ public class Http2Connection implements Closeable {
         }
 
         @Override
-        public void rstStream(int streamId, ErrorCode errorCode) {
+        public void rstStream(int streamId, Http2ErrorCode errorCode) {
             if (pushedStream(streamId)) {
                 pushResetLater(streamId, errorCode);
                 return;
@@ -906,7 +905,7 @@ public class Http2Connection implements Closeable {
         }
 
         @Override
-        public void settings(boolean clearPrevious, Settings settings) {
+        public void settings(boolean clearPrevious, Http2Settings settings) {
             try {
                 writerExecutor.execute(new NamedRunnable("Http %s ACK Settings", connectionName) {
                     @Override
@@ -919,7 +918,7 @@ public class Http2Connection implements Closeable {
             }
         }
 
-        void applyAndAckSettings(boolean clearPrevious, Settings settings) {
+        void applyAndAckSettings(boolean clearPrevious, Http2Settings settings) {
             long delta = 0;
             Http2Stream[] streamsToNotify = null;
             synchronized (writer) {
@@ -985,7 +984,7 @@ public class Http2Connection implements Closeable {
         }
 
         @Override
-        public void goAway(int lastGoodStreamId, ErrorCode errorCode, ByteString debugData) {
+        public void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, ByteString debugData) {
             if (debugData.size() > 0) { // TODO: log the debugData
             }
 
@@ -998,7 +997,7 @@ public class Http2Connection implements Closeable {
 
             for (Http2Stream http2Stream : streamsCopy) {
                 if (http2Stream.getId() > lastGoodStreamId && http2Stream.isLocallyInitiated()) {
-                    http2Stream.receiveRstStream(ErrorCode.REFUSED_STREAM);
+                    http2Stream.receiveRstStream(Http2ErrorCode.REFUSED_STREAM);
                     removeStream(http2Stream.getId());
                 }
             }
@@ -1027,7 +1026,7 @@ public class Http2Connection implements Closeable {
         }
 
         @Override
-        public void pushPromise(int streamId, int promisedStreamId, List<Headers.Header> requestHeaders) {
+        public void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders) {
             pushRequestLater(promisedStreamId, requestHeaders);
         }
 

@@ -28,8 +28,8 @@
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.UnoUrl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;

@@ -29,9 +29,9 @@ package org.miaixz.bus.notify.metric.aliyun;
 
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;

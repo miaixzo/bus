@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.notify.metric.netease;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;

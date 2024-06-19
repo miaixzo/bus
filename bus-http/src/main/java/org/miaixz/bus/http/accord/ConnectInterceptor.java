@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;

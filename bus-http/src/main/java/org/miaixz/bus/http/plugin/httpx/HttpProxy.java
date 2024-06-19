@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.plugin.httpx;
 
-import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.Credentials;
 

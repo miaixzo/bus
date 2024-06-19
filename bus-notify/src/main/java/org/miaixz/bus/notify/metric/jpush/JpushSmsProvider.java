@@ -28,9 +28,9 @@
 package org.miaixz.bus.notify.metric.jpush;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;

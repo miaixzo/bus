@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.pay;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 
 import java.util.Arrays;

@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.cache.CacheControl;
 

@@ -29,9 +29,9 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.source.GzipSource;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RealResponseBody;

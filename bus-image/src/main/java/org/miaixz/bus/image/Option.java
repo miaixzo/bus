@@ -29,7 +29,7 @@ package org.miaixz.bus.image;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
 

@@ -28,9 +28,9 @@
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 

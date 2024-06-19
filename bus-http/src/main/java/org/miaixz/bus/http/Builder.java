@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.http.Http2Header;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -597,18 +598,18 @@ public class Builder {
         return result.readUtf8();
     }
 
-    public static Headers toHeaders(List<Headers.Header> headerBlock) {
+    public static Headers toHeaders(List<Http2Header> headerBlock) {
         Headers.Builder builder = new Headers.Builder();
-        for (Headers.Header header : headerBlock) {
+        for (Http2Header header : headerBlock) {
             Internal.instance.addLenient(builder, header.name.utf8(), header.value.utf8());
         }
         return builder.build();
     }
 
-    public static List<Headers.Header> toHeaderBlock(Headers headers) {
-        List<Headers.Header> result = new ArrayList<>();
+    public static List<Http2Header> toHeaderBlock(Headers headers) {
+        List<Http2Header> result = new ArrayList<>();
         for (int i = 0; i < headers.size(); i++) {
-            result.add(new Headers.Header(headers.name(i), headers.value(i)));
+            result.add(new Http2Header(headers.name(i), headers.value(i)));
         }
         return result;
     }

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.BulkData;

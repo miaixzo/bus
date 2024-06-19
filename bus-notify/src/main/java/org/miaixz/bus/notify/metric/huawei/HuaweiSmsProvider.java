@@ -27,8 +27,12 @@
  */
 package org.miaixz.bus.notify.metric.huawei;
 
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;

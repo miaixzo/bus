@@ -32,8 +32,6 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.http.Headers;
-import org.miaixz.bus.http.Settings;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.Closeable;
@@ -42,7 +40,7 @@ import java.util.List;
 
 /**
  * Reads HTTP/2运输框架
- * 此实现假设我们没有向对等端发送增加的{@link Settings#getMaxFrameSize frame size设置}。
+ * 此实现假设我们没有向对等端发送增加的{@link Http2Settings#getMaxFrameSize frame size设置}。
  * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
  *
  * @author Kimi Liu
@@ -187,12 +185,12 @@ public class Http2Reader implements Closeable {
 
         length = lengthWithoutPadding(length, flags, padding);
 
-        List<Headers.Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
+        List<Http2Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
 
         handler.headers(endStream, streamId, -1, headerBlock);
     }
 
-    private List<Headers.Header> readHeaderBlock(int length, short padding, byte flags, int streamId)
+    private List<Http2Header> readHeaderBlock(int length, short padding, byte flags, int streamId)
             throws IOException {
         continuation.length = continuation.left = length;
         continuation.padding = padding;
@@ -240,7 +238,7 @@ public class Http2Reader implements Closeable {
         if (length != 4) throw Http2.ioException("TYPE_RST_STREAM length: %d != 4", length);
         if (streamId == 0) throw Http2.ioException("TYPE_RST_STREAM streamId == 0");
         int errorCodeInt = source.readInt();
-        ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
+        Http2ErrorCode errorCode = Http2ErrorCode.fromHttp2(errorCodeInt);
         if (null == errorCode) {
             throw Http2.ioException("TYPE_RST_STREAM unexpected error code: %d", errorCodeInt);
         }
@@ -257,7 +255,7 @@ public class Http2Reader implements Closeable {
         }
 
         if (length % 6 != 0) throw Http2.ioException("TYPE_SETTINGS length %% 6 != 0: %s", length);
-        Settings settings = new Settings();
+        Http2Settings settings = new Http2Settings();
         for (int i = 0; i < length; i += 6) {
             int id = source.readShort() & 0xFFFF;
             int value = source.readInt();
@@ -303,7 +301,7 @@ public class Http2Reader implements Closeable {
         int promisedStreamId = source.readInt() & 0x7fffffff;
         length -= 4;
         length = lengthWithoutPadding(length, flags, padding);
-        List<Headers.Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
+        List<Http2Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
         handler.pushPromise(streamId, promisedStreamId, headerBlock);
     }
 
@@ -324,7 +322,7 @@ public class Http2Reader implements Closeable {
         int lastStreamId = source.readInt();
         int errorCodeInt = source.readInt();
         int opaqueDataLength = length - 8;
-        ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
+        Http2ErrorCode errorCode = Http2ErrorCode.fromHttp2(errorCodeInt);
         if (null == errorCode) {
             throw Http2.ioException("TYPE_GOAWAY unexpected error code: %d", errorCodeInt);
         }
@@ -361,11 +359,11 @@ public class Http2Reader implements Closeable {
          * @param headerBlock        header信息
          */
         void headers(boolean inFinished, int streamId, int associatedStreamId,
-                     List<Headers.Header> headerBlock);
+                     List<Http2Header> headerBlock);
 
-        void rstStream(int streamId, ErrorCode errorCode);
+        void rstStream(int streamId, Http2ErrorCode errorCode);
 
-        void settings(boolean clearPrevious, Settings settings);
+        void settings(boolean clearPrevious, Http2Settings settings);
 
         /**
          * HTTP/2 only.
@@ -391,7 +389,7 @@ public class Http2Reader implements Closeable {
          * @param errorCode        关闭连接的原因.
          * @param debugData        只适用于HTTP/2;要发送的不透明调试数据
          */
-        void goAway(int lastGoodStreamId, ErrorCode errorCode, ByteString debugData);
+        void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, ByteString debugData);
 
         /**
          * 通知可以在{@code streamId}上发送额外的{@code windowSizeIncrement}字节
@@ -422,7 +420,7 @@ public class Http2Reader implements Closeable {
          * @param requestHeaders   最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和(@code:path}.
          * @throws IOException 异常信息
          */
-        void pushPromise(int streamId, int promisedStreamId, List<Headers.Header> requestHeaders)
+        void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders)
                 throws IOException;
 
         /**

@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.Authenticator;

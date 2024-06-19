@@ -37,9 +37,9 @@ import org.miaixz.bus.core.lang.exception.RevisedException;
  */
 public class StreamException extends RevisedException {
 
-    public final ErrorCode errorCode;
+    public final Http2ErrorCode errorCode;
 
-    public StreamException(ErrorCode errorCode) {
+    public StreamException(Http2ErrorCode errorCode) {
         super("stream was reset: " + errorCode);
         this.errorCode = errorCode;
     }

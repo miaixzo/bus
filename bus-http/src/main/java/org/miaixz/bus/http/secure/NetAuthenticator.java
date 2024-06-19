@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.Route;

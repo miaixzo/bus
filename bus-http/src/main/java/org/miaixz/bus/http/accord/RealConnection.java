@@ -30,10 +30,10 @@ package org.miaixz.bus.http.accord;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
+import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
@@ -634,7 +634,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      */
     @Override
     public void onStream(Http2Stream stream) throws IOException {
-        stream.close(ErrorCode.REFUSED_STREAM, null);
+        stream.close(Http2ErrorCode.REFUSED_STREAM, null);
     }
 
     /**
@@ -668,15 +668,15 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         assert (!Thread.holdsLock(connectionPool));
         synchronized (connectionPool) {
             if (e instanceof StreamException) {
-                ErrorCode errorCode = ((StreamException) e).errorCode;
-                if (errorCode == ErrorCode.REFUSED_STREAM) {
+                Http2ErrorCode errorCode = ((StreamException) e).errorCode;
+                if (errorCode == Http2ErrorCode.REFUSED_STREAM) {
                     // Retry REFUSED_STREAM errors once on the same connection.
                     refusedStreamCount++;
                     if (refusedStreamCount > 1) {
                         noNewExchanges = true;
                         routeFailureCount++;
                     }
-                } else if (errorCode != ErrorCode.CANCEL) {
+                } else if (errorCode != Http2ErrorCode.CANCEL) {
                     // Keep the connection for CANCEL errors. Everything else wants a fresh connection.
                     noNewExchanges = true;
                     routeFailureCount++;

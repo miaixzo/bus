@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Exchange;

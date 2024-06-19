@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.Headers;
 
 import java.util.concurrent.TimeUnit;

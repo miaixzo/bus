@@ -27,8 +27,12 @@
  */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MapKit;

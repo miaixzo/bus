@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.Callback;
 
 import java.io.File;

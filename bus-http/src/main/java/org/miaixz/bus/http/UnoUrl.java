@@ -29,9 +29,9 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 
 import java.net.MalformedURLException;
 import java.net.URI;

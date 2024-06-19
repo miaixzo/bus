@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Headers;

@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.notify.metric.upyun;
 
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;

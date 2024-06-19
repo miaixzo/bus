@@ -25,10 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.http;
+package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.http.metric.http.Http2Connection;
+import org.miaixz.bus.core.net.Http;
 
 import java.util.Arrays;
 
@@ -39,7 +38,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Settings {
+public class Http2Settings {
 
     /**
      * 设置总数
@@ -59,7 +58,7 @@ public class Settings {
         Arrays.fill(values, 0);
     }
 
-    public Settings set(int id, int value) {
+    public Http2Settings set(int id, int value) {
         if (id < 0 || id >= values.length) {
             return this;
         }
@@ -136,7 +135,7 @@ public class Settings {
      *
      * @param other 设置信息
      */
-    public void merge(Settings other) {
+    public void merge(Http2Settings other) {
         for (int i = 0; i < COUNT; i++) {
             if (!other.isSet(i)) continue;
             set(i, other.get(i));

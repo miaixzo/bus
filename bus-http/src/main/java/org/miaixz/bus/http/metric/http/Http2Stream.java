@@ -84,7 +84,7 @@ public class Http2Stream {
      * 这条小溪非正常关闭的原因。如果有多个原因导致异常关闭这个流(例如两个对等点几乎同时关闭它)，
      * 那么这就是这个对等点知道的第一个原因.
      */
-    ErrorCode errorCode = null;
+    Http2ErrorCode errorCode = null;
     IOException errorException;
     /**
      * 如果已发送或接收响应头，则为
@@ -189,7 +189,7 @@ public class Http2Stream {
      * Returns the reason why this stream was closed, or null if it closed normally or has not yet
      * been closed.
      */
-    public synchronized ErrorCode getErrorCode() {
+    public synchronized Http2ErrorCode getErrorCode() {
         return errorCode;
     }
 
@@ -201,7 +201,7 @@ public class Http2Stream {
      * @param flushHeaders true to force flush the response headers. This should be true unless the
      *                     response body exists and will be written immediately.
      */
-    public void writeHeaders(List<Headers.Header> responseHeaders, boolean outFinished, boolean flushHeaders)
+    public void writeHeaders(List<Http2Header> responseHeaders, boolean outFinished, boolean flushHeaders)
             throws IOException {
         assert (!Thread.holdsLock(Http2Stream.this));
         if (responseHeaders == null) {
@@ -271,7 +271,7 @@ public class Http2Stream {
      * Abnormally terminate this stream. This blocks until the {@code RST_STREAM} frame has been
      * transmitted.
      */
-    public void close(ErrorCode rstStatusCode, IOException errorException)
+    public void close(Http2ErrorCode rstStatusCode, IOException errorException)
             throws IOException {
         if (!closeInternal(rstStatusCode, errorException)) {
             return; // Already closed.
@@ -283,7 +283,7 @@ public class Http2Stream {
      * Abnormally terminate this stream. This enqueues a {@code RST_STREAM} frame and returns
      * immediately.
      */
-    public void closeLater(ErrorCode errorCode) {
+    public void closeLater(Http2ErrorCode errorCode) {
         if (!closeInternal(errorCode, null)) {
             return; // Already closed.
         }
@@ -293,7 +293,7 @@ public class Http2Stream {
     /**
      * Returns true if this stream was closed.
      */
-    private boolean closeInternal(ErrorCode errorCode, IOException errorException) {
+    private boolean closeInternal(Http2ErrorCode errorCode, IOException errorException) {
         assert (!Thread.holdsLock(this));
         synchronized (this) {
             if (this.errorCode != null) {
@@ -340,7 +340,7 @@ public class Http2Stream {
         }
     }
 
-    synchronized void receiveRstStream(ErrorCode errorCode) {
+    synchronized void receiveRstStream(Http2ErrorCode errorCode) {
         if (this.errorCode == null) {
             this.errorCode = errorCode;
             notifyAll();
@@ -360,7 +360,7 @@ public class Http2Stream {
             // is safe because the input stream is closed (we won't use any
             // further bytes) and the output stream is either finished or closed
             // (so RSTing both streams doesn't cause harm).
-            Http2Stream.this.close(ErrorCode.CANCEL, null);
+            Http2Stream.this.close(Http2ErrorCode.CANCEL, null);
         } else if (!open) {
             connection.removeStream(id);
         }
@@ -525,7 +525,7 @@ public class Http2Stream {
                 // If the peer sends more data than we can handle, discard it and close the connection.
                 if (flowControlError) {
                     in.skip(byteCount);
-                    closeLater(ErrorCode.FLOW_CONTROL_ERROR);
+                    closeLater(Http2ErrorCode.FLOW_CONTROL_ERROR);
                     return;
                 }
 
@@ -701,7 +701,7 @@ public class Http2Stream {
     class StreamTimeout extends AsyncTimeout {
         @Override
         protected void timedOut() {
-            closeLater(ErrorCode.CANCEL);
+            closeLater(Http2ErrorCode.CANCEL);
             connection.sendDegradedPingLater();
         }
 

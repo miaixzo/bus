@@ -1,6 +1,7 @@
-package org.miaixz.bus.core.lang;
+package org.miaixz.bus.core.net;
 
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**

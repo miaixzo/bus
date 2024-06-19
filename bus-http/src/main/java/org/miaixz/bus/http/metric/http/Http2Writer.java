@@ -30,8 +30,6 @@ package org.miaixz.bus.http.metric.http;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.http.Headers;
-import org.miaixz.bus.http.Settings;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.Closeable;
@@ -83,7 +81,7 @@ public class Http2Writer implements Closeable {
     /**
      * Applies {@code peerSettings} and then sends a settings ACK.
      */
-    public synchronized void applyAndAckSettings(Settings peerSettings) throws IOException {
+    public synchronized void applyAndAckSettings(Http2Settings peerSettings) throws IOException {
         if (closed) throw new IOException("closed");
         this.maxFrameSize = peerSettings.getMaxFrameSize(maxFrameSize);
         if (peerSettings.getHeaderTableSize() != -1) {
@@ -110,7 +108,7 @@ public class Http2Writer implements Closeable {
      * @throws IOException 异常
      */
     public synchronized void pushPromise(int streamId, int promisedStreamId,
-                                         List<Headers.Header> requestHeaders) throws IOException {
+                                         List<Http2Header> requestHeaders) throws IOException {
         if (closed) throw new IOException("closed");
         hpackWriter.writeHeaders(requestHeaders);
 
@@ -130,7 +128,7 @@ public class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    public synchronized void rstStream(int streamId, ErrorCode errorCode)
+    public synchronized void rstStream(int streamId, Http2ErrorCode errorCode)
             throws IOException {
         if (closed) throw new IOException("closed");
         if (errorCode.httpCode == -1) throw new IllegalArgumentException();
@@ -177,14 +175,14 @@ public class Http2Writer implements Closeable {
     /**
      * Write httpd's settings to the peer.
      */
-    public synchronized void settings(Settings settings) throws IOException {
+    public synchronized void settings(Http2Settings settings) throws IOException {
         if (closed) throw new IOException("closed");
         int length = settings.size() * 6;
         byte type = Http2.TYPE_SETTINGS;
         byte flags = Http2.FLAG_NONE;
         int streamId = 0;
         frameHeader(streamId, length, type, flags);
-        for (int i = 0; i < Settings.COUNT; i++) {
+        for (int i = 0; i < Http2Settings.COUNT; i++) {
             if (!settings.isSet(i)) continue;
             int id = i;
             if (id == 4) {
@@ -221,7 +219,7 @@ public class Http2Writer implements Closeable {
      * @param errorCode        关闭连接的原因.
      * @param debugData        只适用于HTTP/2;要发送的不透明调试数据.
      */
-    public synchronized void goAway(int lastGoodStreamId, ErrorCode errorCode, byte[] debugData)
+    public synchronized void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, byte[] debugData)
             throws IOException {
         if (closed) throw new IOException("closed");
         if (errorCode.httpCode == -1) throw Http2.illegalArgument("errorCode.httpCode == -1");
@@ -286,7 +284,7 @@ public class Http2Writer implements Closeable {
     }
 
     public synchronized void headers(
-            boolean outFinished, int streamId, List<Headers.Header> headerBlock) throws IOException {
+            boolean outFinished, int streamId, List<Http2Header> headerBlock) throws IOException {
         if (closed) throw new IOException("closed");
         hpackWriter.writeHeaders(headerBlock);
 

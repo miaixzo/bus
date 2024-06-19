@@ -29,9 +29,9 @@ package org.miaixz.bus.starter.wrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.logger.Logger;

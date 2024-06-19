@@ -28,8 +28,8 @@
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;

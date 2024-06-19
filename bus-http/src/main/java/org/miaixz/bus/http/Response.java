@@ -29,9 +29,9 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.cache.CacheControl;

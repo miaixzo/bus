@@ -28,7 +28,6 @@
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Protocol;
 
 import java.io.IOException;
@@ -48,12 +47,12 @@ public interface PushObserver {
     PushObserver CANCEL = new PushObserver() {
 
         @Override
-        public boolean onRequest(int streamId, List<Headers.Header> requestHeaders) {
+        public boolean onRequest(int streamId, List<Http2Header> requestHeaders) {
             return true;
         }
 
         @Override
-        public boolean onHeaders(int streamId, List<Headers.Header> responseHeaders, boolean last) {
+        public boolean onHeaders(int streamId, List<Http2Header> responseHeaders, boolean last) {
             return true;
         }
 
@@ -65,7 +64,7 @@ public interface PushObserver {
         }
 
         @Override
-        public void onReset(int streamId, ErrorCode errorCode) {
+        public void onReset(int streamId, Http2ErrorCode errorCode) {
         }
     };
 
@@ -76,7 +75,7 @@ public interface PushObserver {
      * @param requestHeaders 最低限度包括 method、scheme、authority和path
      * @return the true/false
      */
-    boolean onRequest(int streamId, List<Headers.Header> requestHeaders);
+    boolean onRequest(int streamId, List<Http2Header> requestHeaders);
 
     /**
      * 推送请求对应的响应标头。当{@code last}为真时，则没有后续的数据帧
@@ -86,7 +85,7 @@ public interface PushObserver {
      * @param last            如果为真，则没有响应数据
      * @return the true/false
      */
-    boolean onHeaders(int streamId, List<Headers.Header> responseHeaders, boolean last);
+    boolean onHeaders(int streamId, List<Http2Header> responseHeaders, boolean last);
 
     /**
      * 与推送请求对应的响应数据块。必须读取或跳过这些数据.
@@ -107,6 +106,6 @@ public interface PushObserver {
      * @param streamId  服务器发起的流ID:偶数.
      * @param errorCode 错误码信息
      */
-    void onReset(int streamId, ErrorCode errorCode);
+    void onReset(int streamId, Http2ErrorCode errorCode);
 
 }

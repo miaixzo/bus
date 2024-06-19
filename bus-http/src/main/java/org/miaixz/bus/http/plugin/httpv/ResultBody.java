@@ -29,8 +29,12 @@ package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
