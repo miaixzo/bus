@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.logger.Logger;
@@ -116,10 +116,10 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
         this.requestInfo(request, method);
-        if (Http.GET.equals(method)
-                || Http.POST.equals(method)
-                || Http.PATCH.equals(method)
-                || Http.PUT.equals(method)) {
+        if (HTTP.GET.equals(method)
+                || HTTP.POST.equals(method)
+                || HTTP.PATCH.equals(method)
+                || HTTP.PUT.equals(method)) {
             if (request instanceof CacheRequestWrapper) {
                 CacheRequestWrapper cacheRequestWrapper = ((CacheRequestWrapper) request);
                 Logger.info("==> {}", new String(cacheRequestWrapper.getBody()));
@@ -143,9 +143,9 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
         final String method = request.getMethod();
-        if (Http.POST.equals(method)
-                || Http.PATCH.equals(method)
-                || Http.PUT.equals(method)) {
+        if (HTTP.POST.equals(method)
+                || HTTP.PATCH.equals(method)
+                || HTTP.PUT.equals(method)) {
             if (response instanceof CacheResponseWrapper) {
                 CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
                 Logger.info("<== {}", new String(cacheResponseWrapper.getBody()).length());
@@ -181,25 +181,25 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     private void requestInfo(HttpServletRequest request, String method) {
         String requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
         switch (method) {
-            case Http.ALL:
+            case HTTP.ALL:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
                 break;
-            case Http.POST:
+            case HTTP.POST:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
                 break;
-            case Http.DELETE:
+            case HTTP.DELETE:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
                 break;
-            case Http.PUT:
+            case HTTP.PUT:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
                 break;
-            case Http.OPTIONS:
+            case HTTP.OPTIONS:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
                 break;
-            case Http.BEFORE:
+            case HTTP.BEFORE:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
                 break;
-            case Http.AFTER:
+            case HTTP.AFTER:
                 requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
                 break;
         }

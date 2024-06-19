@@ -30,7 +30,7 @@ package org.miaixz.bus.http.plugin.httpv;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.*;
@@ -541,7 +541,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     protected Request prepareRequest(String method) {
-        boolean bodyCanUsed = Http.permitsRequestBody(method);
+        boolean bodyCanUsed = HTTP.permitsRequestBody(method);
         assertNotConflict(!bodyCanUsed);
         Request.Builder builder = new Request.Builder()
                 .url(buildUrlPath());
@@ -632,7 +632,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null == bodyParams) {
             return new FormBody.Builder(charset).build();
         }
-        if (Http.FORM.equalsIgnoreCase(bodyType)) {
+        if (HTTP.FORM.equalsIgnoreCase(bodyType)) {
             FormBody.Builder builder = new FormBody.Builder(charset);
             for (String name : bodyParams.keySet()) {
                 String value = bodyParams.get(name);
@@ -786,7 +786,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return 请求结果
          */
         public CoverResult get() {
-            return request(Http.GET);
+            return request(HTTP.GET);
         }
 
         /**
@@ -795,7 +795,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return 请求结果
          */
         public CoverResult head() {
-            return request(Http.HEAD);
+            return request(HTTP.HEAD);
         }
 
         /**
@@ -804,7 +804,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return 请求结果
          */
         public CoverResult post() {
-            return request(Http.POST);
+            return request(HTTP.POST);
         }
 
         /**
@@ -813,7 +813,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return 请求结果
          */
         public CoverResult put() {
-            return request(Http.PUT);
+            return request(HTTP.PUT);
         }
 
         /**
@@ -822,7 +822,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return HttpCall
          */
         public CoverResult patch() {
-            return request(Http.PATCH);
+            return request(HTTP.PATCH);
         }
 
         /**
@@ -831,7 +831,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return 请求结果
          */
         public CoverResult delete() {
-            return request(Http.DELETE);
+            return request(HTTP.DELETE);
         }
 
         /**
@@ -973,7 +973,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall get() {
-            return request(Http.GET);
+            return request(HTTP.GET);
         }
 
         /**
@@ -982,7 +982,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall head() {
-            return request(Http.HEAD);
+            return request(HTTP.HEAD);
         }
 
         /**
@@ -991,7 +991,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall post() {
-            return request(Http.POST);
+            return request(HTTP.POST);
         }
 
         /**
@@ -1000,7 +1000,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall put() {
-            return request(Http.PUT);
+            return request(HTTP.PUT);
         }
 
         /**
@@ -1009,7 +1009,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall patch() {
-            return request(Http.PATCH);
+            return request(HTTP.PATCH);
         }
 
         /**
@@ -1018,7 +1018,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
          * @return GiveCall
          */
         public GiveCall delete() {
-            return request(Http.DELETE);
+            return request(HTTP.DELETE);
         }
 
         /**

@@ -32,8 +32,8 @@ import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Exchange;
@@ -164,7 +164,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     public RealWebSocket(Request request, WebSocketListener listener, Random random,
                          long pingIntervalMillis) {
-        if (!Http.GET.equals(request.method())) {
+        if (!HTTP.GET.equals(request.method())) {
             throw new IllegalArgumentException("Request must be GET: " + request.method());
         }
         this.originalRequest = request;

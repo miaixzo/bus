@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 
 import java.util.Arrays;
 
@@ -100,33 +100,33 @@ public class Http2Settings {
     }
 
     public int getHeaderTableSize() {
-        int bit = 1 << Http.HEADER_TABLE_SIZE;
-        return (bit & set) != 0 ? values[Http.HEADER_TABLE_SIZE] : -1;
+        int bit = 1 << HTTP.HEADER_TABLE_SIZE;
+        return (bit & set) != 0 ? values[HTTP.HEADER_TABLE_SIZE] : -1;
     }
 
     public boolean getEnablePush(boolean defaultValue) {
-        int bit = 1 << Http.ENABLE_PUSH;
-        return ((bit & set) != 0 ? values[Http.ENABLE_PUSH] : defaultValue ? 1 : 0) == 1;
+        int bit = 1 << HTTP.ENABLE_PUSH;
+        return ((bit & set) != 0 ? values[HTTP.ENABLE_PUSH] : defaultValue ? 1 : 0) == 1;
     }
 
     public int getMaxConcurrentStreams(int defaultValue) {
-        int bit = 1 << Http.MAX_CONCURRENT_STREAMS;
-        return (bit & set) != 0 ? values[Http.MAX_CONCURRENT_STREAMS] : defaultValue;
+        int bit = 1 << HTTP.MAX_CONCURRENT_STREAMS;
+        return (bit & set) != 0 ? values[HTTP.MAX_CONCURRENT_STREAMS] : defaultValue;
     }
 
     public int getMaxFrameSize(int defaultValue) {
-        int bit = 1 << Http.MAX_FRAME_SIZE;
-        return (bit & set) != 0 ? values[Http.MAX_FRAME_SIZE] : defaultValue;
+        int bit = 1 << HTTP.MAX_FRAME_SIZE;
+        return (bit & set) != 0 ? values[HTTP.MAX_FRAME_SIZE] : defaultValue;
     }
 
     public int getMaxHeaderListSize(int defaultValue) {
-        int bit = 1 << Http.MAX_HEADER_LIST_SIZE;
-        return (bit & set) != 0 ? values[Http.MAX_HEADER_LIST_SIZE] : defaultValue;
+        int bit = 1 << HTTP.MAX_HEADER_LIST_SIZE;
+        return (bit & set) != 0 ? values[HTTP.MAX_HEADER_LIST_SIZE] : defaultValue;
     }
 
     public int getInitialWindowSize() {
-        int bit = 1 << Http.INITIAL_WINDOW_SIZE;
-        return (bit & set) != 0 ? values[Http.INITIAL_WINDOW_SIZE] : Http.DEFAULT_INITIAL_WINDOW_SIZE;
+        int bit = 1 << HTTP.INITIAL_WINDOW_SIZE;
+        return (bit & set) != 0 ? values[HTTP.INITIAL_WINDOW_SIZE] : HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
     }
 
     /**

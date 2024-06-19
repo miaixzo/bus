@@ -30,8 +30,8 @@ package org.miaixz.bus.http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.httpv.*;
 import org.miaixz.bus.http.socket.WebSocket;
@@ -252,10 +252,10 @@ public class Httpv {
                 throw new InternalException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
             }
         } else {
-            boolean isFullPath = urlPath.startsWith(Http.HTTPS_PREFIX)
-                    || urlPath.startsWith(Http.HTTP_PREFIX)
-                    || urlPath.startsWith(Http.WSS_PREFIX)
-                    || urlPath.startsWith(Http.WS_PREFIX);
+            boolean isFullPath = urlPath.startsWith(HTTP.HTTPS_PREFIX)
+                    || urlPath.startsWith(HTTP.HTTP_PREFIX)
+                    || urlPath.startsWith(HTTP.WSS_PREFIX)
+                    || urlPath.startsWith(HTTP.WS_PREFIX);
             if (isFullPath) {
                 fullUrl = urlPath;
             } else if (null != baseUrl) {
@@ -264,11 +264,11 @@ public class Httpv {
                 throw new InternalException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
             }
         }
-        if (websocket && fullUrl.startsWith(Http.HTTP)) {
-            return fullUrl.replaceFirst(Http.HTTP, Http.WS);
+        if (websocket && fullUrl.startsWith(HTTP.HTTP)) {
+            return fullUrl.replaceFirst(HTTP.HTTP, HTTP.WS);
         }
-        if (!websocket && fullUrl.startsWith(Http.WS)) {
-            return fullUrl.replaceFirst(Http.WS, Http.HTTP);
+        if (!websocket && fullUrl.startsWith(HTTP.WS)) {
+            return fullUrl.replaceFirst(HTTP.WS, HTTP.HTTP);
         }
         return fullUrl;
     }
@@ -392,7 +392,7 @@ public class Httpv {
 
         private Charset charset = org.miaixz.bus.core.lang.Charset.UTF_8;
 
-        private String bodyType = Http.FORM;
+        private String bodyType = HTTP.FORM;
 
         public Builder() {
             mediaTypes = new HashMap<>();

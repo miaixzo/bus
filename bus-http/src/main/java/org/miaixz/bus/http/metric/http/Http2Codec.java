@@ -29,8 +29,8 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
@@ -63,10 +63,10 @@ public class Http2Codec implements HttpCodec {
             Header.TRANSFER_ENCODING,
             Header.ENCODING,
             Header.UPGRADE,
-            Http.TARGET_METHOD_UTF8,
-            Http.TARGET_PATH_UTF8,
-            Http.TARGET_SCHEME_UTF8,
-            Http.TARGET_AUTHORITY_UTF8);
+            HTTP.TARGET_METHOD_UTF8,
+            HTTP.TARGET_PATH_UTF8,
+            HTTP.TARGET_SCHEME_UTF8,
+            HTTP.TARGET_AUTHORITY_UTF8);
     private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
             Header.CONNECTION,
             Header.HOST,
@@ -126,7 +126,7 @@ public class Http2Codec implements HttpCodec {
         for (int i = 0, size = headerBlock.size(); i < size; i++) {
             String name = headerBlock.name(i);
             String value = headerBlock.value(i);
-            if (name.equals(Http.RESPONSE_STATUS_UTF8)) {
+            if (name.equals(HTTP.RESPONSE_STATUS_UTF8)) {
                 statusLine = StatusLine.parse("HTTP/1.1 " + value);
             } else if (!HTTP_2_SKIPPED_RESPONSE_HEADERS.contains(name)) {
                 Internal.instance.addLenient(headersBuilder, name, value);
@@ -182,7 +182,7 @@ public class Http2Codec implements HttpCodec {
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         Headers headers = stream.takeHeaders();
         Response.Builder responseBuilder = readHttp2HeadersList(headers, protocol);
-        if (expectContinue && Internal.instance.code(responseBuilder) == Http.HTTP_CONTINUE) {
+        if (expectContinue && Internal.instance.code(responseBuilder) == HTTP.HTTP_CONTINUE) {
             return null;
         }
         return responseBuilder;

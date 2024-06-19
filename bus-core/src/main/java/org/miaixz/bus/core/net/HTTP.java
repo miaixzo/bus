@@ -1,6 +1,5 @@
 package org.miaixz.bus.core.net;
 
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -10,7 +9,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Http {
+public class HTTP {
 
     /**
      * The http
@@ -416,7 +415,7 @@ public class Http {
         if (StringKit.isEmpty(url)) {
             return false;
         }
-        return url.startsWith(Http.HTTP_PREFIX) || url.startsWith("http%3A%2F%2F");
+        return url.startsWith(org.miaixz.bus.core.net.HTTP.HTTP_PREFIX) || url.startsWith("http%3A%2F%2F");
     }
 
     /**
@@ -429,7 +428,7 @@ public class Http {
         if (StringKit.isEmpty(url)) {
             return false;
         }
-        return url.startsWith(Http.HTTPS_PREFIX) || url.startsWith("https%3A%2F%2F");
+        return url.startsWith(org.miaixz.bus.core.net.HTTP.HTTPS_PREFIX) || url.startsWith("https%3A%2F%2F");
     }
 
     /**
@@ -439,7 +438,7 @@ public class Http {
      * @return true: 本地主机（域名）, false: 非本地主机（域名）
      */
     public static boolean isLocalHost(String url) {
-        return StringKit.isEmpty(url) || url.contains(Http.HOST_IPV4) || url.contains(Http.HOST_LOCAL);
+        return StringKit.isEmpty(url) || url.contains(org.miaixz.bus.core.net.HTTP.HOST_IPV4) || url.contains(org.miaixz.bus.core.net.HTTP.HOST_LOCAL);
     }
 
 

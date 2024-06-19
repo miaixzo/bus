@@ -30,7 +30,7 @@ package org.miaixz.bus.http;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.metric.CookieJar;
 import org.miaixz.bus.http.secure.Challenge;
 
@@ -424,9 +424,9 @@ public class Headers {
         }
 
         int responseCode = response.code();
-        if ((responseCode < Http.HTTP_CONTINUE || responseCode >= 200)
-                && responseCode != Http.HTTP_NO_CONTENT
-                && responseCode != Http.HTTP_NOT_MODIFIED) {
+        if ((responseCode < HTTP.HTTP_CONTINUE || responseCode >= 200)
+                && responseCode != HTTP.HTTP_NO_CONTENT
+                && responseCode != HTTP.HTTP_NOT_MODIFIED) {
             return true;
         }
 

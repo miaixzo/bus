@@ -32,7 +32,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.metric.NamedRunnable;
@@ -155,7 +155,7 @@ public class Http2Connection implements Closeable {
         // thrashing window updates every 64KiB, yet small enough to avoid blowing
         // up the heap.
         if (builder.client) {
-            settings.set(Http.INITIAL_WINDOW_SIZE, CLIENT_WINDOW_SIZE);
+            settings.set(HTTP.INITIAL_WINDOW_SIZE, CLIENT_WINDOW_SIZE);
         }
 
         connectionName = builder.connectionName;
@@ -170,8 +170,8 @@ public class Http2Connection implements Closeable {
         // Like newSingleThreadExecutor, except lazy creates the thread.
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
                 org.miaixz.bus.http.Builder.threadFactory(String.format("Http %s Push Observer", connectionName), true));
-        peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
-        peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
+        peerSettings.set(HTTP.INITIAL_WINDOW_SIZE, HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
+        peerSettings.set(HTTP.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
         socket = builder.socket;
         writer = new Http2Writer(builder.sink, client);
@@ -491,8 +491,8 @@ public class Http2Connection implements Closeable {
             writer.connectionPreface();
             writer.settings(settings);
             int windowSize = settings.getInitialWindowSize();
-            if (windowSize != Http.DEFAULT_INITIAL_WINDOW_SIZE) {
-                writer.windowUpdate(0, windowSize - Http.DEFAULT_INITIAL_WINDOW_SIZE);
+            if (windowSize != HTTP.DEFAULT_INITIAL_WINDOW_SIZE) {
+                writer.windowUpdate(0, windowSize - HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
             }
         }
         new Thread(readerRunnable).start(); // Not a daemon thread.

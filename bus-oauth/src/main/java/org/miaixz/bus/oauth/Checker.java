@@ -29,7 +29,7 @@ package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
@@ -84,21 +84,21 @@ public class Checker {
         if (StringKit.isEmpty(redirectUri)) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }
-        if (!Http.isHttp(redirectUri) && !Http.isHttps(redirectUri)) {
+        if (!HTTP.isHttp(redirectUri) && !HTTP.isHttps(redirectUri)) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }
         // facebook的回调地址必须为https的链接
-        if (Registry.FACEBOOK == complex && !Http.isHttps(redirectUri)) {
+        if (Registry.FACEBOOK == complex && !HTTP.isHttps(redirectUri)) {
             // FacebookScope's redirect uri must use the HTTPS protocol
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }
         // 微软的回调地址必须为https的链接或者localhost,不允许使用http
-        if (Registry.MICROSOFT == complex && !Http.isHttpsOrLocalHost(redirectUri)) {
+        if (Registry.MICROSOFT == complex && !HTTP.isHttpsOrLocalHost(redirectUri)) {
             // MicrosoftScope's redirect uri must use the HTTPS or localhost
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }
         // 微软中国的回调地址必须为https的链接或者localhost,不允许使用http
-        if (Registry.MICROSOFT_CN == complex && !Http.isHttpsOrLocalHost(redirectUri)) {
+        if (Registry.MICROSOFT_CN == complex && !HTTP.isHttpsOrLocalHost(redirectUri)) {
             // MicrosoftScope's redirect uri must use the HTTPS or localhost
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }

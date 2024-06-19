@@ -29,7 +29,7 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * HTTP header: the name is an ASCII string, but the value can be UTF-8.
@@ -38,11 +38,11 @@ public class Http2Header {
 
     // Special header names defined in HTTP/2 spec.
     public static final ByteString PSEUDO_PREFIX = ByteString.encodeUtf8(Symbol.COLON);
-    public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(Http.RESPONSE_STATUS_UTF8);
-    public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(Http.TARGET_METHOD_UTF8);
-    public static final ByteString TARGET_PATH = ByteString.encodeUtf8(Http.TARGET_PATH_UTF8);
-    public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(Http.TARGET_SCHEME_UTF8);
-    public static final ByteString TARGET_AUTHORITY = ByteString.encodeUtf8(Http.TARGET_AUTHORITY_UTF8);
+    public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(HTTP.RESPONSE_STATUS_UTF8);
+    public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(HTTP.TARGET_METHOD_UTF8);
+    public static final ByteString TARGET_PATH = ByteString.encodeUtf8(HTTP.TARGET_PATH_UTF8);
+    public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(HTTP.TARGET_SCHEME_UTF8);
+    public static final ByteString TARGET_AUTHORITY = ByteString.encodeUtf8(HTTP.TARGET_AUTHORITY_UTF8);
 
     /**
      * Name in case-insensitive ASCII encoding.

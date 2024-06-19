@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PaymentException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -289,7 +289,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static String post(String url, String data, String certPath, String certPass, String protocol) {
         try {
             if (StringKit.isEmpty(protocol)) {
-                protocol = Http.TLS_V_10;
+                protocol = HTTP.TLS_V_10;
             }
             Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
             final Request request = new Request.Builder()
@@ -315,8 +315,8 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
         try {
-            if (StringKit.isEmpty(Http.TLS_V_10)) {
-                protocol = Http.TLS_V_10;
+            if (StringKit.isEmpty(HTTP.TLS_V_10)) {
+                protocol = HTTP.TLS_V_10;
             }
             Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
             final Request request = new Request.Builder()
@@ -388,7 +388,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @return {@link String}  请求返回的结果
      */
     public static String upload(String url, String data, String certPath, String certPass, String filePath) {
-        return upload(url, data, certPath, certPass, filePath, Http.TLS_V_10);
+        return upload(url, data, certPath, certPass, filePath, HTTP.TLS_V_10);
     }
 
     /**

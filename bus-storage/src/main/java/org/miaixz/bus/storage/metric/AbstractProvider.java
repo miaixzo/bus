@@ -30,7 +30,7 @@ package org.miaixz.bus.storage.metric;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
 
@@ -59,7 +59,7 @@ public abstract class AbstractProvider implements Provider {
             httpConn = (HttpURLConnection) url.openConnection();
             int responseCode = httpConn.getResponseCode();
 
-            if (responseCode == Http.HTTP_OK) {
+            if (responseCode == HTTP.HTTP_OK) {
                 String fileName = Normal.EMPTY;
                 String disposition = httpConn.getHeaderField("Content-Disposition");
 
@@ -105,7 +105,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     protected String getFullPath(String file) {
-        if (file.startsWith(Http.HTTP_PREFIX) || file.startsWith(Http.HTTPS_PREFIX)) {
+        if (file.startsWith(HTTP.HTTP_PREFIX) || file.startsWith(HTTP.HTTPS_PREFIX)) {
             return file;
         }
         return this.context.getPrefix() + file;

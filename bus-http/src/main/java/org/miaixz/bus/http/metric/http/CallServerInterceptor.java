@@ -28,8 +28,8 @@
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Request;
@@ -68,7 +68,7 @@ public class CallServerInterceptor implements Interceptor {
 
         boolean responseHeadersStarted = false;
         Response.Builder responseBuilder = null;
-        if (Http.permitsRequestBody(request.method()) && request.body() != null) {
+        if (HTTP.permitsRequestBody(request.method()) && request.body() != null) {
             // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
             // Continue" response before transmitting the request body. If we don't get that, return
             // what we did get (such as a 4xx response) without ever transmitting the request body.

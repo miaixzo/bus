@@ -33,8 +33,8 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -53,19 +53,19 @@ class Hpack {
 
     static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[]{
             new Http2Header(Http2Header.TARGET_AUTHORITY, Normal.EMPTY),
-            new Http2Header(Http2Header.TARGET_METHOD, Http.GET),
-            new Http2Header(Http2Header.TARGET_METHOD, Http.POST),
+            new Http2Header(Http2Header.TARGET_METHOD, HTTP.GET),
+            new Http2Header(Http2Header.TARGET_METHOD, HTTP.POST),
             new Http2Header(Http2Header.TARGET_PATH, Symbol.SLASH),
             new Http2Header(Http2Header.TARGET_PATH, "/index.html"),
-            new Http2Header(Http2Header.TARGET_SCHEME, Http.HTTP),
-            new Http2Header(Http2Header.TARGET_SCHEME, Http.HTTPS),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_OK)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NO_CONTENT)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_PARTIAL)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_MODIFIED)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_BAD_REQUEST)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_FOUND)),
-            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_INTERNAL_ERROR)),
+            new Http2Header(Http2Header.TARGET_SCHEME, HTTP.HTTP),
+            new Http2Header(Http2Header.TARGET_SCHEME, HTTP.HTTPS),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_OK)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NO_CONTENT)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_PARTIAL)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NOT_MODIFIED)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_BAD_REQUEST)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NOT_FOUND)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_INTERNAL_ERROR)),
             new Http2Header(Header.ACCEPT_CHARSET, Normal.EMPTY),
             new Http2Header(Header.ACCEPT_ENCODING, "gzip, deflate"),
             new Http2Header(Header.ACCEPT_LANGUAGE, Normal.EMPTY),

@@ -29,7 +29,7 @@ package org.miaixz.bus.pay.metric.wechat;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.XmlKit;
@@ -261,15 +261,15 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
             platSerialNo = serialNo;
         }
 
-        if (Http.GET.equals(method)) {
+        if (HTTP.GET.equals(method)) {
             return get(prefix.concat(suffix), authorization, platSerialNo, null);
-        } else if (Http.POST.equals(method)) {
+        } else if (HTTP.POST.equals(method)) {
             return post(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.DELETE.equals(method)) {
+        } else if (HTTP.DELETE.equals(method)) {
             return delete(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.PATCH.equals(method)) {
+        } else if (HTTP.PATCH.equals(method)) {
             return patch(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.PUT.equals(method)) {
+        } else if (HTTP.PUT.equals(method)) {
             return put(prefix.concat(suffix), authorization, platSerialNo, body);
         }
         return upload(prefix.concat(suffix), authorization, platSerialNo, body, file);
@@ -312,15 +312,15 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
             platSerialNo = serialNo;
         }
 
-        if (Http.GET.equals(method)) {
+        if (HTTP.GET.equals(method)) {
             return get(prefix.concat(suffix), authorization, platSerialNo, null);
-        } else if (Http.POST.equals(method)) {
+        } else if (HTTP.POST.equals(method)) {
             return post(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.DELETE.equals(method)) {
+        } else if (HTTP.DELETE.equals(method)) {
             return delete(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.PATCH.equals(method)) {
+        } else if (HTTP.PATCH.equals(method)) {
             return patch(prefix.concat(suffix), authorization, platSerialNo, body);
-        } else if (Http.PUT.equals(method)) {
+        } else if (HTTP.PUT.equals(method)) {
             return put(prefix.concat(suffix), authorization, platSerialNo, body);
         }
         return upload(prefix.concat(suffix), authorization, platSerialNo, body, file);

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.notify.metric.netease;
 
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
@@ -98,7 +98,7 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(String.valueOf(Http.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
+                .errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
     }
 

@@ -34,8 +34,8 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RealResponseBody;
@@ -182,7 +182,7 @@ public class CacheInterceptor implements Interceptor {
 
         // 如果我们也有缓存响应，那么在做一个条件get
         if (null != cacheResponse) {
-            if (networkResponse.code() == Http.HTTP_NOT_MODIFIED) {
+            if (networkResponse.code() == HTTP.HTTP_NOT_MODIFIED) {
                 Response response = cacheResponse.newBuilder()
                         .headers(combine(cacheResponse.headers(), networkResponse.headers()))
                         .sentRequestAtMillis(networkResponse.sentRequestAtMillis())
@@ -213,7 +213,7 @@ public class CacheInterceptor implements Interceptor {
                 return cacheWritingResponse(cacheRequest, response);
             }
 
-            if (Http.invalidatesCache(networkRequest.method())) {
+            if (HTTP.invalidatesCache(networkRequest.method())) {
                 try {
                     cache.remove(networkRequest);
                 } catch (IOException ignored) {

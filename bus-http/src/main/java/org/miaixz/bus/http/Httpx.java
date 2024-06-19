@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -255,7 +255,7 @@ public class Httpx {
      */
     public static String get(final String url, final boolean isAsync) {
         if (isAsync) {
-            return enqueue(Builder.builder().url(url).method(Http.GET).build());
+            return enqueue(Builder.builder().url(url).method(HTTP.GET).build());
         }
         return get(url);
     }
@@ -404,12 +404,12 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String post(final String url, final String data, final String mediaType, final String charset) {
-        return execute(Builder.builder().url(url).method(Http.POST).data(data).mediaType(mediaType)
+        return execute(Builder.builder().url(url).method(HTTP.POST).data(data).mediaType(mediaType)
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
     public static String post(final String url, final String data, final Map<String, String> headerMap, final String mediaType) {
-        return execute(Builder.builder().url(url).method(Http.POST).data(data).headerMap(headerMap).mediaType(mediaType)
+        return execute(Builder.builder().url(url).method(HTTP.POST).data(data).headerMap(headerMap).mediaType(mediaType)
                 .requestCharset(Charset.DEFAULT_UTF_8).responseCharset(Charset.DEFAULT_UTF_8).build());
     }
 
@@ -423,7 +423,7 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String post(final String url, final Map<String, String> formMap, final String mediaType, final String charset) {
-        return execute(Builder.builder().url(url).method(Http.POST).formMap(formMap).mediaType(mediaType)
+        return execute(Builder.builder().url(url).method(HTTP.POST).formMap(formMap).mediaType(mediaType)
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
@@ -451,7 +451,7 @@ public class Httpx {
      * @return the {@link String}
      */
     public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap, final String mediaType, final String charset) {
-        return execute(Builder.builder().url(url).method(Http.POST).headerMap(headerMap).formMap(formMap)
+        return execute(Builder.builder().url(url).method(HTTP.POST).headerMap(headerMap).formMap(formMap)
                 .mediaType(mediaType).requestCharset(charset).responseCharset(charset).build());
     }
 
@@ -503,7 +503,7 @@ public class Httpx {
             builder.responseCharset = Charset.DEFAULT_UTF_8;
         }
         if (StringKit.isBlank(builder.method)) {
-            builder.method = Http.GET;
+            builder.method = HTTP.GET;
         }
         if (StringKit.isBlank(builder.mediaType)) {
             builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
@@ -519,7 +519,7 @@ public class Httpx {
         }
         String method = builder.method.toUpperCase();
         String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
-        if (StringKit.equals(method, Http.GET)) {
+        if (StringKit.equals(method, HTTP.GET)) {
             if (MapKit.isNotEmpty(builder.formMap)) {
                 String form = builder.formMap.entrySet().stream()
                         .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
@@ -527,7 +527,7 @@ public class Httpx {
                 builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
             }
             request.get();
-        } else if (ArrayKit.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
+        } else if (ArrayKit.contains(new String[]{HTTP.POST, HTTP.PUT, HTTP.DELETE, HTTP.PATCH}, method)) {
             if (StringKit.isNotEmpty(builder.data)) {
                 RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
                 request.method(method, requestBody);

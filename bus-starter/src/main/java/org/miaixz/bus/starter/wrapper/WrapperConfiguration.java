@@ -33,7 +33,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -138,7 +138,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
-            if (Http.POST.equals(method) || Http.PATCH.equals(method) || Http.PUT.equals(method)) {
+            if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
                 if (!(request instanceof CacheRequestWrapper)) {
                     request = new CacheRequestWrapper(request);
                 }

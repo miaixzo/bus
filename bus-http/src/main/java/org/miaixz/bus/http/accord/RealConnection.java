@@ -32,8 +32,8 @@ import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
@@ -421,13 +421,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             tunnelCodec.skipConnectBody(response);
 
             switch (response.code()) {
-                case Http.HTTP_OK:
+                case HTTP.HTTP_OK:
                     if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
                         throw new IOException("TLS tunnel buffered too many bytes!");
                     }
                     return null;
 
-                case Http.HTTP_PROXY_AUTH:
+                case HTTP.HTTP_PROXY_AUTH:
                     tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
                     if (null == tunnelRequest) {
                         throw new IOException("Failed to authenticate with proxy");
@@ -455,7 +455,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     private Request createTunnelRequest() throws IOException {
         Request proxyConnectRequest = new Request.Builder()
                 .url(route.address().url())
-                .method(Http.CONNECT, null)
+                .method(HTTP.CONNECT, null)
                 .header(Header.HOST, Builder.hostHeader(route.address().url(), true))
                 .header(Header.PROXY_CONNECTION, Header.KEEP_ALIVE)
                 .header(Header.USER_AGENT, "Httpd/" + Version.all())
@@ -464,7 +464,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         Response fakeAuthChallengeResponse = new Response.Builder()
                 .request(proxyConnectRequest)
                 .protocol(Protocol.HTTP_1_1)
-                .code(Http.HTTP_PROXY_AUTH)
+                .code(HTTP.HTTP_PROXY_AUTH)
                 .message("Preemptive Authenticate")
                 .body(Builder.EMPTY_RESPONSE)
                 .sentRequestAtMillis(-1L)

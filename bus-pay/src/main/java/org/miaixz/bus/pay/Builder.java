@@ -36,7 +36,7 @@ import org.miaixz.bus.core.data.Snowflake;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -348,7 +348,7 @@ public class Builder {
     /**
      * 构造签名串
      *
-     * @param method    {@link Http} GET,POST,PUT等
+     * @param method    {@link HTTP} GET,POST,PUT等
      * @param url       请求接口 /v3/certificates
      * @param timestamp 获取发起请求时的系统当前时间戳
      * @param nonceStr  随机字符串

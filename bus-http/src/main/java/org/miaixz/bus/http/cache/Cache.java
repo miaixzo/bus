@@ -37,8 +37,8 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
@@ -175,7 +175,7 @@ public class Cache implements Closeable, Flushable {
     CacheRequest put(Response response) {
         String requestMethod = response.request().method();
 
-        if (Http.invalidatesCache(response.request().method())) {
+        if (HTTP.invalidatesCache(response.request().method())) {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
@@ -183,7 +183,7 @@ public class Cache implements Closeable, Flushable {
             }
             return null;
         }
-        if (!Http.GET.equals(requestMethod)) {
+        if (!HTTP.GET.equals(requestMethod)) {
             // 不要缓存非get响应。从技术上讲，我们可以缓存HEAD请求和POST请求，但是这样做的复杂性很高，好处很少
             return null;
         }
@@ -555,7 +555,7 @@ public class Cache implements Closeable, Flushable {
         }
 
         private boolean isHttps() {
-            return url.startsWith(Http.HTTPS_PREFIX);
+            return url.startsWith(HTTP.HTTPS_PREFIX);
         }
 
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {

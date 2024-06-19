@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
@@ -58,7 +58,7 @@ public class ConnectInterceptor implements Interceptor {
         Transmitter transmitter = realChain.transmitter();
 
         // 我们需要网络来满足这个要求。可能用于验证条件GET
-        boolean doExtensiveHealthChecks = !Http.GET.equals(request.method());
+        boolean doExtensiveHealthChecks = !HTTP.GET.equals(request.method());
         Exchange exchange = transmitter.newExchange(chain, doExtensiveHealthChecks);
 
         return realChain.proceed(request, transmitter, exchange);

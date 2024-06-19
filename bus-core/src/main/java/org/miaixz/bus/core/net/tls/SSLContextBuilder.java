@@ -30,7 +30,7 @@ package org.miaixz.bus.core.net.tls;
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -175,10 +175,10 @@ public class SSLContextBuilder implements Builder<SSLContext> {
 
     public static SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance(Http.TLS_V_13);
+            return SSLContext.getInstance(HTTP.TLS_V_13);
         } catch (NoSuchAlgorithmException e) {
             try {
-                return SSLContext.getInstance(Http.TLS);
+                return SSLContext.getInstance(HTTP.TLS);
             } catch (NoSuchAlgorithmException e2) {
                 throw new IllegalStateException("No TLS provider", e);
             }

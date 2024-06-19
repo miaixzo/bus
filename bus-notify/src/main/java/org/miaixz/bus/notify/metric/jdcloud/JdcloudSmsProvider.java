@@ -28,8 +28,8 @@
 package org.miaixz.bus.notify.metric.jdcloud;
 
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -67,8 +67,8 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Contex
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
-        String errcode = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
+        String errmsg = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

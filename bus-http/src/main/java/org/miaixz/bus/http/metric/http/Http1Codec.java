@@ -36,7 +36,7 @@ import org.miaixz.bus.core.io.timout.AssignTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
 import org.miaixz.bus.http.metric.Internal;
@@ -227,9 +227,9 @@ public class Http1Codec implements HttpCodec {
                     .message(statusLine.message)
                     .headers(readHeaders());
 
-            if (expectContinue && statusLine.code == Http.HTTP_CONTINUE) {
+            if (expectContinue && statusLine.code == HTTP.HTTP_CONTINUE) {
                 return null;
-            } else if (statusLine.code == Http.HTTP_CONTINUE) {
+            } else if (statusLine.code == HTTP.HTTP_CONTINUE) {
                 state = STATE_READ_RESPONSE_HEADERS;
                 return responseBuilder;
             }

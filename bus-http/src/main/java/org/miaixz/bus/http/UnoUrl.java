@@ -31,7 +31,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.HTTP;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -124,9 +124,9 @@ public class UnoUrl {
      * otherwise.
      */
     public static int defaultPort(String scheme) {
-        if (Http.HTTP.equals(scheme)) {
+        if (HTTP.HTTP.equals(scheme)) {
             return 80;
-        } else if (Http.HTTPS.equals(scheme)) {
+        } else if (HTTP.HTTPS.equals(scheme)) {
             return 443;
         } else {
             return -1;
@@ -950,10 +950,10 @@ public class UnoUrl {
         public Builder scheme(String scheme) {
             if (null == scheme) {
                 throw new NullPointerException("scheme == null");
-            } else if (scheme.equalsIgnoreCase(Http.HTTP)) {
-                this.scheme = Http.HTTP;
-            } else if (scheme.equalsIgnoreCase(Http.HTTPS)) {
-                this.scheme = Http.HTTPS;
+            } else if (scheme.equalsIgnoreCase(HTTP.HTTP)) {
+                this.scheme = HTTP.HTTP;
+            } else if (scheme.equalsIgnoreCase(HTTP.HTTPS)) {
+                this.scheme = HTTP.HTTPS;
             } else {
                 throw new IllegalArgumentException("unexpected scheme: " + scheme);
             }
@@ -1287,12 +1287,12 @@ public class UnoUrl {
 
             int schemeDelimiterOffset = schemeDelimiterOffset(input, pos, limit);
             if (schemeDelimiterOffset != -1) {
-                if (input.regionMatches(true, pos, Http.HTTPS + Symbol.COLON, 0, 6)) {
-                    this.scheme = Http.HTTPS;
-                    pos += (Http.HTTPS + Symbol.COLON).length();
-                } else if (input.regionMatches(true, pos, Http.HTTP + Symbol.COLON, 0, 5)) {
-                    this.scheme = Http.HTTP;
-                    pos += (Http.HTTP + Symbol.COLON).length();
+                if (input.regionMatches(true, pos, HTTP.HTTPS + Symbol.COLON, 0, 6)) {
+                    this.scheme = HTTP.HTTPS;
+                    pos += (HTTP.HTTPS + Symbol.COLON).length();
+                } else if (input.regionMatches(true, pos, HTTP.HTTP + Symbol.COLON, 0, 5)) {
+                    this.scheme = HTTP.HTTP;
+                    pos += (HTTP.HTTP + Symbol.COLON).length();
                 } else {
                     throw new IllegalArgumentException("Expected URL scheme 'http' or 'https' but was '"
                             + input.substring(0, schemeDelimiterOffset) + Symbol.SINGLE_QUOTE);
