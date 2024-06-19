@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;

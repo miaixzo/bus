@@ -27,11 +27,11 @@
  */
 package org.miaixz.bus.http.plugin.httpz;
 
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.http.DnsX;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Httpz;
-import org.miaixz.bus.http.Protocol;
 import org.miaixz.bus.http.accord.ConnectionPool;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.cache.Cache;

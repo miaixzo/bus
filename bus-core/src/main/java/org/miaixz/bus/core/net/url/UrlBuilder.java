@@ -30,8 +30,8 @@ package org.miaixz.bus.core.net.url;
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
@@ -283,7 +283,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return 协议，例如http
      */
     public String getSchemeWithDefault() {
-        return StringKit.defaultIfEmpty(this.scheme, Protocol.HTTP);
+        return StringKit.defaultIfEmpty(this.scheme, Protocol.HTTP.name);
     }
 
     /**

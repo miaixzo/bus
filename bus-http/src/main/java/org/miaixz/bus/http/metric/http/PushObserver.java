@@ -28,7 +28,7 @@
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 
 import java.io.IOException;
 import java.util.List;

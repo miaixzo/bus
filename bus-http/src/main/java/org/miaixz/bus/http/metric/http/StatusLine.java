@@ -29,7 +29,7 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Response;
 
 import java.io.IOException;

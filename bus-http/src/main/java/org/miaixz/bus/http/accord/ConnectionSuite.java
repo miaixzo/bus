@@ -86,7 +86,7 @@ public class ConnectionSuite {
      */
     public static final ConnectionSuite MODERN_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
-            .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
+            .tlsVersions(TlsVersion.TLSv1_3, TlsVersion.TLSv1_2)
             .supportsTlsExtensions(true)
             .build();
 

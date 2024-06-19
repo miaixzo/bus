@@ -29,7 +29,6 @@ package org.miaixz.bus.core.net;
 
 import org.miaixz.bus.core.center.map.BiMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.net.ip.IPv4;
 
 import java.util.HashMap;

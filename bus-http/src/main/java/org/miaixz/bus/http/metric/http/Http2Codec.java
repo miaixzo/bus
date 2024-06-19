@@ -31,6 +31,7 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;

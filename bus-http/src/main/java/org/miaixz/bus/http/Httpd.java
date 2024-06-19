@@ -29,6 +29,7 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.http.accord.ConnectionPool;

@@ -30,9 +30,9 @@ package org.miaixz.bus.core.net.ip;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MaskBit;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 

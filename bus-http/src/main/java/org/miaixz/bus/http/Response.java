@@ -32,6 +32,7 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.cache.CacheControl;

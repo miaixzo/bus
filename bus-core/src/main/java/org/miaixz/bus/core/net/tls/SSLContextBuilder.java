@@ -28,9 +28,9 @@
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -56,7 +56,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
 
     private static final long serialVersionUID = -1L;
 
-    private String protocol = Protocol.TLS;
+    private String protocol = Protocol.TLS.name;
     private KeyManager[] keyManagers;
     private TrustManager[] trustManagers = TrustAnyTrustManager.TRUST_ANYS;
     private SecureRandom secureRandom = new SecureRandom();

@@ -39,9 +39,13 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
+import org.miaixz.bus.http.UnoUrl;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.http.StatusLine;
@@ -485,7 +489,7 @@ public class Cache implements Closeable, Flushable {
                     List<Certificate> localCertificates = readCertificateList(source);
                     TlsVersion tlsVersion = !source.exhausted()
                             ? TlsVersion.forJavaName(source.readUtf8LineStrict())
-                            : TlsVersion.SSL_3_0;
+                            : TlsVersion.SSLv3;
                     handshake = Handshake.get(tlsVersion, cipherSuite, peerCertificates, localCertificates);
                 } else {
                     handshake = null;
