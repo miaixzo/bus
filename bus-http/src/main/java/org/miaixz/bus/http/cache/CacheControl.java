@@ -29,7 +29,7 @@ package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
 
 import java.util.concurrent.TimeUnit;
@@ -152,7 +152,7 @@ public class CacheControl {
             String name = headers.name(i);
             String value = headers.value(i);
 
-            if (name.equalsIgnoreCase(Header.CACHE_CONTROL)) {
+            if (name.equalsIgnoreCase(HTTP.CACHE_CONTROL)) {
                 if (null != headerValue) {
                     // 多个cache-control头文件意味着不能使用原始值
                     canUseHeaderValue = false;

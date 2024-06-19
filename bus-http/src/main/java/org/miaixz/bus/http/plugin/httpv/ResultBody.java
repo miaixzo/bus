@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
@@ -330,7 +330,7 @@ public class ResultBody implements CoverResult.Body {
         if (response.code() != HttpURLConnection.HTTP_PARTIAL) {
             return rangeStart;
         }
-        String range = response.header(Header.CONTENT_RANGE);
+        String range = response.header(HTTP.CONTENT_RANGE);
         if (null != range && range.startsWith("bytes")) {
             int index = range.indexOf(Symbol.C_MINUS);
             if (index > 5) {

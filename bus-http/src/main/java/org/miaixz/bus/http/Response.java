@@ -31,7 +31,6 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.bodys.ResponseBody;
@@ -257,9 +256,9 @@ public class Response implements Closeable {
     public List<Challenge> challenges() {
         String responseField;
         if (code == HTTP.HTTP_UNAUTHORIZED) {
-            responseField = Header.WWW_AUTHENTICATE;
+            responseField = HTTP.WWW_AUTHENTICATE;
         } else if (code == HTTP.HTTP_PROXY_AUTH) {
-            responseField = Header.PROXY_AUTHENTICATE;
+            responseField = HTTP.PROXY_AUTHENTICATE;
         } else {
             return Collections.emptyList();
         }

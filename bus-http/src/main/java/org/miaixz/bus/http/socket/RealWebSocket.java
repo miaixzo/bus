@@ -33,7 +33,6 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
@@ -208,10 +207,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
                 .protocols(ONLY_HTTP1)
                 .build();
         final Request request = originalRequest.newBuilder()
-                .header(Header.UPGRADE, "websocket")
-                .header(Header.CONNECTION, Header.UPGRADE)
-                .header(Header.SEC_WEBSOCKET_KEY, key)
-                .header(Header.SEC_WEBSOCKET_VERSION, "13")
+                .header(HTTP.UPGRADE, "websocket")
+                .header(HTTP.CONNECTION, HTTP.UPGRADE)
+                .header(HTTP.SEC_WEBSOCKET_KEY, key)
+                .header(HTTP.SEC_WEBSOCKET_VERSION, "13")
                 .build();
         call = Internal.instance.newWebSocketCall(client, request);
         call.enqueue(new Callback() {
@@ -253,19 +252,19 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
                     + response.code() + Symbol.SPACE + response.message() + Symbol.SINGLE_QUOTE);
         }
 
-        String headerConnection = response.header(Header.CONNECTION);
-        if (!Header.UPGRADE.equalsIgnoreCase(headerConnection)) {
+        String headerConnection = response.header(HTTP.CONNECTION);
+        if (!HTTP.UPGRADE.equalsIgnoreCase(headerConnection)) {
             throw new ProtocolException("Expected 'Connection' header value 'Upgrade' but was '"
                     + headerConnection + Symbol.SINGLE_QUOTE);
         }
 
-        String headerUpgrade = response.header(Header.UPGRADE);
+        String headerUpgrade = response.header(HTTP.UPGRADE);
         if (!"websocket".equalsIgnoreCase(headerUpgrade)) {
             throw new ProtocolException(
                     "Expected 'Upgrade' header value 'websocket' but was '" + headerUpgrade + Symbol.SINGLE_QUOTE);
         }
 
-        String headerAccept = response.header(Header.SEC_WEBSOCKET_ACCEPT);
+        String headerAccept = response.header(HTTP.SEC_WEBSOCKET_ACCEPT);
         String acceptExpected = ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC)
                 .sha1().base64();
         if (!acceptExpected.equals(headerAccept)) {

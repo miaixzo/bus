@@ -39,7 +39,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Checker;
@@ -109,7 +109,7 @@ public class AlipayProvider extends AbstractProvider {
         }
 
         // 支付宝在创建回调地址时，不允许使用localhost或者127.0.0.1
-        if (HTTP.isLocalHost(context.getRedirectUri())) {
+        if (Protocol.isLocalHost(context.getRedirectUri())) {
             // The redirect uri of alipay is forbidden to use localhost or 127.0.0.1
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), Registry.ALIPAY);
         }

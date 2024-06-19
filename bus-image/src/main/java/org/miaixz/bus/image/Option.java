@@ -29,7 +29,7 @@ package org.miaixz.bus.image;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
 
@@ -90,8 +90,8 @@ public class Option {
                         "SSL_RSA_WITH_3DES_EDE_CBC_SHA"
                 },
                 new String[]{
-                        HTTP.TLS_V_10,
-                        HTTP.SSL_V_30
+                        Protocol.TLSv1.name,
+                        Protocol.SSLv3.name
                 },
                 tlsNeedClientAuth,
                 keystoreURL,

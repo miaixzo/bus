@@ -38,7 +38,6 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -559,7 +558,7 @@ public class Cache implements Closeable, Flushable {
         }
 
         private boolean isHttps() {
-            return url.startsWith(HTTP.HTTPS_PREFIX);
+            return url.startsWith(Protocol.HTTPS_PREFIX);
         }
 
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {
@@ -604,8 +603,8 @@ public class Cache implements Closeable, Flushable {
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String mediaType = responseHeaders.get(Header.CONTENT_TYPE);
-            String length = responseHeaders.get(Header.CONTENT_LENGTH);
+            String mediaType = responseHeaders.get(HTTP.CONTENT_TYPE);
+            String length = responseHeaders.get(HTTP.CONTENT_LENGTH);
             Request request = new Request.Builder()
                     .url(url)
                     .method(requestMethod, null)

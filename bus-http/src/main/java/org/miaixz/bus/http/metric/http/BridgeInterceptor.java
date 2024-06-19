@@ -31,7 +31,7 @@ import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.bodys.RealResponseBody;
@@ -67,43 +67,43 @@ public class BridgeInterceptor implements Interceptor {
         if (null != body) {
             MediaType mediaType = body.mediaType();
             if (null != mediaType) {
-                requestBuilder.header(Header.CONTENT_TYPE, mediaType.toString());
+                requestBuilder.header(HTTP.CONTENT_TYPE, mediaType.toString());
             }
 
             long length = body.length();
             if (length != -1) {
-                requestBuilder.header(Header.CONTENT_LENGTH, Long.toString(length));
-                requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
+                requestBuilder.header(HTTP.CONTENT_LENGTH, Long.toString(length));
+                requestBuilder.removeHeader(HTTP.TRANSFER_ENCODING);
             } else {
-                requestBuilder.header(Header.TRANSFER_ENCODING, "chunked");
-                requestBuilder.removeHeader(Header.CONTENT_LENGTH);
+                requestBuilder.header(HTTP.TRANSFER_ENCODING, "chunked");
+                requestBuilder.removeHeader(HTTP.CONTENT_LENGTH);
             }
         }
 
-        if (null == request.header(Header.HOST)) {
-            requestBuilder.header(Header.HOST, Builder.hostHeader(request.url(), false));
+        if (null == request.header(HTTP.HOST)) {
+            requestBuilder.header(HTTP.HOST, Builder.hostHeader(request.url(), false));
         }
 
-        if (null == request.header(Header.CONNECTION)) {
-            requestBuilder.header(Header.CONNECTION, Header.KEEP_ALIVE);
+        if (null == request.header(HTTP.CONNECTION)) {
+            requestBuilder.header(HTTP.CONNECTION, HTTP.KEEP_ALIVE);
         }
 
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (null == request.header(Header.ACCEPT_ENCODING)
+        if (null == request.header(HTTP.ACCEPT_ENCODING)
                 && null == request.header("Range")) {
             transparentGzip = true;
-            requestBuilder.header(Header.ACCEPT_ENCODING, "gzip");
+            requestBuilder.header(HTTP.ACCEPT_ENCODING, "gzip");
         }
 
         List<Cookie> cookies = cookieJar.loadForRequest(request.url());
         if (!cookies.isEmpty()) {
-            requestBuilder.header(Header.COOKIE, cookieHeader(cookies));
+            requestBuilder.header(HTTP.COOKIE, cookieHeader(cookies));
         }
 
-        if (null == request.header(Header.USER_AGENT)) {
-            requestBuilder.header(Header.USER_AGENT, "Httpd/" + Version.all());
+        if (null == request.header(HTTP.USER_AGENT)) {
+            requestBuilder.header(HTTP.USER_AGENT, "Httpd/" + Version.all());
         }
 
         Response networkResponse = chain.proceed(requestBuilder.build());
@@ -114,15 +114,15 @@ public class BridgeInterceptor implements Interceptor {
                 .request(request);
 
         if (transparentGzip
-                && "gzip".equalsIgnoreCase(networkResponse.header(Header.CONTENT_ENCODING))
+                && "gzip".equalsIgnoreCase(networkResponse.header(HTTP.CONTENT_ENCODING))
                 && Headers.hasBody(networkResponse)) {
             GzipSource responseBody = new GzipSource(networkResponse.body().source());
             Headers strippedHeaders = networkResponse.headers().newBuilder()
-                    .removeAll(Header.CONTENT_ENCODING)
-                    .removeAll(Header.CONTENT_LENGTH)
+                    .removeAll(HTTP.CONTENT_ENCODING)
+                    .removeAll(HTTP.CONTENT_LENGTH)
                     .build();
             responseBuilder.headers(strippedHeaders);
-            String mediaType = networkResponse.header(Header.CONTENT_TYPE);
+            String mediaType = networkResponse.header(HTTP.CONTENT_TYPE);
             responseBuilder.body(new RealResponseBody(mediaType, -1L, IoKit.buffer(responseBody)));
         }
 

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.plugin.httpx;
 
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.Credentials;
 
@@ -75,8 +75,8 @@ public class HttpProxy {
         return (route, response) -> {
             String credential = Credentials.basic(user, password);
             return response.request().newBuilder().
-                    header(Header.PROXY_AUTHORIZATION, credential).
-                    header(Header.PROXY_CONNECTION, Header.KEEP_ALIVE).build();
+                    header(HTTP.PROXY_AUTHORIZATION, credential).
+                    header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE).build();
         };
     }
 

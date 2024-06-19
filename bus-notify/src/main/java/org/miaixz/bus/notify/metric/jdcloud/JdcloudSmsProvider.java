@@ -29,7 +29,6 @@ package org.miaixz.bus.notify.metric.jdcloud;
 
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -62,7 +61,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Contex
         bodys.put("signId", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");

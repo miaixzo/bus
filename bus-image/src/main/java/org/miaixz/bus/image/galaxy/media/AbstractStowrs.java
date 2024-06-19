@@ -30,7 +30,7 @@ package org.miaixz.bus.image.galaxy.media;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -186,10 +186,10 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setRequestMethod("POST");
             httpPost.setConnectTimeout(10000);
             httpPost.setReadTimeout(60000);
-            httpPost.setRequestProperty(Header.CONTENT_TYPE,
+            httpPost.setRequestProperty(HTTP.CONTENT_TYPE,
                     MediaType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
-            httpPost.setRequestProperty(Header.USER_AGENT, null == agentName ? "STOWRS" : agentName);
-            httpPost.setRequestProperty(Header.ACCEPT,
+            httpPost.setRequestProperty(HTTP.USER_AGENT, null == agentName ? "STOWRS" : agentName);
+            httpPost.setRequestProperty(HTTP.ACCEPT,
                     contentType == MediaType.APPLICATION_DICOM_JSON ? MediaType.APPLICATION_DICOM_JSON : MediaType.APPLICATION_DICOM_XML);
 
             if (null != headers && !headers.isEmpty()) {
@@ -222,7 +222,7 @@ public class AbstractStowrs implements AutoCloseable {
         out.write(MultipartParser.Separator.BOUNDARY.getType());
         out.writeBytes(MULTIPART_BOUNDARY);
         out.write(MultipartParser.Separator.FIELD.getType());
-        out.writeBytes(Header.CONTENT_TYPE + ": ");
+        out.writeBytes(HTTP.CONTENT_TYPE + ": ");
         out.writeBytes(contentType);
         out.write(MultipartParser.Separator.HEADER.getType());
     }

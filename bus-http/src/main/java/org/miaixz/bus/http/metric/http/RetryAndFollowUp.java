@@ -28,7 +28,6 @@
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Exchange;
@@ -241,7 +240,7 @@ public class RetryAndFollowUp implements Interceptor {
                 // Does the client allow redirects?
                 if (!httpd.followRedirects()) return null;
 
-                String location = userResponse.header(Header.LOCATION);
+                String location = userResponse.header(HTTP.LOCATION);
                 if (null == location) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
@@ -263,9 +262,9 @@ public class RetryAndFollowUp implements Interceptor {
                         requestBuilder.method(method, requestBody);
                     }
                     if (!maintainBody) {
-                        requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
-                        requestBuilder.removeHeader(Header.CONTENT_LENGTH);
-                        requestBuilder.removeHeader(Header.CONTENT_TYPE);
+                        requestBuilder.removeHeader(HTTP.TRANSFER_ENCODING);
+                        requestBuilder.removeHeader(HTTP.CONTENT_LENGTH);
+                        requestBuilder.removeHeader(HTTP.CONTENT_TYPE);
                     }
                 }
 

@@ -29,7 +29,6 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Request;
@@ -149,8 +148,8 @@ public class CallServerInterceptor implements Interceptor {
                     .build();
         }
 
-        if ("close".equalsIgnoreCase(response.request().header(Header.CONNECTION))
-                || "close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
+        if ("close".equalsIgnoreCase(response.request().header(HTTP.CONNECTION))
+                || "close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
             exchange.noNewExchangesOnConnection();
         }
 

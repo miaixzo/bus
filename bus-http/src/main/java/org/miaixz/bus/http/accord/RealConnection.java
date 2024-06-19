@@ -33,7 +33,6 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -434,7 +433,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                         throw new IOException("Failed to authenticate with proxy");
                     }
 
-                    if ("close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
+                    if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
                         return tunnelRequest;
                     }
                     break;
@@ -457,9 +456,9 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         Request proxyConnectRequest = new Request.Builder()
                 .url(route.address().url())
                 .method(HTTP.CONNECT, null)
-                .header(Header.HOST, Builder.hostHeader(route.address().url(), true))
-                .header(Header.PROXY_CONNECTION, Header.KEEP_ALIVE)
-                .header(Header.USER_AGENT, "Httpd/" + Version.all())
+                .header(HTTP.HOST, Builder.hostHeader(route.address().url(), true))
+                .header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE)
+                .header(HTTP.USER_AGENT, "Httpd/" + Version.all())
                 .build();
 
         Response fakeAuthChallengeResponse = new Response.Builder()
@@ -470,7 +469,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                 .body(Builder.EMPTY_RESPONSE)
                 .sentRequestAtMillis(-1L)
                 .receivedResponseAtMillis(-1L)
-                .header(Header.PROXY_AUTHENTICATE, Header.HTTPD_PREEMPTIVE)
+                .header(HTTP.PROXY_AUTHENTICATE, HTTP.HTTPD_PREEMPTIVE)
                 .build();
 
         Request authenticatedRequest = route.address().proxyAuthenticator()

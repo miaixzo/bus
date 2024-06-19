@@ -1,8 +1,5 @@
 package org.miaixz.bus.core.net;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
-
 /**
  * HTTP 相关常量
  *
@@ -12,37 +9,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class HTTP {
 
     /**
-     * The http
+     * HTTP Method ALL
      */
-    public static final String HTTP = "http";
+    public static final String ALL = "ALL";
     /**
-     * The https
+     * HTTP Method NONE
      */
-    public static final String HTTPS = "https";
-    /**
-     * The https
-     */
-    public static final String WS = "ws";
-    /**
-     * The https
-     */
-    public static final String WSS = "wss";
-    /**
-     * The prefix http
-     */
-    public static final String HTTP_PREFIX = HTTP + Symbol.COLON + Symbol.FORWARDSLASH;
-    /**
-     * The prefix https
-     */
-    public static final String HTTPS_PREFIX = HTTPS + Symbol.COLON + Symbol.FORWARDSLASH;
-    /**
-     * The prefix ws
-     */
-    public static final String WS_PREFIX = WS + Symbol.COLON + Symbol.FORWARDSLASH;
-    /**
-     * The prefix wss
-     */
-    public static final String WSS_PREFIX = WSS + Symbol.COLON + Symbol.FORWARDSLASH;
+    public static final String NONE = "NONE";
     /**
      * HTTP Method GET
      */
@@ -103,106 +76,8 @@ public class HTTP {
      * HTTP Method PROPFIND
      */
     public static final String PROPFIND = "PROPFIND";
-    /**
-     * HTTP Method ALL
-     */
-    public static final String ALL = "ALL";
-    /**
-     * HTTP Method NONE
-     */
-    public static final String NONE = "NONE";
-    /**
-     * HTTP/1.0
-     */
-    public static final String HTTP_1_0 = "HTTP/1.0";
-    /**
-     * HTTP/1.1
-     */
-    public static final String HTTP_1_1 = "HTTP/1.1";
-    /**
-     * HTTP/2.0
-     */
-    public static final String HTTP_2_0 = "HTTP/2.0";
-    /**
-     * SPDY/3.1
-     */
-    public static final String SPDY_3_1 = "SPDY/3.1";
-    /**
-     * SOAP 1.1
-     */
-    public static final String SOAP_1_1 = "SOAP 1.1 Protocol";
-    /**
-     * SOAP 1.2
-     */
-    public static final String SOAP_1_2 = "SOAP 1.2 Protocol";
-    /**
-     * QUIC
-     */
-    public static final String QUIC = "QUIC";
-    /**
-     * 明文HTTP/2，没有"upgrade"往返。此选项要求客户端事先知道服务器支持明文HTTP/2
-     */
-    public static final String H2_PRIOR_KNOWLEDGE = "H2_PRIOR_KNOWLEDGE";
-    /**
-     * Supports some version of SSL; may support other versions
-     */
-    public static final String SSL = "SSL";
-    /**
-     * Supports some version of TLS; may support other versions
-     */
-    public static final String TLS = "TLS";
-    /**
-     * Supports RFC 2246: TLS version 1.0 ; may support other versions
-     */
-    public static final String TLS_V_10 = "TLSv1";
-    /**
-     * Supports RFC 4346: TLS version 1.1 ; may support other versions
-     */
-    public static final String TLS_V_11 = "TLSv1.1";
-    /**
-     * Supports RFC 5246: TLS version 1.2 ; may support other versions
-     */
-    public static final String TLS_V_12 = "TLSv1.2";
-    /**
-     * Supports RFC 5246: TLS version 1.3 ; may support other versions
-     */
-    public static final String TLS_V_13 = "TLSv1.3";
-    /**
-     * Supports SSL version 2 or later; may support other versions
-     */
-    public static final String SSL_V_20 = "SSLv2";
-    /**
-     * Supports SSL version 3; may support other versions
-     */
-    public static final String SSL_V_30 = "SSLv3";
-    /**
-     * The use status
-     */
-    public static final String RESPONSE_STATUS_UTF8 = ":status";
-    /**
-     * The use method
-     */
-    public static final String TARGET_METHOD_UTF8 = ":method";
-    /**
-     * The use path
-     */
-    public static final String TARGET_PATH_UTF8 = ":path";
-    /**
-     * The use scheme
-     */
-    public static final String TARGET_SCHEME_UTF8 = ":scheme";
-    /**
-     * The use authority
-     */
-    public static final String TARGET_AUTHORITY_UTF8 = ":authority";
-    /**
-     * The IPV4 127.0.0.1
-     */
-    public static final String HOST_IPV4 = "127.0.0.1";
-    /**
-     * The localhost
-     */
-    public static final String HOST_LOCAL = "localhost";
+
+
     /**
      * HTTP Status-Code 100: Continue.
      */
@@ -388,6 +263,271 @@ public class HTTP {
      * Window size in bytes.
      */
     public static final int INITIAL_WINDOW_SIZE = 7;
+
+
+    /**
+     * The header Host
+     */
+    public static final String HOST = "Host";
+    /**
+     * The header Server
+     */
+    public static final String SERVER = "Server";
+    /**
+     * The header Age
+     */
+    public static final String AGE = "Age";
+    /**
+     * The header Allow
+     */
+    public static final String ALLOW = "Allow";
+    /**
+     * The header Expires
+     */
+    public static final String EXPIRES = "Expires";
+    /**
+     * The header Cookie
+     */
+    public static final String COOKIE = "Cookie";
+    /**
+     * The header Set-Cookie
+     */
+    public static final String SET_COOKIE = "Set-Cookie";
+    /**
+     * The header Encoding
+     */
+    public static final String ENCODING = "Encoding";
+    /**
+     * The header Upgrade
+     */
+    public static final String UPGRADE = "Upgrade";
+    /**
+     * The header Trailers
+     */
+    public static final String TRAILERS = "Trailers";
+    /**
+     * The header Location
+     */
+    public static final String LOCATION = "Location";
+    /**
+     * The header Connection
+     */
+    public static final String CONNECTION = "Connection";
+    /**
+     * The header Date
+     */
+    public static final String DATE = "Date";
+    /**
+     * The header Etag
+     */
+    public static final String ETAG = "Etag";
+    /**
+     * The header Expect
+     */
+    public static final String EXPECT = "Expect";
+    /**
+     * The header From
+     */
+    public static final String FROM = "From";
+    /**
+     * The header Link
+     */
+    public static final String LINK = "Link";
+    /**
+     * The header Vary
+     */
+    public static final String VARY = "Vary";
+    /**
+     * The header Via
+     */
+    public static final String VIA = "Via";
+    /**
+     * The header Range
+     */
+    public static final String RANGE = "Range";
+    /**
+     * The header Referer
+     */
+    public static final String REFERER = "Referer";
+    /**
+     * The header Refresh
+     */
+    public static final String REFRESH = "Refresh";
+    /**
+     * The header te
+     */
+    public static final String TE = "te";
+    /**
+     * The header If-Match
+     */
+    public static final String IF_MATCH = "If-Match";
+    /**
+     * The header If-Range
+     */
+    public static final String IF_RANGE = "If-Range";
+    /**
+     * The header Accept
+     */
+    public static final String ACCEPT = "Accept";
+    /**
+     * The header Accept-Charset
+     */
+    public static final String ACCEPT_CHARSET = "Accept-Charset";
+    /**
+     * The header Accept-Encoding
+     */
+    public static final String ACCEPT_ENCODING = "Accept-Encoding";
+    /**
+     * The header Accept-Language
+     */
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
+    /**
+     * The header Accept-Ranges
+     */
+    public static final String ACCEPT_RANGES = "Accept-Ranges";
+    /**
+     * The header Content-Encoding
+     */
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    /**
+     * The header Content-Language
+     */
+    public static final String CONTENT_LANGUAGE = "Content-Language";
+    /**
+     * The header Content-Length
+     */
+    public static final String CONTENT_LENGTH = "Content-Length";
+    /**
+     * The header Content-Location
+     */
+    public static final String CONTENT_LOCATION = "Content-Location";
+    /**
+     * The header Content-MD5
+     */
+    public static final String CONTENT_MD5 = "Content-MD5";
+    /**
+     * The header Content-Range
+     */
+    public static final String CONTENT_RANGE = "Content-Range";
+    /**
+     * The header Content-Type
+     */
+    public static final String CONTENT_TYPE = "Content-Type";
+    /**
+     * The header Content-Disposition
+     */
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    /**
+     * The header Transfer-Encoding
+     */
+    public static final String TRANSFER_ENCODING = "Transfer-Encoding";
+    /**
+     * The header Cache-Control
+     */
+    public static final String CACHE_CONTROL = "Cache-Control";
+    /**
+     * The header User-Agent
+     */
+    public static final String USER_AGENT = "User-Agent";
+    /**
+     * The header Retry-After
+     */
+    public static final String RETRY_AFTER = "Retry-After";
+    /**
+     * The header Max-Forwards
+     */
+    public static final String MAX_FORWARDS = "Max-Forwards";
+    /**
+     * The header Keep-Alive
+     */
+    public static final String KEEP_ALIVE = "Keep-Alive";
+    /**
+     * The header Authorization
+     */
+    public static final String AUTHORIZATION = "Authorization";
+    /**
+     * The header Proxy-Authorization
+     */
+    public static final String PROXY_AUTHORIZATION = "Proxy-Authorization";
+    /**
+     * The header Proxy-Connection
+     */
+    public static final String PROXY_CONNECTION = "Proxy-Connection";
+    /**
+     * The header WWW-Authenticate
+     */
+    public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+    /**
+     * The header Proxy-Authenticate
+     */
+    public static final String PROXY_AUTHENTICATE = "Proxy-Authenticate";
+    /**
+     * The header Httpd-Preemptive
+     */
+    public static final String HTTPD_PREEMPTIVE = "Httpd-Preemptive";
+    /**
+     * The header Last-Modified
+     */
+    public static final String LAST_MODIFIED = "Last-Modified";
+    /**
+     * The header If-Unmodified-Since
+     */
+    public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
+    /**
+     * The header If-Modified-Since
+     */
+    public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
+    /**
+     * The header If-None-Match
+     */
+    public static final String IF_NONE_MATCH = "If-None-Match";
+    /**
+     * The header Sec-WebSocket-Key
+     */
+    public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
+    /**
+     * The header Sec-WebSocket-Accept
+     */
+    public static final String SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
+    /**
+     * The header SOAPAction
+     */
+    public static final String SOAPACTION = "SOAPAction";
+
+
+    /**
+     * The use method
+     */
+    public static final String TARGET_METHOD_UTF8 = ":method";
+    /**
+     * The use status
+     */
+    public static final String RESPONSE_STATUS_UTF8 = ":status";
+    /**
+     * The use path
+     */
+    public static final String TARGET_PATH_UTF8 = ":path";
+    /**
+     * The use scheme
+     */
+    public static final String TARGET_SCHEME_UTF8 = ":scheme";
+    /**
+     * The use authority
+     */
+    public static final String TARGET_AUTHORITY_UTF8 = ":authority";
+
     /**
      * The form data
      */
@@ -404,56 +544,6 @@ public class HTTP {
      * The protobuf data
      */
     public static final String PROTOBUF = "protobuf";
-
-    /**
-     * 是否为http协议
-     *
-     * @param url 待验证的url
-     * @return true: http协议, false: 非http协议
-     */
-    public static boolean isHttp(String url) {
-        if (StringKit.isEmpty(url)) {
-            return false;
-        }
-        return url.startsWith(org.miaixz.bus.core.net.HTTP.HTTP_PREFIX) || url.startsWith("http%3A%2F%2F");
-    }
-
-    /**
-     * 是否为https协议
-     *
-     * @param url 待验证的url
-     * @return true: https协议, false: 非https协议
-     */
-    public static boolean isHttps(String url) {
-        if (StringKit.isEmpty(url)) {
-            return false;
-        }
-        return url.startsWith(org.miaixz.bus.core.net.HTTP.HTTPS_PREFIX) || url.startsWith("https%3A%2F%2F");
-    }
-
-    /**
-     * 是否为本地主机（域名）
-     *
-     * @param url 待验证的url
-     * @return true: 本地主机（域名）, false: 非本地主机（域名）
-     */
-    public static boolean isLocalHost(String url) {
-        return StringKit.isEmpty(url) || url.contains(org.miaixz.bus.core.net.HTTP.HOST_IPV4) || url.contains(org.miaixz.bus.core.net.HTTP.HOST_LOCAL);
-    }
-
-
-    /**
-     * 是否为https协议或本地主机（域名）
-     *
-     * @param url 待验证的url
-     * @return true: https协议或本地主机 false: 非https协议或本机主机
-     */
-    public static boolean isHttpsOrLocalHost(String url) {
-        if (StringKit.isEmpty(url)) {
-            return false;
-        }
-        return isHttps(url) || isLocalHost(url);
-    }
 
     /**
      * WebDAV

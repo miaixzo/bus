@@ -30,7 +30,7 @@ package org.miaixz.bus.notify.metric.jpush;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
@@ -64,8 +64,8 @@ public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
         bodys.put("temp_para", entity.getParams());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(Header.AUTHORIZATION, "Basic " + getSign());
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(HTTP.AUTHORIZATION, "Basic " + getSign());
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);

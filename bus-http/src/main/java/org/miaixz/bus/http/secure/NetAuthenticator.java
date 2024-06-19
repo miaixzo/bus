@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.Route;
@@ -75,7 +75,7 @@ public class NetAuthenticator implements Authenticator {
                 String credential = Credentials.basic(
                         auth.getUserName(), new String(auth.getPassword()), challenge.charset());
                 return request.newBuilder()
-                        .header(proxyAuthorization ? Header.PROXY_AUTHENTICATE : Header.AUTHORIZATION, credential)
+                        .header(proxyAuthorization ? HTTP.PROXY_AUTHENTICATE : HTTP.AUTHORIZATION, credential)
                         .build();
             }
         }

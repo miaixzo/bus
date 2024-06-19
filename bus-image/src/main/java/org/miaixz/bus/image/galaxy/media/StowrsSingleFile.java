@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.BulkData;
@@ -115,10 +115,10 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
             out.writeBytes(MULTIPART_BOUNDARY);
             byte[] fsep = MultipartParser.Separator.FIELD.getType();
             out.write(fsep);
-            out.writeBytes(Header.CONTENT_TYPE + ": ");
+            out.writeBytes(HTTP.CONTENT_TYPE + ": ");
             out.writeBytes(mdiaType);
             out.write(fsep);
-            out.writeBytes(Header.CONTENT_LOCATION + ": ");
+            out.writeBytes(HTTP.CONTENT_LOCATION + ": ");
             out.writeBytes(getContentLocation(metadata));
             out.write(MultipartParser.Separator.HEADER.getType());
 

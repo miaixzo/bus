@@ -29,7 +29,7 @@ package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
 
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class WebApplication {
 
     public StringBuilder getServiceURL(Connection conn) {
         return new StringBuilder(Normal._64)
-                .append(conn.isTls() ? HTTP.HTTPS_PREFIX : HTTP.HTTP_PREFIX)
+                .append(conn.isTls() ? Protocol.HTTPS_PREFIX : Protocol.HTTP_PREFIX)
                 .append(conn.getHostname())
                 .append(Symbol.C_COLON)
                 .append(conn.getPort())

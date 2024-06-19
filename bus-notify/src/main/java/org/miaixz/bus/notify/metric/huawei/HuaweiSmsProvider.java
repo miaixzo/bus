@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -93,8 +93,8 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiMaterial, Context>
         bodys.put("signature", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put(Header.AUTHORIZATION, AUTH_HEADER_VALUE);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(HTTP.AUTHORIZATION, AUTH_HEADER_VALUE);
         headers.put("X-WSSE", buildWsseHeader());
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);

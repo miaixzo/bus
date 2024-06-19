@@ -30,7 +30,6 @@ package org.miaixz.bus.http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.cache.CacheControl;
 
@@ -233,8 +232,8 @@ public class Request {
          */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
-            if (value.isEmpty()) return removeHeader(Header.CACHE_CONTROL);
-            return header(Header.CACHE_CONTROL, value);
+            if (value.isEmpty()) return removeHeader(HTTP.CACHE_CONTROL);
+            return header(HTTP.CACHE_CONTROL, value);
         }
 
         public Builder get() {

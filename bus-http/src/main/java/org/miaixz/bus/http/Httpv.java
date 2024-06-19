@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.plugin.httpv.*;
 import org.miaixz.bus.http.socket.WebSocket;
@@ -252,10 +252,10 @@ public class Httpv {
                 throw new InternalException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
             }
         } else {
-            boolean isFullPath = urlPath.startsWith(HTTP.HTTPS_PREFIX)
-                    || urlPath.startsWith(HTTP.HTTP_PREFIX)
-                    || urlPath.startsWith(HTTP.WSS_PREFIX)
-                    || urlPath.startsWith(HTTP.WS_PREFIX);
+            boolean isFullPath = urlPath.startsWith(Protocol.HTTPS_PREFIX)
+                    || urlPath.startsWith(Protocol.HTTP_PREFIX)
+                    || urlPath.startsWith(Protocol.WSS_PREFIX)
+                    || urlPath.startsWith(Protocol.WS_PREFIX);
             if (isFullPath) {
                 fullUrl = urlPath;
             } else if (null != baseUrl) {
@@ -264,11 +264,11 @@ public class Httpv {
                 throw new InternalException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
             }
         }
-        if (websocket && fullUrl.startsWith(HTTP.HTTP)) {
-            return fullUrl.replaceFirst(HTTP.HTTP, HTTP.WS);
+        if (websocket && fullUrl.startsWith(Protocol.HTTP.name)) {
+            return fullUrl.replaceFirst(Protocol.HTTP.name, Protocol.WS.name);
         }
-        if (!websocket && fullUrl.startsWith(HTTP.WS)) {
-            return fullUrl.replaceFirst(HTTP.WS, HTTP.HTTP);
+        if (!websocket && fullUrl.startsWith(Protocol.WS.name)) {
+            return fullUrl.replaceFirst(Protocol.WS.name, Protocol.HTTP.name);
         }
         return fullUrl;
     }
@@ -437,7 +437,7 @@ public class Httpv {
                 Request request = chain.request();
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
-                String type = response.header(Header.CONTENT_TYPE);
+                String type = response.header(HTTP.CONTENT_TYPE);
                 if (null == body || null != type && (type.contains("octet-stream")
                         || type.contains("image") || type.contains("video")
                         || type.contains("archive") || type.contains("word")

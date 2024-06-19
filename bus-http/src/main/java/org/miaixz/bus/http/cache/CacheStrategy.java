@@ -28,7 +28,6 @@
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;
@@ -88,7 +87,7 @@ public class CacheStrategy {
                 break;
             case HTTP.HTTP_MOVED_TEMP:
             case HTTP.HTTP_TEMP_REDIRECT:
-                if (null != response.header(Header.EXPIRES)
+                if (null != response.header(HTTP.EXPIRES)
                         || response.cacheControl().maxAgeSeconds() != -1
                         || response.cacheControl().isPublic()
                         || response.cacheControl().isPrivate()) {
@@ -183,7 +182,7 @@ public class CacheStrategy {
          * @return the true/false
          */
         private static boolean hasConditions(Request request) {
-            return null != request.header(Header.IF_MODIFIED_SINCE) || null != request.header(Header.IF_NONE_MATCH);
+            return null != request.header(HTTP.IF_MODIFIED_SINCE) || null != request.header(HTTP.IF_NONE_MATCH);
         }
 
         /**

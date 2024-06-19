@@ -30,7 +30,6 @@ package org.miaixz.bus.http.metric.http;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
@@ -56,27 +55,27 @@ public class Http2Codec implements HttpCodec {
      * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
      */
     private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
-            Header.CONNECTION,
-            Header.HOST,
-            Header.KEEP_ALIVE,
-            Header.PROXY_CONNECTION,
-            Header.TE,
-            Header.TRANSFER_ENCODING,
-            Header.ENCODING,
-            Header.UPGRADE,
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
+            HTTP.UPGRADE,
             HTTP.TARGET_METHOD_UTF8,
             HTTP.TARGET_PATH_UTF8,
             HTTP.TARGET_SCHEME_UTF8,
             HTTP.TARGET_AUTHORITY_UTF8);
     private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
-            Header.CONNECTION,
-            Header.HOST,
-            Header.KEEP_ALIVE,
-            Header.PROXY_CONNECTION,
-            Header.TE,
-            Header.TRANSFER_ENCODING,
-            Header.ENCODING,
-            Header.UPGRADE);
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
+            HTTP.UPGRADE);
 
     private final NewChain chain;
     private final RealConnection realConnection;
@@ -109,7 +108,7 @@ public class Http2Codec implements HttpCodec {
         for (int i = 0, size = headers.size(); i < size; i++) {
             // header names must be lowercase.
             String name = StringKit.upperFirst(headers.name(i));
-            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(Header.TE)
+            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(HTTP.TE)
                     && "trailers".equals(headers.value(i))) {
                 result.add(new Http2Header(name, headers.value(i)));
             }

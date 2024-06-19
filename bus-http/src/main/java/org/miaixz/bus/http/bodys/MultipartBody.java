@@ -32,7 +32,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Header;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
 
 import java.io.IOException;
@@ -178,7 +178,7 @@ public class MultipartBody extends RequestBody {
 
             MediaType mediaType = body.mediaType();
             if (null != mediaType) {
-                sink.writeUtf8(Header.CONTENT_TYPE + ": ")
+                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ")
                         .writeUtf8(mediaType.toString())
                         .write(CRLF);
             }
@@ -235,10 +235,10 @@ public class MultipartBody extends RequestBody {
             if (null == body) {
                 throw new NullPointerException("body == null");
             }
-            if (null != headers && null != headers.get(Header.CONTENT_TYPE)) {
+            if (null != headers && null != headers.get(HTTP.CONTENT_TYPE)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Type");
             }
-            if (null != headers && null != headers.get(Header.CONTENT_LENGTH)) {
+            if (null != headers && null != headers.get(HTTP.CONTENT_LENGTH)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Length");
             }
             return new Part(headers, body);
@@ -261,7 +261,7 @@ public class MultipartBody extends RequestBody {
             }
 
             Headers headers = new Headers.Builder()
-                    .addUnsafeNonAscii(Header.CONTENT_DISPOSITION, disposition.toString())
+                    .addUnsafeNonAscii(HTTP.CONTENT_DISPOSITION, disposition.toString())
                     .build();
 
             return create(headers, body);

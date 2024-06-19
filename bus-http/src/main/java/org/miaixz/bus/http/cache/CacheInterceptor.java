@@ -35,7 +35,6 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Header;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
@@ -111,14 +110,14 @@ public class CacheInterceptor implements Interceptor {
      * @return the true/false
      */
     static boolean isEndToEnd(String fieldName) {
-        return !Header.CONNECTION.equalsIgnoreCase(fieldName)
-                && !Header.KEEP_ALIVE.equalsIgnoreCase(fieldName)
-                && !Header.PROXY_AUTHENTICATE.equalsIgnoreCase(fieldName)
-                && !Header.PROXY_AUTHORIZATION.equalsIgnoreCase(fieldName)
-                && !Header.TE.equalsIgnoreCase(fieldName)
-                && !Header.TRAILERS.equalsIgnoreCase(fieldName)
-                && !Header.TRANSFER_ENCODING.equalsIgnoreCase(fieldName)
-                && !Header.UPGRADE.equalsIgnoreCase(fieldName);
+        return !HTTP.CONNECTION.equalsIgnoreCase(fieldName)
+                && !HTTP.KEEP_ALIVE.equalsIgnoreCase(fieldName)
+                && !HTTP.PROXY_AUTHENTICATE.equalsIgnoreCase(fieldName)
+                && !HTTP.PROXY_AUTHORIZATION.equalsIgnoreCase(fieldName)
+                && !HTTP.TE.equalsIgnoreCase(fieldName)
+                && !HTTP.TRAILERS.equalsIgnoreCase(fieldName)
+                && !HTTP.TRANSFER_ENCODING.equalsIgnoreCase(fieldName)
+                && !HTTP.UPGRADE.equalsIgnoreCase(fieldName);
     }
 
     /**
@@ -128,9 +127,9 @@ public class CacheInterceptor implements Interceptor {
      * @return the true/false
      */
     static boolean isContentSpecificHeader(String fieldName) {
-        return Header.CONTENT_LENGTH.equalsIgnoreCase(fieldName)
-                || Header.CONTENT_ENCODING.equalsIgnoreCase(fieldName)
-                || Header.CONTENT_TYPE.equalsIgnoreCase(fieldName);
+        return HTTP.CONTENT_LENGTH.equalsIgnoreCase(fieldName)
+                || HTTP.CONTENT_ENCODING.equalsIgnoreCase(fieldName)
+                || HTTP.CONTENT_TYPE.equalsIgnoreCase(fieldName);
     }
 
     @Override
@@ -299,7 +298,7 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
-        String mediaType = response.header(Header.CONTENT_TYPE);
+        String mediaType = response.header(HTTP.CONTENT_TYPE);
         long contentLength = response.body().length();
         return response.newBuilder()
                 .body(new RealResponseBody(mediaType, contentLength, IoKit.buffer(cacheWritingSource)))
