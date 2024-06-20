@@ -28,7 +28,7 @@
 /**
  * 定义用户进行通信开发所需实现的接口
  * <p>
- * 用户进行通信开发时需要实现该package中的接口，通常情况下仅需实现{@link org.miaixz.bus.socket.Protocol}/{@link org.miaixz.bus.socket.Handler}即可。
+ * 用户进行通信开发时需要实现该package中的接口，通常情况下仅需实现{@link org.miaixz.bus.socket.Message}/{@link org.miaixz.bus.socket.Handler}即可。
  * 如需仅需通讯层面的监控，本项目提供了接口{@link org.miaixz.bus.socket.Monitor}以供使用。
  * </p>
  * <p>

@@ -25,26 +25,33 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.socket.accord.kcp;
+package org.miaixz.bus.socket;
 
-import org.miaixz.bus.socket.Protocol;
-import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.accord.AioClient;
+import org.miaixz.bus.socket.accord.AioServer;
 
 import java.nio.ByteBuffer;
 
 /**
+ * 消息传输采用的模式
+ * <p>
+ * 根据通信双方约定的模式规范实现{@code Message}接口，使用时将该实现类注册至服务启动类{@link AioClient}、{@link AioServer}
+ * </p>
+ * 注意：框架本身的所有Socket链路复用同一个Message，请勿在其实现类的成员变量中存储特定链路的数据。
+ *
+ * @param <T> 消息对象实体类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KcpProtocol implements Protocol<KcpPacket> {
+public interface Message<T> {
 
-    @Override
-    public KcpPacket decode(ByteBuffer readBuffer, Session session) {
-        if (!readBuffer.hasRemaining()) {
-            return null;
-        }
-        KcpPacket packet = new KcpPacket();
-        return packet;
-    }
+    /**
+     * 对于从Socket流中获取到的数据采用当前Protocol的实现类协议进行解析。
+     *
+     * @param readBuffer 待处理的读buffer
+     * @param session    本次需要解码的session
+     * @return 本次解码成功后封装的业务消息对象, 返回null则表示解码未完成
+     */
+    T decode(final ByteBuffer readBuffer, Session session);
 
 }

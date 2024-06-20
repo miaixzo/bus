@@ -48,18 +48,22 @@ public enum Protocol {
      */
     TCP("tcp"),
     /**
+     *
+     */
+    UDP("udp"),
+    /**
      * http协议
      */
     HTTP("http"),
     /**
      * 过时的plaintext，默认情况下不使用持久套接字
      */
-    HTTP_1_0("http/1.0"),
+    HTTP_1_0("HTTP/1.0"),
     /**
      * 包含持久连接的plaintext
      * 此版本的Httpd实现了RFC 7230，并跟踪对该规范的修订
      */
-    HTTP_1_1("http/1.1"),
+    HTTP_1_1("HTTP/1.1"),
     /**
      * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送
      * HTTP/1.1语义是在HTTP/2上分层的
@@ -93,11 +97,11 @@ public enum Protocol {
      */
     SOAP_1_2("SOAP 1.2 Protocol"),
     /**
-     * SOAP 1.2协议
+     *the ws
      */
     WS("ws"),
     /**
-     * SOAP 1.2协议
+     * the wss
      */
     WSS("wss"),
     /**
@@ -135,7 +139,15 @@ public enum Protocol {
     /**
      * Supports RFC 5246: TLS version 1.3
      */
-    TLSv1_3("TLSv1.3");
+    TLSv1_3("TLSv1.3"),
+    /**
+     *
+     */
+    DICOM("dicom"),
+    /**
+     *
+     */
+    HL7("hl7");
 
     /**
      * The prefix http
@@ -268,6 +280,9 @@ public enum Protocol {
         return isHttps(url) || isLocalHost(url);
     }
 
+    public boolean isTcp() {
+        return this != UDP;
+    }
 
     /**
      * 返回用于识别ALPN协议的字符串，如“http/1.1”、“spdy/3.1”或“http/2.0”.

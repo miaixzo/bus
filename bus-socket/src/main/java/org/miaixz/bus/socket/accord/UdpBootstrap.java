@@ -29,7 +29,7 @@ package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Protocol;
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Worker;
 import org.miaixz.bus.socket.buffer.BufferFactory;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
@@ -59,13 +59,13 @@ public class UdpBootstrap {
     private boolean innerWorker = false;
 
 
-    public <Request> UdpBootstrap(Protocol<Request> protocol, Handler<Request> handler, Worker worker) {
-        this(protocol, handler);
+    public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler, Worker worker) {
+        this(message, handler);
         this.worker = worker;
     }
 
-    public <Request> UdpBootstrap(Protocol<Request> protocol, Handler<Request> handler) {
-        context.setProtocol(protocol);
+    public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler) {
+        context.setProtocol(message);
         context.setProcessor(handler);
     }
 

@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
 import org.miaixz.bus.image.metric.Connection;
@@ -74,7 +75,7 @@ public class HL7Rcv {
     };
 
     public HL7Rcv() {
-        conn.setProtocol(Connection.Protocol.HL7);
+        conn.setProtocol(Protocol.HL7);
         device.addDeviceExtension(hl7Ext);
         device.addConnection(conn);
         hl7Ext.addHL7Application(hl7App);

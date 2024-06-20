@@ -25,10 +25,21 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
+package org.miaixz.bus.socket.metric.message;
+
+import org.miaixz.bus.socket.Session;
+
 /**
- * 字符协议等实现
+ * 字节数组模式
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.socket.metric.protocol;
+public class ByteArrayMessage extends FixedLengthBytesMessage<byte[]> {
+
+    @Override
+    protected byte[] decode(byte[] bytes, Session session) {
+        return bytes;
+    }
+
+}

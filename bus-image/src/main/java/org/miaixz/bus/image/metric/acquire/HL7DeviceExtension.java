@@ -28,6 +28,7 @@
 package org.miaixz.bus.image.metric.acquire;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.internal.hl7.*;
@@ -43,7 +44,7 @@ import java.util.LinkedHashMap;
 public class HL7DeviceExtension extends DeviceExtension {
 
     static {
-        Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7Handler.INSTANCE);
+        Connection.registerTCPProtocolHandler(Protocol.HL7, HL7Handler.INSTANCE);
     }
 
     private final LinkedHashMap<String, HL7Application> hl7apps = new LinkedHashMap<>();

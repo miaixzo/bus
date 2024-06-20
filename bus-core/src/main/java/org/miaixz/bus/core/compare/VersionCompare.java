@@ -44,11 +44,12 @@ import java.io.Serializable;
  */
 public class VersionCompare extends NullCompare<String> implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
      * 单例
      */
     public static final VersionCompare INSTANCE = new VersionCompare();
-    private static final long serialVersionUID = -1L;
 
     /**
      * 默认构造

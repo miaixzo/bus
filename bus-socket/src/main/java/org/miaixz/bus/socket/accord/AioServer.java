@@ -30,7 +30,7 @@ package org.miaixz.bus.socket.accord;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Protocol;
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.buffer.*;
 import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
@@ -87,25 +87,25 @@ public final class AioServer {
     /**
      * 设置服务端启动必要参数配置
      *
-     * @param port     绑定服务端口号
-     * @param protocol 协议编解码
-     * @param handler  消息处理器
+     * @param port    绑定服务端口号
+     * @param message 协议编解码
+     * @param handler 消息处理器
      */
-    public <T> AioServer(int port, Protocol<T> protocol, Handler<T> handler) {
+    public <T> AioServer(int port, Message<T> message, Handler<T> handler) {
         context.setPort(port);
-        context.setProtocol(protocol);
+        context.setProtocol(message);
         context.setProcessor(handler);
         context.setThreadNum(Runtime.getRuntime().availableProcessors());
     }
 
     /**
-     * @param host     绑定服务端Host地址
-     * @param port     绑定服务端口号
-     * @param protocol 协议编解码
-     * @param handler  消息处理器
+     * @param host    绑定服务端Host地址
+     * @param port    绑定服务端口号
+     * @param message 协议编解码
+     * @param handler 消息处理器
      */
-    public <T> AioServer(String host, int port, Protocol<T> protocol, Handler<T> handler) {
-        this(port, protocol, handler);
+    public <T> AioServer(String host, int port, Message<T> message, Handler<T> handler) {
+        this(port, message, handler);
         context.setHost(host);
     }
 

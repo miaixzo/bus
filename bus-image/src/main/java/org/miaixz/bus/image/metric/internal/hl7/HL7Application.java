@@ -29,6 +29,7 @@ package org.miaixz.bus.image.metric.internal.hl7;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Compatible;
@@ -202,7 +203,7 @@ public class HL7Application implements Serializable {
     }
 
     public void addConnection(Connection conn) {
-        if (conn.getProtocol() != Connection.Protocol.HL7)
+        if (conn.getProtocol() != Protocol.HL7)
             throw new IllegalArgumentException(
                     "protocol != HL7 - " + conn.getProtocol());
 

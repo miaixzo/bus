@@ -29,7 +29,7 @@ package org.miaixz.bus.starter.socket;
 
 import jakarta.annotation.Resource;
 import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Protocol;
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.accord.AioServer;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class SocketQuickService {
     @Resource
     private Handler handler;
     @Resource
-    private Protocol protocol;
+    private Message message;
     private AioServer aioQuickServer;
 
     public SocketQuickService(SocketProperties properties) {
@@ -52,7 +52,7 @@ public class SocketQuickService {
     }
 
     public void start() {
-        this.aioQuickServer = new AioServer(this.properties.getPort(), protocol, handler);
+        this.aioQuickServer = new AioServer(this.properties.getPort(), message, handler);
         try {
             aioQuickServer.start();
         } catch (IOException e) {

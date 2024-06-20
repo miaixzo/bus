@@ -25,21 +25,37 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.socket.metric.protocol;
+package org.miaixz.bus.socket.metric.message;
 
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 
+import java.nio.ByteBuffer;
+
 /**
- * 字节数组模式
+ * 固定长度字节模式
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ByteArrayProtocol extends FixedLengthBytesProtocol<byte[]> {
+public abstract class FixedLengthBytesMessage<T> implements Message<T> {
 
     @Override
-    protected byte[] decode(byte[] bytes, Session session) {
-        return bytes;
+    public final T decode(ByteBuffer readBuffer, Session session) {
+        if (readBuffer.remaining() < Integer.BYTES) {
+            return null;
+        }
+        readBuffer.mark();
+        int length = readBuffer.getInt();
+        if (readBuffer.remaining() < length) {
+            readBuffer.reset();
+            return null;
+        }
+        byte[] bytes = new byte[length];
+        readBuffer.get(bytes);
+        return decode(bytes, session);
     }
+
+    protected abstract T decode(byte[] bytes, Session session);
 
 }

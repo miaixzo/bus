@@ -30,6 +30,7 @@ package org.miaixz.bus.image.metric;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Dimse;
@@ -463,7 +464,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     public void addConnection(Connection conn) {
-        if (conn.getProtocol() != Connection.Protocol.DICOM)
+        if (conn.getProtocol() != Protocol.DICOM)
             throw new IllegalArgumentException(
                     "protocol != DICOM - " + conn.getProtocol());
 

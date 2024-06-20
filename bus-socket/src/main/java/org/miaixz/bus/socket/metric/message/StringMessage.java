@@ -25,9 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.socket.metric.protocol;
+package org.miaixz.bus.socket.metric.message;
 
-import org.miaixz.bus.socket.Protocol;
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.metric.decoder.FixedLengthFrameDecoder;
 
@@ -42,18 +42,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StringProtocol implements Protocol<String> {
+public class StringMessage implements Message<String> {
 
     private final Charset charset;
 
     private final Map<Session, FixedLengthFrameDecoder> decoderMap = new ConcurrentHashMap<>();
     private long lastClearTime = System.currentTimeMillis();
 
-    public StringProtocol(Charset charset) {
+    public StringMessage(Charset charset) {
         this.charset = charset;
     }
 
-    public StringProtocol() {
+    public StringMessage() {
         this(org.miaixz.bus.core.lang.Charset.UTF_8);
     }
 

@@ -107,7 +107,7 @@ public class StatusLine {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(protocol == Protocol.HTTP_1_0 ? "HTTP/1.0" : "HTTP/1.1");
+        result.append(protocol == Protocol.HTTP_1_0 ? Protocol.HTTP_1_0.name : Protocol.HTTP_1_1.name);
         result.append(Symbol.C_SPACE).append(code);
         if (null != message) {
             result.append(Symbol.C_SPACE).append(message);

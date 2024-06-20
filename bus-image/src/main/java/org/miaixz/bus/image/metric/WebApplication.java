@@ -155,7 +155,7 @@ public class WebApplication {
     }
 
     public void addConnection(Connection conn) {
-        if (conn.getProtocol() != Connection.Protocol.HTTP)
+        if (conn.getProtocol() != Protocol.HTTP)
             throw new IllegalArgumentException(
                     "Web Application does not support protocol " + conn.getProtocol());
         if (null != device && device != conn.getDevice())
