@@ -44,27 +44,27 @@ import java.util.Iterator;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UniversalNamespaceCache implements NamespaceContext {
+public class UniversalNamespace implements NamespaceContext {
 
     private static final String DEFAULT_NS = "DEFAULT";
     private final BiMap<String, String> prefixUri = new BiMap<>(new HashMap<>());
 
     /**
-     * This constructor parses the document and stores all namespaces it can
-     * find. If toplevelOnly is true, only namespaces in the root are used.
+     * 此构造函数解析文档并存储其能找到的所有命名空间。
+     * 如果 toplevelOnly 为 true，则仅使用根目录中的命名空间。
      *
-     * @param node         source Node
-     * @param toplevelOnly restriction of the search to enhance performance
+     * @param node         源节点
+     * @param toplevelOnly 限制搜索以提高性能
      */
-    public UniversalNamespaceCache(final Node node, final boolean toplevelOnly) {
+    public UniversalNamespace(final Node node, final boolean toplevelOnly) {
         examineNode(node.getFirstChild(), toplevelOnly);
     }
 
     /**
-     * A single node is read, the namespace attributes are extracted and stored.
+     *取单个节点，提取并存储命名空间属性。
      *
-     * @param node            to examine
-     * @param attributesOnly, if true no recursion happens
+     * @param node           检查节点
+     * @param attributesOnly 如果为真，则不发生递归
      */
     private void examineNode(final Node node, final boolean attributesOnly) {
         final NamedNodeMap attributes = node.getAttributes();
@@ -78,7 +78,6 @@ public class UniversalNamespaceCache implements NamespaceContext {
 
         if (!attributesOnly) {
             final NodeList childNodes = node.getChildNodes();
-            //noinspection ConstantConditions
             if (null != childNodes) {
                 Node item;
                 final int childLength = childNodes.getLength();
@@ -92,34 +91,32 @@ public class UniversalNamespaceCache implements NamespaceContext {
     }
 
     /**
-     * This method looks at an attribute and stores it, if it is a namespace
-     * attribute.
+     * 如果它是命名空间属性，则此方法查看该属性并将其存储。
      *
-     * @param attribute to examine
+     * @param node 检查节点
      */
-    private void storeAttribute(final Node attribute) {
-        if (null == attribute) {
+    private void storeAttribute(final Node node) {
+        if (null == node) {
             return;
         }
-        // examine the attributes in namespace xmlns
-        if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attribute.getNamespaceURI())) {
-            // Default namespace xmlns="uri goes here"
-            if (XMLConstants.XMLNS_ATTRIBUTE.equals(attribute.getNodeName())) {
-                prefixUri.put(DEFAULT_NS, attribute.getNodeValue());
+        // 检查命名空间 xmlns 中的属性
+        if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(node.getNamespaceURI())) {
+            // 默认命名空间 xmlns="uri goes here"
+            if (XMLConstants.XMLNS_ATTRIBUTE.equals(node.getNodeName())) {
+                prefixUri.put(DEFAULT_NS, node.getNodeValue());
             } else {
-                // The defined prefixes are stored here
-                prefixUri.put(attribute.getLocalName(), attribute.getNodeValue());
+                // 定义的前缀存储在这里
+                prefixUri.put(node.getLocalName(), node.getNodeValue());
             }
         }
 
     }
 
     /**
-     * This method is called by XPath. It returns the default namespace, if the
-     * prefix is null or "".
+     * 此方法由 XPath 调用。如果前缀为 null 或“”，则返回默认命名空间。
      *
-     * @param prefix to search for
-     * @return uri
+     * @param prefix 前缀
+     * @return 命名空间URI
      */
     @Override
     public String getNamespaceURI(final String prefix) {
@@ -131,8 +128,7 @@ public class UniversalNamespaceCache implements NamespaceContext {
     }
 
     /**
-     * This method is not needed in this context, but can be implemented in a
-     * similar way.
+     * 在这种情况下不需要这种方法，但可以用类似的方式实现。
      */
     @Override
     public String getPrefix(final String namespaceURI) {

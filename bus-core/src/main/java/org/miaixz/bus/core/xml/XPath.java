@@ -105,7 +105,7 @@ public class XPath {
     public static Object getByXPath(final String expression, final Object source, final QName returnType) {
         NamespaceContext nsContext = null;
         if (source instanceof Node) {
-            nsContext = new UniversalNamespaceCache((Node) source, false);
+            nsContext = new UniversalNamespace((Node) source, false);
         }
         return getByXPath(expression, source, returnType, nsContext);
     }

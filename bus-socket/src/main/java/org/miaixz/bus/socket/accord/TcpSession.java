@@ -68,6 +68,7 @@ import java.util.function.Function;
  * @since Java 17+
  */
 public final class TcpSession extends Session {
+
     /**
      * 底层通信channel对象
      */
@@ -76,15 +77,21 @@ public final class TcpSession extends Session {
      * 输出流
      */
     private final WriteBuffer byteBuf;
+    /**
+     * 缓冲页
+     */
     private final BufferPage bufferPage;
     /**
      * 服务上下文
      */
     private final Context context;
+    /**
+     * 缓冲函数
+     */
     private final Function<BufferPage, VirtualBuffer> function;
     /**
-     * 读缓冲。
-     * <p>大小取决于AioClient/AioServer设置的setReadBufferSize</p>
+     * 读缓冲
+     * 大小取决于AioClient/AioServer设置的setReadBufferSize
      */
     private VirtualBuffer readBuffer;
     /**
@@ -118,7 +125,7 @@ public final class TcpSession extends Session {
 
     /**
      * 触发AIO的写操作,
-     * <p>需要调用控制同步</p>
+     * 需要调用控制同步
      */
     void writeCompleted(int result) {
         Monitor monitor = context.getMonitor();
@@ -139,11 +146,11 @@ public final class TcpSession extends Session {
             return;
         }
         byteBuf.finishWrite();
-        //此时可能是Closing或Closed状态
+        // 此时可能是Closing或Closed状态
         if (status != SESSION_STATUS_ENABLED) {
             close();
         } else {
-            //也许此时有新的消息通过write方法添加到writeCacheQueue中
+            // 也许此时有新的消息通过write方法添加到writeCacheQueue中
             byteBuf.flush();
         }
     }
@@ -270,7 +277,7 @@ public final class TcpSession extends Session {
                 break;
             }
 
-            //处理消息
+            // 处理消息
             try {
                 handler.process(this, dataEntry);
                 if (modCount != this.modCount) {
@@ -293,14 +300,14 @@ public final class TcpSession extends Session {
         byteBuf.flush();
 
         readBuffer.compact();
-        //读缓冲区已满
+        // 读缓冲区已满
         if (!readBuffer.hasRemaining()) {
             InternalException exception = new InternalException("readBuffer overflow. The current TCP connection will be closed. Please fix your " + context.getProtocol().getClass().getSimpleName() + "#decode bug.");
             handler.stateEvent(this, Status.DECODE_EXCEPTION, exception);
             throw exception;
         }
 
-        //read from channel
+        // 从通道读取
         Monitor monitor = context.getMonitor();
         if (monitor != null) {
             monitor.beforeRead(this);
@@ -485,8 +492,6 @@ public final class TcpSession extends Session {
         }
     }
 
-
-
     /**
      * 写事件回调处理
      */
@@ -514,6 +519,5 @@ public final class TcpSession extends Session {
             }
         }
     };
-
 
 }

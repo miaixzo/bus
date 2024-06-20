@@ -57,6 +57,9 @@ import java.util.concurrent.TimeUnit;
  */
 public final class AioClient {
 
+    /**
+     * 健康检查
+     */
     private static final ScheduledExecutorService CONNECT_TIMEOUT_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread thread = new Thread(r, "connection-timeout-monitor");
         thread.setDaemon(true);
@@ -73,6 +76,9 @@ public final class AioClient {
      * @see TcpSession
      */
     private TcpSession session;
+    /**
+     * ByteBuffer内存池
+     */
     private BufferPagePool innerBufferPool = null;
     /**
      * IO事件处理线程组

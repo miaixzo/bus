@@ -55,6 +55,9 @@ import java.util.function.Function;
  */
 public final class AioServer {
 
+    /**
+     * 线程序号
+     */
     private static long threadSeqNumber;
     /**
      * 客户端服务配置
@@ -66,11 +69,11 @@ public final class AioServer {
      */
     private BufferPagePool innerBufferPool = null;
     /**
-     * asynchronousServerSocketChannel
+     * 异步服务器套接字通道
      */
     private AsynchronousServerSocketChannel serverSocketChannel = null;
     /**
-     * asynchronousChannelGroup
+     * 异步通道组
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
     /**
@@ -81,7 +84,9 @@ public final class AioServer {
      * 内存池
      */
     private BufferPagePool bufferPool = null;
-
+    /**
+     * 虚拟缓冲区工厂
+     */
     private VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(context.getReadBufferSize());
 
     /**
@@ -136,13 +141,13 @@ public final class AioServer {
             }
 
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
-            // set socket options
+            // 设置套接字选项
             if (context.getSocketOptions() != null) {
                 for (Map.Entry<SocketOption<Object>, Object> entry : context.getSocketOptions().entrySet()) {
                     this.serverSocketChannel.setOption(entry.getKey(), entry.getValue());
                 }
             }
-            // bind host
+            // 绑定主机
             if (context.getHost() != null) {
                 serverSocketChannel.bind(new InetSocketAddress(context.getHost(), context.getPort()), context.getBacklog());
             } else {
@@ -183,6 +188,7 @@ public final class AioServer {
      * 为每个新建立的连接创建Session对象
      *
      * @param channel 当前已建立连接通道
+     * @param function
      */
     private void createSession(AsynchronousSocketChannel channel, Function<BufferPage, VirtualBuffer> function) {
         // 连接成功则构造Session对象
@@ -298,7 +304,7 @@ public final class AioServer {
     }
 
     /**
-     * 设置内存池。
+     * 设置内存池
      * 通过该方法设置的内存池，在AioServer执行shutdown时不会触发内存池的释放。
      * 该方法适用于多个AioServer、AioClient共享内存池的场景。
      * <b>在启用内存池的情况下会有更好的性能表现</b>
@@ -313,7 +319,7 @@ public final class AioServer {
     }
 
     /**
-     * 设置内存池的构造工厂。
+     * 设置内存池的构造工厂
      * 通过工厂形式生成的内存池会强绑定到当前AioServer对象，
      * 在AioServer执行shutdown时会释放内存池。
      * <b>在启用内存池的情况下会有更好的性能表现</b>

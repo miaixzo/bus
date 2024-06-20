@@ -54,16 +54,39 @@ public class UdpBootstrap {
      * 内存池
      */
     private BufferPagePool bufferPool;
+    /**
+     * 缓冲页池
+     */
     private BufferPagePool innerBufferPool = null;
+    /**
+     * 工作者
+     */
     private Worker worker;
+    /**
+     * 内部工作者
+     */
     private boolean innerWorker = false;
 
-
+    /**
+     * 构造
+     *
+     * @param message   消息处理
+     * @param handler   拦截器
+     * @param worker    工作者
+     * @param <Request> 当前请求
+     */
     public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler, Worker worker) {
         this(message, handler);
         this.worker = worker;
     }
 
+    /**
+     * 构造
+     *
+     * @param message   消息处理
+     * @param handler   拦截器
+     * @param <Request> 当前请求
+     */
     public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler) {
         context.setProtocol(message);
         context.setProcessor(handler);
@@ -166,7 +189,7 @@ public class UdpBootstrap {
     }
 
     /**
-     * 设置内存池的构造工厂。
+     * 设置内存池的构造工厂
      * 通过工厂形式生成的内存池会强绑定到当前UdpBootstrap对象，
      * 在UdpBootstrap执行shutdown时会释放内存池。
      * <b>在启用内存池的情况下会有更好的性能表现</b>

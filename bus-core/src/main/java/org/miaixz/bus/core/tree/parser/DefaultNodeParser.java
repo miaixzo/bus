@@ -37,7 +37,6 @@ import java.util.Map;
  * 默认的简单转换器
  *
  * @param <T> ID类型
- *            liangbaikai
  * @author Kimi Liu
  * @since Java 17+
  */

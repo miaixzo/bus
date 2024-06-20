@@ -56,6 +56,9 @@ public final class UdpChannel {
      * 服务上下文
      */
     public final Context context;
+    /**
+     * 缓冲页
+     */
     private final BufferPage bufferPage;
     /**
      * 真实的UDP通道
@@ -65,7 +68,13 @@ public final class UdpChannel {
      * 待输出消息
      */
     private ConcurrentLinkedQueue<ResponseUnit> responseTasks;
+    /**
+     * 工作者
+     */
     private Worker worker;
+    /**
+     * 注册者key
+     */
     private SelectionKey selectionKey;
     /**
      * 发送失败的
