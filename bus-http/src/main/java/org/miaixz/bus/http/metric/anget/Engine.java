@@ -29,8 +29,10 @@ package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 浏览器解析引擎
@@ -48,7 +50,7 @@ public class Engine extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<Engine> ENGINES = ListKit.of(
+    public static final List<Engine> ENGINES = ListKit.view(
             new Engine("Trident", "trident"),
             new Engine("Webkit", "webkit"),
             new Engine("Chrome", "chrome"),
@@ -56,18 +58,37 @@ public class Engine extends UserAgent {
             new Engine("Presto", "presto"),
             new Engine("Gecko", "gecko"),
             new Engine("KHTML", "khtml"),
-            new Engine("Konqeror", "konqueror"),
+            new Engine("Konqueror", "konqueror"),
             new Engine("MIDP", "MIDP")
     );
+
+    /**
+     * 匹配正则
+     */
+    private final Pattern pattern;
 
     /**
      * 构造
      *
      * @param name  引擎名称
-     * @param regex 关键字或表达式
+     * @param rule 关键字或表达式
      */
-    public Engine(String name, String regex) {
-        super(name, regex);
+    public Engine(String name, String rule) {
+        super(name, rule);
+        this.pattern = Pattern.compile(name + "[/\\- ]([\\w.\\-]+)", Pattern.CASE_INSENSITIVE);
+    }
+
+    /**
+     * 获取引擎版本
+     *
+     * @param userAgentString User-Agent字符串
+     * @return 版本
+     */
+    public String getVersion(final String userAgentString) {
+        if (isUnknown()) {
+            return null;
+        }
+        return PatternKit.getGroup1(this.pattern, userAgentString);
     }
 
 }

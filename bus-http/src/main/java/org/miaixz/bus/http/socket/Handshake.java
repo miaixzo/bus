@@ -53,7 +53,7 @@ public class Handshake {
 
     /**
      * 用于此连接的TLS版本。在Httpd 3.0之前没有跟踪这个值。
-     * 对于之前版本缓存的响应，它返回{@link TlsVersion#SSL_3_0}
+     * 对于之前版本缓存的响应，它返回{@link TlsVersion#SSLv3}
      */
     private final TlsVersion tlsVersion;
     /**
@@ -122,7 +122,7 @@ public class Handshake {
 
     /**
      * Returns the TLS version used for this connection. This value wasn't tracked prior to Http
-     * 3.0. For responses cached by preceding versions this returns {@link TlsVersion#SSL_3_0}.
+     * 3.0. For responses cached by preceding versions this returns {@link TlsVersion#SSLv3}.
      */
     public TlsVersion tlsVersion() {
         return tlsVersion;

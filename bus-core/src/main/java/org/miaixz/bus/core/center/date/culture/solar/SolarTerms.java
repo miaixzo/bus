@@ -85,7 +85,7 @@ public class SolarTerms extends Samsara {
     }
 
     /**
-     * 是否节
+     * 是否节令
      *
      * @return true/false
      */
@@ -94,7 +94,7 @@ public class SolarTerms extends Samsara {
     }
 
     /**
-     * 是否气
+     * 是否气令
      *
      * @return true/false
      */

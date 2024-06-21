@@ -28,9 +28,9 @@
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,87 +39,81 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Divice extends UserAgent {
+public class Device extends UserAgent {
 
     /**
      * 未知
      */
-    public static final Divice UNKNOWN = new Divice(Normal.UNKNOWN, null);
+    public static final Device UNKNOWN = new Device(Normal.UNKNOWN, null);
 
     /**
-     * iPhone
+     * Iphone
      */
-    public static final Divice IPHONE = new Divice("iPhone", "iphone");
+    public static final Device IPHONE = new Device("iPhone", "iphone");
     /**
-     * iPod
+     * ipod
      */
-    public static final Divice IPOD = new Divice("iPod", "ipod");
+    public static final Device IPOD = new Device("iPod", "ipod");
     /**
-     * iPad
+     * ipad
      */
-    public static final Divice IPAD = new Divice("iPad", "ipad");
+    public static final Device IPAD = new Device("iPad", "ipad");
 
     /**
-     * Android
+     * android
      */
-    public static final Divice ANDROID = new Divice("Android", "android");
+    public static final Device ANDROID = new Device("Android", "android");
     /**
-     * Android
+     * android
      */
-    public static final Divice GOOGLE_TV = new Divice("GoogleTV", "googletv");
+    public static final Device GOOGLE_TV = new Device("GoogleTV", "googletv");
 
     /**
      * Windows Phone
      */
-    public static final Divice WINDOWS_PHONE = new Divice("Windows Phone", "windows (ce|phone|mobile)( os)?");
+    public static final Device WINDOWS_PHONE = new Device("Windows Phone", "windows (ce|phone|mobile)( os)?");
 
     /**
      * 支持的移动平台类型
      */
-    public static final List<Divice> MOBILE_DIVICES = ListKit.of(
+    public static final List<Device> MOBILE_DEVICE = ListKit.of(
             WINDOWS_PHONE,
             IPAD,
             IPOD,
             IPHONE,
+            new Device("Android", "XiaoMi|MI\\s+"),
             ANDROID,
             GOOGLE_TV,
-            new Divice("htcFlyer", "htc_flyer"),
-            new Divice("Symbian", "symbian(os)?"),
-            new Divice("Blackberry", "blackberry"),
-            new Divice("Android", "XiaoMi|MI\\s+")
+            new Device("htcFlyer", "htc_flyer"),
+            new Device("Symbian", "symbian(os)?"),
+            new Device("Blackberry", "blackberry")
     );
 
     /**
      * 支持的桌面平台类型
      */
-    public static final List<Divice> DESKTOP_DIVICES = ListKit.of(
-            new Divice("Windows", "windows"),
-            new Divice("Mac", "(macintosh|darwin)"),
-            new Divice("Linux", "linux"),
-            new Divice("Wii", "wii"),
-            new Divice("Playstation", "playstation"),
-            new Divice("Java", "java")
+    public static final List<Device> DESKTOP_DEVICE = ListKit.of(
+            new Device("Windows", "windows"),
+            new Device("Mac", "(macintosh|darwin)"),
+            new Device("Linux", "linux"),
+            new Device("Wii", "wii"),
+            new Device("Playstation", "playstation"),
+            new Device("Java", "java")
     );
 
     /**
      * 支持的平台类型
      */
-    public static final List<Divice> DIVICES;
-
-    static {
-        DIVICES = new ArrayList<>(13);
-        DIVICES.addAll(MOBILE_DIVICES);
-        DIVICES.addAll(DESKTOP_DIVICES);
-    }
+    public static final List<Device> ALL_DEVICE = (List<Device>) CollKit.union(MOBILE_DEVICE, DESKTOP_DEVICE);
 
     /**
      * 构造
      *
      * @param name  平台名称
-     * @param regex 关键字或表达式
+     * @param rule 关键字或表达式
      */
-    public Divice(String name, String regex) {
-        super(name, regex);
+    public Device(final String name, final String rule) {
+        super(name, rule);
     }
 
     /**
@@ -128,7 +122,7 @@ public class Divice extends UserAgent {
      * @return 是否为移动平台
      */
     public boolean isMobile() {
-        return MOBILE_DIVICES.contains(this);
+        return MOBILE_DEVICE.contains(this);
     }
 
     /**
@@ -137,7 +131,7 @@ public class Divice extends UserAgent {
      * @return 是否为Iphone或者iPod设备
      */
     public boolean isIPhoneOrIPod() {
-        return IPHONE.equals(this) || IPOD.equals(this);
+        return this.equals(IPHONE) || this.equals(IPOD);
     }
 
     /**
@@ -146,7 +140,7 @@ public class Divice extends UserAgent {
      * @return 是否为Iphone或者iPod设备
      */
     public boolean isIPad() {
-        return IPAD.equals(this);
+        return this.equals(IPAD);
     }
 
     /**
@@ -164,7 +158,7 @@ public class Divice extends UserAgent {
      * @return 是否为Android平台，包括Android和Google TV
      */
     public boolean isAndroid() {
-        return ANDROID.equals(this) || GOOGLE_TV.equals(this);
+        return this.equals(ANDROID) || this.equals(GOOGLE_TV);
     }
 
 }

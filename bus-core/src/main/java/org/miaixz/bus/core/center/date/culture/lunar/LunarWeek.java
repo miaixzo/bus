@@ -159,8 +159,7 @@ public class LunarWeek extends Loops {
      * @return 农历日
      */
     public LunarDay getFirstDay() {
-        LunarMonth m = getMonth();
-        LunarDay firstDay = LunarDay.fromYmd(m.getYear().getYear(), m.getMonthWithLeap(), 1);
+        LunarDay firstDay = LunarDay.fromYmd(month.getYear().getYear(), month.getMonthWithLeap(), 1);
         return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start.getIndex(), 7));
     }
 

@@ -86,29 +86,26 @@ public class SolarFestival extends Loops {
             throw new IllegalArgumentException(String.format("illegal index: %d", index));
         }
         Matcher matcher = Pattern.compile(String.format("@%02d\\d+", index)).matcher(DATA);
-        if (matcher.find()) {
-            String data = matcher.group();
-            EnumMap.Festival type = EnumMap.Festival.fromCode(data.charAt(3) - '0');
-            if (type == EnumMap.Festival.DAY) {
-                int startYear = Integer.parseInt(data.substring(8), 10);
-                if (year >= startYear) {
-                    return new SolarFestival(type, SolarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6, 8), 10)), startYear, data);
-                }
-            }
+        if (!matcher.find()) {
+            return null;
         }
-        return null;
+        String data = matcher.group();
+        EnumMap.Festival type = EnumMap.Festival.fromCode(data.charAt(3) - '0');
+        if (type != EnumMap.Festival.DAY) {
+            return null;
+        }
+        int startYear = Integer.parseInt(data.substring(8), 10);
+        return year < startYear ? null : new SolarFestival(type, SolarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6, 8), 10)), startYear, data);
     }
 
     public static SolarFestival fromYmd(int year, int month, int day) {
         Matcher matcher = Pattern.compile(String.format("@\\d{2}0%02d%02d\\d+", month, day)).matcher(DATA);
-        if (matcher.find()) {
-            String data = matcher.group();
-            int startYear = Integer.parseInt(data.substring(8), 10);
-            if (year >= startYear) {
-                return new SolarFestival(EnumMap.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
-            }
+        if (!matcher.find()) {
+            return null;
         }
-        return null;
+        String data = matcher.group();
+        int startYear = Integer.parseInt(data.substring(8), 10);
+        return year < startYear ? null : new SolarFestival(EnumMap.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
     }
 
     public SolarFestival next(int n) {

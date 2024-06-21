@@ -49,7 +49,7 @@ public class NOS extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<NOS> OSES = ListKit.of(
+    public static final List<NOS> NOS = ListKit.of(
             new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0", "windows nt (10\\.0)"),
             new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3", "windows nt (6\\.3)"),
             new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2", "windows nt (6\\.2)"),
@@ -78,7 +78,7 @@ public class NOS extends UserAgent {
             new NOS("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)")
     );
     /**
-     * 版本规则
+     * 匹配正则
      */
     private Pattern pattern;
 
@@ -86,21 +86,21 @@ public class NOS extends UserAgent {
      * 构造
      *
      * @param name  系统名称
-     * @param regex 关键字或表达式
+     * @param rule 关键字或表达式
      */
-    public NOS(String name, String regex) {
-        this(name, regex, null);
+    public NOS(String name, String rule) {
+        this(name, rule, null);
     }
 
     /**
      * 构造
      *
      * @param name         系统名称
-     * @param regex        关键字或表达式
+     * @param rule        关键字或表达式
      * @param versionRegex 版本正则表达式
      */
-    public NOS(String name, String regex, String versionRegex) {
-        super(name, regex);
+    public NOS(String name, String rule, String versionRegex) {
+        super(name, rule);
         if (null != versionRegex) {
             this.pattern = Pattern.compile(versionRegex, Pattern.CASE_INSENSITIVE);
         }
@@ -110,11 +110,11 @@ public class NOS extends UserAgent {
      * 添加自定义的系统类型
      *
      * @param name         浏览器名称
-     * @param regex        关键字或表达式
+     * @param rule        关键字或表达式
      * @param versionRegex 匹配版本的正则
      */
-    synchronized public static void addOs(String name, String regex, String versionRegex) {
-        OSES.add(new NOS(name, regex, versionRegex));
+    synchronized public static void addOs(String name, String rule, String versionRegex) {
+        NOS.add(new NOS(name, rule, versionRegex));
     }
 
     /**
@@ -129,6 +129,15 @@ public class NOS extends UserAgent {
             return null;
         }
         return PatternKit.getGroup1(this.pattern, userAgent);
+    }
+
+    /**
+     * 是否为MacOS
+     *
+     * @return 是否为MacOS
+     */
+    public boolean isMacOS() {
+        return "OSX".equals(getName());
     }
 
 }

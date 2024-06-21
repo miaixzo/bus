@@ -151,6 +151,11 @@ public class LunarHour extends Loops {
         return day + getSixtyCycle().getName() + "时";
     }
 
+    /**
+     * 位于当天的索引
+     *
+     * @return 索引
+     */
     public int getIndexInDay() {
         return (hour + 1) / 2;
     }
@@ -166,8 +171,8 @@ public class LunarHour extends Loops {
             days--;
         }
         LunarDay d = day.next(days);
-        LunarMonth month = d.getMonth();
-        return fromYmdHms(month.getYear().getYear(), month.getMonthWithLeap(), d.getDay(), hour, minute, second);
+        LunarMonth m = d.getMonth();
+        return fromYmdHms(m.getYear().getYear(), m.getMonthWithLeap(), d.getDay(), hour, minute, second);
     }
 
     /**
@@ -180,12 +185,10 @@ public class LunarHour extends Loops {
         if (!day.equals(target.getDay())) {
             return day.isBefore(target.getDay());
         }
-        int bHour = target.getHour();
-        if (hour == bHour) {
-            int bMinute = target.getMinute();
-            return minute == bMinute ? second < target.getSecond() : minute < bMinute;
+        if (hour != target.getHour()) {
+            return hour < target.getHour();
         }
-        return hour < bHour;
+        return minute != target.getMinute() ? minute < target.getMinute() : second < target.getSecond();
     }
 
     /**
@@ -198,16 +201,14 @@ public class LunarHour extends Loops {
         if (!day.equals(target.getDay())) {
             return day.isAfter(target.getDay());
         }
-        int bHour = target.getHour();
-        if (hour == bHour) {
-            int bMinute = target.getMinute();
-            return minute == bMinute ? second > target.getSecond() : minute > bMinute;
+        if (hour != target.getHour()) {
+            return hour > target.getHour();
         }
-        return hour > bHour;
+        return minute != target.getMinute() ? minute > target.getMinute() : second > target.getSecond();
     }
 
     /**
-     * 当时的年干支
+     * 当时的年干支（立春换）
      *
      * @return 干支
      */
@@ -231,7 +232,7 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 当时的月干支
+     * 当时的月干支（节气换）
      *
      * @return 干支
      */
@@ -253,7 +254,7 @@ public class LunarHour extends Loops {
      */
     public SixtyCycle getDaySixtyCycle() {
         SixtyCycle d = day.getSixtyCycle();
-        return hour > 22 ? d.next(1) : d;
+        return hour < 23 ? d : d.next(1);
     }
 
     /**

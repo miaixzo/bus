@@ -59,10 +59,10 @@ public class SolarHalfYear extends Loops {
      * @param index 索引，0-1
      */
     public SolarHalfYear(int year, int index) {
-        this.year = SolarYear.fromYear(year);
         if (index < 0 || index > 1) {
             throw new IllegalArgumentException(String.format("illegal solar half year index: %d", index));
         }
+        this.year = SolarYear.fromYear(year);
         this.index = index;
     }
 

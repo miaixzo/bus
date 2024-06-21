@@ -67,10 +67,10 @@ public class SolarMonth extends Loops {
      * @param month 月
      */
     public SolarMonth(int year, int month) {
-        this.year = SolarYear.fromYear(year);
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException(String.format("illegal solar month: %d", month));
         }
+        this.year = SolarYear.fromYear(year);
         this.month = month;
     }
 

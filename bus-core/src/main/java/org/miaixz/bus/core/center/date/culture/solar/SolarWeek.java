@@ -149,8 +149,7 @@ public class SolarWeek extends Loops {
         while (forward ? (d >= weeksInMonth) : (d < 0)) {
             if (forward) {
                 d -= weeksInMonth;
-            }
-            if (!forward) {
+            } else {
                 if (!SolarDay.fromYmd(m.getYear().getYear(), m.getMonth(), 1).getWeek().equals(start)) {
                     d += add;
                 }
