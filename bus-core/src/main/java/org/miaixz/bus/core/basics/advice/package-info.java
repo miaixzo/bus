@@ -25,36 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
-
-import lombok.*;
-
 /**
- * 返回值公用类
+ * 异常信息处理
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Message {
-
-    /**
-     * 请求返回码
-     */
-    public String errcode;
-
-    /**
-     * 请求返回消息
-     */
-    public String errmsg;
-
-    /**
-     * 请求返回数据
-     */
-    public Object data;
-
-}
+package org.miaixz.bus.core.basics.advice;

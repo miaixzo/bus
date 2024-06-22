@@ -27,8 +27,11 @@
  */
 package org.miaixz.bus.notify.metric.zhutong;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Material;
 
@@ -40,6 +43,9 @@ import org.miaixz.bus.notify.magic.Material;
  */
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ZhutongMaterial extends Material {
 
     /**

@@ -202,11 +202,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, data);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -223,11 +223,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = getTo(url, formMap, headerMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -244,11 +244,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -266,11 +266,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -341,11 +341,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message put(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, data);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -613,11 +613,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

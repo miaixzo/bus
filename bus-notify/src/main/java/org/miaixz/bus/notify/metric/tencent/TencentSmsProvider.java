@@ -27,11 +27,11 @@
  */
 package org.miaixz.bus.notify.metric.tencent;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.util.HashMap;

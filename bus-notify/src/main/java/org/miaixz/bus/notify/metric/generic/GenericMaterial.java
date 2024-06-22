@@ -27,8 +27,11 @@
  */
 package org.miaixz.bus.notify.metric.generic;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,6 +47,9 @@ import java.io.File;
  */
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GenericMaterial extends Material {
 
     private static final String SMTP_HOST = "mail.smtp.host";

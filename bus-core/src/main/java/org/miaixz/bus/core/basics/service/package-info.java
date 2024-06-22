@@ -26,9 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 /**
- * 基础实体类
+ * 业务接口
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.base.entity;
+package org.miaixz.bus.core.basics.service;

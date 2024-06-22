@@ -25,13 +25,15 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
+package org.miaixz.bus.core.basics.entity;
 
 import jakarta.persistence.Transient;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.miaixz.bus.base.normal.Consts;
+import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basics.normal.Consts;
 import org.miaixz.bus.core.data.ObjectId;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.*;
@@ -47,8 +49,10 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-public class BaseEntity extends Tracer {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseEntity<T> extends Tracer<T> {
 
     private static final long serialVersionUID = 1L;
 

@@ -27,11 +27,11 @@
  */
 package org.miaixz.bus.base.service.impl;
 
-import org.miaixz.bus.base.entity.BaseEntity;
-import org.miaixz.bus.base.entity.Result;
 import org.miaixz.bus.base.mapper.BaseMapper;
-import org.miaixz.bus.base.normal.Consts;
-import org.miaixz.bus.base.service.BaseService;
+import org.miaixz.bus.core.basics.entity.BaseEntity;
+import org.miaixz.bus.core.basics.entity.Result;
+import org.miaixz.bus.core.basics.normal.Consts;
+import org.miaixz.bus.core.basics.service.BaseService;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BaseService 接口实现
+ * 基于spring 实现BaseService 接口
  * 根据业务需要如无status，creator等相关属性内容
  * 重写此类及{@link BaseEntity} 业务类继承新类
  *
@@ -210,7 +210,10 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
             PageContext.orderBy(entity.getOrderBy());
         }
         Page<T> list = (Page<T>) mapper.select(entity);
-        return new Result<>((int) list.getTotal(), list.getResult());
+        return Result.<T>builder()
+                .rows(list.getResult())
+                .total((int) list.getTotal())
+                .build();
     }
 
     private String setValue(T entity) {

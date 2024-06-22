@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.notify.metric.unisms;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Material;
 
@@ -40,11 +40,15 @@ import org.miaixz.bus.notify.magic.Material;
  */
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UniMaterial extends Material {
 
     /**
      * 是否为简易模式
      */
+    @Builder.Default
     private boolean simple = true;
 
     /**

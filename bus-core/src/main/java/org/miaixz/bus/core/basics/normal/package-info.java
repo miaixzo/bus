@@ -25,84 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Collections;
-import java.util.List;
-
 /**
- * 返回结果公用
+ * 基础常量
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = true)
-public class Result<T> extends BaseEntity {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 总数据
-     */
-    protected int total;
-    /**
-     * 查询记录数
-     */
-    protected List<T> rows;
-
-    public Result() {
-
-    }
-
-    public Result(List<T> rows) {
-        this.rows = rows;
-    }
-
-    public Result(int total, List<T> rows) {
-        this.total = total;
-        this.rows = rows;
-    }
-
-    public Result(List<T> rows, int pageSize) {
-        if (null == rows || rows.isEmpty()) {
-            throw new IllegalArgumentException("data must be not empty!");
-        }
-        new Result<>(rows, rows.size(), pageSize);
-    }
-
-    public Result(List<T> rows, int total, int pageSize) {
-        this.total = total;
-        this.pageSize = pageSize;
-        this.rows = rows;
-    }
-
-    public static <T> Result<T> Result(List<T> rows, int pageSize) {
-        return new Result<>(rows, pageSize);
-    }
-
-    /**
-     * 得到分页后的数据
-     *
-     * @param pageNo 页码
-     * @return 分页后结果
-     */
-    public List<T> get(int pageNo) {
-        int fromIndex = (pageNo - 1) * this.pageSize;
-        if (fromIndex >= this.rows.size()) {
-            return Collections.emptyList();
-        }
-
-        int toIndex = pageNo * this.pageSize;
-        if (toIndex >= this.rows.size()) {
-            toIndex = this.rows.size();
-        }
-        return this.rows.subList(fromIndex, toIndex);
-    }
-
-}
+package org.miaixz.bus.core.basics.normal;

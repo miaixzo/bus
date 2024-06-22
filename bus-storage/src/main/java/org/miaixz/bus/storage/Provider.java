@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.storage;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;

@@ -28,7 +28,11 @@
 package org.miaixz.bus.oauth.magic;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Gender;
 
 import java.io.Serializable;
@@ -41,7 +45,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Material implements Serializable {

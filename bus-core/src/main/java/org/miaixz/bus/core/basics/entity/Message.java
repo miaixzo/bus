@@ -25,47 +25,40 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.service;
+package org.miaixz.bus.core.basics.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.miaixz.bus.core.xyz.ExceptionKit;
-import org.miaixz.bus.logger.Logger;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 异常信息处理
- * 此类未找到实现的情况下，采用默认实现
- * 可以根据不同业务需求，继承此类实现对应业务逻辑即可
- * 项目中可通过SPI自定义接入
- * 例：META-INF/services/org.miaixz.bus.base.service.ErrorService
- * <code>
- * org.miaixz.bus.xxx.ErrorService
- * </code>
+ * 返回值公用类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
-public class ErrorService {
+@AllArgsConstructor
+public class Message {
 
     /**
-     * 完成请求处理前调用
-     *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * 请求返回码
      */
-    public boolean before(Exception ex) {
-        Logger.error(ExceptionKit.stacktraceToString(ex));
-        return true;
-    }
+    public String errcode;
 
     /**
-     * 完成请求处理后回调
-     *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * 请求返回消息
      */
-    public boolean after(Exception ex) {
-        return true;
-    }
+    public String errmsg;
+
+    /**
+     * 请求返回数据
+     */
+    public Object data;
 
 }

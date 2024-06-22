@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.notify.metric.netease;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -34,7 +35,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Material;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.security.MessageDigest;

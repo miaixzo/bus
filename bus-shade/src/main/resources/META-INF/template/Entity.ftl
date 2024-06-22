@@ -27,7 +27,7 @@
 */
 package ${entityUrl};
 
-import lombok.Getter;
+import lombok.*;
 import lombok.Setter;
 import entity.base.org.miaixz.bus.BaseEntity;
 import javax.persistence.Table;

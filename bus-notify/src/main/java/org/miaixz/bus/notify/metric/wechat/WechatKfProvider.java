@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.notify.metric.wechat;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**

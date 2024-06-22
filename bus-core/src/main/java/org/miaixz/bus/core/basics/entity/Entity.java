@@ -25,78 +25,36 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
+package org.miaixz.bus.core.basics.entity;
 
-import jakarta.persistence.Transient;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
 
 /**
- * 授权公用类
+ * Entity 实体
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-public class OAuth2 extends Entity {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class Entity<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 当前用户标识
+     * 数据主键
      */
-    @Transient
-    protected String x_user_id;
-
-    /**
-     * 当前用户名称
-     */
-    @Transient
-    protected String x_user_name;
-
-    /**
-     * 当前用户角色
-     */
-    @Transient
-    protected String x_role_id;
-
-    /**
-     * 当前用户职称
-     */
-    @Transient
-    protected String x_duty_id;
-
-    /**
-     * 当前用户组织
-     */
-    @Transient
-    protected String x_org_id;
-
-    /**
-     * 当前用户设备
-     */
-    @Transient
-    protected String x_device_id;
-
-    /**
-     * 当前应用
-     */
-    @Transient
-    protected String x_app_id;
-
-    /**
-     * 当前租户
-     */
-    @Transient
-    protected String x_tenant_id;
-
-    /**
-     * 扩展参数信息
-     */
-    @Transient
-    protected String x_extension;
+    @Id
+    protected String id;
 
 }

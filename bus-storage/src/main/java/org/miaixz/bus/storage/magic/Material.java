@@ -27,7 +27,11 @@
  */
 package org.miaixz.bus.storage.magic;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
@@ -39,7 +43,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Material {

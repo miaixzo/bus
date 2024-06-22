@@ -25,9 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.service;
+package org.miaixz.bus.core.basics.service;
 
-import org.miaixz.bus.base.entity.Result;
+import org.miaixz.bus.core.basics.entity.Result;
 
 import java.util.List;
 

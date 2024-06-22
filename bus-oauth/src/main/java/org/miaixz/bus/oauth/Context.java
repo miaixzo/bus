@@ -27,8 +27,11 @@
  */
 package org.miaixz.bus.oauth;
 
-import lombok.Builder;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
@@ -42,7 +45,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Context {

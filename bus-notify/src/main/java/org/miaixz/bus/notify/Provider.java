@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.notify;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.notify.magic.Material;
-import org.miaixz.bus.notify.magic.Message;
 
 import java.util.Collections;
 import java.util.List;

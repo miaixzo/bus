@@ -25,30 +25,74 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
+package org.miaixz.bus.core.basics.entity;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.io.Serializable;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Entity 实体
+ * 访问链路跟踪
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public abstract class Entity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Tracer<T> extends OAuth2<T> {
 
     /**
-     * 数据主键
+     * 当前主链ID
      */
-    @Id
-    protected String id;
+    @Transient
+    protected String x_trace_id;
+
+    /**
+     * 调用者ID
+     */
+    @Transient
+    protected String x_span_id;
+
+    /**
+     * 被调用者ID
+     */
+    @Transient
+    protected String x_child_id;
+
+    /**
+     * 本地IP
+     */
+    @Transient
+    protected String x_local_ip;
+
+    /**
+     * 远程IP
+     */
+    @Transient
+    protected String x_remote_ip;
+
+    /**
+     * 请求者渠道类型: 1-WEB, 2-APP, 3-钉钉，4-微信小程序，5-其他；
+     */
+    @Transient
+    protected String x_remote_channel;
+
+    /**
+     * 请求者终端类型: 1-PC, 2-Android, 3-iPhone, 4-iPad, 5-WinPhone, 6-HarmonyOS，7-其他
+     */
+    @Transient
+    protected String x_remote_terminal;
+
+    /**
+     * 请求者浏览器信息: APP 原生则传系统版本
+     */
+    @Transient
+    protected String x_remote_browser;
 
 }

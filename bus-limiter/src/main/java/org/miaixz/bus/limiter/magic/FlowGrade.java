@@ -27,12 +27,17 @@
  */
 package org.miaixz.bus.limiter.magic;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 流量等级
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@AllArgsConstructor
 public enum FlowGrade {
 
     /**
@@ -45,17 +50,5 @@ public enum FlowGrade {
     FLOW_GRADE_QPS(1);
 
     private int grade;
-
-    FlowGrade(int grade) {
-        this.grade = grade;
-    }
-
-    public int getGrade() {
-        return grade;
-    }
-
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
 
 }

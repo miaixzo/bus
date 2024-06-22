@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.goalie.filter;
 
-import org.miaixz.bus.base.entity.OAuth2;
-import org.miaixz.bus.base.normal.ErrorCode;
+import org.miaixz.bus.core.basics.entity.OAuth2;
+import org.miaixz.bus.core.basics.normal.ErrorCode;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.BusinessException;

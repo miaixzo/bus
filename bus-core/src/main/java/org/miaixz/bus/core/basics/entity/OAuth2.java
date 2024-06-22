@@ -25,70 +25,82 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.entity;
+package org.miaixz.bus.core.basics.entity;
 
 import jakarta.persistence.Transient;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 访问链路跟踪
+ * 授权公用类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-public class Tracer extends OAuth2 {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class OAuth2<T> extends Entity<T> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 当前主链ID
+     * 当前用户标识
      */
     @Transient
-    protected String x_trace_id;
+    protected String x_user_id;
 
     /**
-     * 调用者ID
+     * 当前用户名称
      */
     @Transient
-    protected String x_span_id;
+    protected String x_user_name;
 
     /**
-     * 被调用者ID
+     * 当前用户角色
      */
     @Transient
-    protected String x_child_id;
+    protected String x_role_id;
 
     /**
-     * 本地IP
+     * 当前用户职称
      */
     @Transient
-    protected String x_local_ip;
+    protected String x_duty_id;
 
     /**
-     * 远程IP
+     * 当前用户组织
      */
     @Transient
-    protected String x_remote_ip;
+    protected String x_org_id;
 
     /**
-     * 请求者渠道类型: 1-WEB, 2-APP, 3-钉钉，4-微信小程序，5-其他；
+     * 当前用户设备
      */
     @Transient
-    protected String x_remote_channel;
+    protected String x_device_id;
 
     /**
-     * 请求者终端类型: 1-PC, 2-Android, 3-iPhone, 4-iPad, 5-WinPhone, 6-HarmonyOS，7-其他
+     * 当前应用
      */
     @Transient
-    protected String x_remote_terminal;
+    protected String x_app_id;
 
     /**
-     * 请求者浏览器信息: APP 原生则传系统版本
+     * 当前租户
      */
     @Transient
-    protected String x_remote_browser;
+    protected String x_tenant_id;
+
+    /**
+     * 扩展参数信息
+     */
+    @Transient
+    protected String x_extension;
 
 }

@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.notify.metric.netease;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Message;
 
 import java.util.HashMap;
 import java.util.Map;

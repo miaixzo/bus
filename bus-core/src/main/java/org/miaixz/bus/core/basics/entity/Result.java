@@ -25,36 +25,70 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.notify.magic;
+package org.miaixz.bus.core.basics.entity;
 
-import lombok.Builder;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * 返回消息
+ * 返回结果公用
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-@Builder
-public class Message {
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Result<T> extends BaseEntity<T> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 请求返回码,错误为具体返回码,正确为 0
+     * 总数据
      */
-    public String errcode;
+    protected int total;
+    /**
+     * 查询记录数
+     */
+    protected List<T> rows;
+    /**
+     * 分页页码
+     */
+    @Transient
+    protected transient Integer pageNo;
 
     /**
-     * 请求返回消息
+     * 分页大小
      */
-    public String errmsg;
+    @Transient
+    protected transient Integer pageSize;
 
     /**
-     * 请求返回数据 JSON
+     * 得到分页后的数据
+     *
+     * @param pageNo 页码
+     * @return 分页后结果
      */
-    public Object data;
+    public List<T> get(int pageNo) {
+        int fromIndex = (pageNo - 1) * this.pageSize;
+        if (fromIndex >= this.rows.size()) {
+            return Collections.emptyList();
+        }
+
+        int toIndex = pageNo * this.pageSize;
+        if (toIndex >= this.rows.size()) {
+            toIndex = this.rows.size();
+        }
+        return this.rows.subList(fromIndex, toIndex);
+    }
 
 }

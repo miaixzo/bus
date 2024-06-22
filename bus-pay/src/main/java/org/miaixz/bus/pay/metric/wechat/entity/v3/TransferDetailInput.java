@@ -27,7 +27,11 @@
  */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 发起批量转账的明细列表
@@ -37,7 +41,7 @@ import lombok.*;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferDetailInput {

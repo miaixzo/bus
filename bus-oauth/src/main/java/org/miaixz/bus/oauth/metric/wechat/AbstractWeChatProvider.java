@@ -46,11 +46,9 @@ public abstract class AbstractWeChatProvider extends AbstractProvider {
         super(context, complex);
     }
 
-
     public AbstractWeChatProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
     }
-
 
     /**
      * 获取微信平台用户的实际性别，0表示未定义，1表示男性，2表示女性

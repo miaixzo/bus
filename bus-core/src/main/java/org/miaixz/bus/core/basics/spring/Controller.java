@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.spring;
+package org.miaixz.bus.core.basics.spring;
 
-import org.miaixz.bus.base.entity.Message;
-import org.miaixz.bus.base.normal.ErrorCode;
+import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basics.normal.ErrorCode;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**

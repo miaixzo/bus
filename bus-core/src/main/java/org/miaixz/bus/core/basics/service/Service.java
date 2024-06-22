@@ -25,34 +25,14 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.storage.magic;
-
-import lombok.Builder;
-import lombok.Getter;
+package org.miaixz.bus.core.basics.service;
 
 /**
- * 响应结果
+ * Service 接口
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Builder
-public class Message {
-
-    /**
-     * 请求返回码,正确为 0
-     */
-    public String errcode;
-
-    /**
-     * 请求返回消息
-     */
-    public String errmsg;
-
-    /**
-     * 请求返回数据
-     */
-    public Object data;
+public interface Service {
 
 }
