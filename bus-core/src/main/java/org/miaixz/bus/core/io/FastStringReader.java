@@ -101,9 +101,9 @@ public class FastStringReader extends Reader {
     /**
      * 跳过指定长度，返回跳过的字符数。
      *
-     * <p>{@code ns} 参数可能为负数, 负数表示向前跳过，跳到开头则停止
+     * {@code ns} 参数可能为负数, 负数表示向前跳过，跳到开头则停止
      *
-     * <p>如果字符串所有字符被读取或跳过, 此方法无效，始终返回0.
+     * 如果字符串所有字符被读取或跳过, 此方法无效，始终返回0.
      *
      * @throws IOException IO异常
      */

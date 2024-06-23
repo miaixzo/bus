@@ -56,7 +56,6 @@ import java.security.ProtectionDomain;
  *     <li>移除final属性</li>
  *     <li>{@code ReflectKit.removeFinalModify(Field)} --p {@link  ModifierKit#removeFinalModify(Field)}</li>
  * </ul>
- * <p>
  * 在字节码中，类型表示如下：
  * <ul>
  *     <li>byte    =  B</li>

@@ -40,8 +40,6 @@ import java.net.URL;
  * VFS资源封装
  * 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+
  * 参考：org.springframework.core.io.VfsUtils
- * <p>
- * , Spring
  *
  * @author Kimi Liu
  * @since Java 17+

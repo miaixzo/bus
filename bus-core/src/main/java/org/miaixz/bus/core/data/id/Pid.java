@@ -25,10 +25,60 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
+package org.miaixz.bus.core.data.id;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.StringKit;
+
+import java.lang.management.ManagementFactory;
+
 /**
- * 基础业务实现
+ * 进程ID单例封装
+ * 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.base.service.impl;
+public enum Pid {
+
+    /**
+     * 单例
+     */
+    INSTANCE;
+
+    private final int pid;
+
+    Pid() {
+        this.pid = getPid();
+    }
+
+    /**
+     * 获取当前进程ID，首先获取进程名称，读取@前的ID值，如果不存在，则读取进程名的hash值
+     *
+     * @return 进程ID
+     * @throws InternalException 进程名称为空
+     */
+    public static int getPid() throws InternalException {
+        final String processName = ManagementFactory.getRuntimeMXBean().getName();
+        if (StringKit.isBlank(processName)) {
+            throw new InternalException("Process name is blank!");
+        }
+        final int atIndex = processName.indexOf(Symbol.C_AT);
+        if (atIndex > 0) {
+            return Integer.parseInt(processName.substring(0, atIndex));
+        } else {
+            return processName.hashCode();
+        }
+    }
+
+    /**
+     * 获取PID值
+     *
+     * @return pid
+     */
+    public int get() {
+        return this.pid;
+    }
+
+}

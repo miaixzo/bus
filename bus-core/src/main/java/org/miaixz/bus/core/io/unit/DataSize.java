@@ -176,7 +176,6 @@ public final class DataSize implements Comparable<DataSize> {
 
     /**
      * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES}
-     * <p>
      * 例如：
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
@@ -194,7 +193,6 @@ public final class DataSize implements Comparable<DataSize> {
 
     /**
      * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES}
-     * <p>
      * 例如：
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
@@ -213,10 +211,8 @@ public final class DataSize implements Comparable<DataSize> {
     /**
      * Obtain a DataSize from a text string such as {@code 12MB} using
      * the specified default {@link DataUnit} if no unit is specified.
-     * <p>
      * The string starts with a number followed optionally by a unit matching one of the
      * supported {@linkplain DataUnit suffixes}.
-     * <p>
      * Examples:
      * <pre>
      * "12KB" -- parses as "12 kilobytes"

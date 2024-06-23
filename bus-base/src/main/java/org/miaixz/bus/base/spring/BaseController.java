@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.base.spring;
 
+import org.miaixz.bus.base.service.BaseService;
 import org.miaixz.bus.core.basics.normal.ErrorCode;
-import org.miaixz.bus.core.basics.service.BaseService;
 import org.miaixz.bus.core.basics.spring.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

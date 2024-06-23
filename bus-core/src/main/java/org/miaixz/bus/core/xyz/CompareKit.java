@@ -166,8 +166,6 @@ public class CompareKit {
     /**
      * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况
      * 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
-     *
-     * <p>
      * 一般而言，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
      *
      * @param <T>        被比较对象类型

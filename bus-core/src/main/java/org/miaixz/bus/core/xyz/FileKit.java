@@ -336,7 +336,6 @@ public class FileKit extends PathResolve {
 
     /**
      * 通过多层目录创建文件
-     * <p>
      * 元素名（多层目录名）
      *
      * @param names 多层文件的文件名，由外到内依次传入
@@ -1044,8 +1043,6 @@ public class FileKit extends PathResolve {
      * <pre>
      * FileKit.rename(file, "aaa", true) xx/xx.png = xx/aaa.png
      * </pre>
-     *
-     * <p>
      * 2、isRetainExt为false时，不保留原扩展名，需要在newName中
      *
      * <pre>
@@ -2546,7 +2543,6 @@ public class FileKit extends PathResolve {
 
     /**
      * 检查父完整路径是否为自路径的前半部分，如果不是说明不是子路径，可能存在slip注入。
-     * <p>
      * 见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parentFile 父文件或目录

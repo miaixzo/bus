@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.basics.entity;
+package org.miaixz.bus.base.entity;
 
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -33,9 +33,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basics.entity.Tracer;
 import org.miaixz.bus.core.basics.normal.Consts;
-import org.miaixz.bus.core.data.ObjectId;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.data.id.ObjectId;
 import org.miaixz.bus.core.xyz.*;
 
 import java.util.List;
@@ -52,7 +52,7 @@ import java.util.Objects;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity<T> extends Tracer<T> {
+public class BaseEntity extends Tracer {
 
     private static final long serialVersionUID = 1L;
 
@@ -104,6 +104,7 @@ public class BaseEntity<T> extends Tracer<T> {
      */
     @Transient
     protected transient String orderBy;
+
 
     /**
      * 设置访问信息
@@ -210,55 +211,6 @@ public class BaseEntity<T> extends Tracer<T> {
     public <T> void setCreatAndUpdatInfo(T entity) {
         setCreateInfo(entity);
         setUpdatedInfo(entity);
-    }
-
-    /**
-     * 根据主键属性,判断主键是否值为空
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param field  属性
-     * @return 主键为空, 则返回false；主键有值,返回true
-     */
-    public <T> boolean isPKNotNull(T entity, String field) {
-        if (!FieldKit.hasField(entity.getClass(), field)) {
-            return false;
-        }
-        Object value = FieldKit.getFieldValue(entity, field);
-        return null != value && !Normal.EMPTY.equals(value);
-    }
-
-    /**
-     * 依据对象的属性获取对象值
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param field  属性数组
-     * @return 返回对象属性值
-     */
-    public <T> Object getValue(T entity, String field) {
-        if (FieldKit.hasField(entity.getClass(), field)) {
-            Object object = MethodKit.invokeGetter(entity, field);
-            return null != object ? object.toString() : null;
-        }
-        return null;
-    }
-
-    /**
-     * 依据对象的属性数组和值数组对进行赋值
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param fields 属性数组
-     * @param value  值数组
-     */
-    public <T> void setValue(T entity, String[] fields, Object[] value) {
-        for (int i = 0; i < fields.length; i++) {
-            String field = fields[i];
-            if (FieldKit.hasField(entity.getClass(), field)) {
-                MethodKit.invokeSetter(entity, field, value[i]);
-            }
-        }
     }
 
 }

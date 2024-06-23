@@ -121,9 +121,7 @@ public class CharKit {
     }
 
     /**
-     * <p>
      * 判断是否为大写字母，大写字母包括A~Z
-     * </p>
      *
      * <pre>
      *   CharKit.isLetterUpper('a')  = false
@@ -364,7 +362,6 @@ public class CharKit {
      *     'A' - 'Ⓐ'
      *     'a' - 'ⓐ'
      * </pre>
-     * <p>
      * 获取带圈数字 /封闭式字母数字 ，从1-20,超过1-20报错
      *
      * @param c 被转换的字符，如果字符不支持转换，返回原字符

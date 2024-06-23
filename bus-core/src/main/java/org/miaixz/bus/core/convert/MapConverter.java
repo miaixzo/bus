@@ -86,9 +86,9 @@ public class MapConverter implements Converter, Serializable {
             final Class<?> valueClass = value.getClass();
             if (valueClass.equals(targetType)) {
                 final Type[] typeArguments = TypeKit.getTypeArguments(valueClass);
-                if (null != typeArguments //
-                        && 2 == typeArguments.length//
-                        && Objects.equals(keyType, typeArguments[0]) //
+                if (null != typeArguments
+                        && 2 == typeArguments.length
+                        && Objects.equals(keyType, typeArguments[0])
                         && Objects.equals(valueType, typeArguments[1])) {
                     // 对于键值对类型一致的Map对象，不再做转换，直接返回原对象
                     return (Map) value;

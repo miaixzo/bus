@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 授权公用类
+ * 访问授权
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,7 +45,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OAuth2<T> extends Entity<T> {
+public class OAuth2 extends Entity {
 
     private static final long serialVersionUID = 1L;
 

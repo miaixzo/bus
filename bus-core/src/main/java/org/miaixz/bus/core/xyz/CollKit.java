@@ -1412,7 +1412,6 @@ public class CollKit extends CollectionStream {
 
     /**
      * Iterator转换为Enumeration
-     * <p>
      * Adapt the specified {@link Iterator} to the {@link Enumeration} interface.
      *
      * @param <E>  集合元素类型
@@ -1449,9 +1448,7 @@ public class CollKit extends CollectionStream {
      *  {a: 4}
      * ]
      * </pre>
-     * <p>
      * 结果是：
-     *
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -1482,9 +1479,7 @@ public class CollKit extends CollectionStream {
      *   c: [1]
      * }
      * </pre>
-     * <p>
      * 结果是：
-     *
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}
@@ -2303,7 +2298,6 @@ public class CollKit extends CollectionStream {
     /**
      * 解构多层集合
      * 例如：{@code List<List<List<String>>> 解构成 List<String>}
-     * <p>
      * skipNull如果为true, 则解构后的集合里不包含null值，为false则会包含null值。
      *
      * @param <T>        元素类型

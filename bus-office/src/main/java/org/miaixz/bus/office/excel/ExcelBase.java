@@ -33,7 +33,7 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -535,7 +535,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
 
         if (StringKit.isBlank(fileName)) {
             // 未提供文件名使用随机UUID作为文件名
-            fileName = ID.fastSimpleUUID();
+            fileName = ID.objectId();
         }
 
         fileName = StringKit.addSuffixIfNot(UrlEncoder.encodeAll(fileName, charset), isXlsx() ? ".xlsx" : ".xls");

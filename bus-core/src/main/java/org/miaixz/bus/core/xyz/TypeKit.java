@@ -528,12 +528,10 @@ public class TypeKit {
 
     /**
      * 获得指定类型中所有泛型参数类型，例如：
-     *
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
-     * <p>
      * 通过此方法，传入B.class即可得到String
      *
      * @param type 指定类型
@@ -716,12 +714,10 @@ public class TypeKit {
      * 将{@link Type} 转换为{@link ParameterizedType}
      * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
      * 一般用于获取泛型参数具体的参数类型，例如：
-     *
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
-     * <p>
      * 通过此方法，传入B.class即可得到B{@link ParameterizedType}，从而获取到String
      *
      * @param type {@link Type}

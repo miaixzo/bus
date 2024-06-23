@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.cron;
 
-import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.thread.ExecutorBuilder;
@@ -273,7 +273,7 @@ public class Scheduler implements Serializable {
      * @return ID
      */
     public String schedule(final String pattern, final Crontab crontab) {
-        final String id = ID.fastUUID();
+        final String id = ID.objectId();
         schedule(id, pattern, crontab);
         return id;
     }

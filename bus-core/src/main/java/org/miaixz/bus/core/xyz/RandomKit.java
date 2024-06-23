@@ -100,6 +100,7 @@ public class RandomKit {
      *
      * <p>
      * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * </p>
      *
      * @param seed 随机数种子
      * @return {@link SecureRandom}
@@ -116,6 +117,7 @@ public class RandomKit {
      *
      * <p>
      * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * </p>
      *
      * @param seed 随机数种子
      * @return {@link SecureRandom}

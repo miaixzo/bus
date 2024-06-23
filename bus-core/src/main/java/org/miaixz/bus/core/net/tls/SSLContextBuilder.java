@@ -45,7 +45,6 @@ import java.util.Arrays;
  *     <li>{@link TrustManager}，默认{@link TrustAnyTrustManager}，即信任全部</li>
  *     <li>{@link SecureRandom}</li>
  * </ul>
- * <p>
  * 构建后可获得{@link SSLContext}，通过调用{@link SSLContext#getSocketFactory()}获取{@link javax.net.ssl.SSLSocketFactory}
  *
  * @author Kimi Liu

@@ -31,8 +31,6 @@ import org.bouncycastle.asn1.gm.GMObjectIdentifiers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.data.ID;
-import org.miaixz.bus.core.data.Snowflake;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -232,17 +230,6 @@ public class Builder {
      */
     public static String encryptData(String data, String key) {
         return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes()).encryptBase64(data.getBytes());
-    }
-
-    /**
-     * 雪花算法
-     *
-     * @param workerId     终端ID
-     * @param dataCenterId 数据中心ID
-     * @return {@link Snowflake}
-     */
-    public static Snowflake getSnowflake(long workerId, long dataCenterId) {
-        return ID.getSnowflake(workerId, dataCenterId);
     }
 
     /**

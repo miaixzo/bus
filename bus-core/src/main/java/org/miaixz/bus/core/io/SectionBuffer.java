@@ -149,7 +149,7 @@ public class SectionBuffer {
      * segment contains the data in {@code [pos+byteCount..limit)}. This can be
      * useful when moving partial segments from one buffer to another.
      *
-     * <p>Returns the new head of the circularly-linked list.
+     * Returns the new head of the circularly-linked list.
      */
     public final SectionBuffer split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos) throw new IllegalArgumentException();

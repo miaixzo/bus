@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 访问链路跟踪
+ *  链路跟踪
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,7 +45,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tracer<T> extends OAuth2<T> {
+public class Tracer extends OAuth2 {
 
     /**
      * 当前主链ID

@@ -146,8 +146,6 @@ public class ColorKit {
      * 3. RGB形式，例如：13,148,252
      * 4. RGBA形式，例如：13,148,252,1
      * </pre>
-     * <p>
-     * 方法来自：com.lnwazg.kit
      *
      * @param colorName 颜色的英文名，16进制表示或RGB表示
      * @return {@link Color}

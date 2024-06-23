@@ -25,13 +25,12 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.base.service.impl;
+package org.miaixz.bus.base.service;
 
+import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.BaseMapper;
-import org.miaixz.bus.core.basics.entity.BaseEntity;
 import org.miaixz.bus.core.basics.entity.Result;
 import org.miaixz.bus.core.basics.normal.Consts;
-import org.miaixz.bus.core.basics.service.BaseService;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -51,7 +50,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
+public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
         implements BaseService<T> {
 
     @Autowired

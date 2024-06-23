@@ -29,7 +29,7 @@ package org.miaixz.bus.oauth.metric;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
-import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;

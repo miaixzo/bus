@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.data;
+package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.lang.Symbol;
@@ -235,7 +235,6 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 与此 {@code UUID} 相关联的版本号. 版本号描述此 {@code UUID} 是如何生成的。
-     * <p>
      * 版本号具有以下含意:
      * <ul>
      * <li>UUIDv1 基于时间的 UUID
@@ -256,7 +255,6 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 与此 {@code UUID} 相关联的变体号。变体号描述 {@code UUID} 的布局。
-     * <p>
      * 变体号具有以下含意：
      * <ul>
      * <li>0 为 NCS 向后兼容保留
@@ -279,12 +277,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 与此 UUID 相关联的时间戳值。
-     *
-     * <p>
      * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造。
      * 所得到的时间戳以 100 毫微秒为单位，从 UTC（通用协调时间） 1582 年 10 月 15 日零时开始。
-     *
-     * <p>
      * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义。
      * 如果此 {@code UUID} 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
      *
@@ -301,10 +295,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 与此 UUID 相关联的时钟序列值。
-     *
-     * <p>
      * 14 位的时钟序列值根据此 UUID 的 clock_seq 字段构造。clock_seq 字段用于保证在基于时间的 UUID 中的时间唯一性。
-     * <p>
      * {@code clockSequence} 值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
      *
      * @return 此 {@code UUID} 的时钟序列
@@ -317,10 +308,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 与此 UUID 相关的节点值。
-     *
-     * <p>
      * 48 位的节点值根据此 UUID 的 node 字段构造。此字段旨在用于保存机器的 IEEE 802 地址，该地址用于生成此 UUID 以保证空间唯一性。
-     * <p>
      * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。
      * 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
      *
@@ -332,12 +320,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         return this.getLeastSignificantBits() & 0x0000FFFFFFFFFFFFL;
     }
 
-    // Object Inherited Methods
-
     /**
      * 返回此{@code UUID} 的字符串表现形式。
-     *
-     * <p>
      * UUID 的字符串表示形式由此 BNF 描述：
      *
      * <pre>
@@ -363,8 +347,6 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 返回此{@code UUID} 的字符串表现形式。
-     *
-     * <p>
      * UUID 的字符串表示形式由此 BNF 描述：
      *
      * <pre>
@@ -427,7 +409,6 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 将此对象与指定对象比较。
-     * <p>
      * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值（每一位均相同）时，结果才为 {@code true}。
      *
      * @param obj 要与之比较的对象
@@ -445,12 +426,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         return (mostSigBits == id.getMostSignificantBits() && leastSigBits == id.getLeastSignificantBits());
     }
 
-    // Comparison Operations
-
     /**
      * 将此 UUID 与指定的 UUID 比较。
-     *
-     * <p>
      * 如果两个 UUID 不同，且第一个 UUID 的最高有效字段大于第二个 UUID 的对应字段，则第一个 UUID 大于第二个 UUID。
      *
      * @param val 与此 UUID 比较的 UUID

@@ -32,7 +32,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;

@@ -383,7 +383,6 @@ public class NetKit {
      * 获取本机网卡IP地址，这个地址为所有网卡中非回路地址的第一个
      * 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取。
      * 此方法不会抛出异常，获取失败将返回{@code null}
-     * <p>
      * 参考：<a href="http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java">
      * http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java</a>
      *
@@ -408,7 +407,7 @@ public class NetKit {
      *
      * <p>
      * 此方法不会抛出异常，获取失败将返回{@code null}
-     * <p>
+     * </p>
      *
      * @return 本机网卡IP地址，获取失败返回{@code null}
      */

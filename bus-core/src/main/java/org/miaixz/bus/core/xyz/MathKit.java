@@ -52,6 +52,7 @@ import java.util.Objects;
  * </pre>
  * <p>
  * 表示的不是<strong>0.1</strong>而是<strong>0.1000000000000000055511151231257827021181583404541015625</strong>
+ * </p>
  *
  * <p>
  * 这是因为0.1无法准确的表示为double。因此应该使用<strong>new BigDecimal(String)</strong>。

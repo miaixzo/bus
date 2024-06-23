@@ -176,7 +176,6 @@ public class Version implements Comparable<Version>, Serializable {
      * <pre>
      * [大版本].[小版本].[发布流水号]
      * </pre>
-     * <p>
      * 这里有点说明
      * <ul>
      * <li>大版本 - 表示API的版本,如果没有重大变化,基本上同样的大版本号,使用方式是一致的

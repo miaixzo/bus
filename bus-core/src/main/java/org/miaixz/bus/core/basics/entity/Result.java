@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.core.basics.entity;
 
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 返回结果公用
+ * 数据结果
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,28 +47,27 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Result<T> extends BaseEntity<T> {
+public class Result<T> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 总数据
      */
-    protected int total;
+    protected long total;
     /**
      * 查询记录数
      */
     protected List<T> rows;
+
     /**
      * 分页页码
      */
-    @Transient
     protected transient Integer pageNo;
 
     /**
      * 分页大小
      */
-    @Transient
     protected transient Integer pageSize;
 
     /**

@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 返回值公用类
+ * 响应结果
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,17 +47,17 @@ import lombok.experimental.SuperBuilder;
 public class Message {
 
     /**
-     * 请求返回码
+     * 响应码
      */
     public String errcode;
 
     /**
-     * 请求返回消息
+     * 提示信息
      */
     public String errmsg;
 
     /**
-     * 请求返回数据
+     * 数据集
      */
     public Object data;
 

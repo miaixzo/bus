@@ -465,7 +465,6 @@ public class IteratorKit {
 
     /**
      * Enumeration转换为Iterator
-     * <p>
      * Adapt the specified {@code Enumeration} to the {@code Iterator} interface
      *
      * @param <E> 集合元素类型

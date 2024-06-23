@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.limiter.metric;
 
-import org.miaixz.bus.core.data.UUID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.limiter.Builder;
@@ -62,7 +62,7 @@ public class RequestProvider implements Provider {
 
         @Override
         public Serializable get() {
-            return UUID.fastUUID();
+            return ID.objectId();
         }
 
     };

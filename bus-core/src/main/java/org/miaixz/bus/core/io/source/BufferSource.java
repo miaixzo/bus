@@ -313,7 +313,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * 在{@code options} 中查找第一个作为此缓冲区前缀的字符串，从此缓冲区中使用它，并返回其索引。
      * 如果 {@code options} 中没有字节字符串是此缓冲区的前缀，则返回 -1，并且不消耗任何字节。
      *
-     * <p>如果事先知道预期值集，则可以将其用作 {@link #readByteString} 甚至 {@link #readUtf8} 的替代。
+     * 如果事先知道预期值集，则可以将其用作 {@link #readByteString} 甚至 {@link #readUtf8} 的替代。
      * <pre>{@code
      *   Options FIELDS = Options.of(
      *       ByteString.encodeUtf8("depth="),
@@ -511,7 +511,6 @@ public interface BufferSource extends Source, ReadableByteChannel {
 
     /**
      * 删除并返回单个 UTF-8 代码点，根据需要读取 1 到 4 个字节。
-     * <p>
      * 如果此源不是以正确编码的 UTF-8 代码点开头，则此方法将删除 1 个或多个非 UTF-8 字节并返回替换字符 ({@code U+FFFD})。
      * 这包括编码问题（输入不是正确编码的 UTF-8）、字符超出范围（超出 Unicode 的 0x10ffff 限制）、UTF-16 代理的代码
      * 点 (U+d800..U+dfff) 和过长编码（例如，修改版 UTF-8 中的 NUL 字符为 {@code 0xc080}）
