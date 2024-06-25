@@ -31,50 +31,85 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 /**
- * kotlin.reflect.KCallable方法包装调用类
+ * kotlin.reflect.KParameter实例表示类
+ * 通过反射获取Kotlin中KParameter相关属性值
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KotlinCallable {
+public class KParameter {
 
-    private static final Method METHOD_GET_PARAMETERS;
-    private static final Method METHOD_CALL;
+    private static final Method METHOD_GET_NAME;
+    private static final Method METHOD_GET_TYPE;
+    private static final Method METHOD_GET_JAVA_TYPE;
 
     static {
-        final Class<?> kFunctionClass = ClassKit.loadClass("kotlin.reflect.KCallable");
-        METHOD_GET_PARAMETERS = MethodKit.getMethod(kFunctionClass, "getParameters");
-        METHOD_CALL = MethodKit.getMethodByName(kFunctionClass, "call");
+        final Class<?> kParameterClass = ClassKit.loadClass("kotlin.reflect.KParameter");
+        METHOD_GET_NAME = MethodKit.getMethod(kParameterClass, "getName");
+        METHOD_GET_TYPE = MethodKit.getMethod(kParameterClass, "getType");
+
+        final Class<?> kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
+        METHOD_GET_JAVA_TYPE = MethodKit.getMethod(kTypeClass, "getJavaType");
+    }
+
+    private final String name;
+    private final Class<?> type;
+
+    /**
+     * 构造
+     *
+     * @param kParameterInstance kotlin.reflect.KParameter实例对象
+     */
+    public KParameter(final Object kParameterInstance) {
+        this.name = MethodKit.invoke(kParameterInstance, METHOD_GET_NAME);
+        final Object kType = MethodKit.invoke(kParameterInstance, METHOD_GET_TYPE);
+        this.type = MethodKit.invoke(kType, METHOD_GET_JAVA_TYPE);
     }
 
     /**
-     * 获取参数列表
+     * 获取参数名
      *
-     * @param kCallable kotlin的类、方法或构造
-     * @return 参数列表
+     * @return 参数名
      */
-    public static List<KotlinParameter> getParameters(final Object kCallable) {
-        final List<?> parameters = MethodKit.invoke(kCallable, METHOD_GET_PARAMETERS);
-        final List<KotlinParameter> result = new ArrayList<>(parameters.size());
-        for (final Object parameter : parameters) {
-            result.add(new KotlinParameter(parameter));
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * 获取参数类型
+     *
+     * @return 参数类型
+     */
+    public Class<?> getType() {
+        return type;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
         }
-        return result;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final KParameter that = (KParameter) o;
+        return Objects.equals(name, that.name) && Objects.equals(type, that.type);
     }
 
-    /**
-     * 实例化对象，本质上调用KCallable.call方法
-     *
-     * @param kCallable kotlin的类、方法或构造
-     * @param args      参数列表
-     * @return 参数列表
-     */
-    public static Object call(final Object kCallable, final Object... args) {
-        return MethodKit.invoke(kCallable, METHOD_CALL, new Object[]{args});
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
+    }
+
+    @Override
+    public String toString() {
+        return "KotlinParameter{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
     }
 
 }

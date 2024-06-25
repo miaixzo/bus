@@ -35,8 +35,6 @@ import java.io.Serializable;
 /**
  * This class is used by various models to represent the approved_by property,
  * which can contain a User or Group instance.
- *
- * @since 4.19.0
  */
 public class ApprovedBy implements Serializable {
     private static final long serialVersionUID = 1L;

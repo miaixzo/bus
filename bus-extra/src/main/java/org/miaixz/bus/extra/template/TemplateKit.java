@@ -44,7 +44,7 @@ public class TemplateKit {
      * @return {@link TemplateProvider}
      */
     public static TemplateProvider getEngine() {
-        return TemplateFactory.getEngine();
+        return TemplateFactory.get();
     }
 
     /**

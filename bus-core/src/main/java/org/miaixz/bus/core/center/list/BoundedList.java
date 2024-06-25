@@ -25,91 +25,83 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.lang.reflect.kotlin;
+package org.miaixz.bus.core.center.list;
 
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.center.BoundedCollection;
 
-import java.lang.reflect.Method;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * kotlin.reflect.KParameter实例表示类
- * 通过反射获取Kotlin中KParameter相关属性值
+ * 指定边界大小的List
+ * 通过指定边界，可以限制List的最大容量
  *
+ * @param <E> 元素类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KotlinParameter {
+public class BoundedList<E> extends ListWrapper<E> implements BoundedCollection<E> {
 
-    private static final Method METHOD_GET_NAME;
-    private static final Method METHOD_GET_TYPE;
-    private static final Method METHOD_GET_JAVA_TYPE;
-
-    static {
-        final Class<?> kParameterClass = ClassKit.loadClass("kotlin.reflect.KParameter");
-        METHOD_GET_NAME = MethodKit.getMethod(kParameterClass, "getName");
-        METHOD_GET_TYPE = MethodKit.getMethod(kParameterClass, "getType");
-
-        final Class<?> kTypeClass = ClassKit.loadClass("kotlin.reflect.jvm.internal.KTypeImpl");
-        METHOD_GET_JAVA_TYPE = MethodKit.getMethod(kTypeClass, "getJavaType");
-    }
-
-    private final String name;
-    private final Class<?> type;
+    private final int maxSize;
 
     /**
      * 构造
      *
-     * @param kParameterInstance kotlin.reflect.KParameter实例对象
+     * @param maxSize 最大容量
      */
-    public KotlinParameter(final Object kParameterInstance) {
-        this.name = MethodKit.invoke(kParameterInstance, METHOD_GET_NAME);
-        final Object kType = MethodKit.invoke(kParameterInstance, METHOD_GET_TYPE);
-        this.type = MethodKit.invoke(kType, METHOD_GET_JAVA_TYPE);
+    public BoundedList(final int maxSize) {
+        this(new ArrayList<>(maxSize), maxSize);
     }
 
     /**
-     * 获取参数名
+     * 构造，限制集合的最大容量为提供的List
      *
-     * @return 参数名
+     * @param raw     原始对象
+     * @param maxSize 最大容量
      */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取参数类型
-     *
-     * @return 参数类型
-     */
-    public Class<?> getType() {
-        return type;
+    public BoundedList(final List<E> raw, final int maxSize) {
+        super(raw);
+        this.maxSize = maxSize;
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
+    public boolean isFull() {
+        return size() == this.maxSize;
+    }
+
+    @Override
+    public int maxSize() {
+        return this.maxSize;
+    }
+
+    @Override
+    public boolean add(final E e) {
+        checkFull(1);
+        return super.add(e);
+    }
+
+    @Override
+    public void add(final int index, final E element) {
+        checkFull(1);
+        super.add(index, element);
+    }
+
+    @Override
+    public boolean addAll(final Collection<? extends E> c) {
+        checkFull(c.size());
+        return super.addAll(c);
+    }
+
+    @Override
+    public boolean addAll(final int index, final Collection<? extends E> c) {
+        checkFull(c.size());
+        return super.addAll(index, c);
+    }
+
+    private void checkFull(final int addSize) {
+        if (size() + addSize > this.maxSize) {
+            throw new IndexOutOfBoundsException("List is no space to add " + addSize + " elements!");
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final KotlinParameter that = (KotlinParameter) o;
-        return Objects.equals(name, that.name) && Objects.equals(type, that.type);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, type);
-    }
-
-    @Override
-    public String toString() {
-        return "KotlinParameter{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                '}';
-    }
-
 }

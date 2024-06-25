@@ -49,6 +49,7 @@ import java.util.function.Predicate;
  * @since Java 17+
  */
 public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue<E> {
+
     private static final long serialVersionUID = -1L;
 
     /**
@@ -72,18 +73,18 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
     }
 
     /**
-     * get the max free memory.
+     * 获得最大可用内存
      *
-     * @return the max free memory limit
+     * @return 最大可用内存限制
      */
     public long getMaxFreeMemory() {
         return ((MemoryChecker<E>) this.checker).maxFreeMemory;
     }
 
     /**
-     * set the max free memory.
+     * 设置最大可用内存
      *
-     * @param maxFreeMemory the max free memory
+     * @param maxFreeMemory 最大可用内存
      */
     public void setMaxFreeMemory(final int maxFreeMemory) {
         ((MemoryChecker<E>) this.checker).maxFreeMemory = maxFreeMemory;

@@ -41,45 +41,45 @@ import java.util.function.Function;
  */
 public class TransSpliterator<F, T> implements Spliterator<T> {
 
-    private final Spliterator<F> fromSpliterator;
+    private final Spliterator<F> from;
     private final Function<? super F, ? extends T> function;
 
     /**
      * 构造
      *
-     * @param fromSpliterator 源iterator
+     * @param from 源iterator
      * @param function        函数
      */
-    public TransSpliterator(final Spliterator<F> fromSpliterator, final Function<? super F, ? extends T> function) {
-        this.fromSpliterator = fromSpliterator;
+    public TransSpliterator(final Spliterator<F> from, final Function<? super F, ? extends T> function) {
+        this.from = from;
         this.function = function;
     }
 
     @Override
     public boolean tryAdvance(final Consumer<? super T> action) {
-        return fromSpliterator.tryAdvance(
+        return from.tryAdvance(
                 fromElement -> action.accept(function.apply(fromElement)));
     }
 
     @Override
     public void forEachRemaining(final Consumer<? super T> action) {
-        fromSpliterator.forEachRemaining(fromElement -> action.accept(function.apply(fromElement)));
+        from.forEachRemaining(fromElement -> action.accept(function.apply(fromElement)));
     }
 
     @Override
     public Spliterator<T> trySplit() {
-        final Spliterator<F> fromSplit = fromSpliterator.trySplit();
+        final Spliterator<F> fromSplit = from.trySplit();
         return (fromSplit != null) ? new TransSpliterator<>(fromSplit, function) : null;
     }
 
     @Override
     public long estimateSize() {
-        return fromSpliterator.estimateSize();
+        return from.estimateSize();
     }
 
     @Override
     public int characteristics() {
-        return fromSpliterator.characteristics()
+        return from.characteristics()
                 & ~(Spliterator.DISTINCT | Spliterator.NONNULL | Spliterator.SORTED);
     }
 

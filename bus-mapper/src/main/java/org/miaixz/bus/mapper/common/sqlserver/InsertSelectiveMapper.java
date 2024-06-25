@@ -42,6 +42,12 @@ import org.miaixz.bus.mapper.provider.SqlServerProvider;
 @RegisterMapper
 public interface InsertSelectiveMapper<T> {
 
+    /**
+     * 插入数据库，`null`值不会插入
+     *
+     * @param record 泛型对象
+     * @return the int 操作结果
+     */
     @Options(useGeneratedKeys = true)
     @InsertProvider(type = SqlServerProvider.class, method = "dynamicSQL")
     int insertSelective(T record);

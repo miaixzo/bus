@@ -78,7 +78,7 @@ public class BeetlProvider implements TemplateProvider {
      * @param config 模板配置
      * @return {@link GroupTemplate}
      */
-    private static GroupTemplate createEngine(TemplateConfig config) {
+    private static GroupTemplate create(TemplateConfig config) {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
@@ -128,7 +128,7 @@ public class BeetlProvider implements TemplateProvider {
 
     @Override
     public TemplateProvider init(final TemplateConfig config) {
-        init(createEngine(config));
+        init(create(config));
         return this;
     }
 

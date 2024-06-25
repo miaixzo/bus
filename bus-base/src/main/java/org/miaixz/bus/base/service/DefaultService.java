@@ -74,7 +74,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
     public Object insertBatch(List<T> list) {
         List<String> data = new ArrayList<>();
         list.forEach(item -> {
-            String id = insertSelective(item);
+            String id = this.insertSelective(item);
             data.add(id);
         });
         return data;
@@ -84,20 +84,27 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
     public Object insertBatchSelective(List<T> list) {
         List<String> data = new ArrayList<>();
         list.forEach(item -> {
-            String id = insertSelective(item);
+            String id = this.insertSelective(item);
             data.add(id);
         });
         return data;
     }
 
     @Override
-    public void delete(T entity) {
-        mapper.delete(entity);
+    public int remove(T entity) {
+        entity.setStatus(Consts.STATUS_MINUS_ONE);
+        entity.setUpdate(entity);
+        return mapper.updateByPrimaryKey(entity);
     }
 
     @Override
-    public void deleteById(Object id) {
-        mapper.deleteByPrimaryKey(id);
+    public int delete(T entity) {
+        return mapper.delete(entity);
+    }
+
+    @Override
+    public int deleteById(Object id) {
+        return mapper.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -111,14 +118,14 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
     }
 
     @Override
-    public void updateById(T entity) {
-        entity.setUpdatedInfo(entity);
-        mapper.updateByPrimaryKey(entity);
+    public int updateById(T entity) {
+        entity.setUpdate(entity);
+        return mapper.updateByPrimaryKey(entity);
     }
 
     @Override
     public int updateSelectiveById(T entity) {
-        entity.setUpdatedInfo(entity);
+        entity.setUpdate(entity);
         return mapper.updateByPrimaryKeySelective(entity);
     }
 
@@ -129,7 +136,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
         Object id = FieldKit.getFieldValue(entity, "id");
         condition.createCriteria().andEqualTo(locking, before);
         condition.createCriteria().andEqualTo("id", id);
-        updateByWhereSelective(entity, condition);
+        this.updateByWhereSelective(entity, condition);
         return entity;
     }
 
@@ -138,7 +145,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
         if (StringKit.isEmpty(entity.getId())) {
             this.insert(entity);
         } else {
-            entity.setUpdatedInfo(entity);
+            entity.setUpdate(entity);
             mapper.updateByPrimaryKeySelective(entity);
         }
         return entity;
@@ -146,19 +153,19 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public int updateByWhere(T entity, Object object) {
-        entity.setUpdatedInfo(entity);
+        entity.setUpdate(entity);
         return mapper.updateByCondition(entity, object);
     }
 
     @Override
     public int updateByWhereSelective(T entity, Object object) {
-        entity.setUpdatedInfo(entity);
+        entity.setUpdate(entity);
         return mapper.updateByConditionSelective(entity, object);
     }
 
     @Override
     public int updateStatus(T entity) {
-        entity.setUpdatedInfo(entity);
+        entity.setUpdate(entity);
         return mapper.updateByPrimaryKeySelective(entity);
     }
 
@@ -211,19 +218,25 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
         Page<T> list = (Page<T>) mapper.select(entity);
         return Result.<T>builder()
                 .rows(list.getResult())
-                .total((int) list.getTotal())
+                .total(list.getTotal())
                 .build();
     }
 
-    private String setValue(T entity) {
+    /**
+     * 更新对象属性值
+     * 数据状态/操作人/操作时间
+     *
+     * @param entity 对象
+     * @return the string
+     */
+    protected String setValue(T entity) {
         if (ObjectKit.isEmpty(entity)) {
             return null;
         }
         if (StringKit.isEmpty(entity.getStatus())) {
             entity.setStatus(Consts.STATUS_ONE);
         }
-        entity.setCreateInfo(entity);
-        entity.setUpdatedInfo(entity);
+        entity.setValue(entity);
         return entity.getId();
     }
 

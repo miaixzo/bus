@@ -46,7 +46,7 @@ public interface SelectAllMapper<T> {
     /**
      * 查询全部结果
      *
-     * @return
+     * @return the list 操作结果
      */
     @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     List<T> selectAll();

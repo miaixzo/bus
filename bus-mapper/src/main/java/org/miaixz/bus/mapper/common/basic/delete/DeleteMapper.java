@@ -44,8 +44,8 @@ public interface DeleteMapper<T> {
     /**
      * 根据实体属性作为条件进行删除，查询条件使用等号
      *
-     * @param record
-     * @return
+     * @param record 泛型对象
+     * @return the int 操作结果
      */
     @DeleteProvider(type = BasicDeleteProvider.class, method = "dynamicSQL")
     int delete(T record);

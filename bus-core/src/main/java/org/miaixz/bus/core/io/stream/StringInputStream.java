@@ -25,74 +25,50 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.center.map;
+package org.miaixz.bus.core.io.stream;
 
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.ByteKit;
+
+import java.io.ByteArrayInputStream;
 
 /**
- * 自定义键值函数风格的Map
+ * 基于字符串的InputStream
  *
- * @param <K> 键类型
- * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FuncMap<K, V> extends TransMap<K, V> {
-
-    private static final long serialVersionUID = -1L;
-
-    private final Function<Object, K> keyFunc;
-    private final Function<Object, V> valueFunc;
+public class StringInputStream extends ByteArrayInputStream {
 
     /**
      * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
-     * @param mapFactory Map，提供的空map
-     * @param keyFunc    自定义KEY的函数
-     * @param valueFunc  自定义value函数
+     * @param text    字符串
+     * @param charset 编码
      */
-    public FuncMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
-        this(mapFactory.get(), keyFunc, valueFunc);
+    public StringInputStream(final CharSequence text, final java.nio.charset.Charset charset) {
+        super(ByteKit.toBytes(text, charset));
     }
 
     /**
-     * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * 创建StrInputStream
      *
-     * @param emptyMap  Map，提供的空map
-     * @param keyFunc   自定义KEY的函数
-     * @param valueFunc 自定义value函数
+     * @param text 字符串
+     * @return StrInputStream
      */
-    public FuncMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
-        super(emptyMap);
-        this.keyFunc = keyFunc;
-        this.valueFunc = valueFunc;
+    public static StringInputStream of(final CharSequence text) {
+        return of(text, Charset.UTF_8);
     }
 
     /**
-     * 根据函数自定义键
+     * 创建StrInputStream
      *
-     * @param key KEY
-     * @return 驼峰Key
+     * @param text    字符串
+     * @param charset 编码
+     * @return StrInputStream
      */
-    @Override
-    protected K customKey(final Object key) {
-        if (null != this.keyFunc) {
-            return keyFunc.apply(key);
-        }
-        return (K) key;
-    }
-
-
-    @Override
-    protected V customValue(final Object value) {
-        if (null != this.valueFunc) {
-            return valueFunc.apply(value);
-        }
-        return (V) value;
+    public static StringInputStream of(final CharSequence text, final java.nio.charset.Charset charset) {
+        return new StringInputStream(text, charset);
     }
 
 }

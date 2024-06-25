@@ -101,7 +101,7 @@ public class FileTailer implements Serializable {
      *
      * @param file         文件
      * @param lineHandler  行处理器
-     * @param initReadLine 启动时预读取的行数
+     * @param initReadLine 启动时预读取的行数，1表示一行
      */
     public FileTailer(final File file, final ConsumerX<String> lineHandler, final int initReadLine) {
         this(file, Charset.UTF_8, lineHandler, initReadLine, Units.SECOND.getMillis());
@@ -124,7 +124,7 @@ public class FileTailer implements Serializable {
      * @param file         文件
      * @param charset      编码
      * @param lineHandler  行处理器
-     * @param initReadLine 启动时预读取的行数
+     * @param initReadLine 启动时预读取的行数，1表示一行
      * @param period       检查间隔
      */
     public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler, final int initReadLine, final long period) {
@@ -183,9 +183,9 @@ public class FileTailer implements Serializable {
 
         final LineWatcher lineWatcher = new LineWatcher(this.randomAccessFile, this.charset, this.lineHandler);
         final ScheduledFuture<?> scheduledFuture = this.executorService.scheduleAtFixedRate(//
-                lineWatcher, //
-                0, //
-                this.period, TimeUnit.MILLISECONDS//
+                lineWatcher,
+                0,
+                this.period, TimeUnit.MILLISECONDS
         );
 
         // 监听删除
@@ -246,7 +246,9 @@ public class FileTailer implements Serializable {
             int currentLine = 0;
             while (nextEnd > start) {
                 // 满
-                if (currentLine > initReadLine) {
+                if (currentLine >= initReadLine) {
+                    // initReadLine是行数，从1开始，currentLine是行号，从0开始
+                    // 因此行号0表示一行，所以currentLine == initReadLine表示读取完毕
                     break;
                 }
 

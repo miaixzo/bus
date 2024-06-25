@@ -48,17 +48,17 @@ import java.util.function.Predicate;
  */
 public class TransCollection<F, T> extends AbstractCollection<T> {
 
-    private final Collection<F> fromCollection;
+    private final Collection<F> from;
     private final Function<? super F, ? extends T> function;
 
     /**
      * 构造
      *
-     * @param fromCollection 源集合
+     * @param from 源集合
      * @param function       转换函数
      */
-    public TransCollection(final Collection<F> fromCollection, final Function<? super F, ? extends T> function) {
-        this.fromCollection = Assert.notNull(fromCollection);
+    public TransCollection(final Collection<F> from, final Function<? super F, ? extends T> function) {
+        this.from = Assert.notNull(from);
         this.function = Assert.notNull(function);
     }
 
@@ -67,49 +67,49 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
      *
      * @param <F>             源元素类型
      * @param <T>             目标元素类型
-     * @param fromSpliterator 源{@link Spliterator}
+     * @param from 源{@link Spliterator}
      * @param function        转换函数
      * @return 新类型的{@link Spliterator}
      */
-    public static <F, T> Spliterator<T> trans(final Spliterator<F> fromSpliterator, final Function<? super F, ? extends T> function) {
-        return new TransSpliterator<>(fromSpliterator, function);
+    public static <F, T> Spliterator<T> trans(final Spliterator<F> from, final Function<? super F, ? extends T> function) {
+        return new TransSpliterator<>(from, function);
     }
 
     @Override
     public Iterator<T> iterator() {
-        return IteratorKit.trans(fromCollection.iterator(), function);
+        return IteratorKit.trans(from.iterator(), function);
     }
 
     @Override
     public void clear() {
-        fromCollection.clear();
+        from.clear();
     }
 
     @Override
     public boolean isEmpty() {
-        return fromCollection.isEmpty();
+        return from.isEmpty();
     }
 
     @Override
     public void forEach(final Consumer<? super T> action) {
         Assert.notNull(action);
-        fromCollection.forEach((f) -> action.accept(function.apply(f)));
+        from.forEach((f) -> action.accept(function.apply(f)));
     }
 
     @Override
     public boolean removeIf(final Predicate<? super T> filter) {
         Assert.notNull(filter);
-        return fromCollection.removeIf(element -> filter.test(function.apply(element)));
+        return from.removeIf(element -> filter.test(function.apply(element)));
     }
 
     @Override
     public Spliterator<T> spliterator() {
-        return trans(fromCollection.spliterator(), function);
+        return trans(from.spliterator(), function);
     }
 
     @Override
     public int size() {
-        return fromCollection.size();
+        return from.size();
     }
 
 }

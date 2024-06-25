@@ -43,7 +43,7 @@ import java.util.function.Function;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
+public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 
     private static final long serialVersionUID = -1L;
 

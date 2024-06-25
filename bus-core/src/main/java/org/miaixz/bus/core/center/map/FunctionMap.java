@@ -25,40 +25,74 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.lang.reflect.kotlin;
+package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.MethodKit;
-import org.miaixz.bus.core.xyz.ReflectKit;
-
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * kotlin.reflect.jvm.internal.KClassImpl包装
+ * 自定义键值函数风格的Map
  *
+ * @param <K> 键类型
+ * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KotlinClassImpl {
+public class FunctionMap<K, V> extends TransMap<K, V> {
 
-    private static final Class<?> KCLASS_IMPL_CLASS;
-    private static final Method METHOD_GET_CONSTRUCTORS;
+    private static final long serialVersionUID = -1L;
 
-    static {
-        KCLASS_IMPL_CLASS = ClassKit.loadClass("kotlin.reflect.jvm.internal.KClassImpl");
-        METHOD_GET_CONSTRUCTORS = MethodKit.getMethod(KCLASS_IMPL_CLASS, "getConstructors");
+    private final Function<Object, K> keyFunc;
+    private final Function<Object, V> valueFunc;
+
+    /**
+     * 构造
+     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     *
+     * @param mapFactory Map，提供的空map
+     * @param keyFunc    自定义KEY的函数
+     * @param valueFunc  自定义value函数
+     */
+    public FunctionMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
+        this(mapFactory.get(), keyFunc, valueFunc);
     }
 
     /**
-     * 获取Kotlin类的所有构造方法
+     * 构造
+     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
-     * @param targetType kotlin类
-     * @return 构造列表
+     * @param emptyMap  Map，提供的空map
+     * @param keyFunc   自定义KEY的函数
+     * @param valueFunc 自定义value函数
      */
-    public static List<?> getConstructors(final Class<?> targetType) {
-        final Object kClassImpl = ReflectKit.newInstance(KCLASS_IMPL_CLASS, targetType);
-        return MethodKit.invoke(kClassImpl, METHOD_GET_CONSTRUCTORS);
+    public FunctionMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
+        super(emptyMap);
+        this.keyFunc = keyFunc;
+        this.valueFunc = valueFunc;
+    }
+
+    /**
+     * 根据函数自定义键
+     *
+     * @param key KEY
+     * @return 驼峰Key
+     */
+    @Override
+    protected K customKey(final Object key) {
+        if (null != this.keyFunc) {
+            return keyFunc.apply(key);
+        }
+        return (K) key;
+    }
+
+
+    @Override
+    protected V customValue(final Object value) {
+        if (null != this.valueFunc) {
+            return valueFunc.apply(value);
+        }
+        return (V) value;
     }
 
 }

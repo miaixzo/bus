@@ -46,7 +46,7 @@ public interface InsertUseGeneratedKeysMapper<T> {
      * 插入数据，限制为实体包含`id`属性并且必须为自增列，实体配置的主键策略无效
      *
      * @param record 记录值
-     * @return the int
+     * @return the int 操作结果
      */
     @Options(useGeneratedKeys = true)
     @InsertProvider(type = SpecialProvider.class, method = "dynamicSQL")

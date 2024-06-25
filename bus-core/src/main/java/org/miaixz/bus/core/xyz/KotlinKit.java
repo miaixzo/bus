@@ -30,9 +30,9 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
 import org.miaixz.bus.core.beans.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.reflect.kotlin.KotlinCallable;
-import org.miaixz.bus.core.lang.reflect.kotlin.KotlinClassImpl;
-import org.miaixz.bus.core.lang.reflect.kotlin.KotlinParameter;
+import org.miaixz.bus.core.lang.reflect.kotlin.KCallable;
+import org.miaixz.bus.core.lang.reflect.kotlin.KClassImpl;
+import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -72,7 +72,7 @@ public class KotlinKit {
      * @return 构造列表
      */
     public static List<?> getConstructors(final Class<?> targetType) {
-        return KotlinClassImpl.getConstructors(targetType);
+        return KClassImpl.getConstructors(targetType);
     }
 
     /**
@@ -81,8 +81,8 @@ public class KotlinKit {
      * @param kCallable kotlin的类、方法或构造
      * @return 参数列表
      */
-    public static List<KotlinParameter> getParameters(final Object kCallable) {
-        return KotlinCallable.getParameters(kCallable);
+    public static List<KParameter> getParameters(final Object kCallable) {
+        return KCallable.getParameters(kCallable);
     }
 
     /**
@@ -93,9 +93,9 @@ public class KotlinKit {
      * @return 参数数组
      */
     public static Object[] getParameterValues(final Object kCallable, final ValueProvider<String> valueProvider) {
-        final List<KotlinParameter> parameters = getParameters(kCallable);
+        final List<KParameter> parameters = getParameters(kCallable);
         final Object[] args = new Object[parameters.size()];
-        KotlinParameter kParameter;
+        KParameter kParameter;
         for (int i = 0; i < parameters.size(); i++) {
             kParameter = parameters.get(i);
             args[i] = valueProvider.value(kParameter.getName(), kParameter.getType());
@@ -129,7 +129,7 @@ public class KotlinKit {
         for (final Object constructor : constructors) {
             final Object[] parameterValues = getParameterValues(constructor, valueProvider);
             try {
-                return (T) KotlinCallable.call(constructor, parameterValues);
+                return (T) KCallable.call(constructor, parameterValues);
             } catch (final RuntimeException e) {
                 exception = e;
             }

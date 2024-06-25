@@ -49,7 +49,7 @@ public interface SelectRowBoundsMapper<T> {
      *
      * @param record    记录值
      * @param rowBounds RowBounds
-     * @return the list
+     * @return the list 操作结果
      */
     @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     List<T> selectByRowBounds(T record, RowBounds rowBounds);

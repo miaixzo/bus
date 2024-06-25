@@ -84,7 +84,7 @@ public class Convert {
      * @param value 被转换的值
      * @return String数组
      */
-    public static String[] toStrArray(final Object value) {
+    public static String[] toStringArray(final Object value) {
         return convert(String[].class, value);
     }
 

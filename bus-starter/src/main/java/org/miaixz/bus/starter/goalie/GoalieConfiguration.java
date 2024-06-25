@@ -64,7 +64,7 @@ import java.util.List;
  * 路由自动配置
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 @ConditionalOnWebApplication
 @EnableConfigurationProperties(value = {GoalieProperties.class})

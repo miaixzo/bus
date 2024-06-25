@@ -174,33 +174,35 @@ public class Builder {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
+     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。
+     * 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
      * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      * <pre>
-     * DESede加密：desede().encrypt(data)
-     * DESede解密：desede().decrypt(data)
+     * DESede加密：tdea().encrypt(data)
+     * DESede解密：tdea().decrypt(data)
      * </pre>
      *
      * @return {@link TDEA}
      */
-    public static TDEA desede() {
+    public static TDEA tdea() {
         return new TDEA();
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES）
+     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。
+     * 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
      * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      * <pre>
-     * DESede加密：desede(data).encrypt(data)
-     * DESede解密：desede(data).decrypt(data)
+     * DESede加密：tdea(data).encrypt(data)
+     * DESede解密：tdea(data).decrypt(data)
      * </pre>
      *
      * @param key 密钥
      * @return {@link TDEA}
      */
-    public static TDEA desede(final byte[] key) {
+    public static TDEA tdea(final byte[] key) {
         return new TDEA(key);
     }
 
@@ -679,7 +681,7 @@ public class Builder {
      * @return {@link ZUC}
      */
     public static ZUC zuc128(final byte[] key, final byte[] iv) {
-        return new ZUC(ZUC.ZUCAlgorithm.ZUC_128, key, iv);
+        return new ZUC(Algorithm.ZUC_128, key, iv);
     }
 
     /**
@@ -690,7 +692,7 @@ public class Builder {
      * @return {@link ZUC}
      */
     public static ZUC zuc256(final byte[] key, final byte[] iv) {
-        return new ZUC(ZUC.ZUCAlgorithm.ZUC_256, key, iv);
+        return new ZUC(Algorithm.ZUC_256, key, iv);
     }
 
     /**

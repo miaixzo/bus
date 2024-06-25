@@ -45,12 +45,12 @@ public class TemplateFactory {
 
     /**
      * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 获得的是单例的TemplateEngine
+     * 获得的是单例
      *
-     * @return 单例的TemplateEngine
+     * @return 单例
      */
-    public static TemplateProvider getEngine() {
-        final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::createEngine);
+    public static TemplateProvider get() {
+        final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::create);
         Logger.debug("Use [{}] Template Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
@@ -61,8 +61,8 @@ public class TemplateFactory {
      *
      * @return {@link TemplateProvider}
      */
-    public static TemplateProvider createEngine() {
-        return createEngine(TemplateConfig.DEFAULT);
+    public static TemplateProvider create() {
+        return create(TemplateConfig.DEFAULT);
     }
 
     /**
@@ -72,8 +72,8 @@ public class TemplateFactory {
      * @param config 模板配置，包括编码、模板文件path等信息
      * @return {@link TemplateProvider}
      */
-    public static TemplateProvider createEngine(final TemplateConfig config) {
-        return doCreateEngine(config);
+    public static TemplateProvider create(final TemplateConfig config) {
+        return doCreate(config);
     }
 
     /**
@@ -83,8 +83,8 @@ public class TemplateFactory {
      * @param config 模板配置，包括编码、模板文件path等信息
      * @return {@link TemplateProvider}
      */
-    private static TemplateProvider doCreateEngine(final TemplateConfig config) {
-        final Class<? extends TemplateProvider> customEngineClass = config.getCustomEngine();
+    private static TemplateProvider doCreate(final TemplateConfig config) {
+        final Class<? extends TemplateProvider> customEngineClass = config.getProvider();
         final TemplateProvider engine;
         if (null != customEngineClass) {
             // 自定义模板引擎
@@ -99,4 +99,5 @@ public class TemplateFactory {
 
         throw new InternalException("No template found! Please add one of template jar to your project !");
     }
+
 }

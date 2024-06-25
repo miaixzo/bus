@@ -25,79 +25,49 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.text;
+package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.util.function.BiPredicate;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
- * 字符串区域匹配器，用于匹配字串是头部匹配还是尾部匹配，亦或者是某个位置的匹配。
- * offset用于锚定开始或结束位置，正数表示从开始偏移，负数表示从后偏移
- * <pre>
- *     a  b  c  d  e  f
- *     |  |        |  |
- *     0  1  c  d -2 -1
- * </pre>
+ * 自定义函数Key风格的Map
  *
+ * @param <K> 键类型
+ * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StringMatcher implements BiPredicate<CharSequence, CharSequence>, Serializable {
+public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 
     private static final long serialVersionUID = -1L;
 
-    private final boolean ignoreCase;
-    private final boolean ignoreEquals;
-    /**
-     * 匹配位置，正数表示从开始偏移，负数表示从后偏移
-     */
-    private final int offset;
+    private final Function<Object, K> keyFunc;
 
     /**
      * 构造
+     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @param isPrefix     {@code true}表示检查开头匹配，{@code false}检查末尾匹配
+     * @param emptyMap Map，提供的空map
+     * @param keyFunc  自定义KEY的函数
      */
-    public StringMatcher(final boolean ignoreCase, final boolean ignoreEquals, final boolean isPrefix) {
-        this(ignoreCase, ignoreEquals, isPrefix ? 0 : -1);
+    public FunctionKeyMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc) {
+        super(emptyMap);
+        this.keyFunc = keyFunc;
     }
 
     /**
-     * 构造
+     * 根据函数自定义键
      *
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @param offset       匹配位置，正数表示从开始偏移，负数表示从后偏移
+     * @param key KEY
+     * @return 驼峰Key
      */
-    public StringMatcher(final boolean ignoreCase, final boolean ignoreEquals, final int offset) {
-        this.ignoreCase = ignoreCase;
-        this.ignoreEquals = ignoreEquals;
-        this.offset = offset;
-    }
-
     @Override
-    public boolean test(final CharSequence text, final CharSequence check) {
-        if (null == text || null == check) {
-            if (ignoreEquals) {
-                return false;
-            }
-            return null == text && null == check;
+    protected K customKey(final Object key) {
+        if (null != this.keyFunc) {
+            return keyFunc.apply(key);
         }
-
-        final int strToCheckLength = check.length();
-        final int toffset = this.offset >= 0 ?
-                this.offset : text.length() - strToCheckLength + this.offset + 1;
-        final boolean matches = text.toString()
-                .regionMatches(ignoreCase, toffset, check.toString(), 0, strToCheckLength);
-
-        if (matches) {
-            return (!ignoreEquals) || (!StringKit.equals(text, check, ignoreCase));
-        }
-        return false;
+        return (K) key;
     }
 
 }

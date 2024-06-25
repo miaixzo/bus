@@ -542,7 +542,6 @@ public enum Setting {
     /**
      * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
      * Was added with this commit https://gitlab.com/gitlab-org/gitlab/commit/30e7f01877fd436e21efdf0974d42d8fc83f4883
-     * @since 2019-07-18
      */
     LOGIN_RECAPTCHA_PROTECTION_ENABLED(Boolean.class),
 

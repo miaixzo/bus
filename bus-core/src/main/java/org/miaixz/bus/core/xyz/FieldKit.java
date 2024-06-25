@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -172,27 +173,27 @@ public class FieldKit {
      * 获得一个类中所有满足条件的字段列表，包括其父类中的字段
      * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
      *
-     * @param beanClass      类
-     * @param fieldPredicate field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
+     * @param beanClass 类
+     * @param filter    field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getFields(final Class<?> beanClass, final Predicate<Field> fieldPredicate) throws SecurityException {
+    public static Field[] getFields(final Class<?> beanClass, final Predicate<Field> filter) throws SecurityException {
         Assert.notNull(beanClass);
-        return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getAllFields(fieldPredicate);
+        return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getAllFields(filter);
     }
 
     /**
      * 获得当前类声明的所有字段（包括非public字段），但不包括父类的字段
      *
-     * @param beanClass      类
-     * @param fieldPredicate field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
+     * @param beanClass 类
+     * @param filter    field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> fieldPredicate) throws SecurityException {
+    public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> filter) throws SecurityException {
         Assert.notNull(beanClass);
-        return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getDeclaredFields(fieldPredicate);
+        return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getDeclaredFields(filter);
     }
 
     /**
@@ -289,6 +290,53 @@ public class FieldKit {
     }
 
     /**
+     * 获取所有字段及对应值
+     *
+     * @param obj bean对象，如果是static字段，此处为类class
+     * @return 字段值数组
+     */
+    public static Object getFieldsAndValue(final Object obj) {
+        if (null != obj) {
+            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass());
+            if (null != fields) {
+                Map<String, Object> map = new HashMap<>();
+                for (Field field : fields) {
+                    Object object = getFieldValue(obj, field);
+                    if (ObjectKit.isNotEmpty(object) && !isSerialVersionUID(field)) {
+                        map.put(field.getName(), getFieldValue(obj, field));
+                    }
+                }
+                return map;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有字段及对应值
+     *
+     * @param obj    bean对象，如果是static字段，此处为类class
+     * @param filter 字段过滤器，{@code null}返回原集合
+     * @return 字段值数组
+     */
+    public static Object getFieldsAndValue(final Object obj, final Predicate<Field> filter) {
+        if (null != obj) {
+            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass(), filter);
+            if (null != fields) {
+                Map<String, Object> map = new HashMap<>();
+                for (Field field : fields) {
+                    Object object = getFieldValue(obj, field);
+                    if (ObjectKit.isNotEmpty(object) && !isSerialVersionUID(field)) {
+                        map.put(field.getName(), getFieldValue(obj, field));
+                    }
+                }
+                return map;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 设置字段值
      *
      * @param obj       对象,static字段则此处传Class
@@ -360,6 +408,18 @@ public class FieldKit {
         } catch (final IllegalAccessException e) {
             throw new InternalException(e, "IllegalAccess for [{}.{}]", null == obj ? field.getDeclaringClass() : obj, field.getName());
         }
+    }
+
+    /**
+     * 给定类是否存在serialVersionUID字段
+     *
+     * @param field 字段
+     * @return 是否存在serialVersionUID字段
+     */
+    public static boolean isSerialVersionUID(Field field) {
+        return "serialVersionUID".equals(field.getName())
+                && (Long.class.equals(field.getType()) || long.class.equals(field.getType()))
+                && field.getModifiers() == (Modifier.PRIVATE + Modifier.STATIC + Modifier.FINAL);
     }
 
 }

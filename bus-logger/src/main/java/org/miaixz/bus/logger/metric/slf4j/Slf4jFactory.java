@@ -25,35 +25,76 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.logger.metric.log4j;
+package org.miaixz.bus.logger.metric.slf4j;
 
 import org.miaixz.bus.logger.Supplier;
 import org.miaixz.bus.logger.magic.AbstractFactory;
+import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.NOPLoggerFactory;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 /**
- * log4j
+ * slf4j and logback
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Log4JFactory extends AbstractFactory {
+public class Slf4jFactory extends AbstractFactory {
 
     /**
      * 构造
      */
-    public Log4JFactory() {
-        super("Log4j");
-        check(org.apache.logging.log4j.LogManager.class);
+    public Slf4jFactory() {
+        this(true);
+    }
+
+    /**
+     * 构造
+     *
+     * @param fail 如果未找到桥接包是否报错
+     */
+    public Slf4jFactory(final boolean fail) {
+        super("Slf4j");
+        check(LoggerFactory.class);
+        if (!fail) {
+            return;
+        }
+        final StringBuilder buf = new StringBuilder();
+        final PrintStream err = System.err;
+        try {
+            System.setErr(new PrintStream(new OutputStream() {
+                @Override
+                public void write(final int b) {
+                    buf.append((char) b);
+                }
+            }, true, "US-ASCII"));
+        } catch (final UnsupportedEncodingException e) {
+            throw new Error(e);
+        }
+
+        try {
+            if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {
+                throw new NoClassDefFoundError(buf.toString());
+            } else {
+                err.print(buf);
+                err.flush();
+            }
+        } finally {
+            System.setErr(err);
+        }
     }
 
     @Override
     public Supplier create(final String name) {
-        return new Log4jProvider(name);
+        return new Slf4jProvider(name);
     }
 
     @Override
     public Supplier create(final Class<?> clazz) {
-        return new Log4jProvider(clazz);
+        return new Slf4jProvider(clazz);
     }
 
 }

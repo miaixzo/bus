@@ -1628,6 +1628,17 @@ public class DateKit extends Calendar {
     }
 
     /**
+     * {@code null}安全的日期比较，{@code null}对象排在末尾
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 比较结果，如果date1 &lt; date2，返回数小于0，date1==date2返回0，date1 &gt; date2 大于0
+     */
+    public static int compare(final Date date1, final Date date2) {
+        return CompareKit.compare(date1, date2);
+    }
+
+    /**
      * {@code null}安全的日期比较，并只比较指定格式； {@code null}对象排在末尾, 并指定日期格式；
      *
      * @param date1  日期1

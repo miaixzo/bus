@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.SPIKit;
 import org.miaixz.bus.logger.metric.commons.CommonsFactory;
 import org.miaixz.bus.logger.metric.console.ConsoleFactory;
 import org.miaixz.bus.logger.metric.jdk.JdkFactory;
-import org.miaixz.bus.logger.metric.log4j.Log4JFactory;
-import org.miaixz.bus.logger.metric.slf4j.Slf4JFactory;
+import org.miaixz.bus.logger.metric.log4j.Log4jFactory;
+import org.miaixz.bus.logger.metric.slf4j.Slf4jFactory;
 
 import java.net.URL;
 
@@ -59,7 +59,7 @@ public class Holder {
      *
      * @return the factory
      */
-    public static Factory get() {
+    public static Factory getFactory() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -67,15 +67,15 @@ public class Holder {
      * 自定义默认日志实现
      *
      * @param clazz 日志工厂类
-     * @see Slf4JFactory
-     * @see Log4JFactory
+     * @see Slf4jFactory
+     * @see Log4jFactory
      * @see CommonsFactory
      * @see JdkFactory
      * @see ConsoleFactory
      */
-    public static void set(final Class<? extends Factory> clazz) {
+    public static void setFactory(final Class<? extends Factory> clazz) {
         try {
-            set(ReflectKit.newInstance(clazz));
+            setFactory(ReflectKit.newInstance(clazz));
         } catch (final Exception e) {
             throw new IllegalArgumentException("Can not instance LogFactory class!", e);
         }
@@ -85,13 +85,13 @@ public class Holder {
      * 自定义日志实现
      *
      * @param factory 日志工厂对象
-     * @see Slf4JFactory
-     * @see Log4JFactory
+     * @see Slf4jFactory
+     * @see Log4jFactory
      * @see CommonsFactory
      * @see JdkFactory
      * @see ConsoleFactory
      */
-    public static void set(final Factory factory) {
+    public static void setFactory(final Factory factory) {
         Instances.put(Holder.class.getName(), factory);
         factory.create(Holder.class).debug("Custom Use [{}] Logger.", factory.getName());
     }

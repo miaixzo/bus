@@ -45,7 +45,7 @@ public interface DeleteByConditionMapper<T> {
      * 根据Condition条件删除数据
      *
      * @param condition 条件
-     * @return the int
+     * @return the int 操作结果
      */
     @DeleteProvider(type = ConditionProvider.class, method = "dynamicSQL")
     int deleteByCondition(Object condition);

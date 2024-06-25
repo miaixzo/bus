@@ -25,49 +25,31 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.center.map;
+package org.miaixz.bus.core.center;
 
-import java.util.Map;
-import java.util.function.Function;
+import java.util.Collection;
 
 /**
- * 自定义函数Key风格的Map
+ * 有边界限制的集合，边界集合有最大容量限制
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <E> 元素类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FuncKeyMap<K, V> extends CustomKeyMap<K, V> {
-
-    private static final long serialVersionUID = -1L;
-
-    private final Function<Object, K> keyFunc;
+public interface BoundedCollection<E> extends Collection<E> {
 
     /**
-     * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * 是否已满，如果集合已满，不允许新增元素
      *
-     * @param emptyMap Map，提供的空map
-     * @param keyFunc  自定义KEY的函数
+     * @return 是否已满
      */
-    public FuncKeyMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc) {
-        super(emptyMap);
-        this.keyFunc = keyFunc;
-    }
+    boolean isFull();
 
     /**
-     * 根据函数自定义键
+     * 获取集合最大允许容量
      *
-     * @param key KEY
-     * @return 驼峰Key
+     * @return 容量
      */
-    @Override
-    protected K customKey(final Object key) {
-        if (null != this.keyFunc) {
-            return keyFunc.apply(key);
-        }
-        return (K) key;
-    }
+    int maxSize();
 
 }

@@ -241,7 +241,7 @@ public class SolarDay extends Loops {
      *
      * @return 七十二候
      */
-    public ClimateDay getPhenologyDay() {
+    public ClimateDay getClimateDay() {
         SolarTerms term = getTerm();
         int dayIndex = subtract(term.getJulianDay().getSolarDay());
         int index = dayIndex / 5;

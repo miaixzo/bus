@@ -47,7 +47,7 @@ public interface SelectByConditionMapper<T> {
      * 根据Condition条件进行查询
      *
      * @param condition 条件
-     * @return the list
+     * @return the list 操作结果
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     List<T> selectByCondition(Object condition);

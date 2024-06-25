@@ -46,7 +46,7 @@ public class PinyinKit {
      * @return {@link PinyinProvider}
      */
     public static PinyinProvider createEngine(final String engineName) {
-        return PinyinFactory.createEngine(engineName);
+        return PinyinFactory.create(engineName);
     }
 
     /**
@@ -55,7 +55,7 @@ public class PinyinKit {
      * @return 全局单例的拼音引擎
      */
     public static PinyinProvider getEngine() {
-        return PinyinFactory.getEngine();
+        return PinyinFactory.get();
     }
 
     /**

@@ -137,7 +137,7 @@ public class BaseAdvice extends Controller {
     public Object crontabException(CrontabException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode.EM_100514);
+            return write(ErrorCode.EM_100600);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }

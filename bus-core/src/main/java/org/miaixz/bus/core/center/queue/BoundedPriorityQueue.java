@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.core.center.queue;
 
+import org.miaixz.bus.core.center.BoundedCollection;
+
 import java.util.*;
 
 /**
@@ -37,7 +39,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BoundedPriorityQueue<E> extends PriorityQueue<E> {
+public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements BoundedCollection<E> {
 
     private static final long serialVersionUID = -1L;
 
@@ -47,6 +49,11 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> {
     private final int capacity;
     private final Comparator<? super E> comparator;
 
+    /**
+     * 构造
+     *
+     * @param capacity 容量
+     */
     public BoundedPriorityQueue(final int capacity) {
         this(capacity, null);
     }
@@ -73,6 +80,16 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> {
         this.comparator = comparator;
     }
 
+    @Override
+    public boolean isFull() {
+        return size() == capacity;
+    }
+
+    @Override
+    public int maxSize() {
+        return capacity;
+    }
+
     /**
      * 加入元素，当队列满时，淘汰末尾元素
      *
@@ -81,7 +98,7 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> {
      */
     @Override
     public boolean offer(final E e) {
-        if (size() >= capacity) {
+        if (isFull()) {
             final E head = peek();
             if (this.comparator().compare(e, head) <= 0) {
                 return true;

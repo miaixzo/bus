@@ -48,12 +48,12 @@ import java.util.regex.Pattern;
  * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort Strings like Windows Explorer</a>
  * @since Java 17+
  */
-public class WindowsCompare implements Comparator<CharSequence> {
+public class ExplorerCompare implements Comparator<CharSequence> {
 
     /**
      * 单例
      */
-    public static final WindowsCompare INSTANCE = new WindowsCompare();
+    public static final ExplorerCompare INSTANCE = new ExplorerCompare();
 
     @Override
     public int compare(final CharSequence str1, final CharSequence str2) {

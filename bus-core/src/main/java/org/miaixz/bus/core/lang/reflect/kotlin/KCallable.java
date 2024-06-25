@@ -25,76 +25,56 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.logger.metric.slf4j;
+package org.miaixz.bus.core.lang.reflect.kotlin;
 
-import org.miaixz.bus.logger.Supplier;
-import org.miaixz.bus.logger.magic.AbstractFactory;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.NOPLoggerFactory;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * slf4j and logback
+ * kotlin.reflect.KCallable方法包装调用类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Slf4JFactory extends AbstractFactory {
+public class KCallable {
 
-    /**
-     * 构造
-     */
-    public Slf4JFactory() {
-        this(true);
+    private static final Method METHOD_GET_PARAMETERS;
+    private static final Method METHOD_CALL;
+
+    static {
+        final Class<?> kFunctionClass = ClassKit.loadClass("kotlin.reflect.KCallable");
+        METHOD_GET_PARAMETERS = MethodKit.getMethod(kFunctionClass, "getParameters");
+        METHOD_CALL = MethodKit.getMethodByName(kFunctionClass, "call");
     }
 
     /**
-     * 构造
+     * 获取参数列表
      *
-     * @param fail 如果未找到桥接包是否报错
+     * @param kCallable kotlin的类、方法或构造
+     * @return 参数列表
      */
-    public Slf4JFactory(final boolean fail) {
-        super("Slf4j");
-        check(LoggerFactory.class);
-        if (!fail) {
-            return;
+    public static List<KParameter> getParameters(final Object kCallable) {
+        final List<?> parameters = MethodKit.invoke(kCallable, METHOD_GET_PARAMETERS);
+        final List<KParameter> result = new ArrayList<>(parameters.size());
+        for (final Object parameter : parameters) {
+            result.add(new KParameter(parameter));
         }
-        final StringBuilder buf = new StringBuilder();
-        final PrintStream err = System.err;
-        try {
-            System.setErr(new PrintStream(new OutputStream() {
-                @Override
-                public void write(final int b) {
-                    buf.append((char) b);
-                }
-            }, true, "US-ASCII"));
-        } catch (final UnsupportedEncodingException e) {
-            throw new Error(e);
-        }
-
-        try {
-            if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {
-                throw new NoClassDefFoundError(buf.toString());
-            } else {
-                err.print(buf);
-                err.flush();
-            }
-        } finally {
-            System.setErr(err);
-        }
+        return result;
     }
 
-    @Override
-    public Supplier create(final String name) {
-        return new Slf4jProvider(name);
-    }
-
-    @Override
-    public Supplier create(final Class<?> clazz) {
-        return new Slf4jProvider(clazz);
+    /**
+     * 实例化对象，本质上调用KCallable.call方法
+     *
+     * @param kCallable kotlin的类、方法或构造
+     * @param args      参数列表
+     * @return 参数列表
+     */
+    public static Object call(final Object kCallable, final Object... args) {
+        return MethodKit.invoke(kCallable, METHOD_CALL, new Object[]{args});
     }
 
 }

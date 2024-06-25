@@ -35,7 +35,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.FieldKit;
-import org.miaixz.bus.core.xyz.MethodKit;
 
 import java.io.Serializable;
 
@@ -86,8 +85,8 @@ public class Entity implements Serializable {
      */
     public <T> Object getValue(T entity, String field) {
         if (FieldKit.hasField(entity.getClass(), field)) {
-            Object object = MethodKit.invokeGetter(entity, field);
-            return null != object ? object.toString() : null;
+            Object value = FieldKit.getFieldValue(entity, field);
+            return null != value ? value.toString() : null;
         }
         return null;
     }
@@ -104,7 +103,7 @@ public class Entity implements Serializable {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
             if (FieldKit.hasField(entity.getClass(), field)) {
-                MethodKit.invokeSetter(entity, field, value[i]);
+                FieldKit.setFieldValue(entity, field, value[i]);
             }
         }
     }

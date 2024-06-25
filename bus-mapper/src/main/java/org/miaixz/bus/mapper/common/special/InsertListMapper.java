@@ -47,11 +47,11 @@ public interface InsertListMapper<T> {
     /**
      * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等，另外该接口限制实体包含`id`属性并且必须为自增列
      *
-     * @param recordList 记录值
-     * @return the int
+     * @param list 记录值
+     * @return the int 操作结果
      */
     @Options(useGeneratedKeys = true)
     @InsertProvider(type = SpecialProvider.class, method = "dynamicSQL")
-    int insertList(List<? extends T> recordList);
+    int insertList(List<? extends T> list);
 
 }

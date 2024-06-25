@@ -175,7 +175,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * 获取链接单元格样式，获取后可以定义整体链接样式
      *
      * @return 链接单元格样式
-     * @since 5.7.13
      */
     public CellStyle getCellStyleForHyperlink() {
         return this.cellStyleForHyperlink;
@@ -187,7 +186,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param borderSize 边框粗细{@link BorderStyle}枚举
      * @param colorIndex 颜色的short值
      * @return this
-     * @since 4.0.0
      */
     public DefaultStyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
         Styles.setBorder(this.headCellStyle, borderSize, colorIndex);
@@ -204,7 +202,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param halign 横向位置
      * @param valign 纵向位置
      * @return this
-     * @since 4.0.0
      */
     public DefaultStyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
         Styles.setAlign(this.headCellStyle, halign, valign);
@@ -221,7 +218,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param backgroundColor 背景色
      * @param withHeadCell    是否也定义头部样式
      * @return this
-     * @since 4.0.0
      */
     public DefaultStyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
         if (withHeadCell) {
@@ -254,7 +250,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param font       字体，可以通过{@link Styles#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
-     * @since 4.1.0
      */
     public DefaultStyleSet setFont(final Font font, final boolean ignoreHead) {
         if (!ignoreHead) {
@@ -271,7 +266,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * 设置单元格文本自动换行
      *
      * @return this
-     * @since 4.5.16
      */
     public DefaultStyleSet setWrapText() {
         this.cellStyle.setWrapText(true);

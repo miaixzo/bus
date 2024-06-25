@@ -25,50 +25,35 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.io.stream;
+package org.miaixz.bus.logger.metric.log4j;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.xyz.ByteKit;
-
-import java.io.ByteArrayInputStream;
+import org.miaixz.bus.logger.Supplier;
+import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 基于字符串的InputStream
+ * log4j
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StrInputStream extends ByteArrayInputStream {
+public class Log4jFactory extends AbstractFactory {
 
     /**
      * 构造
-     *
-     * @param text    字符串
-     * @param charset 编码
      */
-    public StrInputStream(final CharSequence text, final java.nio.charset.Charset charset) {
-        super(ByteKit.toBytes(text, charset));
+    public Log4jFactory() {
+        super("Log4j");
+        check(org.apache.logging.log4j.LogManager.class);
     }
 
-    /**
-     * 创建StrInputStream
-     *
-     * @param text 字符串
-     * @return StrInputStream
-     */
-    public static StrInputStream of(final CharSequence text) {
-        return of(text, Charset.UTF_8);
+    @Override
+    public Supplier create(final String name) {
+        return new Log4jProvider(name);
     }
 
-    /**
-     * 创建StrInputStream
-     *
-     * @param text    字符串
-     * @param charset 编码
-     * @return StrInputStream
-     */
-    public static StrInputStream of(final CharSequence text, final java.nio.charset.Charset charset) {
-        return new StrInputStream(text, charset);
+    @Override
+    public Supplier create(final Class<?> clazz) {
+        return new Log4jProvider(clazz);
     }
 
 }

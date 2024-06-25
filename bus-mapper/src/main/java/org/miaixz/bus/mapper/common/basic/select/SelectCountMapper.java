@@ -44,8 +44,8 @@ public interface SelectCountMapper<T> {
     /**
      * 根据实体中的属性查询总数，查询条件使用等号
      *
-     * @param record
-     * @return
+     * @param record 泛型对象
+     * @return the int 操作结果
      */
     @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     int selectCount(T record);

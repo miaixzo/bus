@@ -31,7 +31,7 @@ import org.miaixz.bus.goalie.Handler;
 
 /**
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public class AbstractApiHandler implements Handler {
 

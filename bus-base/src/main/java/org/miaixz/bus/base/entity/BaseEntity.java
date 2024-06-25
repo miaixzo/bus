@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basics.entity.Tracer;
 import org.miaixz.bus.core.basics.normal.Consts;
-import org.miaixz.bus.core.data.id.ObjectId;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.xyz.*;
 
 import java.util.List;
@@ -105,53 +105,6 @@ public class BaseEntity extends Tracer {
     @Transient
     protected transient String orderBy;
 
-
-    /**
-     * 设置访问信息
-     *
-     * @param <T>    对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
-     */
-    public static <T extends BaseEntity> void setAccess(T source, T target) {
-        if (Objects.isNull(source) || Objects.isNull(target)) {
-            return;
-        }
-        target.setX_org_id(source.getX_org_id());
-        target.setX_user_id(source.getX_user_id());
-    }
-
-    /**
-     * 设置访问信息
-     *
-     * @param <T>    对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
-     */
-    public static <T extends BaseEntity> void setAccess(T source, T... target) {
-        if (Objects.isNull(source) || ArrayKit.isEmpty(target)) {
-            return;
-        }
-        for (T targetEntity : target) {
-            setAccess(source, targetEntity);
-        }
-    }
-
-    /**
-     * 设置访问信息
-     *
-     * @param <S>    源对象泛型
-     * @param <E>    集合元素对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
-     */
-    public static <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
-        if (Objects.isNull(source) || CollKit.isEmpty(target)) {
-            return;
-        }
-        target.forEach(targetEntity -> setAccess(source, targetEntity));
-    }
-
     /**
      * 重置数字型字符串为null，防止插入数据库表异常
      *
@@ -170,13 +123,59 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 快速将bean的creator、created附上相关值
+     * 设置访问信息
+     *
+     * @param <T>    对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public <T extends BaseEntity> void setAccess(T source, T target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            return;
+        }
+        target.setX_org_id(source.getX_org_id());
+        target.setX_user_id(source.getX_user_id());
+    }
+
+    /**
+     * 设置访问信息
+     *
+     * @param <T>    对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public <T extends BaseEntity> void setAccess(T source, T... target) {
+        if (Objects.isNull(source) || ArrayKit.isEmpty(target)) {
+            return;
+        }
+        for (T targetEntity : target) {
+            this.setAccess(source, targetEntity);
+        }
+    }
+
+    /**
+     * 设置访问信息
+     *
+     * @param <S>    源对象泛型
+     * @param <E>    集合元素对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
+        if (Objects.isNull(source) || CollKit.isEmpty(target)) {
+            return;
+        }
+        target.forEach(targetEntity -> this.setAccess(source, targetEntity));
+    }
+
+    /**
+     * 快速设置操作者属性值
      *
      * @param <T>    对象
      * @param entity 反射对象
      */
-    public <T> void setCreateInfo(T entity) {
-        String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ObjectId.id() : (String) getValue(entity, "id");
+    public <T> void setInsert(T entity) {
+        String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ID.objectId() : (String) getValue(entity, "id");
         String timestamp = StringKit.toString(DateKit.current());
         String[] fields = {"id", "created"};
         Object[] value = new Object[]{id, timestamp};
@@ -186,16 +185,16 @@ public class BaseEntity extends Tracer {
                     ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
                     timestamp};
         }
-        setValue(entity, fields, value);
+        this.setValue(entity, fields, value);
     }
 
     /**
-     * 快速将bean的modifier、modified附上相关值
+     * 快速设置操作者属性值
      *
-     * @param <T>    对象
+     * @param <T>    泛型对象
      * @param entity 反射对象
      */
-    public <T> void setUpdatedInfo(T entity) {
+    public <T> void setUpdate(T entity) {
         String timestamp = StringKit.toString(DateKit.current());
         String[] fields = {"modified"};
         Object[] value = new Object[]{timestamp};
@@ -205,12 +204,18 @@ public class BaseEntity extends Tracer {
                     timestamp};
         }
 
-        setValue(entity, fields, value);
+        this.setValue(entity, fields, value);
     }
 
-    public <T> void setCreatAndUpdatInfo(T entity) {
-        setCreateInfo(entity);
-        setUpdatedInfo(entity);
+    /**
+     * 快速设置操作者属性值
+     *
+     * @param entity 反射对象
+     * @param <T>    泛型对象
+     */
+    public <T> void setValue(T entity) {
+        this.setInsert(entity);
+        this.setUpdate(entity);
     }
 
 }

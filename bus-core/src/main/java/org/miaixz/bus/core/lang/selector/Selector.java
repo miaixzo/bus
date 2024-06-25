@@ -29,11 +29,13 @@ package org.miaixz.bus.core.lang.selector;
 
 /**
  * 选择器接口
+ * 用于抽象负载均衡策略中的选择方式
  *
  * @param <T> 选择对象类型
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface Selector<T> {
 
     /**

@@ -61,7 +61,7 @@ public class TemplateConfig implements Serializable {
     /**
      * 自定义引擎，当多个jar包引入时，可以自定使用的默认引擎
      */
-    private Class<? extends TemplateProvider> customEngine;
+    private Class<? extends TemplateProvider> provider;
 
     /**
      * 默认构造，使用UTF8编码，默认从ClassPath获取模板
@@ -173,19 +173,19 @@ public class TemplateConfig implements Serializable {
      *
      * @return 自定义引擎，null表示系统自动判断
      */
-    public Class<? extends TemplateProvider> getCustomEngine() {
-        return customEngine;
+    public Class<? extends TemplateProvider> getProvider() {
+        return provider;
     }
 
 
     /**
      * 设置自定义引擎，null表示系统自动判断
      *
-     * @param customEngine 自定义引擎，null表示系统自动判断
+     * @param provider 自定义引擎，null表示系统自动判断
      * @return this
      */
-    public TemplateConfig setCustomEngine(final Class<? extends TemplateProvider> customEngine) {
-        this.customEngine = customEngine;
+    public TemplateConfig setProvider(final Class<? extends TemplateProvider> provider) {
+        this.provider = provider;
         return this;
     }
 
@@ -201,12 +201,12 @@ public class TemplateConfig implements Serializable {
         return Objects.equals(charset, that.charset) &&
                 Objects.equals(path, that.path) &&
                 resourceMode == that.resourceMode &&
-                Objects.equals(customEngine, that.customEngine);
+                Objects.equals(provider, that.provider);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(charset, path, resourceMode, customEngine);
+        return Objects.hash(charset, path, resourceMode, provider);
     }
 
     /**

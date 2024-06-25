@@ -46,8 +46,8 @@ public interface SelectByPrimaryKeyMapper<T> {
     /**
      * 根据主键字段进行查询，方法参数必须包含完整的主键属性，查询条件使用等号
      *
-     * @param key
-     * @return
+     * @param key 主键
+     * @return the object 操作结果
      */
     @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     T selectByPrimaryKey(Object key);

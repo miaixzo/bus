@@ -56,6 +56,12 @@ public class OAuth2 extends Entity {
     protected String x_user_id;
 
     /**
+     * 当前用户编码
+     */
+    @Transient
+    protected String x_user_code;
+
+    /**
      * 当前用户名称
      */
     @Transient

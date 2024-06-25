@@ -46,7 +46,7 @@ public interface InsertMapper<T> {
      * 插入数据库，`null`值也会插入，不会使用列的默认值
      *
      * @param record 记录值
-     * @return the int
+     * @return the int 操作结果
      */
     @Options(useGeneratedKeys = true)
     @InsertProvider(type = SqlServerProvider.class, method = "dynamicSQL")

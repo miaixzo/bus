@@ -49,7 +49,7 @@ public abstract class Registry {
      * @return 日志对象
      */
     public static Supplier get(final String name) {
-        return Holder.get().get(name);
+        return Holder.getFactory().get(name);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class Registry {
      * @return 日志对象
      */
     public static Supplier get(final Class<?> clazz) {
-        return Holder.get().get(clazz);
+        return Holder.getFactory().get(clazz);
     }
 
 }

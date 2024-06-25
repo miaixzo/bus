@@ -248,7 +248,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     public CsvWriter write(final Iterable<?> lines) throws InternalException {
         if (CollKit.isNotEmpty(lines)) {
             for (final Object values : lines) {
-                appendLine(Convert.toStrArray(values));
+                appendLine(Convert.toStringArray(values));
             }
             flush();
         }
@@ -304,7 +304,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
                     writeHeaderLine(map.keySet().toArray(new String[0]));
                     isFirst = false;
                 }
-                writeLine(Convert.toStrArray(map.values()));
+                writeLine(Convert.toStringArray(map.values()));
             }
             flush();
         }

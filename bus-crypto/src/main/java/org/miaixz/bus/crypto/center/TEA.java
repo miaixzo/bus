@@ -36,13 +36,13 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
- * XXTEA（Corrected Block Tiny Encryption Algorithm）算法实现
+ * TEA（Corrected Block Tiny Encryption Algorithm）算法实现
  * 来自：https://github.com/xxtea/xxtea-java
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class XXTEA implements Encryptor, Decryptor, Serializable {
+public class TEA implements Encryptor, Decryptor, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -61,7 +61,7 @@ public class XXTEA implements Encryptor, Decryptor, Serializable {
      *
      * @param key 密钥，16位
      */
-    public XXTEA(final byte[] key) {
+    public TEA(final byte[] key) {
         this.key = key;
     }
 

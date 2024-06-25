@@ -189,7 +189,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
     /**
      * 表明注解是一个合成的注解
      */
-    interface Proxied {
+    public interface Proxied {
 
         /**
          * 获取注解映射对象

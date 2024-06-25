@@ -47,7 +47,7 @@ public class CaptchaBuilder {
      * @param height 图片高
      * @return {@link LineProvider}
      */
-    public static LineProvider ofLineCaptcha(final int width, final int height) {
+    public static LineProvider ofLine(final int width, final int height) {
         return new LineProvider(width, height);
     }
 
@@ -60,7 +60,7 @@ public class CaptchaBuilder {
      * @param lineCount 干扰线条数
      * @return {@link LineProvider}
      */
-    public static LineProvider ofLineCaptcha(final int width, final int height, final int codeCount, final int lineCount) {
+    public static LineProvider ofLine(final int width, final int height, final int codeCount, final int lineCount) {
         return new LineProvider(width, height, codeCount, lineCount);
     }
 
@@ -74,8 +74,8 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link LineProvider}
      */
-    public static LineProvider ofLineCaptcha(final int width, final int height, final int codeCount,
-                                             final int lineCount, final float sizeBaseHeight) {
+    public static LineProvider ofLine(final int width, final int height, final int codeCount,
+                                      final int lineCount, final float sizeBaseHeight) {
         return new LineProvider(width, height, codeCount, lineCount, sizeBaseHeight);
     }
 
@@ -86,7 +86,7 @@ public class CaptchaBuilder {
      * @param height 图片高
      * @return {@link CircleProvider}
      */
-    public static CircleProvider ofCircleCaptcha(final int width, final int height) {
+    public static CircleProvider ofCircle(final int width, final int height) {
         return new CircleProvider(width, height);
     }
 
@@ -99,7 +99,7 @@ public class CaptchaBuilder {
      * @param circleCount 干扰圆圈条数
      * @return {@link CircleProvider}
      */
-    public static CircleProvider ofCircleCaptcha(final int width, final int height, final int codeCount, final int circleCount) {
+    public static CircleProvider ofCircle(final int width, final int height, final int codeCount, final int circleCount) {
         return new CircleProvider(width, height, codeCount, circleCount);
     }
 
@@ -113,8 +113,8 @@ public class CaptchaBuilder {
      * @param size        字体的大小 高度的倍数
      * @return {@link CircleProvider}
      */
-    public static CircleProvider ofCircleCaptcha(final int width, final int height, final int codeCount,
-                                                 final int circleCount, final float size) {
+    public static CircleProvider ofCircle(final int width, final int height, final int codeCount,
+                                          final int circleCount, final float size) {
         return new CircleProvider(width, height, codeCount, circleCount, size);
     }
 
@@ -125,7 +125,7 @@ public class CaptchaBuilder {
      * @param height 图片高
      * @return {@link ShearProvider}
      */
-    public static ShearProvider ofShearCaptcha(final int width, final int height) {
+    public static ShearProvider ofShear(final int width, final int height) {
         return new ShearProvider(width, height);
     }
 
@@ -138,7 +138,7 @@ public class CaptchaBuilder {
      * @param thickness 干扰线宽度
      * @return {@link ShearProvider}
      */
-    public static ShearProvider ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness) {
+    public static ShearProvider ofShear(final int width, final int height, final int codeCount, final int thickness) {
         return new ShearProvider(width, height, codeCount, thickness);
     }
 
@@ -152,7 +152,7 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link ShearProvider}
      */
-    public static ShearProvider ofShearCaptcha(final int width, final int height, final int codeCount, final int thickness, final float sizeBaseHeight) {
+    public static ShearProvider ofShear(final int width, final int height, final int codeCount, final int thickness, final float sizeBaseHeight) {
         return new ShearProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }
 
@@ -163,7 +163,7 @@ public class CaptchaBuilder {
      * @param height 高
      * @return {@link GifProvider}
      */
-    public static GifProvider ofGifCaptcha(final int width, final int height) {
+    public static GifProvider ofGif(final int width, final int height) {
         return new GifProvider(width, height);
     }
 
@@ -175,7 +175,7 @@ public class CaptchaBuilder {
      * @param codeCount 字符个数
      * @return {@link GifProvider}
      */
-    public static GifProvider ofGifCaptcha(final int width, final int height, final int codeCount) {
+    public static GifProvider ofGif(final int width, final int height, final int codeCount) {
         return new GifProvider(width, height, codeCount);
     }
 
@@ -189,8 +189,8 @@ public class CaptchaBuilder {
      * @param sizeBaseHeight 字体的大小 高度的倍数
      * @return {@link GifProvider}
      */
-    public static GifProvider ofGifCaptcha(final int width, final int height, final int codeCount,
-                                           final int thickness, final float sizeBaseHeight) {
+    public static GifProvider ofGif(final int width, final int height, final int codeCount,
+                                    final int thickness, final float sizeBaseHeight) {
         return new GifProvider(width, height, codeCount, thickness, sizeBaseHeight);
     }
 
