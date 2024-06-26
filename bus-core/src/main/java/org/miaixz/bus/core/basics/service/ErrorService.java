@@ -27,25 +27,24 @@
  */
 package org.miaixz.bus.core.basics.service;
 
-import lombok.NoArgsConstructor;
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
  * 异常信息处理
  * 此类未找到实现的情况下，采用默认实现
- * 可以根据不同业务需求，继承此类实现对应业务逻辑即可
- * 项目中可通过SPI自定义接入
- * 例：META-INF/services/org.miaixz.bus.base.service.ErrorService
+ * 可以根据不同业务需求，重写方法实现对应业务逻辑即可
+ * 项目中可通过SPI形式接入
+ * 例：META-INF/services/org.miaixz.bus.core.basics.service.ErrorService
  * <code>
- * org.miaixz.bus.xxx.ErrorService
+ * org.miaixz.bus.xxx.BusinessErrorService
+ * ......
  * </code>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@NoArgsConstructor
-public class ErrorService {
+public interface ErrorService {
 
     /**
      * 完成请求处理前调用
@@ -53,8 +52,8 @@ public class ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    public boolean before(Exception ex) {
-        Console.error(ExceptionKit.stacktraceToString(ex));
+    default boolean before(Exception ex) {
+        Console.error("Before error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 
@@ -64,7 +63,8 @@ public class ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    public boolean after(Exception ex) {
+    default boolean after(Exception ex) {
+        Console.error("After error of : " + ExceptionKit.stacktraceToString(ex));
         return true;
     }
 
