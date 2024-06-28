@@ -59,6 +59,10 @@ public enum Algorithm {
     /**
      * RSA算法，此算法用了RSA/None/NoPadding
      */
+    RSA_NONE("RSA/None/NoPadding"),
+    /**
+     * EC算法
+     */
     EC("EC"),
     /**
      * ECDSA
@@ -268,6 +272,16 @@ public enum Algorithm {
 
     /******************************* 其他算法 *******************************/
 
+    /**
+     * 祖冲之算法-ZUC算法
+     * ZUC-128
+     */
+    ZUC_128("ZUC-128"),
+    /**
+     * 祖冲之算法-ZUC算法
+     * ZUC-256
+     */
+    ZUC_256("ZUC-256"),
     /**
      * ECIES（集成加密方案，elliptic curve integrate encrypt scheme）
      */

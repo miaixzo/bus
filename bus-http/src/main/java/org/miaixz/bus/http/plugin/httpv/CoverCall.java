@@ -28,8 +28,8 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpv;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
@@ -79,7 +79,7 @@ public class CoverCall implements Cancelable {
     }
 
     public void msgType(String type) {
-        if (null == type || type.equalsIgnoreCase(Http.FORM)) {
+        if (null == type || type.equalsIgnoreCase(HTTP.FORM)) {
             throw new IllegalArgumentException("msgType 不可为空 或 form");
         }
         this.msgType = type;
@@ -355,7 +355,7 @@ public class CoverCall implements Cancelable {
          */
         public CoverCall listen() {
             String bodyType = getBodyType();
-            String msgType = Http.FORM.equalsIgnoreCase(bodyType) ? Http.JSON : bodyType;
+            String msgType = HTTP.FORM.equalsIgnoreCase(bodyType) ? HTTP.JSON : bodyType;
             CoverCall socket = new CoverCall(httpv.executor(), msgType);
             registeTagTask(socket);
             httpv.preprocess(this, () -> {

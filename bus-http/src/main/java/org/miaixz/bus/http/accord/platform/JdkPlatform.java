@@ -28,7 +28,7 @@
 package org.miaixz.bus.http.accord.platform;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;

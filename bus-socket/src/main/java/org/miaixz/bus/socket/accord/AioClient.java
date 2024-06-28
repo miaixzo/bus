@@ -30,7 +30,7 @@ package org.miaixz.bus.socket.accord;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Protocol;
+import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.buffer.BufferFactory;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
@@ -57,6 +57,9 @@ import java.util.concurrent.TimeUnit;
  */
 public final class AioClient {
 
+    /**
+     * 健康检查
+     */
     private static final ScheduledExecutorService CONNECT_TIMEOUT_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
         Thread thread = new Thread(r, "connection-timeout-monitor");
         thread.setDaemon(true);
@@ -73,6 +76,9 @@ public final class AioClient {
      * @see TcpSession
      */
     private TcpSession session;
+    /**
+     * ByteBuffer内存池
+     */
     private BufferPagePool innerBufferPool = null;
     /**
      * IO事件处理线程组
@@ -99,13 +105,13 @@ public final class AioClient {
      *
      * @param host     远程服务器地址
      * @param port     远程服务器端口号
-     * @param protocol 协议编解码
+     * @param message 协议编解码
      * @param handler  消息处理器
      */
-    public <T> AioClient(String host, int port, Protocol<T> protocol, Handler<T> handler) {
+    public <T> AioClient(String host, int port, Message<T> message, Handler<T> handler) {
         context.setHost(host);
         context.setPort(port);
-        context.setProtocol(protocol);
+        context.setProtocol(message);
         context.setProcessor(handler);
     }
 

@@ -27,8 +27,11 @@
  */
 package org.miaixz.bus.storage;
 
-import lombok.Builder;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author Kimi Liu
@@ -36,7 +39,7 @@ import lombok.*;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Context {

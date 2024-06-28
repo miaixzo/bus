@@ -27,8 +27,9 @@
  */
 package org.miaixz.bus.base.advice;
 
-import org.miaixz.bus.base.normal.ErrorCode;
-import org.miaixz.bus.base.spring.Controller;
+import org.miaixz.bus.core.basics.advice.ErrorAdvice;
+import org.miaixz.bus.core.basics.normal.ErrorCode;
+import org.miaixz.bus.core.basics.spring.Controller;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.lang.exception.CrontabException;
@@ -136,7 +137,7 @@ public class BaseAdvice extends Controller {
     public Object crontabException(CrontabException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode.EM_100514);
+            return write(ErrorCode.EM_100600);
         }
         return write(e.getErrcode(), e.getErrmsg());
     }

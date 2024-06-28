@@ -30,8 +30,12 @@ package org.miaixz.bus.pay.metric;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PaymentException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -198,11 +202,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, data);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -219,11 +223,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = getTo(url, formMap, headerMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -240,11 +244,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -262,11 +266,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -285,7 +289,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static String post(String url, String data, String certPath, String certPass, String protocol) {
         try {
             if (StringKit.isEmpty(protocol)) {
-                protocol = Http.TLS_V_10;
+                protocol = Protocol.TLSv1.name;
             }
             Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
             final Request request = new Request.Builder()
@@ -311,8 +315,8 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
         try {
-            if (StringKit.isEmpty(Http.TLS_V_10)) {
-                protocol = Http.TLS_V_10;
+            if (StringKit.isEmpty(Protocol.TLSv1.name)) {
+                protocol = Protocol.TLSv1.name;
             }
             Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
             final Request request = new Request.Builder()
@@ -337,11 +341,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message put(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, data);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -384,7 +388,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @return {@link String}  请求返回的结果
      */
     public static String upload(String url, String data, String certPath, String certPass, String filePath) {
-        return upload(url, data, certPath, certPass, filePath, Http.TLS_V_10);
+        return upload(url, data, certPath, certPass, filePath, Protocol.TLSv1.name);
     }
 
     /**
@@ -609,11 +613,11 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, formMap);
-            Message message = new Message();
-            message.setBody(response.body().string());
-            message.setStatus(response.code());
-            message.setHeaders(response.headers().toMultimap());
-            return message;
+            return Message.builder()
+                    .body(response.body().string())
+                    .status(response.code())
+                    .headers(response.headers().toMultimap())
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

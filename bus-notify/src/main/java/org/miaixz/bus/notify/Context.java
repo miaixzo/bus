@@ -27,9 +27,11 @@
  */
 package org.miaixz.bus.notify;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 配置信息
@@ -39,7 +41,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Context {
 
     /**

@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.limiter;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
@@ -40,22 +40,27 @@ import org.miaixz.bus.core.lang.Normal;
  */
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Context {
 
     /**
      * 热点缓存默认时长
      */
+    @Builder.Default
     private int seconds = 60;
 
     /**
      * 是否启动日志
      */
+    @Builder.Default
     private boolean logger = true;
 
     /**
      * 用户标识提供者全限定类名
      */
+    @Builder.Default
     private String supplier = Normal.EMPTY;
 
 }

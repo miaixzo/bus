@@ -31,20 +31,18 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.http.Headers;
 
 import java.io.IOException;
 import java.util.*;
 
 /**
  * 读写HPACK v10.
- * <p>
  * 这个实现为动态表使用一个数组，为索引条目使用一个列表。
  * 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
  *
@@ -53,68 +51,68 @@ import java.util.*;
  */
 class Hpack {
 
-    static final Headers.Header[] STATIC_HEADER_TABLE = new Headers.Header[]{
-            new Headers.Header(Headers.Header.TARGET_AUTHORITY, Normal.EMPTY),
-            new Headers.Header(Headers.Header.TARGET_METHOD, Http.GET),
-            new Headers.Header(Headers.Header.TARGET_METHOD, Http.POST),
-            new Headers.Header(Headers.Header.TARGET_PATH, Symbol.SLASH),
-            new Headers.Header(Headers.Header.TARGET_PATH, "/index.html"),
-            new Headers.Header(Headers.Header.TARGET_SCHEME, Http.HTTP),
-            new Headers.Header(Headers.Header.TARGET_SCHEME, Http.HTTPS),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_OK)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NO_CONTENT)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_PARTIAL)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_MODIFIED)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_BAD_REQUEST)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_FOUND)),
-            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_INTERNAL_ERROR)),
-            new Headers.Header(Header.ACCEPT_CHARSET, Normal.EMPTY),
-            new Headers.Header(Header.ACCEPT_ENCODING, "gzip, deflate"),
-            new Headers.Header(Header.ACCEPT_LANGUAGE, Normal.EMPTY),
-            new Headers.Header(Header.ACCEPT_RANGES, Normal.EMPTY),
-            new Headers.Header(Header.ACCEPT, Normal.EMPTY),
-            new Headers.Header(Header.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
-            new Headers.Header(Header.AGE, Normal.EMPTY),
-            new Headers.Header(Header.ALLOW, Normal.EMPTY),
-            new Headers.Header(Header.AUTHORIZATION, Normal.EMPTY),
-            new Headers.Header(Header.CACHE_CONTROL, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_DISPOSITION, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_ENCODING, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_LANGUAGE, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_LENGTH, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_LOCATION, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_RANGE, Normal.EMPTY),
-            new Headers.Header(Header.CONTENT_TYPE, Normal.EMPTY),
-            new Headers.Header(Header.COOKIE, Normal.EMPTY),
-            new Headers.Header(Header.DATE, Normal.EMPTY),
-            new Headers.Header(Header.ETAG, Normal.EMPTY),
-            new Headers.Header(Header.EXPECT, Normal.EMPTY),
-            new Headers.Header(Header.EXPIRES, Normal.EMPTY),
-            new Headers.Header(Header.FROM, Normal.EMPTY),
-            new Headers.Header(Header.HOST, Normal.EMPTY),
-            new Headers.Header(Header.IF_MATCH, Normal.EMPTY),
-            new Headers.Header(Header.IF_MODIFIED_SINCE, Normal.EMPTY),
-            new Headers.Header(Header.IF_NONE_MATCH, Normal.EMPTY),
-            new Headers.Header(Header.IF_RANGE, Normal.EMPTY),
-            new Headers.Header(Header.IF_UNMODIFIED_SINCE, Normal.EMPTY),
-            new Headers.Header(Header.LAST_MODIFIED, Normal.EMPTY),
-            new Headers.Header(Header.LINK, Normal.EMPTY),
-            new Headers.Header(Header.LOCATION, Normal.EMPTY),
-            new Headers.Header(Header.MAX_FORWARDS, Normal.EMPTY),
-            new Headers.Header(Header.PROXY_AUTHENTICATE, Normal.EMPTY),
-            new Headers.Header(Header.PROXY_AUTHORIZATION, Normal.EMPTY),
-            new Headers.Header(Header.RANGE, Normal.EMPTY),
-            new Headers.Header(Header.REFERER, Normal.EMPTY),
-            new Headers.Header(Header.REFRESH, Normal.EMPTY),
-            new Headers.Header(Header.RETRY_AFTER, Normal.EMPTY),
-            new Headers.Header(Header.SERVER, Normal.EMPTY),
-            new Headers.Header(Header.SET_COOKIE, Normal.EMPTY),
-            new Headers.Header(Header.STRICT_TRANSPORT_SECURITY, Normal.EMPTY),
-            new Headers.Header(Header.TRANSFER_ENCODING, Normal.EMPTY),
-            new Headers.Header(Header.USER_AGENT, Normal.EMPTY),
-            new Headers.Header(Header.VARY, Normal.EMPTY),
-            new Headers.Header(Header.VIA, Normal.EMPTY),
-            new Headers.Header(Header.WWW_AUTHENTICATE, Normal.EMPTY)
+    static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[]{
+            new Http2Header(Http2Header.TARGET_AUTHORITY, Normal.EMPTY),
+            new Http2Header(Http2Header.TARGET_METHOD, HTTP.GET),
+            new Http2Header(Http2Header.TARGET_METHOD, HTTP.POST),
+            new Http2Header(Http2Header.TARGET_PATH, Symbol.SLASH),
+            new Http2Header(Http2Header.TARGET_PATH, "/index.html"),
+            new Http2Header(Http2Header.TARGET_SCHEME, Protocol.HTTP.name),
+            new Http2Header(Http2Header.TARGET_SCHEME, Protocol.HTTPS.name),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_OK)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NO_CONTENT)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_PARTIAL)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NOT_MODIFIED)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_BAD_REQUEST)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NOT_FOUND)),
+            new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_INTERNAL_ERROR)),
+            new Http2Header(HTTP.ACCEPT_CHARSET, Normal.EMPTY),
+            new Http2Header(HTTP.ACCEPT_ENCODING, "gzip, deflate"),
+            new Http2Header(HTTP.ACCEPT_LANGUAGE, Normal.EMPTY),
+            new Http2Header(HTTP.ACCEPT_RANGES, Normal.EMPTY),
+            new Http2Header(HTTP.ACCEPT, Normal.EMPTY),
+            new Http2Header(HTTP.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
+            new Http2Header(HTTP.AGE, Normal.EMPTY),
+            new Http2Header(HTTP.ALLOW, Normal.EMPTY),
+            new Http2Header(HTTP.AUTHORIZATION, Normal.EMPTY),
+            new Http2Header(HTTP.CACHE_CONTROL, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_DISPOSITION, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_ENCODING, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_LANGUAGE, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_LENGTH, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_LOCATION, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_RANGE, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_TYPE, Normal.EMPTY),
+            new Http2Header(HTTP.COOKIE, Normal.EMPTY),
+            new Http2Header(HTTP.DATE, Normal.EMPTY),
+            new Http2Header(HTTP.ETAG, Normal.EMPTY),
+            new Http2Header(HTTP.EXPECT, Normal.EMPTY),
+            new Http2Header(HTTP.EXPIRES, Normal.EMPTY),
+            new Http2Header(HTTP.FROM, Normal.EMPTY),
+            new Http2Header(HTTP.HOST, Normal.EMPTY),
+            new Http2Header(HTTP.IF_MATCH, Normal.EMPTY),
+            new Http2Header(HTTP.IF_MODIFIED_SINCE, Normal.EMPTY),
+            new Http2Header(HTTP.IF_NONE_MATCH, Normal.EMPTY),
+            new Http2Header(HTTP.IF_RANGE, Normal.EMPTY),
+            new Http2Header(HTTP.IF_UNMODIFIED_SINCE, Normal.EMPTY),
+            new Http2Header(HTTP.LAST_MODIFIED, Normal.EMPTY),
+            new Http2Header(HTTP.LINK, Normal.EMPTY),
+            new Http2Header(HTTP.LOCATION, Normal.EMPTY),
+            new Http2Header(HTTP.MAX_FORWARDS, Normal.EMPTY),
+            new Http2Header(HTTP.PROXY_AUTHENTICATE, Normal.EMPTY),
+            new Http2Header(HTTP.PROXY_AUTHORIZATION, Normal.EMPTY),
+            new Http2Header(HTTP.RANGE, Normal.EMPTY),
+            new Http2Header(HTTP.REFERER, Normal.EMPTY),
+            new Http2Header(HTTP.REFRESH, Normal.EMPTY),
+            new Http2Header(HTTP.RETRY_AFTER, Normal.EMPTY),
+            new Http2Header(HTTP.SERVER, Normal.EMPTY),
+            new Http2Header(HTTP.SET_COOKIE, Normal.EMPTY),
+            new Http2Header(HTTP.STRICT_TRANSPORT_SECURITY, Normal.EMPTY),
+            new Http2Header(HTTP.TRANSFER_ENCODING, Normal.EMPTY),
+            new Http2Header(HTTP.USER_AGENT, Normal.EMPTY),
+            new Http2Header(HTTP.VARY, Normal.EMPTY),
+            new Http2Header(HTTP.VIA, Normal.EMPTY),
+            new Http2Header(HTTP.WWW_AUTHENTICATE, Normal.EMPTY)
     };
     static final Map<ByteString, Integer> NAME_TO_FIRST_INDEX = nameToFirstIndex();
     private static final int PREFIX_4_BITS = 0x0f;
@@ -151,11 +149,11 @@ class Hpack {
 
     static class Reader {
 
-        private final List<Headers.Header> headerList = new ArrayList<>();
+        private final List<Http2Header> headerList = new ArrayList<>();
         private final BufferSource source;
 
         private final int headerTableSizeSetting;
-        Headers.Header[] dynamicTable = new Headers.Header[8];
+        Http2Header[] dynamicTable = new Http2Header[8];
         int nextHeaderIndex = dynamicTable.length - 1;
         int headerCount = 0;
         int dynamicTableByteCount = 0;
@@ -241,15 +239,15 @@ class Hpack {
             }
         }
 
-        public List<Headers.Header> getAndResetHeaderList() {
-            List<Headers.Header> result = new ArrayList<>(headerList);
+        public List<Http2Header> getAndResetHeaderList() {
+            List<Http2Header> result = new ArrayList<>(headerList);
             headerList.clear();
             return result;
         }
 
         private void readIndexedHeader(int index) throws IOException {
             if (isStaticHeader(index)) {
-                Headers.Header staticEntry = STATIC_HEADER_TABLE[index];
+                Http2Header staticEntry = STATIC_HEADER_TABLE[index];
                 headerList.add(staticEntry);
             } else {
                 int dynamicTableIndex = dynamicTableIndex(index - STATIC_HEADER_TABLE.length);
@@ -267,26 +265,26 @@ class Hpack {
         private void readLiteralHeaderWithoutIndexingIndexedName(int index) throws IOException {
             ByteString name = getName(index);
             ByteString value = readByteString();
-            headerList.add(new Headers.Header(name, value));
+            headerList.add(new Http2Header(name, value));
         }
 
         private void readLiteralHeaderWithoutIndexingNewName() throws IOException {
             ByteString name = checkLowercase(readByteString());
             ByteString value = readByteString();
-            headerList.add(new Headers.Header(name, value));
+            headerList.add(new Http2Header(name, value));
         }
 
         private void readLiteralHeaderWithIncrementalIndexingIndexedName(int nameIndex)
                 throws IOException {
             ByteString name = getName(nameIndex);
             ByteString value = readByteString();
-            insertIntoDynamicTable(-1, new Headers.Header(name, value));
+            insertIntoDynamicTable(-1, new Http2Header(name, value));
         }
 
         private void readLiteralHeaderWithIncrementalIndexingNewName() throws IOException {
             ByteString name = checkLowercase(readByteString());
             ByteString value = readByteString();
-            insertIntoDynamicTable(-1, new Headers.Header(name, value));
+            insertIntoDynamicTable(-1, new Http2Header(name, value));
         }
 
         private ByteString getName(int index) throws IOException {
@@ -309,7 +307,7 @@ class Hpack {
         /**
          * index == -1 when new.
          */
-        private void insertIntoDynamicTable(int index, Headers.Header entry) {
+        private void insertIntoDynamicTable(int index, Http2Header entry) {
             headerList.add(entry);
 
             int delta = entry.hpackSize;
@@ -329,7 +327,7 @@ class Hpack {
 
             if (index == -1) { // Adding a value to the dynamic table.
                 if (headerCount + 1 > dynamicTable.length) { // Need to grow the dynamic table.
-                    Headers.Header[] doubled = new Headers.Header[dynamicTable.length * 2];
+                    Http2Header[] doubled = new Http2Header[dynamicTable.length * 2];
                     System.arraycopy(dynamicTable, 0, doubled, dynamicTable.length, dynamicTable.length);
                     nextHeaderIndex = dynamicTable.length - 1;
                     dynamicTable = doubled;
@@ -401,7 +399,7 @@ class Hpack {
         int headerTableSizeSetting;
         int maxDynamicTableByteCount;
         // Visible for testing.
-        Headers.Header[] dynamicTable = new Headers.Header[8];
+        Http2Header[] dynamicTable = new Http2Header[8];
         // Array is populated back to front, so new entries always have lowest index.
         int nextHeaderIndex = dynamicTable.length - 1;
         int headerCount = 0;
@@ -452,7 +450,7 @@ class Hpack {
             return entriesToEvict;
         }
 
-        private void insertIntoDynamicTable(Headers.Header entry) {
+        private void insertIntoDynamicTable(Http2Header entry) {
             int delta = entry.hpackSize;
 
             // if the new or replacement header is too big, drop all entries.
@@ -466,7 +464,7 @@ class Hpack {
             evictToRecoverBytes(bytesToRecover);
 
             if (headerCount + 1 > dynamicTable.length) { // Need to grow the dynamic table.
-                Headers.Header[] doubled = new Headers.Header[dynamicTable.length * 2];
+                Http2Header[] doubled = new Http2Header[dynamicTable.length * 2];
                 System.arraycopy(dynamicTable, 0, doubled, dynamicTable.length, dynamicTable.length);
                 nextHeaderIndex = dynamicTable.length - 1;
                 dynamicTable = doubled;
@@ -480,7 +478,7 @@ class Hpack {
         /**
          * This does not use "never indexed" semantics for sensitive headers.
          */
-        void writeHeaders(List<Headers.Header> headerBlock) throws IOException {
+        void writeHeaders(List<Http2Header> headerBlock) throws IOException {
             if (emitDynamicTableSizeUpdate) {
                 if (smallestHeaderTableSizeSetting < maxDynamicTableByteCount) {
                     // Multiple dynamic table size updates!
@@ -492,7 +490,7 @@ class Hpack {
             }
 
             for (int i = 0, size = headerBlock.size(); i < size; i++) {
-                Headers.Header header = headerBlock.get(i);
+                Http2Header header = headerBlock.get(i);
                 ByteString name = header.name.toAsciiLowercase();
                 ByteString value = header.value;
                 int headerIndex = -1;
@@ -536,7 +534,7 @@ class Hpack {
                     writeByteString(name);
                     writeByteString(value);
                     insertIntoDynamicTable(header);
-                } else if (name.startsWith(Headers.Header.PSEUDO_PREFIX) && !Headers.Header.TARGET_AUTHORITY.equals(name)) {
+                } else if (name.startsWith(Http2Header.PSEUDO_PREFIX) && !Http2Header.TARGET_AUTHORITY.equals(name)) {
                     // Follow Chromes lead - only include the :authority pseudo header, but exclude all other
                     // pseudo headers. Literal Header Field without Indexing - Indexed Name.
                     writeInt(headerNameIndex, PREFIX_4_BITS, 0);

@@ -35,7 +35,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TerminalVersion {

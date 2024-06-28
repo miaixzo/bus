@@ -37,6 +37,7 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.cn.star.six.SixStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
@@ -125,21 +126,21 @@ public class LunarDay extends Loops {
             return fromYmd(month.getYear().getYear(), month.getMonthWithLeap(), day);
         }
         int d = day + n;
-        LunarMonth lm = month;
-        int daysInMonth = lm.getDayCount();
+        LunarMonth m = month;
+        int daysInMonth = m.getDayCount();
         boolean forward = n > 0;
         int add = forward ? 1 : -1;
         while (forward ? (d > daysInMonth) : (d <= 0)) {
             if (forward) {
                 d -= daysInMonth;
             }
-            lm = lm.next(add);
-            daysInMonth = lm.getDayCount();
+            m = m.next(add);
+            daysInMonth = m.getDayCount();
             if (!forward) {
                 d += daysInMonth;
             }
         }
-        return fromYmd(lm.getYear().getYear(), lm.getMonthWithLeap(), d);
+        return fromYmd(m.getYear().getYear(), m.getMonthWithLeap(), d);
     }
 
     /**
@@ -149,21 +150,19 @@ public class LunarDay extends Loops {
      * @return true/false
      */
     public boolean isBefore(LunarDay target) {
+        LunarMonth bMonth = target.getMonth();
         int aYear = month.getYear().getYear();
-        LunarMonth targetMonth = target.getMonth();
-        int bYear = targetMonth.getYear().getYear();
-        if (aYear == bYear) {
-            int aMonth = month.getMonth();
-            int bMonth = targetMonth.getMonth();
-            if (aMonth == bMonth) {
-                if (month.isLeap() && !targetMonth.isLeap()) {
-                    return false;
-                }
-                return day < target.getDay();
-            }
-            return aMonth < bMonth;
+        int bYear = bMonth.getYear().getYear();
+        if (aYear != bYear) {
+            return aYear < bYear;
         }
-        return aYear < bYear;
+        if (month.getMonth() != bMonth.getMonth()) {
+            return month.getMonth() < bMonth.getMonth();
+        }
+        if (month.isLeap() && !bMonth.isLeap()) {
+            return false;
+        }
+        return day < target.getDay();
     }
 
     /**
@@ -173,21 +172,19 @@ public class LunarDay extends Loops {
      * @return true/false
      */
     public boolean isAfter(LunarDay target) {
+        LunarMonth bMonth = target.getMonth();
         int aYear = month.getYear().getYear();
-        LunarMonth targetMonth = target.getMonth();
-        int bYear = targetMonth.getYear().getYear();
-        if (aYear == bYear) {
-            int aMonth = month.getMonth();
-            int bMonth = targetMonth.getMonth();
-            if (aMonth == bMonth) {
-                if (month.isLeap() && !targetMonth.isLeap()) {
-                    return true;
-                }
-                return day > target.getDay();
-            }
-            return aMonth > bMonth;
+        int bYear = bMonth.getYear().getYear();
+        if (aYear != bYear) {
+            return aYear > bYear;
         }
-        return aYear > bYear;
+        if (month.getMonth() != bMonth.getMonth()) {
+            return month.getMonth() > bMonth.getMonth();
+        }
+        if (month.isLeap() && !bMonth.isLeap()) {
+            return true;
+        }
+        return day > target.getDay();
     }
 
     /**
@@ -196,11 +193,11 @@ public class LunarDay extends Loops {
      * @return 星期
      */
     public Week getWeek() {
-        return getSolarDay().getJulianDay().getWeek();
+        return getSolarDay().getWeek();
     }
 
     /**
-     * 当天的年干支
+     * 当天的年干支（立春换）
      *
      * @return 干支
      */
@@ -224,7 +221,7 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 当天的月干支
+     * 当天的月干支（节气换）
      *
      * @return 干支
      */
@@ -306,10 +303,7 @@ public class LunarDay extends Loops {
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
-        if (index % 12 < 6) {
-            return Direction.fromIndex(new int[]{2, 8, 4, 6, 0}[index / 12]);
-        }
-        return month.getYear().getJupiterDirection();
+        return index % 12 < 6 ? Direction.fromIndex(new int[]{2, 8, 4, 6, 0}[index / 12]) : month.getYear().getJupiterDirection();
     }
 
     /**
@@ -328,6 +322,15 @@ public class LunarDay extends Loops {
      */
     public Phase getPhase() {
         return Phase.fromIndex(day - 1);
+    }
+
+    /**
+     * 六曜
+     *
+     * @return 六曜
+     */
+    public SixStar getSixStar() {
+        return SixStar.fromIndex((month.getMonth() + day - 2) % 6);
     }
 
     /**
@@ -354,9 +357,9 @@ public class LunarDay extends Loops {
      * @return 农历传统节日
      */
     public LunarFestival getFestival() {
-        LunarMonth m = getMonth();
-        return LunarFestival.fromYmd(m.getYear().getYear(), m.getMonthWithLeap(), day);
+        return LunarFestival.fromYmd(month.getYear().getYear(), month.getMonthWithLeap(), day);
     }
+
 
     @Override
     public boolean equals(Object o) {

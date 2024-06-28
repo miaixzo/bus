@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.data.Pid;
+import org.miaixz.bus.core.data.id.Pid;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;

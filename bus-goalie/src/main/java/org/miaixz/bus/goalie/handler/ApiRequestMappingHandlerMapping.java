@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 

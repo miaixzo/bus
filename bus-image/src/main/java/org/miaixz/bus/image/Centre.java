@@ -28,7 +28,10 @@
 package org.miaixz.bus.image;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.BooleanKit;
@@ -54,7 +57,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * @author Kimi Liu
  * @since Java 17+
  */
-@lombok.Builder
+@Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Centre {

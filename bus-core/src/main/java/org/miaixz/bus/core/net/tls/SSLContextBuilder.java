@@ -28,9 +28,8 @@
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.lang.Http;
-import org.miaixz.bus.core.lang.Protocol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -46,7 +45,6 @@ import java.util.Arrays;
  *     <li>{@link TrustManager}，默认{@link TrustAnyTrustManager}，即信任全部</li>
  *     <li>{@link SecureRandom}</li>
  * </ul>
- * <p>
  * 构建后可获得{@link SSLContext}，通过调用{@link SSLContext#getSocketFactory()}获取{@link javax.net.ssl.SSLSocketFactory}
  *
  * @author Kimi Liu
@@ -56,7 +54,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
 
     private static final long serialVersionUID = -1L;
 
-    private String protocol = Protocol.TLS;
+    private String protocol = Protocol.TLS.name;
     private KeyManager[] keyManagers;
     private TrustManager[] trustManagers = TrustAnyTrustManager.TRUST_ANYS;
     private SecureRandom secureRandom = new SecureRandom();
@@ -175,10 +173,10 @@ public class SSLContextBuilder implements Builder<SSLContext> {
 
     public static SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance(Http.TLS_V_13);
+            return SSLContext.getInstance(Protocol.TLSv1_3.name);
         } catch (NoSuchAlgorithmException e) {
             try {
-                return SSLContext.getInstance(Http.TLS);
+                return SSLContext.getInstance(Protocol.TLS.name);
             } catch (NoSuchAlgorithmException e2) {
                 throw new IllegalStateException("No TLS provider", e);
             }

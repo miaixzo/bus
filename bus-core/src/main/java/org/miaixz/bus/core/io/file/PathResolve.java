@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.*;
 import java.nio.file.*;
@@ -608,6 +609,33 @@ public class PathResolve {
      * @see Files#isSameFile(Path, Path)
      */
     public static boolean equals(final Path file1, final Path file2) throws InternalException {
+        // 两者都为null判定为相同
+        if (null == file1 || null == file2) {
+            return null == file1 && null == file2;
+        }
+
+        final boolean exists1 = exists(file1, false);
+        final boolean exists2 = exists(file2, false);
+
+
+        if (exists1 && exists2) {
+            return isSameFile(file1, file2);
+        }
+
+        return ObjectKit.equals(file1, file2);
+    }
+
+    /**
+     * 检查两个文件是否是同一个文件
+     * 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     *
+     * @param file1 文件1，必须存在
+     * @param file2 文件2，必须存在
+     * @return 是否相同
+     * @throws InternalException IO异常
+     * @see Files#isSameFile(Path, Path)
+     */
+    public static boolean isSameFile(final Path file1, final Path file2) throws InternalException {
         try {
             return Files.isSameFile(file1, file2);
         } catch (final IOException e) {

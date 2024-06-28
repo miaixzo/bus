@@ -55,7 +55,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 /**
- * {@link CharSequence} 相关工具类封装，包括但不限于：
+ * {@link CharSequence} 相关类封装，包括但不限于：
  * <ul>
  *     <li>字符串补充前缀或后缀：addXXX</li>
  *     <li>字符串补充长度：padXXX</li>
@@ -441,7 +441,7 @@ public class CharsBacker extends StringValidator {
      * @return 是否以指定字符串开头
      */
     public static boolean startWith(final CharSequence text, final CharSequence prefix, final boolean ignoreCase, final boolean ignoreEquals) {
-        return new StringMatcher(ignoreCase, ignoreEquals, true)
+        return new OffsetMatcher(ignoreCase, ignoreEquals, true)
                 .test(text, prefix);
     }
 
@@ -547,7 +547,7 @@ public class CharsBacker extends StringValidator {
      * @return 是否以指定字符串结尾
      */
     public static boolean endWith(final CharSequence text, final CharSequence suffix, final boolean ignoreCase, final boolean ignoreEquals) {
-        return new StringMatcher(ignoreCase, ignoreEquals, false)
+        return new OffsetMatcher(ignoreCase, ignoreEquals, false)
                 .test(text, suffix);
     }
 

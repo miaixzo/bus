@@ -28,7 +28,7 @@
 package org.miaixz.bus.http.accord.platform;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.secure.BasicCertificateChainCleaner;
 import org.miaixz.bus.http.secure.BasicTrustRootIndex;
 import org.miaixz.bus.http.secure.CertificateChainCleaner;

@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Issuer;
@@ -1203,7 +1203,7 @@ public class Device implements Serializable {
         if (null != ctx)
             return ctx;
 
-        ctx = SSLContext.getInstance(Http.TLS);
+        ctx = SSLContext.getInstance(Protocol.TLS.name);
         ctx.init(keyManagers(), trustManagers(), null);
         sslContext = ctx;
         return ctx;

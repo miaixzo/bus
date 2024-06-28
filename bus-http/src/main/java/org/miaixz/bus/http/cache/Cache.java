@@ -35,13 +35,16 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
+import org.miaixz.bus.http.UnoUrl;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.http.StatusLine;
@@ -175,7 +178,7 @@ public class Cache implements Closeable, Flushable {
     CacheRequest put(Response response) {
         String requestMethod = response.request().method();
 
-        if (Http.invalidatesCache(response.request().method())) {
+        if (HTTP.invalidatesCache(response.request().method())) {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
@@ -183,7 +186,7 @@ public class Cache implements Closeable, Flushable {
             }
             return null;
         }
-        if (!Http.GET.equals(requestMethod)) {
+        if (!HTTP.GET.equals(requestMethod)) {
             // 不要缓存非get响应。从技术上讲，我们可以缓存HEAD请求和POST请求，但是这样做的复杂性很高，好处很少
             return null;
         }
@@ -485,7 +488,7 @@ public class Cache implements Closeable, Flushable {
                     List<Certificate> localCertificates = readCertificateList(source);
                     TlsVersion tlsVersion = !source.exhausted()
                             ? TlsVersion.forJavaName(source.readUtf8LineStrict())
-                            : TlsVersion.SSL_3_0;
+                            : TlsVersion.SSLv3;
                     handshake = Handshake.get(tlsVersion, cipherSuite, peerCertificates, localCertificates);
                 } else {
                     handshake = null;
@@ -555,7 +558,7 @@ public class Cache implements Closeable, Flushable {
         }
 
         private boolean isHttps() {
-            return url.startsWith(Http.HTTPS_PREFIX);
+            return url.startsWith(Protocol.HTTPS_PREFIX);
         }
 
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {
@@ -600,8 +603,8 @@ public class Cache implements Closeable, Flushable {
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String mediaType = responseHeaders.get(Header.CONTENT_TYPE);
-            String length = responseHeaders.get(Header.CONTENT_LENGTH);
+            String mediaType = responseHeaders.get(HTTP.CONTENT_TYPE);
+            String length = responseHeaders.get(HTTP.CONTENT_LENGTH);
             Request request = new Request.Builder()
                     .url(url)
                     .method(requestMethod, null)

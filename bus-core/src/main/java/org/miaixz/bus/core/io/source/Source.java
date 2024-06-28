@@ -50,7 +50,7 @@ public interface Source extends Closeable {
      * @param sink      缓冲
      * @param byteCount 长度大小
      * @return the long
-     * @throws IOException {@link IOException} IOException.
+     * @throws IOException 异常
      */
     long read(Buffer sink, long byteCount) throws IOException;
 
@@ -65,7 +65,7 @@ public interface Source extends Closeable {
      * 关闭此源并释放此源持有的资源.
      * 读取闭源是一个错误。多次关闭源是安全的.
      *
-     * @throws IOException {@link IOException} IOException.
+     * @throws IOException 异常
      */
     @Override
     void close() throws IOException;

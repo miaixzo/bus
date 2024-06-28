@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.Material;
@@ -70,10 +71,8 @@ public class Connection implements Serializable {
     // 适应SunJSSE TLS应用程序数据长度16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
     public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2", "TLSv1.1", "TLSv1"};
-    private static final EnumMap<Protocol, TCPHandler> tcpHandlers =
-            new EnumMap<Protocol, TCPHandler>(Protocol.class);
-    private static final EnumMap<Protocol, UDPHandler> udpHandlers =
-            new EnumMap<Protocol, UDPHandler>(Protocol.class);
+    private static final EnumMap<Protocol, TCPHandler> tcpHandlers = new EnumMap<>(Protocol.class);
+    private static final EnumMap<Protocol, UDPHandler> udpHandlers = new EnumMap<>(Protocol.class);
 
     static {
         registerTCPProtocolHandler(Protocol.DICOM, AdvancedHandler.INSTANCE);
@@ -937,7 +936,7 @@ public class Connection implements Serializable {
             throw new IllegalStateException("Not attached to Device");
         if (isListening())
             throw new IllegalStateException("Already listening - " + listener);
-        if (protocol.isTCP()) {
+        if (protocol.isTcp()) {
             TCPHandler handler = tcpHandlers.get(protocol);
             if (null == handler) {
                 Logger.info("No TCP Protocol Handler for protocol {}", protocol);
@@ -980,7 +979,7 @@ public class Connection implements Serializable {
     public Socket connect(Connection remoteConn)
             throws IOException, InternalException, GeneralSecurityException {
         checkInstalled();
-        if (!protocol.isTCP())
+        if (!protocol.isTcp())
             throw new IllegalStateException("Not a TCP Connection");
         checkCompatible(remoteConn);
         SocketAddress bindPoint = getClientBindPoint();
@@ -1038,7 +1037,7 @@ public class Connection implements Serializable {
 
     public DatagramSocket createDatagramSocket() throws IOException {
         checkInstalled();
-        if (protocol.isTCP())
+        if (protocol.isTcp())
             throw new IllegalStateException("Not a UDP Connection");
 
         DatagramSocket ds = new DatagramSocket(getClientBindPoint());
@@ -1106,7 +1105,7 @@ public class Connection implements Serializable {
         if (remoteConn.protocol != protocol)
             return false;
 
-        if (!protocol.isTCP())
+        if (!protocol.isTcp())
             return true;
 
         if (!isTls())
@@ -1163,18 +1162,6 @@ public class Connection implements Serializable {
         setTlsProtocols(from.tlsProtocols);
         setBlacklist(from.blacklist);
         setInstalled(from.installed);
-    }
-
-    public enum Protocol {
-        DICOM, HL7, SYSLOG_TLS, SYSLOG_UDP, HTTP;
-
-        public boolean isTCP() {
-            return this != SYSLOG_UDP;
-        }
-
-        public boolean isSyslog() {
-            return this == SYSLOG_TLS || this == SYSLOG_UDP;
-        }
     }
 
     private static class HTTPResponse extends ByteArrayOutputStream {

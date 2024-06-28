@@ -146,7 +146,7 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      *                                  <li>当{@code annotation}包装的注解对象类型为{@code ResolvedAnnotationMapping}时抛出；</li>
      *                                  </ul>
      */
-    ResolvedAnnotationMapping(final ResolvedAnnotationMapping source, final Annotation annotation, final boolean resolveAttribute) {
+    public ResolvedAnnotationMapping(final ResolvedAnnotationMapping source, final Annotation annotation, final boolean resolveAttribute) {
         Objects.requireNonNull(annotation);
         Assert.isFalse(AnnotationMappingProxy.isProxied(annotation), "annotation has been proxied");
         Assert.isFalse(annotation instanceof ResolvedAnnotationMapping, "annotation has been wrapped");
@@ -200,6 +200,7 @@ public class ResolvedAnnotationMapping implements AnnotationMapping<Annotation> 
      * 解析属性
      */
     private boolean resolveAttributes() {
+        // TODO 支持处理@Ignore，被标记的属性无法被覆写，也不会被别名关联
         // 解析同一注解中的别名
         resolveAliasAttributes();
         // 使用子注解覆写当前注解中的属性

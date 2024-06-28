@@ -62,7 +62,7 @@ public enum Status {
     PROCESS_EXCEPTION,
     /**
      * 协议解码异常
-     * 执行{@link Protocol#decode(ByteBuffer, Session)}期间发生未捕获的异常
+     * 执行{@link Message#decode(ByteBuffer, Session)}期间发生未捕获的异常
      */
     DECODE_EXCEPTION,
     /**

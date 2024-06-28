@@ -44,7 +44,7 @@ import java.util.*;
  *     <li>求集合的差集</li>
  * </ul>
  *
- * @param <E> 集合元素类型
+ * @param <E> 元素类型
  * @author Kimi Liu
  * @since Java 17+
  */

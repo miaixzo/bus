@@ -27,8 +27,7 @@
  */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Exchange;
@@ -37,6 +36,7 @@ import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -70,7 +70,7 @@ public class RetryAndFollowUp implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Request request = chain.request();
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Transmitter transmitter = realChain.transmitter();
@@ -213,7 +213,7 @@ public class RetryAndFollowUp implements Interceptor {
 
         final String method = userResponse.request().method();
         switch (responseCode) {
-            case Http.HTTP_PROXY_AUTH:
+            case HTTP.HTTP_PROXY_AUTH:
                 Proxy selectedProxy = route != null
                         ? route.proxy()
                         : httpd.proxy();
@@ -222,25 +222,25 @@ public class RetryAndFollowUp implements Interceptor {
                 }
                 return httpd.proxyAuthenticator().authenticate(route, userResponse);
 
-            case Http.HTTP_UNAUTHORIZED:
+            case HTTP.HTTP_UNAUTHORIZED:
                 return httpd.authenticator().authenticate(route, userResponse);
 
-            case Http.HTTP_PERM_REDIRECT:
-            case Http.HTTP_TEMP_REDIRECT:
+            case HTTP.HTTP_PERM_REDIRECT:
+            case HTTP.HTTP_TEMP_REDIRECT:
                 // "If the 307 or 308 status code is received in response to a request other than GET
                 // or HEAD, the user agent MUST NOT automatically redirect the request"
                 if (!method.equals("GET") && !method.equals("HEAD")) {
                     return null;
                 }
                 // fall-through
-            case Http.HTTP_MULT_CHOICE:
-            case Http.HTTP_MOVED_PERM:
-            case Http.HTTP_MOVED_TEMP:
-            case Http.HTTP_SEE_OTHER:
+            case HTTP.HTTP_MULT_CHOICE:
+            case HTTP.HTTP_MOVED_PERM:
+            case HTTP.HTTP_MOVED_TEMP:
+            case HTTP.HTTP_SEE_OTHER:
                 // Does the client allow redirects?
                 if (!httpd.followRedirects()) return null;
 
-                String location = userResponse.header(Header.LOCATION);
+                String location = userResponse.header(HTTP.LOCATION);
                 if (null == location) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
@@ -253,18 +253,18 @@ public class RetryAndFollowUp implements Interceptor {
 
                 // Most redirects don't include a request body.
                 Request.Builder requestBuilder = userResponse.request().newBuilder();
-                if (Http.permitsRequestBody(method)) {
-                    final boolean maintainBody = Http.redirectsWithBody(method);
-                    if (Http.redirectsToGet(method)) {
+                if (HTTP.permitsRequestBody(method)) {
+                    final boolean maintainBody = HTTP.redirectsWithBody(method);
+                    if (HTTP.redirectsToGet(method)) {
                         requestBuilder.method("GET", null);
                     } else {
                         RequestBody requestBody = maintainBody ? userResponse.request().body() : null;
                         requestBuilder.method(method, requestBody);
                     }
                     if (!maintainBody) {
-                        requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
-                        requestBuilder.removeHeader(Header.CONTENT_LENGTH);
-                        requestBuilder.removeHeader(Header.CONTENT_TYPE);
+                        requestBuilder.removeHeader(HTTP.TRANSFER_ENCODING);
+                        requestBuilder.removeHeader(HTTP.CONTENT_LENGTH);
+                        requestBuilder.removeHeader(HTTP.CONTENT_TYPE);
                     }
                 }
 
@@ -277,7 +277,7 @@ public class RetryAndFollowUp implements Interceptor {
 
                 return requestBuilder.url(url).build();
 
-            case Http.HTTP_CLIENT_TIMEOUT:
+            case HTTP.HTTP_CLIENT_TIMEOUT:
                 // 408's are rare in practice, but some servers like HAProxy use this response code. The
                 // spec says that we may repeat the request without modifications. Modern browsers also
                 // repeat the request (even non-idempotent ones.)
@@ -292,7 +292,7 @@ public class RetryAndFollowUp implements Interceptor {
                 }
 
                 if (userResponse.priorResponse() != null
-                        && userResponse.priorResponse().code() == Http.HTTP_CLIENT_TIMEOUT) {
+                        && userResponse.priorResponse().code() == HTTP.HTTP_CLIENT_TIMEOUT) {
                     // We attempted to retry and got another timeout. Give up.
                     return null;
                 }
@@ -303,9 +303,9 @@ public class RetryAndFollowUp implements Interceptor {
 
                 return userResponse.request();
 
-            case Http.HTTP_UNAVAILABLE:
+            case HTTP.HTTP_UNAVAILABLE:
                 if (userResponse.priorResponse() != null
-                        && userResponse.priorResponse().code() == Http.HTTP_UNAVAILABLE) {
+                        && userResponse.priorResponse().code() == HTTP.HTTP_UNAVAILABLE) {
                     // We attempted to retry and got another timeout. Give up.
                     return null;
                 }

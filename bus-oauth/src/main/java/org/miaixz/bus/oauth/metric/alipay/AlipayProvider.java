@@ -36,16 +36,20 @@ import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Checker;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.oauth.magic.*;
+import org.miaixz.bus.oauth.magic.AccToken;
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
@@ -109,7 +113,7 @@ public class AlipayProvider extends AbstractProvider {
         }
 
         // 支付宝在创建回调地址时，不允许使用localhost或者127.0.0.1
-        if (Http.isLocalHost(context.getRedirectUri())) {
+        if (Protocol.isLocalHost(context.getRedirectUri())) {
             // The redirect uri of alipay is forbidden to use localhost or 127.0.0.1
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), Registry.ALIPAY);
         }

@@ -34,6 +34,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -43,7 +44,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
-import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;

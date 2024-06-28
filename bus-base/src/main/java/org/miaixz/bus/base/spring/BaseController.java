@@ -27,8 +27,12 @@
  */
 package org.miaixz.bus.base.spring;
 
-import org.miaixz.bus.base.normal.ErrorCode;
 import org.miaixz.bus.base.service.BaseService;
+import org.miaixz.bus.core.basics.normal.ErrorCode;
+import org.miaixz.bus.core.basics.spring.Controller;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.validate.magic.annotation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,11 +58,15 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Object add(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
+        String id = service.insertSelective(entity);
+        if (StringKit.isNotBlank(id)) {
+            return write(MapKit.of("id", id));
+        }
+        return write(ErrorCode.EM_100513);
     }
 
     /**
-     * 通用:删除数据
+     * 通用:逻辑删除
      *
      * @param entity 对象参数
      * @return 操作结果
@@ -66,8 +74,27 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public Object remove(T entity) {
-        service.deleteById(entity);
-        return write(ErrorCode.EM_SUCCESS);
+        int total = service.remove(entity);
+        if (total >= 0) {
+            return write(MapKit.of("total", total));
+        }
+        return write(ErrorCode.EM_100513);
+    }
+
+    /**
+     * 通用:物理删除
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Object delete(T entity) {
+        int total = service.delete(entity);
+        if (total >= 0) {
+            return write(MapKit.of("total", total));
+        }
+        return write(ErrorCode.EM_100513);
     }
 
     /**
@@ -79,7 +106,11 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Object update(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
+        int total = service.updateSelectiveById(entity);
+        if (total >= 0) {
+            return write(MapKit.of("total", total));
+        }
+        return write(ErrorCode.EM_100513);
     }
 
     /**
@@ -114,7 +145,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public Object page(T entity) {
+    public Object page(@Valid({"pageSize", "pageNo"}) T entity) {
         return write(service.page(entity));
     }
 

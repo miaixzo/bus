@@ -30,9 +30,9 @@ package org.miaixz.bus.goalie.metric;
 /**
  * 自定义错误码
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
-public class ErrorCode extends org.miaixz.bus.base.normal.ErrorCode {
+public class ErrorCode extends org.miaixz.bus.core.basics.normal.ErrorCode {
 
     /**
      * 没有API权限

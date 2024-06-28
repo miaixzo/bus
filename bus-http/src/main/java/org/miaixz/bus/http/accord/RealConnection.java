@@ -30,17 +30,17 @@ package org.miaixz.bus.http.accord;
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.metric.EventListener;
-import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.*;
 import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.Handshake;
@@ -421,19 +421,19 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             tunnelCodec.skipConnectBody(response);
 
             switch (response.code()) {
-                case Http.HTTP_OK:
+                case HTTP.HTTP_OK:
                     if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
                         throw new IOException("TLS tunnel buffered too many bytes!");
                     }
                     return null;
 
-                case Http.HTTP_PROXY_AUTH:
+                case HTTP.HTTP_PROXY_AUTH:
                     tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
                     if (null == tunnelRequest) {
                         throw new IOException("Failed to authenticate with proxy");
                     }
 
-                    if ("close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
+                    if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
                         return tunnelRequest;
                     }
                     break;
@@ -455,21 +455,21 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     private Request createTunnelRequest() throws IOException {
         Request proxyConnectRequest = new Request.Builder()
                 .url(route.address().url())
-                .method(Http.CONNECT, null)
-                .header(Header.HOST, Builder.hostHeader(route.address().url(), true))
-                .header(Header.PROXY_CONNECTION, Header.KEEP_ALIVE)
-                .header(Header.USER_AGENT, "Httpd/" + Version.all())
+                .method(HTTP.CONNECT, null)
+                .header(HTTP.HOST, Builder.hostHeader(route.address().url(), true))
+                .header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE)
+                .header(HTTP.USER_AGENT, "Httpd/" + Version.all())
                 .build();
 
         Response fakeAuthChallengeResponse = new Response.Builder()
                 .request(proxyConnectRequest)
                 .protocol(Protocol.HTTP_1_1)
-                .code(Http.HTTP_PROXY_AUTH)
+                .code(HTTP.HTTP_PROXY_AUTH)
                 .message("Preemptive Authenticate")
                 .body(Builder.EMPTY_RESPONSE)
                 .sentRequestAtMillis(-1L)
                 .receivedResponseAtMillis(-1L)
-                .header(Header.PROXY_AUTHENTICATE, Header.HTTPD_PREEMPTIVE)
+                .header(HTTP.PROXY_AUTHENTICATE, HTTP.HTTPD_PREEMPTIVE)
                 .build();
 
         Request authenticatedRequest = route.address().proxyAuthenticator()
@@ -555,7 +555,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         return true;
     }
 
-    HttpCodec newCodec(Httpd client, Interceptor.Chain chain) throws SocketException {
+    HttpCodec newCodec(Httpd client, NewChain chain) throws SocketException {
         if (http2Connection != null) {
             return new Http2Codec(client, this, chain, http2Connection);
         } else {
@@ -634,7 +634,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      */
     @Override
     public void onStream(Http2Stream stream) throws IOException {
-        stream.close(ErrorCode.REFUSED_STREAM, null);
+        stream.close(Http2ErrorCode.REFUSED_STREAM, null);
     }
 
     /**
@@ -668,15 +668,15 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         assert (!Thread.holdsLock(connectionPool));
         synchronized (connectionPool) {
             if (e instanceof StreamException) {
-                ErrorCode errorCode = ((StreamException) e).errorCode;
-                if (errorCode == ErrorCode.REFUSED_STREAM) {
+                Http2ErrorCode errorCode = ((StreamException) e).errorCode;
+                if (errorCode == Http2ErrorCode.REFUSED_STREAM) {
                     // Retry REFUSED_STREAM errors once on the same connection.
                     refusedStreamCount++;
                     if (refusedStreamCount > 1) {
                         noNewExchanges = true;
                         routeFailureCount++;
                     }
-                } else if (errorCode != ErrorCode.CANCEL) {
+                } else if (errorCode != Http2ErrorCode.CANCEL) {
                     // Keep the connection for CANCEL errors. Everything else wants a fresh connection.
                     noNewExchanges = true;
                     routeFailureCount++;

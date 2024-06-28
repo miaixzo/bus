@@ -44,8 +44,8 @@ public interface InsertMapper<T> {
     /**
      * 保存一个实体，null的属性也会保存，不会使用数据库默认值
      *
-     * @param record
-     * @return
+     * @param record 泛型对象
+     * @return the int 操作结果
      */
     @InsertProvider(type = BasicInsertProvider.class, method = "dynamicSQL")
     int insert(T record);

@@ -113,9 +113,6 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * <p>指定字符串数组中，是否包含空字符串。</p>
      * <p>如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。</p>
-     *
-     *
-     * <p>例：</p>
      * <ul>
      *     <li>{@code hasBlank()                  // true}</li>
      *     <li>{@code hasBlank("", null, " ")     // true}</li>
@@ -158,9 +155,6 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * <p>指定字符串数组中的元素，是否全部为空字符串。</p>
      * <p>如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。</p>
-     *
-     *
-     * <p>例：</p>
      * <ul>
      *     <li>{@code isAllBlank()                  // true}</li>
      *     <li>{@code isAllBlank("", null, " ")     // true}</li>
@@ -310,7 +304,7 @@ public class ArrayKit extends PrimitiveArray {
 
     /**
      * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * <p>如果提供的数组本身为空，则返回{@code true}</p>
+     * 如果提供的数组本身为空，则返回{@code true}
      *
      * @param <T>  元素类型
      * @param args 被检查的对象,一个或者多个

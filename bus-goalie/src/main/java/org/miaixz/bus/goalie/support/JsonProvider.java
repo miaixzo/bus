@@ -34,7 +34,7 @@ import org.miaixz.bus.goalie.Provider;
  * Json序列化
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public class JsonProvider implements Provider {
 

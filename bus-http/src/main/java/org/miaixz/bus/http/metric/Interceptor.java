@@ -27,13 +27,9 @@
  */
 package org.miaixz.bus.http.metric;
 
-import org.miaixz.bus.http.NewCall;
-import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
-import org.miaixz.bus.http.accord.Connection;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 观察、修改和潜在的短路请求，并返回相应的响应
@@ -44,38 +40,21 @@ import java.util.concurrent.TimeUnit;
  */
 public interface Interceptor {
 
-    Response intercept(Chain chain) throws IOException;
+    /**
+     * 网络请求拦截
+     *
+     * @param chain 网络调用链
+     * @return {@link Response}
+     * @throws IOException 异常
+     */
+    Response intercept(NewChain chain) throws IOException;
 
-    interface Chain {
+    /**
+     * 说明该拦截器实现的作用
+     * 方便其他业务场景或者服务使用，例如链路追踪等
+     */
+    default void instructions() {
 
-        /**
-         * @return 网络请求
-         */
-        Request request();
-
-        Response proceed(Request request) throws IOException;
-
-        /**
-         * 返回将执行请求的连接。这只在网络拦截器链中可用;
-         * 对于应用程序拦截器，这总是null
-         *
-         * @return 连接信息
-         */
-        Connection connection();
-
-        NewCall call();
-
-        int connectTimeoutMillis();
-
-        Chain withConnectTimeout(int timeout, TimeUnit unit);
-
-        int readTimeoutMillis();
-
-        Chain withReadTimeout(int timeout, TimeUnit unit);
-
-        int writeTimeoutMillis();
-
-        Chain withWriteTimeout(int timeout, TimeUnit unit);
     }
 
 }

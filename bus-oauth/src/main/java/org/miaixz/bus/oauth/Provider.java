@@ -27,11 +27,11 @@
  */
 package org.miaixz.bus.oauth;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
-import org.miaixz.bus.oauth.magic.Message;
 
 /**
  * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口

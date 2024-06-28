@@ -36,7 +36,6 @@ import java.util.ServiceConfigurationError;
 
 /**
  * 服务提供接口SPI（Service Provider interface）相关类
- * <p>
  * SPI机制中的服务加载工具类，流程如下
  *
  * <pre>

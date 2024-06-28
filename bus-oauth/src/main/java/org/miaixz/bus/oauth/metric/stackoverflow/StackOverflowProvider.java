@@ -31,9 +31,9 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -70,7 +70,7 @@ public class StackOverflowProvider extends AbstractProvider {
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         Map<String, String> header = new HashMap<>();
-        header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
         String response = Httpx.post(accessTokenUrl, form, header);
 
         JSONObject accessTokenObject = JSONObject.parseObject(response);

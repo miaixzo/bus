@@ -27,8 +27,10 @@
  */
 package org.miaixz.bus.notify.metric.huawei;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Material;
 
@@ -40,6 +42,8 @@ import org.miaixz.bus.notify.magic.Material;
  */
 @Getter
 @Setter
+@SuperBuilder
+@AllArgsConstructor
 public class HuaweiMaterial extends Material {
 
     /**
@@ -50,7 +54,5 @@ public class HuaweiMaterial extends Material {
     public String getUrl() {
         return this.url = "https://smsapi.cn-north-4.myhuaweicloud.com/sms/batchSendSms/v1/";
     }
-
-
 
 }

@@ -146,7 +146,7 @@ public class ClassKit {
      * 例如：ClassKit这个类
      *
      * <pre>
-     * isSimple为false: "reflect.core.org.miaixz.bus.ClassKit"
+     * isSimple为false: "org.miaixz.bus.ClassKit"
      * isSimple为true: "ClassKit"
      * </pre>
      *
@@ -808,7 +808,7 @@ public class ClassKit {
     }
 
     /**
-     * <p>按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口。
+     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口。
      * 类遍历顺序如下：
      * <ul>
      *     <li>离{@code type}距离越近，则顺序越靠前；</li>

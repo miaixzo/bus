@@ -27,15 +27,15 @@
  */
 package org.miaixz.bus.notify.metric.upyun;
 
-import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.util.Collection;
@@ -63,8 +63,8 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunMaterial, Context> {
         bodys.put("vars", StringKit.split(entity.getParams(), "|").toString());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(Header.AUTHORIZATION, entity.getToken());
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(HTTP.AUTHORIZATION, entity.getToken());
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
 
         Collection<UpyunMaterial.MessageId> list = JsonKit.toList(response, UpyunMaterial.MessageId.class);

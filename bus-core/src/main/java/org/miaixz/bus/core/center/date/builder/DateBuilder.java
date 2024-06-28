@@ -495,7 +495,7 @@ public final class DateBuilder {
      *
      * @return LocalDateTime 表示当前对象日期时间的LocalDateTime实例。
      */
-    LocalDateTime toLocalDateTime() {
+    public LocalDateTime toLocalDateTime() {
         this.prepare();
 
         // 如果unixsecond大于0，使用unix时间戳创建LocalDateTime
@@ -532,7 +532,7 @@ public final class DateBuilder {
      *
      * @return OffsetDateTime 表示当前时间的 OffsetDateTime 对象。
      */
-    OffsetDateTime toOffsetDateTime() {
+    public OffsetDateTime toOffsetDateTime() {
         // 准备工作，可能涉及一些初始化或数据处理
         this.prepare();
 

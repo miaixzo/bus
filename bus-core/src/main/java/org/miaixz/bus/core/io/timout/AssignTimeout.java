@@ -48,7 +48,7 @@ public class AssignTimeout extends Timeout {
     }
 
     /**
-     * {@link Timeout} instance to which this instance is currently delegating.
+     * {@link Timeout} 此实例当前正在委托给的实例
      */
     public final Timeout delegate() {
         return delegate;

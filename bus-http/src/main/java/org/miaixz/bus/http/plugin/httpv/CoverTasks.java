@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Callback;
 
 import java.io.File;
@@ -177,13 +177,13 @@ public class CoverTasks {
         private String toMediaType(String type) {
             if (type != null) {
                 String lower = type.toLowerCase();
-                if (lower.contains(Http.JSON)) {
+                if (lower.contains(HTTP.JSON)) {
                     return MediaType.APPLICATION_JSON;
                 }
-                if (lower.contains(Http.XML)) {
+                if (lower.contains(HTTP.XML)) {
                     return MediaType.APPLICATION_XML;
                 }
-                if (lower.contains(Http.PROTOBUF)) {
+                if (lower.contains(HTTP.PROTOBUF)) {
                     return MediaType.APPLICATION_PROTOBUF;
                 }
             }

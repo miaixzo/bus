@@ -28,14 +28,14 @@
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -56,7 +56,7 @@ public class CallServerInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Exchange exchange = realChain.exchange();
         Request request = realChain.request();
@@ -67,7 +67,7 @@ public class CallServerInterceptor implements Interceptor {
 
         boolean responseHeadersStarted = false;
         Response.Builder responseBuilder = null;
-        if (Http.permitsRequestBody(request.method()) && request.body() != null) {
+        if (HTTP.permitsRequestBody(request.method()) && request.body() != null) {
             // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
             // Continue" response before transmitting the request body. If we don't get that, return
             // what we did get (such as a 4xx response) without ever transmitting the request body.
@@ -148,8 +148,8 @@ public class CallServerInterceptor implements Interceptor {
                     .build();
         }
 
-        if ("close".equalsIgnoreCase(response.request().header(Header.CONNECTION))
-                || "close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
+        if ("close".equalsIgnoreCase(response.request().header(HTTP.CONNECTION))
+                || "close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
             exchange.noNewExchangesOnConnection();
         }
 

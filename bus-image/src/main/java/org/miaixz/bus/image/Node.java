@@ -29,8 +29,8 @@ package org.miaixz.bus.image;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.logger.Logger;
@@ -88,7 +88,7 @@ public class Node {
         } catch (UnknownHostException e) {
             Logger.error("Cannot resolve hostname", e);
         }
-        return StringKit.hasText(hostname) ? hostname : Http.HOST_IPV4;
+        return StringKit.hasText(hostname) ? hostname : Protocol.HOST_IPV4;
     }
 
     public static Node buildLocalDicomNode(Association as) {

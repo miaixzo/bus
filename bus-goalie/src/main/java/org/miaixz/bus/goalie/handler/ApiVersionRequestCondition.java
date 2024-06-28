@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVersionRequestCondition> {
 

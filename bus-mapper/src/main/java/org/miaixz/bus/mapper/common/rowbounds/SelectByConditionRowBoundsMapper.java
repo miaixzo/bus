@@ -49,7 +49,7 @@ public interface SelectByConditionRowBoundsMapper<T> {
      *
      * @param condition 条件
      * @param rowBounds RowBounds
-     * @return the list
+     * @return the list 操作结果
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     List<T> selectByConditionAndRowBounds(Object condition, RowBounds rowBounds);

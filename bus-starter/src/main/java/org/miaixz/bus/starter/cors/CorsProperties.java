@@ -29,8 +29,8 @@ package org.miaixz.bus.starter.cors;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -60,7 +60,7 @@ public class CorsProperties {
     /**
      * 允许的方法
      */
-    private String[] allowedMethods = new String[]{Http.GET, Http.POST, Http.PUT, Http.OPTIONS, Http.DELETE};
+    private String[] allowedMethods = new String[]{HTTP.GET, HTTP.POST, HTTP.PUT, HTTP.OPTIONS, HTTP.DELETE};
     /**
      * 响应头信息公开
      */

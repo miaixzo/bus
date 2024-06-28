@@ -44,8 +44,8 @@ public interface UpdateByPrimaryKeySelectiveMapper<T> {
     /**
      * 根据主键更新属性不为null的值
      *
-     * @param record
-     * @return
+     * @param record 泛型对象
+     * @return the int 操作结果
      */
     @UpdateProvider(type = BasicUpdateProvider.class, method = "dynamicSQL")
     int updateByPrimaryKeySelective(T record);

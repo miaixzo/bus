@@ -27,16 +27,16 @@
  */
 package org.miaixz.bus.notify.metric.aliyun;
 
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.magic.Material;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import javax.crypto.Mac;
@@ -101,7 +101,7 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
         }
         // 去除第一个多余的&符号
         String sortedQueryString = sortQueryStringTmp.substring(1);
-        String stringToSign = Http.GET + Symbol.AND +
+        String stringToSign = HTTP.GET + Symbol.AND +
                 specialUrlEncode(Symbol.SLASH) + Symbol.AND +
                 specialUrlEncode(sortedQueryString);
         return sign(stringToSign);

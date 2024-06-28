@@ -46,8 +46,8 @@ public interface SelectMapper<T> {
     /**
      * 根据实体中的属性值进行查询，查询条件使用等号
      *
-     * @param record
-     * @return
+     * @param record 泛型对象
+     * @return the list 操作结果
      */
     @SelectProvider(type = BasicSelectProvider.class, method = "dynamicSQL")
     List<T> select(T record);

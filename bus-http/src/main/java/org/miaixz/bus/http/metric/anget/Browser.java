@@ -59,11 +59,11 @@ public class Browser extends UserAgent {
             // 企业微信 企业微信使用微信浏览器内核,会包含 MicroMessenger 所以要放在前面
             new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),
             // 微信
-            new Browser("MicroMessenger", "MicroMessenger", "MicroMessenger\\/([\\d\\w\\.\\-]+)"),
+            new Browser("MicroMessenger", "MicroMessenger", OTHER_VERSION),
             // 微信小程序
-            new Browser("miniProgram", "miniProgram", "miniProgram\\/([\\d\\w\\.\\-]+)"),
+            new Browser("miniProgram", "miniProgram", OTHER_VERSION),
             // QQ浏览器
-            new Browser("QQBrowser", "MQQBrowser", "MQQBrowser\\/([\\d\\w\\.\\-]+)"),
+            new Browser("QQBrowser", "QQBrowser", "QQBrowser\\/([\\d\\w\\.\\-]+)"),
             // 钉钉PC端浏览器
             new Browser("DingTalk-win", "dingtalk-win", "DingTalk\\(([\\d\\w\\.\\-]+)\\)"),
             // 钉钉内置浏览器
@@ -73,13 +73,17 @@ public class Browser extends UserAgent {
             // 淘宝内置浏览器
             new Browser("Taobao", "taobao", "AliApp\\(TB\\/([\\d\\w\\.\\-]+)\\)"),
             // UC浏览器
-            new Browser("UCBrowser", "UCBrowser", "UCBrowser\\/([\\d\\w\\.\\-]+)"),
-            // Quark浏览器
-            new Browser("Quark", "Quark", "Quark\\/([\\d\\w\\.\\-]+)"),
-            // Lenovo浏览器
+            new Browser("UCBrowser", "UC?Browser", "UC?Browser\\/([\\d\\w\\.\\-]+)"),
+            // XiaoMi 浏览器
+            new Browser("MiuiBrowser", "MiuiBrowser|mibrowser", "MiuiBrowser\\/([\\d\\w\\.\\-]+)"),
+            // 夸克浏览器
+            new Browser("Quark", "Quark", OTHER_VERSION),
+            // 联想浏览器
             new Browser("Lenovo", "SLBrowser", "SLBrowser/([\\d\\w\\.\\-]+)"),
             new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
-            new Browser("Chrome", "chrome", OTHER_VERSION),
+            // issues I7OTCU
+            new Browser("Chrome", "chrome|(iphone.*crios.*safari)", "(?:Chrome|CriOS)\\/([\\d\\w\\.\\-]+)"),
+            //new Browser("Chrome", "chrome", Other_Version),
             new Browser("Firefox", "firefox", OTHER_VERSION),
             new Browser("IEMobile", "iemobile", OTHER_VERSION),
             new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"),
@@ -96,43 +100,60 @@ public class Browser extends UserAgent {
             new Browser("Evolution", "evolution", OTHER_VERSION),
             new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"),
             new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"),
-            new Browser("Gabble", "Gabble", "Gabble\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Gabble", "Gabble", OTHER_VERSION),
             new Browser("Yammer Desktop", "AdobeAir", "([\\d\\w\\.\\-]+)\\/Yammer"),
             new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"),
             new Browser("Apache HTTP Client", "Apache\\\\-HttpClient", "Apache\\-HttpClient\\/([\\d\\w\\.\\-]+)"),
             new Browser("BlackBerry", "BlackBerry", "BlackBerry[\\d]+\\/([\\d\\w\\.\\-]+)"),
-            // 小米浏览器
-            new Browser("MiuiBrowser", "MiuiBrowser|mibrowser", "MiuiBrowser\\/([\\d\\w\\.\\-]+)")
-
+            // issue#I847JY 百度浏览器
+            new Browser("Baidu", "Baidu", "baiduboxapp\\/([\\d\\w\\.\\-]+)")
     );
 
-    private Pattern versionPattern;
+    /**
+     * 匹配正则
+     */
+    private Pattern pattern;
 
     /**
      * 构造
      *
-     * @param name         浏览器名称
-     * @param regex        关键字或表达式
-     * @param versionRegex 匹配版本的正则
+     * @param name  浏览器名称
+     * @param rule  关键字或表达式
+     * @param regex 匹配版本的正则
      */
-    public Browser(String name, String regex, String versionRegex) {
-        super(name, regex);
-        if (OTHER_VERSION.equals(versionRegex)) {
-            versionRegex = name + versionRegex;
+    public Browser(final String name, final String rule, String regex) {
+        super(name, rule);
+        if (OTHER_VERSION.equals(regex)) {
+            regex = name + regex;
         }
-        if (null != versionRegex) {
-            this.versionPattern = Pattern.compile(versionRegex, Pattern.CASE_INSENSITIVE);
+        if (null != regex) {
+            this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         }
+    }
+
+
+    /**
+     * 添加自定义的浏览器类型
+     *
+     * @param name  浏览器名称
+     * @param rule  关键字或表达式
+     * @param regex 匹配版本的正则
+     */
+    synchronized public static void addCustomBrowser(final String name, final String rule, final String regex) {
+        BROWERS.add(new Browser(name, rule, regex));
     }
 
     /**
      * 获取浏览器版本
      *
-     * @param agentString User-Agent字符串
+     * @param text User-Agent字符串
      * @return 版本
      */
-    public String getVersion(String agentString) {
-        return PatternKit.getGroup1(this.versionPattern, agentString);
+    public String getVersion(final String text) {
+        if (isUnknown()) {
+            return null;
+        }
+        return PatternKit.getGroup1(this.pattern, text);
     }
 
     /**
@@ -141,7 +162,14 @@ public class Browser extends UserAgent {
      * @return 是否移动浏览器
      */
     public boolean isMobile() {
-        return "PSP".equals(this.getName());
+        final String name = this.getName();
+        return "PSP".equals(name) ||
+                "Yammer Mobile".equals(name) ||
+                "Android Browser".equals(name) ||
+                "IEMobile".equals(name) ||
+                "MicroMessenger".equals(name) ||
+                "miniProgram".equals(name) ||
+                "DingTalk".equals(name);
     }
 
 }

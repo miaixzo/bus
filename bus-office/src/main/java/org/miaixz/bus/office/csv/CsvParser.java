@@ -131,7 +131,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         if (lineNo < config.beginLineNo) {
             throw new IllegalStateException("No header available - call nextRow() first");
         }
-        return header.fields;
+        return header.getRaw();
     }
 
     @Override

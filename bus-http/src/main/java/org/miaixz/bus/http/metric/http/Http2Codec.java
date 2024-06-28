@@ -29,13 +29,13 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
-import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -55,29 +55,29 @@ public class Http2Codec implements HttpCodec {
      * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
      */
     private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
-            Header.CONNECTION,
-            Header.HOST,
-            Header.KEEP_ALIVE,
-            Header.PROXY_CONNECTION,
-            Header.TE,
-            Header.TRANSFER_ENCODING,
-            Header.ENCODING,
-            Header.UPGRADE,
-            Http.TARGET_METHOD_UTF8,
-            Http.TARGET_PATH_UTF8,
-            Http.TARGET_SCHEME_UTF8,
-            Http.TARGET_AUTHORITY_UTF8);
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
+            HTTP.UPGRADE,
+            HTTP.TARGET_METHOD_UTF8,
+            HTTP.TARGET_PATH_UTF8,
+            HTTP.TARGET_SCHEME_UTF8,
+            HTTP.TARGET_AUTHORITY_UTF8);
     private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
-            Header.CONNECTION,
-            Header.HOST,
-            Header.KEEP_ALIVE,
-            Header.PROXY_CONNECTION,
-            Header.TE,
-            Header.TRANSFER_ENCODING,
-            Header.ENCODING,
-            Header.UPGRADE);
+            HTTP.CONNECTION,
+            HTTP.HOST,
+            HTTP.KEEP_ALIVE,
+            HTTP.PROXY_CONNECTION,
+            HTTP.TE,
+            HTTP.TRANSFER_ENCODING,
+            HTTP.ENCODING,
+            HTTP.UPGRADE);
 
-    private final Interceptor.Chain chain;
+    private final NewChain chain;
     private final RealConnection realConnection;
     private final Http2Connection connection;
     private final Protocol protocol;
@@ -85,7 +85,7 @@ public class Http2Codec implements HttpCodec {
     private volatile boolean canceled;
 
     public Http2Codec(Httpd client, RealConnection realConnection,
-                      Interceptor.Chain chain, Http2Connection connection) {
+                      NewChain chain, Http2Connection connection) {
         this.realConnection = realConnection;
         this.chain = chain;
         this.connection = connection;
@@ -94,23 +94,23 @@ public class Http2Codec implements HttpCodec {
                 : Protocol.HTTP_2;
     }
 
-    public static List<Headers.Header> http2HeadersList(Request request) {
+    public static List<Http2Header> http2HeadersList(Request request) {
         Headers headers = request.headers();
-        List<Headers.Header> result = new ArrayList<>(headers.size() + 4);
-        result.add(new Headers.Header(Headers.Header.TARGET_METHOD, request.method()));
-        result.add(new Headers.Header(Headers.Header.TARGET_PATH, RequestLine.requestPath(request.url())));
+        List<Http2Header> result = new ArrayList<>(headers.size() + 4);
+        result.add(new Http2Header(Http2Header.TARGET_METHOD, request.method()));
+        result.add(new Http2Header(Http2Header.TARGET_PATH, RequestLine.requestPath(request.url())));
         String host = request.header("Host");
         if (host != null) {
-            result.add(new Headers.Header(Headers.Header.TARGET_AUTHORITY, host)); // Optional.
+            result.add(new Http2Header(Http2Header.TARGET_AUTHORITY, host)); // Optional.
         }
-        result.add(new Headers.Header(Headers.Header.TARGET_SCHEME, request.url().scheme()));
+        result.add(new Http2Header(Http2Header.TARGET_SCHEME, request.url().scheme()));
 
         for (int i = 0, size = headers.size(); i < size; i++) {
             // header names must be lowercase.
             String name = StringKit.upperFirst(headers.name(i));
-            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(Header.TE)
+            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(HTTP.TE)
                     && "trailers".equals(headers.value(i))) {
-                result.add(new Headers.Header(name, headers.value(i)));
+                result.add(new Http2Header(name, headers.value(i)));
             }
         }
         return result;
@@ -126,7 +126,7 @@ public class Http2Codec implements HttpCodec {
         for (int i = 0, size = headerBlock.size(); i < size; i++) {
             String name = headerBlock.name(i);
             String value = headerBlock.value(i);
-            if (name.equals(Http.RESPONSE_STATUS_UTF8)) {
+            if (name.equals(HTTP.RESPONSE_STATUS_UTF8)) {
                 statusLine = StatusLine.parse("HTTP/1.1 " + value);
             } else if (!HTTP_2_SKIPPED_RESPONSE_HEADERS.contains(name)) {
                 Internal.instance.addLenient(headersBuilder, name, value);
@@ -156,12 +156,12 @@ public class Http2Codec implements HttpCodec {
         if (stream != null) return;
 
         boolean hasRequestBody = request.body() != null;
-        List<Headers.Header> requestHeaders = http2HeadersList(request);
+        List<Http2Header> requestHeaders = http2HeadersList(request);
         stream = connection.newStream(requestHeaders, hasRequestBody);
         // We may have been asked to cancel while creating the new stream and sending the request
         // headers, but there was still no stream to close.
         if (canceled) {
-            stream.closeLater(ErrorCode.CANCEL);
+            stream.closeLater(Http2ErrorCode.CANCEL);
             throw new IOException("Canceled");
         }
         stream.readTimeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -182,7 +182,7 @@ public class Http2Codec implements HttpCodec {
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         Headers headers = stream.takeHeaders();
         Response.Builder responseBuilder = readHttp2HeadersList(headers, protocol);
-        if (expectContinue && Internal.instance.code(responseBuilder) == Http.HTTP_CONTINUE) {
+        if (expectContinue && Internal.instance.code(responseBuilder) == HTTP.HTTP_CONTINUE) {
             return null;
         }
         return responseBuilder;
@@ -206,7 +206,7 @@ public class Http2Codec implements HttpCodec {
     @Override
     public void cancel() {
         canceled = true;
-        if (stream != null) stream.closeLater(ErrorCode.CANCEL);
+        if (stream != null) stream.closeLater(Http2ErrorCode.CANCEL);
     }
 
 }

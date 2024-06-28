@@ -27,11 +27,12 @@
  */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 
 import java.io.IOException;
@@ -51,13 +52,13 @@ public class ConnectInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Request request = realChain.request();
         Transmitter transmitter = realChain.transmitter();
 
         // 我们需要网络来满足这个要求。可能用于验证条件GET
-        boolean doExtensiveHealthChecks = !Http.GET.equals(request.method());
+        boolean doExtensiveHealthChecks = !HTTP.GET.equals(request.method());
         Exchange exchange = transmitter.newExchange(chain, doExtensiveHealthChecks);
 
         return realChain.proceed(request, transmitter, exchange);

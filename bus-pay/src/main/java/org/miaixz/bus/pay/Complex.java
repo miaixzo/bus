@@ -27,7 +27,8 @@
  */
 package org.miaixz.bus.pay;
 
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public interface Complex {
      * @return the string
      */
     default String sandbox() {
-        return Http.HOST_IPV4;
+        return Protocol.HOST_IPV4;
     }
 
     /**
@@ -83,7 +84,7 @@ public interface Complex {
      * @return the string
      */
     default String service() {
-        return Http.HOST_IPV4;
+        return Protocol.HOST_IPV4;
     }
 
     /**
@@ -92,7 +93,7 @@ public interface Complex {
      * @return the string
      */
     default String method() {
-        return Http.NONE;
+        return HTTP.NONE;
     }
 
     /**

@@ -36,7 +36,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
@@ -81,7 +81,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         Assert.notBlank(this.context.getPrivateKey(), "[privateKey] not defined");
         Assert.notBlank(this.context.getPublicKey(), "[publicKey] not defined");
 
-        this.client = new DefaultAlipayClient(getUrl(), this.context.getAppId(), this.context.getPrivateKey(), Http.JSON,
+        this.client = new DefaultAlipayClient(getUrl(), this.context.getAppId(), this.context.getPrivateKey(), HTTP.JSON,
                 Charset.DEFAULT_UTF_8, this.context.getPublicKey(), Algorithm.RSA2.getValue());
     }
 

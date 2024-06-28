@@ -31,11 +31,10 @@ import org.bouncycastle.asn1.gm.GMObjectIdentifiers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.data.ID;
-import org.miaixz.bus.core.data.Snowflake;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -234,17 +233,6 @@ public class Builder {
     }
 
     /**
-     * 雪花算法
-     *
-     * @param workerId     终端ID
-     * @param dataCenterId 数据中心ID
-     * @return {@link Snowflake}
-     */
-    public static Snowflake getSnowflake(long workerId, long dataCenterId) {
-        return ID.getSnowflake(workerId, dataCenterId);
-    }
-
-    /**
      * 把所有元素排序
      *
      * @param params 需要排序并参与字符拼接的参数组
@@ -347,7 +335,7 @@ public class Builder {
     /**
      * 构造签名串
      *
-     * @param method    {@link org.miaixz.bus.core.lang.Http} GET,POST,PUT等
+     * @param method    {@link HTTP} GET,POST,PUT等
      * @param url       请求接口 /v3/certificates
      * @param timestamp 获取发起请求时的系统当前时间戳
      * @param nonceStr  随机字符串

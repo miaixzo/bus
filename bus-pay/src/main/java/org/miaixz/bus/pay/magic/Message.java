@@ -27,12 +27,15 @@
  */
 package org.miaixz.bus.pay.magic;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -44,29 +47,13 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message implements Serializable {
+public class Message extends org.miaixz.bus.core.basics.entity.Message {
 
     private static final long serialVersionUID = -1L;
-
-    /**
-     * 请求返回码,错误为具体返回码,正确为 0
-     */
-    public String errcode;
-
-    /**
-     * 请求返回消息
-     */
-    public String errmsg;
-
-    /**
-     * 请求返回数据 JSON
-     */
-    public Object data;
-
-
+    
     private String body;
     private byte[] bodyByte;
     private int status;

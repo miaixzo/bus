@@ -47,11 +47,11 @@ import java.util.concurrent.*;
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
+    private static final long serialVersionUID = -1L;
     /**
      * 默认的等待队列容量
      */
     public static final int DEFAULT_QUEUE_CAPACITY = Integer.MAX_VALUE;
-    private static final long serialVersionUID = -1L;
     /**
      * 初始池大小
      */

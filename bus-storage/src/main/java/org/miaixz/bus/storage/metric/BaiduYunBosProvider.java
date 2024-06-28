@@ -33,12 +33,12 @@ import com.baidubce.services.bos.BosClientConfiguration;
 import com.baidubce.services.bos.model.GetObjectRequest;
 import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
-import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;

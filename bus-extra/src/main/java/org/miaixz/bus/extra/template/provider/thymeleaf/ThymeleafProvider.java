@@ -32,6 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.*;
 
@@ -43,7 +44,7 @@ import org.thymeleaf.templateresolver.*;
  */
 public class ThymeleafProvider implements TemplateProvider {
 
-    org.thymeleaf.TemplateEngine engine;
+    TemplateEngine engine;
     TemplateConfig config;
 
     /**
@@ -64,9 +65,9 @@ public class ThymeleafProvider implements TemplateProvider {
     /**
      * 构造
      *
-     * @param engine {@link org.thymeleaf.TemplateEngine}
+     * @param engine {@link TemplateEngine}
      */
-    public ThymeleafProvider(final org.thymeleaf.TemplateEngine engine) {
+    public ThymeleafProvider(final TemplateEngine engine) {
         init(engine);
     }
 
@@ -76,7 +77,7 @@ public class ThymeleafProvider implements TemplateProvider {
      * @param config 模板配置
      * @return {@link TemplateProvider}
      */
-    private static org.thymeleaf.TemplateEngine createEngine(TemplateConfig config) {
+    private static TemplateEngine create(TemplateConfig config) {
         if (null == config) {
             config = new TemplateConfig();
         }
@@ -112,7 +113,7 @@ public class ThymeleafProvider implements TemplateProvider {
                 break;
         }
 
-        final org.thymeleaf.TemplateEngine engine = new org.thymeleaf.TemplateEngine();
+        final TemplateEngine engine = new TemplateEngine();
         engine.setTemplateResolver(resolver);
         return engine;
     }
@@ -123,7 +124,7 @@ public class ThymeleafProvider implements TemplateProvider {
             config = TemplateConfig.DEFAULT;
         }
         this.config = config;
-        init(createEngine(config));
+        init(create(config));
         return this;
     }
 
@@ -132,7 +133,7 @@ public class ThymeleafProvider implements TemplateProvider {
      *
      * @param engine 引擎
      */
-    private void init(final org.thymeleaf.TemplateEngine engine) {
+    private void init(final TemplateEngine engine) {
         this.engine = engine;
     }
 
@@ -147,10 +148,11 @@ public class ThymeleafProvider implements TemplateProvider {
     /**
      * 获取原始引擎的钩子方法，用于自定义特殊属性，如插件等
      *
-     * @return {@link org.thymeleaf.TemplateEngine}
+     * @return {@link TemplateEngine}
      */
     @Override
-    public org.thymeleaf.TemplateEngine getRaw() {
+    public TemplateEngine getRaw() {
         return this.engine;
     }
+
 }

@@ -29,12 +29,12 @@ package org.miaixz.bus.storage.metric;
 
 import com.UpYun;
 import com.upyun.UpException;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.IOException;

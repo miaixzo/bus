@@ -658,10 +658,7 @@ public class Galaxy {
         if (a - jd > 5) {
             return qiAccurate(w - d);
         }
-        if (a - jd < -5) {
-            return qiAccurate(w + d);
-        }
-        return a;
+        return a - jd < -5 ? qiAccurate(w + d) : a;
     }
 
 }

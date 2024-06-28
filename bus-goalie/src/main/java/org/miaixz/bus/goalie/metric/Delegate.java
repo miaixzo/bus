@@ -29,9 +29,9 @@ package org.miaixz.bus.goalie.metric;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.base.entity.Message;
-import org.miaixz.bus.base.entity.OAuth2;
-import org.miaixz.bus.base.normal.Consts;
+import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basics.entity.OAuth2;
+import org.miaixz.bus.core.basics.normal.Consts;
 
 /**
  * 认证及委托处理

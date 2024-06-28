@@ -27,8 +27,7 @@
  */
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;
@@ -73,22 +72,22 @@ public class CacheStrategy {
     public static boolean isCacheable(Response response, Request request) {
         // 总是去网络获取非缓存的响应代码(RFC 7231 section 6.1)，这个实现不支持缓存部分内容
         switch (response.code()) {
-            case Http.HTTP_OK:
-            case Http.HTTP_NOT_AUTHORITATIVE:
-            case Http.HTTP_NO_CONTENT:
-            case Http.HTTP_MULT_CHOICE:
-            case Http.HTTP_MOVED_PERM:
-            case Http.HTTP_NOT_FOUND:
-            case Http.HTTP_BAD_METHOD:
-            case Http.HTTP_GONE:
-            case Http.HTTP_REQ_TOO_LONG:
-            case Http.HTTP_NOT_IMPLEMENTED:
-            case Http.HTTP_PERM_REDIRECT:
+            case HTTP.HTTP_OK:
+            case HTTP.HTTP_NOT_AUTHORITATIVE:
+            case HTTP.HTTP_NO_CONTENT:
+            case HTTP.HTTP_MULT_CHOICE:
+            case HTTP.HTTP_MOVED_PERM:
+            case HTTP.HTTP_NOT_FOUND:
+            case HTTP.HTTP_BAD_METHOD:
+            case HTTP.HTTP_GONE:
+            case HTTP.HTTP_REQ_TOO_LONG:
+            case HTTP.HTTP_NOT_IMPLEMENTED:
+            case HTTP.HTTP_PERM_REDIRECT:
                 // 这些代码可以被缓存，除非标头禁止
                 break;
-            case Http.HTTP_MOVED_TEMP:
-            case Http.HTTP_TEMP_REDIRECT:
-                if (null != response.header(Header.EXPIRES)
+            case HTTP.HTTP_MOVED_TEMP:
+            case HTTP.HTTP_TEMP_REDIRECT:
+                if (null != response.header(HTTP.EXPIRES)
                         || response.cacheControl().maxAgeSeconds() != -1
                         || response.cacheControl().isPublic()
                         || response.cacheControl().isPrivate()) {
@@ -183,7 +182,7 @@ public class CacheStrategy {
          * @return the true/false
          */
         private static boolean hasConditions(Request request) {
-            return null != request.header(Header.IF_MODIFIED_SINCE) || null != request.header(Header.IF_NONE_MATCH);
+            return null != request.header(HTTP.IF_MODIFIED_SINCE) || null != request.header(HTTP.IF_NONE_MATCH);
         }
 
         /**

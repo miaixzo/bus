@@ -31,7 +31,7 @@ package org.miaixz.bus.goalie;
  * 数据序列化
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public interface Provider {
 

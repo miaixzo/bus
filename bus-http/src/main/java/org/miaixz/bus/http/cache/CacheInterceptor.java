@@ -33,14 +33,18 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.Builder;
+import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.RealResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 
 import java.io.IOException;
@@ -106,14 +110,14 @@ public class CacheInterceptor implements Interceptor {
      * @return the true/false
      */
     static boolean isEndToEnd(String fieldName) {
-        return !Header.CONNECTION.equalsIgnoreCase(fieldName)
-                && !Header.KEEP_ALIVE.equalsIgnoreCase(fieldName)
-                && !Header.PROXY_AUTHENTICATE.equalsIgnoreCase(fieldName)
-                && !Header.PROXY_AUTHORIZATION.equalsIgnoreCase(fieldName)
-                && !Header.TE.equalsIgnoreCase(fieldName)
-                && !Header.TRAILERS.equalsIgnoreCase(fieldName)
-                && !Header.TRANSFER_ENCODING.equalsIgnoreCase(fieldName)
-                && !Header.UPGRADE.equalsIgnoreCase(fieldName);
+        return !HTTP.CONNECTION.equalsIgnoreCase(fieldName)
+                && !HTTP.KEEP_ALIVE.equalsIgnoreCase(fieldName)
+                && !HTTP.PROXY_AUTHENTICATE.equalsIgnoreCase(fieldName)
+                && !HTTP.PROXY_AUTHORIZATION.equalsIgnoreCase(fieldName)
+                && !HTTP.TE.equalsIgnoreCase(fieldName)
+                && !HTTP.TRAILERS.equalsIgnoreCase(fieldName)
+                && !HTTP.TRANSFER_ENCODING.equalsIgnoreCase(fieldName)
+                && !HTTP.UPGRADE.equalsIgnoreCase(fieldName);
     }
 
     /**
@@ -123,13 +127,13 @@ public class CacheInterceptor implements Interceptor {
      * @return the true/false
      */
     static boolean isContentSpecificHeader(String fieldName) {
-        return Header.CONTENT_LENGTH.equalsIgnoreCase(fieldName)
-                || Header.CONTENT_ENCODING.equalsIgnoreCase(fieldName)
-                || Header.CONTENT_TYPE.equalsIgnoreCase(fieldName);
+        return HTTP.CONTENT_LENGTH.equalsIgnoreCase(fieldName)
+                || HTTP.CONTENT_ENCODING.equalsIgnoreCase(fieldName)
+                || HTTP.CONTENT_TYPE.equalsIgnoreCase(fieldName);
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Response cacheCandidate = null != cache
                 ? cache.get(chain.request())
                 : null;
@@ -181,7 +185,7 @@ public class CacheInterceptor implements Interceptor {
 
         // 如果我们也有缓存响应，那么在做一个条件get
         if (null != cacheResponse) {
-            if (networkResponse.code() == Http.HTTP_NOT_MODIFIED) {
+            if (networkResponse.code() == HTTP.HTTP_NOT_MODIFIED) {
                 Response response = cacheResponse.newBuilder()
                         .headers(combine(cacheResponse.headers(), networkResponse.headers()))
                         .sentRequestAtMillis(networkResponse.sentRequestAtMillis())
@@ -212,7 +216,7 @@ public class CacheInterceptor implements Interceptor {
                 return cacheWritingResponse(cacheRequest, response);
             }
 
-            if (Http.invalidatesCache(networkRequest.method())) {
+            if (HTTP.invalidatesCache(networkRequest.method())) {
                 try {
                     cache.remove(networkRequest);
                 } catch (IOException ignored) {
@@ -294,7 +298,7 @@ public class CacheInterceptor implements Interceptor {
             }
         };
 
-        String mediaType = response.header(Header.CONTENT_TYPE);
+        String mediaType = response.header(HTTP.CONTENT_TYPE);
         long contentLength = response.body().length();
         return response.newBuilder()
                 .body(new RealResponseBody(mediaType, contentLength, IoKit.buffer(cacheWritingSource)))

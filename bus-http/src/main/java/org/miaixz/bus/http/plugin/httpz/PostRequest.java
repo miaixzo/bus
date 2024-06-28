@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Headers;
@@ -85,8 +85,8 @@ public class PostRequest extends HttpRequest {
             return builder.build();
         } else if (null != body && body.length() > 0) {
             MediaType mediaType;
-            if (headers.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
+            if (headers.containsKey(HTTP.CONTENT_TYPE)) {
+                mediaType = MediaType.valueOf(headers.get(HTTP.CONTENT_TYPE));
             } else {
                 mediaType = MediaType.TEXT_PLAIN_TYPE;
             }
@@ -114,7 +114,7 @@ public class PostRequest extends HttpRequest {
 
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+            params.forEach((k, v) -> builder.addPart(Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
                     RequestBody.create(null, v)));
         }
     }

@@ -80,7 +80,7 @@ public class FreemarkerProvider implements TemplateProvider {
      * @param config 模板配置
      * @return {@link Configuration }
      */
-    private static Configuration createCfg(TemplateConfig config) {
+    private static Configuration create(TemplateConfig config) {
         if (null == config) {
             config = new TemplateConfig();
         }
@@ -122,7 +122,7 @@ public class FreemarkerProvider implements TemplateProvider {
         if (null == config) {
             config = TemplateConfig.DEFAULT;
         }
-        init(createCfg(config));
+        init(create(config));
         return this;
     }
 

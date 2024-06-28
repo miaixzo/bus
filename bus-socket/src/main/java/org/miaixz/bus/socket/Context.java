@@ -77,9 +77,9 @@ public final class Context {
      */
     private Handler processor;
     /**
-     * 协议编解码
+     * 消息编解码
      */
-    private Protocol protocol;
+    private Message message;
 
     /**
      * Socket 配置
@@ -144,12 +144,12 @@ public final class Context {
         return monitor;
     }
 
-    public Protocol getProtocol() {
-        return protocol;
+    public Message getProtocol() {
+        return message;
     }
 
-    public void setProtocol(Protocol protocol) {
-        this.protocol = protocol;
+    public void setProtocol(Message message) {
+        this.message = message;
     }
 
     public Handler getProcessor() {
@@ -233,7 +233,7 @@ public final class Context {
                 ", port=" + port +
                 ", backlog=" + backlog +
                 ", processor=" + processor +
-                ", protocol=" + protocol +
+                ", protocol=" + message +
                 ", socketOptions=" + socketOptions +
                 ", threadNum=" + threadNum +
                 ", bufferFactory=" + bufferFactory +

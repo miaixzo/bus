@@ -47,7 +47,7 @@ public interface SelectByIdsMapper<T> {
      * 根据主键字符串进行查询，类中只有存在一个带有@Id注解的字段
      *
      * @param ids 如 "1,2,3,4"
-     * @return the int
+     * @return the int 操作结果
      */
     @SelectProvider(type = IdsProvider.class, method = "dynamicSQL")
     List<T> selectByIds(String ids);

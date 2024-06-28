@@ -27,10 +27,9 @@
  */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.cache.CacheControl;
 
@@ -233,24 +232,24 @@ public class Request {
          */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
-            if (value.isEmpty()) return removeHeader(Header.CACHE_CONTROL);
-            return header(Header.CACHE_CONTROL, value);
+            if (value.isEmpty()) return removeHeader(HTTP.CACHE_CONTROL);
+            return header(HTTP.CACHE_CONTROL, value);
         }
 
         public Builder get() {
-            return method(Http.GET, null);
+            return method(HTTP.GET, null);
         }
 
         public Builder head() {
-            return method(Http.HEAD, null);
+            return method(HTTP.HEAD, null);
         }
 
         public Builder post(RequestBody body) {
-            return method(Http.POST, body);
+            return method(HTTP.POST, body);
         }
 
         public Builder delete(RequestBody body) {
-            return method(Http.DELETE, body);
+            return method(HTTP.DELETE, body);
         }
 
         public Builder delete() {
@@ -258,20 +257,20 @@ public class Request {
         }
 
         public Builder put(RequestBody body) {
-            return method(Http.PUT, body);
+            return method(HTTP.PUT, body);
         }
 
         public Builder patch(RequestBody body) {
-            return method(Http.PATCH, body);
+            return method(HTTP.PATCH, body);
         }
 
         public Builder method(String method, RequestBody body) {
             if (null == method) throw new NullPointerException("method == null");
             if (method.length() == 0) throw new IllegalArgumentException("method.length() == 0");
-            if (body != null && !Http.permitsRequestBody(method)) {
+            if (body != null && !HTTP.permitsRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must not have a request body.");
             }
-            if (body == null && Http.requiresRequestBody(method)) {
+            if (body == null && HTTP.requiresRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must have a request body.");
             }
             this.method = method;

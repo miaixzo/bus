@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
 
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public class WebApplication {
     }
 
     public void addConnection(Connection conn) {
-        if (conn.getProtocol() != Connection.Protocol.HTTP)
+        if (conn.getProtocol() != Protocol.HTTP)
             throw new IllegalArgumentException(
                     "Web Application does not support protocol " + conn.getProtocol());
         if (null != device && device != conn.getDevice())
@@ -178,7 +178,7 @@ public class WebApplication {
 
     public StringBuilder getServiceURL(Connection conn) {
         return new StringBuilder(Normal._64)
-                .append(conn.isTls() ? Http.HTTPS_PREFIX : Http.HTTP_PREFIX)
+                .append(conn.isTls() ? Protocol.HTTPS_PREFIX : Protocol.HTTP_PREFIX)
                 .append(conn.getHostname())
                 .append(Symbol.C_COLON)
                 .append(conn.getPort())

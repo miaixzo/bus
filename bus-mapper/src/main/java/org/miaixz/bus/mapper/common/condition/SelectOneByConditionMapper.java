@@ -45,7 +45,7 @@ public interface SelectOneByConditionMapper<T> {
      * 根据Condition条件进行查询
      *
      * @param condition 条件
-     * @return the object
+     * @return the object 操作结果
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     T selectOneByCondition(Object condition);

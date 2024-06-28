@@ -45,9 +45,7 @@ public class HL7ApplicationExtension implements Serializable {
 
     public void setHL7Application(HL7Application hl7App) {
         if (null != hl7App && null != this.hl7App)
-            throw new IllegalStateException(
-                    "already owned by HL7 Application: "
-                            + hl7App.getApplicationName());
+            throw new IllegalStateException("already owned by HL7 Application: " + hl7App.getApplicationName());
         this.hl7App = hl7App;
     }
 

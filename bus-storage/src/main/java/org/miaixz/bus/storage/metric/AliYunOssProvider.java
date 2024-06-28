@@ -31,6 +31,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.model.*;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,7 +39,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
-import org.miaixz.bus.storage.magic.Message;
 
 import java.io.*;
 import java.nio.file.Path;

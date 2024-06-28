@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.http.metric;
 
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.ConnectionPool;

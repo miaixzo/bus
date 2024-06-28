@@ -27,8 +27,11 @@
  */
 package org.miaixz.bus.http.metric.anget;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.util.regex.Pattern;
 
@@ -38,6 +41,8 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@Setter
 public class UserAgent {
 
     /**
@@ -51,11 +56,11 @@ public class UserAgent {
     /**
      * 平台类型
      */
-    private Divice divice;
+    private Device device;
     /**
      * 系统类型
      */
-    private NOS NOS;
+    private NOS nos;
     /**
      * 引擎类型
      */
@@ -81,6 +86,7 @@ public class UserAgent {
      * 构造
      */
     public UserAgent() {
+
     }
 
     /**
@@ -105,147 +111,44 @@ public class UserAgent {
     }
 
     /**
-     * 是否为移动平台
+     * 解析User-Agent
      *
-     * @return 是否为移动平台
+     * @param text User-Agent字符串
+     * @return {@link UserAgent}
      */
-    public boolean isMobile() {
-        return mobile;
-    }
+    public static UserAgent parse(final String text) {
+        if (StringKit.isBlank(text)) {
+            return null;
+        }
+        final UserAgent userAgent = new UserAgent();
 
-    /**
-     * 设置是否为移动平台
-     *
-     * @param mobile 是否为移动平台
-     */
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
+        // 浏览器
+        final Browser browser = parseBrowser(text);
+        userAgent.setBrowser(browser);
+        userAgent.setVersion(browser.getVersion(text));
 
-    /**
-     * 获取浏览器类型
-     *
-     * @return 浏览器类型
-     */
-    public Browser getBrowser() {
-        return browser;
-    }
+        // 浏览器引擎
+        final Engine engine = parseEngine(text);
+        userAgent.setEngine(engine);
+        userAgent.setEngineVersion(engine.getVersion(text));
 
-    /**
-     * 设置浏览器类型
-     *
-     * @param browser 浏览器类型
-     */
-    public void setBrowser(Browser browser) {
-        this.browser = browser;
-    }
+        // 操作系统
+        final NOS os = parseNOS(text);
+        userAgent.setNos(os);
+        userAgent.setVersion(os.getVersion(text));
 
-    /**
-     * 获取平台类型
-     *
-     * @return 平台类型
-     */
-    public Divice getDivice() {
-        return divice;
-    }
+        // 设备信息
+        final Device device = parseDevice(text);
+        userAgent.setDevice(device);
 
-    /**
-     * 设置平台类型
-     *
-     * @param divice 平台类型
-     */
-    public void setDivice(Divice divice) {
-        this.divice = divice;
-    }
+        // MacOS 下的微信不属于移动平台
+        if (device.isMobile() || browser.isMobile()) {
+            if (false == os.isMacOS()) {
+                userAgent.setMobile(true);
+            }
+        }
 
-    /**
-     * 获取系统类型
-     *
-     * @return 系统类型
-     */
-    public NOS getNOS() {
-        return NOS;
-    }
-
-    /**
-     * 设置系统类型
-     *
-     * @param NOS 系统类型
-     */
-    public void setNOS(NOS NOS) {
-        this.NOS = NOS;
-    }
-
-    /**
-     * 获取引擎类型
-     *
-     * @return 引擎类型
-     */
-    public Engine getEngine() {
-        return engine;
-    }
-
-    /**
-     * 设置引擎类型
-     *
-     * @param engine 引擎类型
-     */
-    public void setEngine(Engine engine) {
-        this.engine = engine;
-    }
-
-    /**
-     * 获取浏览器版本
-     *
-     * @return 浏览器版本
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * 设置浏览器版本
-     *
-     * @param version 浏览器版本
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
-     * 获取引擎版本
-     *
-     * @return 引擎版本
-     */
-    public String getEngineVersion() {
-        return engineVersion;
-    }
-
-    /**
-     * 设置引擎版本
-     *
-     * @param engineVersion 引擎版本
-     */
-    public void setEngineVersion(String engineVersion) {
-        this.engineVersion = engineVersion;
-    }
-
-    /**
-     * 获取信息名称
-     *
-     * @return 信息名称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 获取匹配模式
-     *
-     * @return 匹配模式
-     */
-    public Pattern getPattern() {
-        return pattern;
+        return userAgent;
     }
 
     /**
@@ -295,6 +198,66 @@ public class UserAgent {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    /**
+     * 解析浏览器类型
+     *
+     * @param text User-Agent字符串
+     * @return 浏览器类型
+     */
+    private static Browser parseBrowser(final String text) {
+        for (final Browser browser : Browser.BROWERS) {
+            if (browser.isMatch(text)) {
+                return browser;
+            }
+        }
+        return Browser.UNKNOWN;
+    }
+
+    /**
+     * 解析引擎类型
+     *
+     * @param text User-Agent字符串
+     * @return 引擎类型
+     */
+    private static Engine parseEngine(final String text) {
+        for (final Engine engine : Engine.ENGINES) {
+            if (engine.isMatch(text)) {
+                return engine;
+            }
+        }
+        return Engine.UNKNOWN;
+    }
+
+    /**
+     * 解析系统类型
+     *
+     * @param text User-Agent字符串
+     * @return 系统类型
+     */
+    private static NOS parseNOS(final String text) {
+        for (final NOS os : NOS.NOS) {
+            if (os.isMatch(text)) {
+                return os;
+            }
+        }
+        return NOS.UNKNOWN;
+    }
+
+    /**
+     * 解析平台类型
+     *
+     * @param text User-Agent字符串
+     * @return 平台类型
+     */
+    private static Device parseDevice(final String text) {
+        for (final Device platform : Device.ALL_DEVICE) {
+            if (platform.isMatch(text)) {
+                return platform;
+            }
+        }
+        return Device.UNKNOWN;
     }
 
 }

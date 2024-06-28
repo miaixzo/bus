@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.lang.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,23 +45,23 @@ public enum TlsVersion {
     /**
      * 2016年版本
      */
-    TLS_1_3(Protocol.TLS_V_13),
+    TLSv1_3(Protocol.TLSv1_3.name),
     /**
      * 2008年版本
      */
-    TLS_1_2(Protocol.TLS_V_12),
+    TLSv1_2(Protocol.TLSv1_2.name),
     /**
      * 2006年版本
      */
-    TLS_1_1(Protocol.TLS_V_11),
+    TLSv1_1(Protocol.TLSv1_1.name),
     /**
      * 1999年版本
      */
-    TLS_1_0(Protocol.TLS_V_10),
+    TLSv1(Protocol.TLSv1.name),
     /**
      * 1996年版本
      */
-    SSL_3_0(Protocol.SSL_V_30);
+    SSLv3(Protocol.SSLv3.name);
 
     public final String javaName;
 
@@ -70,17 +70,20 @@ public enum TlsVersion {
     }
 
     public static TlsVersion forJavaName(String javaName) {
-        switch (javaName) {
-            case Protocol.TLS_V_13:
-                return TLS_1_3;
-            case Protocol.TLS_V_12:
-                return TLS_1_2;
-            case Protocol.TLS_V_11:
-                return TLS_1_1;
-            case Protocol.TLS_V_10:
-                return TLS_1_0;
-            case Protocol.SSL_V_30:
-                return SSL_3_0;
+        if (Protocol.TLSv1_3.name.equals(javaName)) {
+            return TLSv1_3;
+        }
+        if (Protocol.TLSv1_2.name.equals(javaName)) {
+            return TLSv1_2;
+        }
+        if (Protocol.TLSv1_1.name.equals(javaName)) {
+            return TLSv1_1;
+        }
+        if (Protocol.TLSv1.name.equals(javaName)) {
+            return TLSv1;
+        }
+        if (Protocol.SSLv3.name.equals(javaName)) {
+            return SSLv3;
         }
         throw new IllegalArgumentException("Unexpected TLS version: " + javaName);
     }

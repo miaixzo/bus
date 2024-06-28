@@ -36,13 +36,11 @@ import java.io.IOException;
  * 高并发测试工具类
  *
  * <pre>
- * ps:
- * //模拟1000个线程并发
+ * 模拟1000个线程并发
  * ConcurrencyTester ct = new ConcurrencyTester(1000);
  * ct.test(() -&gt; {
  *      // 需要并发测试的业务代码
  * });
- *
  * Console.logger(ct.getInterval());
  * ct.close();
  * </pre>
@@ -51,6 +49,7 @@ import java.io.IOException;
  * @since Java 17+
  */
 public class ConcurrencyTester implements Closeable {
+
     private final SyncFinisher sf;
     private final StopWatch timeInterval;
     private long interval;

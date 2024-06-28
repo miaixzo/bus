@@ -127,8 +127,10 @@ public class ThreadKit {
      * 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
      * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
      * 计算密集型任务的阻塞系数为0，而IO密集型任务的阻塞系数则接近于1。
+     *
      * <p>
      * see: <a href="http://blog.csdn.net/partner4java/article/details/9417663">http://blog.csdn.net/partner4java/article/details/9417663</a>
+     * </p>
      *
      * @param blockingCoefficient 阻塞系数，阻塞因子介于0~1之间的数，阻塞因子越大，线程池中的线程数越多。
      * @return {@link ThreadPoolExecutor}
@@ -297,7 +299,6 @@ public class ThreadKit {
      * System.out.println("【主线程】所有同学都离开了教室，开始锁教室大门了。");
      * }
      * </pre>
-     * <p>
      * 该示例，也可以用：{@link Phaser} 移相器 进行实现
      *
      * @param taskCount 任务数量
@@ -655,8 +656,7 @@ public class ThreadKit {
      * @return 线程组
      */
     public static ThreadGroup currentThreadGroup() {
-        final SecurityManager s = System.getSecurityManager();
-        return (null != s) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        return Thread.currentThread().getThreadGroup();
     }
 
     /**

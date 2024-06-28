@@ -32,7 +32,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 
 /**
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public class ApiPermissionHandler extends AbstractApiHandler {
 

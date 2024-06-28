@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.goalie.filter;
 
-import org.miaixz.bus.base.entity.Message;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Context;
 import org.miaixz.bus.logger.Logger;

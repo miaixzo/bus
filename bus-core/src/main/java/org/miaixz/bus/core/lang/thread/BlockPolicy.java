@@ -78,7 +78,6 @@ public class BlockPolicy implements RejectedExecutionHandler {
             // 当设置了关闭时候的处理
             handlerwhenshutdown.accept(r);
         }
-
         // 线程池关闭后，丢弃任务
     }
 

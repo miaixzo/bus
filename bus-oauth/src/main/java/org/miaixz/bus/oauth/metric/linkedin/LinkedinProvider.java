@@ -32,9 +32,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -205,7 +205,7 @@ public class LinkedinProvider extends AbstractProvider {
     private AccToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap();
         header.put("Host", "www.linkedin.com");
-        header.put(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
         String response = Httpx.post(accessTokenUrl, null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);

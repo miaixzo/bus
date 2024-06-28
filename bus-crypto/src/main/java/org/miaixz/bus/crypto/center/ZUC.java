@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.crypto.center;
 
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
@@ -50,9 +51,9 @@ public class ZUC extends Crypto {
      * @param key       密钥
      * @param iv        加盐，128位加盐是16bytes，256位是25bytes，{@code null}是随机加盐
      */
-    public ZUC(final ZUCAlgorithm algorithm, final byte[] key, final byte[] iv) {
-        super(algorithm.value,
-                Keeper.generateKey(algorithm.value, key),
+    public ZUC(final Algorithm algorithm, final byte[] key, final byte[] iv) {
+        super(algorithm.getValue(),
+                Keeper.generateKey(algorithm.getValue(), key),
                 generateIvParam(algorithm, iv));
     }
 
@@ -63,8 +64,8 @@ public class ZUC extends Crypto {
      * @return 密钥
      * @see Keeper#generateKey(String)
      */
-    public static byte[] generateKey(final ZUCAlgorithm algorithm) {
-        return Keeper.generateKey(algorithm.value).getEncoded();
+    public static byte[] generateKey(final Algorithm algorithm) {
+        return Keeper.generateKey(algorithm.getValue()).getEncoded();
     }
 
     /**
@@ -74,7 +75,7 @@ public class ZUC extends Crypto {
      * @param iv        加盐，128位加盐是16bytes，256位是25bytes，{@code null}是随机加盐
      * @return {@link IvParameterSpec}
      */
-    private static IvParameterSpec generateIvParam(final ZUCAlgorithm algorithm, byte[] iv) {
+    private static IvParameterSpec generateIvParam(final Algorithm algorithm, byte[] iv) {
         if (null == iv) {
             switch (algorithm) {
                 case ZUC_128:
@@ -86,40 +87,6 @@ public class ZUC extends Crypto {
             }
         }
         return new IvParameterSpec(iv);
-    }
-
-    /**
-     * ZUC类型，包括128位和256位
-     */
-    public enum ZUCAlgorithm {
-        /**
-         * ZUC-128
-         */
-        ZUC_128("ZUC-128"),
-        /**
-         * ZUC-256
-         */
-        ZUC_256("ZUC-256");
-
-        private final String value;
-
-        /**
-         * 构造
-         *
-         * @param value 算法的字符串表示，区分大小写
-         */
-        ZUCAlgorithm(final String value) {
-            this.value = value;
-        }
-
-        /**
-         * 获得算法的字符串表示形式
-         *
-         * @return 算法字符串
-         */
-        public String getValue() {
-            return this.value;
-        }
     }
 
 }

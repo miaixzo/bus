@@ -280,11 +280,9 @@ public class Holiday extends Loops {
 
     public static Holiday fromYmd(int year, int month, int day) {
         Matcher matcher = Pattern.compile(String.format("%04d%02d%02d[0-1][0-8][\\+|-]\\d{2}", year, month, day)).matcher(DATA);
-        if (!matcher.find()) {
-            return null;
-        }
-        return new Holiday(year, month, day, matcher.group());
+        return !matcher.find() ? null : new Holiday(year, month, day, matcher.group());
     }
+
 
     public Holiday next(int n) {
         SolarMonth m = day.getMonth();

@@ -27,7 +27,8 @@
  */
 package org.miaixz.bus.base.service;
 
-import org.miaixz.bus.base.entity.Result;
+import org.miaixz.bus.core.basics.entity.Result;
+import org.miaixz.bus.core.basics.service.Service;
 
 import java.util.List;
 
@@ -72,18 +73,25 @@ public interface BaseService<T> extends Service {
     Object insertBatchSelective(List<T> list);
 
     /**
+     * 通用:逻辑数据
+     *
+     * @param entity 对象参数
+     */
+    int remove(T entity);
+
+    /**
      * 通用:删除数据
      *
      * @param entity 对象参数
      */
-    void delete(T entity);
+    int delete(T entity);
 
     /**
      * 通用:删除数据
      *
      * @param id 对象主键
      */
-    void deleteById(Object id);
+    int deleteById(Object id);
 
     /**
      * 通用:删除数据
@@ -106,7 +114,7 @@ public interface BaseService<T> extends Service {
      *
      * @param entity 对象参数
      */
-    void updateById(T entity);
+    int updateById(T entity);
 
     /**
      * 通用:更新数据

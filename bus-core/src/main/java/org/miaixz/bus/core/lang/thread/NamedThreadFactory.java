@@ -27,16 +27,19 @@
  */
 package org.miaixz.bus.core.lang.thread;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.thread.threadlocal.SpecificThread;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 线程创建工厂类，此工厂可选配置：
- *
+ * 线程创建工厂类
+ * 此工厂可选配置：
  * <pre>
  * 1. 自定义线程命名前缀
  * 2. 自定义是否守护线程
@@ -48,25 +51,40 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class NamedThreadFactory implements ThreadFactory {
 
     /**
-     * 命名前缀
+     * 线程名称前缀
      */
-    private final String prefix;
+    protected final String prefix;
     /**
      * 线程组
      */
-    private final ThreadGroup group;
-    /**
-     * 线程组
-     */
-    private final AtomicInteger threadNumber = new AtomicInteger(1);
+    protected final ThreadGroup group;
     /**
      * 是否守护线程
      */
-    private final boolean isDaemon;
+    protected final boolean daemon;
+    /**
+     * 线程的优先级
+     */
+    protected final int priority;
+    /**
+     * 线程池中的线程ID
+     */
+    protected final AtomicInteger nextId = new AtomicInteger(1);
     /**
      * 无法捕获的异常统一处理
      */
-    private final UncaughtExceptionHandler handler;
+    protected final UncaughtExceptionHandler handler;
+
+    /**
+     * 构造
+     */
+    public NamedThreadFactory() {
+        this(null, null, Thread.NORM_PRIORITY);
+    }
+
+    public NamedThreadFactory(Class<?> clazz) {
+        this(clazz, null, Thread.NORM_PRIORITY);
+    }
 
     /**
      * 构造
@@ -74,72 +92,147 @@ public class NamedThreadFactory implements ThreadFactory {
      * @param prefix 线程名前缀
      */
     public NamedThreadFactory(String prefix) {
-        this(prefix, true);
+        this(null, prefix, Thread.NORM_PRIORITY);
     }
 
     /**
      * 构造
      *
      * @param prefix   线程名前缀
-     * @param isDaemon 是否守护线程
+     * @param priority 优先级
      */
-    public NamedThreadFactory(final String prefix, final boolean isDaemon) {
-        this(prefix, null, isDaemon);
+    public NamedThreadFactory(final Class<?> clazz, String prefix, int priority) {
+        this(clazz, prefix, true, priority);
     }
 
     /**
      * 构造
      *
-     * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
-     * @param isDaemon    是否守护线程
+     * @param prefix 线程名前缀
+     * @param daemon 是否守护线程
      */
-    public NamedThreadFactory(final String prefix, final ThreadGroup threadGroup, final boolean isDaemon) {
-        this(prefix, threadGroup, isDaemon, null);
+    public NamedThreadFactory(final String prefix, final boolean daemon) {
+        this(null, prefix, null, daemon, Thread.NORM_PRIORITY);
     }
 
     /**
      * 构造
      *
-     * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
-     * @param isDaemon    是否守护线程
-     * @param handler     未捕获异常处理
+     * @param prefix   线程名前缀
+     * @param daemon   是否守护线程
+     * @param priority 优先级
      */
-    public NamedThreadFactory(final String prefix, ThreadGroup threadGroup, final boolean isDaemon, final UncaughtExceptionHandler handler) {
-        this.prefix = StringKit.isBlank(prefix) ? "X" : prefix;
-        if (null == threadGroup) {
-            threadGroup = ThreadKit.currentThreadGroup();
+    public NamedThreadFactory(final Class<?> clazz, final String prefix, final boolean daemon, int priority) {
+        this(clazz, prefix, null, daemon, priority);
+    }
+
+    /**
+     * 构造
+     *
+     * @param prefix 线程名前缀
+     * @param group  线程组，可以为null
+     * @param daemon 是否守护线程
+     */
+    public NamedThreadFactory(final String prefix, final ThreadGroup group, final boolean daemon) {
+        this(null, prefix, group, daemon, Thread.NORM_PRIORITY, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param prefix   线程名前缀
+     * @param group    线程组，可以为null
+     * @param daemon   是否守护线程
+     * @param priority 优先级
+     */
+    public NamedThreadFactory(final Class<?> clazz, final String prefix, final ThreadGroup group, final boolean daemon, int priority) {
+        this(clazz, prefix, group, daemon, priority, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param prefix  线程名前缀
+     * @param group   线程组，可以为null
+     * @param daemon  是否守护线程
+     * @param handler 未捕获异常处理
+     */
+    public NamedThreadFactory(final String prefix, ThreadGroup group, final boolean daemon, final UncaughtExceptionHandler handler) {
+        this(null, prefix, group, daemon, Thread.NORM_PRIORITY, handler);
+    }
+
+    /**
+     * 构造
+     *
+     * @param prefix   线程名前缀
+     * @param group    线程组，可以为null
+     * @param daemon   是否守护线程
+     * @param priority 优先级
+     * @param handler  未捕获异常处理
+     */
+    public NamedThreadFactory(final Class<?> clazz, final String prefix, ThreadGroup group, final boolean daemon, int priority, final UncaughtExceptionHandler handler) {
+        if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+            throw new IllegalArgumentException(
+                    "priority: " + priority + " (expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)");
         }
-        this.group = threadGroup;
-        this.isDaemon = isDaemon;
+
+        if (ObjectKit.isEmpty(clazz) && StringKit.isEmpty(prefix)) {
+            // 线程前缀，两者都为空使用默认值
+            this.prefix = Symbol.X;
+        } else {
+            // 线程前缀，默认使用prefix，反之使用clazz
+            this.prefix = StringKit.isBlank(prefix) ? ClassKit.getClassName(clazz, true) : prefix;
+        }
+
+        if (null == group) {
+            // 当前线程组
+            group = Thread.currentThread().getThreadGroup();
+        }
+        this.group = group;
+        this.daemon = daemon;
+        this.priority = priority;
         this.handler = handler;
     }
 
+    /**
+     * 构造一个新的未启动线程来运行给定的可运行对象
+     *
+     * @param r 由新线程实例执行的可运行对象
+     * @return 新新线程信息
+     */
     @Override
     public Thread newThread(final Runnable r) {
-        final Thread t = new Thread(this.group, r, StringKit.format("{}{}", prefix, threadNumber.getAndIncrement()));
-
-        //守护线程
+        final Thread t = this.newThread(r, StringKit.format("{}{}", this.prefix, this.nextId.getAndIncrement()));
+        // 守护线程
         if (!t.isDaemon()) {
-            if (isDaemon) {
+            if (this.daemon) {
                 // 原线程为非守护则设置为守护
                 t.setDaemon(true);
             }
-        } else if (!isDaemon) {
+        } else if (!this.daemon) {
             // 原线程为守护则还原为非守护
             t.setDaemon(false);
         }
-        //异常处理
-        if (null != this.handler) {
-            t.setUncaughtExceptionHandler(handler);
+        if (t.getPriority() != this.priority) {
+            t.setPriority(this.priority);
         }
-        //优先级
-        if (Thread.NORM_PRIORITY != t.getPriority()) {
-            // 标准优先级
-            t.setPriority(Thread.NORM_PRIORITY);
+
+        // 异常处理
+        if (null != this.handler) {
+            t.setUncaughtExceptionHandler(this.handler);
         }
         return t;
+    }
+
+    /**
+     * 构造一个新的未启动线程来运行给定的可运行对象
+     *
+     * @param r    由新线程实例执行的可运行对象
+     * @param name 线程名称
+     * @return 新新线程信息
+     */
+    protected Thread newThread(Runnable r, String name) {
+        return new SpecificThread(this.group, r, name);
     }
 
 }

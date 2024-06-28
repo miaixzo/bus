@@ -36,6 +36,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;
+import org.miaixz.bus.http.metric.NewChain;
 
 import java.io.IOException;
 
@@ -48,7 +49,7 @@ import java.io.IOException;
 public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(NewChain chain) throws IOException {
         Response rsp = chain.proceed(chain.request());
         return rsp.newBuilder()
                 .body(new DownloadFileProgressResponseBody(rsp.body(), this))

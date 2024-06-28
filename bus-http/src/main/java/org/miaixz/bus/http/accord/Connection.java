@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Route;
 import org.miaixz.bus.http.socket.Handshake;
 

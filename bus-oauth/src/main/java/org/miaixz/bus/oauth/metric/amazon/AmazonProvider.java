@@ -29,19 +29,23 @@ package org.miaixz.bus.oauth.metric.amazon;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.oauth.magic.*;
+import org.miaixz.bus.oauth.magic.AccToken;
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.nio.charset.StandardCharsets;
@@ -165,8 +169,8 @@ public class AmazonProvider extends AbstractProvider {
 
     private AccToken getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put(Header.HOST, "api.amazon.com");
-        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
+        header.put(HTTP.HOST, "api.amazon.com");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
         String response = Httpx.post(url, param, header);
         JSONObject jsonObject = JSONObject.parseObject(response);
@@ -201,8 +205,8 @@ public class AmazonProvider extends AbstractProvider {
         String accessToken = accToken.getAccessToken();
         this.checkToken(accessToken);
         Map<String, String> header = new HashMap<>();
-        header.put(Header.HOST, "api.amazon.com");
-        header.put(Header.AUTHORIZATION, "bearer " + accessToken);
+        header.put(HTTP.HOST, "api.amazon.com");
+        header.put(HTTP.AUTHORIZATION, "bearer " + accessToken);
 
         String userInfo = Httpx.get(this.complex.userInfo(), new HashMap<>(0), header);
         JSONObject jsonObject = JSONObject.parseObject(userInfo);

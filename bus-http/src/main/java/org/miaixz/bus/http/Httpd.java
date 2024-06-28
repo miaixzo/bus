@@ -29,6 +29,7 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.http.accord.ConnectionPool;
@@ -141,7 +142,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final List<Interceptor> interceptors;
     /**
      * 返回观察单个网络请求和响应的不可变拦截器列表。这些拦截器必须
-     * 调用{@link Interceptor.Chain#proceed} 只执行一次:网络拦截器短路或重复网络请求是错误的
+     * 调用{@link NewChain#proceed} 只执行一次:网络拦截器短路或重复网络请求是错误的
      */
     final List<Interceptor> networkInterceptors;
     final EventListener.Factory eventListenerFactory;
@@ -897,7 +898,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
         /**
          * 返回观察单个网络请求和响应的可修改的拦截器列表。
-         * 这些拦截器必须调用{@link Interceptor.Chain#proceed}
+         * 这些拦截器必须调用{@link NewChain#proceed}
          * 只执行一次:网络拦截器短路或重复网络请求是错误的
          *
          * @return 构造器

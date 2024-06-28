@@ -106,15 +106,11 @@ public class LunarMonth extends Loops {
             w -= 29.53;
         }
 
-        // 计算正月初一的偏移
-        LunarYear prevYear = LunarYear.fromYear(year - 1);
-        int prevLeapMonth = prevYear.getLeapMonth();
-
         // 正常情况正月初一为第3个朔日，但有些特殊的
         int offset = 2;
         if (year > 8 && year < 24) {
             offset = 1;
-        } else if (prevLeapMonth > 10 && year != 239 && year != 240) {
+        } else if (LunarYear.fromYear(year - 1).getLeapMonth() > 10 && year != 239 && year != 240) {
             offset = 3;
         }
 

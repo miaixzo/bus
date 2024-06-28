@@ -31,9 +31,9 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import jakarta.annotation.Resource;
-import org.miaixz.bus.base.entity.Message;
-import org.miaixz.bus.core.lang.Header;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -74,7 +74,7 @@ public class BridgeVerticleService extends AbstractVerticle {
                 Logger.error("get error", e);
                 result = JsonKit.toJsonString(Message.builder().errcode("-1").build());
             }
-            context.response().putHeader(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).end(result);
+            context.response().putHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).end(result);
         });
 
         vertx.createHttpServer().requestHandler(router).listen(this.properties.getPort());

@@ -269,7 +269,7 @@ public class CIN {
             case 3:
                 return '9';
             case 2:
-                return 'X';
+                return Symbol.C_X;
             case 1:
                 return '0';
             case 0:

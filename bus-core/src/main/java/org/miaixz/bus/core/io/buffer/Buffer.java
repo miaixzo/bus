@@ -2118,12 +2118,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
          * capacity at the end or truncating the buffer at the end. Newly added capacity may span
          * multiple segments.
          *
-         * <p>As a side-effect this cursor will {@link #seek seek}. If the buffer is being enlarged it
+         * As a side-effect this cursor will {@link #seek seek}. If the buffer is being enlarged it
          * will move {@link #offset} to the first byte of newly-added capacity. This is the size of the
          * buffer prior to the {@code resizeBuffer()} call. If the buffer is being shrunk it will move
          * {@link #offset} to the end of the buffer.
          *
-         * <p>Warning: it is the caller’s responsibility to write new data to every byte of the
+         * Warning: it is the caller’s responsibility to write new data to every byte of the
          * newly-allocated capacity. Failure to do so may cause serious security problems as the data
          * in the returned buffers is not zero filled. Buffers may contain dirty pooled segments that
          * hold very sensitive data from other parts of the current process.
@@ -2193,15 +2193,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
          * segment. This adds at least {@code minByteCount} bytes but may add up to a full segment of
          * additional capacity.
          *
-         * <p>As a side-effect this cursor will {@link #seek seek}. It will move {@link #offset} to the
+         * As a side-effect this cursor will {@link #seek seek}. It will move {@link #offset} to the
          * first byte of newly-added capacity. This is the size of the buffer prior to the {@code
          * expandBuffer()} call.
          *
-         * <p>If {@code minByteCount} bytes are available in the buffer's current tail segment that will
+         * If {@code minByteCount} bytes are available in the buffer's current tail segment that will
          * be used; otherwise another segment will be allocated and appended. In either case this
          * returns the number of bytes of capacity added to this buffer.
          *
-         * <p>Warning: it is the caller’s responsibility to either write new data to every byte of the
+         * Warning: it is the caller’s responsibility to either write new data to every byte of the
          * newly-allocated capacity, or to {@link #resizeBuffer shrink} the buffer to the data written.
          * Failure to do so may cause serious security problems as the data in the returned buffers is
          * not zero filled. Buffers may contain dirty pooled segments that hold very sensitive data from

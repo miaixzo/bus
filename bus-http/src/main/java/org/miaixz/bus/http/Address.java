@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.Authenticator;
@@ -101,7 +101,7 @@ public class Address {
                    Proxy proxy, List<Protocol> protocols, List<ConnectionSuite> connectionSuites,
                    ProxySelector proxySelector) {
         this.url = new UnoUrl.Builder()
-                .scheme(null != sslSocketFactory ? Http.HTTPS : Http.HTTP)
+                .scheme(null != sslSocketFactory ? Protocol.HTTPS.name : Protocol.HTTP.name)
                 .host(uriHost)
                 .port(uriPort)
                 .build();

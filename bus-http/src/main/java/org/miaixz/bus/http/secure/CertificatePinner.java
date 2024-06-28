@@ -28,8 +28,8 @@
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.UnoUrl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -208,8 +208,8 @@ public class CertificatePinner {
         Pin(String pattern, String pin) {
             this.pattern = pattern;
             this.canonicalHostname = pattern.startsWith(WILDCARD)
-                    ? UnoUrl.get(Http.HTTP_PREFIX + pattern.substring(WILDCARD.length())).host()
-                    : UnoUrl.get(Http.HTTP_PREFIX + pattern).host();
+                    ? UnoUrl.get(Protocol.HTTP_PREFIX + pattern.substring(WILDCARD.length())).host()
+                    : UnoUrl.get(Protocol.HTTP_PREFIX + pattern).host();
             if (pin.startsWith("sha1/")) {
                 this.hashAlgorithm = "sha1/";
                 this.hash = ByteString.decodeBase64(pin.substring("sha1/".length()));

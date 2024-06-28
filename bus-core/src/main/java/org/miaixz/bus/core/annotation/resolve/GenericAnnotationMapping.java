@@ -55,7 +55,7 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
      * @param annotation 注解对象
      * @param isRoot     是否根注解
      */
-    GenericAnnotationMapping(final Annotation annotation, final boolean isRoot) {
+    public GenericAnnotationMapping(final Annotation annotation, final boolean isRoot) {
         this.annotation = Objects.requireNonNull(annotation);
         this.isRoot = isRoot;
         this.attributes = AnnoKit.getAnnotationAttributes(annotation.annotationType());

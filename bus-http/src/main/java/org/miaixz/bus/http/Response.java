@@ -29,9 +29,9 @@ package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.cache.CacheControl;
@@ -202,12 +202,12 @@ public class Response implements Closeable {
      */
     public boolean isRedirect() {
         switch (code) {
-            case Http.HTTP_PERM_REDIRECT:
-            case Http.HTTP_TEMP_REDIRECT:
-            case Http.HTTP_MULT_CHOICE:
-            case Http.HTTP_MOVED_PERM:
-            case Http.HTTP_MOVED_TEMP:
-            case Http.HTTP_SEE_OTHER:
+            case HTTP.HTTP_PERM_REDIRECT:
+            case HTTP.HTTP_TEMP_REDIRECT:
+            case HTTP.HTTP_MULT_CHOICE:
+            case HTTP.HTTP_MOVED_PERM:
+            case HTTP.HTTP_MOVED_TEMP:
+            case HTTP.HTTP_SEE_OTHER:
                 return true;
             default:
                 return false;
@@ -255,10 +255,10 @@ public class Response implements Closeable {
      */
     public List<Challenge> challenges() {
         String responseField;
-        if (code == Http.HTTP_UNAUTHORIZED) {
-            responseField = Header.WWW_AUTHENTICATE;
-        } else if (code == Http.HTTP_PROXY_AUTH) {
-            responseField = Header.PROXY_AUTHENTICATE;
+        if (code == HTTP.HTTP_UNAUTHORIZED) {
+            responseField = HTTP.WWW_AUTHENTICATE;
+        } else if (code == HTTP.HTTP_PROXY_AUTH) {
+            responseField = HTTP.PROXY_AUTHENTICATE;
         } else {
             return Collections.emptyList();
         }

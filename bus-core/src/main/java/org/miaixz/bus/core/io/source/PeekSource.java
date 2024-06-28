@@ -66,8 +66,7 @@ public class PeekSource implements Source {
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed) throw new IllegalStateException("closed");
 
-        // Source becomes invalid if there is an expected SectionBuffer and it and the expected position
-        // do not match the current head and head position of the upstream buffer
+        // 如果存在 SectionBuffer，并且它的位置与缓冲区的位置不匹配，则源将变为无效
         if (expectedSegment != null
                 && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
@@ -76,9 +75,7 @@ public class PeekSource implements Source {
         if (!upstream.request(pos + 1)) return -1L;
 
         if (expectedSegment == null && buffer.head != null) {
-            // Only once the buffer actually holds data should an expected SectionBuffer and position be
-            // recorded. This allows reads from the peek source to repeatedly return -1 and for data to be
-            // added later. Unit tests depend on this behavior.
+            // 只有当缓冲区实际保存数据时，才应记录预期的 SectionBuffer 和位置。
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }

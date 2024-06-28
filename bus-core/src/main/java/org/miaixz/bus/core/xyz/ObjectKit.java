@@ -42,7 +42,6 @@ import java.util.function.Supplier;
 
 /**
  * 对象工具类，包括判空、克隆、序列化等操作
- * <p>
  * 原数组相关操作见：{@link ArrayKit#hasBlank(CharSequence...)}、{@link ArrayKit#isAllBlank(CharSequence...)}等等
  *
  * @author Kimi Liu

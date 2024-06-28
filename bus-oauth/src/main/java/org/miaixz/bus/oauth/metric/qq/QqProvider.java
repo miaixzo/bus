@@ -29,6 +29,7 @@ package org.miaixz.bus.oauth.metric.qq;
 
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -37,7 +38,10 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.oauth.magic.*;
+import org.miaixz.bus.oauth.magic.AccToken;
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.Map;

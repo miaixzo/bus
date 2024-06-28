@@ -27,14 +27,13 @@
  */
 package org.miaixz.bus.notify.metric.jdcloud;
 
-import org.miaixz.bus.core.lang.Header;
-import org.miaixz.bus.core.lang.Http;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
-import org.miaixz.bus.notify.magic.Message;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -62,13 +61,13 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Contex
         bodys.put("signId", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
-        String errcode = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
-        String errmsg = status == Http.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
+        String errcode = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
+        String errmsg = status == HTTP.HTTP_OK ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
         return Message.builder()
                 .errcode(errcode)

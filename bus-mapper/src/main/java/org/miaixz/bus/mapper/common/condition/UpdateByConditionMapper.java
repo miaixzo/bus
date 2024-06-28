@@ -47,7 +47,7 @@ public interface UpdateByConditionMapper<T> {
      *
      * @param record    记录值
      * @param condition 条件
-     * @return the int
+     * @return the int 操作结果
      */
     @UpdateProvider(type = ConditionProvider.class, method = "dynamicSQL")
     int updateByCondition(@Param("record") T record, @Param("condition") Object condition);

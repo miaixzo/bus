@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.notify.metric.ctyun;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.Material;
 
@@ -40,6 +40,9 @@ import org.miaixz.bus.notify.magic.Material;
  */
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CtyunMaterial extends Material {
 
     /**
@@ -50,6 +53,7 @@ public class CtyunMaterial extends Material {
     /**
      * 接口名称
      */
+    @Builder.Default
     private String action = "SendSms";
 
     /**

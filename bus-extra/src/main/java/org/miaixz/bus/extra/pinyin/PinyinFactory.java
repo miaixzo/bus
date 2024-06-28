@@ -44,13 +44,13 @@ import org.miaixz.bus.logger.Logger;
 public class PinyinFactory {
 
     /**
-     * 获得单例的PinyinEngine
+     * 获得单例
      *
-     * @return 单例的PinyinEngine
+     * @return 单例
      */
-    public static PinyinProvider getEngine() {
-        final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::createEngine);
-        Logger.debug("Use [{}] Pinyin Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+    public static PinyinProvider get() {
+        final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::create);
+        Logger.debug("Use [{}] Pinyin Provider As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
 
@@ -60,28 +60,28 @@ public class PinyinFactory {
      *
      * @return {@link PinyinProvider}
      */
-    public static PinyinProvider createEngine() {
-        return doCreateEngine();
+    public static PinyinProvider create() {
+        return doCreate();
     }
 
     /**
      * 创建自定义引擎
      *
-     * @param engineName 引擎名称，忽略大小写，如`Bopomofo4j`、`Houbb`、`JPinyin`、`Pinyin4j`、`TinyPinyin`
+     * @param name 引擎名称，忽略大小写，如`Bopomofo4j`、`Houbb`、`JPinyin`、`Pinyin4j`、`TinyPinyin`
      * @return 引擎
      * @throws InternalException 无对应名称的引擎
      */
-    public static PinyinProvider createEngine(String engineName) throws InternalException {
-        if (!StringKit.endWithIgnoreCase(engineName, "Engine")) {
-            engineName = engineName + "Engine";
+    public static PinyinProvider create(String name) throws InternalException {
+        if (!StringKit.endWithIgnoreCase(name, "Provider")) {
+            name = name + "Provider";
         }
         final ServiceLoader<PinyinProvider> list = SPIKit.loadList(PinyinProvider.class);
         for (final String serviceName : list.getServiceNames()) {
-            if (StringKit.endWithIgnoreCase(serviceName, engineName)) {
+            if (StringKit.endWithIgnoreCase(serviceName, name)) {
                 return list.getService(serviceName);
             }
         }
-        throw new InternalException("No such engine named: " + engineName);
+        throw new InternalException("No such engine named: " + name);
     }
 
     /**
@@ -90,7 +90,7 @@ public class PinyinFactory {
      *
      * @return {@link PinyinProvider}
      */
-    private static PinyinProvider doCreateEngine() {
+    private static PinyinProvider doCreate() {
         final PinyinProvider engine = SPIKit.loadFirstAvailable(PinyinProvider.class);
         if (null != engine) {
             return engine;

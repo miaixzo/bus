@@ -88,7 +88,7 @@ public abstract class Session {
 
     /**
      * 强制关闭当前Session
-     * <p>若此时还存留待输出的数据，则会导致该部分数据丢失</p>
+     * 若此时还存留待输出的数据，则会导致该部分数据丢失
      */
     public final void close() {
         close(true);
@@ -166,13 +166,9 @@ public abstract class Session {
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象。
-     * <p>
+     * 获得数据输入流对象
      * faster模式下调用该方法会触发UnsupportedOperationException异常。
-     * </p>
-     * <p>
      * Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
-     * </p>
      *
      * @return 输入流
      * @throws IOException IO异常

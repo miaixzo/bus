@@ -30,18 +30,22 @@ package org.miaixz.bus.oauth.metric.eleme;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.data.ID;
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.Header;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.oauth.magic.*;
+import org.miaixz.bus.oauth.magic.AccToken;
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 import java.util.HashMap;
@@ -198,10 +202,10 @@ public class ElemeProvider extends AbstractProvider {
 
     private Map<String, String> buildHeader(String contentType, String requestId, boolean auth) {
         Map<String, String> header = new HashMap<>();
-        header.put(Header.ACCEPT, "text/xml,text/javascript,text/html");
-        header.put(Header.CONTENT_TYPE, contentType);
-        header.put(Header.ACCEPT_ENCODING, "gzip");
-        header.put(Header.USER_AGENT, "eleme-openapi-java-sdk");
+        header.put(HTTP.ACCEPT, "text/xml,text/javascript,text/html");
+        header.put(HTTP.CONTENT_TYPE, contentType);
+        header.put(HTTP.ACCEPT_ENCODING, "gzip");
+        header.put(HTTP.USER_AGENT, "eleme-openapi-java-sdk");
         header.put("x-eleme-requestid", requestId);
 
         if (auth) {

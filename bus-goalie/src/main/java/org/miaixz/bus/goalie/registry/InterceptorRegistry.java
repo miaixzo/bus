@@ -33,7 +33,7 @@ import org.miaixz.bus.goalie.Registry;
  * 数据序列化
  *
  * @author Kimi Liu
- * @since Java 17++
+ * @since Java 17+
  */
 public interface InterceptorRegistry extends Registry {
 

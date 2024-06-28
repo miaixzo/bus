@@ -44,7 +44,7 @@ import java.util.function.Function;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
+public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
 
     private static final long serialVersionUID = -1L;
 

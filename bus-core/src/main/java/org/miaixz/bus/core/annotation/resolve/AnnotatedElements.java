@@ -44,11 +44,11 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * <p>{@link AnnotatedElement}工具类，提供对层级结构中{@link AnnotatedElement}上注解及元注解的访问支持，
+ * {@link AnnotatedElement}工具类，提供对层级结构中{@link AnnotatedElement}上注解及元注解的访问支持，
  * 并提供诸如基于{@link Alias}的属性别名、基于父子注解间的属性值覆盖等特殊的属性映射机制支持。
  *
- * <p><strong>搜索层级结构</strong>
- * <p>参考 Spring 中{@code AnnotatedElementUtils}，
+ * <strong>搜索层级结构</strong>
+ * 参考 Spring 中{@code AnnotatedElementUtils}，
  * 工具类提供<em>get</em>以及<em>find</em>两种语义的搜索：
  * <ul>
  *     <li><em>get</em>：表示搜索范围仅限于指定的{@link AnnotatedElement}本身；</li>
@@ -63,8 +63,8 @@ import java.util.stream.Stream;
  * 则通过<em>getXXX</em>方法将只能获得<em>A</em>上的注解，
  * 而通过<em>findXXX</em>方法将能获得<em>A</em>、<em>B</em>、<em>C</em>上的注解。
  *
- * <p><strong>搜索元注解</strong>
- * <p>工具类支持搜索注解的元注解。在所有格式为<em>getXXX</em>或<em>findXXX</em>的静态方法中，
+ * <strong>搜索元注解</strong>
+ * 工具类支持搜索注解的元注解。在所有格式为<em>getXXX</em>或<em>findXXX</em>的静态方法中，
  * 若不带有<em>directly</em>关键字，则该方法支持搜索元注解，否则不支持搜索元注解。
  * eg:
  * 若类<em>A</em>分别有父类和父接口<em>B</em>、<em>C</em>，上面分别有注解<em>X</em>与其元注解<em>Y</em>，
@@ -77,8 +77,8 @@ import java.util.stream.Stream;
  * </ul>
  * 注意：在当前实例中将无视{@link Inherited}的效果，即通过<em>directly</em>方法将无法获得父类上带有{@link Inherited}的注解。
  *
- * <p><strong>注解属性映射</strong>
- * <p>工具类支持注解对象属性上的一些属性映射机制，即当注解被扫描时，
+ * <strong>注解属性映射</strong>
+ * 工具类支持注解对象属性上的一些属性映射机制，即当注解被扫描时，
  * 将根据一些属性映射机制“解析”为其他类型的属性，这里支持的机制包括：
  * <ul>
  *     <li>
@@ -125,8 +125,8 @@ import java.util.stream.Stream;
  *     </li>
  * </ul>
  *
- * <p><strong>可重复注解支持</strong>
- * <p>工具类中格式为<em>findAllXXX</em>或<em>getAllXXX</em>格式的方法，
+ * <strong>可重复注解支持</strong>
+ * 工具类中格式为<em>findAllXXX</em>或<em>getAllXXX</em>格式的方法，
  * 支持获得{@link AnnotatedElement}上的可重复注解。
  * 此处的可重复注解定义包括两方面：
  * <ul>
@@ -147,8 +147,8 @@ import java.util.stream.Stream;
  *     </li>
  * </ul>
  *
- * <p><strong>缓存</strong>
- * <p>为了避免注解以及{@link AnnotatedElement}层级结构解析过程中的大量反射调用，
+ * <strong>缓存</strong>
+ * 为了避免注解以及{@link AnnotatedElement}层级结构解析过程中的大量反射调用，
  * 工具类为{@link AnnotatedElement}及其元注解信息进行了缓存。
  * 缓存功能默认基于{@link WeakConcurrentMap}实现，会在gc时自动回收部分缓存数据。
  * 但是若有必要，也可以调用{@link #clearCaches()}方法主动清空缓存。
@@ -542,7 +542,7 @@ public class AnnotatedElements {
     }
 
     /**
-     * <p>扫描{@code element}所处层级结构中的{@link AnnotatedElement}，
+     * 扫描{@code element}所处层级结构中的{@link AnnotatedElement}，
      * 并将其全部转为{@link RepeatableMetaAnnotatedElement}后，
      * 再把所有对象合并为{@link HierarchicalAnnotatedElements}。
      * 得到的对象可访问{@code element}所处层级结构中所有{@link AnnotatedElement}上的直接声明的注解，
@@ -565,7 +565,7 @@ public class AnnotatedElements {
     }
 
     /**
-     * <p>扫描{@code element}所处层级结构中的{@link AnnotatedElement}，
+     * 扫描{@code element}所处层级结构中的{@link AnnotatedElement}，
      * 再把所有对象合并为{@link HierarchicalAnnotatedElements}
      * 得到的对象可访问{@code element}所处层级结构中所有{@link AnnotatedElement}上的注解。
      *
@@ -611,7 +611,7 @@ public class AnnotatedElements {
     }
 
     /**
-     * <p>将{@link AnnotatedElement}转为{@link RepeatableMetaAnnotatedElement}，
+     * 将{@link AnnotatedElement}转为{@link RepeatableMetaAnnotatedElement}，
      * 得到的对象可访问{@link AnnotatedElement}上的直接声明的注解，
      * 通过{@code collector}从这些注解获得的可重复注解，以及上述注解的所有元注解。
      * 注意：方法将不会通过缓存结果，因此每次调用都需要重新通过反射并获得相关注解。
@@ -666,7 +666,7 @@ public class AnnotatedElements {
      * @param element {@link AnnotatedElement}
      * @return {@link MetaAnnotatedElement}实例
      */
-    static MetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedMetaElementCache(final AnnotatedElement element) {
+    public static MetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedMetaElementCache(final AnnotatedElement element) {
         return RESOLVED_ELEMENT_CACHE.computeIfAbsent(element, ele -> MetaAnnotatedElement.create(
                 element, (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)
         ));
@@ -678,7 +678,7 @@ public class AnnotatedElements {
      * @param element {@link AnnotatedElement}
      * @return {@link MetaAnnotatedElement}实例
      */
-    static MetaAnnotatedElement<GenericAnnotationMapping> getMetaElementCache(final AnnotatedElement element) {
+    public static MetaAnnotatedElement<GenericAnnotationMapping> getMetaElementCache(final AnnotatedElement element) {
         return ELEMENT_CACHE.computeIfAbsent(element, ele -> MetaAnnotatedElement.create(
                 element, (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))
         ));
@@ -690,7 +690,7 @@ public class AnnotatedElements {
      * @param element {@link AnnotatedElement}
      * @return {@link MetaAnnotatedElement}实例
      */
-    static RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedRepeatableMetaElementCache(final AnnotatedElement element) {
+    public static RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedRepeatableMetaElementCache(final AnnotatedElement element) {
         return RESOLVED_REPEATABLE_ELEMENT_CACHE.computeIfAbsent(element, ele -> RepeatableMetaAnnotatedElement.create(
                 element, (source, annotation) -> ResolvedAnnotationMapping.create(source, annotation, true)
         ));
@@ -702,7 +702,7 @@ public class AnnotatedElements {
      * @param element {@link AnnotatedElement}
      * @return {@link MetaAnnotatedElement}实例
      */
-    static RepeatableMetaAnnotatedElement<GenericAnnotationMapping> getRepeatableMetaElementCache(final AnnotatedElement element) {
+    public static RepeatableMetaAnnotatedElement<GenericAnnotationMapping> getRepeatableMetaElementCache(final AnnotatedElement element) {
         return REPEATABLE_ELEMENT_CACHE.computeIfAbsent(element, ele -> RepeatableMetaAnnotatedElement.create(
                 element, (source, annotation) -> GenericAnnotationMapping.create(annotation, Objects.isNull(source))
         ));

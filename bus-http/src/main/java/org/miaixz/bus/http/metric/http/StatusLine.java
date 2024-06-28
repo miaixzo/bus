@@ -29,7 +29,7 @@ package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.http.Protocol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Response;
 
 import java.io.IOException;
@@ -107,7 +107,7 @@ public class StatusLine {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(protocol == Protocol.HTTP_1_0 ? "HTTP/1.0" : "HTTP/1.1");
+        result.append(protocol == Protocol.HTTP_1_0 ? Protocol.HTTP_1_0.name : Protocol.HTTP_1_1.name);
         result.append(Symbol.C_SPACE).append(code);
         if (null != message) {
             result.append(Symbol.C_SPACE).append(message);
