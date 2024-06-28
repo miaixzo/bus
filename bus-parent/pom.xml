@@ -33,18 +33,19 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.0.2</version>
+    <version>8.0.5</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus Core</description>
+    <description>Bus parent</description>
     <url>https://github.com/839128/bus</url>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>3.3.1</version>
     </parent>
+    <inceptionYear>2015</inceptionYear>
 
     <licenses>
         <license>
@@ -76,9 +77,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <lombok.version>1.18.32</lombok.version>
-        <persistence.version>3.2.0-M2</persistence.version>
+        <persistence.version>3.2.0</persistence.version>
         <mail.version>2.1.3</mail.version>
         <servlet.version>6.1.0-M2</servlet.version>
         <commons.logging.version>1.3.2</commons.logging.version>
@@ -113,7 +113,7 @@
         <curator.version>5.6.0</curator.version>
         <guava.version>33.2.1-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
-        <mysql.version>8.3.0</mysql.version>
+        <mysql.version>8.4.0</mysql.version>
         <jersey.version>3.1.1</jersey.version>
         <jackson.version>2.17.1</jackson.version>
         <jna.version>5.14.0</jna.version>
@@ -139,8 +139,8 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.213</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
-        <bus.version>8.0.2</bus.version>
-        <spring.boot.version>3.3.0</spring.boot.version>
+        <bus.version>8.0.5</bus.version>
+        <spring.boot.version>3.3.1</spring.boot.version>
     </properties>
 
     <dependencyManagement>
@@ -1314,80 +1314,68 @@
     </dependencyManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.3</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.3</version>
+                <executions>
+                    <execution>
+                        <id>sonatype-nexus-staging</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.3.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.3</version>
-                        <executions>
-                            <execution>
-                                <id>sonatype-nexus-staging</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.4.0</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <publishingServerId>central</publishingServerId>
-                            <tokenAuth>true</tokenAuth>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
