@@ -88,7 +88,11 @@ public class Builder {
      */
     public static final String Y = "Y";
 
-    // ⑦创建数据结构文档
+    /**
+     * 创建数据结构文档
+     *
+     * @param config 配置
+     */
     public static void createFile(Config config) {
         new ProduceExecute(config).execute();
     }
