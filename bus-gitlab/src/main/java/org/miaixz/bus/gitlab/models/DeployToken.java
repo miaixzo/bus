@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 public class DeployToken implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Long id;
     private String name;

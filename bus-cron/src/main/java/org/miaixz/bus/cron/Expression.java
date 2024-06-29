@@ -57,7 +57,7 @@ public final class Expression implements Serializable, Cloneable {
     protected static final Integer NO_SPEC = NO_SPEC_INT;
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
     protected static final Map<String, Integer> dayMap = new HashMap<>(60);
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     static {
         monthMap.put("JAN", 0);

@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 import java.io.Serializable;
 
 public class ProjectApprovalsConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Integer approvalsBeforeMerge;
     private Boolean resetApprovalsOnPush;

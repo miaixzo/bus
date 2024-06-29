@@ -127,7 +127,7 @@ public class TagCamel implements Serializable {
     public static final TagCamel PRLUTsData = new TagCamel("PRLUTsData", TagType.OBJECT);
     public static final TagCamel MonoChrome = new TagCamel("MonoChrome", TagType.BOOLEAN);
     protected static final Map<String, TagCamel> tags = Collections.synchronizedMap(new HashMap<>());
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     private static final AtomicInteger idCounter = new AtomicInteger(Integer.MAX_VALUE);
 
     static {

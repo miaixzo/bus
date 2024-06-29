@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class ExportStatus implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Enum representing the status of the export.

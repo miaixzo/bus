@@ -45,7 +45,7 @@ import java.util.Map;
  * This class is used to filter merge requests when getting lists of them.
  */
 public class MergeRequestFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Long projectId;
     private Long groupId;

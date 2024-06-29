@@ -33,7 +33,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class HealthCheckItem implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private HealthCheckStatus status;
     private Map<String, String> labels;

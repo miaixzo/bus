@@ -47,7 +47,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class OAuth2 extends Entity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 当前用户标识

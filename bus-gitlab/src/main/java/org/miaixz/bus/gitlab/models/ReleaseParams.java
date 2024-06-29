@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ReleaseParams implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String name;
     private String tagName;

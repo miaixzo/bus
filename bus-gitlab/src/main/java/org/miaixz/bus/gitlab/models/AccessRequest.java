@@ -30,7 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import java.util.Date;
 
 public class AccessRequest extends AbstractUser<AccessRequest> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Date requestedAt;
     private AccessLevel accessLevel;

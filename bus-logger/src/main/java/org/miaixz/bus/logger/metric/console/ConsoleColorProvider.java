@@ -44,7 +44,7 @@ import java.util.function.Function;
  */
 public class ConsoleColorProvider extends ConsoleProvider {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 控制台打印类名的颜色代码

@@ -28,5 +28,5 @@
 package org.miaixz.bus.gitlab.models;
 
 public class ProjectUser extends AbstractUser<ProjectUser> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 }

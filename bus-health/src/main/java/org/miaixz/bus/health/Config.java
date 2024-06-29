@@ -253,7 +253,7 @@ public final class Config {
      */
     public static class PropertyException extends RuntimeException {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         /**
          * @param property The property name

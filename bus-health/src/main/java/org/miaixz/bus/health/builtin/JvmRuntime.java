@@ -66,7 +66,7 @@ import java.io.Serializable;
  */
 public class JvmRuntime implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final Runtime currentRuntime = Runtime.getRuntime();
 

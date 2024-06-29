@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Iteration implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public enum IterationState {
         UPCOMMING(1), CURRENT(2), CLOSED(3);

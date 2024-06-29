@@ -67,7 +67,7 @@ import java.io.Serializable;
  */
 public class Jvm implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 取得当前JVM impl.的名称(取自系统属性：<code>java.vm.name</code>)

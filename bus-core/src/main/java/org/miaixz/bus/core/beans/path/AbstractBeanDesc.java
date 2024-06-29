@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public abstract class AbstractBeanDesc implements BeanDesc {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Bean类

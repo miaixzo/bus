@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 
 public class SlackService extends NotificationService {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String defaultChannel;
 

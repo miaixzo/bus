@@ -68,7 +68,7 @@ import java.io.Serializable;
  */
 public class JavaRuntime implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final String JAVA_RUNTIME_NAME = Platform.get(Keys.JAVA_RUNTIME_NAME, false);
     private final String JAVA_RUNTIME_VERSION = Platform.get(Keys.JAVA_RUNTIME_VERSION, false);

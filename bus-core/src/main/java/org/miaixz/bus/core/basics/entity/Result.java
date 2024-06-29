@@ -49,7 +49,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Result<T> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 总数据

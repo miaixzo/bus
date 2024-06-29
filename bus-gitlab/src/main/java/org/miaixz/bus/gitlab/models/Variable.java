@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Variable implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Create a List of Variable from the provided Map.

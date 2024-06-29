@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @SuppressWarnings("unchecked")
     public E withDescription(String description) {

@@ -49,7 +49,7 @@ import java.util.Map;
  *  This class is used to filter issues when getting lists of them.
  */
 public class IssueFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Return only the milestone having the given iid.

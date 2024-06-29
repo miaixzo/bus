@@ -40,7 +40,7 @@ import lombok.Setter;
 @Setter
 public class ColumnSchema {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 表中的列的索引（从 1 开始）
      */

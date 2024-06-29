@@ -30,7 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Issue extends AbstractIssue {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Boolean subscribed;
 
