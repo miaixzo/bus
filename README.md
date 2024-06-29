@@ -116,7 +116,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 ### Gradle
 
 ```
-implementation 'org.839128:bus-all:x.x.x'
+implementation 'org.miaixz:bus-all:x.x.x'
 ```
 
 ### Downlad
