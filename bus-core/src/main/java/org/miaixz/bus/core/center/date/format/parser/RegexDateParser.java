@@ -32,73 +32,118 @@ import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 正则日期解析器
+ * 使用正则列表方式的日期解析器
+ * 通过定义若干的日期正则，遍历匹配到给定正则后，按照正则方式解析为日期
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RegexDateParser implements PredicateDateParser {
+public class RegexDateParser implements DateParser, Serializable {
 
-    private static final int[] NSS = {
-            100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1
-    };
+    private static final long serialVersionUID = -1L;
 
-    private final Pattern pattern;
+    private static final int[] NSS = {100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1};
+
+
+    private final List<Pattern> pattern;
 
     /**
      * 构造
      *
      * @param pattern 正则表达式
      */
-    public RegexDateParser(final Pattern pattern) {
+    public RegexDateParser(final List<Pattern> pattern) {
         this.pattern = pattern;
     }
 
     /**
-     * 根据给定带名称的分组正则创建
+     * 根据给定的正则列表
      *
-     * @param regex 正则表达式
-     * @return this
+     * @param regexes 正则列表，默认忽略大小写
+     * @return RegexListDateParser
      */
-    public static RegexDateParser of(final String regex) {
-        // 日期正则忽略大小写
-        return of(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+    public static RegexDateParser of(final String... regexes) {
+        final List<Pattern> patternList = new ArrayList<>(regexes.length);
+        for (final String regex : regexes) {
+            patternList.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+        }
+        return new RegexDateParser(patternList);
     }
 
     /**
-     * 根据给定带名称的分组正则创建
+     * 根据给定的正则列表
      *
-     * @param pattern 正则表达式
+     * @param patterns 正则列表
+     * @return {@link RegexDateParser}
+     */
+    public static RegexDateParser of(final Pattern... patterns) {
+        return new RegexDateParser(ListKit.of(patterns));
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param regex 日期正则
      * @return this
      */
-    public static RegexDateParser of(final Pattern pattern) {
-        return new RegexDateParser(pattern);
+    public RegexDateParser addRegex(final String regex) {
+        // 日期正则忽略大小写
+        return addPattern(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param pattern 日期正则
+     * @return this
+     */
+    public RegexDateParser addPattern(final Pattern pattern) {
+        this.pattern.add(pattern);
+        return this;
+    }
+
+    @Override
+    public Date parse(final CharSequence source) throws DateException {
+        final DateBuilder dateBuilder = DateBuilder.of();
+        Matcher matcher;
+        for (final Pattern pattern : this.pattern) {
+            matcher = pattern.matcher(source);
+            if (matcher.matches()) {
+                parse(matcher, dateBuilder);
+                return dateBuilder.toDate();
+            }
+        }
+
+        throw new DateException("No valid pattern for date string: [{}]", source);
     }
 
     /**
      * 解析日期
      *
      * @param matcher 正则匹配器
-     * @return 日期
      * @throws DateException 日期解析异常
      */
-    public static Date parse(final Matcher matcher) throws DateException {
+    private static void parse(final Matcher matcher, final DateBuilder dateBuilder) throws DateException {
         // 毫秒时间戳
         final String millisecond = PatternKit.group(matcher, "millisecond");
         if (StringKit.isNotEmpty(millisecond)) {
-            return DateKit.date(parseLong(millisecond));
+            dateBuilder.setMillisecond(parseLong(millisecond));
+            return;
         }
 
-        final DateBuilder dateBuilder = DateBuilder.of();
         // year
         Optional.ofNullable(PatternKit.group(matcher, "year")).ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
         // month
@@ -114,10 +159,10 @@ public class RegexDateParser implements PredicateDateParser {
         // second
         Optional.ofNullable(PatternKit.group(matcher, "second")).ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
         // ns
-        Optional.ofNullable(PatternKit.group(matcher, "ns")).ifPresent((ns) -> dateBuilder.setNs(parseNano(ns)));
+        Optional.ofNullable(PatternKit.group(matcher, "ns")).ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
         // am or pm
         Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent((m) -> {
-            if ('p' == m.charAt(0)) {
+            if (CharKit.equals('p', m.charAt(0), true)) {
                 dateBuilder.setPm(true);
             } else {
                 dateBuilder.setAm(true);
@@ -126,22 +171,25 @@ public class RegexDateParser implements PredicateDateParser {
 
         // zero zone offset
         Optional.ofNullable(PatternKit.group(matcher, "zero")).ifPresent((zero) -> {
-            dateBuilder.setZoneOffsetSetted(true);
-            dateBuilder.setZoneOffset(0);
+            dateBuilder.setFlag(true);
+            dateBuilder.setOffset(0);
         });
 
         // zone offset
         Optional.ofNullable(PatternKit.group(matcher, "zoneOffset")).ifPresent((zoneOffset) -> {
-            dateBuilder.setZoneOffsetSetted(true);
-            dateBuilder.setZoneOffset(parseZoneOffset(zoneOffset));
+            dateBuilder.setFlag(true);
+            dateBuilder.setOffset(parseZoneOffset(zoneOffset));
+        });
+
+        // zone name
+        Optional.ofNullable(PatternKit.group(matcher, "zoneName")).ifPresent((zoneOffset) -> {
+            // 暂时不支持解析
         });
 
         // unix时间戳
         Optional.ofNullable(PatternKit.group(matcher, "unixsecond")).ifPresent((unixsecond) -> {
-            dateBuilder.setUnixsecond(parseLong(unixsecond));
+            dateBuilder.setTimestamp(parseLong(unixsecond));
         });
-
-        return dateBuilder.toDate();
     }
 
     private static int parseYear(final String year) {
@@ -236,20 +284,6 @@ public class RegexDateParser implements PredicateDateParser {
             minute = parseInt(zoneOffset, from, from + 2);
         }
         return (hour * 60 + minute) * (neg ? -1 : 1);
-    }
-
-    @Override
-    public boolean test(final CharSequence source) {
-        return PatternKit.isMatch(this.pattern, source);
-    }
-
-    @Override
-    public Date parse(final CharSequence source) throws DateException {
-        final Matcher matcher = this.pattern.matcher(source);
-        if (!matcher.matches()) {
-            throw new DateException("Invalid date string: [{}], not match the date regex: [{}].", source, this.pattern.pattern());
-        }
-        return parse(matcher);
     }
 
 }

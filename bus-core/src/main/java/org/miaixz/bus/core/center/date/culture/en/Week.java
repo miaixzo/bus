@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.date.culture.en;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.EnumKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.time.DayOfWeek;
 import java.util.Calendar;
@@ -128,6 +129,27 @@ public enum Week {
      */
     public static Week of(final String name) throws IllegalArgumentException {
         if (null != name && name.length() > 1) {
+            if (StringKit.startWithAny(name, "星期", "周")) {
+                final char chineseNumber = name.charAt(name.length() - 1);
+                switch (chineseNumber) {
+                    case '一':
+                        return MONDAY;
+                    case '二':
+                        return TUESDAY;
+                    case '三':
+                        return WEDNESDAY;
+                    case '四':
+                        return THURSDAY;
+                    case '五':
+                        return FRIDAY;
+                    case '六':
+                        return SATURDAY;
+                    case '日':
+                        return SUNDAY;
+                }
+                throw new IllegalArgumentException("Invalid week name: " + name);
+            }
+
             switch (Character.toLowerCase(name.charAt(0))) {
                 case 'm':
                     return MONDAY; // monday
@@ -154,7 +176,7 @@ public enum Week {
             }
         }
 
-        throw new IllegalArgumentException("Invalid Week name: " + name);
+        throw new IllegalArgumentException("Invalid week name: " + name);
     }
 
     /**
