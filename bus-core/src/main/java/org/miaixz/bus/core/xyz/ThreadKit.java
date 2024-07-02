@@ -174,9 +174,9 @@ public class ThreadKit {
      * @param maximumQueueSize 队列大小
      * @param threadNamePrefix 线程名称前缀
      * @param isBlocked        是否使用{@link BlockPolicy}策略
-     * @return {@link ExecutorService}
+     * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads, final int maximumQueueSize, final String threadNamePrefix, final boolean isBlocked) {
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize, final String threadNamePrefix, final boolean isBlocked) {
         return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
                 (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
     }
@@ -192,9 +192,9 @@ public class ThreadKit {
      * @param maximumQueueSize 队列大小
      * @param threadNamePrefix 线程名称前缀
      * @param handler          拒绝策略
-     * @return {@link ExecutorService}
+     * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads,
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads,
                                                    final int maximumQueueSize,
                                                    final String threadNamePrefix,
                                                    final RejectedExecutionHandler handler) {

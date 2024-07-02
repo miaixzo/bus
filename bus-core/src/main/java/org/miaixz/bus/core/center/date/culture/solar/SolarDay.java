@@ -215,7 +215,13 @@ public class SolarDay extends Loops {
      * @return 节气第几天
      */
     public SolarTermDay getTermDay() {
-        SolarTerms term = SolarTerms.fromIndex(month.getYear().getYear() + 1, 0);
+        int y = month.getYear().getYear();
+        int i = month.getMonth() * 2;
+        if (i == 24) {
+            y += 1;
+            i = 0;
+        }
+        SolarTerms term = SolarTerms.fromIndex(y, i);
         SolarDay day = term.getJulianDay().getSolarDay();
         while (isBefore(day)) {
             term = term.next(-1);
@@ -363,7 +369,7 @@ public class SolarDay extends Loops {
      * @return 天数
      */
     public int subtract(SolarDay target) {
-        return (int) (getJulianDay().getDay() - target.getJulianDay().getDay());
+        return (int) (getJulianDay().subtract(target.getJulianDay()));
     }
 
     /**
@@ -381,10 +387,10 @@ public class SolarDay extends Loops {
      * @return 农历日
      */
     public LunarDay getLunarDay() {
-        LunarMonth m = LunarMonth.fromYm(month.getYear().getYear(), month.getMonth()).next(-3);
+        LunarMonth m = LunarMonth.fromYm(month.getYear().getYear(), month.getMonth());
         int days = subtract(m.getFirstJulianDay().getSolarDay());
-        while (days >= m.getDayCount()) {
-            m = m.next(1);
+        while (days < 0) {
+            m = m.next(-1);
             days = subtract(m.getFirstJulianDay().getSolarDay());
         }
         return LunarDay.fromYmd(m.getYear().getYear(), m.getMonthWithLeap(), days + 1);

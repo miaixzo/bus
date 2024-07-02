@@ -197,4 +197,14 @@ public class JulianDay extends Loops {
         return Week.fromIndex((int) (day + 0.5) + 7000001);
     }
 
+    /**
+     * 儒略日相减
+     *
+     * @param target 儒略日
+     * @return 差
+     */
+    public double subtract(JulianDay target) {
+        return day - target.getDay();
+    }
+
 }

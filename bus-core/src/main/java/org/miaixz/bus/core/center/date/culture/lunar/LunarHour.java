@@ -33,6 +33,7 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
@@ -266,6 +267,15 @@ public class LunarHour extends Loops {
         int earthBranchIndex = getIndexInDay() % 12;
         int heavenStemIndex = getDaySixtyCycle().getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex;
         return SixtyCycle.fromName(HeavenStem.fromIndex(heavenStemIndex).getName() + EarthBranch.fromIndex(earthBranchIndex).getName());
+    }
+
+    /**
+     * 黄道黑道十二神
+     *
+     * @return 黄道黑道十二神
+     */
+    public TwelveStar getTwelveStar() {
+        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex() + (8 - getDaySixtyCycle().getEarthBranch().getIndex() % 6) * 2);
     }
 
     /**
