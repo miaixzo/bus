@@ -84,6 +84,20 @@ public class WordTree extends HashMap<Character, WordTree> {
     }
 
     /**
+     * 通过预定义的关键词构造单词树
+     *
+     * @param words 初始关键词
+     * @return this
+     */
+    public static WordTree of(final String... words) {
+        final WordTree wordTree = new WordTree(words.length);
+        for (final String word : words) {
+            wordTree.addWord(word);
+        }
+        return wordTree;
+    }
+
+    /**
      * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符
      * 当accept为false时，此字符不参与匹配
      *
@@ -362,7 +376,7 @@ public class WordTree extends HashMap<Character, WordTree> {
     private Iterable<String> innerFlatten(Entry<Character, WordTree> entry) {
         List<String> list = EasyStream.of(entry.getValue().entrySet()).flat(this::innerFlatten).map(v -> entry.getKey() + v).toList();
         if (list.isEmpty()) {
-            return EasyStream.of(entry.getKey().toString());
+            return EasyStream.of(StringKit.toStringOrNull(entry.getKey()));
         }
         return list;
     }

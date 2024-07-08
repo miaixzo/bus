@@ -66,4 +66,13 @@ public interface Converter {
         return (T) ObjectKit.defaultIfNull(convert(targetType, value), defaultValue);
     }
 
+    /**
+     * 返回原值的转换器，不做转换
+     *
+     * @return this
+     */
+    static Converter identity() {
+        return (targetType, value) -> value;
+    }
+
 }

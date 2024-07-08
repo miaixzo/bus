@@ -60,6 +60,17 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
         init();
     }
 
+    private static void dumpBufferPool(BufferPagePool writeBufferPool) throws NoSuchFieldException, IllegalAccessException {
+        Field field = BufferPagePool.class.getDeclaredField("bufferPages");
+        field.setAccessible(true);
+        BufferPage[] pages = (BufferPage[]) field.get(writeBufferPool);
+        String logger = "";
+        for (BufferPage page : pages) {
+            logger += "\r\n" + page.toString();
+        }
+        Logger.info(logger);
+    }
+
     private void init() {
         future = HashedWheelTimer.DEFAULT_TIMER.scheduleWithFixedDelay(() -> {
             {
@@ -69,22 +80,26 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     return;
                 }
                 try {
-                    Field bufferPoolField = AioServer.class.getDeclaredField("bufferPool");
+                    Field bufferPoolField = AioServer.class.getDeclaredField("writeBufferPool");
                     bufferPoolField.setAccessible(true);
-                    BufferPagePool pagePool = (BufferPagePool) bufferPoolField.get(server);
-                    if (pagePool == null) {
+                    BufferPagePool writeBufferPool = (BufferPagePool) bufferPoolField.get(server);
+                    if (writeBufferPool == null) {
                         Logger.error("server maybe has not started!");
                         shutdown();
                         return;
                     }
-                    Field field = BufferPagePool.class.getDeclaredField("bufferPages");
-                    field.setAccessible(true);
-                    BufferPage[] pages = (BufferPage[]) field.get(pagePool);
-                    String logger = "";
-                    for (BufferPage page : pages) {
-                        logger += "\r\n" + page.toString();
+                    Field readBufferPoolField = AioServer.class.getDeclaredField("readBufferPool");
+                    readBufferPoolField.setAccessible(true);
+                    BufferPagePool readBufferPool = (BufferPagePool) readBufferPoolField.get(server);
+
+                    if (readBufferPool != null && readBufferPool != writeBufferPool) {
+                        Logger.info("dump writeBuffer");
+                        dumpBufferPool(writeBufferPool);
+                        Logger.info("dump readBuffer");
+                        dumpBufferPool(readBufferPool);
+                    } else {
+                        dumpBufferPool(writeBufferPool);
                     }
-                    Logger.info(logger);
                 } catch (Exception e) {
                     Logger.error("", e);
                 }

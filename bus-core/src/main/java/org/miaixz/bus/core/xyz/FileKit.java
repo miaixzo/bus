@@ -712,6 +712,37 @@ public class FileKit extends PathResolve {
     }
 
     /**
+     * 清理空文件夹
+     * 此方法用于递归删除空的文件夹，不删除文件
+     * 如果传入的文件夹本身就是空的，删除这个文件夹
+     *
+     * @param directory 文件夹
+     * @return the true/false
+     */
+    public static boolean cleanEmpty(final File directory) {
+        if (directory == null || false == directory.exists() || false == directory.isDirectory()) {
+            return true;
+        }
+
+        final File[] files = directory.listFiles();
+        if (ArrayKit.isEmpty(files)) {
+            // 空文件夹则删除之
+            return directory.delete();
+        }
+
+        for (final File childFile : files) {
+            cleanEmpty(childFile);
+        }
+
+        // 当前目录清除完毕，需要再次判断当前文件夹，空文件夹则删除之
+        final String[] fileNames = directory.list();
+        if (ArrayKit.isEmpty(fileNames)) {
+            return directory.delete();
+        }
+        return true;
+    }
+
+    /**
      * 创建文件夹，如果存在直接返回此文件夹
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *

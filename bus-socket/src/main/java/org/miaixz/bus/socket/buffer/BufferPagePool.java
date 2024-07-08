@@ -48,6 +48,9 @@ public final class BufferPagePool {
         thread.setDaemon(true);
         return thread;
     });
+
+    public static final BufferPagePool DEFAULT_BUFFER_PAGE_POOL = new BufferPagePool(0, 1, false);
+
     /**
      * 内存页游标
      */

@@ -30,6 +30,7 @@ package org.miaixz.bus.core.center.date;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
+import org.miaixz.bus.core.center.date.format.parser.RegisterDateParser;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
@@ -52,6 +53,38 @@ import java.util.Locale;
  */
 public class Resolver extends Converter {
 
+    /**
+     * 将日期字符串转换为{@link DateTime}对象，格式：
+     * <ol>
+     * <li>yyyy-MM-dd HH:mm:ss</li>
+     * <li>yyyy/MM/dd HH:mm:ss</li>
+     * <li>yyyy.MM.dd HH:mm:ss</li>
+     * <li>yyyy年MM月dd日 HH时mm分ss秒</li>
+     * <li>yyyy-MM-dd</li>
+     * <li>yyyy/MM/dd</li>
+     * <li>yyyy.MM.dd</li>
+     * <li>HH:mm:ss</li>
+     * <li>HH时mm分ss秒</li>
+     * <li>yyyy-MM-dd HH:mm</li>
+     * <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+     * <li>yyyy-MM-dd HH:mm:ss.SSSSSS</li>
+     * <li>yyyyMMddHHmmss</li>
+     * <li>yyyyMMddHHmmssSSS</li>
+     * <li>yyyyMMdd</li>
+     * <li>EEE, dd MMM yyyy HH:mm:ss z</li>
+     * <li>EEE MMM dd HH:mm:ss zzz yyyy</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
+     * </ol>
+     *
+     * @param date 日期字符串
+     * @return 日期
+     */
+    public static DateTime parse(final CharSequence date) {
+        return (DateTime) RegisterDateParser.INSTANCE.parse(date);
+    }
 
     /**
      * 构建DateTime对象

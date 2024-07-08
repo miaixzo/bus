@@ -34,6 +34,7 @@ import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
@@ -85,7 +86,7 @@ public class FeishuProvider extends AbstractProvider {
         requestObject.put("app_secret", context.getAppSecret());
 
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = Httpx.post(url, requestObject.toJSONString(), header, MediaType.APPLICATION_JSON);
         JSONObject jsonObject = JSON.parseObject(response);
@@ -110,7 +111,7 @@ public class FeishuProvider extends AbstractProvider {
     protected Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         header.put("Authorization", "Bearer " + accessToken);
         String response = Httpx.get(complex.userInfo(), null, header);
         JSONObject object = JSON.parseObject(response);
@@ -144,7 +145,7 @@ public class FeishuProvider extends AbstractProvider {
 
     private AccToken getToken(JSONObject param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = Httpx.post(url, param.toJSONString(), header, MediaType.APPLICATION_JSON);
         JSONObject jsonObject = JSON.parseObject(response);
         this.checkResponse(jsonObject);

@@ -32,9 +32,7 @@ import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.buffer.BufferFactory;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
-import org.miaixz.bus.socket.buffer.VirtualBufferFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -77,10 +75,6 @@ public final class AioClient {
      */
     private TcpSession session;
     /**
-     * ByteBuffer内存池
-     */
-    private BufferPagePool innerBufferPool = null;
-    /**
      * IO事件处理线程组
      * 作为客户端，该AsynchronousChannelGroup只需保证2个长度的线程池大小即可满足通信读写所需。
      */
@@ -93,13 +87,15 @@ public final class AioClient {
      * 连接超时时间
      */
     private int connectTimeout;
+
     /**
-     * 内存池
+     * write 内存池
      */
-    private BufferPagePool bufferPool = null;
-
-    private VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(context.getReadBufferSize());
-
+    private BufferPagePool writeBufferPool = null;
+    /**
+     * read 内存池
+     */
+    private BufferPagePool readBufferPool = null;
     /**
      * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
      *
@@ -147,9 +143,11 @@ public final class AioClient {
                 }
             }, connectTimeout, TimeUnit.MILLISECONDS);
         }
-        if (bufferPool == null) {
-            bufferPool = context.getBufferFactory().create();
-            this.innerBufferPool = bufferPool;
+        if (writeBufferPool == null) {
+            this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
+        }
+        if (readBufferPool == null) {
+            this.readBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
         }
         //set socket options
         if (context.getSocketOptions() != null) {
@@ -173,7 +171,7 @@ public final class AioClient {
                         throw new RuntimeException("Monitor refuse channel");
                     }
                     //连接成功则构造Session对象
-                    session = new TcpSession(connectedChannel, context, bufferPool.allocateBufferPage(), bufferPage -> readBufferFactory.newBuffer(bufferPage));
+                    session = new TcpSession(connectedChannel, context, writeBufferPool.allocateBufferPage(), () -> readBufferPool.allocateBufferPage().allocate(context.getReadBufferSize()));
                     handler.completed(session, attachment);
                 } catch (Exception e) {
                     failed(e, socketChannel);
@@ -279,11 +277,6 @@ public final class AioClient {
             asynchronousChannelGroup.shutdown();
             asynchronousChannelGroup = null;
         }
-        if (innerBufferPool != null) {
-            innerBufferPool.release();
-            innerBufferPool = null;
-            bufferPool = null;
-        }
     }
 
     /**
@@ -340,23 +333,12 @@ public final class AioClient {
      * @return 当前客户端实例
      */
     public AioClient setBufferPagePool(BufferPagePool bufferPool) {
-        this.bufferPool = bufferPool;
-        this.context.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
-        return this;
+        return setBufferPagePool(bufferPool, bufferPool);
     }
 
-    /**
-     * 设置内存池的构造工厂。
-     * 通过工厂形式生成的内存池会强绑定到当前AioClient对象，
-     * 在AioClient执行shutdown时会释放内存池。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
-     *
-     * @param bufferFactory 内存池工厂
-     * @return 当前客户端实例
-     */
-    public AioClient setBufferFactory(BufferFactory bufferFactory) {
-        this.context.setBufferFactory(bufferFactory);
-        this.bufferPool = null;
+    public AioClient setBufferPagePool(BufferPagePool readBufferPool, BufferPagePool writeBufferPool) {
+        this.writeBufferPool = writeBufferPool;
+        this.readBufferPool = readBufferPool;
         return this;
     }
 
@@ -381,11 +363,6 @@ public final class AioClient {
      */
     public AioClient connectTimeout(int timeout) {
         this.connectTimeout = timeout;
-        return this;
-    }
-
-    public final AioClient setReadBufferFactory(VirtualBufferFactory readBufferFactory) {
-        this.readBufferFactory = readBufferFactory;
         return this;
     }
 

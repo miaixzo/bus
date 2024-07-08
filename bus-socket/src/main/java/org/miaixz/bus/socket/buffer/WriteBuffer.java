@@ -251,6 +251,50 @@ public final class WriteBuffer extends OutputStream {
         flush();
     }
 
+    public synchronized void write(byte[] bytes, Consumer<WriteBuffer> consumer) throws IOException {
+        write(bytes, 0, bytes.length, consumer);
+    }
+
+    public synchronized void transferFrom(ByteBuffer byteBuffer, Consumer<WriteBuffer> consumer) throws IOException {
+        if (!byteBuffer.hasRemaining()) {
+            throw new IllegalStateException("none remaining byteBuffer");
+        }
+        if (writeInBuf != null && writeInBuf.buffer().position() > 0) {
+            flushWriteBuffer(true);
+        }
+        if (completionConsumer != null) {
+            throw new WritePendingException();
+        }
+        if (writeInBuf != null && writeInBuf.buffer().position() > 0) {
+            throw new IllegalStateException();
+        }
+        this.completionConsumer = consumer;
+        VirtualBuffer wrap = VirtualBuffer.wrap(byteBuffer);
+        if (count == 0 && semaphore.tryAcquire()) {
+            writeConsumer.accept(wrap);
+            return;
+        }
+        try {
+            while (count == items.length) {
+                this.wait();
+                // 防止因close诱发内存泄露
+                if (closed) {
+                    return;
+                }
+            }
+
+            items[putIndex] = wrap;
+            if (++putIndex == items.length) {
+                putIndex = 0;
+            }
+            count++;
+        } catch (InterruptedException e1) {
+            throw new RuntimeException(e1);
+        } finally {
+            flush();
+        }
+    }
+
     /**
      * 初始化8字节的缓存数值
      */

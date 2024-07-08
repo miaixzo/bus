@@ -445,7 +445,7 @@ public class IteratorKit {
      * @return HashMap
      */
     public static <K, V> Map<K, V> toMap(final Iterable<V> iterable, final Function<V, K> keyMapper) {
-        return toMap(iterable, keyMapper, v -> v);
+        return toMap(iterable, keyMapper, Function.identity());
     }
 
     /**

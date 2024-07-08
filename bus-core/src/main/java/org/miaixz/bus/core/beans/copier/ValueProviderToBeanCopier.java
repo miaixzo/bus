@@ -31,6 +31,7 @@ import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
@@ -88,11 +89,11 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
             // 获取目标字段真实类型
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
             // 编辑键值对
-            final MutableEntry<String, Object> entry = copyOptions.editField(tFieldName, null);
+            final MutableEntry<Object, Object> entry = copyOptions.editField(tFieldName, null);
             if (null == entry) {
                 return;
             }
-            tFieldName = entry.getKey();
+            tFieldName = StringKit.toStringOrNull(entry.getKey());
             // 对key做转换，转换后为null的跳过
             if (null == tFieldName) {
                 return;

@@ -60,9 +60,6 @@ import java.util.TreeMap;
  */
 public class ElemeProvider extends AbstractProvider {
 
-    private static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded;charset=UTF-8";
-    private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
-
     public ElemeProvider(Context context) {
         super(context, Registry.ELEME);
     }
@@ -103,7 +100,7 @@ public class ElemeProvider extends AbstractProvider {
         form.put("code", callback.getCode());
         form.put("grant_type", "authorization_code");
 
-        Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);
+        Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
 
         String response = Httpx.post(complex.accessToken(), form, header);
         JSONObject object = JSONObject.parseObject(response);
@@ -124,7 +121,7 @@ public class ElemeProvider extends AbstractProvider {
         form.put("refresh_token", oldToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
-        Map<String, String> header = this.buildHeader(CONTENT_TYPE_FORM, this.getRequestId(), true);
+        Map<String, String> header = this.buildHeader(MediaType.APPLICATION_FORM_URLENCODED, this.getRequestId(), true);
         String response = Httpx.post(complex.refresh(), form, header);
 
         JSONObject object = JSONObject.parseObject(response);
@@ -167,7 +164,7 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("params", parameters);
         paramsMap.put("signature", signature);
 
-        Map<String, String> header = this.buildHeader(CONTENT_TYPE_JSON, requestId, false);
+        Map<String, String> header = this.buildHeader(MediaType.APPLICATION_JSON, requestId, false);
         String response = Httpx.post(complex.userInfo(), JSONObject.toJSONString(paramsMap), header, MediaType.APPLICATION_JSON);
 
         JSONObject object = JSONObject.parseObject(response);

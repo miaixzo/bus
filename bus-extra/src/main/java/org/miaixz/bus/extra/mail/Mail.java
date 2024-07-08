@@ -323,7 +323,7 @@ public class Mail implements Builder<MimeMessage> {
                     bodyPart.setDataHandler(new DataHandler(attachment));
                     nameEncoded = attachment.getName();
                     if (this.mailAccount.isEncodefilename()) {
-                        nameEncoded = InternalMailUtil.encodeText(nameEncoded, charset);
+                        nameEncoded = InternalMail.encodeText(nameEncoded, charset);
                     }
                     // 普通附件文件名
                     bodyPart.setFileName(nameEncoded);
@@ -431,7 +431,7 @@ public class Mail implements Builder<MimeMessage> {
             // 用户未提供发送方，则从Session中自动获取
             msg.setFrom();
         } else {
-            msg.setFrom(InternalMailUtil.parseFirstAddress(from, charset));
+            msg.setFrom(InternalMail.parseFirstAddress(from, charset));
         }
         // 标题
         msg.setSubject(this.title, (null == charset) ? null : charset.name());
@@ -440,18 +440,18 @@ public class Mail implements Builder<MimeMessage> {
         // 内容和附件
         msg.setContent(buildContent(charset));
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO, InternalMailUtil.parseAddressFromStrs(this.tos, charset));
+        msg.setRecipients(MimeMessage.RecipientType.TO, InternalMail.parseAddressFromStrs(this.tos, charset));
         // 抄送人
         if (ArrayKit.isNotEmpty(this.ccs)) {
-            msg.setRecipients(MimeMessage.RecipientType.CC, InternalMailUtil.parseAddressFromStrs(this.ccs, charset));
+            msg.setRecipients(MimeMessage.RecipientType.CC, InternalMail.parseAddressFromStrs(this.ccs, charset));
         }
         // 密送人
         if (ArrayKit.isNotEmpty(this.bccs)) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC, InternalMailUtil.parseAddressFromStrs(this.bccs, charset));
+            msg.setRecipients(MimeMessage.RecipientType.BCC, InternalMail.parseAddressFromStrs(this.bccs, charset));
         }
         // 回复地址(reply-to)
         if (ArrayKit.isNotEmpty(this.reply)) {
-            msg.setReplyTo(InternalMailUtil.parseAddressFromStrs(this.reply, charset));
+            msg.setReplyTo(InternalMail.parseAddressFromStrs(this.reply, charset));
         }
 
         return msg;

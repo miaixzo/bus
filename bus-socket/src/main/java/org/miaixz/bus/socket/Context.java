@@ -28,7 +28,6 @@
 package org.miaixz.bus.socket;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.socket.buffer.BufferFactory;
 
 import java.net.SocketOption;
 import java.util.HashMap;
@@ -90,11 +89,6 @@ public final class Context {
      * 线程数
      */
     private int threadNum = 1;
-
-    /**
-     * 内存池工厂
-     */
-    private BufferFactory bufferFactory = BufferFactory.DISABLED_BUFFER_FACTORY;
 
     /**
      * 获取默认内存块大小
@@ -206,14 +200,6 @@ public final class Context {
         this.threadNum = threadNum;
     }
 
-    public BufferFactory getBufferFactory() {
-        return bufferFactory;
-    }
-
-    public void setBufferFactory(BufferFactory bufferFactory) {
-        this.bufferFactory = bufferFactory;
-    }
-
     public int getBacklog() {
         return backlog;
     }
@@ -236,7 +222,6 @@ public final class Context {
                 ", protocol=" + message +
                 ", socketOptions=" + socketOptions +
                 ", threadNum=" + threadNum +
-                ", bufferFactory=" + bufferFactory +
                 '}';
     }
 

@@ -59,7 +59,7 @@ public final class UdpChannel {
     /**
      * 缓冲页
      */
-    private final BufferPage bufferPage;
+    private final BufferPage writeBufferPage;
     /**
      * 真实的UDP通道
      */
@@ -81,14 +81,14 @@ public final class UdpChannel {
      */
     private ResponseUnit failResponseUnit;
 
-    UdpChannel(final DatagramChannel channel, Context context, BufferPage bufferPage) {
+    UdpChannel(final DatagramChannel channel, Context context, BufferPage writeBufferPage) {
         this.channel = channel;
-        this.bufferPage = bufferPage;
+        this.writeBufferPage = writeBufferPage;
         this.context = context;
     }
 
-    UdpChannel(final DatagramChannel channel, Worker worker, Context context, BufferPage bufferPage) {
-        this(channel, context, bufferPage);
+    UdpChannel(final DatagramChannel channel, Worker worker, Context context, BufferPage writeBufferPage) {
+        this(channel, context, writeBufferPage);
         responseTasks = new ConcurrentLinkedQueue<>();
         this.worker = worker;
         worker.addRegister(selector -> {
@@ -169,7 +169,7 @@ public final class UdpChannel {
      * 建立与远程服务的连接会话,通过Session可进行数据传输
      */
     public Session connect(SocketAddress remote) {
-        return new UdpSession(this, remote, bufferPage);
+        return new UdpSession(this, remote, writeBufferPage);
     }
 
     public Session connect(String host, int port) {
@@ -203,11 +203,6 @@ public final class UdpChannel {
             failResponseUnit.response.clean();
         }
     }
-
-    public BufferPage getBufferPage() {
-        return bufferPage;
-    }
-
 
     public DatagramChannel getChannel() {
         return channel;

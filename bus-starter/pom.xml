@@ -72,9 +72,9 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <spring.boot.version>3.3.1</spring.boot.version>
-        <lombok.version>1.18.32</lombok.version>
-        <persistence.version>3.2.0</persistence.version>
-        <servlet.version>6.1.0-M2</servlet.version>
+        <lombok.version>1.18.34</lombok.version>
+        <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+       <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <aspectj.version>1.9.22</aspectj.version>
         <vertx.version>4.5.8</vertx.version>
         <guice.version>7.0.0</guice.version>
@@ -220,13 +220,13 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>${persistence.version}</version>
+            <version>${jakarta.persistence.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>${servlet.version}</version>
+            <version>${jakarta.servlet.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -74,7 +74,7 @@
         <spring.boot.version>3.3.1</spring.boot.version>
         <compress.version>1.26.2</compress.version>
         <freemarker.version>2.3.32</freemarker.version>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <hikaricp.version>5.1.0</hikaricp.version>
         <mysql.version>8.4.0</mysql.version>
     </properties>

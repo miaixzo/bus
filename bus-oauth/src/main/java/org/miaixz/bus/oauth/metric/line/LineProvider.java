@@ -31,7 +31,9 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -84,7 +86,7 @@ public class LineProvider extends AbstractProvider {
     @Override
     protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
 
         String userInfo = Httpx.get(complex.userInfo(), null, header);

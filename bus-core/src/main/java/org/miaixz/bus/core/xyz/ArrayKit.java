@@ -54,52 +54,40 @@ public class ArrayKit extends PrimitiveArray {
 
     /**
      * 转为数组，如果values为数组，返回，否则返回一个只有values一个元素的数组
-     *
-     * @param <A>    数组类型
-     * @param values 元素值
-     * @return 数组
-     */
-    public static <A> A ofArray(final Object values) {
-        return ofArray(values, null);
-    }
-
-    /**
-     * 转为数组，如果values为数组，返回，否则返回一个只有values一个元素的数组
+     * 注意：values的元素类型或其本身类型必须和提供的elementType完全一致
      *
      * @param <A>         数组类型
      * @param values      元素值
      * @param elementType 数组元素类型，{@code null}表示使用values的类型
      * @return 数组
      */
-    public static <A> A ofArray(final Object values, final Class<?> elementType) {
+    public static <A> A castOrWrapSingle(final Object values, final Class<?> elementType) {
         if (isArray(values)) {
             return (A) values;
         }
 
+        return wrapSingle(values, elementType);
+    }
+
+    /**
+     * 包装单一元素为数组
+     *
+     * @param <A>         数组类型
+     * @param value       元素值
+     * @param elementType 数组元素类型，{@code null}表示使用value的类型
+     * @return 数组
+     */
+    public static <A> A wrapSingle(final Object value, final Class<?> elementType) {
         // 插入单个元素
         final Object newInstance = Array.newInstance(
-                null == elementType ? values.getClass() : elementType, 1);
-        Array.set(newInstance, 0, values);
+                null == elementType ? value.getClass() : elementType, 1);
+        Array.set(newInstance, 0, value);
         return (A) newInstance;
     }
 
-    /**
-     * 将集合转为数组
-     *
-     * @param <T>           数组元素类型
-     * @param iterator      {@link Iterator}
-     * @param componentType 集合元素类型
-     * @return 数组
-     */
-    public static <T> T[] ofArray(final Iterator<T> iterator, final Class<T> componentType) {
-        if (null == iterator) {
-            return newArray(componentType, 0);
-        }
-        return ListKit.of(iterator).toArray(newArray(componentType, 0));
-    }
 
     /**
-     * 将集合转为数组
+     * 将集合转为数组，如果集合为{@code null}，则返回空的数组（元素个数为0）
      *
      * @param <T>           数组元素类型
      * @param iterable      {@link Iterable}
@@ -107,7 +95,26 @@ public class ArrayKit extends PrimitiveArray {
      * @return 数组
      */
     public static <T> T[] ofArray(final Iterable<T> iterable, final Class<T> componentType) {
-        return ofArray(IteratorKit.getIter(iterable), componentType);
+        if (null == iterable) {
+            return newArray(componentType, 0);
+        }
+
+        if (iterable instanceof List) {
+            // List
+            return ((List<T>) iterable).toArray(newArray(componentType, 0));
+        } else if (iterable instanceof Collection) {
+            // 其它集合
+            final int size = ((Collection<T>) iterable).size();
+            final T[] result = newArray(componentType, size);
+            int i = 0;
+            for (final T element : iterable) {
+                result[i] = element;
+                i++;
+            }
+        }
+
+        // 自定义Iterable转为List处理
+        return ListKit.of(iterable.iterator()).toArray(newArray(componentType, 0));
     }
 
     /**
@@ -609,7 +616,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <T> T[] setOrAppend(final T[] array, final int index, final T value) {
         if (isEmpty(array)) {
-            return ofArray(value, null == array ? null : array.getClass().getComponentType());
+            return wrapSingle(value, null == array ? null : array.getClass().getComponentType());
         }
         return ArrayWrapper.of(array).setOrAppend(index, value).getRaw();
     }
@@ -625,7 +632,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <A> A setOrAppend(final A array, final int index, final Object value) {
         if (isEmpty(array)) {
-            return ofArray(value, null == array ? null : array.getClass().getComponentType());
+            return wrapSingle(value, null == array ? null : array.getClass().getComponentType());
         }
         return ArrayWrapper.of(array).setOrAppend(index, value).getRaw();
     }
@@ -641,7 +648,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <A> A setOrPadding(final A array, final int index, final Object value) {
         if (index == 0 && isEmpty(array)) {
-            return ofArray(value, null == array ? null : array.getClass().getComponentType());
+            return wrapSingle(value, null == array ? null : array.getClass().getComponentType());
         }
         return ArrayWrapper.of(array).setOrPadding(index, value).getRaw();
     }
@@ -659,7 +666,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <A, E> A setOrPadding(final A array, final int index, final E value, final E paddingValue) {
         if (index == 0 && isEmpty(array)) {
-            return ofArray(value, null == array ? null : array.getClass().getComponentType());
+            return wrapSingle(value, null == array ? null : array.getClass().getComponentType());
         }
         return ArrayWrapper.of(array).setOrPadding(index, value, paddingValue).getRaw();
     }
@@ -710,16 +717,16 @@ public class ArrayKit extends PrimitiveArray {
      * </ul>
      *
      * @param <T>    数组元素类型
-     * @param buffer 已有数组
+     * @param array  已有数组
      * @param index  位置
      * @param values 新值
      * @return 新数组或原有数组
      */
-    public static <T> T[] replace(final T[] buffer, final int index, final T... values) {
-        if (isEmpty(buffer)) {
+    public static <T> T[] replace(final T[] array, final int index, final T... values) {
+        if (isEmpty(array)) {
             return values;
         }
-        return ArrayWrapper.of(buffer).replace(index, values).getRaw();
+        return ArrayWrapper.of(array).replace(index, values).getRaw();
     }
 
     /**
@@ -739,7 +746,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <A> A replace(final A array, final int index, final A values) {
         if (isEmpty(array)) {
-            return ofArray(values, null == array ? null : array.getClass().getComponentType());
+            return castOrWrapSingle(values, null == array ? null : array.getClass().getComponentType());
         }
         return ArrayWrapper.of(array).replace(index, values).getRaw();
     }
@@ -765,15 +772,15 @@ public class ArrayKit extends PrimitiveArray {
      * 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
      *
      * @param <A>         数组类型
-     * @param <T>         数组元素类型
+     * @param <E>         数组元素类型
      * @param array       已有数组，可以为原始类型数组
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素
      * @return 新数组
      */
     @SafeVarargs
-    public static <A, T> A insert(final A array, final int index, final T... newElements) {
-        return ArrayWrapper.of(array).insert(index, newElements).getRaw();
+    public static <A, E> A insert(final A array, final int index, final E... newElements) {
+        return ArrayWrapper.of(array).insertArray(index, (A) newElements).getRaw();
     }
 
     /**
@@ -1675,26 +1682,7 @@ public class ArrayKit extends PrimitiveArray {
      * 按照指定规则，将一种类型的数组转换为另一种类型
      *
      * @param array               被转换的数组
-     * @param targetComponentType 目标的元素类型
-     * @param func                转换规则函数
-     * @param <T>                 原数组类型
-     * @param <R>                 目标数组类型
-     * @return 转换后的数组
-     */
-    public static <T, R> R[] map(final T[] array, final Class<R> targetComponentType, final Function<? super T, ? extends R> func) {
-        final int length = length(array);
-        final R[] result = newArray(targetComponentType, length);
-        for (int i = 0; i < length; i++) {
-            result[i] = func.apply(array[i]);
-        }
-        return result;
-    }
-
-    /**
-     * 按照指定规则，将一种类型的数组转换为另一种类型
-     *
-     * @param array               被转换的数组
-     * @param targetComponentType 目标的元素类型
+     * @param targetComponentType 标的元素类型，只能为包装类型
      * @param func                转换规则函数
      * @param <T>                 原数组类型
      * @param <R>                 目标数组类型
@@ -1718,7 +1706,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>   目标数组类型
      * @return 列表
      */
-    public static <T, R> List<R> map(final T[] array, final Function<? super T, ? extends R> func) {
+    public static <T, R> List<R> mapToList(final T[] array, final Function<? super T, ? extends R> func) {
         return Arrays.stream(array).map(func).collect(Collectors.toList());
     }
 

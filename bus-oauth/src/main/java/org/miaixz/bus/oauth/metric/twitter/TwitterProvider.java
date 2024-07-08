@@ -32,6 +32,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -163,7 +164,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
-        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", callback.getOauth_verifier());

@@ -31,6 +31,7 @@ import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
@@ -86,11 +87,11 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             }
 
             // 编辑键值对
-            final MutableEntry<String, Object> entry = copyOptions.editField(sFieldName, sValue);
+            final MutableEntry<Object, Object> entry = copyOptions.editField(sFieldName, sValue);
             if (null == entry) {
                 return;
             }
-            sFieldName = entry.getKey();
+            sFieldName = StringKit.toStringOrNull(entry.getKey());
             // 对key做转换，转换后为null的跳过
             if (null == sFieldName) {
                 return;

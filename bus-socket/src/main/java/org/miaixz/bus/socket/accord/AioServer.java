@@ -32,7 +32,8 @@ import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Status;
-import org.miaixz.bus.socket.buffer.*;
+import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
 import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.security.InvalidParameterException;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * AIO服务端
@@ -65,10 +66,6 @@ public final class AioServer {
      */
     private final Context context = new Context();
     /**
-     * 内存池
-     */
-    private BufferPagePool innerBufferPool = null;
-    /**
      * 异步服务器套接字通道
      */
     private AsynchronousServerSocketChannel serverSocketChannel = null;
@@ -79,16 +76,15 @@ public final class AioServer {
     /**
      * 是否开启低内存模式
      */
-    private boolean lowMemory;
+    private boolean lowMemory = true;
     /**
-     * 内存池
+     * write 内存池
      */
-    private BufferPagePool bufferPool = null;
+    private BufferPagePool writeBufferPool = null;
     /**
-     * 虚拟缓冲区工厂
+     * read 内存池
      */
-    private VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(context.getReadBufferSize());
-
+    private BufferPagePool readBufferPool = null;
     /**
      * 设置服务端启动必要参数配置
      *
@@ -120,10 +116,6 @@ public final class AioServer {
      * @throws IOException IO异常
      */
     public void start() throws IOException {
-        if (bufferPool == null) {
-            this.bufferPool = context.getBufferFactory().create();
-            this.innerBufferPool = bufferPool;
-        }
         asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(context.getThreadNum(), r -> new Thread(r, "Socket:Thread-" + (threadSeqNumber++)));
         start(asynchronousChannelGroup);
     }
@@ -135,9 +127,11 @@ public final class AioServer {
      */
     public void start(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         try {
-            if (bufferPool == null) {
-                this.bufferPool = context.getBufferFactory().create();
-                this.innerBufferPool = bufferPool;
+            if (writeBufferPool == null) {
+                this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
+            }
+            if (readBufferPool == null) {
+                this.readBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
             }
 
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
@@ -162,7 +156,7 @@ public final class AioServer {
     }
 
     private void startAcceptThread() {
-        Function<BufferPage, VirtualBuffer> function = bufferPage -> readBufferFactory.newBuffer(bufferPage);
+        Supplier<VirtualBuffer> readBufferSupplier = () -> readBufferPool.allocateBufferPage().allocate(context.getReadBufferSize());
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
@@ -173,7 +167,7 @@ public final class AioServer {
                     failed(throwable, attachment);
                     serverSocketChannel.accept(attachment, this);
                 } finally {
-                    createSession(channel, function);
+                    createSession(channel, readBufferSupplier);
                 }
             }
 
@@ -188,10 +182,10 @@ public final class AioServer {
      * 为每个新建立的连接创建Session对象
      *
      * @param channel 当前已建立连接通道
-     * @param function
+     * @param readBufferSupplier
      */
-    private void createSession(AsynchronousSocketChannel channel, Function<BufferPage, VirtualBuffer> function) {
-        // 连接成功则构造Session对象
+    private void createSession(AsynchronousSocketChannel channel, Supplier<VirtualBuffer> readBufferSupplier) {
+        //连接成功则构造AIOSession对象
         TcpSession session = null;
         AsynchronousSocketChannel acceptChannel = channel;
         try {
@@ -200,18 +194,18 @@ public final class AioServer {
             }
             if (acceptChannel != null) {
                 acceptChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
-                session = new TcpSession(acceptChannel, this.context, bufferPool.allocateBufferPage(), function);
+                session = new TcpSession(acceptChannel, this.context, writeBufferPool.allocateBufferPage(), readBufferSupplier);
             } else {
                 context.getProcessor().stateEvent(null, Status.REJECT_ACCEPT, null);
                 IoKit.close(channel);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             if (session == null) {
                 IoKit.close(channel);
             } else {
                 session.close();
             }
+            context.getProcessor().stateEvent(null, Status.INTERNAL_EXCEPTION, e);
         }
     }
 
@@ -231,16 +225,13 @@ public final class AioServer {
         if (asynchronousChannelGroup != null) {
             asynchronousChannelGroup.shutdown();
         }
-        if (innerBufferPool != null) {
-            innerBufferPool.release();
-        }
     }
 
     /**
      * 设置读缓存区大小
      *
      * @param size 单位：byte
-     * @return 当前AioServer对象
+     * @return this
      */
     public AioServer setReadBufferSize(int size) {
         this.context.setReadBufferSize(size);
@@ -258,7 +249,7 @@ public final class AioServer {
      * @param socketOption 配置项
      * @param value        配置值
      * @param <V>          配置项类型
-     * @return 当前AioServer对象
+     * @return this
      */
     public <V> AioServer setOption(SocketOption<V> socketOption, V value) {
         context.setOption(socketOption, value);
@@ -269,7 +260,7 @@ public final class AioServer {
      * 设置服务工作线程数,设置数值必须大于等于2
      *
      * @param threadNum 线程数
-     * @return 当前AioServer对象
+     * @return this
      */
     public AioServer setThreadNum(int threadNum) {
         if (threadNum <= 1) {
@@ -284,11 +275,11 @@ public final class AioServer {
      *
      * @param bufferSize     单个内存块大小
      * @param bufferCapacity 内存块数量上限
-     * @return 当前AioServer对象
+     * @return this
      */
     public AioServer setWriteBuffer(int bufferSize, int bufferCapacity) {
-        context.setWriteBufferSize(bufferSize);
-        context.setWriteBufferCapacity(bufferCapacity);
+        this.context.setWriteBufferSize(bufferSize);
+        this.context.setWriteBufferCapacity(bufferCapacity);
         return this;
     }
 
@@ -296,50 +287,47 @@ public final class AioServer {
      * 设置 backlog 大小
      *
      * @param backlog backlog大小
-     * @return 当前AioServer对象
+     * @return this
      */
-    public AioServer setBacklog(int backlog) {
-        context.setBacklog(backlog);
+    public final AioServer setBacklog(int backlog) {
+        this.context.setBacklog(backlog);
         return this;
     }
 
     /**
-     * 设置内存池
-     * 通过该方法设置的内存池，在AioServer执行shutdown时不会触发内存池的释放。
-     * 该方法适用于多个AioServer、AioClient共享内存池的场景。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
+     * 设置读写内存池。
+     * 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景，
+     * <b>以获得更好的性能表现</b>
      *
      * @param bufferPool 内存池对象
-     * @return 当前AioServer对象
+     * @return this
      */
     public AioServer setBufferPagePool(BufferPagePool bufferPool) {
-        this.bufferPool = bufferPool;
-        this.context.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
+        return setBufferPagePool(bufferPool, bufferPool);
+    }
+
+    /**
+     * 设置读写内存池。
+     * 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景，
+     * <b>以获得更好的性能表现</b>
+     *
+     * @param readBufferPool  读内存池对象
+     * @param writeBufferPool 写内存池对象
+     * @return this
+     */
+    public AioServer setBufferPagePool(BufferPagePool readBufferPool, BufferPagePool writeBufferPool) {
+        this.writeBufferPool = writeBufferPool;
+        this.readBufferPool = readBufferPool;
         return this;
     }
 
     /**
-     * 设置内存池的构造工厂
-     * 通过工厂形式生成的内存池会强绑定到当前AioServer对象，
-     * 在AioServer执行shutdown时会释放内存池。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
+     * 禁用低代码模式
      *
-     * @param bufferFactory 内存池工厂
-     * @return 当前AioServer对象
+     * @return this
      */
-    public AioServer setBufferFactory(BufferFactory bufferFactory) {
-        this.context.setBufferFactory(bufferFactory);
-        this.bufferPool = null;
-        return this;
-    }
-
-    public AioServer setReadBufferFactory(VirtualBufferFactory readBufferFactory) {
-        this.readBufferFactory = readBufferFactory;
-        return this;
-    }
-
-    public AioServer setLowMemory(boolean lowMemory) {
-        this.lowMemory = lowMemory;
+    public AioServer disableLowMemory() {
+        this.lowMemory = false;
         return this;
     }
 

@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -119,7 +120,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         bodys.put("content", entity.getContent());
 
         Map<String, String> headers = MapKit.newHashMap(1, true);
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = Httpx.post(url, bodys, headers);
 
@@ -179,7 +180,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         bodys.put("records", JsonKit.toJsonString(records));
 
         Map<String, String> headers = MapKit.newHashMap(1, true);
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = Httpx.post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);

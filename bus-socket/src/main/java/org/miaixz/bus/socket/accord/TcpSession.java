@@ -42,7 +42,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * AIO传输层会话
@@ -78,17 +78,13 @@ public final class TcpSession extends Session {
      */
     private final WriteBuffer byteBuf;
     /**
-     * 缓冲页
-     */
-    private final BufferPage bufferPage;
-    /**
      * 服务上下文
      */
     private final Context context;
     /**
      * 缓冲函数
      */
-    private final Function<BufferPage, VirtualBuffer> function;
+    private final Supplier<VirtualBuffer> readBufferSupplier;
     /**
      * 读缓冲
      * 大小取决于AioClient/AioServer设置的setReadBufferSize
@@ -106,19 +102,18 @@ public final class TcpSession extends Session {
     /**
      * @param channel Socket通道
      */
-    TcpSession(AsynchronousSocketChannel channel, Context context, BufferPage bufferPage, Function<BufferPage, VirtualBuffer> function) {
+    public TcpSession(AsynchronousSocketChannel channel, Context context, BufferPage writeBufferPage, Supplier<VirtualBuffer> readBufferSupplier) {
         this.channel = channel;
         this.context = context;
-        this.bufferPage = bufferPage;
-        this.function = function;
-        byteBuf = new WriteBuffer(bufferPage, this::continueWrite, this.context.getWriteBufferSize(), this.context.getWriteBufferCapacity());
-        // 触发状态机
+        this.readBufferSupplier = readBufferSupplier;
+        byteBuf = new WriteBuffer(writeBufferPage, this::continueWrite, this.context.getWriteBufferSize(), this.context.getWriteBufferCapacity());
+        //触发状态机
         this.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
         doRead();
     }
 
     void doRead() {
-        this.readBuffer = function.apply(bufferPage);
+        this.readBuffer = readBufferSupplier.get();
         this.readBuffer.buffer().flip();
         signalRead();
     }

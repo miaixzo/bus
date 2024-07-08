@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -71,21 +70,23 @@ public class CalendarConverter extends AbstractConverter {
     protected Calendar convertInternal(final Class<?> targetClass, final Object value) {
         // Handle Date
         if (value instanceof Date) {
-            return DateKit.calendar((Date) value);
+            return org.miaixz.bus.core.center.date.Calendar.calendar((Date) value);
         }
 
         // Handle Long
         if (value instanceof Long) {
             //此处使用自动拆装箱
-            return DateKit.calendar((Long) value);
+            return org.miaixz.bus.core.center.date.Calendar.calendar((Long) value);
         }
 
         if (value instanceof XMLGregorianCalendar) {
-            return DateKit.calendar((XMLGregorianCalendar) value);
+            return org.miaixz.bus.core.center.date.Calendar.calendar((XMLGregorianCalendar) value);
         }
 
         final String valueStr = convertToString(value);
-        return DateKit.calendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
+        return org.miaixz.bus.core.center.date.Calendar.calendar(StringKit.isBlank(format) ?
+                org.miaixz.bus.core.center.date.Calendar.parse(valueStr) :
+                org.miaixz.bus.core.center.date.Calendar.parse(valueStr, format));
     }
 
 }

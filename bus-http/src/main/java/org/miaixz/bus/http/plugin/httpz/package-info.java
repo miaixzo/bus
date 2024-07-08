@@ -25,61 +25,11 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.core.center.date.format.parser;
-
-import org.miaixz.bus.core.center.date.DateTime;
-import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.xyz.MathKit;
-
-import java.io.Serializable;
-
 /**
- * 纯数字的日期字符串解析，支持格式包括；
- * <ul>
- *   <li>yyyyMMddHHmmss</li>
- *   <li>yyyyMMddHHmmssSSS</li>
- *   <li>yyyyMMdd</li>
- *   <li>HHmmss</li>
- *   <li>毫秒时间戳</li>
- * </ul>
+ * Httpz 实现
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PureDateParser implements PredicateDateParser, Serializable {
+package org.miaixz.bus.http.plugin.httpz;
 
-    private static final long serialVersionUID = -1L;
-
-    /**
-     * 单例
-     */
-    public static PureDateParser INSTANCE = new PureDateParser();
-
-    @Override
-    public boolean test(final CharSequence date) {
-        return MathKit.isNumber(date);
-    }
-
-    @Override
-    public DateTime parse(final CharSequence source) throws DateException {
-        final int length = source.length();
-        // 纯数字形式
-        if (length == Fields.PURE_DATETIME.length()) {
-            return new DateTime(source, Formatter.PURE_DATETIME_FORMAT);
-        } else if (length == Fields.PURE_DATETIME_MS.length()) {
-            return new DateTime(source, Formatter.PURE_DATETIME_MS_FORMAT);
-        } else if (length == Fields.PURE_DATE.length()) {
-            return new DateTime(source, Formatter.PURE_DATE_FORMAT);
-        } else if (length == Fields.PURE_TIME.length()) {
-            return new DateTime(source, Formatter.PURE_TIME_FORMAT);
-        } else if (length >= 11 && length <= 13) {
-            // 时间戳
-            return new DateTime(MathKit.parseLong(String.valueOf(source)));
-        }
-
-        throw new DateException("No pure format fit for date String [{}] !", source);
-    }
-
-}

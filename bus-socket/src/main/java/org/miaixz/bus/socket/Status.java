@@ -91,5 +91,9 @@ public enum Status {
     /**
      * 服务端接受连接异常
      */
-    ACCEPT_EXCEPTION
+    ACCEPT_EXCEPTION,
+    /**
+     * 内部异常
+     */
+    INTERNAL_EXCEPTION
 }

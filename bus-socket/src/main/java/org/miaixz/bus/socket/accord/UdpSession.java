@@ -49,10 +49,10 @@ public final class UdpSession extends Session {
 
     private final WriteBuffer byteBuf;
 
-    public UdpSession(final UdpChannel udpChannel, final SocketAddress remote, BufferPage bufferPage) {
+    public UdpSession(final UdpChannel udpChannel, final SocketAddress remote, BufferPage writeBufferPage) {
         this.udpChannel = udpChannel;
         this.remote = remote;
-        this.byteBuf = new WriteBuffer(bufferPage, buffer -> udpChannel.write(buffer, UdpSession.this), udpChannel.context.getWriteBufferSize(), 1);
+        this.byteBuf = new WriteBuffer(writeBufferPage, buffer -> udpChannel.write(buffer, this), udpChannel.context.getWriteBufferSize(), 1);
         udpChannel.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
     }
 

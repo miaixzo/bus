@@ -45,7 +45,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class InternalMailUtil {
+public class InternalMail {
 
     /**
      * 将多个字符串邮件地址转为{@link InternetAddress}列表
@@ -58,8 +58,8 @@ public class InternalMailUtil {
     public static InternetAddress[] parseAddressFromStrs(final String[] addrStrs, final Charset charset) {
         final List<InternetAddress> resultList = new ArrayList<>(addrStrs.length);
         InternetAddress[] addrs;
-        for (final String addrStr : addrStrs) {
-            addrs = parseAddress(addrStr, charset);
+        for (final String text : addrStrs) {
+            addrs = parseAddress(text, charset);
             if (ArrayKit.isNotEmpty(addrs)) {
                 Collections.addAll(resultList, addrs);
             }

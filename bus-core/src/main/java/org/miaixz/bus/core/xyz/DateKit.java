@@ -35,13 +35,10 @@ import org.miaixz.bus.core.center.date.culture.en.*;
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
-import org.miaixz.bus.core.center.date.format.parser.NormalDateParser;
-import org.miaixz.bus.core.center.date.format.parser.RegisterDateParser;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.text.CharsBacker;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -739,59 +736,6 @@ public class DateKit extends Calendar {
         }
 
         return Calendar.formatChineseDate(Calendar.calendar(date), withTime);
-    }
-
-    /**
-     * 将日期字符串转换为{@link DateTime}对象，格式：
-     * <ol>
-     * <li>yyyy-MM-dd HH:mm:ss</li>
-     * <li>yyyy/MM/dd HH:mm:ss</li>
-     * <li>yyyy.MM.dd HH:mm:ss</li>
-     * <li>yyyy年MM月dd日 HH时mm分ss秒</li>
-     * <li>yyyy-MM-dd</li>
-     * <li>yyyy/MM/dd</li>
-     * <li>yyyy.MM.dd</li>
-     * <li>HH:mm:ss</li>
-     * <li>HH时mm分ss秒</li>
-     * <li>yyyy-MM-dd HH:mm</li>
-     * <li>yyyy-MM-dd HH:mm:ss.SSS</li>
-     * <li>yyyy-MM-dd HH:mm:ss.SSSSSS</li>
-     * <li>yyyyMMddHHmmss</li>
-     * <li>yyyyMMddHHmmssSSS</li>
-     * <li>yyyyMMdd</li>
-     * <li>EEE, dd MMM yyyy HH:mm:ss z</li>
-     * <li>EEE MMM dd HH:mm:ss zzz yyyy</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
-     * </ol>
-     *
-     * @param dateCharSequence 日期字符串
-     * @return 日期
-     */
-    public static DateTime parse(final CharSequence dateCharSequence) {
-        if (StringKit.isBlank(dateCharSequence)) {
-            return null;
-        }
-        String date = dateCharSequence.toString();
-        // 去掉两边空格并去掉中文日期中的“日”和“秒”，以规范长度
-        date = StringKit.removeAll(date.trim(), '日', '秒');
-
-        final Date result = RegisterDateParser.INSTANCE.parse(date);
-        if (null != result) {
-            return date(result);
-        }
-
-        //标准日期格式（包括单个数字的日期时间）
-        date = normalize(date);
-
-        if (NormalDateParser.INSTANCE.test(date)) {
-            return NormalDateParser.INSTANCE.parse(date);
-        }
-
-        // 没有更多匹配的时间格式
-        throw new DateException("No format fit for date String [{}] !", date);
     }
 
     /**
@@ -1676,6 +1620,16 @@ public class DateKit extends Calendar {
      */
     public static double nanosToSeconds(final long duration) {
         return duration / 1_000_000_000.0;
+    }
+
+    /**
+     * 转换为Calendar对象
+     *
+     * @param date 日期对象
+     * @return Calendar对象
+     */
+    public static java.util.Calendar toCalendar(final Date date) {
+        return Calendar.calendar(date);
     }
 
     /**

@@ -39,7 +39,9 @@ import java.nio.charset.Charset;
  * @since Java 17+
  */
 public class FtpConfig implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Connector connector;
     /**
      * 编码

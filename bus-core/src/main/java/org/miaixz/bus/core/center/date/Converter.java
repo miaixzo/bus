@@ -213,6 +213,7 @@ public class Converter extends Formatter {
 
     /**
      * {@link Instant}转{@link LocalDateTime}，使用UTC时区
+     * 此方法自动将一个UTC时间转换为本地时间，如传入00:00，则结果为08:00
      *
      * @param instant {@link Instant}
      * @return {@link LocalDateTime}
@@ -223,9 +224,11 @@ public class Converter extends Formatter {
 
     /**
      * {@link Instant}转{@link LocalDateTime}
+     * instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区
+     * 如果所在时区与当前时区不同，会转换时间
      *
      * @param instant {@link Instant}
-     * @param zoneId  时区
+     * @param zoneId  时区，如果给定的时区与当前时区不同，会转换时间
      * @return {@link LocalDateTime}
      */
     public static LocalDateTime of(final Instant instant, final ZoneId zoneId) {
@@ -238,9 +241,11 @@ public class Converter extends Formatter {
 
     /**
      * {@link Instant}转{@link LocalDateTime}
+     * instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区
+     * 如果所在时区与当前时区不同，会转换时间
      *
      * @param instant  {@link Instant}
-     * @param timeZone 时区
+     * @param timeZone 时区，如果给定的时区与当前时区不同，会转换时间
      * @return {@link LocalDateTime}
      */
     public static LocalDateTime of(final Instant instant, final TimeZone timeZone) {

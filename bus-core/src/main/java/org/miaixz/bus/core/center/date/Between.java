@@ -30,7 +30,6 @@ package org.miaixz.bus.core.center.date;
 import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.DateKit;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -201,8 +200,8 @@ public class Between implements Serializable {
      * @return 相差月数
      */
     public long betweenMonth(final boolean isReset) {
-        final java.util.Calendar beginCal = DateKit.calendar(begin);
-        final java.util.Calendar endCal = DateKit.calendar(end);
+        final java.util.Calendar beginCal = Calendar.calendar(begin);
+        final java.util.Calendar endCal = Calendar.calendar(end);
 
         final int betweenYear = endCal.get(java.util.Calendar.YEAR) - beginCal.get(java.util.Calendar.YEAR);
         final int betweenMonthOfYear = endCal.get(java.util.Calendar.MONTH) - beginCal.get(java.util.Calendar.MONTH);
@@ -227,8 +226,8 @@ public class Between implements Serializable {
      * @return 相差年数
      */
     public long betweenYear(final boolean isReset) {
-        final java.util.Calendar beginCal = DateKit.calendar(begin);
-        final java.util.Calendar endCal = DateKit.calendar(end);
+        final java.util.Calendar beginCal = Calendar.calendar(begin);
+        final java.util.Calendar endCal = Calendar.calendar(end);
 
         final int result = endCal.get(java.util.Calendar.YEAR) - beginCal.get(java.util.Calendar.YEAR);
         if (false == isReset) {
@@ -282,7 +281,7 @@ public class Between implements Serializable {
      * @return 字符串
      */
     public String toString(final Units unit, final FormatPeriod.Level level) {
-        return DateKit.formatBetween(between(unit), level);
+        return FormatPeriod.of(between(unit), level).format();
     }
 
     /**

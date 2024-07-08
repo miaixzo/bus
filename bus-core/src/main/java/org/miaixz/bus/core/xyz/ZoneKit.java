@@ -29,6 +29,7 @@ package org.miaixz.bus.core.xyz;
 
 import java.time.ZoneId;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@link ZoneId}和{@link TimeZone}相关封装
@@ -73,6 +74,31 @@ public class ZoneKit {
         }
 
         return timeZone.toZoneId();
+    }
+
+    /**
+     * 获取指定偏移量的可用时区，如果有多个时区匹配，使用第一个
+     *
+     * @param rawOffset 偏移量
+     * @param timeUnit  偏移量单位
+     * @return 时区
+     */
+    public static TimeZone getTimeZoneByOffset(final int rawOffset, final TimeUnit timeUnit) {
+        final String id = getAvailableID(rawOffset, timeUnit);
+        return null == id ? null : TimeZone.getTimeZone(id);
+    }
+
+    /**
+     * 获取指定偏移量的可用时区ID，如果有多个时区匹配，使用第一个
+     *
+     * @param rawOffset 偏移量
+     * @param timeUnit  偏移量单位
+     * @return 时区ID，未找到返回{@code null}
+     */
+    public static String getAvailableID(final int rawOffset, final TimeUnit timeUnit) {
+        final String[] availableIDs = TimeZone.getAvailableIDs(
+                (int) ObjectKit.defaultIfNull(timeUnit, TimeUnit.MILLISECONDS).toMillis(rawOffset));
+        return ArrayKit.isEmpty(availableIDs) ? null : availableIDs[0];
     }
 
 }

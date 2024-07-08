@@ -41,9 +41,6 @@ import lombok.ToString;
 @Setter
 public class Builder {
 
-    private static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded;charset=UTF-8";
-    private static final String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
-
     /**
      * 缓存类型
      */

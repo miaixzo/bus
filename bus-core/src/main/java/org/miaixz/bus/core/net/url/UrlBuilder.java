@@ -55,11 +55,6 @@ public final class UrlBuilder implements Builder<String> {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 是否需要编码`%`
-     * 区别对待，如果是，则生成URL时需要重新全部编码，否则跳过所有`%`
-     */
-    private final boolean needEncodePercent;
-    /**
      * 协议，例如http
      */
     private String scheme;
@@ -93,8 +88,6 @@ public final class UrlBuilder implements Builder<String> {
      */
     public UrlBuilder() {
         this.charset = Charset.UTF_8;
-        // 编码非空情况下做解码
-        this.needEncodePercent = true;
     }
 
     /**
@@ -116,8 +109,6 @@ public final class UrlBuilder implements Builder<String> {
         this.path = path;
         this.query = query;
         this.setFragment(fragment);
-        // 编码非空情况下做解码
-        this.needEncodePercent = null != charset;
     }
 
     /**
@@ -165,9 +156,14 @@ public final class UrlBuilder implements Builder<String> {
 
     /**
      * 使用URL字符串构建UrlBuilder，当传入的URL没有协议时，按照http协议对待。
+     * <ul>
+     *     <li>如果url用户传入的URL没有做编码，则charset设置为{@code null}，此时URL不会解码，在build时也不会编码。</li>
+     *     <li>如果url已经编码，或部分编码，则需要设置charset，此时URL会解码编码后的参数，在build时也会编码。</li>
+     *     <li>如果url未编码，且存在歧义字符串，则需要设置charset为{@code null}，并调用{@link #setCharset(java.nio.charset.Charset)}在build时编码URL。</li>
+     * </ul>
      *
      * @param httpUrl URL字符串
-     * @param charset 编码，用于URLEncode和URLDecode
+     * @param charset 编码，用于URLEncode和URLDecode，如果为{@code null}，则不对传入的URL解码
      * @return UrlBuilder
      */
     public static UrlBuilder ofHttp(String httpUrl, final java.nio.charset.Charset charset) {
@@ -193,11 +189,12 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder
-     *
-     * @param url     URL字符串
-     * @param charset 编码，用于URLEncode和URLDecode
-     * @return UrlBuilder
+     * 使用URL字符串构建UrlBuilder，规则如下：
+     * <ul>
+     *     <li>如果url用户传入的URL没有做编码，则charset设置为{@code null}，此时URL不会解码，在build时也不会编码。</li>
+     *     <li>如果url已经编码，或部分编码，则需要设置charset，此时URL会解码编码后的参数，在build时也会编码。</li>
+     *     <li>如果url未编码，且存在歧义字符串，则需要设置charset为{@code null}，并调用{@link #setCharset(java.nio.charset.Charset)}在build时编码URL。</li>
+     * </ul>
      */
     public static UrlBuilder of(final String url, final java.nio.charset.Charset charset) {
         Assert.notBlank(url, "Url must be not blank!");
@@ -208,7 +205,7 @@ public final class UrlBuilder implements Builder<String> {
      * 使用URL构建UrlBuilder
      *
      * @param url     URL
-     * @param charset 编码，用于URLEncode和URLDecode
+     * @param charset 编码，用于URLEncode和URLDecode，{@code null}表示不解码
      * @return UrlBuilder
      */
     public static UrlBuilder of(final URL url, final java.nio.charset.Charset charset) {
@@ -376,7 +373,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return 路径，例如/aa/bb/cc
      */
     public String getPaths() {
-        return null == this.path ? Symbol.SLASH : this.path.build(charset, this.needEncodePercent);
+        return null == this.path ? Symbol.SLASH : this.path.build(charset);
     }
 
     /**
@@ -449,7 +446,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return 查询语句，例如a=1&amp;b=2
      */
     public String getQuerys() {
-        return null == this.query ? null : this.query.build(this.charset, this.needEncodePercent);
+        return null == this.query ? null : this.query.build(this.charset);
     }
 
     /**
@@ -500,8 +497,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return 标识符，例如#后边的部分
      */
     public String getFragmentEncoded() {
-        final char[] safeChars = this.needEncodePercent ? null : new char[]{Symbol.C_PERCENT};
-        return RFC3986.FRAGMENT.encode(this.fragment, this.charset, safeChars);
+        return RFC3986.FRAGMENT.encode(this.fragment, this.charset);
     }
 
     /**

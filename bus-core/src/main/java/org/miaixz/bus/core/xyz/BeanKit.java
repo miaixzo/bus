@@ -361,12 +361,12 @@ public class BeanKit {
      */
     public static Map<String, Object> beanToMap(final Object bean, final String... properties) {
         int mapSize = 16;
-        UnaryOperator<MutableEntry<String, Object>> editor = null;
+        UnaryOperator<MutableEntry<Object, Object>> editor = null;
         if (ArrayKit.isNotEmpty(properties)) {
             mapSize = properties.length;
             final Set<String> propertiesSet = SetKit.of(properties);
             editor = entry -> {
-                final String key = entry.getKey();
+                final String key = StringKit.toStringOrNull(entry.getKey());
                 entry.setKey(propertiesSet.contains(key) ? key : null);
                 return entry;
             };
@@ -400,13 +400,14 @@ public class BeanKit {
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap, final boolean isToUnderlineCase, final boolean ignoreNullValue) {
+    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
+                                                final boolean isToUnderlineCase, final boolean ignoreNullValue) {
         if (null == bean) {
             return null;
         }
 
         return beanToMap(bean, targetMap, ignoreNullValue, entry -> {
-            final String key = entry.getKey();
+            final String key = StringKit.toStringOrNull(entry.getKey());
             entry.setKey(isToUnderlineCase ? StringKit.toUnderlineCase(key) : key);
             return entry;
         });
@@ -428,8 +429,10 @@ public class BeanKit {
      * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key，如果这个Editor返回null则忽略这个字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
-                                                final boolean ignoreNullValue, final UnaryOperator<MutableEntry<String, Object>> keyEditor) {
+    public static Map<String, Object> beanToMap(final Object bean,
+                                                final Map<String, Object> targetMap,
+                                                final boolean ignoreNullValue,
+                                                final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
         if (null == bean) {
             return null;
         }

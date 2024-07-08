@@ -31,6 +31,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -88,7 +89,7 @@ public class WechatPayBuilder {
 
     public static Map<String, String> getHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }
@@ -97,7 +98,7 @@ public class WechatPayBuilder {
 
     public static Map<String, String> getUploadHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put("Content-Type", "multipart/form-data;boundary=\"boundary\"");
+        headers.put(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"");
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }

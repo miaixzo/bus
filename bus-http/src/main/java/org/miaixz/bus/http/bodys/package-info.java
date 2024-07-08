@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,26 +25,11 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
-package org.miaixz.bus.socket.buffer;
-
 /**
- * 内存池工厂
+ *  Body 相关处理
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BufferFactory {
+package org.miaixz.bus.http.bodys;
 
-    /**
-     * 禁用状态的内存池
-     */
-    BufferFactory DISABLED_BUFFER_FACTORY = () -> new BufferPagePool(0, 1, false);
-
-    /**
-     * 创建内存池
-     *
-     * @return 生成的内存池对象
-     */
-    BufferPagePool create();
-
-}
