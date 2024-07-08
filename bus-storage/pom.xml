@@ -80,7 +80,7 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.213</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
-        <jackson.version>2.17.1</jackson.version>
+        <jackson.version>2.17.2</jackson.version>
         <okhttp.version>4.12.0</okhttp.version>
     </properties>
 
