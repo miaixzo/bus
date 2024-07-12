@@ -39,13 +39,13 @@
     <name>${project.artifactId}</name>
     <description>Bus parent</description>
     <url>https://github.com/839128/bus</url>
+    <inceptionYear>2015</inceptionYear>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>3.3.1</version>
     </parent>
-    <inceptionYear>2015</inceptionYear>
 
     <licenses>
         <license>
@@ -139,7 +139,7 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.213</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
-        <bus.version>8.0.5</bus.version>
+        <miaixz.bus.version>8.0.5</miaixz.bus.version>
         <spring.boot.version>3.3.1</spring.boot.version>
     </properties>
 
@@ -148,142 +148,142 @@
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-all</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-base</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-cache</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-core</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-cron</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-crypto</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-extra</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-gitlab</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-goalie</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-health</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-http</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-image</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-limiter</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-logger</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-mapper</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-oauth</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-office</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-opencv</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-pager</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-proxy</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-sensitive</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-setting</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-socket</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-starter</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-storage</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-tracer</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>bus-validate</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
                 <artifactId>lancia</artifactId>
-                <version>${bus.version}</version>
+                <version>${miaixz.bus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
