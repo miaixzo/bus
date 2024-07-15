@@ -33,6 +33,7 @@ import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -97,6 +98,11 @@ public final class AioClient {
      */
     private BufferPagePool readBufferPool = null;
     /**
+     * 是否开启低内存模式
+     */
+    private boolean lowMemory = true;
+
+    /**
      * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
      *
      * @param host     远程服务器地址
@@ -120,7 +126,9 @@ public final class AioClient {
      * @throws IOException
      */
     public <A> void start(A attachment, CompletionHandler<Session, ? super A> handler) throws IOException {
-        this.asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(2, Thread::new);
+        this.asynchronousChannelGroup =
+                new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(2,
+                        Thread::new);
         start(asynchronousChannelGroup, attachment, handler);
     }
 
@@ -243,7 +251,9 @@ public final class AioClient {
      * @see AioClient#start(AsynchronousChannelGroup)
      */
     public Session start() throws IOException {
-        this.asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(2, Thread::new);
+        this.asynchronousChannelGroup =
+                new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(2,
+                        Thread::new);
         return start(asynchronousChannelGroup);
     }
 
@@ -363,6 +373,16 @@ public final class AioClient {
      */
     public AioClient connectTimeout(int timeout) {
         this.connectTimeout = timeout;
+        return this;
+    }
+
+    /**
+     * 禁用低代码模式
+     *
+     * @return
+     */
+    public AioClient disableLowMemory() {
+        this.lowMemory = false;
         return this;
     }
 

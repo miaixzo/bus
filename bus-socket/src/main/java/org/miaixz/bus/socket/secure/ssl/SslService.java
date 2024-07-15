@@ -29,6 +29,7 @@ package org.miaixz.bus.socket.secure.ssl;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -231,8 +232,10 @@ public final class SslService {
                 failed(new IOException("eof"), attachment);
                 return;
             }
-            synchronized (attachment) {
-                doHandshake(attachment);
+            if (result != AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
+                synchronized (attachment) {
+                    doHandshake(attachment);
+                }
             }
         }
 

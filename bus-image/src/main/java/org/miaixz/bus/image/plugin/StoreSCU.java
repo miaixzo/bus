@@ -418,15 +418,15 @@ public class StoreSCU implements AutoCloseable {
             case Status.DataSetDoesNotMatchSOPClassWarning:
                 totalSize += f.length();
                 ps = Builder.WARNING;
-                System.err.println(MessageFormat.format("WARNING: Received C-STORE-RSP with Status {0}H for {1}",
+                Logger.error(MessageFormat.format("WARNING: Received C-STORE-RSP with Status {0}H for {1}",
                         Tag.shortToHexString(status), f));
-                System.err.println(cmd);
+                Logger.error(cmd.toString());
                 break;
             default:
                 ps = Builder.FAILED;
-                System.err.println(MessageFormat.format("ERROR: Received C-STORE-RSP with Status {0}H for {1}",
+                Logger.error(MessageFormat.format("ERROR: Received C-STORE-RSP with Status {0}H for {1}",
                         Tag.shortToHexString(status), f));
-                System.err.println(cmd);
+                Logger.error(cmd.toString());
         }
         Builder.notify(state.getProgress(), cmd, ps, filesScanned);
     }

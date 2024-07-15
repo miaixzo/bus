@@ -35,6 +35,7 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.magic.Message;
 
@@ -652,11 +653,11 @@ public class WechatPayBuilder {
         String signature = response.getHeader("Wechatpay-Signature");
         String signatureType = response.getHeader("Wechatpay-Signature-Type");
         String body = response.getBody();
-        System.out.println("timestamp:" + timestamp);
-        System.out.println("nonceStr:" + nonceStr);
-        System.out.println("signature:" + signature);
-        System.out.println("signatureType:" + signatureType);
-        System.out.println("body:" + body);
+        Logger.info("timestamp:" + timestamp);
+        Logger.info("nonceStr:" + nonceStr);
+        Logger.info("signature:" + signature);
+        Logger.info("signatureType:" + signatureType);
+        Logger.info("body:" + body);
         return verifySignature(signatureType, signature, body, nonceStr, timestamp, Builder.getCertFileInputStream(certPath));
     }
 
@@ -811,8 +812,8 @@ public class WechatPayBuilder {
         map.put("publicKey", publicKey);
         map.put("privateKey", privateKey);
 
-        System.out.println("公钥\r\n" + publicKey);
-        System.out.println("私钥\r\n" + privateKey);
+        Logger.info("公钥\r\n" + publicKey);
+        Logger.info("私钥\r\n" + privateKey);
         return map;
     }
 
