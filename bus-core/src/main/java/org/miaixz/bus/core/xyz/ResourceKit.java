@@ -227,7 +227,7 @@ public class ResourceKit {
      * @return {@link URL}
      */
     public static URL getResourceUrl(String resource, final Class<?> baseClass) {
-        resource = StringKit.emptyIfNull(resource);
+        resource = StringKit.toStringOrEmpty(resource);
         return (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
     }
 

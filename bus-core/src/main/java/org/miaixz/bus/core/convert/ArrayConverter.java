@@ -133,11 +133,11 @@ public class ArrayConverter extends AbstractConverter {
 
             // 字符串转bytes，首先判断是否为Base64，是则转换，否则按照默认getBytes方法。
             if (targetComponentType == byte.class) {
-                final String str = value.toString();
-                if (Base64.isTypeBase64(str)) {
+                final String text = value.toString();
+                if (Base64.isTypeBase64(text)) {
                     return Base64.decode(value.toString());
                 }
-                return str.getBytes();
+                return text.getBytes();
             }
 
             // 单纯字符串情况下按照逗号分隔后劈开

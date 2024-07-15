@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class UrlPath {
 
-    private List<String> segments;
+    private List<CharSequence> segments;
     private boolean withEngTag;
 
     /**
@@ -106,7 +106,7 @@ public class UrlPath {
      *
      * @return 节点列表
      */
-    public List<String> getSegments() {
+    public List<CharSequence> getSegments() {
         return ObjectKit.defaultIfNull(this.segments, ListKit.empty());
     }
 
@@ -116,7 +116,7 @@ public class UrlPath {
      * @param index 节点位置
      * @return 节点，无节点或者越界返回null
      */
-    public String getSegment(final int index) {
+    public CharSequence getSegment(final int index) {
         if (null == this.segments || index >= this.segments.size()) {
             return null;
         }
@@ -187,7 +187,7 @@ public class UrlPath {
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (final String segment : segments) {
+        for (final CharSequence segment : segments) {
             // https://www.ietf.org/rfc/rfc3986.html#section-3.3
             // 此处Path中是允许有`:`的，之前理解有误，应该是相对URI的第一个segment中不允许有`:`
             builder.append(Symbol.C_SLASH).append(RFC3986.SEGMENT.encode(segment, charset));
@@ -222,11 +222,10 @@ public class UrlPath {
             this.segments = new LinkedList<>();
         }
 
-        final String seg = StringKit.toString(segment);
         if (before) {
-            this.segments.add(0, seg);
+            this.segments.add(0, segment);
         } else {
-            this.segments.add(seg);
+            this.segments.add(segment);
         }
     }
 

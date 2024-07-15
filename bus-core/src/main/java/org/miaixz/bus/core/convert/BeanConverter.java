@@ -109,7 +109,7 @@ public class BeanConverter implements Converter, Serializable {
         } else if (value instanceof byte[]) {
             // 尝试反序列化
             return SerializeKit.deserialize((byte[]) value);
-        } else if (StringKit.isEmptyIfString(value)) {
+        } else if (ObjectKit.isEmptyIfString(value)) {
             return null;
         }
 

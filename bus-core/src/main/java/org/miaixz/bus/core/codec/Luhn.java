@@ -66,15 +66,15 @@ public class Luhn {
      * 计算校验位数字
      * 忽略已有的校验位数字，根据前N位计算最后一位校验位数字
      *
-     * @param str            被检查的数字
+     * @param text            被检查的数字
      * @param withCheckDigit 是否含有校验位
      * @return 校验位数字
      */
-    public static int getCheckDigit(String str, final boolean withCheckDigit) {
+    public static int getCheckDigit(String text, final boolean withCheckDigit) {
         if (withCheckDigit) {
-            str = str.substring(0, str.length() - 1);
+            text = text.substring(0, text.length() - 1);
         }
-        return 10 - (sum(str + "0") % 10);
+        return 10 - (sum(text + "0") % 10);
     }
 
     /**

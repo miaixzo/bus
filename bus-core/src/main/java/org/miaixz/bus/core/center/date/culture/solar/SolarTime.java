@@ -31,7 +31,6 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 
 /**
  * 公历时刻
@@ -92,12 +91,39 @@ public class SolarTime extends Loops {
     }
 
     /**
+     * 公历日
+     *
+     * @return 公历日
+     */
+    public SolarDay getSolarDay() {
+        return day;
+    }
+
+    /**
+     * 年
+     *
+     * @return 年
+     */
+    public int getYear() {
+        return day.getYear();
+    }
+
+    /**
+     * 月
+     *
+     * @return 月
+     */
+    public int getMonth() {
+        return day.getMonth();
+    }
+
+    /**
      * 日
      *
      * @return 日
      */
-    public SolarDay getDay() {
-        return day;
+    public int getDay() {
+        return day.getDay();
     }
 
     /**
@@ -143,8 +169,8 @@ public class SolarTime extends Loops {
      * @return true/false
      */
     public boolean isBefore(SolarTime target) {
-        if (!day.equals(target.getDay())) {
-            return day.isBefore(target.getDay());
+        if (!day.equals(target.getSolarDay())) {
+            return day.isBefore(target.getSolarDay());
         }
         if (hour != target.getHour()) {
             return hour < target.getHour();
@@ -159,8 +185,8 @@ public class SolarTime extends Loops {
      * @return true/false
      */
     public boolean isAfter(SolarTime target) {
-        if (!day.equals(target.getDay())) {
-            return day.isAfter(target.getDay());
+        if (!day.equals(target.getSolarDay())) {
+            return day.isAfter(target.getSolarDay());
         }
         if (hour != target.getHour()) {
             return hour > target.getHour();
@@ -174,9 +200,8 @@ public class SolarTime extends Loops {
      * @return 节气
      */
     public SolarTerms getTerm() {
-        SolarMonth m = day.getMonth();
-        int y = m.getYear().getYear();
-        int i = m.getMonth() * 2;
+        int y = getYear();
+        int i = getMonth() * 2;
         if (i == 24) {
             y += 1;
             i = 0;
@@ -194,8 +219,7 @@ public class SolarTime extends Loops {
      * @return 儒略日
      */
     public JulianDay getJulianDay() {
-        SolarMonth m = day.getMonth();
-        return JulianDay.fromYmdHms(m.getYear().getYear(), m.getMonth(), day.getDay(), hour, minute, second);
+        return JulianDay.fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
     }
 
     /**
@@ -205,7 +229,7 @@ public class SolarTime extends Loops {
      * @return 秒数
      */
     public int subtract(SolarTime target) {
-        int days = day.subtract(target.getDay());
+        int days = day.subtract(target.getSolarDay());
         int cs = hour * 3600 + minute * 60 + second;
         int ts = target.getHour() * 3600 + target.getMinute() * 60 + target.getSecond();
         int seconds = cs - ts;
@@ -225,8 +249,7 @@ public class SolarTime extends Loops {
      */
     public SolarTime next(int n) {
         if (n == 0) {
-            SolarMonth m = day.getMonth();
-            return SolarTime.fromYmdHms(m.getYear().getYear(), m.getMonth(), day.getDay(), hour, minute, second);
+            return SolarTime.fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
         }
         int ts = second + n;
         int tm = minute + ts / 60;
@@ -249,8 +272,7 @@ public class SolarTime extends Loops {
         }
 
         SolarDay d = day.next(td);
-        SolarMonth m = d.getMonth();
-        return SolarTime.fromYmdHms(m.getYear().getYear(), m.getMonth(), d.getDay(), th, tm, ts);
+        return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), th, tm, ts);
     }
 
     /**
@@ -260,8 +282,7 @@ public class SolarTime extends Loops {
      */
     public LunarHour getLunarHour() {
         LunarDay d = day.getLunarDay();
-        LunarMonth m = d.getMonth();
-        return LunarHour.fromYmdHms(m.getYear().getYear(), m.getMonthWithLeap(), d.getDay(), hour, minute, second);
+        return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
 }

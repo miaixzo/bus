@@ -79,12 +79,21 @@ public class SolarMonth extends Loops {
     }
 
     /**
+     * 公历年
+     *
+     * @return 公历年
+     */
+    public SolarYear getSolarYear() {
+        return year;
+    }
+
+    /**
      * 年
      *
      * @return 年
      */
-    public SolarYear getYear() {
-        return year;
+    public int getYear() {
+        return year.getYear();
     }
 
     /**
@@ -102,7 +111,7 @@ public class SolarMonth extends Loops {
      * @return 天数
      */
     public int getDayCount() {
-        if (1582 == year.getYear() && 10 == month) {
+        if (1582 == getYear() && 10 == month) {
             return 21;
         }
         int d = DAYS[getIndexInYear()];
@@ -127,8 +136,8 @@ public class SolarMonth extends Loops {
      *
      * @return 公历季度
      */
-    public SolarQuarter getSeason() {
-        return SolarQuarter.fromIndex(year.getYear(), getIndexInYear() / 3);
+    public SolarQuarter getQuarter() {
+        return SolarQuarter.fromIndex(getYear(), getIndexInYear() / 3);
     }
 
     /**
@@ -138,7 +147,7 @@ public class SolarMonth extends Loops {
      * @return 周数
      */
     public int getWeekCount(int start) {
-        return (int) Math.ceil((indexOf(SolarDay.fromYmd(year.getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
+        return (int) Math.ceil((indexOf(SolarDay.fromYmd(getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
     }
 
     public String getName() {
@@ -152,10 +161,10 @@ public class SolarMonth extends Loops {
 
     public SolarMonth next(int n) {
         if (n == 0) {
-            return fromYm(year.getYear(), month);
+            return fromYm(getYear(), month);
         }
         int m = month + n;
-        int y = year.getYear() + m / 12;
+        int y = getYear() + m / 12;
         m %= 12;
         if (m < 1) {
             m += 12;
@@ -172,7 +181,7 @@ public class SolarMonth extends Loops {
      */
     public List<SolarWeek> getWeeks(int start) {
         int size = getWeekCount(start);
-        int y = year.getYear();
+        int y = getYear();
         List<SolarWeek> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             l.add(SolarWeek.fromYm(y, month, i, start));
@@ -187,7 +196,7 @@ public class SolarMonth extends Loops {
      */
     public List<SolarDay> getDays() {
         int size = getDayCount();
-        int y = year.getYear();
+        int y = getYear();
         List<SolarDay> l = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             l.add(SolarDay.fromYmd(y, month, i + 1));

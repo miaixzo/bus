@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Assert;

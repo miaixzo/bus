@@ -109,10 +109,8 @@ public class SolarFestival extends Loops {
     }
 
     public SolarFestival next(int n) {
-        SolarMonth m = day.getMonth();
-        int year = m.getYear().getYear();
         if (n == 0) {
-            return fromYmd(year, m.getMonth(), day.getDay());
+            return fromYmd(day.getYear(), day.getMonth(), day.getDay());
         }
         int size = NAMES.length;
         int t = this.index + n;
@@ -120,7 +118,7 @@ public class SolarFestival extends Loops {
         if (t < 0) {
             t -= size;
         }
-        return fromIndex(year + t / size, offset);
+        return fromIndex(day.getYear() + t / size, offset);
     }
 
     /**

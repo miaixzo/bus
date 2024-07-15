@@ -498,7 +498,7 @@ public class UrlKit {
         if (isEncodePath) {
             path = RFC3986.PATH.encode(path, Charset.UTF_8);
         }
-        return protocol + domain + StringKit.emptyIfNull(path) + StringKit.emptyIfNull(params);
+        return protocol + domain + StringKit.toStringOrEmpty(path) + StringKit.toStringOrEmpty(params);
     }
 
     /**
@@ -808,9 +808,11 @@ public class UrlKit {
 
         final Map<String, List<String>> params = new LinkedHashMap<>();
         queryMap.forEach((key, value) -> {
-            final List<String> values = params.computeIfAbsent(StringKit.toString(key), k -> new ArrayList<>(1));
-            // 一般是一个参数
-            values.add(StringKit.toString(value));
+            if(null != key && null != value){
+                final List<String> values = params.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
+                // 一般是一个参数
+                values.add(StringKit.toStringOrNull(value));
+            }
         });
         return params;
     }

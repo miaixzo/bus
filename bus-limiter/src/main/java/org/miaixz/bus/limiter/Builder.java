@@ -28,6 +28,7 @@
 package org.miaixz.bus.limiter;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.reflect.JdkProxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -45,19 +46,11 @@ public class Builder {
     private static final Object LOCK = new Object();
 
     public static Class<?> getUserClass(Class<?> clazz) {
-        if (isCglibProxyClass(clazz)) {
+        if (JdkProxy.isCglibProxyClass(clazz)) {
             Class<?> superclass = clazz.getSuperclass();
             return getUserClass(superclass);
         }
         return clazz;
-    }
-
-    public static boolean isCglibProxyClass(Class<?> clazz) {
-        return (clazz != null && isCglibProxyClassName(clazz.getName()));
-    }
-
-    private static boolean isCglibProxyClassName(String className) {
-        return (className != null && className.contains("$$"));
     }
 
     /**

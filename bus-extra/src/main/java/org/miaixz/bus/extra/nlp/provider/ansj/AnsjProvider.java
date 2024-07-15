@@ -62,7 +62,7 @@ public class AnsjProvider implements NLPProvider {
 
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new AnsjResult(analysis.parseStr(StringKit.toString(text)));
+        return new AnsjResult(analysis.parseStr(StringKit.toStringOrEmpty(text)));
     }
 
 }

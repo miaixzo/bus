@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.windows;
 
-import org.miaixz.bus.core.annotation.NotThreadSafe;
+import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.windows.PerfDataKit.PerfCounter;

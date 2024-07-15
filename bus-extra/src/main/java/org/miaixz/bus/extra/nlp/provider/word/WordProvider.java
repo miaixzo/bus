@@ -73,7 +73,7 @@ public class WordProvider implements NLPProvider {
 
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new WordResult(this.segmentation.seg(StringKit.toString(text)));
+        return new WordResult(this.segmentation.seg(StringKit.toStringOrEmpty(text)));
     }
 
 }

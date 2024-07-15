@@ -30,7 +30,7 @@ package org.miaixz.bus.setting.magic;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.LambdaInfo;
+import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.getter.GroupedTypeGetter;
@@ -74,8 +74,8 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
      * @return 获取表达式对应属性和返回的对象
      */
     public <P, T> T get(final FunctionX<P, T> func) {
-        final LambdaInfo lambdaInfo = LambdaKit.resolve(func);
-        return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
+        final LambdaX lambdaX = LambdaKit.resolve(func);
+        return get(lambdaX.getFieldName(), lambdaX.getReturnType());
     }
 
     /**

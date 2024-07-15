@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.instance;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * 实例化对象的接口

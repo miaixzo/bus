@@ -53,7 +53,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -64,179 +67,6 @@ import java.util.stream.Collectors;
  * @since Java 17+
  */
 public class CollKit extends CollectionStream {
-
-    /**
-     * 集合是否为空
-     *
-     * @param collection 集合
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final Collection<?> collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    /**
-     * Iterable是否为空
-     *
-     * @param iterable Iterable对象
-     * @return 是否为空
-     * @see IteratorKit#isEmpty(Iterable)
-     */
-    public static boolean isEmpty(final Iterable<?> iterable) {
-        return IteratorKit.isEmpty(iterable);
-    }
-
-    /**
-     * Iterator是否为空
-     *
-     * @param iterator Iterator对象
-     * @return 是否为空
-     * @see IteratorKit#isEmpty(Iterator)
-     */
-    public static boolean isEmpty(final Iterator<?> iterator) {
-        return IteratorKit.isEmpty(iterator);
-    }
-
-    /**
-     * Enumeration是否为空
-     *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final Enumeration<?> enumeration) {
-        return null == enumeration || !enumeration.hasMoreElements();
-    }
-
-    /**
-     * Map是否为空
-     *
-     * @param map 集合
-     * @return 是否为空
-     * @see MapKit#isEmpty(Map)
-     */
-    public static boolean isEmpty(final Map<?, ?> map) {
-        return MapKit.isEmpty(map);
-    }
-
-    /**
-     * 如果给定集合为空，返回默认集合
-     *
-     * @param <T>               集合类型
-     * @param <E>               集合元素类型
-     * @param collection        集合
-     * @param defaultCollection 默认数组
-     * @return 非空（empty）的原集合或默认集合
-     */
-    public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final T defaultCollection) {
-        return isEmpty(collection) ? defaultCollection : collection;
-    }
-
-    /**
-     * 如果给定集合为空，返回默认集合
-     *
-     * @param <T>             集合类型
-     * @param <E>             集合元素类型
-     * @param collection      集合
-     * @param handler         非空的处理函数
-     * @param defaultSupplier 默认值懒加载函数
-     * @return 非空（empty）的原集合或默认集合
-     */
-    public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final Function<T, T> handler, final Supplier<? extends T> defaultSupplier) {
-        return isEmpty(collection) ? defaultSupplier.get() : handler.apply(collection);
-    }
-
-    /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptySet()}
-     *
-     * @param <T> 集合元素类型
-     * @param set 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
-     */
-    public static <T> Set<T> emptyIfNull(final Set<T> set) {
-        return ObjectKit.defaultIfNull(set, Collections.emptySet());
-    }
-
-    /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptyList()}
-     *
-     * @param <T>  集合元素类型
-     * @param list 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
-     */
-    public static <T> List<T> emptyIfNull(final List<T> list) {
-        return ObjectKit.defaultIfNull(list, Collections.emptyList());
-    }
-
-    /**
-     * 集合是否为非空
-     *
-     * @param collection 集合
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final Collection<?> collection) {
-        return !isEmpty(collection);
-    }
-
-    /**
-     * Iterable是否为空
-     *
-     * @param iterable Iterable对象
-     * @return 是否为空
-     * @see IteratorKit#isNotEmpty(Iterable)
-     */
-    public static boolean isNotEmpty(final Iterable<?> iterable) {
-        return IteratorKit.isNotEmpty(iterable);
-    }
-
-    /**
-     * Iterator是否为空
-     *
-     * @param iterator Iterator对象
-     * @return 是否为空
-     * @see IteratorKit#isNotEmpty(Iterator)
-     */
-    public static boolean isNotEmpty(final Iterator<?> iterator) {
-        return IteratorKit.isNotEmpty(iterator);
-    }
-
-    /**
-     * Enumeration是否为空
-     *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
-     */
-    public static boolean isNotEmpty(final Enumeration<?> enumeration) {
-        return null != enumeration && enumeration.hasMoreElements();
-    }
-
-    /**
-     * 是否包含{@code null}元素
-     * <ul>
-     *     <li>集合为{@code null}，返回{@code true}</li>
-     *     <li>集合为空集合，即元素个数为0，返回{@code false}</li>
-     *     <li>集合中元素为""，返回{@code false}</li>
-     * </ul>
-     *
-     * @param iterable 被检查的Iterable对象，如果为{@code null} 返回true
-     * @return 是否包含{@code null}元素
-     * @see IteratorKit#hasNull(Iterator)
-     */
-    public static boolean hasNull(final Iterable<?> iterable) {
-        return IteratorKit.hasNull(IteratorKit.getIter(iterable));
-    }
-
-    /**
-     * Map是否为非空
-     *
-     * @param map 集合
-     * @return 是否为非空
-     * @see MapKit#isNotEmpty(Map)
-     */
-    public static boolean isNotEmpty(final Map<?, ?> map) {
-        return MapKit.isNotEmpty(map);
-    }
 
     /**
      * 去重集合
@@ -1957,7 +1787,7 @@ public class CollKit extends CollectionStream {
      * @return 分组列表
      */
     public static <T> List<List<T>> groupByField(final Collection<T> collection, final String fieldName) {
-        return groupByFunc(collection, t -> BeanKit.getFieldValue(t, fieldName));
+        return groupByFunc(collection, t -> BeanKit.getProperty(t, fieldName));
     }
 
     /**
@@ -2162,105 +1992,6 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取Collection或者iterator的大小，此方法可以处理的对象类型如下：
-     * <ul>
-     *   <li>Collection - the collection size</li>
-     *   <li>Map - the map size</li>
-     *   <li>Array - the array size</li>
-     *   <li>Iterator - the number of elements remaining in the iterator</li>
-     *   <li>Enumeration - the number of elements remaining in the enumeration</li>
-     * </ul>
-     *
-     * @param object 可以为空的对象
-     * @return 如果object为空则返回0
-     * @throws IllegalArgumentException 参数object不是Collection或者iterator
-     */
-    public static int size(final Object object) {
-        if (object == null) {
-            return 0;
-        }
-
-        // 优先判断使用频率较高的类型
-        if (object instanceof Collection<?>) {
-            return ((Collection<?>) object).size();
-        } else if (object instanceof Map<?, ?>) {
-            return ((Map<?, ?>) object).size();
-        } else if (object instanceof Iterable<?>) {
-            return IteratorKit.size((Iterable<?>) object);
-        } else if (object instanceof Iterator<?>) {
-            return IteratorKit.size((Iterator<?>) object);
-        } else if (object instanceof Enumeration<?>) {
-            int total = 0;
-            final Enumeration<?> it = (Enumeration<?>) object;
-            while (it.hasMoreElements()) {
-                total++;
-                it.nextElement();
-            }
-            return total;
-        } else if (ArrayKit.isArray(object)) {
-            return ArrayKit.length(object);
-        } else {
-            throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
-        }
-    }
-
-    /**
-     * 判断subCollection是否为collection的子集合，不考虑顺序，只考虑元素数量。
-     * <ul>
-     *     <li>如果两个集合为同一集合或，则返回true</li>
-     *     <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
-     * </ul>
-     *
-     * @param subCollection 第一个Iterable对象，即子集合。
-     * @param collection    第二个Iterable对象，可以为任何实现了Iterable接口的集合。
-     * @return 如果subCollection是collection的子集合，则返回true；否则返回false。
-     */
-    public static boolean isSub(final Collection<?> subCollection, final Collection<?> collection) {
-        if (size(subCollection) > size(collection)) {
-            return false;
-        }
-        return IteratorKit.isSub(subCollection, collection);
-    }
-
-    /**
-     * 判断两个{@link Collection} 是否元素和顺序相同，返回{@code true}的条件是：
-     * <ul>
-     *     <li>两个{@link Collection}必须长度相同</li>
-     *     <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
-     * </ul>
-     *
-     * @param list1 列表1
-     * @param list2 列表2
-     * @return 是否相同
-     */
-    public static boolean isEqualList(final Collection<?> list1, final Collection<?> list2) {
-        return equals(list1, list2, false);
-    }
-
-    /**
-     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序
-     * 当满足下列情况时返回{@code true}：
-     * <ul>
-     *     <li>两个{@link Iterable}都为{@code null}；</li>
-     *     <li>两个{@link Iterable}满足{@code coll1 == coll2}；</li>
-     *     <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
-     *     <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
-     * </ul>
-     *
-     * @param coll1       集合1
-     * @param coll2       集合2
-     * @param ignoreOrder 是否忽略顺序
-     * @return 是否相同
-     */
-    public static boolean equals(final Collection<?> coll1, final Collection<?> coll2, final boolean ignoreOrder) {
-        if (size(coll1) != size(coll2)) {
-            return false;
-        }
-
-        return IteratorKit.equals(coll1, coll2, ignoreOrder);
-    }
-
-    /**
      * 一个对象不为空且不存在于该集合中时，加入到该集合中
      * <pre>
      *     null, null -&gt; false
@@ -2375,7 +2106,7 @@ public class CollKit extends CollectionStream {
      */
     public static int ringNextIntByObject(final Object object, final AtomicInteger atomicInteger) {
         Assert.notNull(object);
-        final int modulo = CollKit.size(object);
+        final int modulo = size(object);
         return ringNextInt(modulo, atomicInteger);
     }
 

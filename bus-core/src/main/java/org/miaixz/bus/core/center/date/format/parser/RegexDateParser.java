@@ -132,7 +132,7 @@ public class RegexDateParser implements DateParser, Serializable {
 
     @Override
     public Date parse(final CharSequence source) throws DateException {
-        Assert.notBlank(source, "Date str must be not blank!");
+        Assert.notBlank(source, "Date source must be not blank!");
         return parseToBuilder(source).toDate();
     }
 

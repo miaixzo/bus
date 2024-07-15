@@ -52,6 +52,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 
 /**
@@ -84,26 +85,51 @@ import java.util.regex.Matcher;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CharsBacker extends StringValidator {
+public class CharsBacker extends CharsValidator {
 
     /**
-     * {@link CharSequence} 转为字符串，null安全
+     * 调用对象的toString方法，null会返回“null”
      *
-     * @param cs {@link CharSequence}
+     * @param obj 对象
      * @return 字符串
+     * @see String#valueOf(Object)
      */
-    public static String toString(final CharSequence cs) {
-        return null == cs ? null : cs.toString();
+    public static String toString(final Object obj) {
+        return String.valueOf(obj);
     }
 
     /**
-     * 当给定字符串为null时，转换为Empty
+     * 调用对象的toString方法，{@code null}会返回{@code null}
+     *
+     * @param obj 对象
+     * @return 字符串 or {@code null}
+     */
+    public static String toStringOrNull(final Object obj) {
+        return null == obj ? null : obj.toString();
+    }
+
+    /**
+     * 调用对象的toString方法，{@code null}会返回空字符串 ""
+     * 如果仅仅是对{@link CharSequence}处理，请使用{@link #emptyIfNull(CharSequence)}
+     *
+     * @param obj 对象
+     * @return {@link String }
+     * @see #emptyIfNull(CharSequence)
+     */
+    public static String toStringOrEmpty(final Object obj) {
+        return null == obj ? Normal.EMPTY : obj.toString();
+    }
+
+    /**
+     * 当给定字符串为空字符串时，转换为""
+     * 此方法与{@link #toStringOrEmpty(Object)}不同的是，如果提供的{@link CharSequence}非String，则保持原状
      *
      * @param text 被转换的字符串
      * @return 转换后的字符串
+     * @see #toStringOrEmpty(Object)
      */
-    public static String emptyIfNull(final CharSequence text) {
-        return ObjectKit.defaultIfNull(text, Normal.EMPTY).toString();
+    public static CharSequence emptyIfNull(final CharSequence text) {
+        return null == text ? Normal.EMPTY : text;
     }
 
     /**
@@ -118,13 +144,60 @@ public class CharsBacker extends StringValidator {
     }
 
     /**
+     * <p>如果给定字符串为{@code null}返回默认值
+     * <pre>{@code
+     *   defaultIfNull(null, null);       = null
+     *   defaultIfNull(null, "");         = ""
+     *   defaultIfNull(null, "zz");       = "zz"
+     *   defaultIfNull("abc", *);         = "abc"
+     * }</pre>
+     *
+     * @param <T>          字符串类型
+     * @param text          被检查字符串，可能为{@code null}
+     * @param defaultValue 被检查字符串为{@code null}返回的默认值，可以为{@code null}
+     * @return 被检查字符串不为 {@code null} 返回原值，否则返回默认值
+     * @see ObjectKit#defaultIfNull(Object, Object)
+     */
+    public static <T extends CharSequence> T defaultIfNull(final T text, final T defaultValue) {
+        return ObjectKit.defaultIfNull(text, defaultValue);
+    }
+
+    /**
+     * 如果给定字符串不为{@code null} 返回原值, 否则返回 {@link Supplier#get()} 提供的默认值
+     *
+     * @param <T>             被检查字符串类型
+     * @param source          被检查字符串，可能为{@code null}
+     * @param defaultSupplier 为空时的默认值提供者
+     * @return 被检查字符串不为 {@code null} 返回原值，否则返回 {@link Supplier#get()} 提供的默认值
+     * @see ObjectKit#defaultIfNull(Object, Supplier)
+     */
+    public static <T extends CharSequence> T defaultIfNull(final T source, final Supplier<? extends T> defaultSupplier) {
+        return ObjectKit.defaultIfNull(source, defaultSupplier);
+    }
+
+    /**
+     * 如果给定字符串不为{@code null} 返回自定义handler处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     *
+     * @param <R>             返回值类型
+     * @param <T>             被检查对象类型
+     * @param source          被检查对象，可能为{@code null}
+     * @param handler         非空时自定义的处理方法
+     * @param defaultSupplier 为空时的默认值提供者
+     * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     * @see ObjectKit#defaultIfNull(Object, Function, Supplier)
+     */
+    public static <T extends CharSequence, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler, final Supplier<? extends R> defaultSupplier) {
+        return ObjectKit.defaultIfNull(source, handler, defaultSupplier);
+    }
+
+    /**
      * 如果给定对象为{@code null}或者 "" 返回默认值
      *
      * <pre>
      *   defaultIfEmpty(null, null)      = null
      *   defaultIfEmpty(null, "")        = ""
-     *   defaultIfEmpty("", "zz")      = "zz"
-     *   defaultIfEmpty(" ", "zz")      = " "
+     *   defaultIfEmpty("", "zz")        = "zz"
+     *   defaultIfEmpty(" ", "zz")       = " "
      *   defaultIfEmpty("abc", *)        = "abc"
      * </pre>
      *
@@ -138,20 +211,29 @@ public class CharsBacker extends StringValidator {
     }
 
     /**
+     * 如果给定对象为{@code null}或者{@code ""}返回原值, 否则返回自定义handler处理后的返回值
+     *
+     * @param <T>             被检查对象类型
+     * @param text            String 类型
+     * @param defaultSupplier empty时的处理方法
+     * @return 处理后的返回值
+     */
+    public static <T extends CharSequence> T defaultIfEmpty(final T text, final Supplier<? extends T> defaultSupplier) {
+        return isEmpty(text) ? defaultSupplier.get() : text;
+    }
+
+    /**
      * 如果给定对象为{@code null}或者{@code ""}返回defaultHandler处理的结果, 否则返回自定义handler处理后的返回值
      *
      * @param <T>             被检查对象类型
      * @param <V>             结果类型
-     * @param text            String 类型
+     * @param text             String 类型
      * @param handler         非empty的处理方法
      * @param defaultSupplier empty时的处理方法
      * @return 处理后的返回值
      */
     public static <T extends CharSequence, V> V defaultIfEmpty(final T text, final Function<T, V> handler, final Supplier<? extends V> defaultSupplier) {
-        if (isNotEmpty(text)) {
-            return handler.apply(text);
-        }
-        return defaultSupplier.get();
+        return isEmpty(text) ? defaultSupplier.get() : handler.apply(text);
     }
 
     /**
@@ -160,8 +242,8 @@ public class CharsBacker extends StringValidator {
      * <pre>
      *   defaultIfBlank(null, null)      = null
      *   defaultIfBlank(null, "")        = ""
-     *   defaultIfBlank("", "zz")      = "zz"
-     *   defaultIfBlank(" ", "zz")      = "zz"
+     *   defaultIfBlank("", "zz")        = "zz"
+     *   defaultIfBlank(" ", "zz")       = "zz"
      *   defaultIfBlank("abc", *)        = "abc"
      * </pre>
      *
@@ -205,11 +287,11 @@ public class CharsBacker extends StringValidator {
      * </ul>
      *
      * <pre>
-     * trim(null)          = null
-     * trim(&quot;&quot;)            = &quot;&quot;
-     * trim(&quot;     &quot;)       = &quot;&quot;
-     * trim(&quot;abc&quot;)         = &quot;abc&quot;
-     * trim(&quot;    abc    &quot;) = &quot;abc&quot;
+     * trim(null)                         = null
+     * trim(&quot;&quot;)                 = &quot;&quot;
+     * trim(&quot;     &quot;)            = &quot;&quot;
+     * trim(&quot;abc&quot;)              = &quot;abc&quot;
+     * trim(&quot;    abc    &quot;)      = &quot;abc&quot;
      * </pre>
      *
      * @param text 要处理的字符串
@@ -223,11 +305,11 @@ public class CharsBacker extends StringValidator {
      * 除去字符串头尾部的空白，如果字符串是{@code null}，返回{@code ""}。
      *
      * <pre>
-     * trimToEmpty(null)          = ""
-     * trimToEmpty("")            = ""
-     * trimToEmpty("     ")       = ""
-     * trimToEmpty("abc")         = "abc"
-     * trimToEmpty("    abc    ") = "abc"
+     * trimToEmpty(null)                  = ""
+     * trimToEmpty("")                    = ""
+     * trimToEmpty("     ")               = ""
+     * trimToEmpty("abc")                 = "abc"
+     * trimToEmpty("    abc    ")         = "abc"
      * </pre>
      *
      * @param text 字符串
@@ -241,11 +323,11 @@ public class CharsBacker extends StringValidator {
      * 除去字符串头尾部的空白，如果字符串是{@code null}或者""，返回{@code null}。
      *
      * <pre>
-     * trimToNull(null)          = null
-     * trimToNull("")            = null
-     * trimToNull("     ")       = null
-     * trimToNull("abc")         = "abc"
-     * trimToEmpty("    abc    ") = "abc"
+     * trimToNull(null)                   = null
+     * trimToNull("")                     = null
+     * trimToNull("     ")                = null
+     * trimToNull("abc")                  = "abc"
+     * trimToEmpty("    abc    ")         = "abc"
      * </pre>
      *
      * @param text 字符串
@@ -263,7 +345,7 @@ public class CharsBacker extends StringValidator {
      * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
      *
      * <pre>
-     * trimPrefix(null)         = null
+     * trimPrefix(null)                   = null
      * trimPrefix(&quot;&quot;)           = &quot;&quot;
      * trimPrefix(&quot;abc&quot;)        = &quot;abc&quot;
      * trimPrefix(&quot;  abc&quot;)      = &quot;abc&quot;
@@ -285,12 +367,12 @@ public class CharsBacker extends StringValidator {
      * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
      *
      * <pre>
-     * trimSuffix(null)       = null
-     * trimSuffix(&quot;&quot;)         = &quot;&quot;
-     * trimSuffix(&quot;abc&quot;)      = &quot;abc&quot;
-     * trimSuffix(&quot;  abc&quot;)    = &quot;  abc&quot;
-     * trimSuffix(&quot;abc  &quot;)    = &quot;abc&quot;
-     * trimSuffix(&quot; abc &quot;)    = &quot; abc&quot;
+     * trimSuffix(null)                  = null
+     * trimSuffix(&quot;&quot;)          = &quot;&quot;
+     * trimSuffix(&quot;abc&quot;)       = &quot;abc&quot;
+     * trimSuffix(&quot;  abc&quot;)     = &quot;  abc&quot;
+     * trimSuffix(&quot;abc  &quot;)     = &quot;abc&quot;
+     * trimSuffix(&quot; abc &quot;)     = &quot; abc&quot;
      * </pre>
      *
      * @param text 要处理的字符串
@@ -975,7 +1057,7 @@ public class CharsBacker extends StringValidator {
     public static String removeAll(final CharSequence text, final CharSequence args) {
         // args如果为空， 也不用继续后面的逻辑
         if (isEmpty(text) || isEmpty(args)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return text.toString().replace(args, Normal.EMPTY);
     }
@@ -989,7 +1071,7 @@ public class CharsBacker extends StringValidator {
      * @return 移除后的字符串
      */
     public static String removeAny(final CharSequence text, final CharSequence... args) {
-        String result = toString(text);
+        String result = toStringOrNull(text);
         if (isNotEmpty(text)) {
             for (final CharSequence remove : args) {
                 result = removeAll(result, remove);
@@ -1006,8 +1088,8 @@ public class CharsBacker extends StringValidator {
      * @return 去除后的字符
      */
     public static String removeAll(final CharSequence text, final char... chars) {
-        if (null == text || ArrayKit.isEmpty(chars)) {
-            return toString(text);
+        if (StringKit.isEmpty(text) || ArrayKit.isEmpty(chars)) {
+            return toStringOrNull(text);
         }
         return filter(text, (c) -> !ArrayKit.contains(chars, c));
     }
@@ -1094,7 +1176,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String removePrefix(final CharSequence text, final CharSequence prefix, final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(prefix)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         final String text2 = text.toString();
@@ -1113,7 +1195,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String removeSuffix(final CharSequence text, final CharSequence suffix) {
         if (isEmpty(text) || isEmpty(suffix)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         final String text2 = text.toString();
@@ -1143,7 +1225,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String removeSuffixIgnoreCase(final CharSequence text, final CharSequence suffix) {
         if (isEmpty(text) || isEmpty(suffix)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         final String text2 = text.toString();
@@ -1189,7 +1271,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         int from = 0;
@@ -1227,7 +1309,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String stripIgnoreCase(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         int from = 0;
         int to = text.length();
@@ -1307,7 +1389,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String sub(final CharSequence text, int fromIndexInclude, int toIndexExclude) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final int len = text.length();
 
@@ -1352,7 +1434,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String subByCodePoint(final CharSequence text, final int fromIndex, final int toIndex) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         if (fromIndex < 0 || fromIndex > toIndex) {
@@ -1392,7 +1474,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String subPreGbk(final CharSequence text, int len, final boolean halfUp) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         int counterOfDoubleByte = 0;
@@ -2089,7 +2171,7 @@ public class CharsBacker extends StringValidator {
      * @return 包装后的字符串
      */
     public static String wrap(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
-        return emptyIfNull(prefix).concat(emptyIfNull(text)).concat(emptyIfNull(suffix));
+        return toStringOrEmpty(prefix).concat(toStringOrEmpty(text)).concat(toStringOrEmpty(suffix));
     }
 
     /**
@@ -2101,7 +2183,7 @@ public class CharsBacker extends StringValidator {
      * @return 包装后的字符串
      */
     public static String wrap(final CharSequence text, final char prefix, final char suffix) {
-        return prefix + emptyIfNull(text) + suffix;
+        return prefix + toStringOrEmpty(text) + suffix;
     }
 
     /**
@@ -2216,7 +2298,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String unWrap(final CharSequence text, final char prefix, final char suffix) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         if (text.charAt(0) == prefix && text.charAt(text.length() - 1) == suffix) {
             return sub(text, 1, text.length() - 1);
@@ -2547,7 +2629,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String center(CharSequence text, final int size, final char padChar) {
         if (text == null || size <= 0) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final int strLen = text.length();
         final int pads = size - strLen;
@@ -2581,7 +2663,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String center(CharSequence text, final int size, CharSequence padStr) {
         if (text == null || size <= 0) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         if (isEmpty(padStr)) {
             padStr = Symbol.SPACE;
@@ -2741,7 +2823,7 @@ public class CharsBacker extends StringValidator {
      * @return 排序值。负数：version1 &lt; version2，正数：version1 &gt; version2, 0：version1 == version2
      */
     public static int compareVersion(final CharSequence version1, final CharSequence version2) {
-        return VersionCompare.INSTANCE.compare(toString(version1), toString(version2));
+        return VersionCompare.INSTANCE.compare(toStringOrNull(version1), toStringOrNull(version2));
     }
 
     /**
@@ -2781,7 +2863,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String appendIfMissing(final CharSequence text, final CharSequence suffix, final boolean ignoreCase, final CharSequence... testSuffixes) {
         if (text == null || isEmpty(suffix) || endWith(text, suffix, ignoreCase)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         if (ArrayKit.isNotEmpty(testSuffixes)) {
             for (final CharSequence testSuffix : testSuffixes) {
@@ -2830,7 +2912,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String prependIfMissing(final CharSequence text, final CharSequence prefix, final boolean ignoreCase, final CharSequence... prefixes) {
         if (text == null || isEmpty(prefix) || startWith(text, prefix, ignoreCase)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         if (ArrayKit.isNotEmpty(prefixes)) {
             for (final CharSequence s : prefixes) {
@@ -2853,11 +2935,11 @@ public class CharsBacker extends StringValidator {
      */
     public static String replaceFirst(final CharSequence text, final CharSequence searchStr, final CharSequence replacedStr, final boolean ignoreCase) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final int startInclude = indexOf(text, searchStr, 0, ignoreCase);
         if (Normal.__1 == startInclude) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return replaceByCodePoint(text, startInclude, startInclude + searchStr.length(), replacedStr);
     }
@@ -2873,11 +2955,11 @@ public class CharsBacker extends StringValidator {
      */
     public static String replaceLast(final CharSequence text, final CharSequence searchStr, final CharSequence replacedStr, final boolean ignoreCase) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final int lastIndex = lastIndexOf(text, searchStr, text.length(), ignoreCase);
         if (Normal.__1 == lastIndex) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return replace(text, lastIndex, searchStr, replacedStr, ignoreCase);
     }
@@ -2932,7 +3014,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String replace(final CharSequence text, final int fromIndex, final CharSequence searchStr, final CharSequence replacement, final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(searchStr)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return new SearchReplacer(fromIndex, searchStr, replacement, ignoreCase).apply(text);
     }
@@ -3030,7 +3112,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String replaceChars(final CharSequence text, final String chars, final CharSequence replacedStr) {
         if (isEmpty(text) || isEmpty(chars)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return replaceChars(text, chars.toCharArray(), replacedStr);
     }
@@ -3045,7 +3127,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String replaceChars(final CharSequence text, final char[] chars, final CharSequence replacedStr) {
         if (isEmpty(text) || ArrayKit.isEmpty(chars)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         final Set<Character> set = new HashSet<>(chars.length);
@@ -3067,10 +3149,10 @@ public class CharsBacker extends StringValidator {
      *
      * @param text        字符串
      * @param index       位置，-1表示最后一个字符
-     * @param replaceFunc 替换逻辑，给定原字符，返回新字符
+     * @param operator 替换逻辑，给定原字符，返回新字符
      * @return 替换后的字符串
      */
-    public static String replaceAt(final CharSequence text, int index, final Function<Character, Character> replaceFunc) {
+    public static String replaceAt(final CharSequence text, int index, final UnaryOperator<Character> operator) {
         if (text == null) {
             return null;
         }
@@ -3088,16 +3170,16 @@ public class CharsBacker extends StringValidator {
 
         // 检查转换前后是否有编码，无变化则不转换，返回原字符串
         final char c = string.charAt(index);
-        final Character newC = replaceFunc.apply(c);
+        final Character newC = operator.apply(c);
         if (c == newC) {
             // 无变化，返回原字符串
             return string;
         }
 
         // 此处不复用传入的CharSequence，防止修改原对象
-        final StringBuilder builder = new StringBuilder(text);
-        builder.setCharAt(index, replaceFunc.apply(c));
-        return builder.toString();
+        final char[] chars = string.toCharArray();
+        chars[index] = newC;
+        return new String(chars);
     }
 
     /**
@@ -3193,11 +3275,11 @@ public class CharsBacker extends StringValidator {
                                          final int factor, final boolean appendDots) {
         //字符数*速算因子<=最大字节数
         if (text == null || text.length() * factor <= maxBytesLength) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final byte[] sba = ByteKit.toBytes(text, charset);
         if (sba.length <= maxBytesLength) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         //限制字节数
         final int limitBytes;
@@ -3268,6 +3350,16 @@ public class CharsBacker extends StringValidator {
         }
         return preString + upperFirst(text);
     }
+    /**
+     * 大写首字母
+     * 例如：text = name, return Name
+     *
+     * @param text 字符串
+     * @return 字符串
+     */
+    public static String upperFirst(final CharSequence text) {
+        return upperAt(text, 0);
+    }
 
     /**
      * 大写对应下标字母
@@ -3278,81 +3370,8 @@ public class CharsBacker extends StringValidator {
      * @param index 下标，支持负数，-1表示最后一个字符
      * @return 字符串
      */
-    public static String upperAt(final CharSequence text, int index) {
-        if (null == text) {
-            return null;
-        }
-
-        // 支持负数
-        final int length = text.length();
-        if (index < 0) {
-            index += length;
-        }
-
-        final String string = text.toString();
-        if (index < 0 || index >= length) {
-            return string;
-        }
-
-        final char c = text.charAt(index);
-        if (!Character.isLowerCase(c)) {
-            // 非小写不转换，某些字符非小写也非大写，一并略过
-            return string;
-        }
-
-        // 此处不复用传入的CharSequence，防止修改原对象
-        final StringBuilder builder = new StringBuilder(text);
-        builder.setCharAt(index, Character.toUpperCase(c));
-
-        return builder.toString();
-    }
-
-    /**
-     * 小写对应下标字母
-     * 例如: text = NAME,index = 1, return NaME
-     *
-     * @param text  字符串
-     * @param index 下标，支持负数，-1表示最后一个字符
-     * @return 字符串
-     */
-    public static String lowerAt(final CharSequence text, int index) {
-        if (text == null) {
-            return null;
-        }
-
-        // 支持负数
-        final int length = text.length();
-        if (index < 0) {
-            index += length;
-        }
-
-        final String string = text.toString();
-        if (index < 0 || index >= length) {
-            return string;
-        }
-
-        final char c = text.charAt(index);
-        if (!Character.isUpperCase(c)) {
-            // 非大写不转换，某些字符非小写也非大写，一并略过
-            return string;
-        }
-
-        // 此处不复用传入的CharSequence，防止修改原对象
-        final StringBuilder builder = new StringBuilder(text);
-        builder.setCharAt(index, Character.toLowerCase(c));
-
-        return builder.toString();
-    }
-
-    /**
-     * 大写首字母
-     * 例如：text = name, return Name
-     *
-     * @param text 字符串
-     * @return 字符串
-     */
-    public static String upperFirst(final CharSequence text) {
-        return upperAt(text, 0);
+    public static String upperAt(final CharSequence text, final int index) {
+        return replaceAt(text, index, Character::toUpperCase);
     }
 
     /**
@@ -3367,6 +3386,18 @@ public class CharsBacker extends StringValidator {
     }
 
     /**
+     * 小写对应下标字母
+     * 例如: text = NAME,index = 1, return NaME
+     *
+     * @param text  字符串
+     * @param index 下标，支持负数，-1表示最后一个字符
+     * @return 字符串
+     */
+    public static String lowerAt(final CharSequence text, final int index) {
+        return replaceAt(text, index, Character::toLowerCase);
+    }
+
+    /**
      * 过滤字符串
      *
      * @param text      字符串
@@ -3375,7 +3406,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String filter(final CharSequence text, final Predicate<Character> predicate) {
         if (text == null || predicate == null) {
-            return toString(text);
+            return toStringOrNull(text);
         }
 
         final int len = text.length();
@@ -3570,7 +3601,7 @@ public class CharsBacker extends StringValidator {
     public static String concat(final boolean isNullToEmpty, final CharSequence... args) {
         final StringBuilder sb = new StringBuilder();
         for (final CharSequence text : args) {
-            sb.append(isNullToEmpty ? emptyIfNull(text) : text);
+            sb.append(isNullToEmpty ? toStringOrEmpty(text) : text);
         }
         return sb.toString();
     }
@@ -3673,7 +3704,7 @@ public class CharsBacker extends StringValidator {
      */
     public static String move(final CharSequence text, final int startInclude, final int endExclude, int moveLength) {
         if (isEmpty(text)) {
-            return toString(text);
+            return toStringOrNull(text);
         }
         final int len = text.length();
         if (Math.abs(moveLength) > len) {
@@ -3694,7 +3725,7 @@ public class CharsBacker extends StringValidator {
                     .append(text.subSequence(startAfterMove, startInclude))
                     .append(text.subSequence(endExclude, text.length()));
         } else {
-            return toString(text);
+            return toStringOrNull(text);
         }
         return strBuilder.toString();
     }
@@ -4119,6 +4150,20 @@ public class CharsBacker extends StringValidator {
      */
     public static Function<String, String> trimFunc(final boolean isTrim) {
         return isTrim ? StringKit::trim : Function.identity();
+    }
+
+    /**
+     * 将字符串转换为字符数组
+     *
+     * @param text         字符串
+     * @param isCodePoint 是否为Unicode码点（即支持emoji等多char字符）
+     * @return 字符数组
+     */
+    public static int[] toChars(final CharSequence text, final boolean isCodePoint) {
+        if (null == text) {
+            return null;
+        }
+        return (isCodePoint ? text.codePoints() : text.chars()).toArray();
     }
 
 }

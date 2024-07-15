@@ -94,16 +94,16 @@ public class ExplorerCompare implements Comparator<CharSequence> {
         }
     }
 
-    private List<String> splitStringPreserveDelimiter(final CharSequence str) {
-        final Matcher matcher = Pattern.compile("\\d+|\\.|\\s").matcher(str);
+    private List<String> splitStringPreserveDelimiter(final CharSequence text) {
+        final Matcher matcher = Pattern.compile("\\d+|\\.|\\s").matcher(text);
         final List<String> list = new ArrayList<>();
         int pos = 0;
         while (matcher.find()) {
-            list.add(StringKit.sub(str, pos, matcher.start()));
+            list.add(StringKit.sub(text, pos, matcher.start()));
             list.add(matcher.group());
             pos = matcher.end();
         }
-        list.add(StringKit.subSuf(str, pos));
+        list.add(StringKit.subSuf(text, pos));
         return list;
     }
 

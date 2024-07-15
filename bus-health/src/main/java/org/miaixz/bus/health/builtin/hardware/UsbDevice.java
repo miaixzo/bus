@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 import java.util.List;
 

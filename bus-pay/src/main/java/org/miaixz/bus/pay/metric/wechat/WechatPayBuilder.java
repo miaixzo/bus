@@ -362,16 +362,16 @@ public class WechatPayBuilder {
     /**
      * 替换url中的参数
      *
-     * @param str   原始字符串
+     * @param text   原始字符串
      * @param regex 表达式
      * @param args  替换字符串
      * @return {String}
      */
-    public static String replace(String str, String regex, String... args) {
+    public static String replace(String text, String regex, String... args) {
         for (String arg : args) {
-            str = str.replaceFirst(regex, arg);
+            text = text.replaceFirst(regex, arg);
         }
-        return str;
+        return text;
     }
 
     /**

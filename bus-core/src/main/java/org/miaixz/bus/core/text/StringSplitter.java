@@ -30,6 +30,7 @@ package org.miaixz.bus.core.text;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.finder.TextFinder;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.Serializable;
@@ -167,7 +168,7 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
         final List<T> result = new ArrayList<>();
         while (this.hasNext()) {
             final T apply = mapping.apply(this.next());
-            if (ignoreEmpty && StringKit.isEmptyIfString(apply)) {
+            if (ignoreEmpty && ObjectKit.isEmptyIfString(apply)) {
                 // 对于mapping之后依旧是String的情况，ignoreEmpty依旧有效
                 continue;
             }

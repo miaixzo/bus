@@ -29,8 +29,8 @@ package org.miaixz.bus.health.mac;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * CF String retrieving

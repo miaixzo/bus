@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.annotation.Immutable;
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

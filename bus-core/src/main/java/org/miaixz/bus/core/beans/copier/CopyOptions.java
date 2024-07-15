@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.Converter;

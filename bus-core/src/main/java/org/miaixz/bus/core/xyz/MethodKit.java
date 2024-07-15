@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.NullWrapperBean;
+import org.miaixz.bus.core.beans.NullWrapper;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.instance.Instances;
@@ -483,14 +483,14 @@ public class MethodKit {
 
         String name = method.getName();
         // 跳过set这类特殊方法
-        if ("set".equals(name)) {
+        if (name.length() < 4) {
             return false;
         }
 
         if (ignoreCase) {
             name = name.toLowerCase();
         }
-        return name.startsWith("set");
+        return name.startsWith(Normal.SET);
     }
 
     /**
@@ -512,14 +512,18 @@ public class MethodKit {
         }
 
         // 参数个数必须为0或1
-        final int parameterCount = method.getParameterCount();
-        if (0 != parameterCount) {
+        if (0 != method.getParameterCount()) {
+            return false;
+        }
+
+        // 必须有返回值
+        if (Void.class == method.getReturnType()) {
             return false;
         }
 
         String name = method.getName();
         // 跳过getClass、get、is这类特殊方法
-        if ("getClass".equals(name) || "get".equals(name) || "is".equals(name)) {
+        if (name.length() < 3 || "getClass".equals(name) || Normal.GET.equals(name)) {
             return false;
         }
 
@@ -527,11 +531,11 @@ public class MethodKit {
             name = name.toLowerCase();
         }
 
-        if (name.startsWith("is")) {
+        if (name.startsWith(Normal.IS)) {
             // 判断返回值是否为Boolean
             return BooleanKit.isBoolean(method.getReturnType());
         }
-        return name.startsWith("get");
+        return name.startsWith(Normal.GET);
     }
 
     /**
@@ -601,7 +605,7 @@ public class MethodKit {
      * @param args       参数列表
      * @return 执行结果
      * @throws InternalException IllegalAccessException包装
-     * @see NullWrapperBean
+     * @see NullWrapper
      */
     public static <T> T invoke(final Object obj, final String methodName, final Object... args) throws InternalException {
         Assert.notNull(obj, "Object to get method must be not null!");
@@ -767,7 +771,7 @@ public class MethodKit {
                 if (i >= args.length || null == args[i]) {
                     // 越界或者空值
                     actualArgs[i] = ClassKit.getDefaultValue(parameterTypes[i]);
-                } else if (args[i] instanceof NullWrapperBean) {
+                } else if (args[i] instanceof NullWrapper) {
                     //如果是通过NullWrapperBean传递的null参数,直接赋值null
                     actualArgs[i] = null;
                 } else if (!parameterTypes[i].isAssignableFrom(args[i].getClass())) {

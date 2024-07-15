@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.annotation.Alias;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 

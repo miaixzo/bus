@@ -33,8 +33,8 @@ import org.miaixz.bus.cache.Manage;
 import org.miaixz.bus.cache.support.KeyGenerator;
 import org.miaixz.bus.cache.support.PatternGenerator;
 import org.miaixz.bus.cache.support.PreventObjects;
-import org.miaixz.bus.core.annotation.Inject;
-import org.miaixz.bus.core.annotation.Singleton;
+import org.miaixz.bus.core.lang.annotation.Inject;
+import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 

@@ -28,7 +28,7 @@
 package org.miaixz.bus.setting.metric.props;
 
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.LambdaInfo;
+import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.io.file.FileName;
@@ -322,7 +322,8 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
 
     @Override
     public Object getObject(final CharSequence key, final Object defaultValue) {
-        return ObjectKit.defaultIfNull(getProperty(StringKit.toString(key)), defaultValue);
+        Assert.notNull(key, "Key must be not null!");
+        return ObjectKit.defaultIfNull(getProperty(key.toString()), defaultValue);
     }
 
     /**
@@ -334,8 +335,8 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return 获取表达式对应属性和返回的对象
      */
     public <P, T> T get(final FunctionX<P, T> func) {
-        final LambdaInfo lambdaInfo = LambdaKit.resolve(func);
-        return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
+        final LambdaX lambdaX = LambdaKit.resolve(func);
+        return get(lambdaX.getFieldName(), lambdaX.getReturnType());
     }
 
     /**
@@ -477,7 +478,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
      * @return Bean对象
      */
     public <T> T toBean(final T bean, String prefix) {
-        prefix = StringKit.emptyIfNull(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
+        prefix = StringKit.toStringOrEmpty(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
 
         String key;
         for (final java.util.Map.Entry<Object, Object> entry : this.entrySet()) {

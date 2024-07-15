@@ -31,7 +31,7 @@ import com.sun.jna.platform.unix.aix.Perfstat;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Utility to query performance stats for cpu

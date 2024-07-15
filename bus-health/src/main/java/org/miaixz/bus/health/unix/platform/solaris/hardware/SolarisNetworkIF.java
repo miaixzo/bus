@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit;

@@ -379,8 +379,8 @@ public class Builder {
             return null;
         }
         StringBuilder sbf = new StringBuilder();
-        for (String str : signMessage) {
-            sbf.append(str).append("\n");
+        for (String text : signMessage) {
+            sbf.append(text).append("\n");
         }
         return sbf.toString();
     }

@@ -60,7 +60,7 @@ public class AnalysisProvider implements NLPProvider {
     public NLPResult parse(final CharSequence text) {
         final TokenStream stream;
         try {
-            stream = analyzer.tokenStream("text", StringKit.toString(text));
+            stream = analyzer.tokenStream("text", StringKit.toStringOrEmpty(text));
             stream.reset();
         } catch (final IOException e) {
             throw new InternalException(e);

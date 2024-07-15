@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.*;
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.builtin.jna.ByRef;

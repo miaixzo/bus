@@ -95,20 +95,19 @@ public class HeavenStem extends Samsara {
         if (null == target) {
             return null;
         }
-        Element hostElement = getElement();
-        Element guestElement = target.getElement();
+        Element host = getElement();
+        Element guest = target.getElement();
         int index = 0;
-        boolean sameYinYang = getOpposite().equals(target.getOpposite());
-        if (hostElement.getReinforce().equals(guestElement)) {
+        if (host.getReinforce().equals(guest)) {
             index = 1;
-        } else if (hostElement.getRestrain().equals(guestElement)) {
+        } else if (host.getRestrain().equals(guest)) {
             index = 2;
-        } else if (guestElement.getRestrain().equals(hostElement)) {
+        } else if (host.getRestrained().equals(guest)) {
             index = 3;
-        } else if (guestElement.getReinforce().equals(hostElement)) {
+        } else if (host.getReinforced().equals(guest)) {
             index = 4;
         }
-        return TenStar.fromIndex(index * 2 + (sameYinYang ? 0 : 1));
+        return TenStar.fromIndex(index * 2 + (getOpposite().equals(target.getOpposite()) ? 0 : 1));
     }
 
     /**

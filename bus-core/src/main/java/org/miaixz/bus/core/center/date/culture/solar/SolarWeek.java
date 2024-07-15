@@ -85,13 +85,32 @@ public class SolarWeek extends Loops {
     }
 
     /**
+     * 公历月
+     *
+     * @return 公历月
+     */
+    public SolarMonth getSolarMonth() {
+        return month;
+    }
+
+    /**
+     * 年
+     *
+     * @return 年
+     */
+    public int getYear() {
+        return month.getYear();
+    }
+
+    /**
      * 月
      *
      * @return 月
      */
-    public SolarMonth getMonth() {
-        return month;
+    public int getMonth() {
+        return month.getMonth();
     }
+
 
     /**
      * 索引
@@ -110,7 +129,7 @@ public class SolarWeek extends Loops {
     public int getIndexInYear() {
         int i = 0;
         // 今年第1周
-        SolarWeek w = SolarWeek.fromYm(month.getYear().getYear(), 1, 0, start.getIndex());
+        SolarWeek w = SolarWeek.fromYm(getYear(), 1, 0, start.getIndex());
         while (!w.equals(this)) {
             w = w.next(1);
             i++;
@@ -138,7 +157,7 @@ public class SolarWeek extends Loops {
 
     public SolarWeek next(int n) {
         if (n == 0) {
-            return fromYm(month.getYear().getYear(), month.getMonth(), index, start.getIndex());
+            return fromYm(getYear(), getMonth(), index, start.getIndex());
         }
         int d = index + n;
         SolarMonth m = month;
@@ -150,13 +169,13 @@ public class SolarWeek extends Loops {
             if (forward) {
                 d -= weeksInMonth;
             } else {
-                if (!SolarDay.fromYmd(m.getYear().getYear(), m.getMonth(), 1).getWeek().equals(start)) {
+                if (!SolarDay.fromYmd(m.getYear(), m.getMonth(), 1).getWeek().equals(start)) {
                     d += add;
                 }
             }
             m = m.next(add);
             if (forward) {
-                if (!SolarDay.fromYmd(m.getYear().getYear(), m.getMonth(), 1).getWeek().equals(start)) {
+                if (!SolarDay.fromYmd(m.getYear(), m.getMonth(), 1).getWeek().equals(start)) {
                     d += add;
                 }
             }
@@ -165,7 +184,7 @@ public class SolarWeek extends Loops {
                 d += weeksInMonth;
             }
         }
-        return fromYm(m.getYear().getYear(), m.getMonth(), d, startIndex);
+        return fromYm(m.getYear(), m.getMonth(), d, startIndex);
     }
 
     /**
@@ -174,8 +193,7 @@ public class SolarWeek extends Loops {
      * @return 公历日
      */
     public SolarDay getFirstDay() {
-        SolarMonth m = getMonth();
-        SolarDay firstDay = SolarDay.fromYmd(m.getYear().getYear(), m.getMonth(), 1);
+        SolarDay firstDay = SolarDay.fromYmd(getYear(), getMonth(), 1);
         return firstDay.next(index * 7 - indexOf(firstDay.getWeek().getIndex() - start.getIndex(), 7));
     }
 

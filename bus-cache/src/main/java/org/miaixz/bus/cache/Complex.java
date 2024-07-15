@@ -35,9 +35,9 @@ import org.miaixz.bus.cache.support.ArgNameGenerator;
 import org.miaixz.bus.cache.support.CacheInfoContainer;
 import org.miaixz.bus.cache.support.KeyGenerator;
 import org.miaixz.bus.cache.support.SpelCalculator;
-import org.miaixz.bus.core.annotation.Inject;
-import org.miaixz.bus.core.annotation.Named;
-import org.miaixz.bus.core.annotation.Singleton;
+import org.miaixz.bus.core.lang.annotation.Inject;
+import org.miaixz.bus.core.lang.annotation.Named;
+import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.unix.driver;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Executor;
 

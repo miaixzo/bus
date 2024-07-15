@@ -31,6 +31,7 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.ResourceLoader;
 import org.beetl.core.resource.*;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
@@ -52,6 +53,8 @@ public class BeetlProvider implements TemplateProvider {
      * 默认构造
      */
     public BeetlProvider() {
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(GroupTemplate.class);
     }
 
     /**

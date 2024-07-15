@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.LambdaFactory;
-import org.miaixz.bus.core.center.function.LambdaInfo;
+import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -49,7 +49,7 @@ import java.util.function.*;
  */
 public class LambdaKit {
 
-    private static final WeakConcurrentMap<Object, LambdaInfo> CACHE = new WeakConcurrentMap<>();
+    private static final WeakConcurrentMap<Object, LambdaX> CACHE = new WeakConcurrentMap<>();
 
     /**
      * 通过对象的方法或类的静态方法引用，获取lambda实现类
@@ -86,11 +86,11 @@ public class LambdaKit {
      * @return lambda实现类
      */
     public static <R, T extends Serializable> Class<R> getRealClass(final T func) {
-        final LambdaInfo lambdaInfo = resolve(func);
-        return (Class<R>) Optional.of(lambdaInfo)
-                .map(LambdaInfo::getInstantiatedMethodParameterTypes)
+        final LambdaX lambdaX = resolve(func);
+        return (Class<R>) Optional.of(lambdaX)
+                .map(LambdaX::getInstantiatedMethodParameterTypes)
                 .filter(types -> types.length != 0).map(types -> types[types.length - 1])
-                .orElseGet(lambdaInfo::getClazz);
+                .orElseGet(lambdaX::getClazz);
     }
 
     /**
@@ -101,7 +101,7 @@ public class LambdaKit {
      * @param <T>  lambda的类型
      * @return 返回解析后的结果
      */
-    public static <T extends Serializable> LambdaInfo resolve(final T func) {
+    public static <T extends Serializable> LambdaX resolve(final T func) {
         return CACHE.computeIfAbsent(func, (key) -> {
             final SerializedLambda serializedLambda = _resolve(func);
             final String methodName = serializedLambda.getImplMethodName();
@@ -109,7 +109,7 @@ public class LambdaKit {
             if ("<init>".equals(methodName)) {
                 for (final Constructor<?> constructor : implClass.getDeclaredConstructors()) {
                     if (ReflectKit.getDesc(constructor, false).equals(serializedLambda.getImplMethodSignature())) {
-                        return new LambdaInfo(constructor, serializedLambda);
+                        return new LambdaX(constructor, serializedLambda);
                     }
                 }
             } else {
@@ -117,7 +117,7 @@ public class LambdaKit {
                 for (final Method method : methods) {
                     if (method.getName().equals(methodName)
                             && ReflectKit.getDesc(method, false).equals(serializedLambda.getImplMethodSignature())) {
-                        return new LambdaInfo(method, serializedLambda);
+                        return new LambdaX(method, serializedLambda);
                     }
                 }
             }

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.annotation.NotThreadSafe;
+import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.setting.metric.props.Props;

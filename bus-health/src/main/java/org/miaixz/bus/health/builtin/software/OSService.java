@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
  * Operating system services are responsible for the management of platform resources, including the processor, memory,

@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import com.sun.jna.Memory;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;

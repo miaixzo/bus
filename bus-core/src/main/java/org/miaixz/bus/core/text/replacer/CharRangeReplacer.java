@@ -63,11 +63,11 @@ public class CharRangeReplacer extends StringReplacer {
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
-            return StringKit.toString(text);
+            return StringKit.toStringOrNull(text);
         }
 
-        final String originalStr = StringKit.toString(text);
-        final int[] chars = (isCodePoint ? originalStr.codePoints() : originalStr.chars()).toArray();
+        final String originalStr = text.toString();
+        final int[] chars = StringKit.toChars(originalStr, this.isCodePoint);
         final int strLength = chars.length;
 
         final int beginInclude = this.beginInclude;

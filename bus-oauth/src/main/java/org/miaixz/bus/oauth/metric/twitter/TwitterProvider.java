@@ -99,8 +99,9 @@ public class TwitterProvider extends AbstractProvider {
      */
     public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
-        String str = Builder.parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(str);
+
+        String text = Builder.parseMapToString(map, true);
+        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(text);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
         byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.mapper.builder.resolve;
 import jakarta.persistence.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.annotation.Order;
+import org.miaixz.bus.core.lang.annotation.Order;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;

@@ -193,7 +193,7 @@ public class LunarYear extends Loops {
     public List<LunarMonth> getMonths() {
         List<LunarMonth> l = new ArrayList<>(13);
         LunarMonth m = LunarMonth.fromYm(year, 1);
-        while (m.getYear().getYear() == year) {
+        while (m.getYear() == year) {
             l.add(m);
             m = m.next(1);
         }

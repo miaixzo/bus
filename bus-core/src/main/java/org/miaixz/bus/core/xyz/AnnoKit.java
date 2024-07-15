@@ -27,14 +27,14 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.annotation.resolve.AnnotationMappingProxy;
-import org.miaixz.bus.core.annotation.resolve.AnnotationProxy;
-import org.miaixz.bus.core.annotation.resolve.elements.CombinationAnnotatedElement;
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.LambdaInfo;
+import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMappingProxy;
+import org.miaixz.bus.core.lang.annotation.resolve.AnnotationProxy;
+import org.miaixz.bus.core.lang.annotation.resolve.elements.CombinationAnnotatedElement;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
 
@@ -209,7 +209,7 @@ public class AnnoKit {
         if (propertyName == null) {
             return null;
         } else {
-            final LambdaInfo lambda = LambdaKit.resolve(propertyName);
+            final LambdaX lambda = LambdaKit.resolve(propertyName);
             final String instantiatedMethodType = lambda.getLambda().getInstantiatedMethodType();
             final Class<A> annotationClass = ClassKit.loadClass(StringKit.sub(instantiatedMethodType, 2, StringKit.indexOf(instantiatedMethodType, Symbol.C_SEMICOLON)));
             return getAnnotationValue(annotationEle, annotationClass, lambda.getLambda().getImplMethodName());

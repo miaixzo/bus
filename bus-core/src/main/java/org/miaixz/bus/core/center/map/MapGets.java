@@ -39,7 +39,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapGets {
+public class MapGets extends MapValidator {
 
     /**
      * 获取Map指定key的值，并转换为字符串

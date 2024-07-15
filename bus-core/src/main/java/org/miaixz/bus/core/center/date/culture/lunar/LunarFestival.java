@@ -115,8 +115,7 @@ public class LunarFestival extends Loops {
             String data = matcher.group();
             SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
             LunarDay lunarDay = solarTerms.getJulianDay().getSolarDay().getLunarDay();
-            LunarMonth lunarMonth = lunarDay.getMonth();
-            if (lunarMonth.getYear().getYear() == year && lunarMonth.getMonth() == month && lunarDay.getDay() == day) {
+            if (lunarDay.getYear() == year && lunarDay.getMonth() == month && lunarDay.getDay() == day) {
                 return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerms, data);
             }
         }
@@ -126,14 +125,12 @@ public class LunarFestival extends Loops {
         }
         LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
         LunarDay nextDay = lunarDay.next(1);
-        return nextDay.getMonth().getMonth() == 1 && nextDay.getDay() == 1 ? new LunarFestival(EnumMap.Festival.EVE, lunarDay, null, matcher.group()) : null;
+        return nextDay.getMonth() == 1 && nextDay.getDay() == 1 ? new LunarFestival(EnumMap.Festival.EVE, lunarDay, null, matcher.group()) : null;
     }
 
     public LunarFestival next(int n) {
-        LunarMonth m = day.getMonth();
-        int year = m.getYear().getYear();
         if (n == 0) {
-            return fromYmd(year, m.getMonthWithLeap(), day.getDay());
+            return fromYmd(day.getYear(), day.getMonth(), day.getDay());
         }
         int size = NAMES.length;
         int t = index + n;
@@ -141,7 +138,7 @@ public class LunarFestival extends Loops {
         if (t < 0) {
             t -= size;
         }
-        return fromIndex(year + t / size, offset);
+        return fromIndex(day.getYear() + t / size, offset);
     }
 
     /**

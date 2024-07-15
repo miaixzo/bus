@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.linux.hardware.LinuxPowerSource;

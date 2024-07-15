@@ -30,7 +30,7 @@ package org.miaixz.bus.health.windows.hardware;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;

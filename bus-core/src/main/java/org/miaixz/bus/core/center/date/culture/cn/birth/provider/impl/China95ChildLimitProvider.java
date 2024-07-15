@@ -52,9 +52,8 @@ public class China95ChildLimitProvider implements ChildLimitProvider {
         minutes %= 360;
         int day = minutes / 12;
 
-        SolarDay birthday = birthTime.getDay();
-        SolarMonth birthMonth = birthday.getMonth();
-        SolarMonth sm = SolarMonth.fromYm(birthMonth.getYear().getYear() + year, birthMonth.getMonth()).next(month);
+        SolarDay birthday = birthTime.getSolarDay();
+        SolarMonth sm = SolarMonth.fromYm(birthday.getYear() + year, birthday.getMonth()).next(month);
 
         int d = birthday.getDay() + day;
         int dc = sm.getDayCount();
@@ -63,7 +62,7 @@ public class China95ChildLimitProvider implements ChildLimitProvider {
             sm = sm.next(1);
         }
 
-        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear().getYear(), sm.getMonth(), d, birthTime.getHour(), birthTime.getMinute(), birthTime.getSecond()), year, month, day, 0, 0);
+        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, birthTime.getHour(), birthTime.getMinute(), birthTime.getSecond()), year, month, day, 0, 0);
     }
 
 }

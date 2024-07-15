@@ -29,7 +29,7 @@ package org.miaixz.bus.health.unix.platform.aix.driver.perfstat;
 
 import com.sun.jna.platform.unix.aix.Perfstat;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Utility to query performance stats for memory

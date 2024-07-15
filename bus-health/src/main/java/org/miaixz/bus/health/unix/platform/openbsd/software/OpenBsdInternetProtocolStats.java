@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
 import org.miaixz.bus.health.unix.driver.NetStat;

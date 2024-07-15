@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeUtil;
 import org.miaixz.bus.core.xyz.ListKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.style.StyleSet;
@@ -100,7 +100,7 @@ public class RowKit {
         boolean isAllNull = true;
         for (int i = startCellNumInclude; i < size; i++) {
             cellValue = CellKit.getCellValue(CellKit.getCell(row, i), cellEditor);
-            isAllNull &= StringKit.isEmptyIfString(cellValue);
+            isAllNull &= ObjectKit.isEmptyIfString(cellValue);
             cellValues.add(cellValue);
         }
 

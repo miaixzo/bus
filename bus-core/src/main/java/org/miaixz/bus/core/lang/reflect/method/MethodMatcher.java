@@ -27,7 +27,8 @@
  */
 package org.miaixz.bus.core.lang.reflect.method;
 
-import org.miaixz.bus.core.annotation.resolve.AnnotatedElements;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.xyz.*;
 
 import java.lang.annotation.Annotation;
@@ -198,12 +199,12 @@ public class MethodMatcher {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
         // 匹配方法名为 get + 首字母大写的属性名的无参数方法
-        Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, "get"));
+        Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.GET));
         // 查找方法名为属性名的无参数方法
         nameMatcher = nameMatcher.or(forName(fieldName));
         if (Objects.equals(boolean.class, fieldType) || Objects.equals(Boolean.class, fieldType)) {
             // 匹配方法名为 get + 首字母大写的属性名的无参数方法
-            nameMatcher = nameMatcher.or(forName(StringKit.upperFirstAndAddPre(fieldName, "is")));
+            nameMatcher = nameMatcher.or(forName(StringKit.upperFirstAndAddPre(fieldName, Normal.IS)));
         }
         return allMatch(nameMatcher, forReturnType(fieldType), forNoneParameter());
     }
@@ -238,7 +239,7 @@ public class MethodMatcher {
     public static Predicate<Method> forSetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
-        final Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, "set"))
+        final Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.SET))
                 .or(forName(fieldName));
         return allMatch(nameMatcher, forParameterTypes(fieldType));
     }

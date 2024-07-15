@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -247,12 +247,12 @@ public final class Parsing {
     /**
      * Convert a string to an integer representation.
      *
-     * @param str  A human readable ASCII string
+     * @param text  A human readable ASCII string
      * @param size Number of characters to convert to the long. May not exceed 8.
      * @return An integer representing the string where each character is treated as a byte
      */
-    public static long strToLong(String str, int size) {
-        return byteArrayToLong(str.getBytes(Charset.US_ASCII), size);
+    public static long strToLong(String text, int size) {
+        return byteArrayToLong(text.getBytes(Charset.US_ASCII), size);
     }
 
     /**
@@ -976,12 +976,12 @@ public final class Parsing {
      * example, 0 1 4-7 parses to a list containing 0, 1, 4, 5, 6, and 7. Also support comma separated entries like 0,
      * 2-5, 7-8, 9 to a list containing 0, 2, 3, 4, 5, 7, 8, 9.
      *
-     * @param str A string containing space-delimited integers or ranges of integers with a hyphen
+     * @param text A string containing space-delimited integers or ranges of integers with a hyphen
      * @return A list of integers representing the provided range(s).
      */
-    public static List<Integer> parseHyphenatedIntList(String str) {
+    public static List<Integer> parseHyphenatedIntList(String text) {
         List<Integer> result = new ArrayList<>();
-        String[] csvTokens = str.split(Symbol.COMMA);
+        String[] csvTokens = text.split(Symbol.COMMA);
         for (String csvToken : csvTokens) {
             csvToken = csvToken.trim();
             for (String s : Regex.SPACES.split(csvToken)) {

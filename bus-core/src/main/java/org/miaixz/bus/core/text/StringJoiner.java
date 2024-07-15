@@ -28,11 +28,11 @@
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
+import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.IOException;
@@ -258,7 +258,7 @@ public class StringJoiner implements Appendable, Serializable {
             final Map.Entry<?, ?> entry = (Map.Entry<?, ?>) obj;
             append(entry.getKey()).append(entry.getValue());
         } else {
-            append(ObjectKit.toString(obj));
+            append(Convert.toString(obj));
         }
         return this;
     }

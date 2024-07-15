@@ -31,7 +31,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 import com.sun.jna.platform.mac.IOKit.IOService;
 import com.sun.jna.platform.mac.IOKitUtil;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableNativeLongByReference;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseablePointerByReference;

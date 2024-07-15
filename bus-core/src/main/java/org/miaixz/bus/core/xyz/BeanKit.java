@@ -27,10 +27,14 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.*;
+import org.miaixz.bus.core.beans.BeanCache;
+import org.miaixz.bus.core.beans.DynaBean;
 import org.miaixz.bus.core.beans.copier.BeanCopier;
 import org.miaixz.bus.core.beans.copier.CopyOptions;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
+import org.miaixz.bus.core.beans.desc.BeanDesc;
+import org.miaixz.bus.core.beans.desc.BeanDescFactory;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.beans.path.BeanPath;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.Dictionary;
@@ -82,13 +86,13 @@ public class BeanKit {
     }
 
     /**
-     * 获取{@link StrictBeanDesc} Bean描述信息
+     * 获取{@link BeanDesc} Bean描述信息
      *
      * @param clazz Bean类
-     * @return {@link StrictBeanDesc}
+     * @return {@link BeanDesc}
      */
-    public static StrictBeanDesc getBeanDesc(final Class<?> clazz) {
-        return BeanDescCache.INSTANCE.getBeanDesc(clazz, () -> new StrictBeanDesc(clazz));
+    public static BeanDesc getBeanDesc(final Class<?> clazz) {
+        return BeanDescFactory.getBeanDesc(clazz);
     }
 
     /**
@@ -122,7 +126,7 @@ public class BeanKit {
     }
 
     /**
-     * 获得字段名和字段描述Map，获得的结果会缓存在 {@link BeanInfoCache}中
+     * 获得字段名和字段描述Map，获得的结果会缓存在 {@link BeanCache}中
      *
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
@@ -130,7 +134,7 @@ public class BeanKit {
      * @throws BeanException 获取属性异常
      */
     public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> clazz, final boolean ignoreCase) throws BeanException {
-        return BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
+        return BeanCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
     }
 
     /**
@@ -216,35 +220,6 @@ public class BeanKit {
         } else {// 普通Bean对象
             return FieldKit.getFieldValue(bean, fieldNameOrIndex);
         }
-    }
-
-    /**
-     * 设置字段值，通过反射设置字段值，并不调用setXXX方法
-     * 对象同样支持Map类型，fieldNameOrIndex即为key，支持：
-     * <ul>
-     *     <li>Map</li>
-     *     <li>List</li>
-     *     <li>Bean</li>
-     * </ul>
-     *
-     * @param bean             Bean
-     * @param fieldNameOrIndex 字段名或序号，序号支持负数
-     * @param value            值
-     * @return beans，当为数组时，返回一个新的数组
-     */
-    public static Object setFieldValue(final Object bean, final String fieldNameOrIndex, final Object value) {
-        if (bean instanceof Map) {
-            ((Map) bean).put(fieldNameOrIndex, value);
-        } else if (bean instanceof List) {
-            ListKit.setOrPadding((List) bean, Convert.toInt(fieldNameOrIndex), value);
-        } else if (ArrayKit.isArray(bean)) {
-            // 追加产生新数组，此处返回新数组
-            return ArrayKit.setOrPadding(bean, Convert.toInt(fieldNameOrIndex), value);
-        } else {
-            // 普通Bean对象
-            FieldKit.setFieldValue(bean, fieldNameOrIndex, value);
-        }
-        return bean;
     }
 
     /**
@@ -820,7 +795,7 @@ public class BeanKit {
     public static boolean hasEmptyField(final Object bean, final String... ignoreFieldNames) {
         return checkBean(bean, field ->
                 (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                        && StringKit.isEmptyIfString(FieldKit.getFieldValue(bean, field))
+                        && ObjectKit.isEmptyIfString(FieldKit.getFieldValue(bean, field))
         );
     }
 

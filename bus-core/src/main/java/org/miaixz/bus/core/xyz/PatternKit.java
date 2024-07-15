@@ -29,6 +29,7 @@ package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.center.regex.RegexValidator;
 import org.miaixz.bus.core.compare.LengthCompare;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,7 +51,7 @@ import java.util.regex.Matcher;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PatternKit {
+public class PatternKit extends RegexValidator {
 
     /**
      * 正则中需要被转义的关键字
@@ -379,8 +380,8 @@ public class PatternKit {
      * @return 删除后剩余的内容
      */
     public static String delFirst(final String regex, final CharSequence content) {
-        if (ArrayKit.hasBlank(regex, content)) {
-            return StringKit.toString(content);
+        if (StringKit.hasEmpty(regex, content)) {
+            return StringKit.toStringOrNull(content);
         }
 
         final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
@@ -408,7 +409,7 @@ public class PatternKit {
      */
     public static String replaceFirst(final java.util.regex.Pattern pattern, final CharSequence content, final String replacement) {
         if (null == pattern || StringKit.isEmpty(content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         return pattern.matcher(content).replaceFirst(replacement);
@@ -422,8 +423,8 @@ public class PatternKit {
      * @return 删除后剩余的内容
      */
     public static String delLast(final String regex, final CharSequence text) {
-        if (ArrayKit.hasBlank(regex, text)) {
-            return StringKit.toString(text);
+        if (StringKit.isEmpty(regex) || StringKit.isEmpty(text)) {
+            return StringKit.toStringOrNull(text);
         }
 
         final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
@@ -445,7 +446,7 @@ public class PatternKit {
             }
         }
 
-        return StringKit.toString(text);
+        return StringKit.toStringOrNull(text);
     }
 
     /**
@@ -457,7 +458,7 @@ public class PatternKit {
      */
     public static String delAll(final String regex, final CharSequence content) {
         if (StringKit.hasEmpty(regex, content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
@@ -473,7 +474,7 @@ public class PatternKit {
      */
     public static String delAll(final java.util.regex.Pattern pattern, final CharSequence content) {
         if (null == pattern || StringKit.isEmpty(content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         return pattern.matcher(content).replaceAll(Normal.EMPTY);
@@ -488,7 +489,7 @@ public class PatternKit {
      */
     public static String delPre(final String regex, final CharSequence content) {
         if (null == content || null == regex) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
@@ -503,15 +504,14 @@ public class PatternKit {
      * @return 删除前缀后的新内容
      */
     public static String delPre(final java.util.regex.Pattern pattern, final CharSequence content) {
-        if (null == content || null == pattern) {
-            return StringKit.toString(content);
+        if (null != pattern && StringKit.isNotEmpty(content)) {
+            final Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                return StringKit.sub(content, matcher.end(), content.length());
+            }
         }
 
-        final Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            return StringKit.sub(content, matcher.end(), content.length());
-        }
-        return StringKit.toString(content);
+        return StringKit.toStringOrNull(content);
     }
 
     /**
@@ -676,36 +676,6 @@ public class PatternKit {
     }
 
     /**
-     * 指定内容中是否有表达式匹配的内容
-     *
-     * @param regex   正则表达式
-     * @param content 被查找的内容
-     * @return 指定内容中是否有表达式匹配的内容
-     */
-    public static boolean contains(final String regex, final CharSequence content) {
-        if (null == regex || null == content) {
-            return false;
-        }
-
-        final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
-        return contains(pattern, content);
-    }
-
-    /**
-     * 指定内容中是否有表达式匹配的内容
-     *
-     * @param pattern 编译后的正则模式
-     * @param content 被查找的内容
-     * @return 指定内容中是否有表达式匹配的内容
-     */
-    public static boolean contains(final java.util.regex.Pattern pattern, final CharSequence content) {
-        if (null == pattern || null == content) {
-            return false;
-        }
-        return pattern.matcher(content).find();
-    }
-
-    /**
      * 找到指定正则匹配到字符串的开始位置
      *
      * @param regex   正则
@@ -785,50 +755,12 @@ public class PatternKit {
     }
 
     /**
-     * 给定内容是否匹配正则
-     *
-     * @param regex   正则
-     * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
-     */
-    public static boolean isMatch(final String regex, final CharSequence content) {
-        if (content == null) {
-            // 提供null的字符串为不匹配
-            return false;
-        }
-
-        if (StringKit.isEmpty(regex)) {
-            // 正则不存在则为全匹配
-            return true;
-        }
-
-        final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
-        return isMatch(pattern, content);
-    }
-
-    /**
-     * 给定内容是否匹配正则
-     *
-     * @param pattern 模式
-     * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
-     */
-    public static boolean isMatch(final java.util.regex.Pattern pattern, final CharSequence content) {
-        if (content == null || pattern == null) {
-            // 提供null的字符串为不匹配
-            return false;
-        }
-        return pattern.matcher(content).matches();
-    }
-
-    /**
      * 正则替换指定值
      * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
      * 例如：原字符串是：中文1234，我想把1234换成(1234)，则可以：
      *
      * <pre>
-     * PatternKit.replaceAll("中文1234", "(\\d+)", "($1)"))
-     *
+     * replaceAll("中文1234", "(\\d+)", "($1)"))
      * 结果：中文(1234)
      * </pre>
      *
@@ -851,12 +783,15 @@ public class PatternKit {
      * @param replacementTemplate 替换的文本模板，可以使用$1类似的变量提取正则匹配出的内容
      * @return 处理后的文本
      */
-    public static String replaceAll(final CharSequence content, final java.util.regex.Pattern pattern, final String replacementTemplate) {
+    public static String replaceAll(final CharSequence content, final java.util.regex.Pattern pattern, String replacementTemplate) {
         if (StringKit.isEmpty(content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
-        // replacementTemplate字段不能为null，否则无法抉择如何处理结果
+        // replacementTemplate字段为null时按照去除匹配对待
+        if (null == replacementTemplate) {
+            replacementTemplate = Normal.EMPTY;
+        }
         Assert.notNull(replacementTemplate, "ReplacementTemplate must be not null !");
 
         final Matcher matcher = pattern.matcher(content);
@@ -869,7 +804,7 @@ public class PatternKit {
                 String replacement = replacementTemplate;
                 for (final String var : varNums) {
                     final int group = Integer.parseInt(var);
-                    replacement = replacement.replace(Symbol.DOLLAR + var, matcher.group(group));
+                    replacement = replacement.replace("$" + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();
@@ -877,7 +812,9 @@ public class PatternKit {
             matcher.appendTail(sb);
             return sb.toString();
         }
-        return StringKit.toString(content);
+
+        // 无匹配结果，返回原字符串
+        return StringKit.toStringOrNull(content);
     }
 
     /**
@@ -910,9 +847,13 @@ public class PatternKit {
      * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
      * @return 替换后的字符串
      */
-    public static String replaceAll(final CharSequence text, final java.util.regex.Pattern pattern, final FunctionX<Matcher, String> replaceFun) {
-        if (StringKit.isEmpty(text)) {
-            return StringKit.toString(text);
+    public static String replaceAll(final CharSequence text, final java.util.regex.Pattern pattern, FunctionX<Matcher, String> replaceFun) {
+        if (null == pattern || StringKit.isEmpty(text)) {
+            return StringKit.toStringOrNull(text);
+        }
+
+        if (null == replaceFun) {
+            replaceFun = Matcher::group;
         }
 
         final Matcher matcher = pattern.matcher(text);
@@ -947,7 +888,7 @@ public class PatternKit {
      */
     public static String escape(final CharSequence content) {
         if (StringKit.isBlank(content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         final StringBuilder builder = new StringBuilder();

@@ -792,9 +792,10 @@ public class GifDecoder {
         public BufferedImage image;
         public int delay;
 
-        public GifFrame(BufferedImage im, int del) {
-            image = im;
-            delay = del;
+        public GifFrame(BufferedImage image, int delay) {
+            this.image = image;
+            this.delay = delay;
         }
     }
+
 }

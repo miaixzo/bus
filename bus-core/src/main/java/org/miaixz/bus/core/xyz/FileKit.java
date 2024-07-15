@@ -63,7 +63,7 @@ public class FileKit extends PathResolve {
     /**
      * 绝对路径判断正则
      */
-    private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?");
+    private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?", Pattern.DOTALL);
 
     /**
      * 是否为Windows环境

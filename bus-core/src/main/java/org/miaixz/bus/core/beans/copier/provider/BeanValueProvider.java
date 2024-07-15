@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.core.beans.copier.provider;
 
-import org.miaixz.bus.core.beans.BeanDesc;
-import org.miaixz.bus.core.beans.PropDesc;
 import org.miaixz.bus.core.beans.copier.ValueProvider;
+import org.miaixz.bus.core.beans.desc.BeanDesc;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.BeanKit;
 

@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.builtin.software;
 
 import com.sun.jna.platform.win32.WinDef.HWND;
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 import java.awt.*;
 

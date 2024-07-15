@@ -29,6 +29,7 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
@@ -76,6 +77,18 @@ public class Convert {
      */
     public static String toString(final Object value) {
         return toString(value, null);
+    }
+
+    /**
+     * 转换为字符串
+     * 如果给定的值为{@code null}，或者转换失败，返回默认值"null"（即null这个字符串）
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @return 结果
+     */
+    public static String toStringOrNull(final Object value) {
+        return toString(value, Normal.NULL);
     }
 
     /**

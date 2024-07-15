@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.core.beans;
 
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.BeanException;

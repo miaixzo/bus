@@ -140,7 +140,7 @@ public class ClassScanner implements Serializable {
      * @param charset        编码
      */
     public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate, final java.nio.charset.Charset charset) {
-        packageName = StringKit.emptyIfNull(packageName);
+        packageName = StringKit.toStringOrEmpty(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);

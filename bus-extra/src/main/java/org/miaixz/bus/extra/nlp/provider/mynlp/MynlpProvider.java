@@ -67,7 +67,7 @@ public class MynlpProvider implements NLPProvider {
 
     @Override
     public NLPResult parse(final CharSequence text) {
-        final Sentence sentence = this.lexer.scan(StringKit.toString(text));
+        final Sentence sentence = this.lexer.scan(StringKit.toStringOrEmpty(text));
         return new MynlpResult(sentence);
     }
 
