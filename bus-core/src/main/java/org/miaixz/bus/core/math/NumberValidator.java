@@ -39,6 +39,45 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class NumberValidator {
 
+    public static final double DOUBLE_EPSILON = 1e-6;
+    public static final double FLOAT_EPSILON = 1e-5;
+
+    public static boolean isEqualToZero(float val) {
+        return Math.copySign(val, 1.0) < FLOAT_EPSILON;
+    }
+
+    public static boolean isDifferentFromZero(float val) {
+        return Math.copySign(val, 1.0) > FLOAT_EPSILON;
+    }
+
+    public static boolean isEqual(float a, float b) {
+        return Math.copySign(a - b, 1.0) <= FLOAT_EPSILON
+                || (a == b)
+                || (Float.isNaN(a) && Float.isNaN(b));
+    }
+
+    public static boolean isDifferent(float a, float b) {
+        return Math.copySign(a - b, 1.0) >= FLOAT_EPSILON;
+    }
+
+    public static boolean isEqualToZero(double val) {
+        return Math.copySign(val, 1.0) < DOUBLE_EPSILON;
+    }
+
+    public static boolean isDifferentFromZero(double val) {
+        return Math.copySign(val, 1.0) > DOUBLE_EPSILON;
+    }
+
+    public static boolean isEqual(double a, double b) {
+        return Math.copySign(a - b, 1.0) <= DOUBLE_EPSILON
+                || (a == b)
+                || (Double.isNaN(a) && Double.isNaN(b));
+    }
+
+    public static boolean isDifferent(double a, double b) {
+        return Math.copySign(a - b, 1.0) >= DOUBLE_EPSILON;
+    }
+
     /**
      * 是否为数字，支持包括：
      *

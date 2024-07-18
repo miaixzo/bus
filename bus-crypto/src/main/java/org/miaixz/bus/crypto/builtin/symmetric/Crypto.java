@@ -173,8 +173,8 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      */
     private static void copyForZeroPadding(final CipherInputStream in, final OutputStream out, final int blockSize) throws IOException {
         int n = 1;
-        if (Normal.DEFAULT_BUFFER_SIZE > blockSize) {
-            n = Math.max(n, Normal.DEFAULT_BUFFER_SIZE / blockSize);
+        if (Normal._8192 > blockSize) {
+            n = Math.max(n, Normal._8192 / blockSize);
         }
         // 此处缓存buffer使用blockSize的整数倍，方便读取时可以正好将补位的0读在一个buffer中
         final int bufSize = blockSize * n;

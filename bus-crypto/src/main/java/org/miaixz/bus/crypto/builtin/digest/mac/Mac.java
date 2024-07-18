@@ -75,12 +75,12 @@ public interface Mac {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 摘要bytes
      */
     default byte[] digest(final InputStream data, int bufferLength) {
         if (bufferLength < 1) {
-            bufferLength = Normal.DEFAULT_BUFFER_SIZE;
+            bufferLength = Normal._8192;
         }
 
         final byte[] buffer = new byte[bufferLength];

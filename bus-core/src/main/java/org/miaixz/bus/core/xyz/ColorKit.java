@@ -204,6 +204,29 @@ public class ColorKit {
     }
 
     /**
+     * 从rgba数组或gray值中获取RGB颜色
+     *
+     * @param gray 在单色显示器上呈现时的单个灰色无符号值。单位在p值中指定，
+     *             从最小的0x0000(黑色)到最大的0xFFFF(白色)。
+     * @param rgba 指定RGB[A]颜色的无符号值数组(可选的)
+     * @return {@link Color}
+     */
+    public static Color getColor(int gray, int[] rgba) {
+        int r, g, b, a = 255;
+        if (rgba != null && rgba.length >= 3) {
+            r = Math.min(rgba[0], 255);
+            g = Math.min(rgba[1], 255);
+            b = Math.min(rgba[2], 255);
+            if (rgba.length > 3) {
+                a = Math.min(rgba[3], 255);
+            }
+        } else {
+            r = g = b = gray >> 8;
+        }
+        return new Color(r, g, b, a);
+    }
+
+    /**
      * 16进制的颜色值转换为Color对象，例如#fcf6d6
      *
      * @param hex 16进制的颜色值，例如#fcf6d6

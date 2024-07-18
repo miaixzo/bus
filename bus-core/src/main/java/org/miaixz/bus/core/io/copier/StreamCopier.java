@@ -48,7 +48,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
      * 构造
      */
     public StreamCopier() {
-        this(Normal.DEFAULT_BUFFER_SIZE);
+        this(Normal._8192);
     }
 
     /**

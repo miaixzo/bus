@@ -66,7 +66,7 @@ public class ReaderInputStream extends InputStream {
      * @param charset 字符集，用于创建CharsetEncoder
      */
     public ReaderInputStream(final Reader reader, final java.nio.charset.Charset charset) {
-        this(reader, charset, Normal.DEFAULT_BUFFER_SIZE);
+        this(reader, charset, Normal._8192);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ReaderInputStream extends InputStream {
      * @param encoder 用于编码的CharsetEncoder
      */
     public ReaderInputStream(final Reader reader, final CharsetEncoder encoder) {
-        this(reader, encoder, Normal.DEFAULT_BUFFER_SIZE);
+        this(reader, encoder, Normal._8192);
     }
 
     /**

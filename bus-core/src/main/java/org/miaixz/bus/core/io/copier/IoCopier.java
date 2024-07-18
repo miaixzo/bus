@@ -60,12 +60,12 @@ public abstract class IoCopier<S, T> {
     /**
      * 构造
      *
-     * @param bufferSize 缓存大小，&lt; 0 表示默认{@link Normal#DEFAULT_BUFFER_SIZE}
+     * @param bufferSize 缓存大小，&lt; 0 表示默认{@link Normal#_8192}
      * @param count      拷贝总数，-1表示无限制
      * @param progress   进度条
      */
     public IoCopier(final int bufferSize, final long count, final StreamProgress progress) {
-        this.bufferSize = bufferSize > 0 ? bufferSize : Normal.DEFAULT_BUFFER_SIZE;
+        this.bufferSize = bufferSize > 0 ? bufferSize : Normal._8192;
         this.count = count <= 0 ? Long.MAX_VALUE : count;
         this.progress = progress;
     }

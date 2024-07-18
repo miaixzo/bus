@@ -50,7 +50,7 @@ public class ZipWriter implements Closeable {
     /**
      * 自定义缓存大小
      */
-    private int bufferSize = Normal.DEFAULT_BUFFER_SIZE;
+    private int bufferSize = Normal._8192;
 
     /**
      * 构造

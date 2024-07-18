@@ -46,7 +46,7 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
      * 构造
      */
     public ReaderWriterCopier() {
-        this(Normal.DEFAULT_BUFFER_SIZE);
+        this(Normal._8192);
     }
 
     /**

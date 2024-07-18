@@ -52,279 +52,459 @@ public class MediaType {
     public static final String CHARSET_PARAMETER = "charset";
 
     /**
-     * The value of a type or subtype wildcard {@value #MEDIA_TYPE_WILDCARD}.
+     * The value of a type or subtype {@value #MEDIA_TYPE_WILDCARD}.
      */
     public static final String MEDIA_TYPE_WILDCARD = Symbol.STAR;
 
     /**
-     * A {@code String} constant representing wildcard {@value #WILDCARD} media type .
+     * A {@code String} constant representing {@value #WILDCARD} media type .
      */
     public static final String WILDCARD = "*/*";
 
     /**
-     * A {@link MediaType} constant representing wildcard {@value #WILDCARD} media type.
+     * A {@link MediaType} constant representing {@value #WILDCARD} media type.
      */
     public static final MediaType WILDCARD_TYPE = new MediaType();
 
     /**
-     * "application/xml"
+     * A {@code String} constant representing {@value #APPLICATION_XML} media type.
      */
     public static final String APPLICATION_XML = "application/xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_XML} media type.
+     */
     public static final MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
 
     /**
-     * "application/x-protobuf"
-     */
-    public static final String APPLICATION_PROTOBUF = "application/x-protobuf";
-    public static final MediaType APPLICATION_PROTOBUF_TYPE = new MediaType("application", "x-protobuf");
-
-    /**
-     * "application/atom+xml"
+     * A {@code String} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_ATOM_XML} media type.
+     */
     public static final MediaType APPLICATION_ATOM_XML_TYPE = new MediaType("application", "atom+xml");
 
     /**
-     * "application/xhtml+xml"
+     * A {@code String} constant representing {@value #APPLICATION_XHTML_XML} media type.
      */
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_XHTML_XML} media type.
+     */
     public static final MediaType APPLICATION_XHTML_XML_TYPE = new MediaType("application", "xhtml+xml");
 
     /**
-     * "application/svg+xml"
+     * A {@code String} constant representing {@value #APPLICATION_SVG_XML} media type.
      */
     public static final String APPLICATION_SVG_XML = "application/svg+xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_SVG_XML} media type.
+     */
     public static final MediaType APPLICATION_SVG_XML_TYPE = new MediaType("application", "svg+xml");
 
     /**
-     * "application/json"
+     * A {@code String} constant representing {@value #APPLICATION_JSON} media type.
      */
     public static final String APPLICATION_JSON = "application/json";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON} media type.
+     */
     public static final MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
 
     /**
-     * "application/x-www-form-urlencoded"
+     * A {@code String} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
+     */
     public static final MediaType APPLICATION_FORM_URLENCODED_TYPE = new MediaType("application", "x-www-form-urlencoded");
-    /**
-     * "application/octet-stream"
-     */
-    public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-    public static final MediaType APPLICATION_OCTET_STREAM_TYPE = new MediaType("application", "octet-stream");
 
     /**
-     * "text/plain"
-     */
-    public static final String TEXT_PLAIN = "text/plain";
-    public static final MediaType TEXT_PLAIN_TYPE = new MediaType("text", "plain");
-
-    /**
-     * "text/xml"
-     */
-    public static final String TEXT_XML = "text/xml";
-    public static final MediaType TEXT_XML_TYPE = new MediaType("text", "xml");
-
-    /**
-     * "text/html"
-     */
-    public static final String TEXT_HTML = "text/html";
-    public static final MediaType TEXT_HTML_TYPE = new MediaType("text", "html");
-
-    /**
-     * "application/dicom"
-     */
-    public static final String APPLICATION_DICOM = "application/dicom";
-    public static final MediaType APPLICATION_DICOM_TYPE = new MediaType("application", "dicom");
-
-    /**
-     * "application/dicom+xml"
-     */
-    public static final String APPLICATION_DICOM_XML = "application/dicom+xml";
-    public static final MediaType APPLICATION_DICOM_XML_TYPE = new MediaType("application", "dicom+xml");
-
-    /**
-     * "application/dicom+json"
-     */
-    public static final String APPLICATION_DICOM_JSON = "application/dicom+json";
-    public static final MediaType APPLICATION_DICOM_JSON_TYPE = new MediaType("application", "dicom+json");
-
-    /**
-     * "image/*"
-     */
-    public static final String IMAGE_WILDCARD = "image/*";
-    public static final MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", Symbol.STAR);
-
-    /**
-     * "image/gif"
-     */
-    public static final String IMAGE_GIF = "image/gif";
-    public static final MediaType IMAGE_GIF_TYPE = new MediaType("image", "gif");
-
-    /**
-     * "image/png"
-     */
-    public static final String IMAGE_PNG = "image/png";
-    public static final MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
-
-    /**
-     * "image/bmp"
-     */
-    public static final String IMAGE_BMP = "image/bmp";
-    public static final MediaType IMAGE_BMP_TYPE = new MediaType("image", "bmp");
-
-    /**
-     * "image/jpeg"
-     */
-    public static final String IMAGE_JPEG = "image/jpeg";
-    public static final MediaType IMAGE_JPEG_TYPE = new MediaType("image", "jpeg");
-
-    /**
-     * "image/x-jls"
-     */
-    public static final String IMAGE_X_JLS = "image/x-jls";
-    public static final MediaType IMAGE_X_JLS_TYPE = new MediaType("image", "x-jls");
-
-    /**
-     * "image/jp2"
-     */
-    public static final String IMAGE_JP2 = "image/jp2";
-    public static final MediaType IMAGE_JP2_TYPE = new MediaType("image", "jp2");
-
-    /**
-     * "image/jpx"
-     */
-    public static final String IMAGE_JPX = "image/jpx";
-    public static final MediaType IMAGE_JPX_TYPE = new MediaType("image", "jpx");
-
-    /**
-     * "image/dicom+rle"
-     */
-    public static final String IMAGE_X_DICOM_RLE = "image/x-dicom+rle";
-    public static final MediaType IMAGE_X_DICOM_RLE_TYPE = new MediaType("image", "x-dicom+rle");
-
-    /**
-     * "video/*"
-     */
-    public static final String VIDEO_WILDCARD = "video/*";
-    public static final MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", Symbol.STAR);
-
-    /**
-     * "video/mpeg"
-     */
-    public static final String VIDEO_MPEG = "video/mpeg";
-    public static final MediaType VIDEO_MPEG_TYPE = new MediaType("video", "mpeg");
-
-    /**
-     * "video/mp4"
-     */
-    public static final String VIDEO_MP4 = "video/mp4";
-    public static final MediaType VIDEO_MP4_TYPE = new MediaType("video", "mp4");
-
-    /**
-     * "application/pdf"
-     */
-    public static final String APPLICATION_PDF = "application/pdf";
-    public static final MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
-
-    /**
-     * "text/rtf"
-     */
-    public static final String TEXT_RTF = "text/rtf";
-    public static final MediaType TEXT_RTF_TYPE = new MediaType("text", "rtf");
-
-    /**
-     * "text/csv"
-     */
-    public static final String TEXT_CSV = "text/csv";
-    public static final MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
-
-    /**
-     * "text/csv;charset=utf-8"
-     */
-    public static final String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
-    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", Charset.DEFAULT_UTF_8);
-
-    /**
-     * "application/zip"
-     */
-    public static final String APPLICATION_ZIP = "application/zip";
-    public static final MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
-
-    /**
-     * "application/x-zip-compressed"
-     */
-    public static final String APPLICATION_ZIP_COMPRESSED = "application/x-zip-compressed";
-    public static final MediaType APPLICATION_ZIP_COMPRESSED_TYPE = new MediaType("application", "x-zip-compressed");
-
-    /**
-     * "multipart/form-data"
+     * A {@code String} constant representing {@value #MULTIPART_FORM_DATA} media type.
      */
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_FORM_DATA} media type.
+     */
     public static final MediaType MULTIPART_FORM_DATA_TYPE = new MediaType("multipart", "form-data");
 
     /**
-     * "multipart/mixed"
+     * A {@code String} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
      */
-    public static final String MULTIPART_MIXED = "multipart/mixed";
-    public static final MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
+    public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
+     */
+    public static final MediaType APPLICATION_OCTET_STREAM_TYPE = new MediaType("application", "octet-stream");
 
     /**
-     * "multipart/alternative"
+     * A {@code String} constant representing {@value #TEXT_PLAIN} media type.
      */
-    public static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
-    public static final MediaType MULTIPART_ALTERNATIVE_TYPE = new MediaType("multipart", "alternative");
+    public static final String TEXT_PLAIN = "text/plain";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_PLAIN} media type.
+     */
+    public static final MediaType TEXT_PLAIN_TYPE = new MediaType("text", "plain");
 
     /**
-     * "multipart/digest"
+     * A {@code String} constant representing {@value #TEXT_XML} media type.
      */
-    public static final String MULTIPART_DIGEST = "multipart/digest";
-    public static final MediaType MULTIPART_DIGEST_TYPE = new MediaType("multipart", "digest");
+    public static final String TEXT_XML = "text/xml";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_XML} media type.
+     */
+    public static final MediaType TEXT_XML_TYPE = new MediaType("text", "xml");
 
     /**
-     * "multipart/related"
+     * A {@code String} constant representing {@value #TEXT_HTML} media type.
      */
-    public static final String MULTIPART_parallel = "multipart/parallel";
-    public static final MediaType MULTIPART_PARALLEL_TYPE = new MediaType("multipart", "parallel");
+    public static final String TEXT_HTML = "text/html";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_HTML} media type.
+     */
+    public static final MediaType TEXT_HTML_TYPE = new MediaType("text", "html");
 
     /**
-     * "multipart/related"
-     */
-    public static final String MULTIPART_RELATED = "multipart/related";
-    public static final MediaType MULTIPART_RELATED_TYPE = new MediaType("multipart", "related");
-
-    /**
-     * "multipart/related;type=application/dicom"
-     */
-    public static final String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
-    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE =
-            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
-
-    /**
-     * "multipart/related;type=\"application/dicom+xml\""
-     */
-    public static final String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
-    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
-            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
-
-    /**
-     * "text/event-stream;type=\"application/event-stream\""
+     * A {@code String} constant representing {@value #SERVER_SENT_EVENTS} media type.
      */
     public static final String SERVER_SENT_EVENTS = "text/event-stream";
+    /**
+     * A {@link MediaType} constant representing {@value #SERVER_SENT_EVENTS} media type.
+     */
     public static final MediaType SERVER_SENT_EVENTS_TYPE = new MediaType("text", "event-stream");
 
     /**
-     * "application/json-patch+json;type=\"application/json-patch+json\""
+     * {@link String} representation of {@value #APPLICATION_JSON_PATCH_JSON} media type.
      */
     public static final String APPLICATION_JSON_PATCH_JSON = "application/json-patch+json";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_PATCH_JSON} media type.
+     */
     public static final MediaType APPLICATION_JSON_PATCH_JSON_TYPE = new MediaType("application", "json-patch+json");
 
     /**
-     * "application/soap+xml;type=\"application/soap+xml\""
+     * A {@code String} constant representing {@value #APPLICATION_SOAP_XML} media type.
      */
     public static final String APPLICATION_SOAP_XML = "application/soap+xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_SOAP_XML} media type.
+     */
     public static final MediaType APPLICATION_SOAP_XML_TYPE = new MediaType("application", "soap+xml");
 
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_DICOM} media type.
+     */
+    public final static String APPLICATION_DICOM = "application/dicom";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_DICOM} media type.
+     */
+    public final static MediaType APPLICATION_DICOM_TYPE = new MediaType("application", "dicom");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_DICOM_XML} media type.
+     */
+    public final static String APPLICATION_DICOM_XML = "application/dicom+xml";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_DICOM_XML} media type.
+     */
+    public final static MediaType APPLICATION_DICOM_XML_TYPE = new MediaType("application", "dicom+xml");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_DICOM_JSON} media type.
+     */
+    public final static String APPLICATION_DICOM_JSON = "application/dicom+json";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_DICOM_JSON} media type.
+     */
+    public final static MediaType APPLICATION_DICOM_JSON_TYPE = new MediaType("application", "dicom+json");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_WILDCARD} media type.
+     */
+    public final static String IMAGE_WILDCARD = "image/*";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_WILDCARD} media type.
+     */
+    public final static MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", "*");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_GIF} media type.
+     */
+    public final static String IMAGE_GIF = "image/gif";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_GIF} media type.
+     */
+    public final static MediaType IMAGE_GIF_TYPE = new MediaType("image", "gif");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_PNG} media type.
+     */
+    public final static String IMAGE_PNG = "image/png";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_PNG} media type.
+     */
+    public final static MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JPEG} media type.
+     */
+    public final static String IMAGE_JPEG = "image/jpeg";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JPEG} media type.
+     */
+    public final static MediaType IMAGE_JPEG_TYPE = new MediaType("image", "jpeg");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JLS} media type.
+     */
+    public final static String IMAGE_JLS = "image/jls";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JLS} media type.
+     */
+    public final static MediaType IMAGE_JLS_TYPE = new MediaType("image", "jls");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JP2} media type.
+     */
+    public final static String IMAGE_JP2 = "image/jp2";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JP2} media type.
+     */
+    public final static MediaType IMAGE_JP2_TYPE = new MediaType("image", "jp2");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_J2C} media type.
+     */
+    public final static String IMAGE_J2C = "image/j2c";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_J2C} media type.
+     */
+    public final static MediaType IMAGE_J2C_TYPE = new MediaType("image", "j2c");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JPX} media type.
+     */
+    public final static String IMAGE_JPX = "image/jpx";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JPX} media type.
+     */
+    public final static MediaType IMAGE_JPX_TYPE = new MediaType("image", "jpx");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JPH} media type.
+     */
+    public final static String IMAGE_JPH = "image/jph";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JPH} media type.
+     */
+    public final static MediaType IMAGE_JPH_TYPE = new MediaType("image", "jph");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_JPHC} media type.
+     */
+    public final static String IMAGE_JPHC = "image/jphc";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_JPHC} media type.
+     */
+    public final static MediaType IMAGE_JPHC_TYPE = new MediaType("image", "jphc");
+
+    /**
+     * A {@code String} constant representing {@value #IMAGE_DICOM_RLE} media type.
+     */
+    public final static String IMAGE_DICOM_RLE = "image/dicom-rle";
+    /**
+     * A {@link MediaType} constant representing {@value #IMAGE_DICOM_RLE} media type.
+     */
+    public final static MediaType IMAGE_DICOM_RLE_TYPE = new MediaType("image", "dicom-rle");
+
+    /**
+     * A {@code String} constant representing {@value #VIDEO_WILDCARD} media type.
+     */
+    public final static String VIDEO_WILDCARD = "video/*";
+    /**
+     * A {@link MediaType} constant representing {@value #VIDEO_WILDCARD} media type.
+     */
+    public final static MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", "*");
+
+    /**
+     * A {@code String} constant representing {@value #VIDEO_MPEG} media type.
+     */
+    public final static String VIDEO_MPEG = "video/mpeg";
+    /**
+     * A {@link MediaType} constant representing {@value #VIDEO_MPEG} media type.
+     */
+    public final static MediaType VIDEO_MPEG_TYPE = new MediaType("video", "mpeg");
+
+    /**
+     * A {@code String} constant representing {@value #VIDEO_MP4} media type.
+     */
+    public final static String VIDEO_MP4 = "video/mp4";
+    /**
+     * A {@link MediaType} constant representing {@value #VIDEO_MP4} media type.
+     */
+    public final static MediaType VIDEO_MP4_TYPE = new MediaType("video", "mp4");
+
+    /**
+     * A {@code String} constant representing {@value #VIDEO_QUICKTIME} media type.
+     */
+    public final static String VIDEO_QUICKTIME = "video/quicktime";
+    /**
+     * A {@link MediaType} constant representing {@value #VIDEO_QUICKTIME} media type.
+     */
+    public final static MediaType VIDEO_QUICKTIME_TYPE = new MediaType("video", "quicktime");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_PDF} media type.
+     */
+    public final static String APPLICATION_PDF = "application/pdf";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_PDF} media type.
+     */
+    public final static MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
+
+    /**
+     * A {@code String} constant representing {@value #TEXT_RTF} media type.
+     */
+    public final static String TEXT_RTF = "text/rtf";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_RTF} media type.
+     */
+    public final static MediaType TEXT_RTF_TYPE = new MediaType("text", "rtf");
+
+    /**
+     * A {@code String} constant representing {@value #TEXT_CSV} media type.
+     */
+    public final static String TEXT_CSV = "text/csv";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_CSV} media type.
+     */
+    public final static MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
+
+    /**
+     * A {@code String} constant representing {@value #TEXT_CSV_UTF8} media type.
+     */
+    public final static String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
+    /**
+     * A {@link MediaType} constant representing {@value #TEXT_CSV_UTF8} media type.
+     */
+    public final static MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_ZIP} media type.
+     */
+    public final static String APPLICATION_ZIP = "application/zip";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_ZIP} media type.
+     */
+    public final static MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_RELATED} media type.
+     */
+    public final static String MULTIPART_RELATED = "multipart/related";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_RELATED} media type.
+     */
+    public final static MediaType MULTIPART_RELATED_TYPE = new MediaType("multipart", "related");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
+     */
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
+     */
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
+     */
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
+     */
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+
+    /**
+     * A {@code String} constant representing {@value #MODEL_STL} media type.
+     */
+    public final static String MODEL_STL = "model/stl";
+    /**
+     * A {@link MediaType} constant representing {@value #MODEL_STL} media type.
+     */
+    public final static MediaType MODEL_STL_TYPE = new MediaType("model", "stl");
+
+    /**
+     * A {@code String} constant representing {@value #MODEL_X_STL_BINARY} media type.
+     */
+    public final static String MODEL_X_STL_BINARY = "model/x.stl-binary";
+    /**
+     * A {@link MediaType} constant representing {@value #MODEL_X_STL_BINARY} media type.
+     */
+    public final static MediaType MODEL_X_STL_BINARY_TYPE = new MediaType("model", "x.stl-binary");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_SLA} media type.
+     */
+    public final static String APPLICATION_SLA = "application/sla";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_SLA} media type.
+     */
+    public final static MediaType APPLICATION_SLA_TYPE = new MediaType("application", "sla");
+
+    /**
+     * A {@code String} constant representing {@value #MODEL_OBJ} media type.
+     */
+    public final static String MODEL_OBJ = "model/obj";
+    /**
+     * A {@link MediaType} constant representing {@value #MODEL_OBJ} media type.
+     */
+    public final static MediaType MODEL_OBJ_TYPE = new MediaType("model", "obj");
+
+    /**
+     * A {@code String} constant representing {@value #MODEL_MTL} media type.
+     */
+    public final static String MODEL_MTL = "model/mtl";
+    /**
+     * A {@link MediaType} constant representing {@value #MODEL_MTL} media type.
+     */
+    public final static MediaType MODEL_MTL_TYPE = new MediaType("model", "mtl");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_VND_GENOZIP} media type.
+     */
+    public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_VND_GENOZIP} media type.
+     */
+    public final static MediaType APPLICATION_VND_GENOZIP_TYPE = new MediaType("application", "vnd.genozip");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_X_BZIP2} media type.
+     */
+    public final static String APPLICATION_X_BZIP2 = "application/x-bzip2";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_X_BZIP2} media type.
+     */
+    public final static MediaType APPLICATION_X_BZIP2_TYPE = new MediaType("application", "x-bzip2");
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_PRS_VCFBZIP} media type.
+     */
+    public final static String APPLICATION_PRS_VCFBZIP = "application/prs.vcfbzip";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_PRS_VCFBZIP} media type.
+     */
+    public final static MediaType APPLICATION_PRS_VCFBZIP_TYPE = new MediaType("application", "prs.vcfbzip");
+
+    /**
+     * A {@code String} constant representing {@value #APPLICATION_PRS_VCFBZIP2} media type.
+     */
+    public final static String APPLICATION_PRS_VCFBZIP2 = "application/prs.vcfbzip2";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_PRS_VCFBZIP2} media type.
+     */
+    public final static MediaType APPLICATION_PRS_VCFBZIP2_TYPE = new MediaType("application", "prs.vcfbzip2");
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";
@@ -520,6 +700,40 @@ public class MediaType {
                 || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
                 || (type.equalsIgnoreCase(mediaType.type)
                 && this.subtype.equalsIgnoreCase(mediaType.subtype)));
+    }
+
+    public static boolean isSTLType(MediaType mediaType) {
+        return equalsIgnoreParameters(mediaType, MODEL_STL_TYPE)
+                || equalsIgnoreParameters(mediaType, MODEL_X_STL_BINARY_TYPE)
+                || equalsIgnoreParameters(mediaType, APPLICATION_SLA_TYPE);
+    }
+
+    public static boolean isSTLType(String type) {
+        return MODEL_STL.equalsIgnoreCase(type)
+                || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
+                || APPLICATION_SLA.equalsIgnoreCase(type);
+    }
+
+    public static boolean equalsIgnoreParameters(MediaType type1, MediaType type2) {
+        return type1.getType().equalsIgnoreCase(type2.getType())
+                && type1.getSubtype().equalsIgnoreCase(type2.getSubtype());
+    }
+
+    public static MediaType getMultiPartRelatedType(MediaType mediaType) {
+        if (!MULTIPART_RELATED_TYPE.isCompatible(mediaType))
+            return null;
+
+        String type = mediaType.getParameters().get("type");
+        if (type == null)
+            return MediaType.WILDCARD_TYPE;
+
+        MediaType partType = MediaType.valueOf(type);
+        if (mediaType.getParameters().size() > 1) {
+            Map<String, String> params = new HashMap<>(mediaType.getParameters());
+            params.remove("type");
+            partType = new MediaType(partType.getType(), partType.getSubtype(), params);
+        }
+        return partType;
     }
 
 }

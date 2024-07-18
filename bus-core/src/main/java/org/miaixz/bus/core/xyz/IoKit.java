@@ -85,7 +85,7 @@ public class IoKit {
      * @throws InternalException IO异常
      */
     public static long copy(final Reader reader, final Writer writer) throws InternalException {
-        return copy(reader, writer, Normal.DEFAULT_BUFFER_SIZE);
+        return copy(reader, writer, Normal._8192);
     }
 
     /**
@@ -141,7 +141,7 @@ public class IoKit {
      * @throws InternalException IO异常
      */
     public static long copy(final InputStream in, final OutputStream out) throws InternalException {
-        return copy(in, out, Normal.DEFAULT_BUFFER_SIZE);
+        return copy(in, out, Normal._8192);
     }
 
     /**
@@ -201,6 +201,158 @@ public class IoKit {
         Assert.notNull(out, "FileOutputStream is null!");
 
         return FileChannelCopier.of().copy(in, out);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in     输入流
+     * @param out    输出流
+     * @param buffer 缓存
+     */
+    public static void copy(InputStream in, OutputStream out, byte[] buffer)
+            throws IOException {
+        int count;
+        while ((count = in.read(buffer, 0, buffer.length)) > 0)
+            if (out != null)
+                out.write(buffer, 0, count);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in        输入流
+     * @param out       输出流
+     * @param swapBytes 交换字节
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, int len, int swapBytes) throws InternalException {
+        copy(in, out, len & 0xffffffffL, swapBytes);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in        输入流
+     * @param out       输出流
+     * @param swapBytes 交换字节
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, long len, int swapBytes) throws InternalException {
+        copy(in, out, len, swapBytes, new byte[(int) Math.min(len, Normal._2048)]);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, long bufferSize) throws InternalException {
+        copy(in, out, bufferSize & 0xffffffffL, new byte[(int) Math.min(bufferSize, Normal._2048)]);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param buffer     缓存
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, int bufferSize, byte[] buffer) throws InternalException {
+        copy(in, out, bufferSize & 0xffffffffL, buffer);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param buffer     缓存
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, long bufferSize, byte[] buffer) throws InternalException {
+        if (bufferSize < 0)
+            throw new IndexOutOfBoundsException();
+        try {
+            while (bufferSize > 0) {
+                int count = in.read(buffer, 0, (int) Math.min(bufferSize, buffer.length));
+                if (count < 0)
+                    throw new InternalException();
+                out.write(buffer, 0, count);
+                bufferSize -= count;
+            }
+        } catch (IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param swapBytes  交换字节
+     * @param buffer     缓存
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, int bufferSize, int swapBytes, byte[] buffer) throws InternalException {
+        copy(in, out, bufferSize & 0xffffffffL, swapBytes, buffer);
+    }
+
+    /**
+     * 拷贝流，拷贝后不关闭流
+     *
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param swapBytes  交换字节
+     * @param buffer     缓存
+     * @throws InternalException IO异常
+     */
+    public static void copy(InputStream in, OutputStream out, long bufferSize, int swapBytes, byte[] buffer) throws InternalException {
+        if (swapBytes == 1) {
+            copy(in, out, bufferSize, buffer);
+            return;
+        }
+        if (!(swapBytes == 2 || swapBytes == 4))
+            throw new IllegalArgumentException("swapBytes: " + swapBytes);
+        if (bufferSize < 0 || (bufferSize % swapBytes) != 0)
+            throw new IllegalArgumentException("length: " + bufferSize);
+        int off = 0;
+        try {
+            while (bufferSize > 0) {
+                int count = in.read(buffer, off, (int) Math.min(bufferSize, buffer.length - off));
+                if (count < 0)
+                    throw new InternalException("" + count);
+                bufferSize -= count;
+                count += off;
+                off = count % swapBytes;
+                count -= off;
+                switch (swapBytes) {
+                    case 2:
+                        ByteKit.swapShorts(buffer, 0, count);
+                        break;
+                    case 4:
+                        ByteKit.swapInts(buffer, 0, count);
+                        break;
+                    case 8:
+                        ByteKit.swapLongs(buffer, 0, count);
+                        break;
+                }
+                out.write(buffer, 0, count);
+                if (off > 0)
+                    System.arraycopy(buffer, count, buffer, 0, off);
+            }
+        } catch (IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**
@@ -341,7 +493,7 @@ public class IoKit {
      */
     public static String read(final Reader reader, final boolean isClose) throws InternalException {
         final StringBuilder builder = StringKit.builder();
-        final CharBuffer buffer = CharBuffer.allocate(Normal.DEFAULT_BUFFER_SIZE);
+        final CharBuffer buffer = CharBuffer.allocate(Normal._8192);
         try {
             while (-1 != reader.read(buffer)) {
                 builder.append(buffer.flip());
@@ -1536,72 +1688,9 @@ public class IoKit {
                 | (v & 0x00000000000000ffL) << 56;
     }
 
-    public static void copy(InputStream in, OutputStream out, byte[] buf)
-            throws IOException {
-        int count;
-        while ((count = in.read(buf, 0, buf.length)) > 0)
-            if (null != out) {
-                out.write(buf, 0, count);
-            }
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            byte[] buf) throws IOException {
-        if (len < 0)
-            throw new IndexOutOfBoundsException();
-        while (len > 0) {
-            int count = in.read(buf, 0, Math.min(len, buf.length));
-            if (count < 0)
-                throw new EOFException();
-            out.write(buf, 0, count);
-            len -= count;
-        }
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            int swapBytes) throws IOException {
-        copy(in, out, len, swapBytes, new byte[Math.min(len, 2048)]);
-    }
-
-    public static void copy(InputStream in, OutputStream out, int len,
-                            int swapBytes, byte[] buf) throws IOException {
-        if (swapBytes == 1) {
-            copy(in, out, len, buf);
-            return;
-        }
-        if (!(swapBytes == 2 || swapBytes == 4))
-            throw new IllegalArgumentException("swapBytes: " + swapBytes);
-        if (len < 0 || (len % swapBytes) != 0)
-            throw new IllegalArgumentException("length: " + len);
-        int off = 0;
-        while (len > 0) {
-            int count = in.read(buf, off, Math.min(len, buf.length - off));
-            if (count < 0)
-                throw new EOFException();
-            len -= count;
-            count += off;
-            off = count % swapBytes;
-            count -= off;
-            switch (swapBytes) {
-                case 2:
-                    ByteKit.swapShorts(buf, 0, count);
-                    break;
-                case 4:
-                    ByteKit.swapInts(buf, 0, count);
-                    break;
-                case 8:
-                    ByteKit.swapLongs(buf, 0, count);
-                    break;
-            }
-            out.write(buf, 0, count);
-            if (off > 0)
-                System.arraycopy(buf, count, buf, 0, off);
-        }
-    }
-
     public static InputStream openFileOrURL(String name) throws IOException {
         if (name.startsWith("resource:")) {
-            URL url = ResourceKit.getResourceUrl(name.substring(9), StreamKit.class);
+            URL url = ResourceKit.getResourceUrl(name.substring(9), IoKit.class);
             if (null == url)
                 throw new FileNotFoundException(name);
             return url.openStream();
@@ -1670,7 +1759,7 @@ public class IoKit {
      * @throws InternalException IO异常
      */
     public static long copyNio(final ReadableByteChannel in, final WritableByteChannel out) throws InternalException {
-        return copyNio(in, out, Normal.DEFAULT_BUFFER_SIZE);
+        return copyNio(in, out, Normal._8192);
     }
 
     /**

@@ -45,10 +45,10 @@ public class CircularByteBuffer {
     private int currentNumberOfBytes;
 
     /**
-     * 默认缓冲大小的构造({@link Normal#DEFAULT_BUFFER_SIZE})
+     * 默认缓冲大小的构造({@link Normal#_8192})
      */
     public CircularByteBuffer() {
-        this(Normal.DEFAULT_BUFFER_SIZE);
+        this(Normal._8192);
     }
 
     /**

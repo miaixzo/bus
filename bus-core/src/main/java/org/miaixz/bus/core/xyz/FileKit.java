@@ -30,6 +30,8 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.BomReader;
+import org.miaixz.bus.core.io.file.FileReader;
+import org.miaixz.bus.core.io.file.FileWriter;
 import org.miaixz.bus.core.io.file.*;
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -1703,7 +1705,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static String readString(final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).readString();
+        return FileReader.of(file, charset).readString();
     }
 
     /**
@@ -1791,7 +1793,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T extends Collection<String>> T readLines(final File file, final java.nio.charset.Charset charset, final T collection) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).readLines(collection);
+        return FileReader.of(file, charset).readLines(collection);
     }
 
     /**
@@ -1918,7 +1920,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static void readLines(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) throws InternalException {
-        org.miaixz.bus.core.io.file.FileReader.of(file, charset).readLines(lineHandler);
+        FileReader.of(file, charset).readLines(lineHandler);
     }
 
     /**
@@ -2028,7 +2030,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T> T read(final File file, final java.nio.charset.Charset charset, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).read(readerHandler);
+        return FileReader.of(file, charset).read(readerHandler);
     }
 
     /**
@@ -2082,7 +2084,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static BufferedWriter getWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).getWriter(isAppend);
+        return FileWriter.of(file, charset).getWriter(isAppend);
     }
 
     /**
@@ -2173,7 +2175,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).write(content);
+        return FileWriter.of(file, charset).write(content);
     }
 
     /**
@@ -2223,7 +2225,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File appendString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).append(content);
+        return FileWriter.of(file, charset).append(content);
     }
 
     /**
@@ -2366,7 +2368,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeLines(list, isAppend);
+        return FileWriter.of(file, charset).writeLines(list, isAppend);
     }
 
     /**
@@ -2380,7 +2382,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeUtf8Map(final Map<?, ?> map, final File file, final String kvSeparator, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.of(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
@@ -2395,7 +2397,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeMap(final Map<?, ?> map, final File file, final java.nio.charset.Charset charset, final String kvSeparator, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.of(file, charset).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
@@ -2435,7 +2437,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeBytes(final byte[] data, final File dest, final int off, final int len, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(dest).write(data, off, len, isAppend);
+        return FileWriter.of(dest).write(data, off, len, isAppend);
     }
 
     /**
@@ -2486,7 +2488,7 @@ public class FileKit extends PathResolve {
      */
     public static File convertLineSeparator(final File file, final java.nio.charset.Charset charset, final LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeLines(lines, lineSeparator, false);
+        return FileWriter.of(file, charset).writeLines(lines, lineSeparator, false);
     }
 
     /**

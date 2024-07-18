@@ -102,7 +102,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * @param config 配置，null则为默认配置
      */
     public CsvParser(final Reader reader, final CsvReadConfig config) {
-        this(reader, config, Normal.DEFAULT_LARGE_BUFFER_SIZE);
+        this(reader, config, Normal._32768);
     }
 
     /**

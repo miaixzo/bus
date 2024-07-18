@@ -50,7 +50,7 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
      * 构造
      */
     public ChannelCopier() {
-        this(Normal.DEFAULT_BUFFER_SIZE);
+        this(Normal._8192);
     }
 
     /**

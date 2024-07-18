@@ -225,7 +225,7 @@ public enum Constellation {
      * @return 对应的名称
      */
     public String getName(final int code) {
-        return this.name;
+        return ENUMS[code].name;
     }
 
     /**

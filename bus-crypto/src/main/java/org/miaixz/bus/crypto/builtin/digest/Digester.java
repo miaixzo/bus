@@ -213,7 +213,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -231,7 +231,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
 
     /**
      * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -280,18 +280,18 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要，使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 生成摘要，使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
      */
     public byte[] digest(final InputStream data) {
-        return digest(data, Normal.DEFAULT_BUFFER_SIZE);
+        return digest(data, Normal._8192);
     }
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -304,13 +304,13 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 摘要bytes
      * @throws InternalException IO异常
      */
     public byte[] digest(final InputStream data, int bufferLength) throws InternalException {
         if (bufferLength < 1) {
-            bufferLength = Normal.DEFAULT_BUFFER_SIZE;
+            bufferLength = Normal._8192;
         }
 
         final byte[] result;
@@ -329,10 +329,10 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 摘要
      */
     public String digestHex(final InputStream data, final int bufferLength) {
@@ -352,7 +352,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -370,7 +370,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */

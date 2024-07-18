@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.shade.safety;
 
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.shade.safety.algorithm.Key;
@@ -77,7 +78,7 @@ public abstract class Builder {
     public static final String XJAR_KEY_HOLD = "hold";
     public static final String BOOT_INF_CLASSES = "BOOT-INF/classes/";
     public static final String BOOT_INF_LIB = "BOOT-INF/lib/";
-    public static final String CRLF = System.getProperty("line.separator");
+    public static final String CRLF = System.getProperty(Keys.LINE_SEPARATOR);
     public static final String ALGORITHM = "AES";
     public static int DEFAULT_KEYSIZE = Normal._128;
     public static int DEFAULT_IVSIZE = Normal._128;

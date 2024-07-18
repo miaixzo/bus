@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.setting.metric.ini;
 
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
      */
     @Override
     public String toPropertiesString() {
-        StringJoiner joiner = new StringJoiner(System.getProperty("line.separator", Symbol.LF));
+        StringJoiner joiner = new StringJoiner(System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF));
         joiner.add(toString());
         for (IniProperty p : this) {
             joiner.add(p);

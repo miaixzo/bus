@@ -275,7 +275,7 @@ public class Sign extends Asymmetric<Sign> {
 
     /**
      * 生成签名，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data 被签名数据
      * @return 签名
@@ -285,21 +285,21 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 生成签名，使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 生成签名，使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data {@link InputStream} 数据流
      * @return 签名bytes
      */
     public byte[] sign(final InputStream data) {
-        return sign(data, Normal.DEFAULT_BUFFER_SIZE);
+        return sign(data, Normal._8192);
     }
 
     /**
      * 生成签名，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data         被签名数据
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 签名
      */
     public String digestHex(final InputStream data, final int bufferLength) {
@@ -310,12 +310,12 @@ public class Sign extends Asymmetric<Sign> {
      * 生成签名
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 签名bytes
      */
     public byte[] sign(final InputStream data, int bufferLength) {
         if (bufferLength < 1) {
-            bufferLength = Normal.DEFAULT_BUFFER_SIZE;
+            bufferLength = Normal._8192;
         }
 
         final byte[] buffer = new byte[bufferLength];

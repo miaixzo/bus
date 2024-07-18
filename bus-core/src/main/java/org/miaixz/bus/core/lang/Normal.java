@@ -30,6 +30,7 @@ package org.miaixz.bus.core.lang;
 import org.miaixz.bus.core.io.file.FileName;
 
 import java.net.URL;
+import java.util.Date;
 
 /**
  * 默认常量
@@ -43,44 +44,70 @@ public class Normal {
      * The number 1024
      * 1.二进制计数的基本计量单位
      * 2.广大程序员的共同节日
+     * 3.由于特殊性置顶
      */
-    public static final int _1024 = 1024;
+    public static final int _1024 = 2 << 10;
+
+    /**
+     * The number 32768
+     */
+    public static final int _32768 = 2 << 14;
+
+    /**
+     * The number 16384
+     */
+    public static final int _16384 = 2 << 13;
+
+    /**
+     * The number 8192
+     */
+    public static final int _8192 = 2 << 12;
+
+    /**
+     * The number 2048
+     */
+    public static final int _2048 = 2 << 11;
+
     /**
      * The number 512
      */
-    public static final int _512 = 512;
+    public static final int _512 = 2 << 9;
 
     /**
      * The number 256
      */
-    public static final int _256 = 256;
+    public static final int _256 = 2 << 8;
 
     /**
      * The number 128
      */
-    public static final int _128 = 128;
+    public static final int _128 = 2 << 7;
 
     /**
      * The number 64
      */
-    public static final int _64 = 64;
+    public static final int _64 = 2 << 6;
 
     /**
      * The number 32
      */
-    public static final int _32 = 32;
+    public static final int _32 = 2 << 5;
+
     /**
      * The number 24
      */
     public static final int _24 = 24;
+
     /**
      * The number 20
      */
     public static final int _20 = 20;
+
     /**
      * The number 18
      */
     public static final int _18 = 18;
+
     /**
      * The number 16
      */
@@ -90,6 +117,7 @@ public class Normal {
      * The number 12
      */
     public static final int _12 = 12;
+
     /**
      * The number 9
      */
@@ -389,6 +417,11 @@ public class Normal {
     public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
 
     /**
+     * {@code Date} array.
+     */
+    public static final Date[] EMPTY_DATE_OBJECT_ARRAY = new Date[0];
+
+    /**
      * Bytes per Kilobyte(KB).
      */
     public static final long BYTES_PER_KB = _1024;
@@ -407,19 +440,6 @@ public class Normal {
      * Bytes per Terabyte(TB).
      */
     public static final long BYTES_PER_TB = BYTES_PER_GB * _1024;
-
-    /**
-     * 默认缓存大小 8192
-     */
-    public static final int DEFAULT_BUFFER_SIZE = 2 << 12;
-    /**
-     * 默认中等缓存大小 16384
-     */
-    public static final int DEFAULT_MIDDLE_BUFFER_SIZE = 2 << 13;
-    /**
-     * 默认大缓存大小 32768
-     */
-    public static final int DEFAULT_LARGE_BUFFER_SIZE = 2 << 14;
 
     /**
      * 默认增长因子，当Map的size达到 容量*增长因子时，开始扩充Map
