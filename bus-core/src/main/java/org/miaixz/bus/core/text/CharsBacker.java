@@ -1419,7 +1419,7 @@ public class CharsBacker extends CharsValidator {
     /**
      * 改进JDK subString
      * <ul>
-     *     <li>index从0开始计算，最后一个字符为-1，即sub("hutool", 0, -1)得到"hutoo"</li>
+     *     <li>index从0开始计算，最后一个字符为-1，即sub("miaixz", 0, -1)得到"miaixz"</li>
      *     <li>如果from和to位置一样，返回 ""</li>
      *     <li>如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length</li>
      *     <li>如果经过修正的index中from大于to，则互换from和to，如abcdefgh 2 3 =》 c，abcdefgh 2 -3 =》 cde </li>
