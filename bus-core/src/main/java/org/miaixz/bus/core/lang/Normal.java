@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.io.file.FileType;
 
 import java.net.URL;
 import java.util.Date;
@@ -629,6 +629,7 @@ public class Normal {
     };
 
     /**
+     * 字节计量单位
      * <pre>
      *     byte        1B     1
      *     kilobyte    1KB    1,024
@@ -834,7 +835,7 @@ public class Normal {
     public static boolean isJarFileURL(final URL url) {
         Assert.notNull(url, "URL must be not null");
         return (URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
-                url.getPath().toLowerCase().endsWith(FileName.EXT_JAR));
+                url.getPath().toLowerCase().endsWith(FileType.JAR));
     }
 
 }

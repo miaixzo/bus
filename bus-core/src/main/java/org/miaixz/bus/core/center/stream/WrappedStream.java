@@ -206,9 +206,6 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      * 返回与指定函数将元素作为参数执行后组成的流。
      * 这是一个无状态中间操作
      *
-     * @param action 指定的函数
-     * @return 返回叠加操作后的FastStream
-     * 当你需要查看经过操作管道某处的元素，可以执行以下操作:
      * <pre>{@code
      *     .of("one", "two", "three", "four")
      *         .filter(e -> e.length() > 3)
@@ -217,6 +214,10 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
      *         .peek(e -> System.out.println("Mapped value: " + e))
      *         .collect(Collectors.toList());
      * }</pre>
+     *
+     * @param action 指定的函数
+     * @return 返回叠加操作后的FastStream
+     * 当你需要查看经过操作管道某处的元素，可以执行以下操作:
      */
     @Override
     default S peek(final Consumer<? super T> action) {

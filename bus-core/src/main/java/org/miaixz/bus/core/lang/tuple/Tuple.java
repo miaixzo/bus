@@ -48,8 +48,17 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 多值信息
+     */
     private final Object[] members;
+    /**
+     * 多值hash
+     */
     private int hashCode;
+    /**
+     * 缓存hash
+     */
     private boolean cacheHash;
 
     /**

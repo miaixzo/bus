@@ -41,6 +41,12 @@ public class IndexedSegment extends NamedSegment {
      */
     private final int index;
 
+    /**
+     * 构造
+     *
+     * @param idxStr           索引字符串变量
+     * @param wholePlaceholder 占位符完整文本
+     */
     public IndexedSegment(final String idxStr, final String wholePlaceholder) {
         super(idxStr, wholePlaceholder);
         this.index = Integer.parseInt(idxStr);

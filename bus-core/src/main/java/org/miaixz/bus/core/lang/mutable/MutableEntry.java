@@ -44,7 +44,13 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 键
+     */
     protected K key;
+    /**
+     * 值
+     */
     protected V value;
 
     /**

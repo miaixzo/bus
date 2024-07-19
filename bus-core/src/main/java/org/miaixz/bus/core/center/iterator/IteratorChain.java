@@ -39,16 +39,22 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class IterChain<T> implements Iterator<T>, Chain<Iterator<T>, IterChain<T>> {
+public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, IteratorChain<T>> {
 
+    /**
+     * 所有的Iterator
+     */
     protected final List<Iterator<T>> allIterators = new ArrayList<>();
+    /**
+     * 当前位置
+     */
     protected int currentIter = -1;
 
     /**
      * 构造
      * 可以使用 {@link #addChain(Iterator)} 方法加入更多的集合。
      */
-    public IterChain() {
+    public IteratorChain() {
 
     }
 
@@ -59,7 +65,7 @@ public class IterChain<T> implements Iterator<T>, Chain<Iterator<T>, IterChain<T
      * @throws IllegalArgumentException 当存在重复的迭代器，或添加的迭代器中存在{@code null}时抛出
      */
     @SafeVarargs
-    public IterChain(final Iterator<T>... iterators) {
+    public IteratorChain(final Iterator<T>... iterators) {
         if (ArrayKit.isNotEmpty(iterators)) {
             for (final Iterator<T> iterator : iterators) {
                 addChain(iterator);
@@ -75,7 +81,7 @@ public class IterChain<T> implements Iterator<T>, Chain<Iterator<T>, IterChain<T
      * @throws IllegalArgumentException 当迭代器被重复添加，或待添加的迭代器为{@code null}时抛出
      */
     @Override
-    public IterChain<T> addChain(final Iterator<T> iterator) {
+    public IteratorChain<T> addChain(final Iterator<T> iterator) {
         Objects.requireNonNull(iterator);
         if (allIterators.contains(iterator)) {
             throw new IllegalArgumentException("Duplicate iterator");

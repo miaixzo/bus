@@ -192,10 +192,10 @@ public class QrCodeKit {
     public static void generate(final String content, final QrConfig config, final String imageType, final OutputStream out) {
         switch (imageType) {
             case QR_TYPE_SVG:
-                IoKit.writeUtf8(out, false, generateAsSvg(content, config));
+                IoKit.write(out, false, generateAsSvg(content, config));
                 break;
             case QR_TYPE_TXT:
-                IoKit.writeUtf8(out, false, generateAsAsciiArt(content, config));
+                IoKit.write(out, false, generateAsAsciiArt(content, config));
                 break;
             default:
                 BufferedImage img = null;

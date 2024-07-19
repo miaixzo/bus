@@ -69,6 +69,7 @@ public class NamedStringTemplate extends StringTemplate {
      */
     protected int indexedSegmentMaxIdx = 0;
 
+
     protected NamedStringTemplate(final String template, final int features, final String prefix,
                                   final String suffix, final char escape, final String defaultValue,
                                   final UnaryOperator<String> defaultValueHandler) {
@@ -553,17 +554,23 @@ public class NamedStringTemplate extends StringTemplate {
      * 构造器
      */
     public static class Builder extends AbstractBuilder<Builder, NamedStringTemplate> {
+
         /**
          * 占位符前缀，默认为 {@link NamedStringTemplate#DEFAULT_PREFIX}
-         * <p>不能为空字符串</p>
+         * 不能为空字符串
          */
         protected String prefix;
         /**
          * 占位符后缀，默认为 {@link NamedStringTemplate#DEFAULT_SUFFIX}
-         * <p>不能为空字符串</p>
+         * 不能为空字符串
          */
         protected String suffix;
 
+        /**
+         * 构造
+         *
+         * @param template 模板
+         */
         protected Builder(final String template) {
             super(template);
         }

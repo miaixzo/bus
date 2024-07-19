@@ -456,12 +456,11 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
     public interface Builder<T> extends Consumer<T>, org.miaixz.bus.core.Builder<EasyStream<T>> {
 
         /**
-         * Adds an element to the unwrap being built.
+         * 将元素添加到正在构建的对象中
          *
-         * @param t the element to add
+         * @param t 要添加的元素
          * @return {@code this} builder
-         * @throws IllegalStateException if the builder has already transitioned to
-         *                               the built state
+         * @throws IllegalStateException 如果构建器已经转换到构建状态
          */
         default Builder<T> add(final T t) {
             accept(t);

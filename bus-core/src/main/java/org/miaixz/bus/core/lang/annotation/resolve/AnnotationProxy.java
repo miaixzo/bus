@@ -50,8 +50,17 @@ public class AnnotationProxy<T extends Annotation> implements Annotation, Invoca
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 注解
+     */
     private final T annotation;
+    /**
+     * 注解类型
+     */
     private final Class<T> type;
+    /**
+     * 注解属性
+     */
     private final Map<String, Object> attributes;
 
     /**

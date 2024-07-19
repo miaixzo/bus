@@ -91,7 +91,7 @@ public class SingleStringTemplate extends StringTemplate {
         // 上一个解析的segment是否是固定文本，如果是，则需要和当前新的文本部分合并
         boolean lastIsLiteralSegment = false;
         // 复用的占位符变量
-        final SingleSegment singlePlaceholderSegment = SingleSegment.newInstance(placeholder);
+        final SingleSegment singlePlaceholderSegment = SingleSegment.of(placeholder);
         List<StringSegment> segments = null;
         while (true) {
             delimIndex = template.indexOf(placeholder, handledPosition);

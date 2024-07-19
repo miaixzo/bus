@@ -38,7 +38,13 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class DefaultSegment<T extends Number> implements Segment<T> {
 
+    /**
+     * 起始位置
+     */
     protected T beginIndex;
+    /**
+     * 结束位置
+     */
     protected T endIndex;
 
     /**

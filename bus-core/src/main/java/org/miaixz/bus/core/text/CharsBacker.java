@@ -281,9 +281,9 @@ public class CharsBacker extends CharsValidator {
      * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
      * <ul>
      *     <li>去除字符串空格罗列相关如下：</li>
-     *     <li>{@link StringKit#trimPrefix(CharSequence)}去除头部空格</li>
-     *     <li>{@link StringKit#trimSuffix(CharSequence)}去除尾部空格</li>
-     *     <li>{@link StringKit#cleanBlank(CharSequence)}去除头部、尾部、中间空格</li>
+     *     <li>{@link #trimPrefix(CharSequence)}去除头部空格</li>
+     *     <li>{@link #trimSuffix(CharSequence)}去除尾部空格</li>
+     *     <li>{@link #cleanBlank(CharSequence)}去除头部、尾部、中间空格</li>
      * </ul>
      *
      * <pre>
@@ -1088,7 +1088,7 @@ public class CharsBacker extends CharsValidator {
      * @return 去除后的字符
      */
     public static String removeAll(final CharSequence text, final char... chars) {
-        if (StringKit.isEmpty(text) || ArrayKit.isEmpty(chars)) {
+        if (isEmpty(text) || ArrayKit.isEmpty(chars)) {
             return toStringOrNull(text);
         }
         return filter(text, (c) -> !ArrayKit.contains(chars, c));
@@ -1187,6 +1187,35 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
+     * 去掉指定所有后缀，如：
+     * <pre>{@code
+     *     str=11abab, suffix=ab => return 11
+     *     str=11ab, suffix=ab => return 11
+     *     str=11ab, suffix="" => return 11ab
+     *     str=11ab, suffix=null => return 11ab
+     * }</pre>
+     *
+     * @param text    字符串，空返回原字符串
+     * @param suffix 后缀字符串，空返回原字符串
+     * @return 去掉所有后缀的字符串，若后缀不是 suffix， 返回原字符串
+     */
+    public static String removeAllSuffix(final CharSequence text, final CharSequence suffix) {
+        if (isEmpty(text) || isEmpty(suffix)) {
+            return toStringOrNull(text);
+        }
+
+        final String suffixStr = suffix.toString();
+        final int suffixLength = suffixStr.length();
+
+        final String str2 = text.toString();
+        int toIndex = str2.length();
+        while (str2.startsWith(suffixStr, toIndex - suffixLength)) {
+            toIndex -= suffixLength;
+        }
+        return subPre(str2, toIndex);
+    }
+
+    /**
      * 去掉指定后缀
      *
      * @param text   字符串
@@ -1200,7 +1229,8 @@ public class CharsBacker extends CharsValidator {
 
         final String text2 = text.toString();
         if (text2.endsWith(suffix.toString())) {
-            return subPre(text2, text2.length() - suffix.length());// 截取前半段
+            // 截取前半段
+            return subPre(text2, text2.length() - suffix.length());
         }
         return text2;
     }
@@ -1270,6 +1300,32 @@ public class CharsBacker extends CharsValidator {
      * @return 处理后的字符串
      */
     public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
+        return strip(text, prefix, suffix, false);
+    }
+
+    /**
+     * 去除两边的指定字符串
+     * 两边字符如果存在，则去除，不存在不做处理
+     * <pre>{@code
+     *  "aaa_STRIPPED_bbb", "a", "b"       -> "aa_STRIPPED_bb"
+     *  "aaa_STRIPPED_bbb", null, null     -> "aaa_STRIPPED_bbb"
+     *  "aaa_STRIPPED_bbb", "", ""         -> "aaa_STRIPPED_bbb"
+     *  "aaa_STRIPPED_bbb", "", "b"        -> "aaa_STRIPPED_bb"
+     *  "aaa_STRIPPED_bbb", null, "b"      -> "aaa_STRIPPED_bb"
+     *  "aaa_STRIPPED_bbb", "a", ""        -> "aa_STRIPPED_bbb"
+     *  "aaa_STRIPPED_bbb", "a", null      -> "aa_STRIPPED_bbb"
+     *
+     *  "a", "a", "a"  -> ""
+     * }
+     * </pre>
+     *
+     * @param text       被处理的字符串
+     * @param prefix     前缀
+     * @param suffix     后缀
+     * @param ignoreCase 是否忽略大小写
+     * @return 处理后的字符串
+     */
+    public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix, final boolean ignoreCase) {
         if (isEmpty(text)) {
             return toStringOrNull(text);
         }
@@ -1278,10 +1334,10 @@ public class CharsBacker extends CharsValidator {
         int to = text.length();
 
         final String text2 = text.toString();
-        if (startWith(text2, prefix)) {
+        if (startWith(text2, prefix, ignoreCase)) {
             from = prefix.length();
         }
-        if (endWith(text2, suffix)) {
+        if (endWith(text2, suffix, ignoreCase)) {
             to -= suffix.length();
         }
 
@@ -1291,7 +1347,7 @@ public class CharsBacker extends CharsValidator {
     /**
      * 去除两边的指定字符串，忽略大小写
      *
-     * @param text           被处理的字符串
+     * @param text            被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
      * @return 处理后的字符串
      */
@@ -1302,26 +1358,13 @@ public class CharsBacker extends CharsValidator {
     /**
      * 去除两边的指定字符串，忽略大小写
      *
-     * @param text   被处理的字符串
+     * @param text    被处理的字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 处理后的字符串
      */
     public static String stripIgnoreCase(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
-        if (isEmpty(text)) {
-            return toStringOrNull(text);
-        }
-        int from = 0;
-        int to = text.length();
-
-        final String text2 = text.toString();
-        if (startWithIgnoreCase(text2, prefix)) {
-            from = prefix.length();
-        }
-        if (endWithIgnoreCase(text2, suffix)) {
-            to -= suffix.length();
-        }
-        return text2.substring(from, to);
+        return strip(text, prefix, suffix, true);
     }
 
     /**
@@ -1375,12 +1418,12 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * 改进JDK subString
-     * index从0开始计算，最后一个字符为-1
-     * 如果from和to位置一样，返回 ""
-     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length
-     * 如果经过修正的index中from大于to，则互换from和to example:
-     * abcdefgh 2 3 = c
-     * abcdefgh 2 -3 = cde
+     * <ul>
+     *     <li>index从0开始计算，最后一个字符为-1，即sub("hutool", 0, -1)得到"hutoo"</li>
+     *     <li>如果from和to位置一样，返回 ""</li>
+     *     <li>如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length</li>
+     *     <li>如果经过修正的index中from大于to，则互换from和to，如abcdefgh 2 3 =》 c，abcdefgh 2 -3 =》 cde </li>
+     * </ul>
      *
      * @param text             String
      * @param fromIndexInclude 开始的index（包括）
@@ -1500,7 +1543,7 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * 切割指定位置之前部分的字符串
-     * <p>安全的subString,允许：string为null，允许string长度小于toIndexExclude长度</p>
+     * 安全的subString,允许：string为null，允许string长度小于toIndexExclude长度
      * <pre>{@code
      *      Assert.assertEquals(subPre(null, 3), null);
      * 		Assert.assertEquals(subPre("ab", 3), "ab");
@@ -1515,19 +1558,27 @@ public class CharsBacker extends CharsValidator {
      * @return 切割后的剩余的前半部分字符串
      */
     public static String subPre(final CharSequence text, final int toIndexExclude) {
+        if (isEmpty(text) || text.length() == toIndexExclude) {
+            return toStringOrNull(text);
+        }
         return sub(text, 0, toIndexExclude);
     }
 
     /**
      * 切割指定位置之后部分的字符串
+     * <ul>
+     *     <li>fromIndex为0或字符串为空，返回原字符串</li>
+     *     <li>fromIndex大于字符串本身的长度，返回""</li>
+     *     <li>fromIndex支持负数，-1表示length-1</li>
+     * </ul>
      *
      * @param text      字符串
      * @param fromIndex 切割开始的位置（包括）
      * @return 切割后后剩余的后半部分字符串
      */
     public static String subSuf(final CharSequence text, final int fromIndex) {
-        if (isEmpty(text)) {
-            return null;
+        if (0 == fromIndex || isEmpty(text)) {
+            return toStringOrNull(text);
         }
         return sub(text, fromIndex, text.length());
     }
@@ -2379,12 +2430,12 @@ public class CharsBacker extends CharsValidator {
      * 获取字符串中最左边的{@code len}字符
      *
      * <pre>
-     * StringKit.left(null, *)    = null
-     * StringKit.left(*, -ve)     = ""
-     * StringKit.left("", *)      = ""
-     * StringKit.left("abc", 0)   = ""
-     * StringKit.left("abc", 2)   = "ab"
-     * StringKit.left("abc", 4)   = "abc"
+     *  left(null, *)    = null
+     *  left(*, -ve)     = ""
+     *  left("", *)      = ""
+     *  left("abc", 0)   = ""
+     *  left("abc", 2)   = "ab"
+     *  left("abc", 4)   = "abc"
      * </pre>
      *
      * @param text 要从中获取字符的字符串可能为空
@@ -2408,12 +2459,12 @@ public class CharsBacker extends CharsValidator {
      * 获取字符串中最右边的{@code len}字符
      *
      * <pre>
-     * StringKit.right(null, *)    = null
-     * StringKit.right(*, -ve)     = ""
-     * StringKit.right("", *)      = ""
-     * StringKit.right("abc", 0)   = ""
-     * StringKit.right("abc", 2)   = "bc"
-     * StringKit.right("abc", 4)   = "abc"
+     *  right(null, *)    = null
+     *  right(*, -ve)     = ""
+     *  right("", *)      = ""
+     *  right("abc", 0)   = ""
+     *  right("abc", 2)   = "bc"
+     *  right("abc", 4)   = "abc"
      * </pre>
      *
      * @param text 要从中获取字符的字符串可能为空
@@ -2437,14 +2488,14 @@ public class CharsBacker extends CharsValidator {
      * 从字符串中间获取{@code len}字符.
      *
      * <pre>
-     * StringKit.mid(null, *, *)    = null
-     * StringKit.mid(*, *, -ve)     = ""
-     * StringKit.mid("", 0, *)      = ""
-     * StringKit.mid("abc", 0, 2)   = "ab"
-     * StringKit.mid("abc", 0, 4)   = "abc"
-     * StringKit.mid("abc", 2, 4)   = "c"
-     * StringKit.mid("abc", 4, 2)   = ""
-     * StringKit.mid("abc", -2, 2)  = "ab"
+     *  mid(null, *, *)    = null
+     *  mid(*, *, -ve)     = ""
+     *  mid("", 0, *)      = ""
+     *  mid("abc", 0, 2)   = "ab"
+     *  mid("abc", 0, 4)   = "abc"
+     *  mid("abc", 2, 4)   = "c"
+     *  mid("abc", 4, 2)   = ""
+     *  mid("abc", -2, 2)  = "ab"
      * </pre>
      *
      * @param text 要从中获取字符的字符串可能为空
@@ -3879,8 +3930,8 @@ public class CharsBacker extends CharsValidator {
      */
     public static String split(String text, String separator, String reserve) {
         StringBuffer sb = new StringBuffer();
-        if (StringKit.isNotEmpty(text)) {
-            String[] arr = StringKit.splitToArray(text, separator);
+        if (isNotEmpty(text)) {
+            String[] arr = splitToArray(text, separator);
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) {
                     sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
@@ -4149,7 +4200,7 @@ public class CharsBacker extends CharsValidator {
      * @return {@link Function}
      */
     public static Function<String, String> trimFunc(final boolean isTrim) {
-        return isTrim ? StringKit::trim : Function.identity();
+        return isTrim ? CharsBacker::trim : Function.identity();
     }
 
     /**

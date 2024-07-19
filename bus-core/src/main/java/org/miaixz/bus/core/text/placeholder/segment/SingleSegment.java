@@ -36,11 +36,22 @@ package org.miaixz.bus.core.text.placeholder.segment;
  */
 public class SingleSegment extends AbstractSegment {
 
+    /**
+     * 构造
+     *
+     * @param placeholder 占位符
+     */
     private SingleSegment(final String placeholder) {
         super(placeholder);
     }
 
-    public static SingleSegment newInstance(final String placeholder) {
+    /**
+     * 创建
+     *
+     * @param placeholder 占位符
+     * @return this
+     */
+    public static SingleSegment of(final String placeholder) {
         return new SingleSegment(placeholder);
     }
 

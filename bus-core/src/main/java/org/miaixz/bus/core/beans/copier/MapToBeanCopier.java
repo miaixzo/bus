@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
@@ -82,7 +81,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
         this.source.forEach((sKey, sValue) -> {
             if (null == sKey) {

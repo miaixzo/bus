@@ -50,8 +50,14 @@ public class DynaBean implements Cloneable, Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private final Class<?> beanClass;
+    /**
+     * bean对象
+     */
     private Object bean;
+    /**
+     * bean类
+     */
+    private final Class<?> beanClass;
 
     /**
      * 构造

@@ -73,7 +73,7 @@ public class FileKit extends PathResolve {
      * @return 是否为Windows环境
      */
     public static boolean isWindows() {
-        return FileName.WINDOWS_SEPARATOR == File.separatorChar;
+        return Symbol.C_BACKSLASH == File.separatorChar;
     }
 
     /**
@@ -233,7 +233,7 @@ public class FileKit extends PathResolve {
         if (path == null) {
             return new ArrayList<>(0);
         }
-        int index = path.lastIndexOf(FileName.EXT_JAR_PATH);
+        int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
         if (index < 0) {
             // 普通目录
             final List<String> paths = new ArrayList<>();
@@ -249,7 +249,7 @@ public class FileKit extends PathResolve {
         // jar文件
         path = getAbsolutePath(path);
         // jar文件中的路径
-        index = index + FileName.EXT_JAR.length();
+        index = index + FileType.JAR.length();
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(path.substring(0, index));
@@ -2429,15 +2429,49 @@ public class FileKit extends PathResolve {
      * 写入数据到文件
      *
      * @param data     数据
-     * @param dest     目标文件
+     * @param target     目标文件
      * @param off      数据开始位置
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
-     * @throws InternalException IO异常
      */
-    public static File writeBytes(final byte[] data, final File dest, final int off, final int len, final boolean isAppend) throws InternalException {
-        return FileWriter.of(dest).write(data, off, len, isAppend);
+    public static File writeBytes(final byte[] data, final File target, final int off, final int len, final boolean isAppend) {
+        return FileWriter.of(target).write(data, off, len, isAppend);
+    }
+
+    /**
+     * 将流的内容写入文件
+     * 此方法会自动关闭输入流
+     *
+     * @param target 目标文件
+     * @param in     输入流
+     * @return 目标文件
+     */
+    public static File writeFromStream(final InputStream in, final File target) {
+        return writeFromStream(in, target, true);
+    }
+
+    /**
+     * 将流的内容写入文件
+     *
+     * @param target      目标文件
+     * @param in        输入流
+     * @param isCloseIn 是否关闭输入流
+     * @return 目标文件
+     */
+    public static File writeFromStream(final InputStream in, final File target, final boolean isCloseIn) {
+        return FileWriter.of(target).writeFromStream(in, isCloseIn);
+    }
+
+    /**
+     * 将文件写入流中，此方法不会关闭输出流
+     *
+     * @param file 文件
+     * @param out  流
+     * @return 写出的流byte数
+     */
+    public static long writeToStream(final File file, final OutputStream out) {
+        return FileReader.of(file).writeToStream(out);
     }
 
     /**

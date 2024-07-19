@@ -41,6 +41,9 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public abstract class IoCopier<S, T> {
 
+    /**
+     * 缓存大小
+     */
     protected final int bufferSize;
     /**
      * 拷贝总数

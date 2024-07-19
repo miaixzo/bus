@@ -41,6 +41,10 @@ import java.util.Objects;
 public class Triplet<L, M, R> extends Pair<L, R> {
 
     private static final long serialVersionUID = -1L;
+
+    /**
+     * 中值
+     */
     protected M middle;
 
     /**

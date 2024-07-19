@@ -44,7 +44,13 @@ import java.util.List;
  */
 public class Partition<T> extends AbstractList<List<T>> {
 
+    /**
+     * 被分区的列表
+     */
     protected final List<T> list;
+    /**
+     * 每个分区的长度
+     */
     protected final int size;
 
     /**

@@ -76,6 +76,51 @@ public class MediaType {
     public static final MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
 
     /**
+     * A {@code String} constant representing {@value #APPLICATION_X_PROTOBUF} media type.
+     */
+    public static final String APPLICATION_X_PROTOBUF = "application/x-protobuf";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_X_PROTOBUF} media type.
+     */
+    public static final MediaType APPLICATION_X_PROTOBUF_TYPE = new MediaType("application", "x-protobuf");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_MIXED} media type.
+     */
+    public static final String MULTIPART_MIXED = "multipart/mixed";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_MIXED} media type.
+     */
+    public static final MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_ALTERNATIVE} media type.
+     */
+    public static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_ALTERNATIVE} media type.
+     */
+    public static final MediaType MULTIPART_ALTERNATIVE_TYPE = new MediaType("multipart", "alternative");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_DIGEST} media type.
+     */
+    public static final String MULTIPART_DIGEST = "multipart/digest";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_DIGEST} media type.
+     */
+    public static final MediaType MULTIPART_DIGEST_TYPE = new MediaType("multipart", "digest");
+
+    /**
+     * A {@code String} constant representing {@value #MULTIPART_PARALLEL} media type.
+     */
+    public static final String MULTIPART_PARALLEL = "multipart/parallel";
+    /**
+     * A {@link MediaType} constant representing {@value #MULTIPART_PARALLEL} media type.
+     */
+    public static final MediaType MULTIPART_PARALLEL_TYPE = new MediaType("multipart", "parallel");
+
+    /**
      * A {@code String} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";

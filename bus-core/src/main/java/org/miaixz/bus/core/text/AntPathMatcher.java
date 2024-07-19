@@ -661,6 +661,12 @@ public class AntPathMatcher {
 
         private final List<String> variableNames = new ArrayList<>();
 
+        /**
+         * Create a new {@code AntPathStringMatcher} that will match the supplied {@code pattern}
+         *
+         * @param pattern       the pattern to match against
+         * @param caseSensitive 是否大小写不敏感
+         */
         public AntPathStringMatcher(final String pattern, final boolean caseSensitive) {
             this.rawPattern = pattern;
             this.caseSensitive = caseSensitive;

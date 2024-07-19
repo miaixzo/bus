@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.core.beans.copier;
 
+import org.miaixz.bus.core.beans.desc.BeanDesc;
 import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.Convert;
@@ -109,6 +110,11 @@ public class CopyOptions implements Serializable {
      */
     private BiPredicate<Field, Object> propertiesFilter;
 
+    /**
+     * 自定义的Bean解析类<br>
+     * 默认规则下普通Bean使用严格的Bean解析，需要同时解析Bean中的字段和方法，然后匹配，自定义后可以只解析getter和setter方法
+     */
+    protected Class<BeanDesc> beanDescClass;
     /**
      * 构造拷贝选项
      */

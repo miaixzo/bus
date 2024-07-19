@@ -82,22 +82,22 @@ public class FileWriter extends FileWrapper {
 
     /**
      * 构造
-     * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
+     * 编码使用 {@link Charset#UTF_8}
      *
      * @param file 文件
      */
     public FileWriter(final File file) {
-        this(file, DEFAULT_CHARSET);
+        this(file, Charset.UTF_8);
     }
 
     /**
      * 构造
-     * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
+     * 编码使用 {@link Charset#UTF_8}
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
      */
     public FileWriter(final String filePath) {
-        this(filePath, DEFAULT_CHARSET);
+        this(filePath, Charset.UTF_8);
     }
 
     /**
@@ -112,7 +112,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 创建 FileWriter, 编码：{@link FileWrapper#DEFAULT_CHARSET}
+     * 创建 FileWriter, 编码：{@link Charset#UTF_8}
      *
      * @param file 文件
      * @return FileWriter

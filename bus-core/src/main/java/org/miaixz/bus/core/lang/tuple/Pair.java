@@ -44,7 +44,13 @@ public class Pair<L, R> implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 左值（第一个值）
+     */
     protected L left;
+    /**
+     * 右值（第二个值）
+     */
     protected R right;
 
     /**

@@ -1850,12 +1850,6 @@ public class DateKit extends Calendar {
          */
         public static <T extends Date> T wrap(final Class<?> targetClass, final long mills) {
             // 返回指定类型
-            if (Date.class == targetClass) {
-                return (T) new Date(mills);
-            }
-            if (DateTime.class == targetClass) {
-                return (T) DateKit.date(mills);
-            }
             if (java.sql.Date.class == targetClass) {
                 return (T) new java.sql.Date(mills);
             }

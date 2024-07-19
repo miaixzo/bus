@@ -38,10 +38,15 @@ public class NamedSegment extends AbstractSegment {
 
     /**
      * 占位符完整文本
-     * <p>例如：{@literal "{name}"->"{name}"}</p>
+     * 例如：{@literal "{name}"->"{name}"}
      */
     private final String wholePlaceholder;
 
+    /**
+     * 构造
+     * @param name 占位符变量
+     * @param wholePlaceholder 占位符完整文本
+     */
     public NamedSegment(final String name, final String wholePlaceholder) {
         super(name);
         this.wholePlaceholder = wholePlaceholder;

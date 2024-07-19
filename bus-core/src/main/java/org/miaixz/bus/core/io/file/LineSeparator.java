@@ -57,12 +57,25 @@ public enum LineSeparator {
      */
     WINDOWS("\r\n");
 
+    /**
+     * 获取换行符值
+     */
     private final String value;
 
+    /**
+     * 构造
+     *
+     * @param lineSeparator 换行符
+     */
     LineSeparator(final String lineSeparator) {
         this.value = lineSeparator;
     }
 
+    /**
+     * 获取换行符值
+     *
+     * @return 值
+     */
     public String getValue() {
         return this.value;
     }

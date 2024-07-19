@@ -212,6 +212,17 @@ public class UrlQuery {
     }
 
     /**
+     * 移除键及对应所有的值
+     *
+     * @param key 键
+     * @return this
+     */
+    public UrlQuery remove(final CharSequence key) {
+        this.query.remove(key);
+        return this;
+    }
+
+    /**
      * 解析URL中的查询字符串
      *
      * @param query 查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
@@ -332,17 +343,6 @@ public class UrlQuery {
     }
 
     /**
-     * 生成查询字符串，类似于aaa=111&amp;bbb=222
-     * 此方法不对任何特殊字符编码，仅用于输出显示
-     *
-     * @return 查询字符串
-     */
-    @Override
-    public String toString() {
-        return build(null);
-    }
-
-    /**
      * 解析URL中的查询字符串
      * 规则见：https://url.spec.whatwg.org/#urlencoded-parsing
      *
@@ -411,6 +411,16 @@ public class UrlQuery {
         }
     }
 
+    /**
+     * 生成查询字符串，类似于aaa=111&amp;bbb=222
+     * 此方法不对任何特殊字符编码，仅用于输出显示
+     *
+     * @return 查询字符串
+     */
+    @Override
+    public String toString() {
+        return build(null);
+    }
 
     /**
      * 编码模式

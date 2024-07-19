@@ -51,8 +51,12 @@ public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
     private boolean finished;
 
     /**
-     * Creates a spliterator reporting the given estimated size and
-     * additionalCharacteristics.
+     * 构造
+     *
+     * @param seed    初始值
+     * @param hasNext 是否有下一个断言
+     * @param next    下一个值生产者
+     * @return this
      */
     IterateSpliterator(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
         super(Long.MAX_VALUE, Spliterator.ORDERED | Spliterator.IMMUTABLE);
@@ -61,7 +65,16 @@ public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
         this.next = next;
     }
 
-    public static <T> IterateSpliterator<T> create(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
+    /**
+     * 创建
+     *
+     * @param seed    初始值
+     * @param hasNext 是否有下一个断言
+     * @param next    下一个值生产者
+     * @param <T>     流元素类型
+     * @return this
+     */
+    public static <T> IterateSpliterator<T> of(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
         return new IterateSpliterator<>(seed, hasNext, next);
     }
 

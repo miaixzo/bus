@@ -30,7 +30,6 @@ package org.miaixz.bus.core.beans.copier;
 import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
@@ -44,7 +43,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
+public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
 
     /**
      * 目标的类型（用于泛型类注入）
@@ -59,7 +58,7 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public ValueProviderToBeanCopier(final ValueProvider<String> source, final T target, final Type targetType, final CopyOptions copyOptions) {
+    public ValueToBeanCopier(final ValueProvider<String> source, final T target, final Type targetType, final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }
@@ -73,7 +72,7 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
         targetPropDescMap.forEach((tFieldName, tDesc) -> {
             if (null == tFieldName) {

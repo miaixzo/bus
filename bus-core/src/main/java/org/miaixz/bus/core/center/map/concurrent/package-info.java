@@ -31,8 +31,6 @@
  * {@link org.miaixz.bus.core.center.map.concurrent.Weighers} 类提供用于获取最常见类型的实现的实用方法。
  *
  * @author Kimi Liu
- * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- * http://code.google.com/p/concurrentlinkedhashmap/</a>
  * @since Java 17+
  */
 package org.miaixz.bus.core.center.map.concurrent;

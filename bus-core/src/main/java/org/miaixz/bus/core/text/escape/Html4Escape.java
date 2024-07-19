@@ -38,6 +38,9 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
  */
 public class Html4Escape extends XmlEscape {
 
+    /**
+     * ISO8859_1 转义字符
+     */
     protected static final String[][] ISO8859_1_ESCAPE = { //
             {"\u00A0", "&nbsp;"}, // non-breaking space
             {"\u00A1", "&iexcl;"}, // inverted exclamation mark
