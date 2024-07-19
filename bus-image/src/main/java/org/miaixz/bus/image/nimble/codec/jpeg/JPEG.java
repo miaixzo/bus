@@ -26,7 +26,6 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 package org.miaixz.bus.image.nimble.codec.jpeg;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -37,10 +36,31 @@ public class JPEG {
      * For temporary use in arithmetic coding
      */
     public static final int TEM = 0x01;
-
-    // Codes 0x02 - 0xBF are reserved
-
-    // SOF markers for Nondifferential Huffman coding
+    /**
+     * Start of codestream
+     */
+    public static final int FF_SOC = 0xFF4F;
+    public static final int SOC = 0x4F;
+    /**
+     * Image and tile size
+     */
+    public static final int SIZ = 0x51;
+    /**
+     * Coding style default
+     */
+    public static final int COD = 0x52;
+    /**
+     * Tile-part lengths
+     */
+    public static final int TLM = 0x55;
+    /**
+     * Start of tile-part
+     */
+    public static final int SOT = 0x90;
+    /**
+     * Start of data
+     */
+    public static final int SOD = 0x93;
     /**
      * Baseline DCT
      */
@@ -57,13 +77,10 @@ public class JPEG {
      * Lossless Sequential
      */
     public static final int SOF3 = 0xC3;
-
     /**
      * Define Huffman Tables
      */
     public static final int DHT = 0xC4;
-
-    // SOF markers for Differential Huffman coding
     /**
      * Differential Sequential DCT
      */
@@ -76,13 +93,10 @@ public class JPEG {
      * Differential Lossless
      */
     public static final int SOF7 = 0xC7;
-
     /**
      * Reserved for JPEG extensions
      */
     public static final int JPG = 0xC8;
-
-    // SOF markers for Nondifferential arithmetic coding
     /**
      * Extended Sequential DCT, Arithmetic coding
      */
@@ -95,13 +109,10 @@ public class JPEG {
      * Lossless Sequential, Arithmetic coding
      */
     public static final int SOF11 = 0xCB;
-
     /**
      * Define Arithmetic conditioning tables
      */
     public static final int DAC = 0xCC;
-
-    // SOF markers for Differential arithmetic coding
     /**
      * Differential Sequential DCT, Arithmetic coding
      */
@@ -114,7 +125,6 @@ public class JPEG {
      * Differential Lossless, Arithmetic coding
      */
     public static final int SOF15 = 0xCF;
-
     // Restart Markers
     public static final int RST0 = 0xD0;
     public static final int RST1 = 0xD1;
@@ -128,10 +138,10 @@ public class JPEG {
      * Number of restart markers
      */
     public static final int RESTART_RANGE = 8;
-
     /**
      * Start of Image
      */
+    public static final int FF_SOI = 0xFFD8;
     public static final int SOI = 0xD8;
     /**
      * End of Image
@@ -141,37 +151,32 @@ public class JPEG {
      * Start of Scan
      */
     public static final int SOS = 0xDA;
-
     /**
      * Define Quantization Tables
      */
     public static final int DQT = 0xDB;
-
     /**
      * Define Number of lines
      */
     public static final int DNL = 0xDC;
-
     /**
      * Define Restart Interval
      */
     public static final int DRI = 0xDD;
-
     /**
      * Define Hierarchical progression
      */
     public static final int DHP = 0xDE;
-
     /**
      * Expand reference image(s)
      */
     public static final int EXP = 0xDF;
-
-    // Application markers
     /**
      * APP0 used by JFIF
      */
     public static final int APP0 = 0xE0;
+
+    // Application markers
     public static final int APP1 = 0xE1;
     public static final int APP2 = 0xE2;
     public static final int APP3 = 0xE3;
@@ -190,8 +195,6 @@ public class JPEG {
      */
     public static final int APP14 = 0xEE;
     public static final int APP15 = 0xEF;
-
-    // codec 0xF0 to 0xFD are reserved
     /**
      * JPEG-LS coding
      */
@@ -200,11 +203,12 @@ public class JPEG {
      * JPEG-LS parameters
      */
     public static final int LSE = 0xF8;
-
     /**
      * Comment marker
      */
     public static final int COM = 0xFE;
+    // JPEG 2000 markers
+    private static final int JPEG2000_STANDALONE = 0x30;
 
     public static boolean isStandalone(int marker) {
         switch (marker) {
@@ -221,7 +225,7 @@ public class JPEG {
             case EOI:
                 return true;
         }
-        return false;
+        return (marker & 0xF0) == JPEG2000_STANDALONE;
     }
 
     public static boolean isSOF(int marker) {
@@ -246,6 +250,7 @@ public class JPEG {
     }
 
     public static boolean isAPP(int marker) {
-        return (marker & APP0) == APP0;
+        return (marker & 0xF0) == APP0;
     }
+
 }

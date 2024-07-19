@@ -27,11 +27,9 @@
  */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Material;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -40,7 +38,7 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum BinaryValueType implements ValueType {
+enum BinaryValueType implements ValueType {
 
     BYTE(1, 1) {
         @Override
@@ -76,8 +74,18 @@ public enum BinaryValueType implements ValueType {
         }
 
         @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return toInt(b, off, bigEndian);
+        }
+
+        @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.shortToBytes(i, b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return toBytes((int) l, b, off, bigEndian);
         }
     },
     USHORT(2, 2) {
@@ -97,8 +105,18 @@ public enum BinaryValueType implements ValueType {
         }
 
         @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return toInt(b, off, bigEndian);
+        }
+
+        @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.shortToBytes(i, b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return toBytes((int) l, b, off, bigEndian);
         }
     },
     INT(4, 4) {
@@ -118,8 +136,18 @@ public enum BinaryValueType implements ValueType {
         }
 
         @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return toInt(b, off, bigEndian);
+        }
+
+        @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.intToBytes(i, b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return toBytes((int) l, b, off, bigEndian);
         }
     },
     UINT(4, 4) {
@@ -139,13 +167,23 @@ public enum BinaryValueType implements ValueType {
         }
 
         @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return toInt(b, off, bigEndian);
+        }
+
+        @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.intToBytes(i, b, off, bigEndian);
         }
 
         @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return toBytes((int) l, b, off, bigEndian);
+        }
+
+        @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
-            return Long.toString(toInt(b, off, bigEndian) & 0xffffffffL);
+            return Integer.toUnsignedString(toInt(b, off, bigEndian));
         }
     },
     TAG(4, 2) {
@@ -166,12 +204,84 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
-            return toBytes(Integer.parseInt(s, Normal._16), b, off, bigEndian);
+            return toBytes(Integer.parseInt(s, 16), b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.tagToBytes(i, b, off, bigEndian);
+        }
+    },
+    LONG(8, 8) {
+        @Override
+        public boolean isIntValue() {
+            return true;
+        }
+
+        @Override
+        public byte[] toggleEndian(byte[] b, boolean preserve) {
+            return ByteKit.swapLongs(preserve ? b.clone() : b, 0, b.length);
+        }
+
+        @Override
+        protected int toInt(byte[] b, int off, boolean bigEndian) {
+            return (int) toLong(b, off, bigEndian);
+        }
+
+        @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return ByteKit.bytesToLong(b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
+            return toBytes((long) i, b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return ByteKit.longToBytes(l, b, off, bigEndian);
+        }
+    },
+    ULONG(8, 8) {
+        @Override
+        public boolean isIntValue() {
+            return true;
+        }
+
+        @Override
+        public byte[] toggleEndian(byte[] b, boolean preserve) {
+            return ByteKit.swapLongs(preserve ? b.clone() : b, 0, b.length);
+        }
+
+        @Override
+        protected int toInt(byte[] b, int off, boolean bigEndian) {
+            return (int) toLong(b, off, bigEndian);
+        }
+
+        @Override
+        protected long toLong(byte[] b, int off, boolean bigEndian) {
+            return ByteKit.bytesToLong(b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
+            return toBytes(Builder.parseUV(s), b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
+            return toBytes((long) i, b, off, bigEndian);
+        }
+
+        @Override
+        protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
+            return ByteKit.longToBytes(l, b, off, bigEndian);
+        }
+
+        @Override
+        protected String toString(byte[] b, int off, boolean bigEndian) {
+            return Long.toUnsignedString(toLong(b, off, bigEndian));
         }
     },
     FLOAT(4, 4) {
@@ -182,7 +292,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
-            return Material
+            return Builder
                     .formatDS(ByteKit.bytesToFloat(b, off, bigEndian));
         }
 
@@ -220,7 +330,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
-            return Material
+            return Builder
                     .formatDS(ByteKit.bytesToDouble(b, off, bigEndian));
         }
 
@@ -287,11 +397,15 @@ public enum BinaryValueType implements ValueType {
     }
 
     protected String toString(byte[] b, int off, boolean bigEndian) {
-        return Integer.toString(toInt(b, off, bigEndian));
+        return Long.toString(toLong(b, off, bigEndian));
     }
 
     protected int toInt(byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
+    }
+
+    protected long toLong(byte[] b, int off, boolean bigEndian) {
+        return toInt(b, off, bigEndian);
     }
 
     protected float toFloat(byte[] b, int off, boolean bigEndian) {
@@ -303,10 +417,14 @@ public enum BinaryValueType implements ValueType {
     }
 
     protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
-        return toBytes(Material.parseIS(s), b, off, bigEndian);
+        return toBytes(Builder.parseIS(s), b, off, bigEndian);
     }
 
     protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
 
@@ -329,10 +447,9 @@ public enum BinaryValueType implements ValueType {
     @Override
     public String toString(Object val, boolean bigEndian, int valueIndex,
                            String defVal) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         int off = valueIndex * numBytes;
         return off + numBytes <= len
@@ -348,10 +465,9 @@ public enum BinaryValueType implements ValueType {
     @Override
     public Object toStrings(Object val, boolean bigEndian,
                             SpecificCharacterSet cs) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         checkLength(len);
         if (len == numBytes)
@@ -366,10 +482,9 @@ public enum BinaryValueType implements ValueType {
     @Override
     public int toInt(Object val, boolean bigEndian, int valueIndex,
                      int defVal) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         int off = valueIndex * numBytes;
         return off + numBytes <= len
@@ -379,10 +494,9 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public int[] toInts(Object val, boolean bigEndian) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         checkLength(len);
         int[] is = new int[len / numBytes];
@@ -392,12 +506,36 @@ public enum BinaryValueType implements ValueType {
     }
 
     @Override
-    public float toFloat(Object val, boolean bigEndian, int valueIndex,
-                         float defVal) {
-        if (!(val instanceof byte[]))
+    public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
+        int len = b.length;
+        int off = valueIndex * numBytes;
+        return off + numBytes <= len
+                ? toLong(b, off, bigEndian)
+                : defVal;
+    }
+
+    @Override
+    public long[] toLongs(Object val, boolean bigEndian) {
+        if (!(val instanceof byte[] b))
+            throw new UnsupportedOperationException();
+
+        int len = b.length;
+        checkLength(len);
+        long[] ls = new long[len / numBytes];
+        for (int i = 0, off = 0; i < ls.length; i++, off += numBytes)
+            ls[i] = toLong(b, off, bigEndian);
+        return ls;
+    }
+
+    @Override
+    public float toFloat(Object val, boolean bigEndian, int valueIndex,
+                         float defVal) {
+        if (!(val instanceof byte[] b))
+            throw new UnsupportedOperationException();
+
         int len = b.length;
         int off = valueIndex * numBytes;
         return off + numBytes <= len
@@ -407,10 +545,9 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public float[] toFloats(Object val, boolean bigEndian) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         checkLength(len);
         float[] fs = new float[len / numBytes];
@@ -422,10 +559,9 @@ public enum BinaryValueType implements ValueType {
     @Override
     public double toDouble(Object val, boolean bigEndian, int valueIndex,
                            double defVal) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         int off = valueIndex * numBytes;
         return off + numBytes <= len
@@ -435,10 +571,9 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public double[] toDoubles(Object val, boolean bigEndian) {
-        if (!(val instanceof byte[]))
+        if (!(val instanceof byte[] b))
             throw new UnsupportedOperationException();
 
-        byte[] b = (byte[]) val;
         int len = b.length;
         checkLength(len);
         double[] ds = new double[len / numBytes];
@@ -454,19 +589,18 @@ public enum BinaryValueType implements ValueType {
     }
 
     @Override
-    public Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                         DatePrecision precisions) {
+    public Date[] toDate(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Object toValue(byte[] b) {
-        return null != b && b.length > 0 ? b : Value.NULL;
+        return b != null && b.length > 0 ? b : Value.NULL;
     }
 
     @Override
     public Object toValue(String s, boolean bigEndian) {
-        if (null == s || s.isEmpty())
+        if (s == null || s.isEmpty())
             return Value.NULL;
 
         return toBytes(s, new byte[numBytes], 0, bigEndian);
@@ -474,7 +608,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(String[] ss, boolean bigEndian) {
-        if (null == ss || ss.length == 0)
+        if (ss == null || ss.length == 0)
             return Value.NULL;
 
         if (ss.length == 1)
@@ -489,7 +623,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(int[] is, boolean bigEndian) {
-        if (null == is || is.length == 0)
+        if (is == null || is.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[is.length * numBytes];
@@ -500,8 +634,20 @@ public enum BinaryValueType implements ValueType {
     }
 
     @Override
+    public Object toValue(long[] ls, boolean bigEndian) {
+        if (ls == null || ls.length == 0)
+            return Value.NULL;
+
+        byte[] b = new byte[ls.length * numBytes];
+        for (int i = 0, off = 0; i < ls.length; i++, off += numBytes)
+            toBytes(ls[i], b, off, bigEndian);
+
+        return b;
+    }
+
+    @Override
     public Object toValue(float[] fs, boolean bigEndian) {
-        if (null == fs || fs.length == 0)
+        if (fs == null || fs.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[fs.length * numBytes];
@@ -513,7 +659,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(double[] ds, boolean bigEndian) {
-        if (null == ds || ds.length == 0)
+        if (ds == null || ds.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[ds.length * numBytes];
@@ -547,7 +693,7 @@ public enum BinaryValueType implements ValueType {
                 return false;
             }
             if (i > 0)
-                sb.append(Symbol.C_BACKSLASH);
+                sb.append('\\');
         }
         return true;
     }

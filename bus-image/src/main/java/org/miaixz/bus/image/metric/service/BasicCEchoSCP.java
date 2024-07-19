@@ -33,8 +33,7 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Commands;
-import org.miaixz.bus.image.metric.ImageException;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -42,10 +41,10 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BasicCEchoSCP extends AbstractService {
+public class BasicCEchoSCP extends AbstractImageService {
 
     public BasicCEchoSCP() {
-        super(UID.VerificationSOPClass);
+        super(UID.Verification.uid);
     }
 
     public BasicCEchoSCP(String... sopClasses) {
@@ -53,13 +52,10 @@ public class BasicCEchoSCP extends AbstractService {
     }
 
     @Override
-    public void onDimse(Association as,
-                        Presentation pc,
-                        Dimse dimse,
-                        Attributes cmd,
-                        Attributes data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc,
+                          Dimse dimse, Attributes cmd, Attributes data) throws IOException {
         if (dimse != Dimse.C_ECHO_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ImageServiceException(Status.UnrecognizedOperation);
 
         as.tryWriteDimseRSP(pc, Commands.mkEchoRSP(cmd, Status.Success));
     }

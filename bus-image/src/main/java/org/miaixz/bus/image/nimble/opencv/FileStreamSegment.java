@@ -35,7 +35,6 @@ import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -54,7 +53,7 @@ public class FileStreamSegment extends StreamSegment {
         this.filePath = getFilePath(fdes);
     }
 
-    FileStreamSegment(ExtendInputImageStream stream) {
+    FileStreamSegment(SegmentedImageStream stream) {
         super(stream.getSegmentPositions(), stream.getSegmentLengths(), stream.getImageDescriptor());
         this.filePath = stream.getFile().getAbsolutePath();
     }
@@ -62,7 +61,7 @@ public class FileStreamSegment extends StreamSegment {
     public static String getFilePath(RandomAccessFile file) {
         try {
             Field fpath = RandomAccessFile.class.getDeclaredField("path");
-            if (null != fpath) {
+            if (fpath != null) {
                 fpath.setAccessible(true);
                 return (String) fpath.get(file);
             }
@@ -75,7 +74,7 @@ public class FileStreamSegment extends StreamSegment {
     public static RandomAccessFile getRandomAccessFile(FileImageInputStream fstream) {
         try {
             Field fRaf = FileImageInputStream.class.getDeclaredField("raf");
-            if (null != fRaf) {
+            if (fRaf != null) {
                 fRaf.setAccessible(true);
                 return (RandomAccessFile) fRaf.get(fstream);
             }
@@ -88,7 +87,7 @@ public class FileStreamSegment extends StreamSegment {
     public static RandomAccessFile getRandomAccessFile(FileImageOutputStream fstream) {
         try {
             Field fRaf = FileImageOutputStream.class.getDeclaredField("raf");
-            if (null != fRaf) {
+            if (fRaf != null) {
                 fRaf.setAccessible(true);
                 return (RandomAccessFile) fRaf.get(fstream);
             }

@@ -32,7 +32,6 @@ package org.miaixz.bus.image.nimble;
  * @since Java 17+
  */
 public enum ColorSubsampling {
-
     YBR_XXX_422 {
         @Override
         public int frameLength(int w, int h) {

@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.image.nimble.codec;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.Photometric;
 
 import java.io.Serializable;
@@ -40,21 +40,23 @@ import java.util.EnumSet;
  */
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     private final String commonName;
     private final Condition condition;
     private final String tsuid;
-    private final Material[] imageWriteParams;
+    private final Property[] imageWriteParams;
 
     public CompressionRule(String commonName, String[] pmis, int[] bitsStored,
                            int pixelRepresentation, String[] aeTitles, String[] sopClasses,
                            String[] bodyPartExamined, String tsuid, String... params) {
         this.commonName = commonName;
         this.condition = new Condition(pmis, bitsStored, pixelRepresentation,
-                Material.maskNull(aeTitles),
-                Material.maskNull(sopClasses),
-                Material.maskNull(bodyPartExamined));
+                Builder.maskNull(aeTitles),
+                Builder.maskNull(sopClasses),
+                Builder.maskNull(bodyPartExamined));
         this.tsuid = tsuid;
-        this.imageWriteParams = Material.valueOf(params);
+        this.imageWriteParams = Property.valueOf(params);
     }
 
     public final String getCommonName() {
@@ -89,7 +91,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         return tsuid;
     }
 
-    public Material[] getImageWriteParams() {
+    public Property[] getImageWriteParams() {
         return imageWriteParams;
     }
 
@@ -102,7 +104,10 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         return condition.compareTo(o.condition);
     }
 
-    private static class Condition implements Comparable<Condition>, Serializable {
+    private static class Condition
+            implements Comparable<Condition>, Serializable {
+
+        private static final long serialVersionUID = -4069284624944470710L;
 
         final EnumSet<Photometric> pmis;
         final int bitsStoredMask;
@@ -128,7 +133,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
-            if (null == o || a.length == 0)
+            if (o == null || a.length == 0)
                 return true;
 
             for (int i = 0; i < a.length; i++)
@@ -152,12 +157,12 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
 
         int[] getBitsStored() {
             int n = 0;
-            for (int i = 8; i <= Normal._16; i++)
+            for (int i = 8; i <= 16; i++)
                 if (matchBitStored(i))
                     n++;
 
             int[] bitsStored = new int[n];
-            for (int i = 8, j = 0; i <= Normal._16; i++)
+            for (int i = 8, j = 0; i <= 16; i++)
                 if (matchBitStored(i))
                     bitsStored[j++] = i;
 
@@ -170,7 +175,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         public boolean matches(String aeTitle, ImageDescriptor imageDescriptor) {
-            return pmis.contains(imageDescriptor.getPhotometric())
+            return pmis.contains(imageDescriptor.getPhotometricInterpretation())
                     && matchBitStored(imageDescriptor.getBitsStored())
                     && matchPixelRepresentation(imageDescriptor.getPixelRepresentation())
                     && isEmptyOrContains(this.aeTitles, aeTitle)

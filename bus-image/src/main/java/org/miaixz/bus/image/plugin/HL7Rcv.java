@@ -28,12 +28,14 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.acquire.HL7DeviceExtension;
-import org.miaixz.bus.image.metric.internal.hl7.*;
+import org.miaixz.bus.image.metric.hl7.*;
+import org.miaixz.bus.image.metric.hl7.net.HL7Application;
+import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
+import org.miaixz.bus.image.metric.hl7.net.HL7MessageListener;
+import org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message;
 import org.miaixz.bus.logger.Logger;
 
 import javax.xml.transform.Templates;
@@ -46,6 +48,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author Kimi Liu
@@ -64,6 +67,9 @@ public class HL7Rcv {
     private String charset;
     private Templates tpls;
     private String[] xsltParams;
+    private boolean useUUIDForFilename;
+    private int responseDelay;
+
     private final HL7MessageListener handler = (hl7App, conn, s, msg) -> {
         try {
             return HL7Rcv.this.onMessage(msg);
@@ -75,7 +81,7 @@ public class HL7Rcv {
     };
 
     public HL7Rcv() {
-        conn.setProtocol(Protocol.HL7);
+        conn.setProtocol(Connection.Protocol.HL7);
         device.addDeviceExtension(hl7Ext);
         device.addConnection(conn);
         hl7Ext.addHL7Application(hl7App);
@@ -101,13 +107,25 @@ public class HL7Rcv {
         this.charset = charset;
     }
 
+    public void setUseUUIDForFilename(boolean useUUIDForFilename) {
+        this.useUUIDForFilename = useUUIDForFilename;
+    }
+
     private UnparsedHL7Message onMessage(UnparsedHL7Message msg)
             throws Exception {
-        if (null != storageDir)
+        if (storageDir != null)
             storeToFile(msg.data(), new File(
                     new File(storageDir, msg.msh().getMessageType()),
-                    msg.msh().getField(9, "_NULL_")));
-        return new UnparsedHL7Message(null == tpls
+                    useUUIDForFilename
+                            ? UUID.randomUUID().toString()
+                            : msg.msh().getField(9, "_NULL_")));
+        if (responseDelay > 0)
+            try {
+                Thread.sleep(responseDelay);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        return new UnparsedHL7Message(tpls == null
                 ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null)
                 : xslt(msg));
     }
@@ -131,7 +149,7 @@ public class HL7Rcv {
         Transformer t = th.getTransformer();
         t.setParameter("MessageControlID", HL7Segment.nextMessageControlID());
         t.setParameter("DateTimeOfMessage", HL7Segment.timeStamp(new Date()));
-        if (null != xsltParams)
+        if (xsltParams != null)
             for (int i = 1; i < xsltParams.length; i++, i++)
                 t.setParameter(xsltParams[i - 1], xsltParams[i]);
         th.setResult(new SAXResult(new HL7ContentHandler(

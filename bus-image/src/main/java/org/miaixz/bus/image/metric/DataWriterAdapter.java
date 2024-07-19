@@ -29,6 +29,7 @@ package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
+import org.miaixz.bus.image.metric.net.PDVOutputStream;
 
 import java.io.IOException;
 
@@ -41,13 +42,13 @@ public class DataWriterAdapter implements DataWriter {
     private final Attributes data;
 
     public DataWriterAdapter(Attributes data) {
-        if (null == data)
+        if (data == null)
             throw new NullPointerException();
         this.data = data;
     }
 
     public static DataWriterAdapter forAttributes(Attributes data) {
-        return null != data ? new DataWriterAdapter(data) : null;
+        return data != null ? new DataWriterAdapter(data) : null;
     }
 
     @Override

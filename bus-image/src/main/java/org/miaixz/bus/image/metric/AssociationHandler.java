@@ -28,9 +28,13 @@
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.metric.internal.pdu.*;
+import org.miaixz.bus.image.galaxy.data.Implementation;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.net.IdentityNegotiator;
+import org.miaixz.bus.image.metric.pdu.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author Kimi Liu
@@ -38,14 +42,15 @@ import java.io.IOException;
  */
 public class AssociationHandler {
 
-    private IdentityNegotiator userIdNegotiator;
+    private IdentityNegotiator userIdNegotiator = new IdentityNegotiator() {
+    };
 
     public IdentityNegotiator getUserIdNegotiator() {
         return userIdNegotiator;
     }
 
     public void setUserIdNegotiator(IdentityNegotiator userIdNegotiator) {
-        this.userIdNegotiator = userIdNegotiator;
+        this.userIdNegotiator = Objects.requireNonNull(userIdNegotiator);
     }
 
     protected AAssociateAC negotiate(Association as, AAssociateRQ rq)
@@ -55,12 +60,12 @@ public class AssociationHandler {
                     AAssociateRJ.SOURCE_SERVICE_PROVIDER_ACSE,
                     AAssociateRJ.REASON_PROTOCOL_VERSION_NOT_SUPPORTED);
         if (!rq.getApplicationContext().equals(
-                UID.DICOMApplicationContextName))
+                UID.DICOMApplicationContext))
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_APP_CTX_NAME_NOT_SUPPORTED);
         ApplicationEntity ae = as.getApplicationEntity();
-        if (null == ae || !ae.getConnections().contains(as.getConnection())
+        if (ae == null || !ae.getConnections().contains(as.getConnection())
                 || !ae.isInstalled() || !ae.isAssociationAcceptor())
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
@@ -69,9 +74,7 @@ public class AssociationHandler {
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLING_AET_NOT_RECOGNIZED);
-        IdentityAC userIdentity = null != getUserIdNegotiator()
-                ? getUserIdNegotiator().negotiate(as, rq.getIdentityRQ())
-                : null;
+        IdentityAC userIdentity = getUserIdNegotiator().negotiate(as, rq.getUserIdentityRQ());
         if (ae.getDevice().isLimitOfAssociationsExceeded(rq))
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_TRANSIENT,
                     AAssociateRJ.SOURCE_SERVICE_PROVIDER_PRES,
@@ -82,6 +85,7 @@ public class AssociationHandler {
     protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq,
                                             IdentityAC userIdentity) {
         AAssociateAC ac = new AAssociateAC();
+        ac.setImplVersionName(Implementation.getVersionName());
         ac.setCalledAET(rq.getCalledAET());
         ac.setCallingAET(rq.getCallingAET());
         Connection conn = as.getConnection();
@@ -91,15 +95,19 @@ public class AssociationHandler {
         ac.setMaxOpsPerformed(Association.minZeroAsMax(rq.getMaxOpsPerformed(),
                 conn.getMaxOpsInvoked()));
         ac.setIdentityAC(userIdentity);
-        ApplicationEntity ae = as.getApplicationEntity();
-        for (Presentation rqpc : rq.getPresentationContexts())
-            ac.addPresentationContext(ae.negotiate(rq, ac, rqpc));
+        ApplicationEntity ae = as.getApplicationEntity().transferCapabilitiesAE();
+        for (PresentationContext rqpc : rq.getPresentationContexts())
+            ac.addPresentationContext(ae != null
+                    ? ae.negotiate(rq, ac, rqpc)
+                    : new PresentationContext(rqpc.getPCID(),
+                    PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
+                    rqpc.getTransferSyntax()));
         return ac;
     }
 
     protected void onClose(Association as) {
         DimseRQHandler tmp = as.getApplicationEntity().getDimseRQHandler();
-        if (null != tmp)
+        if (tmp != null)
             tmp.onClose(as);
     }
 

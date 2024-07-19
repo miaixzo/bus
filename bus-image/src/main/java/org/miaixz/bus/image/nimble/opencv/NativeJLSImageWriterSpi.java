@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
+import org.miaixz.bus.core.Version;
+
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
@@ -44,7 +46,7 @@ public class NativeJLSImageWriterSpi extends ImageWriterSpi {
     }
 
     public NativeJLSImageWriterSpi(Class<? extends NativeJLSImageWriter> writer) {
-        super("Bus Team", "1.5", NativeJLSImageReaderSpi.NAMES, NativeJLSImageReaderSpi.SUFFIXES,
+        super("Miaixz Team", Version._VERSION, NativeJLSImageReaderSpi.NAMES, NativeJLSImageReaderSpi.SUFFIXES,
                 NativeJLSImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
                 new String[]{NativeJLSImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
                 null, null);

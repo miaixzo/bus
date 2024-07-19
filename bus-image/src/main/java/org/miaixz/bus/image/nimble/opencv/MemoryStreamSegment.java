@@ -49,10 +49,10 @@ public class MemoryStreamSegment extends StreamSegment {
     }
 
     public static ByteArrayInputStream getByteArrayInputStream(MemoryCacheImageInputStream inputStream) {
-        if (null != inputStream) {
+        if (inputStream != null) {
             try {
                 Field fid = MemoryCacheImageInputStream.class.getDeclaredField("stream");
-                if (null != fid) {
+                if (fid != null) {
                     fid.setAccessible(true);
                     return (ByteArrayInputStream) fid.get(inputStream);
                 }

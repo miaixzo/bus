@@ -34,7 +34,7 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ValueType {
+interface ValueType {
 
     boolean isStringValue();
 
@@ -58,20 +58,21 @@ public interface ValueType {
 
     int[] toInts(Object val, boolean bigEndian);
 
+    long toLong(Object val, boolean bigEndian, int valueIndex, long defVal);
+
+    long[] toLongs(Object val, boolean bigEndian);
+
     float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal);
 
     float[] toFloats(Object val, boolean bigEndian);
 
-    double toDouble(Object val, boolean bigEndian, int valueIndex,
-                    double defVal);
+    double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal);
 
     double[] toDoubles(Object val, boolean bigEndian);
 
-    Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil,
-                Date defVal, DatePrecision precision);
+    Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision);
 
-    Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                  DatePrecision precisions);
+    Date[] toDate(Object val, TimeZone tz, boolean ceil, DatePrecision precision);
 
     Object toValue(byte[] b);
 
@@ -81,14 +82,15 @@ public interface ValueType {
 
     Object toValue(int[] is, boolean bigEndian);
 
+    Object toValue(long[] is, boolean bigEndian);
+
     Object toValue(float[] fs, boolean bigEndian);
 
     Object toValue(double[] ds, boolean bigEndian);
 
     Object toValue(Date[] ds, TimeZone tz, DatePrecision precision);
 
-    boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs,
-                   int maxChars, StringBuilder sb);
+    boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb);
 
     int vmOf(Object val);
 

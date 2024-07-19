@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
@@ -38,10 +37,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-
 /**
- * DCM-JPG转换
- *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -58,12 +54,12 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
         try (ImageInputStream dis = new ImageInputStream(path.toFile())) {
-            Attributes dataset = dis.readDataset(-1, -1);
+            Attributes dataset = dis.readDataset();
             dataset.addAll(cliAttrs);
-            Logger.error(format.format(dataset));
+            Logger.info(format.format(dataset));
         } catch (IOException e) {
             Logger.error("Failed to parse DICOM file " + path);
-            throw new InternalException(e);
+            e.printStackTrace();
         }
         return FileVisitResult.CONTINUE;
     }

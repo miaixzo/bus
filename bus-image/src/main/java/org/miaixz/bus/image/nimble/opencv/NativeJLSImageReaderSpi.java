@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
+import org.miaixz.bus.core.Version;
+
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
@@ -39,12 +41,12 @@ import java.util.Locale;
  */
 public class NativeJLSImageReaderSpi extends ImageReaderSpi {
 
-    public static final String[] NAMES = {"jpeg-ls-cv", "jpeg-ls", "JPEG-LS"};
-    public static final String[] SUFFIXES = {"jls"};
-    public static final String[] MIMES = {"image/jpeg-ls"};
+    static final String[] NAMES = {"jpeg-ls-cv", "jpeg-ls", "JPEG-LS"};
+    static final String[] SUFFIXES = {"jls"};
+    static final String[] MIMES = {"image/jpeg-ls"};
 
     public NativeJLSImageReaderSpi() {
-        super("Bus Team", "1.5", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
+        super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[]{ImageInputStream.class}, new String[]{NativeJLSImageWriterSpi.class.getName()}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
@@ -61,10 +63,13 @@ public class NativeJLSImageReaderSpi extends ImageReaderSpi {
 
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
-        if (!(source instanceof ImageInputStream)) {
+        // NativeImageReader.read() eventually instantiates a StreamSegment,
+        // which does not support all ImageInputStreams
+        if (!StreamSegment.supportsInputStream(source)) {
             return false;
         }
         ImageInputStream iis = (ImageInputStream) source;
+
         iis.mark();
         int byte1 = iis.read();
         int byte2 = iis.read();

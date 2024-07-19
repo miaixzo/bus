@@ -29,13 +29,15 @@ package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Issuer;
 import org.miaixz.bus.image.metric.*;
-import org.miaixz.bus.image.metric.acquire.DeviceExtension;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.net.ConnectionMonitor;
+import org.miaixz.bus.image.metric.net.DeviceExtension;
+import org.miaixz.bus.image.metric.net.KeycloakClient;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
@@ -58,6 +60,8 @@ import java.util.concurrent.TimeUnit;
  * @since Java 17+
  */
 public class Device implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * AE可以发起的最大开放关联数
@@ -187,15 +191,15 @@ public class Device implements Serializable {
      */
     private TimeZone timeZoneOfDevice;
     private Boolean arcDevExt;
+    private transient AssociationHandler associationHandler = new AssociationHandler();
     private transient DimseRQHandler dimseRQHandler;
-    private transient Monitoring monitoring;
+    private transient ConnectionMonitor connectionMonitor;
     private transient AssociationMonitor associationMonitor;
     private transient Executor executor;
     private transient ScheduledExecutorService scheduledExecutor;
     private transient volatile SSLContext sslContext;
     private transient volatile KeyManager km;
     private transient volatile TrustManager tm;
-    private transient AssociationHandler associationHandler = new AssociationHandler();
 
     public Device() {
 
@@ -220,7 +224,7 @@ public class Device implements Serializable {
     }
 
     private void checkNotEmpty(String name, String val) {
-        if (null != val && val.isEmpty())
+        if (val != null && val.isEmpty())
             throw new IllegalArgumentException(name + " cannot be empty");
     }
 
@@ -546,9 +550,7 @@ public class Device implements Serializable {
 
     public final void setTrustStoreURL(String trustStoreURL) {
         checkNotEmpty("trustStoreURL", trustStoreURL);
-        if (null == trustStoreURL
-                ? null == this.trustStoreURL
-                : trustStoreURL.equals(this.trustStoreURL))
+        if (Objects.equals(trustStoreURL, this.trustStoreURL))
             return;
 
         this.trustStoreURL = trustStoreURL;
@@ -578,7 +580,7 @@ public class Device implements Serializable {
     }
 
     public final void setTrustStorePinProperty(String trustStorePinProperty) {
-        checkNotEmpty("keyPin", keyStoreKeyPin);
+        checkNotEmpty("trustStorePinProperty", trustStorePinProperty);
         this.trustStorePinProperty = trustStorePinProperty;
     }
 
@@ -600,9 +602,7 @@ public class Device implements Serializable {
 
     public final void setKeyStoreURL(String keyStoreURL) {
         checkNotEmpty("keyStoreURL", keyStoreURL);
-        if (null == keyStoreURL
-                ? null == this.keyStoreURL
-                : keyStoreURL.equals(this.keyStoreURL))
+        if (Objects.equals(keyStoreURL, this.keyStoreURL))
             return;
 
         this.keyStoreURL = keyStoreURL;
@@ -614,7 +614,7 @@ public class Device implements Serializable {
     }
 
     public final void setKeyStoreType(String keyStoreType) {
-        checkNotEmpty("keyStoreType", keyStoreURL);
+        checkNotEmpty("keyStoreType", keyStoreType);
         this.keyStoreType = keyStoreType;
     }
 
@@ -738,22 +738,30 @@ public class Device implements Serializable {
         this.dimseRQHandler = dimseRQHandler;
     }
 
+    public Boolean getArcDevExt() {
+        return arcDevExt;
+    }
+
+    public void setArcDevExt(Boolean arcDevExt) {
+        this.arcDevExt = arcDevExt;
+    }
+
     public final AssociationHandler getAssociationHandler() {
         return associationHandler;
     }
 
     public void setAssociationHandler(AssociationHandler associationHandler) {
-        if (null == associationHandler)
+        if (associationHandler == null)
             throw new NullPointerException();
         this.associationHandler = associationHandler;
     }
 
-    public Monitoring getMonitoring() {
-        return monitoring;
+    public ConnectionMonitor getConnectionMonitor() {
+        return connectionMonitor;
     }
 
-    public void setMonitoring(Monitoring monitoring) {
-        this.monitoring = monitoring;
+    public void setConnectionMonitor(ConnectionMonitor connectionMonitor) {
+        this.connectionMonitor = connectionMonitor;
     }
 
     public AssociationMonitor getAssociationMonitor() {
@@ -854,7 +862,7 @@ public class Device implements Serializable {
 
     public ApplicationEntity removeApplicationEntity(String aet) {
         ApplicationEntity ae = aes.remove(aet);
-        if (null != ae)
+        if (ae != null)
             ae.setDevice(null);
         return ae;
     }
@@ -891,7 +899,7 @@ public class Device implements Serializable {
 
     public WebApplication removeWebApplication(String name) {
         WebApplication webapp = webapps.remove(name);
-        if (null != webapp)
+        if (webapp != null)
             webapp.setDevice(null);
         return webapp;
     }
@@ -919,7 +927,7 @@ public class Device implements Serializable {
 
     public KeycloakClient removeKeycloakClient(String name) {
         KeycloakClient client = keycloakClients.remove(name);
-        if (null != client)
+        if (client != null)
             client.setDevice(null);
         return client;
     }
@@ -935,7 +943,7 @@ public class Device implements Serializable {
     }
 
     public boolean removeDeviceExtension(DeviceExtension ext) {
-        if (null == extensions.remove(ext.getClass()))
+        if (extensions.remove(ext.getClass()) == null)
             return false;
 
         ext.setDevice(null);
@@ -966,7 +974,7 @@ public class Device implements Serializable {
      */
     public int getLimitAssociationsInitiatedBy(String callingAET) {
         Integer value = limitAssociationsInitiatedBy.get(Objects.requireNonNull(callingAET));
-        return null != value ? value.intValue() : 0;
+        return value != null ? value.intValue() : 0;
     }
 
     /**
@@ -1053,6 +1061,17 @@ public class Device implements Serializable {
         }
     }
 
+    public int getNumberOfAssociationsInitiatedTo(String calledAET) {
+        synchronized (associations) {
+            int count = 0;
+            for (Association association : associations) {
+                if (calledAET.equals(association.getCalledAET()))
+                    count++;
+            }
+            return count;
+        }
+    }
+
     public void waitForNoOpenConnections() throws InterruptedException {
         synchronized (associations) {
             while (!associations.isEmpty())
@@ -1063,7 +1082,7 @@ public class Device implements Serializable {
     public boolean isLimitOfAssociationsExceeded(AAssociateRQ rq) {
         Integer limit;
         return limitOpenAssociations > 0 && associations.size() > limitOpenAssociations
-                || null != (limit = limitAssociationsInitiatedBy.get(rq.getCallingAET()))
+                || (limit = limitAssociationsInitiatedBy.get(rq.getCallingAET())) != null
                 && getNumberOfAssociationsInitiatedBy(rq.getCallingAET()) > limit;
     }
 
@@ -1073,9 +1092,9 @@ public class Device implements Serializable {
 
     public ApplicationEntity getApplicationEntity(String aet, boolean matchOtherAETs) {
         ApplicationEntity ae = aes.get(aet);
-        if (null == ae)
+        if (ae == null)
             ae = aes.get(Symbol.STAR);
-        if (null == ae && matchOtherAETs)
+        if (ae == null && matchOtherAETs)
             for (ApplicationEntity ae1 : getApplicationEntities())
                 if (ae1.isOtherAETitle(aet))
                     return ae1;
@@ -1101,34 +1120,34 @@ public class Device implements Serializable {
 
     private KeyManager km() throws GeneralSecurityException, IOException {
         KeyManager ret = km;
-        if (null != ret || null == keyStoreURL)
+        if (ret != null || keyStoreURL == null)
             return ret;
         String keyStorePin = keyStorePin();
-        km = ret = SSLManagerFactory.createKeyManager(
-                Material.replaceSystemProperties(keyStoreType()),
-                Material.replaceSystemProperties(keyStoreURL),
-                Material.replaceSystemProperties(keyStorePin()),
-                Material.replaceSystemProperties(keyPin(keyStorePin)));
+        km = ret = TrustAnyTrustManager.createKeyManager(
+                Builder.replaceSystemProperties(keyStoreType()),
+                Builder.replaceSystemProperties(keyStoreURL),
+                Builder.replaceSystemProperties(keyStorePin()),
+                Builder.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
     }
 
     private String keyStoreType() {
-        if (null == keyStoreType)
+        if (keyStoreType == null)
             throw new IllegalStateException("keyStoreURL requires keyStoreType");
 
         return keyStoreType;
     }
 
     private String keyStorePin() {
-        if (null != keyStorePin)
+        if (keyStorePin != null)
             return keyStorePin;
 
-        if (null == keyStorePinProperty)
+        if (keyStorePinProperty == null)
             throw new IllegalStateException(
                     "keyStoreURL requires keyStorePin or keyStorePinProperty");
 
         String pin = System.getProperty(keyStorePinProperty);
-        if (null == pin)
+        if (pin == null)
             throw new IllegalStateException(
                     "No such keyStorePinProperty: " + keyStorePinProperty);
 
@@ -1136,14 +1155,14 @@ public class Device implements Serializable {
     }
 
     private String keyPin(String keyStorePin) {
-        if (null != keyStoreKeyPin)
+        if (keyStoreKeyPin != null)
             return keyStoreKeyPin;
 
-        if (null == keyStoreKeyPinProperty)
+        if (keyStoreKeyPinProperty == null)
             return keyStorePin;
 
         String pin = System.getProperty(keyStoreKeyPinProperty);
-        if (null == pin)
+        if (pin == null)
             throw new IllegalStateException(
                     "No such keyPinProperty: " + keyStoreKeyPinProperty);
 
@@ -1161,37 +1180,37 @@ public class Device implements Serializable {
 
     private TrustManager tm() throws GeneralSecurityException, IOException {
         TrustManager ret = tm;
-        if (null != ret
-                || null == trustStoreURL && authorizedNodeCertificates.isEmpty())
+        if (ret != null
+                || trustStoreURL == null && authorizedNodeCertificates.isEmpty())
             return ret;
 
-        tm = ret = null != trustStoreURL
-                ? SSLManagerFactory.createTrustManager(
-                Material.replaceSystemProperties(trustStoreType()),
-                Material.replaceSystemProperties(trustStoreURL),
-                Material.replaceSystemProperties(trustStorePin()))
-                : SSLManagerFactory.createTrustManager(
+        tm = ret = trustStoreURL != null
+                ? TrustAnyTrustManager.createTrustManager(
+                Builder.replaceSystemProperties(trustStoreType()),
+                Builder.replaceSystemProperties(trustStoreURL),
+                Builder.replaceSystemProperties(trustStorePin()))
+                : TrustAnyTrustManager.createTrustManager(
                 getAllAuthorizedNodeCertificates());
         return ret;
     }
 
     private String trustStoreType() {
-        if (null == trustStoreType)
+        if (trustStoreType == null)
             throw new IllegalStateException("trustStoreURL requires trustStoreType");
 
         return trustStoreType;
     }
 
     private String trustStorePin() {
-        if (null != trustStorePin)
+        if (trustStorePin != null)
             return trustStorePin;
 
-        if (null == trustStorePinProperty)
+        if (trustStorePinProperty == null)
             throw new IllegalStateException(
                     "trustStoreURL requires trustStorePin or trustStorePinProperty");
 
         String pin = System.getProperty(trustStorePinProperty);
-        if (null == pin)
+        if (pin == null)
             throw new IllegalStateException(
                     "No such trustStorePinProperty: " + trustStorePinProperty);
 
@@ -1200,10 +1219,10 @@ public class Device implements Serializable {
 
     public SSLContext sslContext() throws GeneralSecurityException, IOException {
         SSLContext ctx = sslContext;
-        if (null != ctx)
+        if (ctx != null)
             return ctx;
 
-        ctx = SSLContext.getInstance(Protocol.TLS.name);
+        ctx = SSLContext.getInstance("TLS");
         ctx.init(keyManagers(), trustManagers(), null);
         sslContext = ctx;
         return ctx;
@@ -1211,35 +1230,35 @@ public class Device implements Serializable {
 
     public KeyManager[] keyManagers() throws GeneralSecurityException, IOException {
         KeyManager tmp = km();
-        return null != tmp ? new KeyManager[]{tmp} : null;
+        return tmp != null ? new KeyManager[]{tmp} : null;
     }
 
     public TrustManager[] trustManagers() throws GeneralSecurityException, IOException {
         TrustManager tmp = tm();
-        return null != tmp ? new TrustManager[]{tmp} : null;
+        return tmp != null ? new TrustManager[]{tmp} : null;
     }
 
     public void execute(Runnable command) {
-        if (null == executor)
-            throw new IllegalStateException("executer not initalized");
+        if (executor == null)
+            throw new IllegalStateException("executor not initialized");
 
         executor.execute(command);
     }
 
     public ScheduledFuture<?> schedule(Runnable command, long delay,
                                        TimeUnit unit) {
-        if (null == scheduledExecutor)
+        if (scheduledExecutor == null)
             throw new IllegalStateException(
-                    "scheduled executor service not initalized");
+                    "scheduled executor service not initialized");
 
         return scheduledExecutor.schedule(command, delay, unit);
     }
 
     public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
                                                   long initialDelay, long period, TimeUnit unit) {
-        if (null == scheduledExecutor)
+        if (scheduledExecutor == null)
             throw new IllegalStateException(
-                    "scheduled executor service not initalized");
+                    "scheduled executor service not initialized");
 
         return scheduledExecutor.scheduleAtFixedRate(command,
                 initialDelay, period, unit);
@@ -1247,9 +1266,9 @@ public class Device implements Serializable {
 
     public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
                                                      long initialDelay, long delay, TimeUnit unit) {
-        if (null == scheduledExecutor)
+        if (scheduledExecutor == null)
             throw new IllegalStateException(
-                    "scheduled executor service not initalized");
+                    "scheduled executor service not initialized");
 
         return scheduledExecutor.scheduleWithFixedDelay(command,
                 initialDelay, delay, unit);
@@ -1262,17 +1281,17 @@ public class Device implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Material.appendLine(sb, indent, "Device[name: ", deviceName);
-        Material.appendLine(sb, indent2, "desc: ", description);
-        Material.appendLine(sb, indent2, "installed: ", installed);
+        Builder.appendLine(sb, indent, "Device[name: ", deviceName);
+        Builder.appendLine(sb, indent2, "desc: ", description);
+        Builder.appendLine(sb, indent2, "installed: ", installed);
         for (Connection conn : conns)
-            conn.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
+            conn.promptTo(sb, indent2).append(Builder.LINE_SEPARATOR);
         for (ApplicationEntity ae : aes.values())
-            ae.promptTo(sb, indent2).append(Material.LINE_SEPARATOR);
-        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
+            ae.promptTo(sb, indent2).append(Builder.LINE_SEPARATOR);
+        return sb.append(indent).append(']');
     }
 
-    public void reconfigure(Device from) {
+    public void reconfigure(Device from) throws IOException, GeneralSecurityException {
         setDeviceAttributes(from);
         reconfigureConnections(from);
         reconfigureApplicationEntities(from);
@@ -1336,7 +1355,7 @@ public class Device implements Serializable {
             String key = e.getKey();
             X509Certificate[] value = e.getValue();
             X509Certificate[] certs = target.get(key);
-            if (null == certs || !Arrays.equals(value, certs)) {
+            if (certs == null || !Arrays.equals(value, certs)) {
                 target.put(key, value);
                 updated = true;
             }
@@ -1348,7 +1367,7 @@ public class Device implements Serializable {
         Iterator<Connection> connIter = conns.iterator();
         while (connIter.hasNext()) {
             Connection conn = connIter.next();
-            if (null == from.connectionWithEqualsRDN(conn)) {
+            if (from.connectionWithEqualsRDN(conn) == null) {
                 connIter.remove();
                 conn.setDevice(null);
                 conn.unbind();
@@ -1356,7 +1375,7 @@ public class Device implements Serializable {
         }
         for (Connection src : from.conns) {
             Connection conn = connectionWithEqualsRDN(src);
-            if (null == conn)
+            if (conn == null)
                 this.addConnection(conn = new Connection());
             conn.reconfigure(src);
         }
@@ -1366,7 +1385,7 @@ public class Device implements Serializable {
         aes.keySet().retainAll(from.aes.keySet());
         for (ApplicationEntity src : from.aes.values()) {
             ApplicationEntity ae = aes.get(src.getAETitle());
-            if (null == ae)
+            if (ae == null)
                 addApplicationEntity(ae = new ApplicationEntity(src.getAETitle()));
             ae.reconfigure(src);
         }
@@ -1376,7 +1395,7 @@ public class Device implements Serializable {
         webapps.keySet().retainAll(from.webapps.keySet());
         for (WebApplication src : from.webapps.values()) {
             WebApplication webapp = webapps.get(src.getApplicationName());
-            if (null == webapp)
+            if (webapp == null)
                 addWebApplication(webapp = new WebApplication(src.getApplicationName()));
             webapp.reconfigure(src);
         }
@@ -1386,7 +1405,7 @@ public class Device implements Serializable {
         keycloakClients.keySet().retainAll(from.keycloakClients.keySet());
         for (KeycloakClient src : from.keycloakClients.values()) {
             KeycloakClient client = keycloakClients.get(src.getKeycloakClientID());
-            if (null == client)
+            if (client == null)
                 addKeycloakClient(client = new KeycloakClient(src.getKeycloakClientID()));
             client.reconfigure(src);
         }
@@ -1408,7 +1427,7 @@ public class Device implements Serializable {
         for (DeviceExtension src : from.extensions.values()) {
             Class<? extends DeviceExtension> clazz = src.getClass();
             DeviceExtension ext = extensions.get(clazz);
-            if (null == ext)
+            if (ext == null)
                 try {
                     addDeviceExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
@@ -1429,18 +1448,10 @@ public class Device implements Serializable {
 
     public <T extends DeviceExtension> T getDeviceExtensionNotNull(Class<T> clazz) {
         T devExt = getDeviceExtension(clazz);
-        if (null == devExt)
+        if (devExt == null)
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for Device: " + deviceName);
         return devExt;
-    }
-
-    public Boolean getArcDevExt() {
-        return arcDevExt;
-    }
-
-    public void setArcDevExt(Boolean arcDevExt) {
-        this.arcDevExt = arcDevExt;
     }
 
 }

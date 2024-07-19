@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.image.metric;
 
+import org.miaixz.bus.image.metric.net.PDVOutputStream;
+
 import java.io.IOException;
 
 /**

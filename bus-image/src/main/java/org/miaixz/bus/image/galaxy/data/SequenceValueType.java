@@ -34,7 +34,7 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum SequenceValueType implements ValueType {
+enum SequenceValueType implements ValueType {
     SQ;
 
     @Override
@@ -96,6 +96,16 @@ public enum SequenceValueType implements ValueType {
     }
 
     @Override
+    public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long[] toLongs(Object val, boolean bigEndian) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public float toFloat(Object val, boolean bigEndian, int valueIndex,
                          float defVal) {
         throw new UnsupportedOperationException();
@@ -124,8 +134,7 @@ public enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                         DatePrecision precisions) {
+    public Date[] toDate(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
@@ -150,6 +159,11 @@ public enum SequenceValueType implements ValueType {
     }
 
     @Override
+    public Object toValue(long[] ls, boolean bigEndian) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Object toValue(float[] fs, boolean bigEndian) {
         throw new UnsupportedOperationException();
     }
@@ -165,11 +179,8 @@ public enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public boolean prompt(Object val,
-                          boolean bigEndian,
-                          SpecificCharacterSet cs,
-                          int maxChars,
-                          StringBuilder sb) {
+    public boolean prompt(Object val, boolean bigEndian,
+                          SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         sb.append(val);
         return true;
     }

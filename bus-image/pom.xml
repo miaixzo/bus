@@ -72,6 +72,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.34</lombok.version>
+        <jakarta.json-api.version>2.1.3</jakarta.json-api.version>
     </properties>
 
     <dependencies>
@@ -92,6 +93,11 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>${jakarta.json-api.version}</version>
         </dependency>
     </dependencies>
 

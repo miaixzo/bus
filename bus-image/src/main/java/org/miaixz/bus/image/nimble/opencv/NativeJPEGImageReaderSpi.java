@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.Version;
 
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
@@ -41,12 +41,12 @@ import java.util.Locale;
  */
 public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
 
-    public static final String[] NAMES = {"jpeg-cv"};
-    public static final String[] SUFFIXES = null;
-    public static final String[] MIMES = null;
+    static final String[] NAMES = {"jpeg-cv"};
+    static final String[] SUFFIXES = {};
+    static final String[] MIMES = {};
 
     public NativeJPEGImageReaderSpi() {
-        super("Bus Team", "1.5", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
+        super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[]{ImageInputStream.class}, new String[]{}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
@@ -62,11 +62,24 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
     }
 
     @Override
+    public String[] getFileSuffixes() {
+        return SUFFIXES;
+    }
+
+    @Override
+    public String[] getMIMETypes() {
+        return MIMES;
+    }
+
+    @Override
     public boolean canDecodeInput(Object source) throws IOException {
-        if (!(source instanceof ImageInputStream)) {
+        // NativeImageReader.read() eventually instantiates a StreamSegment,
+        // which does not support all ImageInputStreams
+        if (!StreamSegment.supportsInputStream(source)) {
             return false;
         }
         ImageInputStream iis = (ImageInputStream) source;
+
         iis.mark();
         try {
             int byte1 = iis.read();
@@ -115,7 +128,7 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
                 if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
                     return true;
                 }
-                int length = iis.read() << Normal._8;
+                int length = iis.read() << 8;
                 length += iis.read();
                 length -= 2;
                 while (length > 0) {

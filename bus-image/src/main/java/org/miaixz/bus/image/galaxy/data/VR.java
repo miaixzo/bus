@@ -28,8 +28,6 @@
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.logger.Logger;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -39,51 +37,188 @@ import java.util.TimeZone;
  * @since Java 17+
  */
 public enum VR {
-
+    /**
+     * Application Entity
+     */
     AE(0x4145, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
-    AS(0x4153, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
-    AT(0x4154, 8, 0, BinaryValueType.TAG, false),
-    CS(0x4353, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
-    DA(0x4441, 8, Symbol.C_SPACE, StringValueType.DA, false),
-    DS(0x4453, 8, Symbol.C_SPACE, StringValueType.DS, false),
-    DT(0x4454, 8, Symbol.C_SPACE, StringValueType.DT, false),
-    FD(0x4644, 8, 0, BinaryValueType.DOUBLE, false),
-    FL(0x464c, 8, 0, BinaryValueType.FLOAT, false),
-    IS(0x4953, 8, Symbol.C_SPACE, StringValueType.IS, false),
-    LO(0x4c4f, 8, Symbol.C_SPACE, StringValueType.STRING, false),
-    LT(0x4c54, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
-    OB(0x4f42, 12, 0, BinaryValueType.BYTE, true),
-    OD(0x4f44, 12, 0, BinaryValueType.DOUBLE, true),
-    OF(0x4f46, 12, 0, BinaryValueType.FLOAT, true),
-    OL(0x4f4c, 12, 0, BinaryValueType.INT, true),
-    OW(0x4f57, 12, 0, BinaryValueType.SHORT, true),
-    PN(0x504e, 8, Symbol.C_SPACE, StringValueType.PN, false),
-    SH(0x5348, 8, Symbol.C_SPACE, StringValueType.STRING, false),
-    SL(0x534c, 8, 0, BinaryValueType.INT, false),
-    SQ(0x5351, 12, 0, SequenceValueType.SQ, false),
-    SS(0x5353, 8, 0, BinaryValueType.SHORT, false),
-    ST(0x5354, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
-    TM(0x544d, 8, Symbol.C_SPACE, StringValueType.TM, false),
-    UC(0x5543, 12, Symbol.C_SPACE, StringValueType.STRING, false),
-    UI(0x5549, 8, 0, StringValueType.ASCII, false),
-    UL(0x554c, 8, 0, BinaryValueType.UINT, false),
-    UN(0x554e, 12, 0, BinaryValueType.BYTE, true),
-    UR(0x5552, 12, Symbol.C_SPACE, StringValueType.UR, false),
-    US(0x5553, 8, 0, BinaryValueType.USHORT, false),
-    UT(0x5554, 12, Symbol.C_SPACE, StringValueType.TEXT, false);
 
-    private static final VR[] VALUE_OF = new VR[indexOf(UT) + 1];
+    /**
+     * Age String
+     */
+    AS(0x4153, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
+
+    /**
+     * Attribute Tag
+     */
+    AT(0x4154, 8, 0, BinaryValueType.TAG, false),
+
+    /**
+     * Code String
+     */
+    CS(0x4353, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
+
+    /**
+     * Date
+     */
+    DA(0x4441, 8, Symbol.C_SPACE, StringValueType.DA, false),
+
+    /**
+     * Decimal String
+     */
+    DS(0x4453, 8, Symbol.C_SPACE, StringValueType.DS, false),
+
+    /**
+     * Date Time
+     */
+    DT(0x4454, 8, Symbol.C_SPACE, StringValueType.DT, false),
+
+    /**
+     * Floating Point Double
+     */
+    FD(0x4644, 8, 0, BinaryValueType.DOUBLE, false),
+
+    /**
+     * Floating Point Single
+     */
+    FL(0x464c, 8, 0, BinaryValueType.FLOAT, false),
+
+    /**
+     * Integer String
+     */
+    IS(0x4953, 8, Symbol.C_SPACE, StringValueType.IS, false),
+
+    /**
+     * Long String
+     */
+    LO(0x4c4f, 8, Symbol.C_SPACE, StringValueType.STRING, false),
+
+    /**
+     * Long Text
+     */
+    LT(0x4c54, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
+
+    /**
+     * Other Byte
+     */
+    OB(0x4f42, 12, 0, BinaryValueType.BYTE, true),
+
+    /**
+     * Other Double
+     */
+    OD(0x4f44, 12, 0, BinaryValueType.DOUBLE, true),
+
+    /**
+     * Other Float
+     */
+    OF(0x4f46, 12, 0, BinaryValueType.FLOAT, true),
+
+    /**
+     * Other Long
+     */
+    OL(0x4f4c, 12, 0, BinaryValueType.INT, true),
+
+    /**
+     * Other 64-bit Very Long
+     */
+    OV(0x4f56, 12, 0, BinaryValueType.LONG, true),
+
+    /**
+     * Other Word
+     */
+    OW(0x4f57, 12, 0, BinaryValueType.SHORT, true),
+
+    /**
+     * Person Name
+     */
+    PN(0x504e, 8, Symbol.C_SPACE, StringValueType.PN, false),
+
+    /**
+     * Short String
+     */
+    SH(0x5348, 8, Symbol.C_SPACE, StringValueType.STRING, false),
+
+    /**
+     * Signed Long
+     */
+    SL(0x534c, 8, 0, BinaryValueType.INT, false),
+
+    /**
+     * Sequence of Items
+     */
+    SQ(0x5351, 12, 0, SequenceValueType.SQ, false),
+
+    /**
+     * Signed Short
+     */
+    SS(0x5353, 8, 0, BinaryValueType.SHORT, false),
+
+    /**
+     * Short Text
+     */
+    ST(0x5354, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
+
+    /**
+     * Signed 64-bit Long
+     */
+    SV(0x5356, 12, 0, BinaryValueType.LONG, false),
+
+    /**
+     * Time
+     */
+    TM(0x544d, 8, Symbol.C_SPACE, StringValueType.TM, false),
+
+    /**
+     * Unlimited Characters
+     */
+    UC(0x5543, 12, Symbol.C_SPACE, StringValueType.STRING, false),
+
+    /**
+     * Unique Identifier (UID)
+     */
+    UI(0x5549, 8, 0, StringValueType.ASCII, false),
+
+    /**
+     * Unsigned Long
+     */
+    UL(0x554c, 8, 0, BinaryValueType.UINT, false),
+
+    /**
+     * Unknown
+     */
+    UN(0x554e, 12, 0, BinaryValueType.BYTE, true),
+
+    /**
+     * Universal Resource Identifier or Universal Resource Locator (URI/URL)
+     */
+    UR(0x5552, 12, Symbol.C_SPACE, StringValueType.UR, false),
+
+    /**
+     * Unsigned Short
+     */
+    US(0x5553, 8, 0, BinaryValueType.USHORT, false),
+
+    /**
+     * Unlimited Text
+     */
+    UT(0x5554, 12, Symbol.C_SPACE, StringValueType.TEXT, false),
+
+    /**
+     * Unsigned 64-bit Long
+     */
+    UV(0x5556, 12, 0, BinaryValueType.ULONG, false);
+
+    private static final VR[] VALUE_OF = new VR[1024];
 
     static {
         for (VR vr : VR.values())
-            VALUE_OF[indexOf(vr)] = vr;
+            VALUE_OF[indexOf(vr.code)] = vr;
     }
 
-    protected final int code;
-    protected final int headerLength;
-    protected final int paddingByte;
-    protected final ValueType valueType;
-    protected final boolean inlineBinary;
+    private final int code;
+    private final int headerLength;
+    private final int paddingByte;
+    private final ValueType valueType;
+    private final boolean inlineBinary;
 
     VR(int code, int headerLength, int paddingByte, ValueType valueType,
        boolean inlineBinary) {
@@ -94,20 +229,12 @@ public enum VR {
         this.inlineBinary = inlineBinary;
     }
 
-    private static int indexOf(VR vr) {
-        return vr.code - AE.code;
+    private static int indexOf(int code) {
+        return ((code & 0x1f00) >> 3) | (code & 0x1f);
     }
 
     public static VR valueOf(int code) {
-        try {
-            VR vr = VALUE_OF[code - AE.code];
-            if (null != vr) {
-                return vr;
-            }
-        } catch (IndexOutOfBoundsException e) {
-        }
-        Logger.warn("Unrecognized VR internal: {}H - treat as UN", Tag.shortToHexString(code));
-        return UN;
+        return ((code ^ 0x4040) & 0xffffe0e0) == 0 ? VALUE_OF[indexOf(code)] : null;
     }
 
     public int code() {
@@ -171,6 +298,14 @@ public enum VR {
         return valueType.toInts(val, bigEndian);
     }
 
+    public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
+        return valueType.toLong(val, bigEndian, valueIndex, defVal);
+    }
+
+    public long[] toLongs(Object val, boolean bigEndian) {
+        return valueType.toLongs(val, bigEndian);
+    }
+
     public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
         return valueType.toFloat(val, bigEndian, valueIndex, defVal);
     }
@@ -193,9 +328,8 @@ public enum VR {
         return valueType.toDate(val, tz, valueIndex, ceil, defVal, precision);
     }
 
-    public Date[] toDates(Object val, TimeZone tz, boolean ceil,
-                          DatePrecision precisions) {
-        return valueType.toDate(val, tz, ceil, precisions);
+    public Date[] toDates(Object val, TimeZone tz, boolean ceil, DatePrecision precision) {
+        return valueType.toDate(val, tz, ceil, precision);
     }
 
     Object toValue(byte[] b) {
@@ -212,6 +346,10 @@ public enum VR {
 
     Object toValue(int[] is, boolean bigEndian) {
         return valueType.toValue(is, bigEndian);
+    }
+
+    Object toValue(long[] ls, boolean bigEndian) {
+        return valueType.toValue(ls, bigEndian);
     }
 
     Object toValue(float[] fs, boolean bigEndian) {
@@ -232,7 +370,7 @@ public enum VR {
     }
 
     public int vmOf(Object val) {
-        return headerLength == 12 ? 1 : valueType.vmOf(val);
+        return valueType.vmOf(val);
     }
 
     public static class Holder {

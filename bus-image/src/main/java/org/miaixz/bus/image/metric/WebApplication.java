@@ -31,20 +31,22 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
+import org.miaixz.bus.image.metric.net.KeycloakClient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 /**
+ * Description of a Web Application provided by {@link Device}.
+ *
  * @author Kimi Liu
  * @since Java 17+
+ * @since Apr 2018
  */
 public class WebApplication {
 
-    private final List<Connection> conns = new ArrayList<>(1);
     private final EnumSet<ServiceClass> serviceClasses = EnumSet.noneOf(ServiceClass.class);
+    private final Map<String, String> properties = new HashMap<>();
+    private final List<Connection> conns = new ArrayList<>(1);
     private Device device;
     private String applicationName;
     private String description;
@@ -53,9 +55,10 @@ public class WebApplication {
     private String[] applicationClusters = {};
     private String keycloakClientID;
     private Boolean installed;
+    private String deviceName;
+    private KeycloakClient keycloakClient;
 
     public WebApplication() {
-
     }
 
     public WebApplication(String applicationName) {
@@ -67,8 +70,8 @@ public class WebApplication {
     }
 
     public void setDevice(Device device) {
-        if (null != device) {
-            if (null != this.device)
+        if (device != null) {
+            if (this.device != null)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
             for (Connection conn : conns)
@@ -87,10 +90,10 @@ public class WebApplication {
         if (name.isEmpty())
             throw new IllegalArgumentException("name cannot be empty");
         Device device = this.device;
-        if (null != device)
+        if (device != null)
             device.removeWebApplication(this.applicationName);
         this.applicationName = name;
-        if (null != device)
+        if (device != null)
             device.addWebApplication(this);
     }
 
@@ -135,8 +138,8 @@ public class WebApplication {
     }
 
     public boolean isInstalled() {
-        return null != device && device.isInstalled()
-                && (null == installed || installed.booleanValue());
+        return device != null && device.isInstalled()
+                && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -144,21 +147,33 @@ public class WebApplication {
     }
 
     public void setInstalled(Boolean installed) {
-        if (null != installed && installed.booleanValue()
-                && null != device && !device.isInstalled())
+        if (installed != null && installed.booleanValue()
+                && device != null && !device.isInstalled())
             throw new IllegalStateException("owning device not installed");
         this.installed = installed;
     }
 
     public KeycloakClient getKeycloakClient() {
-        return null != keycloakClientID ? device.getKeycloakClient(keycloakClientID) : null;
+        return keycloakClientID != null ? device.getKeycloakClient(keycloakClientID) : keycloakClient;
+    }
+
+    public void setKeycloakClient(KeycloakClient keycloakClient) {
+        this.keycloakClient = keycloakClient;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public void addConnection(Connection conn) {
-        if (conn.getProtocol() != Protocol.HTTP)
+        if (conn.getProtocol() != Connection.Protocol.HTTP)
             throw new IllegalArgumentException(
                     "Web Application does not support protocol " + conn.getProtocol());
-        if (null != device && device != conn.getDevice())
+        if (device != null && device != conn.getDevice())
             throw new IllegalStateException(conn + " not contained by " +
                     device.getDeviceName());
         conns.add(conn);
@@ -168,7 +183,7 @@ public class WebApplication {
         return getServiceURL(firstInstalledConnection());
     }
 
-    private Connection firstInstalledConnection() {
+    public Connection firstInstalledConnection() {
         for (Connection conn : conns) {
             if (conn.isInstalled())
                 return conn;
@@ -206,6 +221,29 @@ public class WebApplication {
         return serviceClasses.contains(serviceClass);
     }
 
+    public void setProperty(String name, String value) {
+        properties.put(name, value);
+    }
+
+    public String getProperty(String name, String defValue) {
+        String value = properties.get(name);
+        return value != null ? value : defValue;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String[] ss) {
+        properties.clear();
+        for (String s : ss) {
+            int index = s.indexOf('=');
+            if (index < 0)
+                throw new IllegalArgumentException("Property in incorrect format : " + s);
+            setProperty(s.substring(0, index), s.substring(index + 1));
+        }
+    }
+
     public void reconfigure(WebApplication src) {
         description = src.description;
         servicePath = src.servicePath;
@@ -215,15 +253,21 @@ public class WebApplication {
         installed = src.installed;
         serviceClasses.clear();
         serviceClasses.addAll(src.serviceClasses);
+        properties.clear();
+        properties.putAll(src.properties);
         device.reconfigureConnections(conns, src.conns);
     }
 
     @Override
     public String toString() {
         return "WebApplication[name=" + applicationName
-                + ",classes=" + serviceClasses
+                + ",serviceClasses=" + serviceClasses
                 + ",path=" + servicePath
                 + ",aet=" + aeTitle
+                + ",applicationClusters=" + Arrays.toString(applicationClusters)
+                + ",keycloakClientID=" + keycloakClientID
+                + ",properties=" + properties
+                + ",installed=" + installed
                 + ']';
     }
 
@@ -233,8 +277,25 @@ public class WebApplication {
         STOW_RS,
         QIDO_RS,
         UPS_RS,
-        M_ARC,
-        M_ARC_AET
+        MWL_RS,
+        MPPS_RS,
+        QIDO_COUNT,
+        DCM_ARC,
+        DCM_ARC_AET,
+        DCM_ARC_AET_DIFF,
+        PAM,
+        REJECT,
+        MOVE,
+        MOVE_MATCHING,
+        UPS_MATCHING,
+        ELASTICSEARCH,
+        PROMETHEUS,
+        GRAFANA,
+        XDS_RS,
+        AGFA_BLOB,
+        J4C_ROUTER,
+        FHIR,
+        WORKFLOW_MANAGER
     }
 
 }

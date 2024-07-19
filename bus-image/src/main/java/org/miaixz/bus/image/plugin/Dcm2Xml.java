@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.SAXWriter;
@@ -44,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 /**
  * DCM-XML转换
@@ -75,16 +73,6 @@ public class Dcm2Xml {
         } catch (MalformedURLException e) {
             return new File(fileOrURL).toURI().toString();
         }
-    }
-
-
-    private static String fname(List<String> argList) throws InternalException {
-        int numArgs = argList.size();
-        if (numArgs == 0)
-            throw new InternalException("missing file operand");
-        if (numArgs > 1)
-            throw new InternalException("too many arguments");
-        return argList.get(0);
     }
 
     public final void setXSLTURL(String xsltURL) {
@@ -146,20 +134,23 @@ public class Dcm2Xml {
         TransformerHandler th = getTransformerHandler();
         Transformer t = th.getTransformer();
         t.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+        if (indent) {
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        }
         t.setOutputProperty(OutputKeys.VERSION, xmlVersion);
         th.setResult(new StreamResult(System.out));
         SAXWriter saxWriter = new SAXWriter(th);
         saxWriter.setIncludeKeyword(includeKeyword);
         saxWriter.setIncludeNamespaceDeclaration(includeNamespaceDeclaration);
-        dis.setImageInputHandler(saxWriter);
-        dis.readDataset(-1, -1);
+        dis.setDicomInputHandler(saxWriter);
+        dis.readDataset();
     }
 
     private TransformerHandler getTransformerHandler()
             throws TransformerConfigurationException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (null == xsltURL)
+        if (xsltURL == null)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

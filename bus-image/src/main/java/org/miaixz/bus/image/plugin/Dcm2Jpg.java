@@ -27,29 +27,26 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.nimble.BufferedImages;
-import org.miaixz.bus.image.nimble.reader.NativeDCMImageReader;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.image.nimble.ICCProfile;
+import org.miaixz.bus.image.nimble.reader.ImageioReadParam;
 
 import javax.imageio.*;
-import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Arrays;
+import java.io.RandomAccessFile;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 /**
- * DCM-JPG转换
- *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -57,6 +54,7 @@ public class Dcm2Jpg {
 
     private final ImageReader imageReader =
             ImageIO.getImageReadersByFormatName("DICOM").next();
+    private ReadImage readImage;
     private String suffix;
     private int frame = 1;
     private int windowIndex;
@@ -65,84 +63,55 @@ public class Dcm2Jpg {
     private float windowCenter;
     private float windowWidth;
     private boolean autoWindowing = true;
+    private boolean ignorePresentationLUTShape;
     private Attributes prState;
     private ImageWriter imageWriter;
     private ImageWriteParam imageWriteParam;
     private int overlayActivationMask = 0xffff;
     private int overlayGrayscaleValue = 0xffff;
+    private int overlayRGBValue = 0xffffff;
+    private ICCProfile.Option iccProfile = ICCProfile.Option.none;
 
-    private static int parseHex(String s) throws InternalException {
-        try {
-            return Integer.parseInt(s, Normal._16);
-        } catch (NumberFormatException e) {
-            throw new InternalException(e.getMessage());
-        }
+    private static Predicate<Object> matchClassName(String clazz) {
+        Predicate<String> predicate = clazz.endsWith("*")
+                ? startsWith(clazz.substring(0, clazz.length() - 1))
+                : clazz::equals;
+        return w -> predicate.test(w.getClass().getName());
+    }
+
+    private static Predicate<String> startsWith(String prefix) {
+        return s -> s.startsWith(prefix);
     }
 
     private static Attributes loadDicomObject(File f) throws IOException {
-        if (null == f)
+        if (f == null)
             return null;
         ImageInputStream dis = new ImageInputStream(f);
         try {
-            return dis.readDataset(-1, -1);
+            return dis.readDataset();
         } finally {
             IoKit.close(dis);
         }
     }
 
-    public static void listSupportedImageWriters(String format) {
-        Logger.info(MessageFormat.format("Supported Image Writers for format: {0}", format));
-        Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName(format);
-        while (it.hasNext()) {
-            ImageWriter writer = it.next();
-            ImageWriteParam param = writer.getDefaultWriteParam();
-            Logger.info(MessageFormat.format("\\n{0}\\:\\\n" +
-                            "\\n   canWriteCompressed\\: {1}\\\n" +
-                            "\\n  canWriteProgressive\\: {2}\\\n" +
-                            "\\n        canWriteTiles\\: {3}\\\n" +
-                            "\\n       canOffsetTiles\\: {4}\\\n" +
-                            "\\n    Compression Types\\: {5}",
-                    writer.getClass().getName(),
-                    param.canWriteCompressed(),
-                    param.canWriteProgressive(),
-                    param.canWriteTiles(),
-                    param.canOffsetTiles(),
-                    param.canWriteCompressed()
-                            ? Arrays.toString(param.getCompressionTypes())
-                            : null));
-        }
-    }
-
-    public static void listSupportedFormats() {
-        Logger.info(
-                MessageFormat.format("Supported output image formats: {0}",
-                        Arrays.toString(ImageIO.getWriterFormatNames())));
-    }
-
     public void initImageWriter(String formatName, String suffix,
                                 String clazz, String compressionType, Number quality) {
+        this.suffix = suffix != null ? suffix : formatName.toLowerCase();
         Iterator<ImageWriter> imageWriters =
                 ImageIO.getImageWritersByFormatName(formatName);
         if (!imageWriters.hasNext())
-            throw new IllegalArgumentException(
-                    MessageFormat.format("output image format: {0} not supported",
-                            formatName));
-        this.suffix = null != suffix ? suffix : formatName.toLowerCase();
-        imageWriter = imageWriters.next();
-        if (null != clazz)
-            while (!clazz.equals(imageWriter.getClass().getName()))
-                if (imageWriters.hasNext())
-                    imageWriter = imageWriters.next();
-                else
-                    throw new IllegalArgumentException(
-                            MessageFormat.format("no Image Writer: {0} for format {1} found",
-                                    clazz, formatName));
+            throw new IllegalArgumentException(formatName);
+        Iterable<ImageWriter> iterable = () -> imageWriters;
+        imageWriter = StreamSupport.stream(iterable.spliterator(), false)
+                .filter(matchClassName(clazz))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(StringKit.format(clazz, formatName)));
         imageWriteParam = imageWriter.getDefaultWriteParam();
-        if (null != compressionType || null != quality) {
+        if (compressionType != null || quality != null) {
             imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            if (null != compressionType)
+            if (compressionType != null)
                 imageWriteParam.setCompressionType(compressionType);
-            if (null != quality)
+            if (quality != null)
                 imageWriteParam.setCompressionQuality(quality.floatValue());
         }
     }
@@ -175,6 +144,14 @@ public class Dcm2Jpg {
         this.autoWindowing = autoWindowing;
     }
 
+    public boolean isIgnorePresentationLUTShape() {
+        return ignorePresentationLUTShape;
+    }
+
+    public void setIgnorePresentationLUTShape(boolean ignorePresentationLUTShape) {
+        this.ignorePresentationLUTShape = ignorePresentationLUTShape;
+    }
+
     public final void setPresentationState(Attributes prState) {
         this.prState = prState;
     }
@@ -185,6 +162,18 @@ public class Dcm2Jpg {
 
     public void setOverlayGrayscaleValue(int overlayGrayscaleValue) {
         this.overlayGrayscaleValue = overlayGrayscaleValue;
+    }
+
+    public void setOverlayRGBValue(int overlayRGBValue) {
+        this.overlayRGBValue = overlayRGBValue;
+    }
+
+    public final void setICCProfile(ICCProfile.Option iccProfile) {
+        this.iccProfile = Objects.requireNonNull(iccProfile);
+    }
+
+    public final void setReadImage(ReadImage readImage) {
+        this.readImage = readImage;
     }
 
     private void mconvert(File src, File dest) {
@@ -199,74 +188,60 @@ public class Dcm2Jpg {
             dest = new File(dest, suffix(src));
         try {
             convert(src, dest);
-            Logger.info(
-                    MessageFormat.format("{0} -> {1}",
-                            src, dest));
         } catch (Exception e) {
-            Logger.error(
-                    MessageFormat.format("Failed to convert {0}: {1}",
-                            src, e.getMessage()));
-            throw new InternalException(e);
+            e.printStackTrace(System.out);
         }
     }
 
     public void convert(File src, File dest) throws IOException {
-        javax.imageio.stream.ImageInputStream iis = ImageIO.createImageInputStream(src);
-        try {
-            BufferedImage bi = readImage(iis);
-            bi = convert(bi);
-            dest.delete();
-            ImageOutputStream ios = ImageIO.createImageOutputStream(dest);
-            try {
-                writeImage(ios, bi);
-            } finally {
-                try {
-                    ios.close();
-                } catch (IOException ignore) {
-                }
-            }
-        } finally {
-            try {
-                iis.close();
-            } catch (IOException e) {
-                throw new InternalException(e);
-            }
+        writeImage(dest, iccProfile.adjust(readImage.apply(src)));
+    }
+
+    public BufferedImage readImageFromImageInputStream(File file) throws IOException {
+        try (javax.imageio.stream.ImageInputStream iis = new FileImageInputStream(file)) {
+            imageReader.setInput(iis);
+            return imageReader.read(frame - 1, readParam());
         }
     }
 
-    private BufferedImage convert(BufferedImage bi) {
-        ColorModel cm = bi.getColorModel();
-        return cm.getNumComponents() == 3 ? BufferedImages.convertToIntRGB(bi) : bi;
-    }
-
-    private BufferedImage readImage(javax.imageio.stream.ImageInputStream iis) throws IOException {
-        imageReader.setInput(iis);
-        return imageReader.read(frame - 1, readParam());
+    public BufferedImage readImageFromDicomInputStream(File file) throws IOException {
+        try (ImageInputStream dis = new ImageInputStream(file)) {
+            imageReader.setInput(dis);
+            return imageReader.read(frame - 1, readParam());
+        }
     }
 
     private ImageReadParam readParam() {
-        NativeDCMImageReader.NativeDCMImageReadParam param =
-                (NativeDCMImageReader.NativeDCMImageReadParam) imageReader.getDefaultReadParam();
+        ImageioReadParam param =
+                (ImageioReadParam) imageReader.getDefaultReadParam();
         param.setWindowCenter(windowCenter);
         param.setWindowWidth(windowWidth);
         param.setAutoWindowing(autoWindowing);
+        param.setIgnorePresentationLUTShape(ignorePresentationLUTShape);
         param.setWindowIndex(windowIndex);
         param.setVOILUTIndex(voiLUTIndex);
         param.setPreferWindow(preferWindow);
         param.setPresentationState(prState);
         param.setOverlayActivationMask(overlayActivationMask);
         param.setOverlayGrayscaleValue(overlayGrayscaleValue);
+        param.setOverlayRGBValue(overlayRGBValue);
         return param;
     }
 
-    private void writeImage(ImageOutputStream ios, BufferedImage bi)
-            throws IOException {
-        imageWriter.setOutput(ios);
-        imageWriter.write(null, new IIOImage(bi, null, null), imageWriteParam);
+    private void writeImage(File dest, BufferedImage bi) throws IOException {
+        try (RandomAccessFile raf = new RandomAccessFile(dest, "rw")) {
+            raf.setLength(0);
+            imageWriter.setOutput(new FileImageOutputStream(raf));
+            imageWriter.write(null, new IIOImage(bi, null, null), imageWriteParam);
+        }
     }
 
     private String suffix(File src) {
-        return src.getName() + Symbol.C_DOT + suffix;
+        return src.getName() + '.' + suffix;
+    }
+
+    private interface ReadImage {
+        BufferedImage apply(File src) throws IOException;
     }
 
 }

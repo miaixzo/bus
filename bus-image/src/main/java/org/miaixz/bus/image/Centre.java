@@ -100,6 +100,14 @@ public class Centre {
         this.device = Objects.requireNonNull(device);
     }
 
+    public Device getDevice() {
+        return device;
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
     public void start() {
         start(false);
     }
@@ -110,6 +118,9 @@ public class Centre {
      * @param flag 标记信息
      */
     public synchronized void start(boolean... flag) {
+        if (isRunning()) {
+            return;
+        }
         if (BooleanKit.or(flag)) {
             if (null == executor) {
                 executor = Executors.newSingleThreadExecutor();
@@ -156,9 +167,9 @@ public class Centre {
 
         storeSCP.getApplicationEntity().setAcceptedCallingAETitles(args.getAcceptedCallingAETitles());
 
-        URL transferCapabilityFile = args.getTransferCapabilityFile();
-        if (null != transferCapabilityFile) {
-            storeSCP.loadDefaultTransferCapability(transferCapabilityFile);
+        URL sopClassesTCS = args.getSopClassesTCS();
+        if (null != sopClassesTCS) {
+            storeSCP.sopClassesTCS(sopClassesTCS);
         } else {
             storeSCP.getApplicationEntity()
                     .addTransferCapability(new TransferCapability(null, Symbol.STAR, TransferCapability.Role.SCP, Symbol.STAR));

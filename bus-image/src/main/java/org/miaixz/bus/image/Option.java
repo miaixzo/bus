@@ -27,49 +27,66 @@
  */
 package org.miaixz.bus.image;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.net.Protocol;
+import lombok.Builder;
+import lombok.*;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
 
-import java.util.EnumSet;
+import java.util.List;
 
 /**
- * 服务请求选项
+ * 请求可选项
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Option {
 
     /**
      * 此AE可以异步执行的最大操作数，无限制为0，而非异步为1
      */
+    @Builder.Default
     private int maxOpsInvoked = Connection.SYNCHRONOUS_MODE;
+    @Builder.Default
     private int maxOpsPerformed = Connection.SYNCHRONOUS_MODE;
+    @Builder.Default
     private int maxPdulenRcv = Connection.DEF_MAX_PDU_LENGTH;
+    @Builder.Default
     private int maxPdulenSnd = Connection.DEF_MAX_PDU_LENGTH;
+    @Builder.Default
     private boolean packPDV = true;
+    @Builder.Default
     private int backlog = Connection.DEF_BACKLOG;
-    private int connectTimeout = Connection.NO_TIMEOUT;
-    private int requestTimeout = Connection.NO_TIMEOUT;
-    private int acceptTimeout = Connection.NO_TIMEOUT;
-    private int releaseTimeout = Connection.NO_TIMEOUT;
-    private int responseTimeout = Connection.NO_TIMEOUT;
-    private int retrieveTimeout = Connection.NO_TIMEOUT;
-    private int idleTimeout = Connection.NO_TIMEOUT;
+
+    private int connectTimeout;
+    private int requestTimeout;
+    private int acceptTimeout;
+    private int releaseTimeout;
+    private int responseTimeout;
+    private int retrieveTimeout;
+    private int idleTimeout;
+    @Builder.Default
     private int socloseDelay = Connection.DEF_SOCKETDELAY;
-    private int sosndBuffer = Connection.DEF_BUFFERSIZE;
-    private int sorcvBuffer = Connection.DEF_BUFFERSIZE;
+    private int sosndBuffer;
+    private int sorcvBuffer;
+    @Builder.Default
     private boolean tcpNoDelay = true;
-    private String[] cipherSuites;
-    private String[] tlsProtocols;
+    @Builder.Default
+    private List<String> cipherSuites = List.of(
+            "SSL_RSA_WITH_NULL_SHA",
+            "TLS_RSA_WITH_AES_128_CBC_SHA",
+            "SSL_RSA_WITH_3DES_EDE_CBC_SHA"
+    );
+    @Builder.Default
+    private List<String> tlsProtocols = List.of(
+            "TLSv1", "SSLv3"
+    );
 
     private boolean tlsNeedClientAuth;
-
     private String keystoreURL;
     private String keystoreType;
     private String keystorePass;
@@ -77,78 +94,5 @@ public class Option {
     private String truststoreURL;
     private String truststoreType;
     private String truststorePass;
-
-    public Option() {
-
-    }
-
-    public Option(boolean tlsNeedClientAuth, String keystoreURL, String keystoreType, String keystorePass, String keyPass, String truststoreURL, String truststoreType, String truststorePass) {
-        this(
-                new String[]{
-                        "SSL_RSA_WITH_NULL_SHA",
-                        "TLS_RSA_WITH_AES_128_CBC_SHA",
-                        "SSL_RSA_WITH_3DES_EDE_CBC_SHA"
-                },
-                new String[]{
-                        Protocol.TLSv1.name,
-                        Protocol.SSLv3.name
-                },
-                tlsNeedClientAuth,
-                keystoreURL,
-                keystoreType,
-                keystorePass,
-                keyPass,
-                truststoreURL,
-                truststoreType,
-                truststorePass
-        );
-    }
-
-    public Option(String[] cipherSuites, String[] tlsProtocols, boolean tlsNeedClientAuth, String keystoreURL, String keystoreType, String keystorePass, String keyPass, String truststoreURL, String truststoreType, String truststorePass) {
-        if (null == cipherSuites) {
-            throw new IllegalArgumentException("cipherSuites cannot be null");
-        }
-        this.cipherSuites = cipherSuites;
-        this.tlsProtocols = tlsProtocols;
-        this.tlsNeedClientAuth = tlsNeedClientAuth;
-        this.keystoreURL = keystoreURL;
-        this.keystoreType = keystoreType;
-        this.keystorePass = keystorePass;
-        this.keyPass = keyPass;
-        this.truststoreURL = truststoreURL;
-        this.truststoreType = truststoreType;
-        this.truststorePass = truststorePass;
-    }
-
-    public enum Type {
-
-        RELATIONAL,
-        DATETIME,
-        FUZZY,
-        TIMEZONE;
-
-        public static byte[] toExtendedNegotiationInformation(EnumSet<Type> opts) {
-            byte[] info = new byte[opts.contains(TIMEZONE) ? 4 : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3 : 1];
-            for (Type query : opts)
-                info[query.ordinal()] = 1;
-            return info;
-        }
-
-        public static EnumSet<Type> toOptions(ExtendedNegotiate extNeg) {
-            EnumSet<Type> opts = EnumSet.noneOf(Type.class);
-            if (null != extNeg) {
-                toOption(extNeg, Type.RELATIONAL, opts);
-                toOption(extNeg, Type.DATETIME, opts);
-                toOption(extNeg, Type.FUZZY, opts);
-                toOption(extNeg, Type.TIMEZONE, opts);
-            }
-            return opts;
-        }
-
-        private static void toOption(ExtendedNegotiate extNeg, Type opt, EnumSet<Type> opts) {
-            if (extNeg.getField(opt.ordinal(), (byte) 0) == 1) opts.add(opt);
-        }
-
-    }
 
 }

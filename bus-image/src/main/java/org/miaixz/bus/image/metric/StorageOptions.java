@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
+import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 
 import java.io.Serializable;
 
@@ -36,6 +36,8 @@ import java.io.Serializable;
  * @since Java 17+
  */
 public class StorageOptions implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private LevelOfSupport levelOfSupport;
 
@@ -57,7 +59,7 @@ public class StorageOptions implements Serializable {
         this.elementCoercion = getElementCoercion;
     }
 
-    public static StorageOptions valueOf(ExtendedNegotiate extNeg) {
+    public static StorageOptions valueOf(ExtendedNegotiation extNeg) {
         return new StorageOptions(
                 LevelOfSupport.valueOf(extNeg.getField(0, (byte) 3)),
                 DigitalSignatureSupport.valueOf(extNeg.getField(2, (byte) 0)),
@@ -108,10 +110,9 @@ public class StorageOptions implements Serializable {
         if (o == this)
             return true;
 
-        if (!(o instanceof StorageOptions))
+        if (!(o instanceof StorageOptions other))
             return false;
 
-        StorageOptions other = (StorageOptions) o;
         return levelOfSupport == other.levelOfSupport
                 && digitalSignatureSupport == other.digitalSignatureSupport
                 && elementCoercion == other.elementCoercion;

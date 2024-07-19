@@ -27,15 +27,14 @@
  */
 package org.miaixz.bus.image.plugin;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.ImageInputHandler;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -47,17 +46,8 @@ public class DcmDump implements ImageInputHandler {
      * default number of characters per line
      */
     private static final int DEFAULT_WIDTH = 78;
+
     private int width = DEFAULT_WIDTH;
-
-    private static String fname(List<String> argList) throws InternalException {
-        int numArgs = argList.size();
-        if (numArgs == 0)
-            throw new InternalException("missing");
-        if (numArgs > 1)
-            throw new InternalException("too-many");
-        return argList.get(0);
-    }
-
 
     public final int getWidth() {
         return width;
@@ -70,8 +60,8 @@ public class DcmDump implements ImageInputHandler {
     }
 
     public void parse(ImageInputStream dis) throws IOException {
-        dis.setImageInputHandler(this);
-        dis.readDataset(-1, -1);
+        dis.setDicomInputHandler(this);
+        dis.readDataset();
     }
 
     @Override
@@ -92,41 +82,54 @@ public class DcmDump implements ImageInputHandler {
         VR vr = dis.vr();
         int vallen = dis.length();
         boolean undeflen = vallen == -1;
+        int tag = dis.tag();
+        String privateCreator = attrs.getPrivateCreator(tag);
         if (vr == VR.SQ || undeflen) {
-            appendKeyword(dis, line);
+            appendKeyword(dis, privateCreator, line);
             dis.readValue(dis, attrs);
             if (undeflen) {
                 line.setLength(0);
                 appendPrefix(dis, line);
                 appendHeader(dis, line);
-                appendKeyword(dis, line);
+                appendKeyword(dis, privateCreator, line);
             }
             return;
         }
-        int tag = dis.tag();
-        byte[] b = dis.readValue();
+        byte[] b = probeValue(dis);
         line.append(" [");
         if (vr.prompt(b, dis.bigEndian(),
                 attrs.getSpecificCharacterSet(),
                 width - line.length() - 1, line)) {
             line.append(']');
-            appendKeyword(dis, line);
+            appendKeyword(dis, privateCreator, line);
         }
         if (tag == Tag.FileMetaInformationGroupLength)
             dis.setFileMetaInformationGroupLength(b);
         else if (tag == Tag.TransferSyntaxUID
                 || tag == Tag.SpecificCharacterSet
+                || tag == Tag.PixelRepresentation
                 || Tag.isPrivateCreator(tag))
             attrs.setBytes(tag, vr, b);
+    }
+
+    private byte[] probeValue(ImageInputStream dis) throws IOException {
+        long len = dis.unsignedLength();
+        if (len == 0) return Normal.EMPTY_BYTE_ARRAY;
+        int read = (int) Math.min(len, (width + 7) & ~7);
+        byte[] b = new byte[read];
+        dis.readFully(b);
+        dis.skipFully(len - read);
+        return b;
     }
 
     @Override
     public void readValue(ImageInputStream dis, Sequence seq)
             throws IOException {
+        String privateCreator = seq.getParent().getPrivateCreator(dis.tag());
         StringBuilder line = new StringBuilder(width);
         appendPrefix(dis, line);
         appendHeader(dis, line);
-        appendKeyword(dis, line);
+        appendKeyword(dis, privateCreator, line);
         appendNumber(seq.size() + 1, line);
         boolean undeflen = dis.length() == -1;
         dis.readValue(dis, seq);
@@ -134,7 +137,7 @@ public class DcmDump implements ImageInputHandler {
             line.setLength(0);
             appendPrefix(dis, line);
             appendHeader(dis, line);
-            appendKeyword(dis, line);
+            appendKeyword(dis, privateCreator, line);
         }
     }
 
@@ -162,10 +165,10 @@ public class DcmDump implements ImageInputHandler {
         line.append(Symbol.C_SHAPE).append(dis.length());
     }
 
-    private void appendKeyword(ImageInputStream dis, StringBuilder line) {
+    private void appendKeyword(ImageInputStream dis, String privateCreator, StringBuilder line) {
         if (line.length() < width) {
             line.append(Symbol.SPACE);
-            line.append(ElementDictionary.keywordOf(dis.tag(), null));
+            line.append(ElementDictionary.keywordOf(dis.tag(), privateCreator));
             if (line.length() > width)
                 line.setLength(width);
         }
@@ -182,17 +185,17 @@ public class DcmDump implements ImageInputHandler {
 
     private void appendFragment(StringBuilder line, ImageInputStream dis,
                                 VR vr) throws IOException {
-        byte[] b = dis.readValue();
+        byte[] b = probeValue(dis);
         line.append(" [");
         if (vr.prompt(b, dis.bigEndian(), null,
                 width - line.length() - 1, line)) {
             line.append(']');
-            appendKeyword(dis, line);
+            appendKeyword(dis, null, line);
         }
     }
 
     private void promptPreamble(byte[] preamble) {
-        if (null == preamble)
+        if (preamble == null)
             return;
 
         StringBuilder line = new StringBuilder(width);

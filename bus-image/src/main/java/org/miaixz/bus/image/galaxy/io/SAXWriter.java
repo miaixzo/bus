@@ -27,8 +27,7 @@
  */
 package org.miaixz.bus.image.galaxy.io;
 
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.xml.sax.ContentHandler;
@@ -36,9 +35,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
@@ -47,25 +43,16 @@ import java.nio.charset.Charset;
 public class SAXWriter implements ImageInputHandler {
 
     private static final String NAMESPACE = "http://dicom.nema.org/PS3.19/models/NativeDICOM";
-    private static final int BASE64_CHUNK_LENGTH = Normal._256 * 3;
-    private static final int BUFFER_LENGTH = Normal._256 * 4;
+    private static final int BASE64_CHUNK_LENGTH = 256 * 3;
+    private static final int BUFFER_LENGTH = 256 * 4;
     private final ContentHandler ch;
     private final AttributesImpl atts = new AttributesImpl();
     private final char[] buffer = new char[BUFFER_LENGTH];
     private boolean includeKeyword = true;
-    private String namespace = Normal.EMPTY;
+    private String namespace = "";
 
     public SAXWriter(ContentHandler ch) {
         this.ch = ch;
-    }
-
-    public static byte[] getBytes(char[] chars) {
-        Charset cs = org.miaixz.bus.core.lang.Charset.UTF_8;
-        CharBuffer cb = CharBuffer.allocate(chars.length);
-        cb.put(chars);
-        cb.flip();
-        ByteBuffer bb = cs.encode(cb);
-        return bb.array();
     }
 
     public final boolean isIncludeKeyword() {
@@ -81,7 +68,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
-        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
+        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : "";
     }
 
     public void write(Attributes attrs) throws SAXException {
@@ -93,7 +80,7 @@ public class SAXWriter implements ImageInputHandler {
     private void writeItem(final Attributes item) throws SAXException {
         final SpecificCharacterSet cs = item.getSpecificCharacterSet();
         try {
-            item.accept(new Attributes.Visitor() {
+            item.accept(new Visitor() {
 
                             @Override
                             public boolean visit(Attributes attrs, int tag, VR vr, Object value)
@@ -130,7 +117,8 @@ public class SAXWriter implements ImageInputHandler {
 
     private void startDocument() throws SAXException {
         ch.startDocument();
-        startElement("NativeDicomModel", "xml:space", "preserve");
+        atts.addAttribute("", "space", "xml:space", "NMTOKEN", "preserve");
+        startElement("NativeDicomModel");
     }
 
     private void endDocument() throws SAXException {
@@ -190,16 +178,14 @@ public class SAXWriter implements ImageInputHandler {
         if (value.isEmpty())
             return;
 
-        if (value instanceof Sequence) {
-            Sequence seq = (Sequence) value;
+        if (value instanceof Sequence seq) {
             int number = 0;
             for (Attributes item : seq) {
                 startElement("Item", "number", ++number);
                 writeItem(item);
                 endElement("Item");
             }
-        } else if (value instanceof Fragments) {
-            Fragments frags = (Fragments) value;
+        } else if (value instanceof Fragments frags) {
             int number = 0;
             for (Object frag : frags) {
                 ++number;
@@ -226,7 +212,7 @@ public class SAXWriter implements ImageInputHandler {
             throws IOException {
         int tag = dis.tag();
         VR vr = dis.vr();
-        int len = dis.length();
+        long len = dis.unsignedLength();
         if (Tag.isGroupLength(tag) || Tag.isPrivateCreator(tag)) {
             dis.readValue(dis, attrs);
         } else if (dis.isExcludeBulkData()) {
@@ -246,7 +232,8 @@ public class SAXWriter implements ImageInputHandler {
                 } else {
                     byte[] b = dis.readValue();
                     if (tag == Tag.TransferSyntaxUID
-                            || tag == Tag.SpecificCharacterSet)
+                            || tag == Tag.SpecificCharacterSet
+                            || tag == Tag.PixelRepresentation)
                         attrs.setBytes(tag, vr, b);
                     if (vr.isInlineBinary())
                         writeInlineBinary(dis.bigEndian()
@@ -264,15 +251,15 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     private void addAttributes(int tag, VR vr, String privateCreator) {
-        if (null != privateCreator)
-            tag &= 0xffff00ff;
         if (includeKeyword) {
             String keyword = ElementDictionary.keywordOf(tag, privateCreator);
-            if (null != keyword && !keyword.isEmpty())
+            if (keyword != null && !keyword.isEmpty())
                 addAttribute("keyword", keyword);
         }
+        if (privateCreator != null)
+            tag &= 0xffff00ff;
         addAttribute("tag", Tag.toHexString(tag));
-        if (null != privateCreator)
+        if (privateCreator != null)
             addAttribute("privateCreator", privateCreator);
         addAttribute("vr", vr.name());
     }
@@ -289,31 +276,10 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
-    private void writeValues(VR vr, Object val, boolean bigEndian,
-                             SpecificCharacterSet cs) throws SAXException {
-        if (vr.isStringType())
-            val = vr.toStrings(val, bigEndian, cs);
-        int vm = vr.vmOf(val);
-        for (int i = 0; i < vm; i++) {
-            String s = vr.toString(val, bigEndian, i, null);
-            addAttribute("number", Integer.toString(i + 1));
-            if (vr == VR.PN) {
-                PersonName pn = new PersonName(s, true);
-                startElement("PersonName");
-                writePNGroup("Alphabetic", pn, PersonName.Group.Alphabetic);
-                writePNGroup("Ideographic", pn, PersonName.Group.Ideographic);
-                writePNGroup("Phonetic", pn, PersonName.Group.Phonetic);
-                endElement("PersonName");
-            } else {
-                writeElement("Value", s);
-            }
-        }
-    }
-
     @Override
     public void readValue(ImageInputStream dis, Fragments frags)
             throws IOException {
-        int len = dis.length();
+        long len = dis.unsignedLength();
         if (dis.isExcludeBulkData()) {
             dis.skipFully(len);
         } else try {
@@ -335,12 +301,35 @@ public class SAXWriter implements ImageInputHandler {
         }
     }
 
+    private void writeValues(VR vr, Object val, boolean bigEndian,
+                             SpecificCharacterSet cs) throws SAXException {
+        if (vr.isStringType())
+            val = vr.toStrings(val, bigEndian, cs);
+        int vm = vr.vmOf(val);
+        for (int i = 0; i < vm; i++) {
+            String s = vr.toString(val, bigEndian, i, null);
+            addAttribute("number", Integer.toString(i + 1));
+            if (vr == VR.PN) {
+                PersonName pn = new PersonName(s, true);
+                startElement("PersonName");
+                writePNGroup("Alphabetic", pn, PersonName.Group.Alphabetic);
+                writePNGroup("Ideographic", pn, PersonName.Group.Ideographic);
+                writePNGroup("Phonetic", pn, PersonName.Group.Phonetic);
+                endElement("PersonName");
+            } else {
+                startElement("Value");
+                if (s != null) writeText(s);
+                endElement("Value");
+            }
+        }
+    }
+
     private void writeInlineBinary(byte[] b) throws SAXException {
         startElement("InlineBinary");
         char[] buf = buffer;
         for (int off = 0; off < b.length; ) {
             int len = Math.min(b.length - off, BASE64_CHUNK_LENGTH);
-            Base64.encode(b, off, len, buf, 0);
+            Builder.encode(b, off, len, buf, 0);
             ch.characters(buf, 0, (len * 4 / 3 + 3) & ~3);
             off += len;
         }
@@ -349,24 +338,28 @@ public class SAXWriter implements ImageInputHandler {
 
     private void writeBulkData(BulkData bulkData)
             throws SAXException {
-        if (null != bulkData.getUUID())
+        if (bulkData.getUUID() != null)
             addAttribute("uuid", bulkData.getUUID());
-        if (null != bulkData.getURI())
+        if (bulkData.getURI() != null)
             addAttribute("uri", bulkData.getURI());
         startElement("BulkData");
         endElement("BulkData");
     }
 
     private void writeElement(String qname, String s) throws SAXException {
-        if (null != s) {
+        if (s != null) {
             startElement(qname);
-            char[] buf = buffer;
-            for (int off = 0, totlen = s.length(); off < totlen; ) {
-                int len = Math.min(totlen - off, buf.length);
-                s.getChars(off, off += len, buf, 0);
-                ch.characters(buf, 0, len);
-            }
+            writeText(s);
             endElement(qname);
+        }
+    }
+
+    private void writeText(String s) throws SAXException {
+        char[] buf = buffer;
+        for (int off = 0, totlen = s.length(); off < totlen; ) {
+            int len = Math.min(totlen - off, buf.length);
+            s.getChars(off, off += len, buf, 0);
+            ch.characters(buf, 0, len);
         }
     }
 

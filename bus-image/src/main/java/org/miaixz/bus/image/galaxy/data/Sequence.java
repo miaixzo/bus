@@ -33,7 +33,7 @@ import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.ListIterator;
 
 /**
  * @author Kimi Liu
@@ -41,12 +41,36 @@ import java.util.Collection;
  */
 public class Sequence extends ArrayList<Attributes> implements Value {
 
-    private final Attributes parent;
-    private int length = -1;
+    private static final long serialVersionUID = -1L;
 
-    Sequence(Attributes parent, int initialCapacity) {
+    private final Attributes parent;
+    private final String privateCreator;
+    private final int tag;
+    private volatile int length = -1;
+    private volatile boolean readOnly;
+
+    Sequence(Attributes parent, String privateCreator, int tag, int initialCapacity) {
         super(initialCapacity);
         this.parent = parent;
+        this.privateCreator = privateCreator;
+        this.tag = tag;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly() {
+        this.readOnly = true;
+        for (Attributes attrs : this) {
+            attrs.setReadOnly();
+        }
+    }
+
+    private void ensureModifiable() {
+        if (readOnly) {
+            throw new UnsupportedOperationException("read-only");
+        }
     }
 
     public final Attributes getParent() {
@@ -64,10 +88,11 @@ public class Sequence extends ArrayList<Attributes> implements Value {
                         "Item already contained by Sequence");
         }
         for (Attributes attrs : c)
-            attrs.setParent(parent);
+            attrs.setParent(parent, privateCreator, tag);
     }
 
     public void trimToSize(boolean recursive) {
+        ensureModifiable();
         super.trimToSize();
         if (recursive)
             for (Attributes attrs : this)
@@ -75,43 +100,59 @@ public class Sequence extends ArrayList<Attributes> implements Value {
     }
 
     @Override
+    public int indexOf(Object o) {
+        ListIterator<Attributes> it = listIterator();
+        while (it.hasNext())
+            if (it.next() == o)
+                return it.previousIndex();
+        return -1;
+    }
+
+    @Override
     public boolean add(Attributes attrs) {
-        return super.add(attrs.setParent(parent));
+        ensureModifiable();
+        return super.add(attrs.setParent(parent, privateCreator, tag));
     }
 
     @Override
     public void add(int index, Attributes attrs) {
-        super.add(index, attrs.setParent(parent));
+        ensureModifiable();
+        super.add(index, attrs.setParent(parent, privateCreator, tag));
     }
 
     @Override
     public boolean addAll(Collection<? extends Attributes> c) {
+        ensureModifiable();
         setParent(c);
         return super.addAll(c);
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends Attributes> c) {
+        ensureModifiable();
         setParent(c);
         return super.addAll(index, c);
     }
 
     @Override
     public void clear() {
+        ensureModifiable();
         for (Attributes attrs : this)
-            attrs.setParent(null);
+            attrs.setParent(null, null, 0);
         super.clear();
     }
 
     @Override
     public Attributes remove(int index) {
-        return super.remove(index).setParent(null);
+        ensureModifiable();
+        return super.remove(index).setParent(null, null, 0);
     }
 
     @Override
     public boolean remove(Object o) {
+        ensureModifiable();
         if (o instanceof Attributes && super.remove(o)) {
-            ((Attributes) o).setParent(null);
+            ((Attributes) o).setParent(null, null, 0);
             return true;
         }
         return false;
@@ -119,7 +160,8 @@ public class Sequence extends ArrayList<Attributes> implements Value {
 
     @Override
     public Attributes set(int index, Attributes attrs) {
-        return super.set(index, attrs.setParent(parent));
+        ensureModifiable();
+        return super.set(index, attrs.setParent(parent, privateCreator, tag));
     }
 
     @Override
@@ -164,7 +206,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
     }
 
     @Override
-    public byte[] toBytes(VR vr, boolean bigEndian) {
+    public byte[] toBytes(VR vr, boolean bigEndian) throws IOException {
         throw new UnsupportedOperationException();
     }
 

@@ -83,7 +83,7 @@ public abstract class SAXTransformer {
     private static SAXWriter getSAXWriter(TransformerHandler th, Result result,
                                           SetupTransformer setup) {
         th.setResult(result);
-        if (null != setup)
+        if (setup != null)
             setup.setup(th.getTransformer());
         return new SAXWriter(th);
     }

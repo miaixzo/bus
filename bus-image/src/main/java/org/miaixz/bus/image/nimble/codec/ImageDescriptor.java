@@ -35,6 +35,7 @@ import org.miaixz.bus.image.nimble.Photometric;
 /**
  * @author Kimi Liu
  * @since Java 17+
+ * @since Jul 2015
  */
 public final class ImageDescriptor {
 
@@ -86,7 +87,7 @@ public final class ImageDescriptor {
         return samples;
     }
 
-    public Photometric getPhotometric() {
+    public Photometric getPhotometricInterpretation() {
         return photometric;
     }
 
@@ -148,6 +149,10 @@ public final class ImageDescriptor {
 
     public boolean isMultiframeWithEmbeddedOverlays() {
         return embeddedOverlays.length > 0 && frames > 1;
+    }
+
+    public boolean is16BitsAllocated8BitsStored() {
+        return bitsAllocated == 16 && bitsStored == 8;
     }
 
 }

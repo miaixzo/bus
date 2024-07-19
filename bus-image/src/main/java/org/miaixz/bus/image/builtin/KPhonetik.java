@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KPhonetik implements FuzzyStr {
+public class KPhonetik implements FuzzyString {
 
     @Override
     public String toFuzzy(String s) {

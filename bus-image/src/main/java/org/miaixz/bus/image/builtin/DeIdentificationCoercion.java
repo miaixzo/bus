@@ -45,7 +45,7 @@ public class DeIdentificationCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(DeIdentifier.Option[] options, AttributesCoercion next) {
-        return null != options && options.length > 0
+        return options != null && options.length > 0
                 ? new DeIdentificationCoercion(new DeIdentifier(options), next)
                 : next;
     }
@@ -53,13 +53,13 @@ public class DeIdentificationCoercion implements AttributesCoercion {
     @Override
     public String remapUID(String uid) {
         String remappedUID = deIdentifier.remapUID(uid);
-        return null != next ? next.remapUID(remappedUID) : remappedUID;
+        return next != null ? next.remapUID(remappedUID) : remappedUID;
     }
 
     @Override
-    public void coerce(Attributes attrs, Attributes modified) {
+    public void coerce(Attributes attrs, Attributes modified) throws Exception {
         deIdentifier.deidentify(attrs);
-        if (null != next)
+        if (next != null)
             next.coerce(attrs, modified);
     }
 

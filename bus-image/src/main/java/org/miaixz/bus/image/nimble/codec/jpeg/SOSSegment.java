@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
@@ -105,9 +104,9 @@ public class SOSSegment {
         sb.append("SOS=[Ls=").append(getHeaderLength())
                 .append(", Ns=").append(numComponents);
         for (int i = 0; i < numComponents; i++) {
-            sb.append(", C").append(i + 1).append(Symbol.C_EQUAL).append(getComponentID(i))
-                    .append(", Td").append(i + 1).append(Symbol.C_EQUAL).append(getTd(i))
-                    .append(", Ta").append(i + 1).append(Symbol.C_EQUAL).append(getTa(i));
+            sb.append(", C").append(i + 1).append('=').append(getComponentID(i))
+                    .append(", Td").append(i + 1).append('=').append(getTd(i))
+                    .append(", Ta").append(i + 1).append('=').append(getTa(i));
         }
         sb.append(", Ss=").append(getSs())
                 .append(", Se=").append(getSe())
@@ -116,4 +115,5 @@ public class SOSSegment {
                 .append(']');
         return sb.toString();
     }
+
 }

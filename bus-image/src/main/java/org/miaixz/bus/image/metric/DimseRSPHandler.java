@@ -30,7 +30,7 @@ package org.miaixz.bus.image.metric;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -41,15 +41,16 @@ import java.io.IOException;
 public class DimseRSPHandler {
 
     private final int msgId;
-    private Presentation pc;
+    private PresentationContext pc;
     private volatile Timeout timeout;
-    private boolean stopOnPending;
+    private volatile boolean stopOnPending;
+    private volatile boolean canceled;
 
     public DimseRSPHandler(int msgId) {
         this.msgId = msgId;
     }
 
-    final void setPC(Presentation pc) {
+    public final void setPC(PresentationContext pc) {
         this.pc = pc;
     }
 
@@ -57,17 +58,22 @@ public class DimseRSPHandler {
         return msgId;
     }
 
-    final void setTimeout(Timeout timeout, boolean stopOnPending) {
+    public final void setTimeout(Timeout timeout, boolean stopOnPending) {
         this.timeout = timeout;
         this.stopOnPending = stopOnPending;
     }
 
-    boolean isStopOnPending() {
+    public boolean isStopOnPending() {
         return stopOnPending;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
     }
 
     public void cancel(Association as) throws IOException {
         as.cancel(pc, msgId);
+        canceled = true;
     }
 
     public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
@@ -79,8 +85,8 @@ public class DimseRSPHandler {
         stopTimeout(as);
     }
 
-    private void stopTimeout(Association as) {
-        if (null != timeout) {
+    public void stopTimeout(Association as) {
+        if (timeout != null) {
             timeout.stop();
             timeout = null;
         }

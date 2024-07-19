@@ -27,8 +27,9 @@
  */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ServiceLoader;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -36,6 +37,7 @@ import java.util.ServiceLoader;
 public abstract class ElementDictionary {
 
     private static final ServiceLoader<ElementDictionary> loader = ServiceLoader.load(ElementDictionary.class);
+    private static final Map<String, ElementDictionary> map = new HashMap<>();
     private final String privateCreator;
     private final Class<?> tagClass;
 
@@ -45,17 +47,24 @@ public abstract class ElementDictionary {
     }
 
     public static ElementDictionary getStandardElementDictionary() {
-        return StandardDictionary.INSTANCE;
+        return StandardElementDictionary.INSTANCE;
     }
 
-    public static ElementDictionary getElementDictionary(
-            String privateCreator) {
-        if (null != privateCreator)
-            synchronized (loader) {
-                for (ElementDictionary dict : loader)
-                    if (privateCreator.equals(dict.getPrivateCreator()))
-                        return dict;
-            }
+    public static ElementDictionary getElementDictionary(String privateCreator) {
+        if (privateCreator != null) {
+            ElementDictionary dict1 = map.get(privateCreator);
+            if (dict1 != null)
+                return dict1;
+            if (!map.containsKey(privateCreator))
+                synchronized (loader) {
+                    for (ElementDictionary dict : loader) {
+                        map.putIfAbsent(dict.getPrivateCreator(), dict);
+                        if (privateCreator.equals(dict.getPrivateCreator()))
+                            return dict;
+                    }
+                    map.put(privateCreator, null);
+                }
+        }
         return getStandardElementDictionary();
     }
 
@@ -94,7 +103,7 @@ public abstract class ElementDictionary {
     }
 
     public int tagForKeyword(String keyword) {
-        if (null != tagClass)
+        if (tagClass != null)
             try {
                 return tagClass.getField(keyword).getInt(null);
             } catch (Exception ignore) {

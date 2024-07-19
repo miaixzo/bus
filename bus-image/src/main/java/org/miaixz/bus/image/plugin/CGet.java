@@ -28,13 +28,18 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.*;
+import org.miaixz.bus.image.galaxy.ImageParam;
+import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.Progress;
+import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Map.Entry;
@@ -54,12 +59,13 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Node callingNode,
-                                 Node calledNode,
-                                 Progress progress,
-                                 File outputDir,
-                                 Args... keys) {
-        return process(new Args(), callingNode, calledNode, progress, outputDir, keys);
+    public static Status process(
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
+            ImageParam... keys) {
+        return process(null, callingNode, calledNode, progress, outputDir, keys);
     }
 
     /**
@@ -71,12 +77,13 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args args,
-                                 Node callingNode,
-                                 Node calledNode,
-                                 Progress progress,
-                                 File outputDir,
-                                 Args... keys) {
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
+            ImageParam... keys) {
         return process(args, callingNode, calledNode, progress, outputDir, null, keys);
     }
 
@@ -90,45 +97,54 @@ public class CGet {
      * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args args,
-                                 Node callingNode,
-                                 Node calledNode,
-                                 Progress progress,
-                                 File outputDir,
-                                 URL sopClassURL,
-                                 Args... keys) {
-        if (null == callingNode || null == calledNode || null == outputDir) {
+    public static Status process(
+            Args args,
+            Node callingNode,
+            Node calledNode,
+            ImageProgress progress,
+            File outputDir,
+            URL sopClassURL,
+            ImageParam... keys) {
+        if (callingNode == null || calledNode == null || outputDir == null) {
             throw new IllegalArgumentException("callingNode, calledNode or outputDir cannot be null!");
         }
+        GetSCU getSCU = null;
+        Args options = args == null ? new Args() : args;
 
         try {
-            GetSCU getSCU = new GetSCU(progress);
+            getSCU = new GetSCU(progress);
             Connection remote = getSCU.getRemoteConnection();
             Connection conn = getSCU.getConnection();
-            args.configureBind(getSCU.getAAssociateRQ(), remote, calledNode);
-            args.configureBind(getSCU.getApplicationEntity(), conn, callingNode);
+            options.configureConnect(getSCU.getAAssociateRQ(), remote, calledNode);
+            options.configureBind(getSCU.getApplicationEntity(), conn, callingNode);
+            Centre service = new Centre(getSCU.getDevice());
 
-            Centre centre = new Centre(getSCU.getDevice());
+            // configure
+            options.configure(conn);
+            options.configureTLS(conn, remote);
 
-            args.configure(conn);
-            args.configureTLS(conn, remote);
-
-            getSCU.setPriority(args.getPriority());
+            getSCU.setPriority(options.getPriority());
 
             getSCU.setStorageDirectory(outputDir);
 
-            getSCU.setInformationModel(getInformationModel(args), args.getTsuidOrder(),
-                    args.getTypes().contains(Option.Type.RELATIONAL));
+            getSCU.setInformationModel(
+                    getInformationModel(options),
+                    options.getTsuidOrder(),
+                    options.getQueryOptions().contains(QueryOption.RELATIONAL));
 
             configureRelatedSOPClass(getSCU, sopClassURL);
 
-            for (Args p : keys) {
-                getSCU.addKey(p.getTag(), p.getValues());
+            Status dcmState = getSCU.getState();
+            for (ImageParam p : keys) {
+                String[] values = p.getValues();
+                getSCU.addKey(p.getTag(), values);
+                if (values != null && values.length > 0) {
+                    dcmState.addDicomMatchingKeys(p);
+                }
             }
 
-            centre.start(true);
+            service.start();
             try {
-                Status dcmState = getSCU.getState();
                 long t1 = System.currentTimeMillis();
                 getSCU.open();
                 long t2 = System.currentTimeMillis();
@@ -136,45 +152,62 @@ public class CGet {
                 Builder.forceGettingAttributes(dcmState, getSCU);
                 long t3 = System.currentTimeMillis();
                 String timeMsg =
-                        MessageFormat.format("DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
-                                getSCU.getAAssociateRQ().getCallingAET(), getSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        MessageFormat.format(
+                                "DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
+                                getSCU.getAAssociateRQ().getCallingAET(),
+                                getSCU.getAAssociateRQ().getCalledAET(),
+                                t2 - t1,
                                 t3 - t2);
-                return Status.build(dcmState, timeMsg, null);
+                dcmState = Status.buildMessage(dcmState, timeMsg, null);
+                dcmState.addProcessTime(t1, t2, t3);
+                dcmState.setBytesSize(getSCU.getTotalSize());
+                return dcmState;
             } catch (Exception e) {
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
                 Logger.error("getscu", e);
                 Builder.forceGettingAttributes(getSCU.getState(), getSCU);
-                return Status.build(getSCU.getState(), null, e);
+                return Status.buildMessage(getSCU.getState(), null, e);
             } finally {
-                Builder.close(getSCU);
-                centre.stop();
+                IoKit.close(getSCU);
+                service.stop();
             }
         } catch (Exception e) {
             Logger.error("getscu", e);
-            return new Status(Status.UnableToProcess,
-                    "DICOM Get failed : " + e.getMessage(), null);
+            return Status.buildMessage(
+                    new Status(Status.UnableToProcess,
+                            "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
+                            null),
+                    null,
+                    e);
         }
     }
 
     private static void configureRelatedSOPClass(GetSCU getSCU, URL url) {
         Properties p = new Properties();
         try {
-            if (null != url) {
+            if (url != null) {
+                p.load(url.openStream());
+            } else {
+                url = ResourceKit.getResourceUrl("sop-classes-tcs.properties", StoreSCP.class);
                 p.load(url.openStream());
             }
-            for (Entry<Object, Object> entry : p.entrySet()) {
-                configureStorageSOPClass(getSCU, (String) entry.getKey(), (String) entry.getValue());
-            }
-        } catch (Exception e) {
-            Logger.error("Read sop classes", e);
+        } catch (IOException e) {
+            Logger.error("Cannot read sop-classes", e);
+        }
+
+        for (Entry<Object, Object> entry : p.entrySet()) {
+            configureStorageSOPClass(getSCU, (String) entry.getKey(), (String) entry.getValue());
         }
     }
 
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = StringKit.splitToArray(tsuids, Symbol.SEMICOLON);
+        String[] ts = StringKit.splitToArray(tsuids, ";");
         for (int i = 0; i < ts.length; i++) {
-            ts[i] = Builder.toUID(ts[i]);
+            ts[i] = UID.toUID(ts[i]);
         }
-        getSCU.addOfferedStorageSOPClass(Builder.toUID(cuid), ts);
+        getSCU.addOfferedStorageSOPClass(UID.toUID(cuid), ts);
     }
 
     private static GetSCU.InformationModel getInformationModel(Args options) {

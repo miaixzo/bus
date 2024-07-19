@@ -32,13 +32,14 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.DirReader;
-import org.miaixz.bus.image.galaxy.DirWriter;
+import org.miaixz.bus.image.builtin.FilesetInfo;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.galaxy.media.ImageDirReader;
+import org.miaixz.bus.image.galaxy.media.ImageDirWriter;
 import org.miaixz.bus.image.galaxy.media.RecordFactory;
 import org.miaixz.bus.image.galaxy.media.RecordType;
 import org.miaixz.bus.logger.Logger;
@@ -48,7 +49,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -70,32 +70,28 @@ public class DcmDir {
     private boolean checkDuplicate;
 
     private File file;
-    private DirReader in;
-    private DirWriter out;
+    private ImageDirReader in;
+    private ImageDirWriter out;
     private RecordFactory recFact;
 
     private String csv;
-    private String recordConfig;
     private char delim;
     private char quote;
 
     private int readCSVFile(int num) throws Exception {
-        if (null != recordConfig) {
-            loadCustomConfiguration();
-        }
         try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
             CSVParser parser = new CSVParser(delim, quote, br.readLine());
             String nextLine;
-            while (null != (nextLine = br.readLine())) {
+            while ((nextLine = br.readLine()) != null) {
                 checkOut();
                 checkRecordFactory();
                 Attributes dataset = parser.toDataset(nextLine);
-                if (null != dataset) {
+                if (dataset != null) {
                     String iuid = dataset.getString(Tag.SOPInstanceUID);
                     char prompt = Symbol.C_DOT;
                     Attributes fmi = null;
-                    if (null != iuid) {
-                        fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian);
+                    if (iuid != null) {
+                        fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian.uid);
                         prompt = 'F';
                     }
                     num = addRecords(dataset, num, null, prompt, iuid, fmi);
@@ -107,7 +103,7 @@ public class DcmDir {
 
     private void compact(File f, File bak) throws IOException {
         File tmp = File.createTempFile("DICOMDIR", null, f.getParentFile());
-        DirReader r = new DirReader(f);
+        ImageDirReader r = new ImageDirReader(f);
         try {
             fsInfo.setFilesetUID(r.getFileSetUID());
             fsInfo.setFilesetID(r.getFileSetID());
@@ -131,24 +127,22 @@ public class DcmDir {
 
     private void rename(File from, File to) throws IOException {
         if (!from.renameTo(to))
-            throw new IOException(
-                    MessageFormat.format("failed to rename {0} to {1}",
-                            from, to));
+            throw new IOException(to.getPath());
     }
 
-    private void copyFrom(DirReader r) throws IOException {
+    private void copyFrom(ImageDirReader r) throws IOException {
         Attributes rec = r.findFirstRootDirectoryRecordInUse(false);
-        while (null != rec) {
+        while (rec != null) {
             copyChildsFrom(r, rec,
                     out.addRootDirectoryRecord(new Attributes(rec)));
             rec = r.findNextDirectoryRecordInUse(rec, false);
         }
     }
 
-    private void copyChildsFrom(DirReader r, Attributes src,
+    private void copyChildsFrom(ImageDirReader r, Attributes src,
                                 Attributes dst) throws IOException {
         Attributes rec = r.findLowerDirectoryRecordInUse(src, false);
-        while (null != rec) {
+        while (rec != null) {
             copyChildsFrom(r, rec,
                     out.addLowerDirectoryRecord(dst, new Attributes(rec)));
             rec = r.findNextDirectoryRecordInUse(rec, false);
@@ -193,24 +187,24 @@ public class DcmDir {
 
     private void openForReadOnly(File file) throws IOException {
         this.file = file;
-        in = new DirReader(file);
+        in = new ImageDirReader(file);
     }
 
     private void create(File file) throws IOException {
         this.file = file;
-        DirWriter.createEmptyDirectory(file,
+        ImageDirWriter.createEmptyDirectory(file,
                 UID.createUIDIfNull(fsInfo.getFilesetUID()),
                 fsInfo.getFilesetID(),
                 fsInfo.getDescriptorFile(),
                 fsInfo.getDescriptorFileCharset());
-        in = out = DirWriter.open(file);
+        in = out = ImageDirWriter.open(file);
         out.setEncodingOptions(encOpts);
         setCheckDuplicate(false);
     }
 
     private void open(File file) throws IOException {
         this.file = file;
-        in = out = DirWriter.open(file);
+        in = out = ImageDirWriter.open(file);
         if (!origSeqLength)
             out.setEncodingOptions(encOpts);
         setCheckDuplicate(true);
@@ -227,15 +221,15 @@ public class DcmDir {
     }
 
     private void list(final String header, final Attributes attrs) {
-        Logger.info(header);
-        Logger.info(attrs.toString(Integer.MAX_VALUE, width));
+        System.out.println(header);
+        System.out.println(attrs.toString(Integer.MAX_VALUE, width));
     }
 
     private void list(Attributes rec, StringBuilder index)
             throws IOException {
         int indexLen = index.length();
         int i = 1;
-        while (null != rec) {
+        while (rec != null) {
             index.append(i++).append(Symbol.C_DOT);
             list(heading(rec, index), rec);
             list(inUse
@@ -280,27 +274,23 @@ public class DcmDir {
             din = new ImageInputStream(f);
             din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             fmi = din.readFileMetaInformation();
-            dataset = din.readDataset(-1, Tag.PixelData);
+            dataset = din.readDatasetUntilPixelData();
         } catch (IOException e) {
-            Logger.info(
-                    MessageFormat.format("failed to parse {0}: {1}",
-                            f, e.getMessage()));
             return 0;
         } finally {
-            if (null != din)
+            if (din != null)
                 try {
                     din.close();
                 } catch (Exception ignore) {
                 }
         }
         char prompt = Symbol.C_DOT;
-        if (null == fmi) {
-            fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian);
+        if (fmi == null) {
+            fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian.uid);
             prompt = 'F';
         }
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID, null);
-        if (null == iuid) {
-            Logger.info(MessageFormat.format("skip-file", f));
+        if (iuid == null) {
             return 0;
         }
 
@@ -313,40 +303,41 @@ public class DcmDir {
         String styuid = dataset.getString(Tag.StudyInstanceUID, null);
         String seruid = dataset.getString(Tag.SeriesInstanceUID, null);
 
-        if (null != styuid) {
-            if (null == pid) {
+        if (styuid != null) {
+            if (pid == null) {
                 dataset.setString(Tag.PatientID, VR.LO, pid = styuid);
                 prompt = prompt == 'F' ? 'P' : 'p';
             }
             Attributes patRec = in.findPatientRecord(pid);
-            if (null == patRec) {
+            if (patRec == null) {
                 patRec = recFact.createRecord(RecordType.PATIENT, null,
                         dataset, null, null);
                 out.addRootDirectoryRecord(patRec);
                 num++;
             }
             Attributes studyRec = in.findStudyRecord(patRec, styuid);
-            if (null == studyRec) {
+            if (studyRec == null) {
                 studyRec = recFact.createRecord(RecordType.STUDY, null,
                         dataset, null, null);
                 out.addLowerDirectoryRecord(patRec, studyRec);
                 num++;
             }
 
-            if (null != seruid) {
+            if (seruid != null) {
                 Attributes seriesRec = in.findSeriesRecord(studyRec, seruid);
-                if (null == seriesRec) {
+                if (seriesRec == null) {
                     seriesRec = recFact.createRecord(RecordType.SERIES, null,
                             dataset, null, null);
                     out.addLowerDirectoryRecord(studyRec, seriesRec);
                     num++;
                 }
 
-                if (null != iuid) {
+                if (iuid != null) {
                     Attributes instRec;
                     if (checkDuplicate) {
                         instRec = in.findLowerInstanceRecord(seriesRec, false, iuid);
-                        if (null != instRec) {
+                        if (instRec != null) {
+                            System.out.print('-');
                             return 0;
                         }
                     }
@@ -356,9 +347,9 @@ public class DcmDir {
                 }
             }
         } else {
-            if (null != iuid) {
+            if (iuid != null) {
                 if (checkDuplicate) {
-                    if (null != in.findRootInstanceRecord(false, iuid)) {
+                    if (in.findRootInstanceRecord(false, iuid) != null) {
                         return 0;
                     }
                 }
@@ -388,51 +379,49 @@ public class DcmDir {
             din = new ImageInputStream(f);
             din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             Attributes fmi = din.readFileMetaInformation();
-            Attributes dataset = din.readDataset(-1, Tag.StudyID);
-            iuid = (null != fmi)
+            Attributes dataset = din.readDataset(o -> o.tag() > Tag.SeriesInstanceUID);
+            iuid = (fmi != null)
                     ? fmi.getString(Tag.MediaStorageSOPInstanceUID, null)
                     : dataset.getString(Tag.SOPInstanceUID, null);
-            if (null == iuid) {
-                Logger.info(MessageFormat.format("skip-file", f));
+            if (iuid == null) {
                 return 0;
             }
             pid = dataset.getString(Tag.PatientID, null);
             styuid = dataset.getString(Tag.StudyInstanceUID, null);
             seruid = dataset.getString(Tag.SeriesInstanceUID, null);
         } catch (IOException e) {
-            Logger.info(
-                    MessageFormat.format("failed to parse {0}: {1}",
-                            f, e.getMessage()));
             return 0;
         } finally {
-            if (null != din)
+            if (din != null)
                 try {
                     din.close();
                 } catch (Exception ignore) {
                 }
         }
         Attributes instRec;
-        if (null != styuid && null != seruid) {
-            Attributes patRec = in.findPatientRecord(null == pid ? styuid : pid);
-            if (null == patRec) {
+        if (styuid != null && seruid != null) {
+            Attributes patRec =
+                    in.findPatientRecord(pid == null ? styuid : pid);
+            if (patRec == null) {
                 return 0;
             }
             Attributes studyRec = in.findStudyRecord(patRec, styuid);
-            if (null == studyRec) {
+            if (studyRec == null) {
                 return 0;
             }
             Attributes seriesRec = in.findSeriesRecord(studyRec, seruid);
-            if (null == seriesRec) {
+            if (seriesRec == null) {
                 return 0;
             }
             instRec = in.findLowerInstanceRecord(seriesRec, false, iuid);
         } else {
             instRec = in.findRootInstanceRecord(false, iuid);
         }
-        if (null == instRec) {
+        if (instRec == null) {
             return 0;
         }
         out.deleteRecord(instRec);
+        System.out.print('x');
         return 1;
     }
 
@@ -447,22 +436,22 @@ public class DcmDir {
     }
 
     private void checkIn() {
-        if (null == in)
-            throw new IllegalStateException("no open file");
+        if (in == null)
+            throw new IllegalStateException("no-open-file");
     }
 
     private void checkOut() {
         checkIn();
-        if (null == out)
-            throw new IllegalStateException("file opened for read-only");
+        if (out == null)
+            throw new IllegalStateException("read-only");
     }
 
     private void checkRecordFactory() {
-        if (null == recFact)
-            throw new IllegalStateException("no Record Factory initialized");
+        if (recFact == null)
+            throw new IllegalStateException("no-record-factory");
     }
 
-    private void loadCustomConfiguration() {
+    private void loadCustomConfiguration(String recordConfig) {
         try {
             recFact.loadConfiguration(Paths.get(recordConfig).toString());
         } catch (Exception e) {
@@ -478,7 +467,7 @@ public class DcmDir {
 
         CSVParser(char delim, char quote, String header) {
             quot = quote;
-            String regex = delim + "(?=(?:[^//" + quot + "]*//" + quot + "[^//" + quot + "]*//" + quot + ")*[^//" + quot + "]*$)";
+            String regex = delim + "(?=(?:[^\\/" + quot + "]*\\/" + quot + "[^\\/" + quot + "]*\\/" + quot + ")*[^\\/" + quot + "]*$)";
             pattern = Pattern.compile(regex);
             String[] headers = parseFields(header);
             tags = new int[headers.length];
@@ -515,47 +504,6 @@ public class DcmDir {
                     .replace(String.valueOf(doubleQuote), String.valueOf(quot))
                     : field;
         }
-    }
-
-    public class FilesetInfo {
-
-        private String uid;
-        private String id;
-        private File descFile;
-        private String descFileCharset;
-
-        public final String getFilesetUID() {
-            return uid;
-        }
-
-        public final void setFilesetUID(String uid) {
-            this.uid = uid;
-        }
-
-        public final String getFilesetID() {
-            return id;
-        }
-
-        public final void setFilesetID(String id) {
-            this.id = id;
-        }
-
-        public final File getDescriptorFile() {
-            return descFile;
-        }
-
-        public final void setDescriptorFile(File descFile) {
-            this.descFile = descFile;
-        }
-
-        public final String getDescriptorFileCharset() {
-            return descFileCharset;
-        }
-
-        public final void setDescriptorFileCharset(String descFileCharset) {
-            this.descFileCharset = descFileCharset;
-        }
-
     }
 
 }

@@ -34,7 +34,6 @@ import java.util.Objects;
  * @since Java 17+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {
-
     private final int[] nullifyTags;
     private final AttributesCoercion next;
 
@@ -44,28 +43,28 @@ public class NullifyAttributesCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(int[] nullifyTags, AttributesCoercion next) {
-        return null != nullifyTags && nullifyTags.length > 0
+        return nullifyTags != null && nullifyTags.length > 0
                 ? new NullifyAttributesCoercion(nullifyTags, next)
                 : next;
     }
 
     @Override
     public String remapUID(String uid) {
-        return null != next ? next.remapUID(uid) : uid;
+        return next != null ? next.remapUID(uid) : uid;
     }
 
     @Override
-    public void coerce(Attributes attrs, Attributes modified) {
+    public void coerce(Attributes attrs, Attributes modified) throws Exception {
         VR.Holder vr = new VR.Holder();
         for (int nullifyTag : nullifyTags) {
             Object value = attrs.getValue(nullifyTag, vr);
-            if (null != value && value != Value.NULL) {
-                if (null != modified)
-                    modified.setValue(nullifyTag, vr.vr, attrs.remove(nullifyTag));
-                attrs.setNull(nullifyTag, vr.vr);
+            if (value != null && value != Value.NULL) {
+                Object originalValue = attrs.setNull(nullifyTag, vr.vr);
+                if (modified != null)
+                    modified.setValue(nullifyTag, vr.vr, originalValue);
             }
         }
-        if (null != next)
+        if (next != null)
             next.coerce(attrs, modified);
     }
 

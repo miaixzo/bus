@@ -27,15 +27,12 @@
  */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -105,7 +102,7 @@ public class SampledColorModel extends ColorModel {
 
     @Override
     public int getRed(Object inData) {
-        return getRGB(inData) >> Normal._16;
+        return getRGB(inData) >> 16;
     }
 
     @Override
@@ -115,7 +112,7 @@ public class SampledColorModel extends ColorModel {
         float[] fba = new float[]{(ba[0] & 0xFF) / 255f,
                 (ba[1] & 0xFF) / 255f, (ba[2] & 0xFF) / 255f};
         float[] rgb = cs.toRGB(fba);
-        int ret = (((int) (rgb[0] * 255)) << Normal._16)
+        int ret = (((int) (rgb[0] * 255)) << 16)
                 | (((int) (rgb[1] * 255)) << 8) | (((int) (rgb[2] * 255)));
         return ret;
     }

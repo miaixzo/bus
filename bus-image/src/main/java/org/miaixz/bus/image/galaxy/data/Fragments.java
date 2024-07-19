@@ -38,18 +38,55 @@ import java.util.Collection;
 import java.util.ListIterator;
 
 /**
+ * Fragments are used for encapsulation of an encoded (=compressed) pixel data
+ * stream into the Pixel Data (7FE0,0010) portion of the DICOM Data Set. They
+ * are encoded as a sequence of items with Value Representation OB.
+ * Each item is either a byte[], {@link BulkData} or {@link Value#NULL}.
+ *
+ * <p>
+ * The first Item in the sequence of items before the encoded Pixel Data Stream
+ * is a Basic Offset Table item. The value of the Basic Offset Table, however,
+ * is not required to be present. The first item is then {@link Value#NULL}.
+ * </p>
+ *
+ * <p>
+ * Depending on the transfer syntax, a frame may be entirely contained within a
+ * single fragment, or may span multiple fragments to support buffering during
+ * compression or to avoid exceeding the maximum size of a fixed length
+ * fragment. A recipient can detect fragmentation of frames by comparing the
+ * number of fragments (the number of Items minus one for the Basic Offset
+ * Table) with the number of frames.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Fragments extends ArrayList<Object> implements Value {
 
+    private static final long serialVersionUID = -6667210062541083610L;
+
     private final VR vr;
     private final boolean bigEndian;
+    private volatile boolean readOnly;
 
     public Fragments(VR vr, boolean bigEndian, int initialCapacity) {
         super(initialCapacity);
         this.vr = vr;
         this.bigEndian = bigEndian;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly() {
+        this.readOnly = true;
+    }
+
+    private void ensureModifiable() {
+        if (readOnly) {
+            throw new UnsupportedOperationException("read-only");
+        }
     }
 
     public final VR vr() {
@@ -73,9 +110,10 @@ public class Fragments extends ArrayList<Object> implements Value {
 
     @Override
     public void add(int index, Object frag) {
+        ensureModifiable();
         super.add(index,
-                null == frag || (frag instanceof byte[]) && ((byte[]) frag).length == 0
-                        ? NULL
+                frag == null || (frag instanceof byte[]) && ((byte[]) frag).length == 0
+                        ? Value.NULL
                         : frag);
     }
 
@@ -86,6 +124,7 @@ public class Fragments extends ArrayList<Object> implements Value {
 
     @Override
     public boolean addAll(int index, Collection<? extends Object> c) {
+        ensureModifiable();
         for (Object o : c)
             add(index++, o);
         return !c.isEmpty();
@@ -117,20 +156,20 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     @Override
-    public byte[] toBytes(VR vr, boolean bigEndian) {
+    public byte[] toBytes(VR vr, boolean bigEndian) throws IOException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (null == object)
+        if (obj == null)
             return false;
-        if (getClass() != object.getClass())
+        if (getClass() != obj.getClass())
             return false;
 
-        Fragments other = (Fragments) object;
+        Fragments other = (Fragments) obj;
         if (bigEndian != other.bigEndian)
             return false;
         if (vr != other.vr)
@@ -156,14 +195,14 @@ public class Fragments extends ArrayList<Object> implements Value {
             hashCode = prime * hashCode + itemHashCode(e);
 
         hashCode = prime * hashCode + (bigEndian ? 1231 : 1237);
-        hashCode = prime * hashCode + ((null == vr) ? 0 : vr.hashCode());
+        hashCode = prime * hashCode + ((vr == null) ? 0 : vr.hashCode());
         return hashCode;
     }
 
     private boolean itemsEqual(Object o1, Object o2) {
 
-        if (null == o1) {
-            return null == o2;
+        if (o1 == null) {
+            return o2 == null;
         } else {
             if (o1 instanceof byte[]) {
                 if (o2 instanceof byte[] && ((byte[]) o1).length == ((byte[]) o2).length) {
@@ -178,7 +217,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     private int itemHashCode(Object e) {
-        if (null == e) {
+        if (e == null) {
             return 0;
         } else {
             if (e instanceof byte[])

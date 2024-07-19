@@ -35,6 +35,8 @@ import java.awt.color.ColorSpace;
  */
 public final class YBRColorSpace extends ColorSpace {
 
+    private static final long serialVersionUID = -1L;
+
     private final ColorSpace csRGB;
     private final YBR ybr;
 

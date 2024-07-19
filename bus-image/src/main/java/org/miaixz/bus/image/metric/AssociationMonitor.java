@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRJ;
+import org.miaixz.bus.image.metric.pdu.AAssociateRJ;
 
 /**
  * @author Kimi Liu

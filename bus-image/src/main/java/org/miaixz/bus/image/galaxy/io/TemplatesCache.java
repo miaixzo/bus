@@ -32,7 +32,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import java.util.HashMap;
 
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -44,14 +43,14 @@ public class TemplatesCache {
     private final HashMap<String, Templates> map = new HashMap<>();
 
     public static synchronized TemplatesCache getDefault() {
-        if (null == defaultCache) {
+        if (defaultCache == null) {
             defaultCache = new TemplatesCache();
         }
         return defaultCache;
     }
 
     public static synchronized void setDefault(TemplatesCache cache) {
-        if (null == cache) {
+        if (cache == null) {
             throw new NullPointerException();
         }
         defaultCache = cache;
@@ -63,7 +62,7 @@ public class TemplatesCache {
 
     public Templates get(String uri) throws TransformerConfigurationException {
         Templates tpl = map.get(uri);
-        if (null == tpl)
+        if (tpl == null)
             map.put(uri, tpl = SAXTransformer.newTemplates(new StreamSource(uri)));
         return tpl;
     }

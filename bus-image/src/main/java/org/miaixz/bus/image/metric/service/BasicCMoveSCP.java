@@ -32,8 +32,7 @@ import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Commands;
-import org.miaixz.bus.image.metric.ImageException;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -41,27 +40,27 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BasicCMoveSCP extends AbstractService {
+public class BasicCMoveSCP extends AbstractImageService {
 
     public BasicCMoveSCP(String... sopClasses) {
         super(sopClasses);
     }
 
     @Override
-    public void onDimse(Association as, Presentation pc, Dimse dimse,
-                        Attributes cmd, Attributes keys) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
+                          Attributes cmd, Attributes keys) throws IOException {
         if (dimse != Dimse.C_MOVE_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ImageServiceException(Status.UnrecognizedOperation);
 
-        Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
-        if (null != retrieve)
-            as.getApplicationEntity().getDevice().execute(retrieve);
+        RetrieveTask retrieveTask = calculateMatches(as, pc, cmd, keys);
+        if (retrieveTask != null)
+            as.getApplicationEntity().getDevice().execute(retrieveTask);
         else
             as.tryWriteDimseRSP(pc, Commands.mkCMoveRSP(cmd, Status.Success));
     }
 
-    protected Retrieve calculateMatches(Association as, Presentation pc,
-                                        Attributes rq, Attributes keys) {
+    protected RetrieveTask calculateMatches(Association as, PresentationContext pc,
+                                            Attributes rq, Attributes keys) {
         return null;
     }
 

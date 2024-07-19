@@ -28,19 +28,29 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.image.*;
+import org.miaixz.bus.image.Device;
+import org.miaixz.bus.image.Status;
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
+import org.miaixz.bus.image.galaxy.data.Visitor;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.galaxy.io.SAXReader;
 import org.miaixz.bus.image.galaxy.io.SAXWriter;
-import org.miaixz.bus.image.metric.*;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.Association;
+import org.miaixz.bus.image.metric.Connection;
+import org.miaixz.bus.image.metric.DimseRSPHandler;
+import org.miaixz.bus.image.metric.QueryOption;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 import javax.xml.XMLConstants;
@@ -65,7 +75,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FindSCU extends Device implements AutoCloseable {
+public class FindSCU implements AutoCloseable {
 
     private final Device device = new Device("findscu");
     private final ApplicationEntity ae = new ApplicationEntity("FINDSCU");
@@ -96,7 +106,7 @@ public class FindSCU extends Device implements AutoCloseable {
         device.addConnection(conn);
         device.addApplicationEntity(ae);
         ae.addConnection(conn);
-        state = new Status(new Progress());
+        state = new Status(new ImageProgress());
     }
 
     static void mergeKeys(Attributes attrs, Attributes keys) {
@@ -112,15 +122,16 @@ public class FindSCU extends Device implements AutoCloseable {
         this.priority = priority;
     }
 
-    public final void setInformationModel(InformationModel model, String[] tss, EnumSet<Option.Type> types) {
+    public final void setInformationModel(InformationModel model, String[] tss, EnumSet<QueryOption> queryOptions) {
         this.model = model;
-        rq.addPresentationContext(new Presentation(1, model.cuid, tss));
-        if (!types.isEmpty()) {
-            model.adjustQueryOptions(types);
-            rq.addExtendedNegotiate(
-                    new ExtendedNegotiate(model.cuid, Option.Type.toExtendedNegotiationInformation(types)));
+        rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
+        if (!queryOptions.isEmpty()) {
+            model.adjustQueryOptions(queryOptions);
+            rq.addExtendedNegotiation(
+                    new ExtendedNegotiation(
+                            model.cuid, QueryOption.toExtendedNegotiationInformation(queryOptions)));
         }
-        if (null != model.level) {
+        if (model.level != null) {
             addLevel(model.level);
         }
     }
@@ -194,13 +205,17 @@ public class FindSCU extends Device implements AutoCloseable {
         return keys;
     }
 
-    public void open() throws IOException, InterruptedException, GeneralSecurityException {
+    public void open()
+            throws IOException,
+            InterruptedException,
+            InternalException,
+            GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (null != as && as.isReadyForDataTransfer()) {
+        if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
         }
@@ -220,7 +235,7 @@ public class FindSCU extends Device implements AutoCloseable {
                 attrs = dis.readDataset(-1, -1);
             }
         }
-        if (null != inFilter) {
+        if (inFilter != null) {
             attrs = new Attributes(inFilter.length + 1);
             attrs.addSelected(attrs, inFilter);
         }
@@ -233,31 +248,32 @@ public class FindSCU extends Device implements AutoCloseable {
     }
 
     private void query(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
+        DimseRSPHandler rspHandler =
+                new DimseRSPHandler(as.nextMessageID()) {
 
-            int cancelAfter = FindSCU.this.cancelAfter;
-            int numMatches;
+                    int cancelAfter;
+                    int numMatches;
 
-            @Override
-            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                super.onDimseRSP(as, cmd, data);
-                int status = cmd.getInt(Tag.Status, -1);
-                if (Status.isPending(status)) {
-                    FindSCU.this.onResult(data);
-                    ++numMatches;
-                    if (cancelAfter != 0 && numMatches >= cancelAfter) {
-                        try {
-                            cancel(as);
-                            cancelAfter = 0;
-                        } catch (IOException e) {
-                            Logger.error("Building response", e);
+                    @Override
+                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                        super.onDimseRSP(as, cmd, data);
+                        int status = cmd.getInt(Tag.Status, -1);
+                        if (Status.isPending(status)) {
+                            onResult(data);
+                            ++numMatches;
+                            if (cancelAfter != 0 && numMatches >= cancelAfter) {
+                                try {
+                                    cancel(as);
+                                    cancelAfter = 0;
+                                } catch (IOException e) {
+                                    Logger.error("Building response", e);
+                                }
+                            }
+                        } else {
+                            state.setStatus(status);
                         }
                     }
-                } else {
-                    state.setStatus(status);
-                }
-            }
-        };
+                };
 
         query(keys, rspHandler);
     }
@@ -266,26 +282,28 @@ public class FindSCU extends Device implements AutoCloseable {
         query(keys, rspHandler);
     }
 
-    private void query(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
+    private void query(Attributes keys, DimseRSPHandler rspHandler)
+            throws IOException, InterruptedException {
         as.cfind(model.cuid, priority, keys, null, rspHandler);
     }
 
     private void onResult(Attributes data) {
-        state.setList(data);
+        state.addDicomRSP(data);
         int numMatches = totNumMatches.incrementAndGet();
-        if (null == outDir) {
+        if (outDir == null) {
             return;
         }
 
         try {
-            if (null == out) {
+            if (out == null) {
                 File f = new File(outDir, fname(numMatches));
                 out = new BufferedOutputStream(new FileOutputStream(f));
             }
             if (xml) {
                 writeAsXML(data, out);
             } else {
-                ImageOutputStream dos = new ImageOutputStream(out, UID.ImplicitVRLittleEndian);
+                // Do not close DicomOutputStream until catOut is false. Only "out" needs to be closed
+                ImageOutputStream dos = new ImageOutputStream(out, UID.ImplicitVRLittleEndian.uid); // NOSONAR
                 dos.writeDataset(null, data);
             }
             out.flush();
@@ -319,16 +337,16 @@ public class FindSCU extends Device implements AutoCloseable {
 
     private TransformerHandler getTransformerHandler() throws Exception {
         SAXTransformerFactory tf = saxtf;
-        if (null == tf) {
+        if (tf == null) {
             saxtf = tf = (SAXTransformerFactory) TransformerFactory.newInstance();
             tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         }
-        if (null == xsltFile) {
+        if (xsltFile == null) {
             return tf.newTransformerHandler();
         }
 
         Templates tpls = xsltTpls;
-        if (null == tpls) {
+        if (tpls == null) {
             xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
         }
 
@@ -344,13 +362,15 @@ public class FindSCU extends Device implements AutoCloseable {
     }
 
     public enum InformationModel {
-        PatientRoot(UID.PatientRootQueryRetrieveInformationModelFIND, "STUDY"),
-        StudyRoot(UID.StudyRootQueryRetrieveInformationModelFIND, "STUDY"),
-        PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelFINDRetired, "STUDY"),
-        MWL(UID.ModalityWorklistInformationModelFIND, null), UPSPull(UID.UnifiedProcedureStepPullSOPClass, null),
-        UPSWatch(UID.UnifiedProcedureStepWatchSOPClass, null),
-        HangingProtocol(UID.HangingProtocolInformationModelFIND, null),
-        ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelFIND, null);
+        PatientRoot(UID.PatientRootQueryRetrieveInformationModelFind.uid, "STUDY"),
+        StudyRoot(UID.StudyRootQueryRetrieveInformationModelFind.uid, "STUDY"),
+        PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelFind.uid, "STUDY"),
+        MWL(UID.ModalityWorklistInformationModelFind.uid, null),
+        UPSPull(UID.UnifiedProcedureStepPull.uid, null),
+        UPSWatch(UID.UnifiedProcedureStepWatch.uid, null),
+        UPSQuery(UID.UnifiedProcedureStepQuery.uid, null),
+        HangingProtocol(UID.HangingProtocolInformationModelFind.uid, null),
+        ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelFind.uid, null);
 
         final String cuid;
         final String level;
@@ -360,10 +380,10 @@ public class FindSCU extends Device implements AutoCloseable {
             this.level = level;
         }
 
-        public void adjustQueryOptions(EnumSet<Option.Type> types) {
-            if (null == level) {
-                types.add(Option.Type.RELATIONAL);
-                types.add(Option.Type.DATETIME);
+        public void adjustQueryOptions(EnumSet<QueryOption> queryOptions) {
+            if (level == null) {
+                queryOptions.add(QueryOption.RELATIONAL);
+                queryOptions.add(QueryOption.DATETIME);
             }
         }
 
@@ -372,7 +392,7 @@ public class FindSCU extends Device implements AutoCloseable {
         }
     }
 
-    private static class MergeNested implements Attributes.Visitor {
+    private static class MergeNested implements Visitor {
         private final Attributes keys;
 
         MergeNested(Attributes keys) {
@@ -387,8 +407,7 @@ public class FindSCU extends Device implements AutoCloseable {
         public boolean visit(Attributes attrs, int tag, VR vr, Object val) {
             if (isNotEmptySequence(val)) {
                 Object o = keys.remove(tag);
-                if (isNotEmptySequence(o))
-                    ((Sequence) val).get(0).addAll(((Sequence) o).get(0));
+                if (isNotEmptySequence(o)) ((Sequence) val).get(0).addAll(((Sequence) o).get(0));
             }
             return true;
         }

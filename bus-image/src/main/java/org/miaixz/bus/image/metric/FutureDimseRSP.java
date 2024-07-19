@@ -55,7 +55,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
                                         Attributes data) {
         super.onDimseRSP(as, cmd, data);
         Entry last = entry;
-        while (null != last.next)
+        while (last.next != null)
             last = last.next;
 
         last.next = new Entry(cmd, data);
@@ -73,7 +73,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         if (!finished && --remainingCapacity == 0) {
             try {
                 Logger.debug("Wait for consuming DIMSE RSP");
-                while (null != ex && remainingCapacity == 0) {
+                while (ex != null && remainingCapacity == 0) {
                     wait();
                 }
                 Logger.debug("Stop waiting for consuming DIMSE RSP");
@@ -88,7 +88,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         super.onClose(as);
         if (!finished) {
             ex = as.getException();
-            if (null == ex)
+            if (ex == null)
                 ex = new IOException("Association to " + as.getRemoteAET()
                         + " released before receive of outstanding DIMSE RSP");
             notifyAll();
@@ -107,7 +107,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
 
     @Override
     public void cancel(Association a) throws IOException {
-        if (null != ex)
+        if (ex != null)
             throw ex;
         if (!finished)
             super.cancel(a);
@@ -122,19 +122,19 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
     }
 
     public synchronized boolean next() throws IOException, InterruptedException {
-        if (null == entry.next) {
+        if (entry.next == null) {
             if (finished)
                 return false;
 
-            if (null == entry.next && null == ex) {
+            if (entry.next == null && ex == null) {
                 Logger.debug("Wait for next DIMSE RSP");
-                while (null == entry.next && null == ex) {
+                while (entry.next == null && ex == null) {
                     wait();
                 }
                 Logger.debug("Stop waiting for next DIMSE RSP");
             }
 
-            if (null != ex)
+            if (ex != null)
                 throw ex;
         }
         entry = entry.next;

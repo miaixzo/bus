@@ -29,7 +29,8 @@ package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.net.PDVInputStream;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -39,11 +40,8 @@ import java.io.IOException;
  */
 public interface DimseRQHandler {
 
-    void onDimse(Association as,
-                 Presentation pc,
-                 Dimse dimse,
-                 Attributes cmd,
-                 PDVInputStream data) throws IOException;
+    void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
+                   Attributes cmd, PDVInputStream data) throws IOException;
 
     void onClose(Association as);
 

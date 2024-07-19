@@ -28,12 +28,14 @@
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.opencv.core.*;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageCV extends Mat implements PlanarImage {
+
+    private boolean releasedAfterProcessing;
+    private boolean hasBeenReleased = false;
 
     public ImageCV() {
         super();
@@ -68,16 +70,16 @@ public class ImageCV extends Mat implements PlanarImage {
     }
 
     public static Mat toMat(PlanarImage source) {
-        if (source instanceof Mat) {
-            return (Mat) source;
+        if (source instanceof Mat mat) {
+            return mat;
         } else {
             throw new IllegalAccessError("Not implemented yet");
         }
     }
 
     public static ImageCV toImageCV(Mat source) {
-        if (source instanceof ImageCV) {
-            return (ImageCV) source;
+        if (source instanceof ImageCV img) {
+            return img;
         }
         ImageCV dstImg = new ImageCV();
         source.assignTo(dstImg);
@@ -89,33 +91,29 @@ public class ImageCV extends Mat implements PlanarImage {
         return total() * elemSize();
     }
 
-    // TODO remove for Java 8
     @Override
-    public Mat toMat() {
-        if (this instanceof Mat) {
-            return this;
-        } else {
-            throw new IllegalAccessError("Not implemented yet");
+    public void release() {
+        if (!hasBeenReleased) {
+            super.release();
+            this.hasBeenReleased = true;
         }
     }
 
-    @Override
-    public ImageCV toImageCV() {
-        if (this instanceof Mat) {
-            if (this instanceof ImageCV) {
-                return this;
-            }
-            ImageCV dstImg = new ImageCV();
-            this.assignTo(dstImg);
-            return dstImg;
-        } else {
-            throw new IllegalAccessError("Not implemented yet");
-        }
+    public boolean isHasBeenReleased() {
+        return hasBeenReleased;
+    }
+
+    public boolean isReleasedAfterProcessing() {
+        return releasedAfterProcessing;
+    }
+
+    public void setReleasedAfterProcessing(boolean releasedAfterProcessing) {
+        this.releasedAfterProcessing = releasedAfterProcessing;
     }
 
     @Override
     public void close() {
-        this.release();
+        release();
     }
 
 }

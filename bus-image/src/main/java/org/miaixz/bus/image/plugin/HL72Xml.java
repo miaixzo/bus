@@ -27,11 +27,9 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.metric.internal.hl7.HL7Charset;
-import org.miaixz.bus.image.metric.internal.hl7.HL7Parser;
-import org.miaixz.bus.image.metric.internal.hl7.HL7Segment;
+import org.miaixz.bus.image.metric.hl7.HL7Charset;
+import org.miaixz.bus.image.metric.hl7.HL7Parser;
+import org.miaixz.bus.image.metric.hl7.HL7Segment;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.OutputKeys;
@@ -43,7 +41,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URL;
-import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -55,16 +52,6 @@ public class HL72Xml {
     private boolean indent = false;
     private boolean includeNamespaceDeclaration = false;
     private String charset;
-
-
-    private static String fname(List<String> argList) throws InternalException {
-        int numArgs = argList.size();
-        if (numArgs == 0)
-            throw new InternalException("missing");
-        if (numArgs > 1)
-            throw new InternalException("too-many");
-        return argList.get(0);
-    }
 
     public final void setXSLT(URL xslt) {
         this.xslt = xslt;
@@ -86,9 +73,10 @@ public class HL72Xml {
         this.charset = charset;
     }
 
+
     public void parse(InputStream is) throws IOException,
             TransformerConfigurationException, SAXException {
-        byte[] buf = new byte[Normal._256];
+        byte[] buf = new byte[256];
         int len = is.read(buf);
         HL7Segment msh = HL7Segment.parseMSH(buf, buf.length);
         String charsetName = HL7Charset.toCharsetName(msh.getField(17, charset));
@@ -109,7 +97,7 @@ public class HL72Xml {
             throws TransformerConfigurationException, IOException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (null == xslt)
+        if (xslt == null)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

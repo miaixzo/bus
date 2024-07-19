@@ -27,15 +27,14 @@
  */
 package org.miaixz.bus.image.nimble.codec;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
-import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
-import org.miaixz.bus.image.nimble.stream.SegmentedImageStream;
+import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLSInputStream;
+import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
 
 import javax.imageio.ImageReadParam;
@@ -80,17 +79,17 @@ public class Decompressor {
     protected ImageDescriptor imageDescriptor;
 
     public Decompressor(Attributes dataset, String tsuid) {
-        if (null == tsuid)
+        if (tsuid == null)
             throw new NullPointerException("tsuid");
 
         this.dataset = dataset;
         this.tsuid = tsuid;
         this.tstype = TransferSyntaxType.forUID(tsuid);
         Object pixeldata = dataset.getValue(Tag.PixelData);
-        if (null == pixeldata)
+        if (pixeldata == null)
             return;
 
-        if (null == tstype)
+        if (tstype == null)
             throw new IllegalArgumentException("Unknown Transfer Syntax: " + tsuid);
         this.rows = dataset.getInt(Tag.Rows, 0);
         this.cols = dataset.getInt(Tag.Columns, 0);
@@ -123,7 +122,7 @@ public class Decompressor {
             this.file = ((BulkData) pixeldataFragments.get(1)).getFile();
             ImageReaderFactory.ImageReaderParam param =
                     ImageReaderFactory.getImageReaderParam(tsuid);
-            if (null == param)
+            if (param == null)
                 throw new UnsupportedOperationException(
                         "Unsupported Transfer Syntax: " + tsuid);
 
@@ -147,42 +146,6 @@ public class Decompressor {
         DataBuffer db = bi.getData().getDataBuffer();
         return db.getSize() * db.getNumBanks()
                 * (DataBuffer.getDataTypeSize(db.getDataType()) >>> 3);
-    }
-
-    private static void writeTo(Raster raster, OutputStream out) throws IOException {
-        SampleModel sm = raster.getSampleModel();
-        DataBuffer db = raster.getDataBuffer();
-        switch (db.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                writeTo(sm, ((DataBufferByte) db).getBankData(), out);
-                break;
-            case DataBuffer.TYPE_USHORT:
-                writeTo(sm, ((DataBufferUShort) db).getData(), out);
-                break;
-            case DataBuffer.TYPE_SHORT:
-                writeTo(sm, ((DataBufferShort) db).getData(), out);
-                break;
-            case DataBuffer.TYPE_INT:
-                writeTo(sm, ((DataBufferInt) db).getData(), out);
-                break;
-            default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Datatype: " + db.getDataType());
-        }
-    }
-
-    private static void writeTo(SampleModel sm, byte[][] bankData, OutputStream out)
-            throws IOException {
-        int h = sm.getHeight();
-        int w = sm.getWidth();
-        ComponentSampleModel csm = (ComponentSampleModel) sm;
-        int len = w * csm.getPixelStride();
-        int stride = csm.getScanlineStride();
-        if (csm.getBandOffsets()[0] != 0)
-            bgr2rgb(bankData[0]);
-        for (byte[] b : bankData)
-            for (int y = 0, off = 0; y < h; ++y, off += stride)
-                out.write(b, off, len);
     }
 
     private static void bgr2rgb(byte[] bs) {
@@ -218,7 +181,7 @@ public class Decompressor {
         for (int y = 0; y < h; ++y) {
             for (int i = 0, j = y * stride; i < b.length; ) {
                 int s = data[j++];
-                b[i++] = (byte) (s >> Normal._16);
+                b[i++] = (byte) (s >> 16);
                 b[i++] = (byte) (s >> 8);
                 b[i++] = (byte) s;
             }
@@ -227,14 +190,14 @@ public class Decompressor {
     }
 
     public void dispose() {
-        if (null != decompressor)
+        if (decompressor != null)
             decompressor.dispose();
 
         decompressor = null;
     }
 
     public boolean decompress() {
-        if (null == decompressor)
+        if (decompressor == null)
             return false;
 
         if (tstype == TransferSyntaxType.RLE)
@@ -341,24 +304,80 @@ public class Decompressor {
         writeTo(decompressFrame(iis, frameIndex).getRaster(), out);
     }
 
+
     protected BufferedImage decompressFrame(ImageInputStream iis, int index)
             throws IOException {
-        SegmentedImageStream siis =
-                new SegmentedImageStream(iis, pixeldataFragments, index);
+        SegmentedInputImageStream siis =
+                new SegmentedInputImageStream(iis, pixeldataFragments, index);
         siis.setImageDescriptor(imageDescriptor);
-        decompressor.setInput(null != patchJpegLS
-                ? new PatchJPEGLSImageInputStream(siis, patchJpegLS)
+        decompressor.setInput(patchJpegLS != null
+                ? new PatchJPEGLSInputStream(siis, patchJpegLS)
                 : siis);
         readParam.setDestination(bi);
         long start = System.currentTimeMillis();
         bi = decompressor.read(0, readParam);
         long end = System.currentTimeMillis();
-
-        Logger.debug("Decompressed frame #{} 1:{} in {} ms",
-                index + 1,
-                (float) sizeOf(bi) / siis.getStreamPosition(),
-                end - start);
+        if (Logger.isDebug())
+            Logger.debug("Decompressed frame #{} 1:{} in {} ms",
+                    index + 1,
+                    (float) sizeOf(bi) / siis.getStreamPosition(),
+                    end - start);
         return bi;
+    }
+
+    private void writeTo(Raster raster, OutputStream out) throws IOException {
+        SampleModel sm = raster.getSampleModel();
+        DataBuffer db = raster.getDataBuffer();
+        switch (db.getDataType()) {
+            case DataBuffer.TYPE_BYTE:
+                writeTo(sm, ((DataBufferByte) db).getBankData(), out);
+                break;
+            case DataBuffer.TYPE_USHORT:
+                writeTo(sm, ((DataBufferUShort) db).getData(), out);
+                break;
+            case DataBuffer.TYPE_SHORT:
+                writeTo(sm, ((DataBufferShort) db).getData(), out);
+                break;
+            case DataBuffer.TYPE_INT:
+                writeTo(sm, ((DataBufferInt) db).getData(), out);
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "Unsupported Datatype: " + db.getDataType());
+        }
+    }
+
+    private void writeTo(SampleModel sm, byte[][] bankData, OutputStream out)
+            throws IOException {
+        int h = sm.getHeight();
+        int w = sm.getWidth();
+        ComponentSampleModel csm = (ComponentSampleModel) sm;
+        int len = w * csm.getPixelStride();
+        int stride = csm.getScanlineStride();
+        if (csm.getBandOffsets()[0] != 0)
+            bgr2rgb(bankData[0]);
+        if (imageDescriptor.getBitsAllocated() == 16) {
+            byte[] buf = new byte[len << 1];
+            int j0 = 0;
+            if (out instanceof ImageOutputStream) {
+                j0 = ((ImageOutputStream) out).isBigEndian() ? 1 : 0;
+            }
+            for (byte[] b : bankData)
+                for (int y = 0, off = 0; y < h; ++y, off += stride) {
+                    out.write(to16BitsAllocated(b, off, len, buf, j0));
+                }
+        } else {
+            for (byte[] b : bankData)
+                for (int y = 0, off = 0; y < h; ++y, off += stride)
+                    out.write(b, off, len);
+        }
+    }
+
+    private byte[] to16BitsAllocated(byte[] b, int off, int len, byte[] buf, int j0) {
+        for (int i = 0, j = j0; i < len; i++, j++, j++) {
+            buf[j] = b[off + i];
+        }
+        return buf;
     }
 
 }

@@ -121,7 +121,6 @@ public class NetKit {
     /**
      * 查找1024~65535范围内的可用端口
      * 此方法只检测给定范围内的随机一个端口，检测65535-1024次
-     * 来自org.springframework.util.SocketUtils
      *
      * @return 可用的端口
      */
@@ -132,7 +131,6 @@ public class NetKit {
     /**
      * 查找指定范围内的可用端口，最大值为65535
      * 此方法只检测给定范围内的随机一个端口，检测65535-minPort次
-     * 来自org.springframework.util.SocketUtils
      *
      * @param minPort 端口最小值（包含）
      * @return 可用的端口
@@ -144,7 +142,6 @@ public class NetKit {
     /**
      * 查找指定范围内的可用端口
      * 此方法只检测给定范围内的随机一个端口，检测maxPort-minPort次
-     * 来自org.springframework.util.SocketUtils
      *
      * @param minPort 端口最小值（包含）
      * @param maxPort 端口最大值（包含）
@@ -165,7 +162,6 @@ public class NetKit {
 
     /**
      * 获取多个本地可用端口
-     * 来自org.springframework.util.SocketUtils
      *
      * @param numRequested 尝试次数
      * @param minPort      端口最小值（包含）

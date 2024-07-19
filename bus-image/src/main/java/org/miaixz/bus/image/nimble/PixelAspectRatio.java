@@ -51,13 +51,13 @@ public class PixelAspectRatio {
     private static float forImage(Attributes attrs, int aspectRatioTag,
                                   int... pixelSpacingTags) {
         int[] ratio = attrs.getInts(aspectRatioTag);
-        if (null != ratio && ratio.length == 2
+        if (ratio != null && ratio.length == 2
                 && ratio[0] > 0 && ratio[1] > 0)
             return (float) ratio[0] / ratio[1];
 
         for (int pixelSpacingTag : pixelSpacingTags) {
             float[] spaces = attrs.getFloats(pixelSpacingTag);
-            if (null != spaces && spaces.length == 2
+            if (spaces != null && spaces.length == 2
                     && spaces[0] > 0 && spaces[1] > 0)
                 return spaces[0] / spaces[1];
         }

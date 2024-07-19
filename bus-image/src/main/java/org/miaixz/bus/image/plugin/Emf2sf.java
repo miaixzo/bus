@@ -27,10 +27,9 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.builtin.Multiframe;
+import org.miaixz.bus.image.builtin.MultiframeExtractor;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
@@ -45,26 +44,10 @@ import java.text.DecimalFormat;
  */
 public class Emf2sf {
 
-    private final Multiframe extractor = new Multiframe();
+    private final MultiframeExtractor extractor = new MultiframeExtractor();
     private int[] frames;
     private DecimalFormat outFileFormat;
     private File outDir;
-
-    private static int[] toFrames(String[] ss) throws InternalException {
-        if (null == ss)
-            return null;
-
-        int[] is = new int[ss.length];
-        for (int i = 0; i < is.length; i++)
-            try {
-                is[i] = Integer.parseInt(ss[i]) - 1;
-            } catch (NumberFormatException e) {
-                throw new InternalException(
-                        "Invalid argument of option --frame: " + ss[i]);
-            }
-
-        return is;
-    }
 
     public final void setOutputDirectory(File outDir) {
         outDir.mkdirs();
@@ -88,7 +71,7 @@ public class Emf2sf {
     }
 
     private String fname(File srcFile, int frame) {
-        if (null != outFileFormat)
+        if (outFileFormat != null)
             synchronized (outFileFormat) {
                 return outFileFormat.format(frame);
             }
@@ -100,12 +83,12 @@ public class Emf2sf {
         ImageInputStream dis = new ImageInputStream(file);
         try {
             dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
-            src = dis.readDataset(-1, -1);
+            src = dis.readDataset();
         } finally {
             IoKit.close(dis);
         }
         Attributes fmi = dis.getFileMetaInformation();
-        if (null == frames) {
+        if (frames == null) {
             int n = src.getInt(Tag.NumberOfFrames, 1);
             for (int frame = 0; frame < n; ++frame)
                 extract(file, fmi, src, frame);
@@ -123,7 +106,7 @@ public class Emf2sf {
         ImageOutputStream out = new ImageOutputStream(
                 new File(outDir, fname(file, frame + 1)));
         try {
-            out.writeDataset(null != fmi
+            out.writeDataset(fmi != null
                     ? sf.createFileMetaInformation(
                     fmi.getString(Tag.TransferSyntaxUID))
                     : null, sf);

@@ -27,13 +27,9 @@
  */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
- * 文件信息标识
- *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,7 +39,7 @@ public class Tag {
     public static final int CommandLengthToEnd = 1;
     public static final int AffectedSOPClassUID = 2;
     public static final int RequestedSOPClassUID = 3;
-    public static final int CommandRecognitionCode = Normal._16;
+    public static final int CommandRecognitionCode = 16;
     public static final int CommandField = 256;
     public static final int MessageID = 272;
     public static final int MessageIDBeingRespondedTo = 288;
@@ -95,6 +91,16 @@ public class Tag {
     public static final int SourceApplicationEntityTitle = 131094;
     public static final int SendingApplicationEntityTitle = 131095;
     public static final int ReceivingApplicationEntityTitle = 131096;
+    public static final int SourcePresentationAddress = 131110;
+    public static final int SendingPresentationAddress = 131111;
+    public static final int ReceivingPresentationAddress = 131112;
+    public static final int RTVMetaInformationVersion = 131121;
+    public static final int RTVCommunicationSOPClassUID = 131122;
+    public static final int RTVCommunicationSOPInstanceUID = 131123;
+    public static final int RTVSourceIdentifier = 131125;
+    public static final int RTVFlowIdentifier = 131126;
+    public static final int RTVFlowRTPSamplingRate = 131127;
+    public static final int RTVFlowActualFrameDuration = 131128;
     public static final int PrivateInformationCreatorUID = 131328;
     public static final int PrivateInformation = 131330;
     public static final int FileSetID = 266544;
@@ -126,9 +132,12 @@ public class Tag {
     public static final int InstanceCreatorUID = 524308;
     public static final int InstanceCoercionDateTime = 524309;
     public static final int SOPClassUID = 524310;
+    public static final int AcquisitionUID = 524311;
     public static final int SOPInstanceUID = 524312;
+    public static final int PyramidUID = 524313;
     public static final int RelatedGeneralSOPClassUID = 524314;
     public static final int OriginalSpecializedSOPClassUID = 524315;
+    public static final int SyntheticData = 524316;
     public static final int StudyDate = 524320;
     public static final int SeriesDate = 524321;
     public static final int AcquisitionDate = 524322;
@@ -219,6 +228,48 @@ public class Tag {
     public static final int PrivateDataElementDescription = 525070;
     public static final int PrivateDataElementEncoding = 525071;
     public static final int PrivateDataElementDefinitionSequence = 525072;
+    public static final int ScopeOfInventorySequence = 525312;
+    public static final int InventoryPurpose = 525313;
+    public static final int InventoryInstanceDescription = 525314;
+    public static final int InventoryLevel = 525315;
+    public static final int ItemInventoryDateTime = 525316;
+    public static final int RemovedFromOperationalUse = 525317;
+    public static final int ReasonForRemovalCodeSequence = 525318;
+    public static final int StoredInstanceBaseURI = 525319;
+    public static final int FolderAccessURI = 525320;
+    public static final int FileAccessURI = 525321;
+    public static final int ContainerFileType = 525322;
+    public static final int FilenameInContainer = 525323;
+    public static final int FileOffsetInContainer = 525324;
+    public static final int FileLengthInContainer = 525325;
+    public static final int StoredInstanceTransferSyntaxUID = 525326;
+    public static final int ExtendedMatchingMechanisms = 525327;
+    public static final int RangeMatchingSequence = 525328;
+    public static final int ListOfUIDMatchingSequence = 525329;
+    public static final int EmptyValueMatchingSequence = 525330;
+    public static final int GeneralMatchingSequence = 525331;
+    public static final int RequestedStatusInterval = 525332;
+    public static final int RetainInstances = 525333;
+    public static final int ExpirationDateTime = 525334;
+    public static final int TransactionStatus = 525335;
+    public static final int TransactionStatusComment = 525336;
+    public static final int FileSetAccessSequence = 525337;
+    public static final int FileAccessSequence = 525338;
+    public static final int RecordKey = 525339;
+    public static final int PriorRecordKey = 525340;
+    public static final int MetadataSequence = 525341;
+    public static final int UpdatedMetadataSequence = 525342;
+    public static final int StudyUpdateDateTime = 525343;
+    public static final int InventoryAccessEndPointsSequence = 525344;
+    public static final int StudyAccessEndPointsSequence = 525345;
+    public static final int IncorporatedInventoryInstanceSequence = 525346;
+    public static final int InventoriedStudiesSequence = 525347;
+    public static final int InventoriedSeriesSequence = 525348;
+    public static final int InventoriedInstancesSequence = 525349;
+    public static final int InventoryCompletionStatus = 525350;
+    public static final int NumberOfStudyRecordsInInstance = 525351;
+    public static final int TotalNumberOfStudyRecords = 525352;
+    public static final int MaximumNumberOfRecords = 525353;
     public static final int NetworkID = 528384;
     public static final int StationName = 528400;
     public static final int StudyDescription = 528432;
@@ -237,10 +288,12 @@ public class Tag {
     public static final int OperatorIdentificationSequence = 528498;
     public static final int AdmittingDiagnosesDescription = 528512;
     public static final int AdmittingDiagnosesCodeSequence = 528516;
+    public static final int PyramidDescription = 528520;
     public static final int ManufacturerModelName = 528528;
     public static final int ReferencedResultsSequence = 528640;
     public static final int ReferencedStudySequence = 528656;
     public static final int ReferencedPerformedProcedureStepSequence = 528657;
+    public static final int ReferencedInstancesBySOPClassSequence = 528658;
     public static final int ReferencedSeriesSequence = 528661;
     public static final int ReferencedPatientSequence = 528672;
     public static final int ReferencedVisitSequence = 528677;
@@ -268,6 +321,7 @@ public class Tag {
     public static final int FailedSOPSequence = 528792;
     public static final int ReferencedSOPSequence = 528793;
     public static final int OtherFailuresSequence = 528794;
+    public static final int FailedStudySequence = 528795;
     public static final int StudiesContainingOtherReferencedInstancesSequence = 528896;
     public static final int RelatedSeriesSequence = 528976;
     public static final int LossyImageCompressionRetired = 532752;
@@ -310,6 +364,7 @@ public class Tag {
     public static final int AnatomicStructureSpaceOrRegionModifierCodeSequenceTrial = 533082;
     public static final int OnAxisBackgroundAnatomicStructureCodeSequenceTrial = 533084;
     public static final int AlternateRepresentationSequence = 536577;
+    public static final int AvailableTransferSyntaxUID = 536578;
     public static final int IrradiationEventUID = 536592;
     public static final int SourceIrradiationEventSequence = 536593;
     public static final int RadiopharmaceuticalAdministrationEventUID = 536594;
@@ -410,20 +465,28 @@ public class Tag {
     public static final int ClinicalTrialSponsorName = 1179664;
     public static final int ClinicalTrialProtocolID = 1179680;
     public static final int ClinicalTrialProtocolName = 1179681;
+    public static final int IssuerOfClinicalTrialProtocolID = 1179682;
+    public static final int OtherClinicalTrialProtocolIDsSequence = 1179683;
     public static final int ClinicalTrialSiteID = 1179696;
     public static final int ClinicalTrialSiteName = 1179697;
+    public static final int IssuerOfClinicalTrialSiteID = 1179698;
     public static final int ClinicalTrialSubjectID = 1179712;
+    public static final int IssuerOfClinicalTrialSubjectID = 1179713;
     public static final int ClinicalTrialSubjectReadingID = 1179714;
+    public static final int IssuerOfClinicalTrialSubjectReadingID = 1179715;
     public static final int ClinicalTrialTimePointID = 1179728;
     public static final int ClinicalTrialTimePointDescription = 1179729;
     public static final int LongitudinalTemporalOffsetFromEvent = 1179730;
     public static final int LongitudinalTemporalEventType = 1179731;
+    public static final int ClinicalTrialTimePointTypeCodeSequence = 1179732;
+    public static final int IssuerOfClinicalTrialTimePointID = 1179733;
     public static final int ClinicalTrialCoordinatingCenterName = 1179744;
     public static final int PatientIdentityRemoved = 1179746;
     public static final int DeidentificationMethod = 1179747;
     public static final int DeidentificationMethodCodeSequence = 1179748;
     public static final int ClinicalTrialSeriesID = 1179761;
     public static final int ClinicalTrialSeriesDescription = 1179762;
+    public static final int IssuerOfClinicalTrialSeriesID = 1179763;
     public static final int ClinicalTrialProtocolEthicsCommitteeName = 1179777;
     public static final int ClinicalTrialProtocolEthicsCommitteeApprovalNumber = 1179778;
     public static final int ConsentForClinicalTrialUseSequence = 1179779;
@@ -455,6 +518,14 @@ public class Tag {
     public static final int MultipleComponentApprovalSequence = 1310982;
     public static final int OtherApprovalStatus = 1310983;
     public static final int OtherSecondaryApprovalStatus = 1310984;
+    public static final int DataElementLabelSequence = 1311232;
+    public static final int DataElementLabelItemSequence = 1311233;
+    public static final int DataElement = 1311234;
+    public static final int DataElementName = 1311235;
+    public static final int DataElementDescription = 1311236;
+    public static final int DataElementConditionality = 1311237;
+    public static final int DataElementMinimumCharacters = 1311238;
+    public static final int DataElementMaximumCharacters = 1311239;
     public static final int ActualEnvironmentalConditions = 1314832;
     public static final int ExpiryDate = 1314848;
     public static final int EnvironmentalConditions = 1314880;
@@ -506,6 +577,8 @@ public class Tag {
     public static final int TimeOfGainCalibration = 1323127;
     public static final int BadPixelImage = 1323136;
     public static final int CalibrationNotes = 1323161;
+    public static final int LinearityCorrectionTechnique = 1323264;
+    public static final int BeamHardeningCorrectionTechnique = 1323265;
     public static final int PulserEquipmentSequence = 1327106;
     public static final int PulserType = 1327108;
     public static final int PulserNotes = 1327110;
@@ -728,6 +801,11 @@ public class Tag {
     public static final int GPSAreaInformation = 1441932;
     public static final int GPSDateStamp = 1441933;
     public static final int GPSDifferential = 1441934;
+    public static final int LightSourcePolarization = 1445889;
+    public static final int EmitterColorTemperature = 1445890;
+    public static final int ContactMethod = 1445891;
+    public static final int ImmersionMedia = 1445892;
+    public static final int OpticalMagnificationFactor = 1445893;
     public static final int ContrastBolusAgent = 1572880;
     public static final int ContrastBolusAgentSequence = 1572882;
     public static final int ContrastBolusT1Relaxivity = 1572883;
@@ -790,6 +868,7 @@ public class Tag {
     public static final int GantryID = 1576968;
     public static final int UniqueDeviceIdentifier = 1576969;
     public static final int UDISequence = 1576970;
+    public static final int ManufacturerDeviceClassUID = 1576971;
     public static final int SecondaryCaptureDeviceID = 1576976;
     public static final int HardcopyCreationDeviceID = 1576977;
     public static final int DateOfSecondaryCapture = 1576978;
@@ -898,9 +977,30 @@ public class Tag {
     public static final int CompressionPressure = 1577379;
     public static final int PaddleDescription = 1577380;
     public static final int CompressionContactArea = 1577381;
+    public static final int AcquisitionMode = 1577392;
+    public static final int DoseModeName = 1577393;
+    public static final int AcquiredSubtractionMaskFlag = 1577394;
+    public static final int FluoroscopyPersistenceFlag = 1577395;
+    public static final int FluoroscopyLastImageHoldPersistenceFlag = 1577396;
+    public static final int UpperLimitNumberOfPersistentFluoroscopyFrames = 1577397;
+    public static final int ContrastBolusAutoInjectionTriggerFlag = 1577398;
+    public static final int ContrastBolusInjectionDelay = 1577399;
+    public static final int XAAcquisitionPhaseDetailsSequence = 1577400;
+    public static final int XAAcquisitionFrameRate = 1577401;
+    public static final int XAPlaneDetailsSequence = 1577402;
+    public static final int AcquisitionFieldOfViewLabel = 1577403;
+    public static final int XRayFilterDetailsSequence = 1577404;
+    public static final int XAAcquisitionDuration = 1577405;
+    public static final int ReconstructionPipelineType = 1577406;
+    public static final int ImageFilterDetailsSequence = 1577407;
+    public static final int AppliedMaskSubtractionFlag = 1577408;
+    public static final int RequestedSeriesDescriptionCodeSequence = 1577409;
     public static final int DateOfLastCalibration = 1577472;
     public static final int TimeOfLastCalibration = 1577473;
     public static final int DateTimeOfLastCalibration = 1577474;
+    public static final int CalibrationDateTime = 1577475;
+    public static final int DateOfManufacture = 1577476;
+    public static final int DateOfInstallation = 1577477;
     public static final int ConvolutionKernel = 1577488;
     public static final int UpperLowerPixelValues = 1577536;
     public static final int ActualFrameDuration = 1577538;
@@ -957,6 +1057,15 @@ public class Tag {
     public static final int ShutterPresentationValue = 1578530;
     public static final int ShutterOverlayGroup = 1578531;
     public static final int ShutterPresentationColorCIELabValue = 1578532;
+    public static final int OutlineShapeType = 1578544;
+    public static final int OutlineLeftVerticalEdge = 1578545;
+    public static final int OutlineRightVerticalEdge = 1578546;
+    public static final int OutlineUpperHorizontalEdge = 1578547;
+    public static final int OutlineLowerHorizontalEdge = 1578548;
+    public static final int CenterOfCircularOutline = 1578549;
+    public static final int DiameterOfCircularOutline = 1578550;
+    public static final int NumberOfPolygonalVertices = 1578551;
+    public static final int VerticesOfThePolygonalOutline = 1578552;
     public static final int CollimatorShape = 1578752;
     public static final int CollimatorLeftVerticalEdge = 1578754;
     public static final int CollimatorRightVerticalEdge = 1578756;
@@ -993,6 +1102,7 @@ public class Tag {
     public static final int AcquisitionComments = 1589248;
     public static final int OutputPower = 1593344;
     public static final int TransducerData = 1593360;
+    public static final int TransducerIdentificationSequence = 1593361;
     public static final int FocusDepth = 1593362;
     public static final int ProcessingFunction = 1593376;
     public static final int PostprocessingFunction = 1593377;
@@ -1057,6 +1167,7 @@ public class Tag {
     public static final int TableOfPixelValues = 1597528;
     public static final int TableOfParameterValues = 1597530;
     public static final int RWaveTimeVector = 1597536;
+    public static final int ActiveImageAreaOverlayGroup = 1597552;
     public static final int DetectorConditionsNominalFlag = 1601536;
     public static final int DetectorTemperature = 1601537;
     public static final int DetectorType = 1601540;
@@ -1507,6 +1618,27 @@ public class Tag {
     public static final int TransducerBeamSteeringCodeSequence = 1611790;
     public static final int TransducerApplicationCodeSequence = 1611791;
     public static final int ZeroVelocityPixelValue = 1611792;
+    public static final int PhotoacousticExcitationCharacteristicsSequence = 1611809;
+    public static final int ExcitationSpectralWidth = 1611810;
+    public static final int ExcitationEnergy = 1611811;
+    public static final int ExcitationPulseDuration = 1611812;
+    public static final int ExcitationWavelengthSequence = 1611813;
+    public static final int ExcitationWavelength = 1611814;
+    public static final int IlluminationTranslationFlag = 1611816;
+    public static final int AcousticCouplingMediumFlag = 1611817;
+    public static final int AcousticCouplingMediumCodeSequence = 1611818;
+    public static final int AcousticCouplingMediumTemperature = 1611819;
+    public static final int TransducerResponseSequence = 1611820;
+    public static final int CenterFrequency = 1611821;
+    public static final int FractionalBandwidth = 1611822;
+    public static final int LowerCutoffFrequency = 1611823;
+    public static final int UpperCutoffFrequency = 1611824;
+    public static final int TransducerTechnologySequence = 1611825;
+    public static final int SoundSpeedCorrectionMechanismCodeSequence = 1611826;
+    public static final int ObjectSoundSpeed = 1611827;
+    public static final int AcousticCouplingMediumSoundSpeed = 1611828;
+    public static final int PhotoacousticImageFrameTypeSequence = 1611829;
+    public static final int ImageDataTypeCodeSequence = 1611830;
     public static final int ReferenceLocationLabel = 1612032;
     public static final int ReferenceLocationDescription = 1612033;
     public static final int ReferenceBasisCodeSequence = 1612034;
@@ -1585,6 +1717,7 @@ public class Tag {
     public static final int OverlayNumber = 2097186;
     public static final int CurveNumber = 2097188;
     public static final int LUTNumber = 2097190;
+    public static final int PyramidLabel = 2097191;
     public static final int ImagePosition = 2097200;
     public static final int ImagePositionPatient = 2097202;
     public static final int ImageOrientation = 2097205;
@@ -1705,6 +1838,7 @@ public class Tag {
     public static final int HorizontalFieldOfView = 2228236;
     public static final int PupilDilated = 2228237;
     public static final int DegreeOfDilation = 2228238;
+    public static final int VertexDistance = 2228239;
     public static final int StereoBaselineAngle = 2228240;
     public static final int StereoBaselineDisplacement = 2228241;
     public static final int StereoHorizontalPixelOffset = 2228242;
@@ -1857,7 +1991,7 @@ public class Tag {
     public static final int OphthalmicEnFaceImageQualityRatingSequence = 2233896;
     public static final int QualityThreshold = 2233904;
     public static final int OCTBscanAnalysisAcquisitionParametersSequence = 2233920;
-    public static final int NumberofBscansPerFrame = 2233922;
+    public static final int NumberOfBscansPerFrame = 2233922;
     public static final int BscanSlabThickness = 2233923;
     public static final int DistanceBetweenBscanSlabs = 2233924;
     public static final int BscanCycleTime = 2233925;
@@ -1974,13 +2108,7 @@ public class Tag {
     public static final int NumberOfFrames = 2621448;
     public static final int FrameIncrementPointer = 2621449;
     public static final int FrameDimensionPointer = 2621450;
-    /**
-     * 图像行数(图像高度)
-     */
     public static final int Rows = 2621456;
-    /**
-     * 图像列数(图像宽度)
-     */
     public static final int Columns = 2621457;
     public static final int Planes = 2621458;
     public static final int UltrasoundColorDataPresent = 2621460;
@@ -2010,15 +2138,9 @@ public class Tag {
     public static final int BlockColumns = 2621586;
     public static final int RowOverlap = 2621587;
     public static final int ColumnOverlap = 2621588;
-    /**
-     * 图像数据存储位数，一般是8位和16位，本文图像处理用的是16位图像
-     */
     public static final int BitsAllocated = 2621696;
     public static final int BitsStored = 2621697;
     public static final int HighBit = 2621698;
-    /**
-     * 是否是带符号，0是无符号，1是有符号
-     */
     public static final int PixelRepresentation = 2621699;
     public static final int SmallestValidPixelValue = 2621700;
     public static final int LargestValidPixelValue = 2621701;
@@ -2067,13 +2189,7 @@ public class Tag {
     public static final int PixelSpacingCalibrationDescription = 2624004;
     public static final int PixelIntensityRelationship = 2625600;
     public static final int PixelIntensityRelationshipSign = 2625601;
-    /**
-     * 默认窗位
-     */
     public static final int WindowCenter = 2625616;
-    /**
-     * 默认窗宽
-     */
     public static final int WindowWidth = 2625617;
     public static final int RescaleIntercept = 2625618;
     public static final int RescaleSlope = 2625619;
@@ -2132,6 +2248,7 @@ public class Tag {
     public static final int LossyImageCompressionRatio = 2629906;
     public static final int LossyImageCompressionMethod = 2629908;
     public static final int ModalityLUTSequence = 2633728;
+    public static final int VariableModalityLUTSequence = 2633729;
     public static final int LUTDescriptor = 2633730;
     public static final int LUTExplanation = 2633731;
     public static final int ModalityLUTType = 2633732;
@@ -2255,10 +2372,23 @@ public class Tag {
     public static final int StudyComponentStatusID = 3280981;
     public static final int RequestedProcedureDescription = 3280992;
     public static final int RequestedProcedureCodeSequence = 3280996;
+    public static final int RequestedLateralityCodeSequence = 3280997;
     public static final int ReasonForVisit = 3280998;
     public static final int ReasonForVisitCodeSequence = 3280999;
     public static final int RequestedContrastAgent = 3281008;
     public static final int StudyComments = 3293184;
+    public static final int FlowIdentifierSequence = 3407873;
+    public static final int FlowIdentifier = 3407874;
+    public static final int FlowTransferSyntaxUID = 3407875;
+    public static final int FlowRTPSamplingRate = 3407876;
+    public static final int SourceIdentifier = 3407877;
+    public static final int FrameOriginTimestamp = 3407879;
+    public static final int IncludesImagingSubject = 3407880;
+    public static final int FrameUsefulnessGroupSequence = 3407881;
+    public static final int RealTimeBulkDataFlowSequence = 3407882;
+    public static final int CameraPositionGroupSequence = 3407883;
+    public static final int IncludesInformation = 3407884;
+    public static final int TimeOfFrameGroupSequence = 3407885;
     public static final int ReferencedPatientAliasSequence = 3670020;
     public static final int VisitStatusID = 3670024;
     public static final int AdmissionID = 3670032;
@@ -2327,6 +2457,31 @@ public class Tag {
     public static final int MultiplexedAudioChannelsDescriptionCodeSequence = 3801856;
     public static final int ChannelIdentificationCode = 3801857;
     public static final int ChannelMode = 3801858;
+    public static final int MultiplexGroupUID = 3801872;
+    public static final int PowerlineFrequency = 3801873;
+    public static final int ChannelImpedanceSequence = 3801874;
+    public static final int ImpedanceValue = 3801875;
+    public static final int ImpedanceMeasurementDateTime = 3801876;
+    public static final int ImpedanceMeasurementFrequency = 3801877;
+    public static final int ImpedanceMeasurementCurrentType = 3801878;
+    public static final int WaveformAmplifierType = 3801879;
+    public static final int FilterLowFrequencyCharacteristicsSequence = 3801880;
+    public static final int FilterHighFrequencyCharacteristicsSequence = 3801881;
+    public static final int SummarizedFilterLookupTable = 3801888;
+    public static final int NotchFilterCharacteristicsSequence = 3801889;
+    public static final int WaveformFilterType = 3801890;
+    public static final int AnalogFilterCharacteristicsSequence = 3801891;
+    public static final int AnalogFilterRollOff = 3801892;
+    public static final int AnalogFilterType = 3801893;
+    public static final int DigitalFilterCharacteristicsSequence = 3801894;
+    public static final int DigitalFilterOrder = 3801895;
+    public static final int DigitalFilterTypeCodeSequence = 3801896;
+    public static final int WaveformFilterDescription = 3801897;
+    public static final int FilterLookupTableSequence = 3801898;
+    public static final int FilterLookupTableDescription = 3801899;
+    public static final int FrequencyEncodingCodeSequence = 3801900;
+    public static final int MagnitudeEncodingCodeSequence = 3801901;
+    public static final int FilterLookupTableData = 3801902;
     public static final int ScheduledStationAETitle = 4194305;
     public static final int ScheduledProcedureStepStartDate = 4194306;
     public static final int ScheduledProcedureStepStartTime = 4194307;
@@ -2528,6 +2683,7 @@ public class Tag {
     public static final int DocumentingOrganizationIdentifierCodeSequenceTrial = 4235304;
     public static final int VerificationDateTime = 4235312;
     public static final int ObservationDateTime = 4235314;
+    public static final int ObservationStartDateTime = 4235315;
     public static final int ValueType = 4235328;
     public static final int ConceptNameCodeSequence = 4235331;
     public static final int MeasurementPrecisionDescriptionTrial = 4235335;
@@ -2623,6 +2779,14 @@ public class Tag {
     public static final int RelationshipSequenceTrial = 4237105;
     public static final int RelationshipTypeCodeSequenceTrial = 4237106;
     public static final int LanguageCodeSequenceTrial = 4237124;
+    public static final int TabulatedValuesSequence = 4237313;
+    public static final int NumberOfTableRows = 4237314;
+    public static final int NumberOfTableColumns = 4237315;
+    public static final int TableRowNumber = 4237316;
+    public static final int TableColumnNumber = 4237317;
+    public static final int TableRowDefinitionSequence = 4237318;
+    public static final int TableColumnDefinitionSequence = 4237319;
+    public static final int CellValuesSequence = 4237320;
     public static final int UniformResourceLocatorTrial = 4237714;
     public static final int WaveformAnnotationSequence = 4239392;
     public static final int TemplateIdentifier = 4250368;
@@ -2788,6 +2952,10 @@ public class Tag {
     public static final int CondenserLensPower = 4718865;
     public static final int ObjectiveLensPower = 4718866;
     public static final int ObjectiveLensNumericalAperture = 4718867;
+    public static final int ConfocalMode = 4718868;
+    public static final int TissueLocation = 4718869;
+    public static final int ConfocalMicroscopyImageFrameTypeSequence = 4718870;
+    public static final int ImageAcquisitionDepth = 4718871;
     public static final int PaletteColorLookupTableSequence = 4718880;
     public static final int ReferencedImageNavigationSequence = 4719104;
     public static final int TopLeftHandCornerOfLocalizerArea = 4719105;
@@ -2985,6 +3153,7 @@ public class Tag {
     public static final int VectorDimensionality = 6684703;
     public static final int VectorAccuracy = 6684704;
     public static final int VectorCoordinateData = 6684705;
+    public static final int DoublePointCoordinatesData = 6684706;
     public static final int TrianglePointIndexList = 6684707;
     public static final int EdgePointIndexList = 6684708;
     public static final int VertexPointIndexList = 6684709;
@@ -3099,6 +3268,24 @@ public class Tag {
     public static final int ModelModification = 6844417;
     public static final int ModelMirroring = 6844418;
     public static final int ModelUsageCodeSequence = 6844419;
+    public static final int ModelGroupUID = 6844420;
+    public static final int RelativeURIReferenceWithinEncapsulatedDocument = 6844421;
+    public static final int AnnotationCoordinateType = 6946817;
+    public static final int AnnotationGroupSequence = 6946818;
+    public static final int AnnotationGroupUID = 6946819;
+    public static final int AnnotationGroupLabel = 6946821;
+    public static final int AnnotationGroupDescription = 6946822;
+    public static final int AnnotationGroupGenerationType = 6946823;
+    public static final int AnnotationGroupAlgorithmIdentificationSequence = 6946824;
+    public static final int AnnotationPropertyCategoryCodeSequence = 6946825;
+    public static final int AnnotationPropertyTypeCodeSequence = 6946826;
+    public static final int AnnotationPropertyTypeModifierCodeSequence = 6946827;
+    public static final int NumberOfAnnotations = 6946828;
+    public static final int AnnotationAppliesToAllOpticalPaths = 6946829;
+    public static final int ReferencedOpticalPathIdentifier = 6946830;
+    public static final int AnnotationAppliesToAllZPlanes = 6946831;
+    public static final int CommonZCoordinateValue = 6946832;
+    public static final int AnnotationIndexList = 6946833;
     public static final int GraphicAnnotationSequence = 7340033;
     public static final int GraphicLayer = 7340034;
     public static final int BoundingBoxAnnotationUnits = 7340035;
@@ -3197,6 +3384,7 @@ public class Tag {
     public static final int FiducialIdentifierCodeSequence = 7340817;
     public static final int ContourUncertaintyRadius = 7340818;
     public static final int UsedFiducialsSequence = 7340820;
+    public static final int UsedRTStructureSetROISequence = 7340821;
     public static final int GraphicCoordinatesDataSequence = 7340824;
     public static final int FiducialUID = 7340826;
     public static final int ReferencedFiducialUID = 7340827;
@@ -3344,6 +3532,9 @@ public class Tag {
     public static final int SelectorSSValue = 7471230;
     public static final int SelectorUIValue = 7471231;
     public static final int SelectorCodeSequenceValue = 7471232;
+    public static final int SelectorOVValue = 7471233;
+    public static final int SelectorSVValue = 7471234;
+    public static final int SelectorUVValue = 7471235;
     public static final int NumberOfScreens = 7471360;
     public static final int NominalScreenDefinitionSequence = 7471362;
     public static final int NumberOfVerticalPixels = 7471364;
@@ -3746,6 +3937,60 @@ public class Tag {
     public static final int PrimaryFluenceModeSequence = 805437520;
     public static final int FluenceMode = 805437521;
     public static final int FluenceModeID = 805437522;
+    public static final int SelectedFrameNumber = 805437696;
+    public static final int SelectedFrameFunctionalGroupsSequence = 805437697;
+    public static final int RTImageFrameGeneralContentSequence = 805437698;
+    public static final int RTImageFrameContextSequence = 805437699;
+    public static final int RTImageScopeSequence = 805437700;
+    public static final int BeamModifierCoordinatesPresenceFlag = 805437701;
+    public static final int StartCumulativeMeterset = 805437702;
+    public static final int StopCumulativeMeterset = 805437703;
+    public static final int RTAcquisitionPatientPositionSequence = 805437704;
+    public static final int RTImageFrameImagingDevicePositionSequence = 805437705;
+    public static final int RTImageFramekVRadiationAcquisitionSequence = 805437706;
+    public static final int RTImageFrameMVRadiationAcquisitionSequence = 805437707;
+    public static final int RTImageFrameRadiationAcquisitionSequence = 805437708;
+    public static final int ImagingSourcePositionSequence = 805437709;
+    public static final int ImageReceptorPositionSequence = 805437710;
+    public static final int DevicePositionToEquipmentMappingMatrix = 805437711;
+    public static final int DevicePositionParameterSequence = 805437712;
+    public static final int ImagingSourceLocationSpecificationType = 805437713;
+    public static final int ImagingDeviceLocationMatrixSequence = 805437714;
+    public static final int ImagingDeviceLocationParameterSequence = 805437715;
+    public static final int ImagingApertureSequence = 805437716;
+    public static final int ImagingApertureSpecificationType = 805437717;
+    public static final int NumberOfAcquisitionDevices = 805437718;
+    public static final int AcquisitionDeviceSequence = 805437719;
+    public static final int AcquisitionTaskSequence = 805437720;
+    public static final int AcquisitionTaskWorkitemCodeSequence = 805437721;
+    public static final int AcquisitionSubtaskSequence = 805437722;
+    public static final int SubtaskWorkitemCodeSequence = 805437723;
+    public static final int AcquisitionTaskIndex = 805437724;
+    public static final int AcquisitionSubtaskIndex = 805437725;
+    public static final int ReferencedBaselineParametersRTRadiationInstanceSequence = 805437726;
+    public static final int PositionAcquisitionTemplateIdentificationSequence = 805437727;
+    public static final int PositionAcquisitionTemplateID = 805437728;
+    public static final int PositionAcquisitionTemplateName = 805437729;
+    public static final int PositionAcquisitionTemplateCodeSequence = 805437730;
+    public static final int PositionAcquisitionTemplateDescription = 805437731;
+    public static final int AcquisitionTaskApplicabilitySequence = 805437732;
+    public static final int ProjectionImagingAcquisitionParameterSequence = 805437733;
+    public static final int CTImagingAcquisitionParameterSequence = 805437734;
+    public static final int KVImagingGenerationParametersSequence = 805437735;
+    public static final int MVImagingGenerationParametersSequence = 805437736;
+    public static final int AcquisitionSignalType = 805437737;
+    public static final int AcquisitionMethod = 805437738;
+    public static final int ScanStartPositionSequence = 805437739;
+    public static final int ScanStopPositionSequence = 805437740;
+    public static final int ImagingSourceToBeamModifierDefinitionPlaneDistance = 805437741;
+    public static final int ScanArcType = 805437742;
+    public static final int DetectorPositioningType = 805437743;
+    public static final int AdditionalRTAccessoryDeviceSequence = 805437744;
+    public static final int DeviceSpecificAcquisitionParameterSequence = 805437745;
+    public static final int ReferencedPositionReferenceInstanceSequence = 805437746;
+    public static final int EnergyDerivationCodeSequence = 805437747;
+    public static final int MaximumCumulativeMetersetExposure = 805437748;
+    public static final int AcquisitionInitiationSequence = 805437749;
     public static final int DVHType = 805568513;
     public static final int DoseUnits = 805568514;
     public static final int DoseType = 805568516;
@@ -3787,6 +4032,8 @@ public class Tag {
     public static final int ROIDescription = 805699624;
     public static final int ROIDisplayColor = 805699626;
     public static final int ROIVolume = 805699628;
+    public static final int ROIDateTime = 805699629;
+    public static final int ROIObservationDateTime = 805699630;
     public static final int RTRelatedROISequence = 805699632;
     public static final int RTROIRelationship = 805699635;
     public static final int ROIGenerationAlgorithm = 805699638;
@@ -3800,6 +4047,12 @@ public class Tag {
     public static final int NumberOfContourPoints = 805699654;
     public static final int ContourNumber = 805699656;
     public static final int AttachedContours = 805699657;
+    public static final int SourcePixelPlanesCharacteristicsSequence = 805699658;
+    public static final int SourceSeriesSequence = 805699659;
+    public static final int SourceSeriesInformationSequence = 805699660;
+    public static final int ROICreatorSequence = 805699661;
+    public static final int ROIInterpreterSequence = 805699662;
+    public static final int ROIObservationContextCodeSequence = 805699663;
     public static final int ContourData = 805699664;
     public static final int RTROIObservationsSequence = 805699712;
     public static final int ObservationNumber = 805699714;
@@ -3822,6 +4075,9 @@ public class Tag {
     public static final int FrameOfReferenceTransformationType = 805699780;
     public static final int FrameOfReferenceTransformationMatrix = 805699782;
     public static final int FrameOfReferenceTransformationComment = 805699784;
+    public static final int PatientLocationCoordinatesSequence = 805699785;
+    public static final int PatientLocationCoordinatesCodeSequence = 805699786;
+    public static final int PatientSupportPositionSequence = 805699787;
     public static final int MeasuredDoseReferenceSequence = 805830672;
     public static final int MeasuredDoseDescription = 805830674;
     public static final int MeasuredDoseType = 805830676;
@@ -3875,9 +4131,14 @@ public class Tag {
     public static final int ReferencedCalculatedDoseReferenceSequence = 805830800;
     public static final int ReferencedCalculatedDoseReferenceNumber = 805830802;
     public static final int BeamLimitingDeviceLeafPairsSequence = 805830816;
+    public static final int EnhancedRTBeamLimitingDeviceSequence = 805830817;
+    public static final int EnhancedRTBeamLimitingOpeningSequence = 805830818;
+    public static final int EnhancedRTBeamLimitingDeviceDefinitionFlag = 805830819;
+    public static final int ParallelRTBeamDelimiterOpeningExtents = 805830820;
     public static final int RecordedWedgeSequence = 805830832;
     public static final int RecordedCompensatorSequence = 805830848;
     public static final int RecordedBlockSequence = 805830864;
+    public static final int RecordedBlockSlabSequence = 805830865;
     public static final int TreatmentSummaryMeasuredDoseReferenceSequence = 805830880;
     public static final int RecordedSnoutSequence = 805830896;
     public static final int RecordedRangeShifterSequence = 805830898;
@@ -4191,6 +4452,7 @@ public class Tag {
     public static final int SourceApplicatorWallNominalThickness = 805962396;
     public static final int SourceApplicatorWallNominalTransmission = 805962398;
     public static final int SourceApplicatorStepSize = 805962400;
+    public static final int ApplicatorShapeReferencedROINumber = 805962401;
     public static final int TransferTubeNumber = 805962402;
     public static final int TransferTubeLength = 805962404;
     public static final int ChannelShieldSequence = 805962416;
@@ -4273,6 +4535,7 @@ public class Tag {
     public static final int ScanSpotReorderingAllowed = 805962645;
     public static final int ScanSpotMetersetWeights = 805962646;
     public static final int ScanningSpotSize = 805962648;
+    public static final int ScanSpotSizesDelivered = 805962649;
     public static final int NumberOfPaintings = 805962650;
     public static final int IonToleranceTableSequence = 805962656;
     public static final int IonBeamSequence = 805962658;
@@ -4291,6 +4554,7 @@ public class Tag {
     public static final int GeneralAccessoryType = 805962787;
     public static final int GeneralAccessoryNumber = 805962788;
     public static final int SourceToGeneralAccessoryDistance = 805962789;
+    public static final int IsocenterToGeneralAccessoryDistance = 805962790;
     public static final int ApplicatorGeometrySequence = 805962801;
     public static final int ApplicatorApertureShape = 805962802;
     public static final int ApplicatorOpening = 805962803;
@@ -4317,6 +4581,213 @@ public class Tag {
     public static final int DeliveredNominalRangeModulatedRegionDepths = 805963024;
     public static final int DeliveredReferenceDoseDefinition = 805963025;
     public static final int ReferenceDoseDefinition = 805963026;
+    public static final int RTControlPointIndex = 805963264;
+    public static final int RadiationGenerationModeIndex = 805963265;
+    public static final int ReferencedDefinedDeviceIndex = 805963266;
+    public static final int RadiationDoseIdentificationIndex = 805963267;
+    public static final int NumberOfRTControlPoints = 805963268;
+    public static final int ReferencedRadiationGenerationModeIndex = 805963269;
+    public static final int TreatmentPositionIndex = 805963270;
+    public static final int ReferencedDeviceIndex = 805963271;
+    public static final int TreatmentPositionGroupLabel = 805963272;
+    public static final int TreatmentPositionGroupUID = 805963273;
+    public static final int TreatmentPositionGroupSequence = 805963274;
+    public static final int ReferencedTreatmentPositionIndex = 805963275;
+    public static final int ReferencedRadiationDoseIdentificationIndex = 805963276;
+    public static final int RTAccessoryHolderWaterEquivalentThickness = 805963277;
+    public static final int ReferencedRTAccessoryHolderDeviceIndex = 805963278;
+    public static final int RTAccessoryHolderSlotExistenceFlag = 805963279;
+    public static final int RTAccessoryHolderSlotSequence = 805963280;
+    public static final int RTAccessoryHolderSlotID = 805963281;
+    public static final int RTAccessoryHolderSlotDistance = 805963282;
+    public static final int RTAccessorySlotDistance = 805963283;
+    public static final int RTAccessoryHolderDefinitionSequence = 805963284;
+    public static final int RTAccessoryDeviceSlotID = 805963285;
+    public static final int RTRadiationSequence = 805963286;
+    public static final int RadiationDoseSequence = 805963287;
+    public static final int RadiationDoseIdentificationSequence = 805963288;
+    public static final int RadiationDoseIdentificationLabel = 805963289;
+    public static final int ReferenceDoseType = 805963290;
+    public static final int PrimaryDoseValueIndicator = 805963291;
+    public static final int DoseValuesSequence = 805963292;
+    public static final int DoseValuePurpose = 805963293;
+    public static final int ReferenceDosePointCoordinates = 805963294;
+    public static final int RadiationDoseValuesParametersSequence = 805963295;
+    public static final int MetersetToDoseMappingSequence = 805963296;
+    public static final int ExpectedInVivoMeasurementValuesSequence = 805963297;
+    public static final int ExpectedInVivoMeasurementValueIndex = 805963298;
+    public static final int RadiationDoseInVivoMeasurementLabel = 805963299;
+    public static final int RadiationDoseCentralAxisDisplacement = 805963300;
+    public static final int RadiationDoseValue = 805963301;
+    public static final int RadiationDoseSourceToSkinDistance = 805963302;
+    public static final int RadiationDoseMeasurementPointCoordinates = 805963303;
+    public static final int RadiationDoseSourceToExternalContourDistance = 805963304;
+    public static final int RTToleranceSetSequence = 805963305;
+    public static final int RTToleranceSetLabel = 805963306;
+    public static final int AttributeToleranceValuesSequence = 805963307;
+    public static final int ToleranceValue = 805963308;
+    public static final int PatientSupportPositionToleranceSequence = 805963309;
+    public static final int TreatmentTimeLimit = 805963310;
+    public static final int CArmPhotonElectronControlPointSequence = 805963311;
+    public static final int ReferencedRTRadiationSequence = 805963312;
+    public static final int ReferencedRTInstanceSequence = 805963313;
+    public static final int ReferencedRTPatientSetupSequence = 805963314;
+    public static final int SourceToPatientSurfaceDistance = 805963316;
+    public static final int TreatmentMachineSpecialModeCodeSequence = 805963317;
+    public static final int IntendedNumberOfFractions = 805963318;
+    public static final int RTRadiationSetIntent = 805963319;
+    public static final int RTRadiationPhysicalAndGeometricContentDetailFlag = 805963320;
+    public static final int RTRecordFlag = 805963321;
+    public static final int TreatmentDeviceIdentificationSequence = 805963322;
+    public static final int ReferencedRTPhysicianIntentSequence = 805963323;
+    public static final int CumulativeMeterset = 805963324;
+    public static final int DeliveryRate = 805963325;
+    public static final int DeliveryRateUnitSequence = 805963326;
+    public static final int TreatmentPositionSequence = 805963327;
+    public static final int RadiationSourceAxisDistance = 805963328;
+    public static final int NumberOfRTBeamLimitingDevices = 805963329;
+    public static final int RTBeamLimitingDeviceProximalDistance = 805963330;
+    public static final int RTBeamLimitingDeviceDistalDistance = 805963331;
+    public static final int ParallelRTBeamDelimiterDeviceOrientationLabelCodeSequence = 805963332;
+    public static final int BeamModifierOrientationAngle = 805963333;
+    public static final int FixedRTBeamDelimiterDeviceSequence = 805963334;
+    public static final int ParallelRTBeamDelimiterDeviceSequence = 805963335;
+    public static final int NumberOfParallelRTBeamDelimiters = 805963336;
+    public static final int ParallelRTBeamDelimiterBoundaries = 805963337;
+    public static final int ParallelRTBeamDelimiterPositions = 805963338;
+    public static final int RTBeamLimitingDeviceOffset = 805963339;
+    public static final int RTBeamDelimiterGeometrySequence = 805963340;
+    public static final int RTBeamLimitingDeviceDefinitionSequence = 805963341;
+    public static final int ParallelRTBeamDelimiterOpeningMode = 805963342;
+    public static final int ParallelRTBeamDelimiterLeafMountingSide = 805963343;
+    public static final int PatientSetupUID = 805963344;
+    public static final int WedgeDefinitionSequence = 805963345;
+    public static final int RadiationBeamWedgeAngle = 805963346;
+    public static final int RadiationBeamWedgeThinEdgeDistance = 805963347;
+    public static final int RadiationBeamEffectiveWedgeAngle = 805963348;
+    public static final int NumberOfWedgePositions = 805963349;
+    public static final int RTBeamLimitingDeviceOpeningSequence = 805963350;
+    public static final int NumberOfRTBeamLimitingDeviceOpenings = 805963351;
+    public static final int RadiationDosimeterUnitSequence = 805963352;
+    public static final int RTDeviceDistanceReferenceLocationCodeSequence = 805963353;
+    public static final int RadiationDeviceConfigurationAndCommissioningKeySequence = 805963354;
+    public static final int PatientSupportPositionParameterSequence = 805963355;
+    public static final int PatientSupportPositionSpecificationMethod = 805963356;
+    public static final int PatientSupportPositionDeviceParameterSequence = 805963357;
+    public static final int DeviceOrderIndex = 805963358;
+    public static final int PatientSupportPositionParameterOrderIndex = 805963359;
+    public static final int PatientSupportPositionDeviceToleranceSequence = 805963360;
+    public static final int PatientSupportPositionToleranceOrderIndex = 805963361;
+    public static final int CompensatorDefinitionSequence = 805963362;
+    public static final int CompensatorMapOrientation = 805963363;
+    public static final int CompensatorProximalThicknessMap = 805963364;
+    public static final int CompensatorDistalThicknessMap = 805963365;
+    public static final int CompensatorBasePlaneOffset = 805963366;
+    public static final int CompensatorShapeFabricationCodeSequence = 805963367;
+    public static final int CompensatorShapeSequence = 805963368;
+    public static final int RadiationBeamCompensatorMillingToolDiameter = 805963369;
+    public static final int BlockDefinitionSequence = 805963370;
+    public static final int BlockEdgeData = 805963371;
+    public static final int BlockOrientation = 805963372;
+    public static final int RadiationBeamBlockThickness = 805963373;
+    public static final int RadiationBeamBlockSlabThickness = 805963374;
+    public static final int BlockEdgeDataSequence = 805963375;
+    public static final int NumberOfRTAccessoryHolders = 805963376;
+    public static final int GeneralAccessoryDefinitionSequence = 805963377;
+    public static final int NumberOfGeneralAccessories = 805963378;
+    public static final int BolusDefinitionSequence = 805963379;
+    public static final int NumberOfBoluses = 805963380;
+    public static final int EquipmentFrameOfReferenceUID = 805963381;
+    public static final int EquipmentFrameOfReferenceDescription = 805963382;
+    public static final int EquipmentReferencePointCoordinatesSequence = 805963383;
+    public static final int EquipmentReferencePointCodeSequence = 805963384;
+    public static final int RTBeamLimitingDeviceAngle = 805963385;
+    public static final int SourceRollAngle = 805963386;
+    public static final int RadiationGenerationModeSequence = 805963387;
+    public static final int RadiationGenerationModeLabel = 805963388;
+    public static final int RadiationGenerationModeDescription = 805963389;
+    public static final int RadiationGenerationModeMachineCodeSequence = 805963390;
+    public static final int RadiationTypeCodeSequence = 805963391;
+    public static final int NominalEnergy = 805963392;
+    public static final int MinimumNominalEnergy = 805963393;
+    public static final int MaximumNominalEnergy = 805963394;
+    public static final int RadiationFluenceModifierCodeSequence = 805963395;
+    public static final int EnergyUnitCodeSequence = 805963396;
+    public static final int NumberOfRadiationGenerationModes = 805963397;
+    public static final int PatientSupportDevicesSequence = 805963398;
+    public static final int NumberOfPatientSupportDevices = 805963399;
+    public static final int RTBeamModifierDefinitionDistance = 805963400;
+    public static final int BeamAreaLimitSequence = 805963401;
+    public static final int ReferencedRTPrescriptionSequence = 805963402;
+    public static final int DoseValueInterpretation = 805963403;
+    public static final int TreatmentSessionUID = 805963520;
+    public static final int RTRadiationUsage = 805963521;
+    public static final int ReferencedRTRadiationSetSequence = 805963522;
+    public static final int ReferencedRTRadiationRecordSequence = 805963523;
+    public static final int RTRadiationSetDeliveryNumber = 805963524;
+    public static final int ClinicalFractionNumber = 805963525;
+    public static final int RTTreatmentFractionCompletionStatus = 805963526;
+    public static final int RTRadiationSetUsage = 805963527;
+    public static final int TreatmentDeliveryContinuationFlag = 805963528;
+    public static final int TreatmentRecordContentOrigin = 805963529;
+    public static final int RTTreatmentTerminationStatus = 805963540;
+    public static final int RTTreatmentTerminationReasonCodeSequence = 805963541;
+    public static final int MachineSpecificTreatmentTerminationCodeSequence = 805963542;
+    public static final int RTRadiationSalvageRecordControlPointSequence = 805963554;
+    public static final int StartingMetersetValueKnownFlag = 805963555;
+    public static final int TreatmentTerminationDescription = 805963568;
+    public static final int TreatmentToleranceViolationSequence = 805963569;
+    public static final int TreatmentToleranceViolationCategory = 805963570;
+    public static final int TreatmentToleranceViolationAttributeSequence = 805963571;
+    public static final int TreatmentToleranceViolationDescription = 805963572;
+    public static final int TreatmentToleranceViolationIdentification = 805963573;
+    public static final int TreatmentToleranceViolationDateTime = 805963574;
+    public static final int RecordedRTControlPointDateTime = 805963578;
+    public static final int ReferencedRadiationRTControlPointIndex = 805963579;
+    public static final int AlternateValueSequence = 805963582;
+    public static final int ConfirmationSequence = 805963583;
+    public static final int InterlockSequence = 805963584;
+    public static final int InterlockDateTime = 805963585;
+    public static final int InterlockDescription = 805963586;
+    public static final int InterlockOriginatingDeviceSequence = 805963587;
+    public static final int InterlockCodeSequence = 805963588;
+    public static final int InterlockResolutionCodeSequence = 805963589;
+    public static final int InterlockResolutionUserSequence = 805963590;
+    public static final int OverrideDateTime = 805963616;
+    public static final int TreatmentToleranceViolationTypeCodeSequence = 805963617;
+    public static final int TreatmentToleranceViolationCauseCodeSequence = 805963618;
+    public static final int MeasuredMetersetToDoseMappingSequence = 805963634;
+    public static final int ReferencedExpectedInVivoMeasurementValueIndex = 805963635;
+    public static final int DoseMeasurementDeviceCodeSequence = 805963636;
+    public static final int AdditionalParameterRecordingInstanceSequence = 805963648;
+    public static final int InterlockOriginDescription = 805963651;
+    public static final int RTPatientPositionScopeSequence = 805963652;
+    public static final int ReferencedTreatmentPositionGroupUID = 805963653;
+    public static final int RadiationOrderIndex = 805963654;
+    public static final int OmittedRadiationSequence = 805963655;
+    public static final int ReasonForOmissionCodeSequence = 805963656;
+    public static final int RTDeliveryStartPatientPositionSequence = 805963657;
+    public static final int RTTreatmentPreparationPatientPositionSequence = 805963658;
+    public static final int ReferencedRTTreatmentPreparationSequence = 805963659;
+    public static final int ReferencedPatientSetupPhotoSequence = 805963660;
+    public static final int PatientTreatmentPreparationMethodCodeSequence = 805963661;
+    public static final int PatientTreatmentPreparationProcedureParameterDescription = 805963662;
+    public static final int PatientTreatmentPreparationDeviceSequence = 805963663;
+    public static final int PatientTreatmentPreparationProcedureSequence = 805963664;
+    public static final int PatientTreatmentPreparationProcedureCodeSequence = 805963665;
+    public static final int PatientTreatmentPreparationMethodDescription = 805963666;
+    public static final int PatientTreatmentPreparationProcedureParameterSequence = 805963667;
+    public static final int PatientSetupPhotoDescription = 805963668;
+    public static final int PatientTreatmentPreparationProcedureIndex = 805963669;
+    public static final int ReferencedPatientSetupProcedureIndex = 805963670;
+    public static final int RTRadiationTaskSequence = 805963671;
+    public static final int RTPatientPositionDisplacementSequence = 805963672;
+    public static final int RTPatientPositionSequence = 805963673;
+    public static final int DisplacementReferenceLabel = 805963674;
+    public static final int DisplacementMatrix = 805963675;
+    public static final int PatientSupportDisplacementSequence = 805963676;
+    public static final int DisplacementReferenceLocationCodeSequence = 805963677;
+    public static final int RTRadiationSetDeliveryUsage = 805963678;
     public static final int ReferencedRTPlanSequence = 806092802;
     public static final int ReferencedBeamSequence = 806092804;
     public static final int ReferencedBeamNumber = 806092806;
@@ -4351,6 +4822,22 @@ public class Tag {
     public static final int OmittedBeamTaskSequence = 806093073;
     public static final int ReasonForOmission = 806093074;
     public static final int ReasonForOmissionDescription = 806093075;
+    public static final int PrescriptionOverviewSequence = 806093076;
+    public static final int TotalPrescriptionDose = 806093077;
+    public static final int PlanOverviewSequence = 806093078;
+    public static final int PlanOverviewIndex = 806093079;
+    public static final int ReferencedPlanOverviewIndex = 806093080;
+    public static final int NumberOfFractionsIncluded = 806093081;
+    public static final int DoseCalibrationConditionsSequence = 806093088;
+    public static final int AbsorbedDoseToMetersetRatio = 806093089;
+    public static final int DelineatedRadiationFieldSize = 806093090;
+    public static final int DoseCalibrationConditionsVerifiedFlag = 806093091;
+    public static final int CalibrationReferencePointDepth = 806093092;
+    public static final int GatingBeamHoldTransitionSequence = 806093093;
+    public static final int BeamHoldTransition = 806093094;
+    public static final int BeamHoldTransitionDateTime = 806093095;
+    public static final int BeamHoldOriginatingDeviceSequence = 806093096;
+    public static final int BeamHoldTransitionTriggerSource = 806093097;
     public static final int ApprovalStatus = 806223874;
     public static final int ReviewDate = 806223876;
     public static final int ReviewTime = 806223877;
@@ -4401,6 +4888,7 @@ public class Tag {
     public static final int SegmentAnnotationTypeCodeSequence = 806354988;
     public static final int DeviceLabel = 806354989;
     public static final int DeviceTypeCodeSequence = 806354990;
+    public static final int SegmentAnnotationTypeModifierCodeSequence = 806354991;
     public static final int PatientEquipmentRelationshipCodeSequence = 806354992;
     public static final int ReferencedFiducialsUID = 806354993;
     public static final int PatientTreatmentOrientationSequence = 806354994;
@@ -4489,6 +4977,19 @@ public class Tag {
     public static final int IntendedStartDayOfWeek = 806355078;
     public static final int WeekdayFractionPatternSequence = 806355079;
     public static final int DeliveryTimeStructureCodeSequence = 806355080;
+    public static final int TreatmentSiteModifierCodeSequence = 806355081;
+    public static final int RoboticBaseLocationIndicator = 806355088;
+    public static final int RoboticPathNodeSetCodeSequence = 806355089;
+    public static final int RoboticNodeIdentifier = 806355090;
+    public static final int RTTreatmentSourceCoordinates = 806355091;
+    public static final int RadiationSourceCoordinateSystemYawAngle = 806355092;
+    public static final int RadiationSourceCoordinateSystemRollAngle = 806355093;
+    public static final int RadiationSourceCoordinateSystemPitchAngle = 806355094;
+    public static final int RoboticPathControlPointSequence = 806355095;
+    public static final int TomotherapeuticControlPointSequence = 806355096;
+    public static final int TomotherapeuticLeafOpenDurations = 806355097;
+    public static final int TomotherapeuticLeafInitialClosedDurations = 806355098;
+    public static final int ConceptualVolumeIdentificationSequence = 806355104;
     public static final int Arbitrary = 1073741840;
     public static final int TextComments = 1073758208;
     public static final int ResultsID = 1074266176;
@@ -4554,7 +5055,7 @@ public class Tag {
     public static final int RouteSegmentEndTime = 1074794534;
     public static final int TDRType = 1074794535;
     public static final int InternationalRouteSegment = 1074794536;
-    public static final int ThreatDetectionAlgorithmandVersion = 1074794537;
+    public static final int ThreatDetectionAlgorithmAndVersion = 1074794537;
     public static final int AssignedLocation = 1074794538;
     public static final int AlarmDecisionTime = 1074794539;
     public static final int AlarmDecision = 1074794545;
@@ -4685,11 +5186,9 @@ public class Tag {
     public static final int OverlayComments = 1610629120;
     public static final int ExtendedOffsetTable = 2145386497;
     public static final int ExtendedOffsetTableLengths = 2145386498;
+    public static final int EncapsulatedPixelDataValueTotalLength = 2145386499;
     public static final int FloatPixelData = 2145386504;
     public static final int DoubleFloatPixelData = 2145386505;
-    /**
-     * 这个字段里存的就是Dicom文件的图像数据
-     */
     public static final int PixelData = 2145386512;
     public static final int CoefficientsSDVN = 2145386528;
     public static final int CoefficientsSDHN = 2145386544;
@@ -4755,7 +5254,6 @@ public class Tag {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, 10, 11, 12, 13, 14, 15
     };
-
     private static final char[] HEX_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
@@ -4833,17 +5331,17 @@ public class Tag {
 
     public static String toString(int tag) {
         char[] s = {
-                Symbol.C_PARENTHESE_LEFT,
+                '(',
                 HEX_DIGITS[(tag >>> 28)],
                 HEX_DIGITS[(tag >>> 24) & 0xF],
                 HEX_DIGITS[(tag >>> 20) & 0xF],
                 HEX_DIGITS[(tag >>> 16) & 0xF],
-                Symbol.C_COMMA,
+                ',',
                 HEX_DIGITS[(tag >>> 12) & 0xF],
                 HEX_DIGITS[(tag >>> 8) & 0xF],
                 HEX_DIGITS[(tag >>> 4) & 0xF],
                 HEX_DIGITS[(tag >>> 0) & 0xF],
-                Symbol.C_PARENTHESE_RIGHT};
+                ')'};
         return new String(s);
     }
 
@@ -4893,9 +5391,9 @@ public class Tag {
     }
 
     public static boolean isItem(int tag) {
-        return tag == Tag.Item
-                || tag == Tag.ItemDelimitationItem
-                || tag == Tag.SequenceDelimitationItem;
+        return tag == Item
+                || tag == ItemDelimitationItem
+                || tag == SequenceDelimitationItem;
     }
 
     public static boolean isFileMetaInformation(int tag) {
@@ -4923,12 +5421,40 @@ public class Tag {
     }
 
     public static int[] parseTagPath(String tagPath) {
-        String[] names = Material.split(tagPath, Symbol.C_DOT);
+        String[] names = Builder.split(tagPath, '.');
         int[] tags = new int[names.length];
         for (int i = 0; i < tags.length; i++)
             if ((tags[i] = forName(names[i])) == -1)
                 throw new IllegalArgumentException("tagPath: " + tagPath);
         return tags;
+    }
+
+    public static int[] toTags(String[] tagOrKeywords) {
+        int[] tags = new int[tagOrKeywords.length];
+        for (int i = 0; i < tags.length; i++) {
+            tags[i] = toTag(tagOrKeywords[i]);
+        }
+        return tags;
+    }
+
+    public static int toTag(String tagOrKeyword) {
+        try {
+            return Integer.parseInt(tagOrKeyword, 16);
+        } catch (IllegalArgumentException e) {
+            int tag = ElementDictionary.tagForKeyword(tagOrKeyword, null);
+            if (tag == -1) {
+                throw new IllegalArgumentException(tagOrKeyword);
+            }
+            return tag;
+        }
+    }
+
+    public enum Type {
+        STANDARD, PRIVATE, PRIVATE_CREATOR;
+
+        public static Type typeOf(int tag) {
+            return (tag & 0x00010000) != 0 ? (tag & 0x0000FF00) != 0 ? PRIVATE : PRIVATE_CREATOR : STANDARD;
+        }
     }
 
 }

@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.image.nimble.codec.BytesWithImageDescriptor;
+import org.miaixz.bus.image.nimble.Photometric;
+import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.CvType;
@@ -40,6 +40,7 @@ import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -61,20 +62,29 @@ public class NativeJLSImageWriter extends ImageWriter {
 
     @Override
     public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
-        if (null == output) {
+        if (output == null) {
             throw new IllegalStateException("input cannot be null");
         }
 
-        if (!(output instanceof ImageOutputStream)) {
+        if (!(output instanceof ImageOutputStream stream)) {
             throw new IllegalArgumentException("input is not an ImageInputStream!");
         }
-        ImageOutputStream stream = (ImageOutputStream) output;
         stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
-        if (!(stream instanceof BytesWithImageDescriptor)) {
+        JPEGLSImageWriteParam jpegParams = (JPEGLSImageWriteParam) param;
+
+        if (!(stream instanceof BytesWithImageImageDescriptor)) {
             throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
         }
-        ImageDescriptor desc = ((BytesWithImageDescriptor) stream).getImageDescriptor();
+        ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
+        Photometric pi = desc.getPhotometricInterpretation();
+
+        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi
+                || Photometric.YBR_PARTIAL_422 == pi || Photometric.YBR_PARTIAL_420 == pi
+                || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
+            throw new IllegalArgumentException(
+                    "True lossless encoder: Photometric interpretation is not supported: " + pi);
+        }
 
         RenderedImage renderedImage = image.getRenderedImage();
         Mat buf = null;
@@ -82,22 +92,28 @@ public class NativeJLSImageWriter extends ImageWriter {
         try {
             ImageCV mat = null;
             try {
-                // 将交叉模式(PlanarConfiguration = 1)转换为像素模式，因此输入图像始终具有像素模式(PlanarConfiguration = 0)
+                // Band interleaved mode (PlanarConfiguration = 1) is converted to pixel interleaved
+                // So the input image has always a pixel interleaved mode mode((PlanarConfiguration = 0)
                 mat = ImageConversion.toMat(renderedImage, param.getSourceRegion(), false);
 
-                int jpeglsNLE = param instanceof JPEGLSImageWriteParam ? ((JPEGLSImageWriteParam) param).getNearLossless() : 0;
+                int jpeglsNLE = jpegParams.getNearLossless();
                 int bitCompressed = desc.getBitsCompressed();
                 int cvType = mat.type();
                 int channels = CvType.channels(cvType);
+                int epi = channels == 1 ? Imgcodecs.EPI_Monochrome2 : Imgcodecs.EPI_RGB;
                 boolean signed = desc.isSigned();
                 int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
                 if (signed) {
                     Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                     jpeglsNLE = 0;
-                    bitCompressed = Normal._16; // 扩展到分配的位以避免异常，因为将负值视为大正值
+                    bitCompressed = 16; // Extend to bit allocated to avoid exception as negative values are treated as large positive values
+                }
+                // Specific case not well supported by jpeg and jpeg-ls encoder that reduce the stream to 8-bit
+                if (bitCompressed == 8 && renderedImage.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE) {
+                    bitCompressed = 12;
                 }
 
-                int[] params = new int[15];
+                int[] params = new int[16];
                 params[Imgcodecs.DICOM_PARAM_IMREAD] = Imgcodecs.IMREAD_UNCHANGED; // Image flags
                 params[Imgcodecs.DICOM_PARAM_DCM_IMREAD] = dcmFlags; // DICOM flags
                 params[Imgcodecs.DICOM_PARAM_WIDTH] = mat.width(); // Image width
@@ -106,15 +122,16 @@ public class NativeJLSImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_COMPONENTS] = channels; // Number of components
                 params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = bitCompressed; // Bits per sample
                 params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
+                params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
                 params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR] = jpeglsNLE; // Lossy error for jpeg-ls
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG-LS encoding error: null image");
                 }
             } finally {
-                if (null != mat) {
+                if (mat != null) {
                     mat.release();
                 }
             }
