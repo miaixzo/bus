@@ -39,6 +39,9 @@ import java.util.concurrent.locks.Lock;
  */
 public class NoLock implements Lock {
 
+    /**
+     * 单例对象
+     */
     public static NoLock INSTANCE = new NoLock();
 
     @Override

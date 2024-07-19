@@ -35,11 +35,11 @@ import java.util.Date;
 import java.util.List;
 
 public class ProjectFetches implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static class DateCount implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private Integer count;
 
@@ -64,7 +64,7 @@ public class ProjectFetches implements Serializable {
     }
 
     public static class Fetches implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private Integer total;
         private List<DateCount> days;

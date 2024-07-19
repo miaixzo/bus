@@ -29,9 +29,9 @@ package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.Option;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,22 +39,31 @@ import java.util.EnumSet;
 import java.util.List;
 
 /**
+ * DICOM Standard, Part 15, Annex H: Transfer Capability - The description of
+ * the SOP classes and syntaxes supported by a Network AE.
+ * An instance of the <code>TransferCapability</code> class describes the
+ * DICOM transfer capabilities of an SCU or SCP in terms of a single
+ * presentation syntax. This includes the role selection (SCU or SCP), the
+ * acceptable transfer syntaxes for a given SOP Class, and any extra
+ * information.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TransferCapability implements Serializable {
 
+    private static final long serialVersionUID = -1L;
     private ApplicationEntity ae;
     private String commonName;
     private String sopClass;
     private Role role;
     private String[] transferSyntaxes;
     private String[] prefTransferSyntaxes = {};
-    private EnumSet<Option.Type> types;
+    private EnumSet<QueryOption> queryOptions;
     private StorageOptions storageOptions;
 
     public TransferCapability() {
-        this(null, UID.VerificationSOPClass, Role.SCU, UID.ImplicitVRLittleEndian);
+        this(null, UID.Verification.uid, Role.SCU, UID.ImplicitVRLittleEndian.uid);
     }
 
     public TransferCapability(String commonName, String sopClass, Role role,
@@ -66,8 +75,8 @@ public class TransferCapability implements Serializable {
     }
 
     public void setApplicationEntity(ApplicationEntity ae) {
-        if (null != ae) {
-            if (null != this.ae)
+        if (ae != null) {
+            if (this.ae != null)
                 throw new IllegalStateException("already owned by AE " +
                         this.ae.getAETitle());
         }
@@ -97,19 +106,19 @@ public class TransferCapability implements Serializable {
     }
 
     public void setRole(Role role) {
-        if (null == role)
+        if (role == null)
             throw new NullPointerException();
 
         if (this.role == role)
             return;
 
         ApplicationEntity ae = this.ae;
-        if (null != ae)
+        if (ae != null)
             ae.removeTransferCapabilityFor(sopClass, this.role);
 
         this.role = role;
 
-        if (null != ae)
+        if (ae != null)
             ae.addTransferCapability(this);
     }
 
@@ -130,12 +139,12 @@ public class TransferCapability implements Serializable {
             return;
 
         ApplicationEntity ae = this.ae;
-        if (null != ae)
+        if (ae != null)
             ae.removeTransferCapabilityFor(sopClass, this.role);
 
         this.sopClass = sopClass;
 
-        if (null != ae)
+        if (ae != null)
             ae.addTransferCapability(this);
     }
 
@@ -149,8 +158,8 @@ public class TransferCapability implements Serializable {
     }
 
     public void setTransferSyntaxes(String... transferSyntaxes) {
-        this.transferSyntaxes = Material.requireContainsNoEmpty(
-                Material.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
+        this.transferSyntaxes = Builder.requireContainsNoEmpty(
+                Builder.requireNotEmpty(transferSyntaxes, "missing transferSyntax"),
                 "empty transferSyntax");
     }
 
@@ -160,11 +169,11 @@ public class TransferCapability implements Serializable {
 
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
         this.prefTransferSyntaxes =
-                Material.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
+                Builder.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
     public boolean containsTransferSyntax(String ts) {
-        return Symbol.STAR.equals(transferSyntaxes[0]) || Material.contains(transferSyntaxes, ts);
+        return Symbol.STAR.equals(transferSyntaxes[0]) || Builder.contains(transferSyntaxes, ts);
     }
 
     public String selectTransferSyntax(String... transferSyntaxes) {
@@ -193,12 +202,12 @@ public class TransferCapability implements Serializable {
         return acceptable;
     }
 
-    public EnumSet<Option.Type> getTypes() {
-        return types;
+    public EnumSet<QueryOption> getQueryOptions() {
+        return queryOptions;
     }
 
-    public void setTypes(EnumSet<Option.Type> types) {
-        this.types = types;
+    public void setQueryOptions(EnumSet<QueryOption> queryOptions) {
+        this.queryOptions = queryOptions;
     }
 
     public StorageOptions getStorageOptions() {
@@ -216,20 +225,20 @@ public class TransferCapability implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Material.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
-        Material.appendLine(sb, indent2, "role: ", role);
+        Builder.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
+        Builder.appendLine(sb, indent2, "role: ", role);
         sb.append(indent2).append("as: ");
-        UID.promptTo(sopClass, sb).append(Material.LINE_SEPARATOR);
+        UID.promptTo(sopClass, sb).append(Builder.LINE_SEPARATOR);
         for (String ts : transferSyntaxes) {
             sb.append(indent2).append("ts: ");
-            UID.promptTo(ts, sb).append(Material.LINE_SEPARATOR);
+            UID.promptTo(ts, sb).append(Builder.LINE_SEPARATOR);
         }
-        if (null != types)
-            sb.append(indent2).append("QueryOptions").append(types)
-                    .append(Material.LINE_SEPARATOR);
-        if (null != storageOptions)
+        if (queryOptions != null)
+            sb.append(indent2).append("QueryOptions").append(queryOptions)
+                    .append(Builder.LINE_SEPARATOR);
+        if (storageOptions != null)
             sb.append(indent2).append(storageOptions)
-                    .append(Material.LINE_SEPARATOR);
+                    .append(Builder.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 

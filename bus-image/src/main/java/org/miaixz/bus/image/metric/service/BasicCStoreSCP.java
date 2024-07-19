@@ -33,9 +33,8 @@ import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Commands;
-import org.miaixz.bus.image.metric.ImageException;
-import org.miaixz.bus.image.metric.PDVInputStream;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.net.PDVInputStream;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -43,7 +42,7 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BasicCStoreSCP extends AbstractService {
+public class BasicCStoreSCP extends AbstractImageService {
 
     public BasicCStoreSCP() {
         super(Symbol.STAR);
@@ -54,29 +53,23 @@ public class BasicCStoreSCP extends AbstractService {
     }
 
     @Override
-    public void onDimse(Association as,
-                        Presentation pc,
-                        Dimse dimse,
-                        Attributes rq,
-                        PDVInputStream data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
+                          Attributes rq, PDVInputStream data) throws IOException {
         if (dimse != Dimse.C_STORE_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ImageServiceException(Status.UnrecognizedOperation);
 
         Attributes rsp = Commands.mkCStoreRSP(rq, Status.Success);
         store(as, pc, rq, data, rsp);
         as.tryWriteDimseRSP(pc, rsp);
     }
 
-    protected void store(Association as, Presentation pc, Attributes rq,
+    protected void store(Association as, PresentationContext pc, Attributes rq,
                          PDVInputStream data, Attributes rsp) throws IOException {
     }
 
     @Override
-    protected void onDimse(Association as,
-                           Presentation pc,
-                           Dimse dimse,
-                           Attributes cmd,
-                           Attributes data) {
+    protected void onDimseRQ(Association as, PresentationContext pc,
+                             Dimse dimse, Attributes cmd, Attributes data) throws IOException {
         throw new UnsupportedOperationException();
     }
 

@@ -29,6 +29,7 @@ package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.AttributesCoercion;
+import org.miaixz.bus.image.galaxy.data.UpdatePolicy;
 
 import javax.xml.transform.Templates;
 
@@ -51,7 +52,7 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
 
     @Override
     public String remapUID(String uid) {
-        return null != next ? next.remapUID(uid) : uid;
+        return next != null ? next.remapUID(uid) : uid;
     }
 
     public boolean isIncludeNameSpaceDeclaration() {
@@ -94,7 +95,7 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
     }
 
     @Override
-    public void coerce(Attributes attrs, Attributes modified) {
+    public void coerce(Attributes attrs, Attributes modified) throws Exception {
         Attributes newAttrs;
         try {
             newAttrs = SAXTransformer.transform(
@@ -102,12 +103,12 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        if (null != modified) {
-            attrs.update(Attributes.UpdatePolicy.OVERWRITE, newAttrs, modified);
+        if (modified != null) {
+            attrs.update(UpdatePolicy.OVERWRITE, newAttrs, modified);
         } else {
             attrs.addAll(newAttrs);
         }
-        if (null != next)
+        if (next != null)
             next.coerce(attrs, modified);
     }
 

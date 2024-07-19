@@ -36,32 +36,39 @@ import java.util.Objects;
  */
 public class ItemPointer implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     public final int sequenceTag;
     public final String privateCreator;
     public final int itemIndex;
 
     public ItemPointer(int sequenceTag) {
-        this(sequenceTag, null, -1);
+        this(null, sequenceTag, -1);
     }
 
     public ItemPointer(int sequenceTag, int itemIndex) {
-        this(sequenceTag, null, itemIndex);
+        this(null, sequenceTag, itemIndex);
     }
 
-    public ItemPointer(int sequenceTag, String privateCreator) {
-        this(sequenceTag, privateCreator, -1);
+    public ItemPointer(String privateCreator, int sequenceTag) {
+        this(privateCreator, sequenceTag, -1);
     }
 
-    public ItemPointer(int sequenceTag, String privateCreator, int itemIndex) {
+    public ItemPointer(String privateCreator, int sequenceTag, int itemIndex) {
         this.sequenceTag = sequenceTag;
         this.privateCreator = privateCreator;
         this.itemIndex = itemIndex;
     }
 
+    public boolean equalsIgnoreItemIndex(ItemPointer that) {
+        return sequenceTag == that.sequenceTag &&
+                Objects.equals(privateCreator, that.privateCreator);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         ItemPointer that = (ItemPointer) o;
         return sequenceTag == that.sequenceTag &&
                 itemIndex == that.itemIndex &&
@@ -73,9 +80,13 @@ public class ItemPointer implements Serializable {
         return Objects.hash(sequenceTag, privateCreator, itemIndex);
     }
 
-    public boolean equalsIgnoreItemIndex(ItemPointer that) {
-        return sequenceTag == that.sequenceTag &&
-                Objects.equals(privateCreator, that.privateCreator);
+    @Override
+    public String toString() {
+        return "ItemPointer{" +
+                "sequenceTag=" + sequenceTag +
+                ", privateCreator='" + privateCreator + '\'' +
+                ", itemIndex=" + itemIndex +
+                '}';
     }
 
 }

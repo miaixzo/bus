@@ -29,7 +29,7 @@ package org.miaixz.bus.health.unix.platform.aix.driver.perfstat;
 
 import com.sun.jna.platform.unix.aix.Perfstat;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Utility to query partition config

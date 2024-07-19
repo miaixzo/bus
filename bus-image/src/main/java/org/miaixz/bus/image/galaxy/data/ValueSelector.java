@@ -36,43 +36,45 @@ import java.util.Objects;
  */
 public class ValueSelector implements Serializable {
 
-    private final AttributesSelector attributesSelector;
+    private static final long serialVersionUID = -1L;
+
+    private final AttributeSelector attributeSelector;
     private final int valueIndex;
     private String text;
 
     public ValueSelector(int tag, String privateCreator, int index, ItemPointer... itemPointers) {
-        this(new AttributesSelector(tag, privateCreator, itemPointers), index);
+        this(new AttributeSelector(tag, privateCreator, itemPointers), index);
     }
 
-    public ValueSelector(AttributesSelector attributesSelector, int index) {
-        this.attributesSelector = Objects.requireNonNull(attributesSelector);
+    public ValueSelector(AttributeSelector attributeSelector, int index) {
+        this.attributeSelector = Objects.requireNonNull(attributeSelector);
         this.valueIndex = index;
     }
 
     public static ValueSelector valueOf(String s) {
         int fromIndex = s.lastIndexOf("DicomAttribute");
         try {
-            return new ValueSelector(AttributesSelector.valueOf(s),
-                    AttributesSelector.selectNumber(s, fromIndex) - 1);
+            return new ValueSelector(AttributeSelector.valueOf(s),
+                    AttributeSelector.selectNumber(s, fromIndex) - 1);
         } catch (Exception e) {
             throw new IllegalArgumentException(s);
         }
     }
 
     public int tag() {
-        return attributesSelector.tag();
+        return attributeSelector.tag();
     }
 
     public String privateCreator() {
-        return attributesSelector.privateCreator();
+        return attributeSelector.privateCreator();
     }
 
     public int level() {
-        return attributesSelector.level();
+        return attributeSelector.level();
     }
 
     public ItemPointer itemPointer(int index) {
-        return attributesSelector.itemPointer(index);
+        return attributeSelector.itemPointer(index);
     }
 
     public int valueIndex() {
@@ -80,13 +82,13 @@ public class ValueSelector implements Serializable {
     }
 
     public String selectStringValue(Attributes attrs, String defVal) {
-        return attributesSelector.selectStringValue(attrs, valueIndex, defVal);
+        return attributeSelector.selectStringValue(attrs, valueIndex, defVal);
     }
 
     @Override
     public String toString() {
-        if (null == text)
-            text = attributesSelector.toStringBuilder()
+        if (text == null)
+            text = attributeSelector.toStringBuilder()
                     .append("/Value[@number=\"")
                     .append(valueIndex + 1)
                     .append("\"]")

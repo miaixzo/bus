@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;

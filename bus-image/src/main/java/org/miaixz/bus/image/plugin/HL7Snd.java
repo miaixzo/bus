@@ -27,13 +27,13 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.internal.hl7.MLLPConnection;
+import org.miaixz.bus.image.metric.hl7.MLLPConnection;
+import org.miaixz.bus.image.metric.hl7.MLLPRelease;
 
 import java.io.*;
 import java.net.Socket;
@@ -51,18 +51,23 @@ public class HL7Snd extends Device {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
 
+    private MLLPRelease mllpRelease;
     private Socket sock;
     private MLLPConnection mllp;
 
-    public HL7Snd() {
+    public HL7Snd() throws IOException {
         super("hl7snd");
         addConnection(conn);
+    }
+
+    public void setMLLPRelease(MLLPRelease mllpRelease) {
+        this.mllpRelease = mllpRelease;
     }
 
     public void open() throws IOException, InternalException, GeneralSecurityException {
         sock = conn.connect(remote);
         sock.setSoTimeout(conn.getResponseTimeout());
-        mllp = new MLLPConnection(sock);
+        mllp = new MLLPConnection(sock, mllpRelease);
     }
 
     public void close() {
@@ -71,7 +76,7 @@ public class HL7Snd extends Device {
 
     public void sendFiles(List<String> pathnames) throws IOException {
         for (String pathname : pathnames)
-            if (pathname.equals(Symbol.MINUS))
+            if (pathname.equals("-"))
                 send(readFromStdIn());
             else {
                 Path path = Paths.get(pathname);
@@ -84,11 +89,11 @@ public class HL7Snd extends Device {
 
     private void send(byte[] data) throws IOException {
         mllp.writeMessage(data);
-        if (null == mllp.readMessage())
+        if (mllp.readMessage() == null)
             throw new IOException("Connection closed by receiver");
     }
 
-    private byte[] readFromStdIn() throws IOException {
+    private byte[] readFromStdIn() {
         FileInputStream in = null;
         try {
             in = new FileInputStream(FileDescriptor.in);

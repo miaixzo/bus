@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CollectionStream {
+public class CollectionStream extends CollectionValidator {
 
     /**
      * 将collection转化为类型不变的map

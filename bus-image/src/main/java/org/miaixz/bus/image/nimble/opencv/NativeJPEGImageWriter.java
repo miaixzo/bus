@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.nimble.Photometric;
-import org.miaixz.bus.image.nimble.codec.BytesWithImageDescriptor;
+import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.logger.Logger;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
@@ -40,6 +40,7 @@ import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -79,23 +80,22 @@ public class NativeJPEGImageWriter extends ImageWriter {
 
     @Override
     public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
-        if (null == output) {
+        if (output == null) {
             throw new IllegalStateException("input cannot be null");
         }
 
-        if (!(output instanceof ImageOutputStream)) {
+        if (!(output instanceof ImageOutputStream stream)) {
             throw new IllegalArgumentException("input is not an ImageInputStream!");
         }
-        ImageOutputStream stream = (ImageOutputStream) output;
         stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
         JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) param;
 
-        if (!(stream instanceof BytesWithImageDescriptor)) {
+        if (!(stream instanceof BytesWithImageImageDescriptor)) {
             throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
         }
-        ImageDescriptor desc = ((BytesWithImageDescriptor) stream).getImageDescriptor();
-        Photometric pi = desc.getPhotometric();
+        ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
+        Photometric pi = desc.getPhotometricInterpretation();
 
         if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi
                 || Photometric.YBR_PARTIAL_422 == pi || Photometric.YBR_PARTIAL_420 == pi
@@ -119,15 +119,24 @@ public class NativeJPEGImageWriter extends ImageWriter {
                 int channels = CvType.channels(cvType);
                 boolean signed = desc.isSigned();
                 int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
+                int bitCompressed = desc.getBitsCompressed();
+                if (signed && jpegParams.getPrediction() > 1) {
+                    Logger.warn("Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
+                    bitCompressed = 16;
+                }
+                // Specific case not well supported by jpeg and jpeg-ls encoder that reduce the stream to 8-bit
+                if (bitCompressed == 8 && renderedImage.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE) {
+                    bitCompressed = 12;
+                }
 
-                int[] params = new int[15];
+                int[] params = new int[16];
                 params[Imgcodecs.DICOM_PARAM_IMREAD] = Imgcodecs.IMREAD_UNCHANGED; // Image flags
                 params[Imgcodecs.DICOM_PARAM_DCM_IMREAD] = dcmFlags; // DICOM flags
                 params[Imgcodecs.DICOM_PARAM_WIDTH] = mat.width(); // Image width
                 params[Imgcodecs.DICOM_PARAM_HEIGHT] = mat.height(); // Image height
                 params[Imgcodecs.DICOM_PARAM_COMPRESSION] = Imgcodecs.DICOM_CP_JPG; // Type of compression
                 params[Imgcodecs.DICOM_PARAM_COMPONENTS] = channels; // Number of components
-                params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = desc.getBitsCompressed(); // Bits per sample
+                params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = bitCompressed; // Bits per sample
                 params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
                 params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
                 params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = jpegParams.getMode(); // JPEG Codec mode
@@ -136,12 +145,12 @@ public class NativeJPEGImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform(); // JPEG lossless transformation point
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG encoding error: null image");
                 }
             } finally {
-                if (null != mat) {
+                if (mat != null) {
                     mat.release();
                 }
             }

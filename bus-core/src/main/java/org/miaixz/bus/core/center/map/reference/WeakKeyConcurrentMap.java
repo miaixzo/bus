@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class WeakKeyConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

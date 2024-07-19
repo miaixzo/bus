@@ -292,7 +292,7 @@ public class MultipartBody extends RequestBody {
 
         /**
          * Set the MIME type. Expected values for {@code type} are {@link MediaType#MULTIPART_MIXED} (the default), {@link
-         * MediaType#MULTIPART_ALTERNATIVE}, {@link MediaType#MULTIPART_DIGEST}, {@link MediaType#MULTIPART_parallel} and {@link MediaType#APPLICATION_FORM_URLENCODED}.
+         * MediaType#MULTIPART_ALTERNATIVE}, {@link MediaType#MULTIPART_DIGEST}, {@link MediaType#MULTIPART_PARALLEL} and {@link MediaType#APPLICATION_FORM_URLENCODED}.
          */
         public Builder setType(MediaType type) {
             if (null == type) {

@@ -27,13 +27,17 @@
  */
 package org.miaixz.bus.image.plugin;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.*;
+import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.metric.ApplicationEntity;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.Progress;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
@@ -67,7 +71,7 @@ public class CStore {
     public static Status process(Node callingNode,
                                  Node calledNode,
                                  List<String> files,
-                                 Progress progress) {
+                                 ImageProgress progress) {
         return process(null, callingNode, calledNode, files, progress);
     }
 
@@ -97,10 +101,12 @@ public class CStore {
                                  Node callingNode,
                                  Node calledNode,
                                  List<String> files,
-                                 Progress progress) {
+                                 ImageProgress progress) {
         if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
+
+        Args options = args == null ? new Args() : args;
 
         StoreSCU storeSCU = null;
 
@@ -111,23 +117,22 @@ public class CStore {
             ApplicationEntity ae = new ApplicationEntity(callingNode.getAet());
             device.addApplicationEntity(ae);
             ae.addConnection(conn);
-            storeSCU = new StoreSCU(ae, progress, args.getEditors());
+            storeSCU = new StoreSCU(ae, progress, options.getEditors());
             Connection remote = storeSCU.getRemoteConnection();
+            Centre service = new Centre(device);
 
-            Centre centre = new Centre(device);
+            options.configureConnect(storeSCU.getAAssociateRQ(), remote, calledNode);
+            options.configureBind(ae, conn, callingNode);
 
-            args.configureBind(storeSCU.getAAssociateRQ(), remote, calledNode);
-            args.configureBind(ae, conn, callingNode);
-
-            args.configure(conn);
-            args.configureTLS(conn, remote);
+            options.configure(conn);
+            options.configureTLS(conn, remote);
 
             storeSCU.setAttributes(new Attributes());
 
-            if (args.isExtendNegociation()) {
-                configureRelatedSOPClass(storeSCU, args.getExtendSopClassesURL());
+            if (options.isNegociation()) {
+                configureRelatedSOPClass(storeSCU, options.getSopClasses());
             }
-            storeSCU.setPriority(args.getPriority());
+            storeSCU.setPriority(options.getPriority());
 
             storeSCU.scanFiles(files, false);
 
@@ -137,7 +142,7 @@ public class CStore {
             if (n == 0) {
                 return new Status(Status.UnableToProcess, "No DICOM file has been found!", null);
             } else {
-                centre.start(true);
+                service.start();
                 try {
                     long t1 = System.currentTimeMillis();
                     storeSCU.open();
@@ -145,26 +150,40 @@ public class CStore {
                     storeSCU.sendFiles();
                     Builder.forceGettingAttributes(dcmState, storeSCU);
                     long t3 = System.currentTimeMillis();
-                    String timeMsg = MessageFormat.format(
-                            "DICOM C-STORE connected in {2}ms from {0} to {1}. Stored files in {3}ms. Total size {4}",
-                            storeSCU.getAAssociateRQ().getCallingAET(), storeSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
-                            t3 - t2, Builder.humanReadableByte(storeSCU.getTotalSize(), false));
-                    return Status.build(dcmState, timeMsg, null);
+                    String timeMsg =
+                            MessageFormat.format(
+                                    "DICOM C-STORE connected in {2}ms from {0} to {1}. Stored files in {3}ms. Total size {4}",
+                                    storeSCU.getAAssociateRQ().getCallingAET(),
+                                    storeSCU.getAAssociateRQ().getCalledAET(),
+                                    t2 - t1,
+                                    t3 - t2,
+                                    Builder.humanReadableByte(storeSCU.getTotalSize(), false));
+                    dcmState = Status.buildMessage(dcmState, timeMsg, null);
+                    dcmState.addProcessTime(t1, t2, t3);
+                    dcmState.setBytesSize(storeSCU.getTotalSize());
+                    return dcmState;
                 } catch (Exception e) {
+                    if (e instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
                     Logger.error("storescu", e);
                     Builder.forceGettingAttributes(storeSCU.getState(), storeSCU);
-                    return Status.build(storeSCU.getState(), null, e);
+                    return Status.buildMessage(storeSCU.getState(), null, e);
                 } finally {
-                    Builder.close(storeSCU);
-                    centre.stop();
+                    IoKit.close(storeSCU);
+                    service.stop();
                 }
             }
         } catch (Exception e) {
             Logger.error("storescu", e);
-            return new Status(Status.UnableToProcess,
-                    "DICOM Store failed : " + e.getMessage(), null);
+            return Status.buildMessage(
+                    new Status(Status.UnableToProcess,
+                            "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
+                            null),
+                    null,
+                    e);
         } finally {
-            Builder.close(storeSCU);
+            IoKit.close(storeSCU);
         }
     }
 
@@ -172,11 +191,14 @@ public class CStore {
         storescu.enableSOPClassRelationshipExtNeg(true);
         Properties p = new Properties();
         try {
-            if (null != url) {
+            if (url != null) {
+                p.load(url.openStream());
+            } else {
+                url = ResourceKit.getResourceUrl("sop-classes-uid.properties", CStore.class);
                 p.load(url.openStream());
             }
-        } catch (Exception e) {
-            Logger.error("Read sop classes", e);
+        } catch (IOException e) {
+            Logger.error("Cannot read sop-class", e);
         }
         storescu.relSOPClasses.init(p);
     }

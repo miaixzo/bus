@@ -27,12 +27,11 @@
  */
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
@@ -82,7 +81,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
         this.source.forEach((sKey, sValue) -> {
             if (null == sKey) {
@@ -90,11 +89,11 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
             }
 
             // 编辑键值对
-            final MutableEntry<String, Object> entry = copyOptions.editField(sKey.toString(), sValue);
+            final MutableEntry<Object, Object> entry = copyOptions.editField(sKey.toString(), sValue);
             if (null == entry) {
                 return;
             }
-            final String sFieldName = entry.getKey();
+            final Object sFieldName = entry.getKey();
             // 对key做转换，转换后为null的跳过
             if (null == sFieldName) {
                 return;
@@ -102,7 +101,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
 
             // 检查目标字段可写性
             // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
-            final PropDesc tDesc = this.copyOptions.findPropDesc(targetPropDescMap, sFieldName);
+            final PropDesc tDesc = this.copyOptions.findPropDesc(targetPropDescMap, sFieldName.toString());
             if (null == tDesc || !tDesc.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;

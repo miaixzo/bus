@@ -49,39 +49,6 @@ import java.util.stream.Collectors;
 public class MapKit extends MapGets {
 
     /**
-     * Map是否为空
-     *
-     * @param map 集合
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final Map<?, ?> map) {
-        return null == map || map.isEmpty();
-    }
-
-    /**
-     * Map是否为非空
-     *
-     * @param map 集合
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final Map<?, ?> map) {
-        return !isEmpty(map);
-    }
-
-    /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptyMap()}
-     *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @param set 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
-     */
-    public static <K, V> Map<K, V> emptyIfNull(final Map<K, V> set) {
-        return (null == set) ? Collections.emptyMap() : set;
-    }
-
-    /**
      * 如果给定Map为空，返回默认Map
      *
      * @param <T>        集合类型

@@ -54,7 +54,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BaseEntity extends Tracer {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 数据状态:-1删除,0无效,1正常

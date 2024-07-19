@@ -30,7 +30,7 @@ package org.miaixz.bus.health.windows.driver.registry;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Netapi32;
 import com.sun.jna.platform.win32.Netapi32.SESSION_INFO_10;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSSession;
 

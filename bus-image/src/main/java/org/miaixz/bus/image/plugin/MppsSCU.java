@@ -29,25 +29,26 @@ package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.*;
+import org.miaixz.bus.image.Format;
+import org.miaixz.bus.image.Status;
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.builtin.DicomFiles;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
-import org.miaixz.bus.image.metric.ApplicationEntity;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.DimseRSPHandler;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author Kimi Liu
@@ -275,11 +276,12 @@ public class MppsSCU {
     }
 
     public final void setDiscontinuationReason(String codeValue) {
-        if (null == codes)
-            throw new IllegalStateException("codec not initialized");
+        if (codes == null)
+            throw new IllegalStateException("codes not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (null == codeMeaning)
-            throw new IllegalArgumentException("undefined internal value: " + codeValue);
+        if (codeMeaning == null)
+            throw new IllegalArgumentException("undefined code value: "
+                    + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_MINUS);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
@@ -296,12 +298,24 @@ public class MppsSCU {
 
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(
-                new Presentation(1, UID.VerificationSOPClass,
-                        UID.ImplicitVRLittleEndian));
+                new PresentationContext(1, UID.Verification.uid,
+                        UID.ImplicitVRLittleEndian.uid));
         rq.addPresentationContext(
-                new Presentation(3,
-                        UID.ModalityPerformedProcedureStepSOPClass,
+                new PresentationContext(3,
+                        UID.ModalityPerformedProcedureStep.uid,
                         tss));
+    }
+
+    public void scanFiles(List<String> fnames, boolean printout) {
+        DicomFiles.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
+            if (UID.ModalityPerformedProcedureStep.equals(
+                    fmi.getString(Tag.MediaStorageSOPClassUID))) {
+                return addMPPS(
+                        fmi.getString(Tag.MediaStorageSOPInstanceUID),
+                        ds);
+            }
+            return addInstance(ds);
+        });
     }
 
     public void open() throws IOException, InterruptedException,
@@ -310,7 +324,7 @@ public class MppsSCU {
     }
 
     public void close() throws IOException, InterruptedException {
-        if (null != as) {
+        if (as != null) {
             as.waitForOutstandingRSP();
             as.release();
             as.waitForSocketClose();
@@ -336,7 +350,7 @@ public class MppsSCU {
         for (int tag : CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS)
             mpps.setNull(tag, dict.vrOf(tag));
 
-        as.ncreate(UID.ModalityPerformedProcedureStepSOPClass,
+        as.ncreate(UID.ModalityPerformedProcedureStep.uid,
                 iuid, mpps, null, rspHandlerFactory.createDimseRSPHandlerForNCreate(mppsWithUID));
     }
 
@@ -347,17 +361,16 @@ public class MppsSCU {
 
     private void setMpps(MppsWithIUID mppsWithIUID)
             throws IOException, InterruptedException {
-        as.nset(UID.ModalityPerformedProcedureStepSOPClass,
+        as.nset(UID.ModalityPerformedProcedureStep.uid,
                 mppsWithIUID.iuid, mppsWithIUID.mpps, null, rspHandlerFactory.createDimseRSPHandlerForNSet());
     }
 
     public boolean addInstance(Attributes inst) {
-        Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (null == suid)
+        if (suid == null)
             return false;
         MppsWithIUID mppsWithIUID = map.get(suid);
-        if (null == mppsWithIUID)
+        if (mppsWithIUID == null)
             map.put(suid, mppsWithIUID = new MppsWithIUID(ppsuid(null), createMPPS(inst)));
         updateMPPS(mppsWithIUID.mpps, inst);
         return true;
@@ -369,7 +382,7 @@ public class MppsSCU {
     }
 
     private String ppsuid(String defval) {
-        if (null == ppsuid)
+        if (ppsuid == null)
             return defval;
 
         int size = map.size();
@@ -379,11 +392,11 @@ public class MppsSCU {
             case 1:
                 map.values().iterator().next().iuid += ".1";
         }
-        return ppsuid + Symbol.C_DOT + (size + 1);
+        return ppsuid + '.' + (size + 1);
     }
 
     private String mkPPSID() {
-        if (null != ppsid)
+        if (ppsid != null)
             return ppsid;
         String id = ppsidFormat.format(serialNo);
         if (++serialNo < 0)
@@ -409,26 +422,27 @@ public class MppsSCU {
                 mpps.getString(Tag.PerformedProcedureStepStartTime));
         mpps.setString(Tag.PerformedProcedureStepStatus, VR.CS, finalStatus);
         Sequence dcrSeq = mpps.newSequence(Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence, 1);
-        if (null != discontinuationReason)
+        if (discontinuationReason != null)
             dcrSeq.add(new Attributes(discontinuationReason));
 
         Sequence raSeq = inst.getSequence(Tag.RequestAttributesSequence);
-        if (null == raSeq || raSeq.isEmpty()) {
-            Sequence ssaSeq =
-                    mpps.newSequence(Tag.ScheduledStepAttributesSequence, 1);
-            Attributes ssa = new Attributes();
+        Attributes ssa1 = inst.getNestedDataset(Tag.ScheduledStepAttributesSequence);
+        if (raSeq == null || raSeq.isEmpty()) {
+            Sequence ssaSeq = mpps.newSequence(Tag.ScheduledStepAttributesSequence, 1);
+            Attributes ssa = ssa1 == null ? new Attributes() : new Attributes(ssa1);
             ssaSeq.add(ssa);
             for (int tag : SSA_TYPE_2_ATTRS)
-                ssa.setNull(tag, dict.vrOf(tag));
+                if (!ssa.containsValue(tag))
+                    ssa.setNull(tag, dict.vrOf(tag));
             ssa.addSelected(inst, SSA_ATTRS);
         } else {
-            Sequence ssaSeq =
-                    mpps.newSequence(Tag.ScheduledStepAttributesSequence, raSeq.size());
+            Sequence ssaSeq = mpps.newSequence(Tag.ScheduledStepAttributesSequence, raSeq.size());
             for (Attributes ra : raSeq) {
-                Attributes ssa = new Attributes();
+                Attributes ssa = ssa1 == null ? new Attributes() : new Attributes(ssa1);
                 ssaSeq.add(ssa);
                 for (int tag : SSA_TYPE_2_ATTRS)
-                    ssa.setNull(tag, dict.vrOf(tag));
+                    if (!ssa.containsValue(tag))
+                        ssa.setNull(tag, dict.vrOf(tag));
                 ssa.addSelected(inst, SSA_ATTRS);
                 ssa.addSelected(ra, SSA_ATTRS);
             }
@@ -439,12 +453,12 @@ public class MppsSCU {
 
     private void updateMPPS(Attributes mpps, Attributes inst) {
         String endTime = inst.getString(Tag.AcquisitionTime);
-        if (null == endTime) {
+        if (endTime == null) {
             endTime = inst.getString(Tag.ContentTime);
-            if (null == endTime)
+            if (endTime == null)
                 endTime = inst.getString(Tag.SeriesTime);
         }
-        if (null != endTime && endTime.compareTo(
+        if (endTime != null && endTime.compareTo(
                 mpps.getString(Tag.PerformedProcedureStepEndTime)) > 0)
             mpps.setString(Tag.PerformedProcedureStepEndTime, VR.TM, endTime);
         Sequence prefSeriesSeq = mpps.getSequence(Tag.PerformedSeriesSequence);
@@ -471,7 +485,7 @@ public class MppsSCU {
         prefSeries.setString(Tag.ProtocolName, VR.LO, protocolName);
         prefSeries.addSelected(inst, PERF_SERIES_ATTRS);
         prefSeries.newSequence(Tag.ReferencedImageSequence, 10);
-        if (null != archiveRequested)
+        if (archiveRequested != null)
             prefSeries.setString(Tag.ArchiveRequested, VR.CS, archiveRequested);
         return prefSeries;
     }

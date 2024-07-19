@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.core.beans;
 
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.BeanException;
@@ -49,8 +50,14 @@ public class DynaBean implements Cloneable, Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private final Class<?> beanClass;
+    /**
+     * bean对象
+     */
     private Object bean;
+    /**
+     * bean类
+     */
+    private final Class<?> beanClass;
 
     /**
      * 构造

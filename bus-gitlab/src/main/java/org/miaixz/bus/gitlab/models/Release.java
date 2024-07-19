@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Release implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String name;
     private String tagName;

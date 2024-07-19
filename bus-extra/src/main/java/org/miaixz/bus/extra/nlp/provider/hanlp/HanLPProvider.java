@@ -63,7 +63,7 @@ public class HanLPProvider implements NLPProvider {
 
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new HanLPResult(this.seg.seg(StringKit.toString(text)));
+        return new HanLPResult(this.seg.seg(StringKit.toStringOrEmpty(text)));
     }
 
 }

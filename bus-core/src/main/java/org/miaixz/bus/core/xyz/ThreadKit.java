@@ -50,7 +50,7 @@ public class ThreadKit {
      *    4. 任务直接提交给线程而不保持它们
      * </pre>
      *
-     * @return ExecutorService
+     * @return {@link ExecutorService}
      */
     public static ExecutorService newExecutor() {
         return ExecutorBuilder.of().useSynchronousQueue().build();
@@ -65,7 +65,7 @@ public class ThreadKit {
      *    4. 同时只允许一个线程工作，剩余放入队列等待，等待数超过1024报错
      * </pre>
      *
-     * @return ExecutorService
+     * @return {@link ExecutorService}
      */
     public static ExecutorService newSingleExecutor() {
         return ExecutorBuilder.of()
@@ -84,9 +84,9 @@ public class ThreadKit {
      * </pre>
      *
      * @param poolSize 同时执行的线程数大小
-     * @return ExecutorService
+     * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newExecutor(final int poolSize) {
+    public static ThreadPoolExecutor newExecutor(final int poolSize) {
         return newExecutor(poolSize, poolSize);
     }
 
@@ -156,7 +156,7 @@ public class ThreadKit {
      * @param nThreads         线程池大小
      * @param threadNamePrefix 线程名称前缀
      * @param isBlocked        是否使用{@link BlockPolicy}策略
-     * @return ExecutorService
+     * @return {@link ExecutorService}
      */
     public static ExecutorService newFixedExecutor(final int nThreads, final String threadNamePrefix, final boolean isBlocked) {
         return newFixedExecutor(nThreads, 1024, threadNamePrefix, isBlocked);
@@ -174,9 +174,9 @@ public class ThreadKit {
      * @param maximumQueueSize 队列大小
      * @param threadNamePrefix 线程名称前缀
      * @param isBlocked        是否使用{@link BlockPolicy}策略
-     * @return ExecutorService
+     * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads, final int maximumQueueSize, final String threadNamePrefix, final boolean isBlocked) {
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize, final String threadNamePrefix, final boolean isBlocked) {
         return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
                 (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
     }
@@ -192,9 +192,9 @@ public class ThreadKit {
      * @param maximumQueueSize 队列大小
      * @param threadNamePrefix 线程名称前缀
      * @param handler          拒绝策略
-     * @return ExecutorService
+     * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads,
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads,
                                                    final int maximumQueueSize,
                                                    final String threadNamePrefix,
                                                    final RejectedExecutionHandler handler) {
@@ -236,7 +236,7 @@ public class ThreadKit {
      *
      * @param <T>  回调对象类型
      * @param task {@link Callable}
-     * @return Future
+     * @return {@link Future}
      */
     public static <T> Future<T> execAsync(final Callable<T> task) {
         return GlobalThreadPool.submit(task);
@@ -258,7 +258,7 @@ public class ThreadKit {
      * 若未完成，则会阻塞
      *
      * @param <T> 回调对象类型
-     * @return CompletionService
+     * @return {@link CompletionService}
      */
     public static <T> CompletionService<T> newCompletionService() {
         return new ExecutorCompletionService<>(GlobalThreadPool.getExecutor());
@@ -270,7 +270,7 @@ public class ThreadKit {
      *
      * @param <T>      回调对象类型
      * @param executor 执行器 {@link ExecutorService}
-     * @return CompletionService
+     * @return {@link CompletionService}
      */
     public static <T> CompletionService<T> newCompletionService(final ExecutorService executor) {
         return new ExecutorCompletionService<>(executor);
@@ -302,7 +302,7 @@ public class ThreadKit {
      * 该示例，也可以用：{@link Phaser} 移相器 进行实现
      *
      * @param taskCount 任务数量
-     * @return CountDownLatch
+     * @return {@link CountDownLatch}
      */
     public static CountDownLatch newCountDownLatch(final int taskCount) {
         return new CountDownLatch(taskCount);
@@ -338,11 +338,10 @@ public class ThreadKit {
      *             }, "线程 - " + x).start();
      *         }
      * }</pre>
-     * <p>
      * 该示例，也可以用：{@link Phaser} 移相器 进行实现
      *
      * @param taskCount 任务数量
-     * @return 循环栅栏
+     * @return {@link CyclicBarrier}
      */
     public static CyclicBarrier newCyclicBarrier(final int taskCount) {
         return new CyclicBarrier(taskCount);
@@ -350,10 +349,6 @@ public class ThreadKit {
 
     /**
      * 新建一个Phaser，一个同步辅助类，jdk1.7提供，可以完全替代CountDownLatch；
-     *
-     * @param taskCount 任务数量
-     * @return Phaser
-     * <p>
      * Pharser: 移相器、相位器，可重用同步屏障；
      * 功能可以替换：{@link CyclicBarrier}（固定线程）循环栅栏、{@link CountDownLatch}（固定计数）倒数计数、加上分层功能
      * 示例1：等6个同学都离开教室，班长才能锁门。
@@ -377,10 +372,12 @@ public class ThreadKit {
      * System.out.println("【主线程】所有同学都离开了教室，开始锁教室大门了。");
      * }
      * </pre>
-     * <p>
      * 示例2：7个同学，集齐7个龙珠，7个同学一起召唤神龙；
      * 只需要：phaser.arrive(); --&gt; phaser.arriveAndAwaitAdvance() //等待其他的线程就位
      * 该示例，也可以用：{@link CyclicBarrier} 进行实现
+     *
+     * @param taskCount 任务数量
+     * @return {@link Phaser}
      */
     public static Phaser newPhaser(final int taskCount) {
         return new Phaser(taskCount);
@@ -622,7 +619,6 @@ public class ThreadKit {
     /**
      * 获取JVM中与当前线程同组的所有线程
      * 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止
-     * from Voovan
      *
      * @param group 线程组
      * @return 线程对象数组
@@ -637,7 +633,6 @@ public class ThreadKit {
 
     /**
      * 获取进程的主线程
-     * from Voovan
      *
      * @return 进程的主线程
      */

@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import com.sun.jna.ptr.NativeLongByReference;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;

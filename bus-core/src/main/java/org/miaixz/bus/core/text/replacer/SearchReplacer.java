@@ -60,19 +60,19 @@ public class SearchReplacer extends StringReplacer {
         this.fromIndex = Math.max(fromIndex, 0);
         this.searchText = Assert.notEmpty(searchText, "'searchStr' must be not empty!");
         this.searchTextLength = searchText.length();
-        this.replacement = StringKit.emptyIfNull(replacement);
+        this.replacement = StringKit.toStringOrEmpty(replacement);
         this.ignoreCase = ignoreCase;
     }
 
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
-            return StringKit.toString(text);
+            return StringKit.toStringOrNull(text);
         }
 
         final int strLength = text.length();
         if (strLength < this.searchTextLength) {
-            return StringKit.toString(text);
+            return StringKit.toStringOrNull(text);
         }
 
         final int fromIndex = this.fromIndex;

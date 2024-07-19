@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Metaphone implements FuzzyStr {
+public class Metaphone implements FuzzyString {
 
     private static boolean vowel(char ch) {
         return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';

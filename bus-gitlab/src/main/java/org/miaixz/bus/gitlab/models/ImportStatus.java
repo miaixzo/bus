@@ -36,7 +36,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class ImportStatus implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Enum representing the status of the import.

@@ -71,12 +71,12 @@ final class FormatNameFilterIterator<T extends ImageReaderWriterSpi> implements 
 
     @Override
     public boolean hasNext() {
-        return null != next;
+        return next != null;
     }
 
     @Override
     public T next() {
-        if (null == next) {
+        if (next == null) {
             throw new NoSuchElementException();
         }
         T o = next;
@@ -88,4 +88,5 @@ final class FormatNameFilterIterator<T extends ImageReaderWriterSpi> implements 
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
 }

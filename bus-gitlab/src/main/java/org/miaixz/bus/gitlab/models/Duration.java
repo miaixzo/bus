@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class Duration implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private static final String[] TIME_UNITS = {
             "mo", "w", "d", "h", "m", "s"

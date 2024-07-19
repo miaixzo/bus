@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -90,11 +91,11 @@ public class AmazonProvider extends AbstractProvider {
         return new String(bytes, StandardCharsets.US_ASCII);
     }
 
-    public static byte[] digest(String str) {
+    public static byte[] digest(String text) {
         MessageDigest messageDigest;
         try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
+            messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

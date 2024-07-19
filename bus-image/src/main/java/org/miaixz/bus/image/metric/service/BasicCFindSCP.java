@@ -31,8 +31,7 @@ import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Association;
-import org.miaixz.bus.image.metric.ImageException;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -40,30 +39,24 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BasicCFindSCP extends AbstractService {
+public class BasicCFindSCP extends AbstractImageService {
 
     public BasicCFindSCP(String... sopClasses) {
         super(sopClasses);
     }
 
     @Override
-    public void onDimse(Association as,
-                        Presentation pc,
-                        Dimse dimse,
-                        Attributes rq,
-                        Attributes keys) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
+                          Attributes rq, Attributes keys) throws IOException {
         if (dimse != Dimse.C_FIND_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ImageServiceException(Status.UnrecognizedOperation);
 
-        Query query = calculateMatches(as, pc, rq, keys);
-        as.getApplicationEntity().getDevice().execute(query);
+        QueryTask queryTask = calculateMatches(as, pc, rq, keys);
+        as.getApplicationEntity().getDevice().execute(queryTask);
     }
 
-    protected Query calculateMatches(Association as,
-                                     Presentation pc,
-                                     Attributes rq,
-                                     Attributes keys) {
-        return new BasicQuery(as, pc, rq, keys);
+    protected QueryTask calculateMatches(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
+        return new BasicQueryTask(as, pc, rq, keys);
     }
 
 }

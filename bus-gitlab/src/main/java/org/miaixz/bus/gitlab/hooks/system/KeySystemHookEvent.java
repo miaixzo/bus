@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.util.Date;
 
 public class KeySystemHookEvent extends AbstractSystemHookEvent {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static final String KEY_CREATE_EVENT = "key_create";
     public static final String KEY_DESTROY_EVENT = "key_destroy";

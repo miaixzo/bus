@@ -27,9 +27,6 @@
  */
 package org.miaixz.bus.image.galaxy.media;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -74,15 +71,20 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     private static String unquote(String s) {
-        char[] cs = s.toCharArray();
+        int srcEnd = s.length() - 1;
+        if (srcEnd < 0 || s.charAt(0) != '\"') {
+            return s;
+        }
+        if (srcEnd == 0 || s.charAt(srcEnd) != '\"') { // missing closing quote
+            srcEnd++;
+        }
+        char[] cs = new char[srcEnd - 1];
+        s.getChars(1, srcEnd, cs, 0);
         boolean backslash = false;
         int count = 0;
         for (char c : cs) {
-            if (c != '\"' && c != Symbol.C_BACKSLASH || backslash) {
+            if (!(backslash = !backslash && c == '\\')) {
                 cs[count++] = c;
-                backslash = false;
-            } else {
-                backslash = c == Symbol.C_BACKSLASH;
             }
         }
         return new String(cs, 0, count);
@@ -90,7 +92,7 @@ public class MultipartInputStream extends FilterInputStream {
 
     @Override
     public int read() throws IOException {
-        return isBoundary() ? -1 : buffer[rpos++];
+        return isBoundary() ? -1 : (buffer[rpos++] & 0xff);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         //NOOP
     }
 
@@ -176,19 +178,18 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     public Map<String, List<String>> readHeaderParams() throws IOException {
-        Map<String, List<String>> map = new TreeMap<>(
-                (o1, o2) -> o1.compareToIgnoreCase(o2));
+        Map<String, List<String>> map = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         Field field = new Field();
         while (readHeaderParam(field)) {
             String name = field.toString();
-            String value = Normal.EMPTY;
-            int endName = name.indexOf(Symbol.C_COLON);
+            String value = "";
+            int endName = name.indexOf(':');
             if (endName != -1) {
-                value = unquote(name.substring(endName + 1)).trim();
+                value = unquote(name.substring(endName + 1).trim());
                 name = name.substring(0, endName);
             }
             List<String> list = map.get(name);
-            if (null == list) {
+            if (list == null) {
                 map.put(name.toLowerCase(), list = new ArrayList<>(1));
             }
             list.add(value);
@@ -209,7 +210,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     private static final class Field {
-        byte[] buffer = new byte[Normal._256];
+        byte[] buffer = new byte[256];
         int length;
 
         void reset() {
@@ -229,7 +230,7 @@ public class MultipartInputStream extends FilterInputStream {
         }
 
         boolean append(byte b) {
-            if (b == Symbol.C_LF && length > 0 && buffer[length - 1] == Symbol.C_CR) {
+            if (b == '\n' && length > 0 && buffer[length - 1] == '\r') {
                 length--;
                 return false;
             }

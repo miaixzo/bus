@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.text.StringValidator;
+import org.miaixz.bus.core.text.CharsValidator;
 
 import java.util.Objects;
 import java.util.function.UnaryOperator;
@@ -97,8 +97,8 @@ public class PlaceholderParser implements UnaryOperator<String> {
      */
     public PlaceholderParser(
             final UnaryOperator<String> processor, final String prefix, final String suffix, final char escape) {
-        Assert.isFalse(StringValidator.isEmpty(prefix), "开始符号不能为空");
-        Assert.isFalse(StringValidator.isEmpty(suffix), "结束符号不能为空");
+        Assert.isFalse(CharsValidator.isEmpty(prefix), "开始符号不能为空");
+        Assert.isFalse(CharsValidator.isEmpty(suffix), "结束符号不能为空");
         this.processor = Objects.requireNonNull(processor);
         this.open = prefix;
         this.openLength = prefix.length();
@@ -115,7 +115,7 @@ public class PlaceholderParser implements UnaryOperator<String> {
      */
     @Override
     public String apply(final String text) {
-        if (StringValidator.isEmpty(text)) {
+        if (CharsValidator.isEmpty(text)) {
             return Normal.EMPTY;
         }
 

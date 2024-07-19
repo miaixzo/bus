@@ -32,7 +32,7 @@ package org.miaixz.bus.gitlab.models;
  * See <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
  */
 public class Contributor extends AbstractUser<Contributor> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Integer commits;
     private Integer additions;

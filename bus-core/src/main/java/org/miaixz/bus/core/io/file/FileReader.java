@@ -75,13 +75,13 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 创建 FileReader, 编码：{@link FileWrapper#DEFAULT_CHARSET}
+     * 创建 FileReader, 编码：{@link Charset#UTF_8}
      *
      * @param file 文件
      * @return FileReader
      */
     public static FileReader of(final File file) {
-        return new FileReader(file, DEFAULT_CHARSET);
+        return new FileReader(file, Charset.UTF_8);
     }
 
     /**

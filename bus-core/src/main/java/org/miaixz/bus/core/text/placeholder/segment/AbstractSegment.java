@@ -37,8 +37,7 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public abstract class AbstractSegment implements StringSegment {
 
     /**
-     * 占位符变量
-     * <p>例如：{@literal "???"->"???", "{}"->"{}", "{name}"->"name"}</p>
+     * 占位符变量，例如：{@literal "???"->"???", "{}"->"{}", "{name}"->"name"}
      */
     private final String placeholder;
 

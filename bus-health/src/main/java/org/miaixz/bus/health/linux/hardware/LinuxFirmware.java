@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.health.linux.hardware;
 
-import org.miaixz.bus.core.annotation.Immutable;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;

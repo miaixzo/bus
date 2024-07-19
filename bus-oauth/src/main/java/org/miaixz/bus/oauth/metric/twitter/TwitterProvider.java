@@ -32,6 +32,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -98,8 +99,9 @@ public class TwitterProvider extends AbstractProvider {
      */
     public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
-        String str = Builder.parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(str);
+
+        String text = Builder.parseMapToString(map, true);
+        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(text);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
         byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
 
@@ -163,7 +165,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
-        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         Map<String, String> form = new HashMap<>(3);
         form.put("oauth_verifier", callback.getOauth_verifier());

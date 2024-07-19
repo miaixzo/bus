@@ -30,6 +30,7 @@ package org.miaixz.bus.extra.template.provider.freemarker;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -54,6 +55,8 @@ public class FreemarkerProvider implements TemplateProvider {
      * 默认构造
      */
     public FreemarkerProvider() {
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(Configuration.class);
     }
 
     /**

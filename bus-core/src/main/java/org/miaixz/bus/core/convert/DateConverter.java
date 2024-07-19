@@ -28,12 +28,14 @@
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.center.date.Resolver;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 日期转换器
@@ -43,11 +45,12 @@ import java.util.Calendar;
  */
 public class DateConverter extends AbstractConverter {
 
+    private static final long serialVersionUID = -1L;
+
     /**
      * 单例
      */
     public static final DateConverter INSTANCE = new DateConverter();
-    private static final long serialVersionUID = -1L;
     /**
      * 日期格式化
      */
@@ -101,11 +104,11 @@ public class DateConverter extends AbstractConverter {
         } else {
             // 统一按照字符串处理
             final String valueStr = convertToString(value);
-            final DateTime dateTime = StringKit.isBlank(this.format) //
-                    ? DateKit.parse(valueStr) //
-                    : DateKit.parse(valueStr, this.format);
-            if (null != dateTime) {
-                return wrap(targetClass, dateTime);
+            final Date date = StringKit.isBlank(this.format) //
+                    ? Resolver.parse(valueStr) //
+                    : Resolver.parse(valueStr, this.format);
+            if (null != date) {
+                return wrap(targetClass, date);
             }
         }
 
@@ -118,12 +121,8 @@ public class DateConverter extends AbstractConverter {
      * @param date Date
      * @return 目标类型对象
      */
-    private java.util.Date wrap(final Class<?> targetClass, final DateTime date) {
-        // 返回指定类型
-        if (java.util.Date.class == targetClass) {
-            return date.toJdkDate();
-        }
-        if (DateTime.class == targetClass) {
+    private java.util.Date wrap(final Class<?> targetClass, final Date date) {
+        if(targetClass == date.getClass()){
             return date;
         }
 
@@ -152,7 +151,14 @@ public class DateConverter extends AbstractConverter {
             return DateKit.date(mills);
         }
 
-        return DateKit.SQL.wrap(targetClass, mills);
+        final String dateClassName = targetClass.getName();
+        if (dateClassName.startsWith("java.sql.")) {
+            // 为了解决在JDK9+模块化项目中用户没有引入java.sql模块导致的问题，此处增加判断
+            // 如果targetClass是java.sql的类，说明引入了此模块
+            return DateKit.SQL.wrap(targetClass, mills);
+        }
+
+        throw new ConvertException("Unsupported target Date type: {}", targetClass.getName());
     }
 
 }

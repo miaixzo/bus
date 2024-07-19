@@ -27,10 +27,11 @@
  */
 package org.miaixz.bus.core.io.file;
 
+import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.text.StringTrimer;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.PatternKit;
@@ -39,7 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * 文件名相关工具类
@@ -48,38 +48,6 @@ import java.util.regex.Pattern;
  * @since Java 17+
  */
 public class FileName {
-
-    /**
-     * .java文件扩展名
-     */
-    public static final String EXT_JAVA = ".java";
-    /**
-     * .class文件扩展名
-     */
-    public static final String EXT_CLASS = ".class";
-    /**
-     * .jar文件扩展名
-     */
-    public static final String EXT_JAR = ".jar";
-
-    /**
-     * 在Jar中的路径jar的扩展名形式
-     */
-    public static final String EXT_JAR_PATH = ".jar!";
-
-    /**
-     * 类Unix路径分隔符
-     */
-    public static final char UNIX_SEPARATOR = Symbol.C_SLASH;
-    /**
-     * Windows路径分隔符
-     */
-    public static final char WINDOWS_SEPARATOR = Symbol.C_BACKSLASH;
-
-    /**
-     * Windows下文件名中的无效字符
-     */
-    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|\r\n]");
 
     /**
      * 特殊后缀
@@ -229,7 +197,7 @@ public class FileName {
 
             final String ext = fileName.substring(index + 1);
             // 扩展名中不能包含路径相关的符号
-            return StringKit.containsAny(ext, UNIX_SEPARATOR, WINDOWS_SEPARATOR) ? Normal.EMPTY : ext;
+            return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
         }
     }
 
@@ -301,7 +269,7 @@ public class FileName {
      * @return 清理后的文件名
      */
     public static String cleanInvalid(final String fileName) {
-        return StringKit.isBlank(fileName) ? fileName : PatternKit.delAll(FILE_NAME_INVALID_PATTERN_WIN, fileName);
+        return StringKit.isBlank(fileName) ? fileName : PatternKit.delAll(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
     /**
@@ -311,7 +279,7 @@ public class FileName {
      * @return 是否包含非法字符
      */
     public static boolean containsInvalid(final String fileName) {
-        return (!StringKit.isBlank(fileName)) && PatternKit.contains(FILE_NAME_INVALID_PATTERN_WIN, fileName);
+        return (!StringKit.isBlank(fileName)) && PatternKit.contains(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
     /**
@@ -381,6 +349,8 @@ public class FileName {
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
         // 去除开头空白符，末尾空白符合法，不去除
         pathToUse = StringKit.trimPrefix(pathToUse);
+        // 去除尾部的换行符
+        pathToUse = StringKit.trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == '\n' || c == '\r');
 
         String prefix = Normal.EMPTY;
         final int prefixIndex = pathToUse.indexOf(Symbol.COLON);
@@ -403,8 +373,17 @@ public class FileName {
             pathToUse = pathToUse.substring(1);
         }
 
-        final List<String> pathList = CharsBacker.split(pathToUse, Symbol.SLASH);
+        return prefix + CollKit.join(resolePathElements(StringKit.split(pathToUse, Symbol.SLASH), prefix), Symbol.SLASH);
+    }
 
+    /**
+     * 处理路径，将路径中的"."和".."转换为标准的路径元素
+     *
+     * @param pathList 路径列表，使用`/`隔开的路径元素列表
+     * @param prefix   路径前缀，用于区别相对或绝对路径
+     * @return 处理后的路径
+     */
+    private static List<String> resolePathElements(final List<String> pathList, final String prefix) {
         final List<String> pathElements = new LinkedList<>();
         int tops = 0;
         String element;
@@ -419,7 +398,6 @@ public class FileName {
                         // 有上级目录标记时按照个数依次跳过
                         tops--;
                     } else {
-                        // Normal path element found.
                         pathElements.add(0, element);
                     }
                 }
@@ -428,13 +406,11 @@ public class FileName {
         if (tops > 0 && StringKit.isEmpty(prefix)) {
             // 只有相对路径补充开头的..，绝对路径直接忽略之
             while (tops-- > 0) {
-                //遍历完节点发现还有上级标注（即开头有一个或多个..），补充之
-                // Normal path element found.
+                // 遍历完节点发现还有上级标注（即开头有一个或多个..），补充之
                 pathElements.add(0, Symbol.DOUBLE_DOT);
             }
         }
-
-        return prefix + CollKit.join(pathElements, Symbol.SLASH);
+        return pathElements;
     }
 
 }

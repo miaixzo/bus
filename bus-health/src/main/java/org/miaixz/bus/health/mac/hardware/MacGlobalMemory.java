@@ -29,9 +29,9 @@ package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;

@@ -90,7 +90,7 @@ public class CharsetDetector {
      * @return 编码
      */
     public static Charset detect(final InputStream in, final Charset... charsets) {
-        return detect(Normal.DEFAULT_BUFFER_SIZE, in, charsets);
+        return detect(Normal._8192, in, charsets);
     }
 
     /**

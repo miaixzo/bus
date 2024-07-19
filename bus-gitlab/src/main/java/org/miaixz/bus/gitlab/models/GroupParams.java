@@ -39,7 +39,7 @@ import java.io.Serializable;
  * the parameters for the call to the GitLab API.
  */
 public class GroupParams implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String name;
     private String path;

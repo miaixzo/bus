@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 

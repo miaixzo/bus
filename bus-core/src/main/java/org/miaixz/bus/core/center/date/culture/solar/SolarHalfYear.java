@@ -71,12 +71,21 @@ public class SolarHalfYear extends Loops {
     }
 
     /**
+     * 公历年
+     *
+     * @return 公历年
+     */
+    public SolarYear getSolarYear() {
+        return year;
+    }
+
+    /**
      * 年
      *
      * @return 年
      */
-    public SolarYear getYear() {
-        return year;
+    public int getYear() {
+        return year.getYear();
     }
 
     /**
@@ -99,10 +108,10 @@ public class SolarHalfYear extends Loops {
 
     public SolarHalfYear next(int n) {
         if (n == 0) {
-            return fromIndex(year.getYear(), index);
+            return fromIndex(getYear(), index);
         }
         int i = index + n;
-        int y = year.getYear() + i / 2;
+        int y = getYear() + i / 2;
         i %= 2;
         if (i < 0) {
             i += 2;
@@ -118,7 +127,7 @@ public class SolarHalfYear extends Loops {
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(6);
-        int y = year.getYear();
+        int y = getYear();
         for (int i = 0; i < 6; i++) {
             l.add(SolarMonth.fromYm(y, index * 6 + i + 1));
         }
@@ -132,7 +141,7 @@ public class SolarHalfYear extends Loops {
      */
     public List<SolarQuarter> getSeasons() {
         List<SolarQuarter> l = new ArrayList<>(2);
-        int y = year.getYear();
+        int y = getYear();
         for (int i = 0; i < 2; i++) {
             l.add(SolarQuarter.fromIndex(y, index * 2 + i));
         }

@@ -27,11 +27,9 @@
  */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
@@ -39,19 +37,20 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BulkData implements Value {
+public class BulkData implements Value, Serializable {
 
-    private final String uuid;
-    private final boolean bigEndian;
+    public static final int MAGIC_LEN = 0xfbfb;
+    private static final long serialVersionUID = -1L;
+    private String uuid;
     private String uri;
     private int uriPathEnd;
+    private boolean bigEndian;
     private long offset = 0;
-    private int length = -1;
+    private long length = -1;
 
     public BulkData(String uuid, String uri, boolean bigEndian) {
         this.uuid = uuid;
@@ -59,21 +58,13 @@ public class BulkData implements Value {
         this.bigEndian = bigEndian;
     }
 
-    public BulkData(String uri, long offset, int length, boolean bigEndian) {
+    public BulkData(String uri, long offset, long length, boolean bigEndian) {
         this.uuid = null;
         this.uriPathEnd = uri.length();
         this.uri = uri + "?offset=" + offset + "&length=" + length;
         this.offset = offset;
         this.length = length;
         this.bigEndian = bigEndian;
-    }
-
-    public static Value deserializeFrom(ObjectInputStream ois)
-            throws IOException {
-        return new BulkData(
-                Material.maskEmpty(ois.readUTF(), null),
-                Material.maskEmpty(ois.readUTF(), null),
-                ois.readBoolean());
     }
 
     public String getUUID() {
@@ -86,25 +77,28 @@ public class BulkData implements Value {
 
     public void setURI(String uri) {
         this.uri = uri;
-        this.uriPathEnd = uri.length();
         this.offset = 0;
         this.length = -1;
-        int pathEnd = uri.indexOf(Symbol.C_QUESTION_MARK);
-        if (pathEnd < 0)
+        this.uriPathEnd = 0;
+        if (uri == null)
             return;
+
+        int pathEnd = uri.indexOf('?');
+        if (pathEnd < 0) {
+            this.uriPathEnd = uri.length();
+            return;
+        }
 
         this.uriPathEnd = pathEnd;
-        if (!uri.startsWith("?offset=", pathEnd))
-            return;
-
-        int offsetEnd = uri.indexOf("&length=", pathEnd + 8);
-        if (offsetEnd < 0)
-            return;
-
-        try {
-            this.offset = Integer.parseInt(uri.substring(pathEnd + 8, offsetEnd));
-            this.length = Integer.parseInt(uri.substring(offsetEnd + 8));
-        } catch (NumberFormatException ignore) {
+        for (String qparam : Builder.split(uri.substring(pathEnd + 1), '&')) {
+            try {
+                if (qparam.startsWith("offset=")) {
+                    this.offset = Long.parseLong(qparam.substring(7));
+                } else if (qparam.startsWith("length=")) {
+                    this.length = Long.parseLong(qparam.substring(7));
+                }
+            } catch (NumberFormatException ignore) {
+            }
         }
     }
 
@@ -113,7 +107,7 @@ public class BulkData implements Value {
     }
 
     public int length() {
-        return length;
+        return (int) length;
     }
 
     public long offset() {
@@ -144,14 +138,14 @@ public class BulkData implements Value {
     }
 
     public String uriWithoutOffsetAndLength() {
-        if (null == uri)
+        if (uri == null)
             throw new IllegalStateException("uri: null");
 
         return uri.substring(0, uriPathEnd);
     }
 
     public InputStream openStream() throws IOException {
-        if (null == uri)
+        if (uri == null)
             throw new IllegalStateException("uri: null");
 
         if (!uri.startsWith("file:"))
@@ -168,25 +162,26 @@ public class BulkData implements Value {
         if (length == -1)
             throw new UnsupportedOperationException();
 
-        return (length + 1) & ~1;
+        return (int) (length + 1) & ~1;
     }
 
     @Override
     public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
-        return (length == -1) ? -1 : ((length + 1) & ~1);
+        return (int) ((length == -1) ? -1 : ((length + 1) & ~1));
     }
 
     @Override
     public byte[] toBytes(VR vr, boolean bigEndian) throws IOException {
-        if (length == -1)
+        int intLength = (int) length;
+        if (intLength < 0)
             throw new UnsupportedOperationException();
 
-        if (length == 0)
+        if (intLength == 0)
             return new byte[]{};
 
         InputStream in = openStream();
         try {
-            byte[] b = new byte[length];
+            byte[] b = new byte[intLength];
             StreamKit.readFully(in, b, 0, b.length);
             if (this.bigEndian != bigEndian) {
                 vr.toggleEndian(b, false);
@@ -213,30 +208,39 @@ public class BulkData implements Value {
         }
     }
 
-    public void serializeTo(ObjectOutputStream oos) throws IOException {
-        oos.writeUTF(Material.maskNull(uuid, Normal.EMPTY));
-        oos.writeUTF(Material.maskNull(uri, Normal.EMPTY));
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeUTF(Builder.maskNull(uuid, ""));
+        oos.writeUTF(Builder.maskNull(uri, ""));
         oos.writeBoolean(bigEndian);
     }
 
+    private void readObject(ObjectInputStream ois)
+            throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        uuid = Builder.maskEmpty(ois.readUTF(), null);
+        setURI(Builder.maskEmpty(ois.readUTF(), null));
+        bigEndian = ois.readBoolean();
+    }
+
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (null == object)
+        if (obj == null)
             return false;
-        if (getClass() != object.getClass())
+        if (getClass() != obj.getClass())
             return false;
-        BulkData other = (BulkData) object;
+        BulkData other = (BulkData) obj;
         if (bigEndian != other.bigEndian)
             return false;
-        if (null == uri) {
-            if (null != other.uri)
+        if (uri == null) {
+            if (other.uri != null)
                 return false;
         } else if (!uri.equals(other.uri))
             return false;
-        if (null == uuid) {
-            return null == other.uuid;
+        if (uuid == null) {
+            return other.uuid == null;
         } else return uuid.equals(other.uuid);
     }
 
@@ -245,32 +249,42 @@ public class BulkData implements Value {
         final int prime = 31;
         int result = 1;
         result = prime * result + (bigEndian ? 1231 : 1237);
-        result = prime * result + ((null == uri) ? 0 : uri.hashCode());
-        result = prime * result + ((null == uuid) ? 0 : uuid.hashCode());
+        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
 
+    /**
+     * Returns the index after the segment ends
+     */
     public long getSegmentEnd() {
         if (length == -1) return -1;
-        return offset() + longLength();
+        return offset() + (length & 0xFFFFFFFFL);
     }
 
+    /**
+     * Gets the actual length as a long so it can represent the 2 gb to 4 gb range of lengths
+     */
     public long longLength() {
-        if (length == -1) return -1;
-        return length & 0xFFFFFFFFl;
+        return length;
     }
 
     public void setOffset(long offset) {
         this.offset = offset;
-        this.uri = this.uri.substring(0, this.uriPathEnd) + "?offset=" + offset + "&length=" + this.length;
+        this.uri = this.uri.substring(0, this.uriPathEnd) + "?offset=" + offset + "&length=" + length;
     }
 
-    public void setLength(long longLength) {
-        if (longLength < -1 || longLength > 0xFFFFFFF0l) {
-            throw new IllegalArgumentException("BulkData length limited to -1..2^32-16 but was " + longLength);
+    public void setLength(long length) {
+        if (length < -1 || length > 0xFFFFFFFEL) {
+            throw new IllegalArgumentException("BulkData length limited to -1..2^32-2 but was " + length);
         }
-        this.length = (int) longLength;
-        this.uri = this.uri.substring(0, this.uriPathEnd) + "?offset=" + this.offset + "&length=" + this.length;
+        this.length = length;
+        this.uri = this.uri.substring(0, this.uriPathEnd) + "?offset=" + this.offset + "&length=" + length;
+    }
+
+    @FunctionalInterface
+    public interface Creator {
+        BulkData create(String uuid, String uri, boolean bigEndian);
     }
 
 }

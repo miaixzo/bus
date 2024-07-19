@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class DeploymentFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
 	 * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.

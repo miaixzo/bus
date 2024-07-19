@@ -28,10 +28,9 @@
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.Material;
-import org.miaixz.bus.image.galaxy.data.AttributesSelector;
+import org.miaixz.bus.image.galaxy.data.AttributeSelector;
 import org.miaixz.bus.image.galaxy.data.ItemPointer;
 import org.miaixz.bus.image.galaxy.data.VR;
 
@@ -43,7 +42,7 @@ import java.util.*;
  */
 public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
-    private final List<AttributesSelector> selectors = new ArrayList<>();
+    private final List<AttributeSelector> selectors = new ArrayList<>();
     private final EnumMap<VR, Integer> lengthsThresholdByVR = new EnumMap<>(VR.class);
     private String bulkDataDescriptorID;
     private boolean excludeDefaults;
@@ -99,7 +98,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     }
 
     private static boolean exeeds(int length, Integer lengthThreshold) {
-        return null != lengthThreshold && length > lengthThreshold;
+        return lengthThreshold != null && length > lengthThreshold;
     }
 
     public String getBulkDataDescriptorID() {
@@ -123,21 +122,21 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
-    public BasicBulkDataDescriptor addAttributeSelector(AttributesSelector... selectors) {
-        for (AttributesSelector selector : selectors) {
+    public BasicBulkDataDescriptor addAttributeSelector(AttributeSelector... selectors) {
+        for (AttributeSelector selector : selectors) {
             this.selectors.add(Objects.requireNonNull(selector));
         }
         return this;
     }
 
-    public AttributesSelector[] getAttributeSelectors() {
-        return selectors.toArray(new AttributesSelector[0]);
+    public AttributeSelector[] getAttributeSelectors() {
+        return selectors.toArray(new AttributeSelector[0]);
     }
 
     public void setAttributeSelectorsFromStrings(String[] ss) {
-        List<AttributesSelector> tmp = new ArrayList<>(ss.length);
+        List<AttributeSelector> tmp = new ArrayList<>(ss.length);
         for (String s : ss) {
-            tmp.add(AttributesSelector.valueOf(s));
+            tmp.add(AttributeSelector.valueOf(s));
         }
         selectors.clear();
         selectors.addAll(tmp);
@@ -145,7 +144,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     public BasicBulkDataDescriptor addTag(int... tags) {
         for (int tag : tags) {
-            this.selectors.add(new AttributesSelector(tag));
+            this.selectors.add(new AttributeSelector(tag));
         }
         return this;
     }
@@ -154,7 +153,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         if (tagPaths.length == 0)
             throw new IllegalArgumentException("tagPaths.length == 0");
         this.selectors.add(
-                new AttributesSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
+                new AttributeSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
         return this;
     }
 
@@ -175,7 +174,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         Map<Integer, EnumSet<VR>> vrsByLength = new HashMap<>();
         for (Map.Entry<VR, Integer> entry : lengthsThresholdByVR.entrySet()) {
             EnumSet<VR> vrs = vrsByLength.get(entry.getValue());
-            if (null == vrs)
+            if (vrs == null)
                 vrsByLength.put(entry.getValue(), vrs = EnumSet.noneOf(VR.class));
             vrs.add(entry.getKey());
         }
@@ -186,8 +185,8 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
             Iterator<VR> vr = entry.getValue().iterator();
             sb.append(vr.next());
             while (vr.hasNext())
-                sb.append(Symbol.C_COMMA).append(vr.next());
-            ss[i] = sb.append(Symbol.C_EQUAL).append(entry.getKey()).toString();
+                sb.append(',').append(vr.next());
+            ss[i] = sb.append('=').append(entry.getKey()).toString();
         }
         return ss;
     }
@@ -195,12 +194,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     public void setLengthsThresholdsFromStrings(String... ss) {
         EnumMap<VR, Integer> tmp = new EnumMap<>(VR.class);
         for (String s : ss) {
-            String[] entry = Material.split(s, Symbol.C_EQUAL);
+            String[] entry = Builder.split(s, '=');
             if (entry.length != 2)
                 throw new IllegalArgumentException(s);
             try {
                 Integer length = Integer.valueOf(entry[1]);
-                for (String vr : Material.split(entry[0], Symbol.C_COMMA)) {
+                for (String vr : Builder.split(entry[0], ',')) {
                     tmp.put(VR.valueOf(vr), length);
                 }
             } catch (IllegalArgumentException e) {
@@ -219,7 +218,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     }
 
     private boolean selected(List<ItemPointer> itemPointers, String privateCreator, int tag) {
-        for (AttributesSelector selector : selectors) {
+        for (AttributeSelector selector : selectors) {
             if (selector.matches(itemPointers, privateCreator, tag))
                 return true;
         }

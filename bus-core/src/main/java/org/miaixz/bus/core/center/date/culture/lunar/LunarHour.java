@@ -28,15 +28,18 @@
 package org.miaixz.bus.core.center.date.culture.lunar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.cn.Taboo;
 import org.miaixz.bus.core.center.date.culture.cn.birth.EightChar;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
+import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
+
+import java.util.List;
 
 /**
  * 时辰
@@ -111,8 +114,35 @@ public class LunarHour extends Loops {
      *
      * @return 农历日
      */
-    public LunarDay getDay() {
+    public LunarDay getLunarDay() {
         return day;
+    }
+
+    /**
+     * 年
+     *
+     * @return 年
+     */
+    public int getYear() {
+        return day.getLunarMonth().getYear();
+    }
+
+    /**
+     * 月
+     *
+     * @return 月
+     */
+    public int getMonth() {
+        return day.getLunarMonth().getMonthWithLeap();
+    }
+
+    /**
+     * 日
+     *
+     * @return 日
+     */
+    public int getDay() {
+        return day.getDay();
     }
 
     /**
@@ -171,8 +201,7 @@ public class LunarHour extends Loops {
             days--;
         }
         LunarDay d = day.next(days);
-        LunarMonth m = d.getMonth();
-        return fromYmdHms(m.getYear().getYear(), m.getMonthWithLeap(), d.getDay(), hour, minute, second);
+        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
     /**
@@ -182,8 +211,8 @@ public class LunarHour extends Loops {
      * @return true/false
      */
     public boolean isBefore(LunarHour target) {
-        if (!day.equals(target.getDay())) {
-            return day.isBefore(target.getDay());
+        if (!day.equals(target.getLunarDay())) {
+            return day.isBefore(target.getLunarDay());
         }
         if (hour != target.getHour()) {
             return hour < target.getHour();
@@ -198,8 +227,8 @@ public class LunarHour extends Loops {
      * @return true/false
      */
     public boolean isAfter(LunarHour target) {
-        if (!day.equals(target.getDay())) {
-            return day.isAfter(target.getDay());
+        if (!day.equals(target.getLunarDay())) {
+            return day.isAfter(target.getLunarDay());
         }
         if (hour != target.getHour()) {
             return hour > target.getHour();
@@ -214,9 +243,9 @@ public class LunarHour extends Loops {
      */
     public SixtyCycle getYearSixtyCycle() {
         SolarTime solarTime = getSolarTime();
-        int solarYear = day.getSolarDay().getMonth().getYear().getYear();
+        int solarYear = day.getSolarDay().getYear();
         SolarTime springSolarTime = SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarTime();
-        LunarYear lunarYear = day.getMonth().getYear();
+        LunarYear lunarYear = day.getLunarMonth().getLunarYear();
         int year = lunarYear.getYear();
         SixtyCycle sixtyCycle = lunarYear.getSixtyCycle();
         if (year == solarYear) {
@@ -238,7 +267,7 @@ public class LunarHour extends Loops {
      */
     public SixtyCycle getMonthSixtyCycle() {
         SolarTime solarTime = getSolarTime();
-        int year = solarTime.getDay().getMonth().getYear().getYear();
+        int year = solarTime.getYear();
         SolarTerms term = solarTime.getTerm();
         int index = term.getIndex() - 3;
         if (index < 0 && term.getJulianDay().getSolarTime().isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarTime())) {
@@ -269,13 +298,22 @@ public class LunarHour extends Loops {
     }
 
     /**
+     * 黄道黑道十二神
+     *
+     * @return 黄道黑道十二神
+     */
+    public TwelveStar getTwelveStar() {
+        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex() + (8 - getDaySixtyCycle().getEarthBranch().getIndex() % 6) * 2);
+    }
+
+    /**
      * 九星（时家紫白星歌诀：三元时白最为佳，冬至阳生顺莫差，孟日七宫仲一白，季日四绿发萌芽，每把时辰起甲子，本时星耀照光华，时星移入中宫去，顺飞八方逐细查。夏至阴生逆回首，孟归三碧季加六，仲在九宫时起甲，依然掌中逆轮跨。）
      *
      * @return 九星
      */
     public NineStar getNineStar() {
         SolarDay solar = day.getSolarDay();
-        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getMonth().getYear().getYear(), 0);
+        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
         SolarTerms xiaZhi = dongZhi.next(12);
         boolean asc = !solar.isBefore(dongZhi.getJulianDay().getSolarDay()) && solar.isBefore(xiaZhi.getJulianDay().getSolarDay());
         int start = new int[]{8, 5, 2}[day.getSixtyCycle().getEarthBranch().getIndex() % 3];
@@ -293,8 +331,7 @@ public class LunarHour extends Loops {
      */
     public SolarTime getSolarTime() {
         SolarDay d = day.getSolarDay();
-        SolarMonth m = d.getMonth();
-        return SolarTime.fromYmdHms(m.getYear().getYear(), m.getMonth(), d.getDay(), hour, minute, second);
+        return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
     }
 
     /**
@@ -306,13 +343,31 @@ public class LunarHour extends Loops {
         return new EightChar(getYearSixtyCycle(), getMonthSixtyCycle(), getDaySixtyCycle(), getSixtyCycle());
     }
 
+    /**
+     * 宜
+     *
+     * @return 宜忌列表
+     */
+    public List<Taboo> getRecommends() {
+        return Taboo.getHourRecommends(getDaySixtyCycle(), getSixtyCycle());
+    }
+
+    /**
+     * 忌
+     *
+     * @return 宜忌列表
+     */
+    public List<Taboo> getAvoids() {
+        return Taboo.getHourAvoids(getDaySixtyCycle(), getSixtyCycle());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof LunarHour)) {
             return false;
         }
         LunarHour target = (LunarHour) o;
-        return day.equals(target.getDay()) && hour == target.getHour() && minute == target.getMinute() && second == target.getSecond();
+        return day.equals(target.getLunarDay()) && hour == target.getHour() && minute == target.getMinute() && second == target.getSecond();
     }
 
 }

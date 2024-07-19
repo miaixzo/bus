@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
@@ -107,33 +106,79 @@ public class LookupTableCV {
         return val;
     }
 
+    private static void lookupByte(
+            short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData, int mask) {
+        int bOffset = tblData.length;
+        if (srcData.length < dstData.length) {
+            for (int i = 0; i < srcData.length; i++) {
+                int val = srcData[i] & mask;
+                for (int b = 0; b < bOffset; b++) {
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
+                }
+            }
+        } else {
+            for (int b = 0; b < bOffset; b++) {
+                byte[] t = tblData[b];
+                int tblOffset = tblOffsets[b];
+                int maxLength = t.length - 1;
+
+                for (int i = b; i < srcData.length; i += bOffset) {
+                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
+                }
+            }
+        }
+    }
+
+    private static void lookupShort(
+            short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData, int mask) {
+        int bOffset = tblData.length;
+        if (srcData.length < dstData.length) {
+            for (int i = 0; i < srcData.length; i++) {
+                int val = (srcData[i] & mask);
+                for (int b = 0; b < bOffset; b++) {
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
+                }
+            }
+        } else {
+            for (int b = 0; b < bOffset; b++) {
+                short[] t = tblData[b];
+                int tblOffset = tblOffsets[b];
+                int maxLength = t.length - 1;
+
+                for (int i = b; i < srcData.length; i += bOffset) {
+                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
+                }
+            }
+        }
+    }
+
     public DataBuffer getData() {
         return data;
     }
 
     public byte[][] getByteData() {
-        return data instanceof DataBufferByte ? ((DataBufferByte) data).getBankData() : null;
+        return data instanceof DataBufferByte buffer ? buffer.getBankData() : null;
     }
 
     public byte[] getByteData(int band) {
-        return data instanceof DataBufferByte ? ((DataBufferByte) data).getData(band) : null;
+        return data instanceof DataBufferByte buffer ? buffer.getData(band) : null;
     }
 
     public short[][] getShortData() {
-        if (data instanceof DataBufferUShort) {
-            return ((DataBufferUShort) data).getBankData();
-        } else if (data instanceof DataBufferShort) {
-            return ((DataBufferShort) data).getBankData();
+        if (data instanceof DataBufferUShort bufferUShort) {
+            return bufferUShort.getBankData();
+        } else if (data instanceof DataBufferShort bufferShort) {
+            return bufferShort.getBankData();
         } else {
             return null;
         }
     }
 
     public short[] getShortData(int band) {
-        if (data instanceof DataBufferUShort) {
-            return ((DataBufferUShort) data).getData(band);
-        } else if (data instanceof DataBufferShort) {
-            return ((DataBufferShort) data).getData(band);
+        if (data instanceof DataBufferUShort bufferUShort) {
+            return bufferUShort.getData(band);
+        } else if (data instanceof DataBufferShort bufferShort) {
+            return bufferShort.getData(band);
         } else {
             return null;
         }
@@ -145,6 +190,13 @@ public class LookupTableCV {
 
     public int getOffset() {
         return offsets[0];
+    }
+
+    /**
+     * Returns the index offset of entry 0 for a specific band.
+     */
+    public int getOffset(int band) {
+        return offsets[band];
     }
 
     public int getNumBands() {
@@ -161,10 +213,6 @@ public class LookupTableCV {
 
     public int lookup(int band, int value) {
         return data.getElem(band, value - offsets[band]);
-    }
-
-    public int getOffset(int band) {
-        return offsets[band];
     }
 
     public ImageCV lookup(Mat src) {
@@ -186,8 +234,7 @@ public class LookupTableCV {
             sSrcData = new short[width * height * channels];
             src.get(0, 0, sSrcData);
         } else {
-            throw new IllegalArgumentException(
-                    "Not suported dataType for LUT transformation:" + src.toString());
+            throw new IllegalArgumentException("Not supported dataType for LUT transformation:" + src);
         }
 
         int lkbBands = getNumBands();
@@ -200,7 +247,7 @@ public class LookupTableCV {
         short[][] sTblData = getShortData();
 
         if (lkbBands < channels) {
-            if (null == sTblData) {
+            if (sTblData == null) {
                 byte[] b = bTblData[0];
                 bTblData = new byte[channels][];
                 Arrays.fill(bTblData, b);
@@ -220,11 +267,11 @@ public class LookupTableCV {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
             byte[] bDstData =
                     scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
-            if (scrByte && null != bSrcData) {
+            if (scrByte && bSrcData != null) {
                 lookup(bSrcData, bDstData, tblOffsets, bTblData);
-            } else if (srcDataType == DataBuffer.TYPE_USHORT && null != sSrcData && null != bDstData) {
+            } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && bDstData != null) {
                 lookupU(sSrcData, bDstData, tblOffsets, bTblData);
-            } else if (srcDataType == DataBuffer.TYPE_SHORT && null != sSrcData && null != bDstData) {
+            } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && bDstData != null) {
                 lookup(sSrcData, bDstData, tblOffsets, bTblData);
             } else {
                 throw new IllegalArgumentException(
@@ -239,11 +286,11 @@ public class LookupTableCV {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
             short[] sDstData =
                     !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
-            if (scrByte && ObjectKit.isNotNull(bSrcData) && ObjectKit.isNotNull(sTblData)) {
+            if (scrByte && bSrcData != null && sTblData != null) {
                 lookup(bSrcData, sDstData, tblOffsets, sTblData);
-            } else if (srcDataType == DataBuffer.TYPE_USHORT && ObjectKit.isNotNull(sSrcData) && ObjectKit.isNotNull(sTblData)) {
+            } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && sTblData != null) {
                 lookupU(sSrcData, sDstData, tblOffsets, sTblData);
-            } else if (srcDataType == DataBuffer.TYPE_SHORT && ObjectKit.isNotNull(sSrcData) && ObjectKit.isNotNull(sTblData)) {
+            } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && sTblData != null) {
                 lookup(sSrcData, sDstData, tblOffsets, sTblData);
             } else {
                 throw new IllegalArgumentException(
@@ -290,57 +337,18 @@ public class LookupTableCV {
 
     // ushort to byte
     private void lookupU(short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData) {
-        int bOffset = tblData.length;
-
-        if (srcData.length < dstData.length) {
-            for (int i = 0; i < srcData.length; i++) {
-                int val = (srcData[i] & 0xFFFF);
-                for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
-                }
-            }
-        } else {
-            for (int b = 0; b < bOffset; b++) {
-                byte[] t = tblData[b];
-                int tblOffset = tblOffsets[b];
-                int maxLength = t.length - 1;
-
-                for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
-                }
-            }
-        }
+        lookupByte(srcData, dstData, tblOffsets, tblData, 0xFFFF);
     }
 
     // short to byte
     private void lookup(short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData) {
-        int bOffset = tblData.length;
         int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
-
-        if (srcData.length < dstData.length) {
-            for (int i = 0; i < srcData.length; i++) {
-                int val = srcData[i] & mask;
-                for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
-                }
-            }
-        } else {
-            for (int b = 0; b < bOffset; b++) {
-                byte[] t = tblData[b];
-                int tblOffset = tblOffsets[b];
-                int maxLength = t.length - 1;
-
-                for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
-                }
-            }
-        }
+        lookupByte(srcData, dstData, tblOffsets, tblData, mask);
     }
 
     // byte to short or ushort
     private void lookup(byte[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData) {
         int bOffset = tblData.length;
-
         if (srcData.length < dstData.length) {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFF);
@@ -363,50 +371,13 @@ public class LookupTableCV {
 
     // ushort to short or ushort
     private void lookupU(short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData) {
-        int bOffset = tblData.length;
-        if (srcData.length < dstData.length) {
-            for (int i = 0; i < srcData.length; i++) {
-                int val = (srcData[i] & 0xFFFF);
-                for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
-                }
-            }
-        } else {
-            for (int b = 0; b < bOffset; b++) {
-                short[] t = tblData[b];
-                int tblOffset = tblOffsets[b];
-                int maxLength = t.length - 1;
-
-                for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
-                }
-            }
-        }
+        lookupShort(srcData, dstData, tblOffsets, tblData, 0xFFFF);
     }
 
     // short to short or ushort
     private void lookup(short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData) {
-        int bOffset = tblData.length;
         int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
-
-        if (srcData.length < dstData.length) {
-            for (int i = 0; i < srcData.length; i++) {
-                int val = (srcData[i] & mask);
-                for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
-                }
-            }
-        } else {
-            for (int b = 0; b < bOffset; b++) {
-                short[] t = tblData[b];
-                int tblOffset = tblOffsets[b];
-                int maxLength = t.length - 1;
-
-                for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
-                }
-            }
-        }
+        lookupShort(srcData, dstData, tblOffsets, tblData, mask);
     }
 
 }

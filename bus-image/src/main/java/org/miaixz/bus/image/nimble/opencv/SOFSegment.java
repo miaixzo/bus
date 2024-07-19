@@ -31,14 +31,14 @@ package org.miaixz.bus.image.nimble.opencv;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SOFSegment {
+class SOFSegment {
 
+    private final boolean jfif;
     private final int marker;
     private final int samplePrecision;
     private final int lines; // height
     private final int samplesPerLine; // width
     private final int components;
-    private final boolean jfif;
 
     SOFSegment(boolean jfif, int marker, int samplePrecision, int lines, int samplesPerLine, int components) {
         this.jfif = jfif;
@@ -47,6 +47,10 @@ public class SOFSegment {
         this.lines = lines;
         this.samplesPerLine = samplesPerLine;
         this.components = components;
+    }
+
+    public boolean isJFIF() {
+        return jfif;
     }
 
     public int getMarker() {
@@ -67,10 +71,6 @@ public class SOFSegment {
 
     public int getComponents() {
         return components;
-    }
-
-    public boolean isJfif() {
-        return jfif;
     }
 
     @Override

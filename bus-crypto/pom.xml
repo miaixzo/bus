@@ -33,7 +33,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>8.0.5</version>
+    <version>8.0.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -71,7 +71,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
     </properties>
 

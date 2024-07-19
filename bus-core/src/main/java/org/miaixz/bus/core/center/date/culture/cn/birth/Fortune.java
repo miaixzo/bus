@@ -80,7 +80,7 @@ public class Fortune extends Loops {
      * @return 农历年
      */
     public LunarYear getLunarYear() {
-        return childLimit.getEndTime().getLunarHour().getDay().getMonth().getYear().next(index);
+        return childLimit.getEndTime().getLunarHour().getLunarDay().getLunarMonth().getLunarYear().next(index);
     }
 
     /**

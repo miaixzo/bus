@@ -53,6 +53,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class FileType {
 
     /**
+     * Jar文件扩展名
+     */
+    public static final String JAVA = ".java";
+    /**
      * Class文件扩展名
      */
     public static final String CLASS = ".class";
@@ -897,6 +901,9 @@ public class FileType {
      * @return 文件类型，未找到为{@code null}
      */
     public static String getType(final String fileStreamHexHead) {
+        if (StringKit.isBlank(fileStreamHexHead)) {
+            return null;
+        }
         for (final Entry<String, String> fileTypeEntry : FILE_TYPE.entrySet()) {
             if (StringKit.startWithIgnoreCase(fileStreamHexHead, fileTypeEntry.getKey())) {
                 return fileTypeEntry.getValue();

@@ -31,6 +31,7 @@ import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -77,7 +78,7 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
     public Message request(final UniMaterial entity, final String action, final Map<String, Object> bodys) {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "uni-java-sdk" + "/" + "0.0.4");
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put("Accept", MediaType.APPLICATION_JSON);
         String url;
         if (entity.isSimple()) {

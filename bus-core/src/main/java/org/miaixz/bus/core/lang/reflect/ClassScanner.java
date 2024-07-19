@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.lang.reflect;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
-import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.io.resource.JarResource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Keys;
@@ -140,7 +140,7 @@ public class ClassScanner implements Serializable {
      * @param charset        编码
      */
     public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate, final java.nio.charset.Charset charset) {
-        packageName = StringKit.emptyIfNull(packageName);
+        packageName = StringKit.toStringOrEmpty(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);
@@ -347,14 +347,14 @@ public class ClassScanner implements Serializable {
     private void scanFile(final File file, final String rootDir) {
         if (file.isFile()) {
             final String fileName = file.getAbsolutePath();
-            if (fileName.endsWith(FileName.EXT_CLASS)) {
+            if (fileName.endsWith(FileType.CLASS)) {
                 final String className = fileName//
                         // 8为classes长度，fileName.length() - 6为".class"的长度
                         .substring(rootDir.length(), fileName.length() - 6)//
                         .replace(File.separatorChar, Symbol.C_DOT);//
                 //加入满足条件的类
                 addIfAccept(className);
-            } else if (fileName.endsWith(FileName.EXT_JAR)) {
+            } else if (fileName.endsWith(FileType.JAR)) {
                 try {
                     scanJar(new JarFile(file));
                 } catch (final IOException e) {
@@ -382,7 +382,7 @@ public class ClassScanner implements Serializable {
             for (final JarEntry entry : new EnumerationIterator<>(jar.entries())) {
                 name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
                 if (StringKit.isEmpty(packagePath) || name.startsWith(this.packagePath)) {
-                    if (name.endsWith(FileName.EXT_CLASS) && !entry.isDirectory()) {
+                    if (name.endsWith(FileType.CLASS) && !entry.isDirectory()) {
                         final String className = name//
                                 .substring(0, name.length() - 6)//
                                 .replace(Symbol.C_SLASH, Symbol.C_DOT);//

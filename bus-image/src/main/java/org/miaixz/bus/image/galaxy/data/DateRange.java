@@ -29,12 +29,15 @@ package org.miaixz.bus.image.galaxy.data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DateRange implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private final Date start;
     private final Date end;
@@ -52,34 +55,33 @@ public class DateRange implements Serializable {
         return end;
     }
 
+    public boolean isStartDateExeedsEndDate() {
+        return start != null && end != null && start.after(end);
+    }
+
     public boolean contains(Date when) {
-        return !(null != start && start.after(when)
-                || null != end && end.before(when));
+        return !(start != null && start.after(when)
+                || end != null && end.before(when));
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
 
-        if (!(object instanceof DateRange))
+        if (!(obj instanceof DateRange other))
             return false;
 
-        DateRange other = (DateRange) object;
-        return (null == start
-                ? null == other.start
-                : start.equals(other.start))
-                && (null == end
-                ? null == other.end
-                : end.equals(other.end));
+        return (Objects.equals(start, other.start))
+                && (Objects.equals(end, other.end));
     }
 
     @Override
     public int hashCode() {
         int code = 0;
-        if (null != start)
+        if (start != null)
             code = start.hashCode();
-        if (null != end)
+        if (end != null)
             code ^= start.hashCode();
         return code;
     }

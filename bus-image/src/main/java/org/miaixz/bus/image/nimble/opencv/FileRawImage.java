@@ -28,26 +28,21 @@
 package org.miaixz.bus.image.nimble.opencv;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FileRawImage {
+public record FileRawImage(File file) {
 
-    private final File file;
+    public static final int HEADER_LENGTH = 46;
 
     public FileRawImage(File file) {
         this.file = Objects.requireNonNull(file);
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public ImageCV read() throws IOException {
+    public ImageCV read() {
         return ImageProcessor.readImageWithCvException(file, null);
     }
 

@@ -28,8 +28,8 @@
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PhysicalMemory;

@@ -60,11 +60,11 @@ public class ImageProperties {
     /**
      * 原始文件保存路径
      */
-    private String dcmPath;
+    private String dcmDir;
     /**
      * 转换后图片保存路径
      */
-    private String imgPath;
+    private String imgDir;
 
     /**
      * 服务器信息
@@ -87,11 +87,25 @@ public class ImageProperties {
          */
         private String aeTitle;
 
-        private String tcsClass;
-
-        private String sopClass;
-
-        private String relClass;
+        /**
+         * 是否启用通过UID或名称指定传输
+         */
+        private boolean negociation;
+        /**
+         * SOP类和传输语法可以通过其UID或名称指定
+         * sop-classes.properties
+         */
+        private String sopClasses;
+        /**
+         * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类
+         * sop-classes-uid.properties
+         */
+        private String sopClassesUID;
+        /**
+         * 扩展Sop类和传输语法的存储传输能力
+         * sop-classes-tcs.properties
+         */
+        private String sopClassesTCS;
 
     }
 

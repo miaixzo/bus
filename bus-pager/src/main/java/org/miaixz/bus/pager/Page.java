@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class Page<E> extends ArrayList<E> implements Closeable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 记录当前堆栈,可查找到page在何处创建

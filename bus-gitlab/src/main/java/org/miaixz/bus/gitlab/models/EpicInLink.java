@@ -30,7 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class EpicInLink extends AbstractEpic<EpicInLink> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public String toString() {
         return (JacksonJson.toJsonString(this));

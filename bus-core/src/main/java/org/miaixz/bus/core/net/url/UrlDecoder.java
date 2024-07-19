@@ -65,7 +65,7 @@ public class UrlDecoder implements Serializable {
      * </ol>
      *
      * @param text    包含URL编码后的字符串
-     * @param charset 编码
+     * @param charset 解码的编码，{@code null}表示不做解码
      * @return 解码后的字符串
      */
     public static String decodeForPath(final String text, final java.nio.charset.Charset charset) {
@@ -207,7 +207,7 @@ public class UrlDecoder implements Serializable {
      *
      * @param text          包含URL编码后的字符串
      * @param isPlusToSpace 是否+转换为空格
-     * @param charset       编码，{@code null}表示不做编码
+     * @param charset       编码，{@code null}表示不做解码
      * @return 解码后的字符串
      */
     public static String decode(final String text, final java.nio.charset.Charset charset, final boolean isPlusToSpace) {

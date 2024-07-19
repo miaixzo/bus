@@ -36,7 +36,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AwardEmoji implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public enum AwardableType {
         ISSUE, MERGE_REQUEST, NOTE, SNIPPET;

@@ -28,19 +28,18 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
-import org.miaixz.bus.image.metric.ApplicationEntity;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.DimseRSPHandler;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -61,7 +60,7 @@ public class IanSCU {
     private final HashMap<String, Attributes> map = new HashMap<>();
     private String uidSuffix;
     private String refPpsIUID;
-    private String refPpsCUID = UID.ModalityPerformedProcedureStepSOPClass;
+    private String refPpsCUID = UID.ModalityPerformedProcedureStep.uid;
     private String availability = "ONLINE";
     private String retrieveAET;
     private String retrieveURI;
@@ -81,11 +80,11 @@ public class IanSCU {
 
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(
-                new Presentation(1, UID.VerificationSOPClass,
-                        UID.ImplicitVRLittleEndian));
+                new PresentationContext(1, UID.Verification.uid,
+                        UID.ImplicitVRLittleEndian.uid));
         rq.addPresentationContext(
-                new Presentation(3,
-                        UID.InstanceAvailabilityNotificationSOPClass,
+                new PresentationContext(3,
+                        UID.InstanceAvailabilityNotification.uid,
                         tss));
     }
 
@@ -102,7 +101,7 @@ public class IanSCU {
     }
 
     public String getRetrieveAET() {
-        return null != retrieveAET ? retrieveAET : ae.getAETitle();
+        return retrieveAET != null ? retrieveAET : ae.getAETitle();
     }
 
     public void setRetrieveAET(String retrieveAET) {
@@ -126,8 +125,8 @@ public class IanSCU {
         as = ae.connect(conn, remote, rq);
     }
 
-    public void close() throws IOException {
-        if (null != as) {
+    public void close() throws IOException, InterruptedException {
+        if (as != null) {
             as.release();
         }
     }
@@ -142,18 +141,17 @@ public class IanSCU {
     }
 
     private void sendIan(Attributes ian) throws IOException, InterruptedException {
-        as.ncreate(UID.InstanceAvailabilityNotificationSOPClass, null, ian, null,
+        as.ncreate(UID.InstanceAvailabilityNotification.uid, null, ian, null,
                 new DimseRSPHandler(as.nextMessageID()));
     }
 
     public boolean addInstance(Attributes inst) {
-        Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (null == suid)
+        if (suid == null)
             return false;
 
         Attributes ian = map.get(suid);
-        if (null == ian)
+        if (ian == null)
             map.put(suid, ian = createIAN(inst));
         updateIAN(ian, inst);
         return true;
@@ -168,7 +166,7 @@ public class IanSCU {
         Attributes ian = new Attributes(3);
         Sequence refPpsSeq =
                 ian.newSequence(Tag.ReferencedPerformedProcedureStepSequence, 1);
-        if (null != refPpsIUID) {
+        if (refPpsIUID != null) {
             Attributes refPps = new Attributes(3);
             refPps.setString(Tag.ReferencedSOPClassUID, VR.UI, refPpsCUID);
             refPps.setString(Tag.ReferencedSOPInstanceUID, VR.UI, refPpsIUID);
@@ -192,11 +190,11 @@ public class IanSCU {
                 inst.getString(Tag.SOPClassUID));
         refSOP.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
                 inst.getString(Tag.SOPInstanceUID));
-        if (null != retrieveURL)
+        if (retrieveURL != null)
             refSOP.setString(Tag.RetrieveURL, VR.UR, retrieveURL);
-        if (null != retrieveURI)
+        if (retrieveURI != null)
             refSOP.setString(Tag.RetrieveURI, VR.UR, retrieveURI);
-        if (null != retrieveUID)
+        if (retrieveUID != null)
             refSOP.setString(Tag.RetrieveLocationUID, VR.UI, retrieveUID);
         refSOPSeq.add(refSOP);
     }

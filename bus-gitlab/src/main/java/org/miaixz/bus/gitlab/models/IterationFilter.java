@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class IterationFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public enum IterationFilterState {
         OPENED, UPCOMING, CURRENT, CLOSED, ALL;

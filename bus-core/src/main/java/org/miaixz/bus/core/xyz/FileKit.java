@@ -30,6 +30,8 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.BomReader;
+import org.miaixz.bus.core.io.file.FileReader;
+import org.miaixz.bus.core.io.file.FileWriter;
 import org.miaixz.bus.core.io.file.*;
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -63,7 +65,7 @@ public class FileKit extends PathResolve {
     /**
      * 绝对路径判断正则
      */
-    private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?");
+    private static final Pattern PATTERN_PATH_ABSOLUTE = Pattern.compile("^[a-zA-Z]:([/\\\\].*)?", Pattern.DOTALL);
 
     /**
      * 是否为Windows环境
@@ -71,7 +73,7 @@ public class FileKit extends PathResolve {
      * @return 是否为Windows环境
      */
     public static boolean isWindows() {
-        return FileName.WINDOWS_SEPARATOR == File.separatorChar;
+        return Symbol.C_BACKSLASH == File.separatorChar;
     }
 
     /**
@@ -231,7 +233,7 @@ public class FileKit extends PathResolve {
         if (path == null) {
             return new ArrayList<>(0);
         }
-        int index = path.lastIndexOf(FileName.EXT_JAR_PATH);
+        int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
         if (index < 0) {
             // 普通目录
             final List<String> paths = new ArrayList<>();
@@ -247,7 +249,7 @@ public class FileKit extends PathResolve {
         // jar文件
         path = getAbsolutePath(path);
         // jar文件中的路径
-        index = index + FileName.EXT_JAR.length();
+        index = index + FileType.JAR.length();
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(path.substring(0, index));
@@ -709,6 +711,37 @@ public class FileKit extends PathResolve {
     public static void clean(final File directory) throws InternalException {
         Assert.notNull(directory, "File must be not null!");
         clean(directory.toPath());
+    }
+
+    /**
+     * 清理空文件夹
+     * 此方法用于递归删除空的文件夹，不删除文件
+     * 如果传入的文件夹本身就是空的，删除这个文件夹
+     *
+     * @param directory 文件夹
+     * @return the true/false
+     */
+    public static boolean cleanEmpty(final File directory) {
+        if (directory == null || false == directory.exists() || false == directory.isDirectory()) {
+            return true;
+        }
+
+        final File[] files = directory.listFiles();
+        if (ArrayKit.isEmpty(files)) {
+            // 空文件夹则删除之
+            return directory.delete();
+        }
+
+        for (final File childFile : files) {
+            cleanEmpty(childFile);
+        }
+
+        // 当前目录清除完毕，需要再次判断当前文件夹，空文件夹则删除之
+        final String[] fileNames = directory.list();
+        if (ArrayKit.isEmpty(fileNames)) {
+            return directory.delete();
+        }
+        return true;
     }
 
     /**
@@ -1672,7 +1705,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static String readString(final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).readString();
+        return FileReader.of(file, charset).readString();
     }
 
     /**
@@ -1760,7 +1793,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T extends Collection<String>> T readLines(final File file, final java.nio.charset.Charset charset, final T collection) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).readLines(collection);
+        return FileReader.of(file, charset).readLines(collection);
     }
 
     /**
@@ -1887,7 +1920,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static void readLines(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) throws InternalException {
-        org.miaixz.bus.core.io.file.FileReader.of(file, charset).readLines(lineHandler);
+        FileReader.of(file, charset).readLines(lineHandler);
     }
 
     /**
@@ -1997,7 +2030,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T> T read(final File file, final java.nio.charset.Charset charset, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileReader.of(file, charset).read(readerHandler);
+        return FileReader.of(file, charset).read(readerHandler);
     }
 
     /**
@@ -2051,7 +2084,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static BufferedWriter getWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).getWriter(isAppend);
+        return FileWriter.of(file, charset).getWriter(isAppend);
     }
 
     /**
@@ -2142,7 +2175,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).write(content);
+        return FileWriter.of(file, charset).write(content);
     }
 
     /**
@@ -2192,7 +2225,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File appendString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).append(content);
+        return FileWriter.of(file, charset).append(content);
     }
 
     /**
@@ -2335,7 +2368,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeLines(list, isAppend);
+        return FileWriter.of(file, charset).writeLines(list, isAppend);
     }
 
     /**
@@ -2349,7 +2382,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeUtf8Map(final Map<?, ?> map, final File file, final String kvSeparator, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.of(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
@@ -2364,7 +2397,7 @@ public class FileKit extends PathResolve {
      * @throws InternalException IO异常
      */
     public static File writeMap(final Map<?, ?> map, final File file, final java.nio.charset.Charset charset, final String kvSeparator, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.of(file, charset).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
@@ -2396,15 +2429,49 @@ public class FileKit extends PathResolve {
      * 写入数据到文件
      *
      * @param data     数据
-     * @param dest     目标文件
+     * @param target     目标文件
      * @param off      数据开始位置
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
-     * @throws InternalException IO异常
      */
-    public static File writeBytes(final byte[] data, final File dest, final int off, final int len, final boolean isAppend) throws InternalException {
-        return org.miaixz.bus.core.io.file.FileWriter.of(dest).write(data, off, len, isAppend);
+    public static File writeBytes(final byte[] data, final File target, final int off, final int len, final boolean isAppend) {
+        return FileWriter.of(target).write(data, off, len, isAppend);
+    }
+
+    /**
+     * 将流的内容写入文件
+     * 此方法会自动关闭输入流
+     *
+     * @param target 目标文件
+     * @param in     输入流
+     * @return 目标文件
+     */
+    public static File writeFromStream(final InputStream in, final File target) {
+        return writeFromStream(in, target, true);
+    }
+
+    /**
+     * 将流的内容写入文件
+     *
+     * @param target      目标文件
+     * @param in        输入流
+     * @param isCloseIn 是否关闭输入流
+     * @return 目标文件
+     */
+    public static File writeFromStream(final InputStream in, final File target, final boolean isCloseIn) {
+        return FileWriter.of(target).writeFromStream(in, isCloseIn);
+    }
+
+    /**
+     * 将文件写入流中，此方法不会关闭输出流
+     *
+     * @param file 文件
+     * @param out  流
+     * @return 写出的流byte数
+     */
+    public static long writeToStream(final File file, final OutputStream out) {
+        return FileReader.of(file).writeToStream(out);
     }
 
     /**
@@ -2455,7 +2522,7 @@ public class FileKit extends PathResolve {
      */
     public static File convertLineSeparator(final File file, final java.nio.charset.Charset charset, final LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
-        return org.miaixz.bus.core.io.file.FileWriter.of(file, charset).writeLines(lines, lineSeparator, false);
+        return FileWriter.of(file, charset).writeLines(lines, lineSeparator, false);
     }
 
     /**

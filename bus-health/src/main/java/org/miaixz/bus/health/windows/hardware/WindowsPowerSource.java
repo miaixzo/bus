@@ -32,7 +32,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.win32.W32APITypeMapper;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;

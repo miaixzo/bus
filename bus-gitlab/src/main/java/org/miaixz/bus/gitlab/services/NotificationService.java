@@ -51,7 +51,7 @@ public abstract class NotificationService implements Serializable {
     public static final String TAG_PUSH_CHANNEL_PROP = "tag_push_channel";
     public static final String PIPELINE_CHANNEL_PROP = "pipeline_channel";
     public static final String WIKI_PAGE_CHANNEL_PROP = "wiki_page_channel";
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     public static final String USERNAME_PROP = "username";
     public static final String DESCRIPTION_PROP = "description";
     public static final String TITLE_PROP = "title";

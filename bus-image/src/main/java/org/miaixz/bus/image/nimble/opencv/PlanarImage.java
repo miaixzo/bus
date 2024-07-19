@@ -70,11 +70,34 @@ public interface PlanarImage extends ImageSize, AutoCloseable {
 
     void assignTo(Mat dstImg);
 
-    Mat toMat();
+    boolean isHasBeenReleased();
 
-    ImageCV toImageCV();
+    boolean isReleasedAfterProcessing();
+
+    void setReleasedAfterProcessing(boolean releasedAfterProcessing);
 
     @Override
     void close();
+
+    default Mat toMat() {
+        if (this instanceof Mat mat) {
+            return mat;
+        } else {
+            throw new IllegalAccessError("Not implemented yet");
+        }
+    }
+
+    default ImageCV toImageCV() {
+        if (this instanceof Mat) {
+            if (this instanceof ImageCV img) {
+                return img;
+            }
+            ImageCV dstImg = new ImageCV();
+            this.assignTo(dstImg);
+            return dstImg;
+        } else {
+            throw new IllegalAccessError("Not implemented yet");
+        }
+    }
 
 }

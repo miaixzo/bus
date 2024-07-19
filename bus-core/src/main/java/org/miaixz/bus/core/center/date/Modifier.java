@@ -29,7 +29,6 @@ package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Modify;
 import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.DateKit;
 
 /**
  * 日期修改器
@@ -89,7 +88,7 @@ public class Modifier {
     public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField, final Modify modify, final boolean truncateMillisecond) {
         // AM_PM上下午特殊处理
         if (java.util.Calendar.AM_PM == dateField) {
-            final boolean isAM = DateKit.isAM(calendar);
+            final boolean isAM = Calendar.isAM(calendar);
             switch (modify) {
                 case TRUNCATE:
                     calendar.set(java.util.Calendar.HOUR_OF_DAY, isAM ? 0 : 12);

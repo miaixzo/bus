@@ -36,7 +36,7 @@ import java.io.Serializable;
  * allowed_to_push, allowed_to_merge, and allowed_to_unprotect values.
  */
 public class AllowedTo implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private AccessLevel accessLevel;
     private Long userId;

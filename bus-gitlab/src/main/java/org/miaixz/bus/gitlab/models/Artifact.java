@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import java.io.Serializable;
 
 public class Artifact implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public enum FileType {
         ARCHIVE, METADATA, TRACE, JUNIT;

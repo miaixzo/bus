@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 public class RunnerDetail extends Runner {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String architecture;
     private String platform;

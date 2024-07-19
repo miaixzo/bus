@@ -285,8 +285,8 @@ public class Holiday extends Loops {
 
 
     public Holiday next(int n) {
-        SolarMonth m = day.getMonth();
-        int year = m.getYear().getYear();
+        SolarMonth m = day.getSolarMonth();
+        int year = m.getYear();
         int month = m.getMonth();
         if (n == 0) {
             return fromYmd(year, month, day.getDay());

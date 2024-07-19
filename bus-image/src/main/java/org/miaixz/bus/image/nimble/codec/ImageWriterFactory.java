@@ -27,9 +27,11 @@
  */
 package org.miaixz.bus.image.nimble.codec;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
 
@@ -37,7 +39,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
@@ -49,6 +50,8 @@ import java.util.Map.Entry;
  */
 public class ImageWriterFactory implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     private static volatile ImageWriterFactory defaultFactory;
     private final TreeMap<String, ImageWriterParam> map = new TreeMap<>();
     private PatchJPEGLS patchJPEGLS;
@@ -58,14 +61,14 @@ public class ImageWriterFactory implements Serializable {
     }
 
     public static ImageWriterFactory getDefault() {
-        if (null == defaultFactory)
-            defaultFactory = initDefault();
+        if (defaultFactory == null)
+            defaultFactory = init();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageWriterFactory factory) {
-        if (null == factory)
+        if (factory == null)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -75,11 +78,17 @@ public class ImageWriterFactory implements Serializable {
         defaultFactory = null;
     }
 
-    private static ImageWriterFactory initDefault() {
+    public static ImageWriterFactory init() {
         ImageWriterFactory factory = new ImageWriterFactory();
         URL url = ResourceKit.getResourceUrl("ImageWriterFactory.properties", ImageWriterFactory.class);
         try {
-            factory.load(url.openStream());
+            Properties props = new Properties();
+            props.load(url.openStream());
+            for (Entry<Object, Object> entry : props.entrySet()) {
+                String[] ss = Builder.split((String) entry.getValue(), ':');
+                factory.map.put((String) entry.getKey(), new ImageWriterParam(ss[0], ss[1], ss[2],
+                        ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to load Image Reader Factory configuration from: " + url.toString(), e);
         }
@@ -91,7 +100,7 @@ public class ImageWriterFactory implements Serializable {
     }
 
     public static ImageWriter getImageWriter(ImageWriterParam param) {
-        return Boolean.getBoolean("org.miaixz.bus.image.nimble.codec.UseServiceLoader")
+        return Boolean.getBoolean("org.miaixz.bus.image.nimble.codec.useServiceLoader")
                 ? getImageWriterFromServiceLoader(param)
                 : getImageWriterFromImageIOServiceRegistry(param);
     }
@@ -102,7 +111,7 @@ public class ImageWriterFactory implements Serializable {
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriter writer = iter.next();
-        if (null != param.className) {
+        if (param.className != null) {
             while (!param.className.equals(writer.getClass().getName())) {
                 if (iter.hasNext())
                     writer = iter.next();
@@ -131,7 +140,7 @@ public class ImageWriterFactory implements Serializable {
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriterSpi spi = iter.next();
-        if (null != param.className) {
+        if (param.className != null) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -143,16 +152,6 @@ public class ImageWriterFactory implements Serializable {
             }
         }
         return spi;
-    }
-
-    public void load(InputStream in) throws IOException {
-        Properties props = new Properties();
-        props.load(in);
-        for (Map.Entry<Object, Object> entry : props.entrySet()) {
-            String[] ss = Material.split((String) entry.getValue(), Symbol.C_COLON);
-            map.put((String) entry.getKey(), new ImageWriterParam(ss[0], ss[1],
-                    ss[2], Material.split(ss[3], Symbol.C_SEMICOLON)));
-        }
     }
 
     public final PatchJPEGLS getPatchJPEGLS() {
@@ -185,13 +184,15 @@ public class ImageWriterFactory implements Serializable {
 
     public static class ImageWriterParam implements Serializable {
 
+        private static final long serialVersionUID = -1L;
+
         public final String formatName;
         public final String className;
         public final PatchJPEGLS patchJPEGLS;
-        public final Material[] imageWriteParams;
+        public final Property[] imageWriteParams;
 
         public ImageWriterParam(String formatName, String className,
-                                PatchJPEGLS patchJPEGLS, Material[] imageWriteParams) {
+                                PatchJPEGLS patchJPEGLS, Property[] imageWriteParams) {
             this.formatName = formatName;
             this.className = nullify(className);
             this.patchJPEGLS = patchJPEGLS;
@@ -200,26 +201,26 @@ public class ImageWriterFactory implements Serializable {
 
         public ImageWriterParam(String formatName, String className,
                                 String patchJPEGLS, String[] imageWriteParams) {
-            this(formatName, className, null != patchJPEGLS
+            this(formatName, className, patchJPEGLS != null
                     && !patchJPEGLS.isEmpty() ? PatchJPEGLS
-                    .valueOf(patchJPEGLS) : null, Material
+                    .valueOf(patchJPEGLS) : null, Property
                     .valueOf(imageWriteParams));
         }
 
 
-        public Material[] getImageWriteParams() {
+        public Property[] getImageWriteParams() {
             return imageWriteParams;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
 
             ImageWriterParam that = (ImageWriterParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (null != className ? !className.equals(that.className) : null != that.className) return false;
+            if (!Objects.equals(className, that.className)) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageWriteParams, that.imageWriteParams);
 
@@ -228,8 +229,8 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
-            result = 31 * result + (null != className ? className.hashCode() : 0);
-            result = 31 * result + (null != patchJPEGLS ? patchJPEGLS.hashCode() : 0);
+            result = 31 * result + (className != null ? className.hashCode() : 0);
+            result = 31 * result + (patchJPEGLS != null ? patchJPEGLS.hashCode() : 0);
             result = 31 * result + Arrays.hashCode(imageWriteParams);
             return result;
         }
@@ -237,10 +238,10 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public String toString() {
             return "ImageWriterParam{" +
-                    "formatName='" + formatName + Symbol.C_SINGLE_QUOTE +
-                    ", className='" + className + Symbol.C_SINGLE_QUOTE +
+                    "formatName='" + formatName + '\'' +
+                    ", className='" + className + '\'' +
                     ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageWriterParam=" + Arrays.toString(imageWriteParams) +
+                    ", imageWriteParams=" + Arrays.toString(imageWriteParams) +
                     '}';
         }
     }

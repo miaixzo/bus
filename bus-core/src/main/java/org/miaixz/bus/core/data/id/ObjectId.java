@@ -45,6 +45,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 3. 随机数
  * 4. INC 自增计数器。确保同一秒内产生objectId的唯一性。
  * </pre>
+ *
+ * <pre>
+ *     | 时间戳 | 随机数 | 自增计数器 |
+ *     |   4   |   4   |    4     |
+ * </pre>
  * 参考：<a href="https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
  * @author Kimi Liu

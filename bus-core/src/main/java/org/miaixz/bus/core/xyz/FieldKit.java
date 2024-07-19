@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.annotation.Alias;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 
@@ -283,7 +283,7 @@ public class FieldKit {
         if (null != obj) {
             final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass(), filter);
             if (null != fields) {
-                return ArrayKit.map(fields, Object.class, field -> getFieldValue(obj, field));
+                return ArrayKit.mapToArray(fields, field -> getFieldValue(obj, field), Object[]::new);
             }
         }
         return null;

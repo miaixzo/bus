@@ -27,43 +27,139 @@
  */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.DatePrecision;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
 import java.text.ParsePosition;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.UnaryOperator;
+
+import static java.time.temporal.ChronoField.*;
 
 /**
- * 日期格式化等工具
- *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Format extends java.text.Format {
 
-    public static final Date[] EMPTY_DATES = {};
+    private static final long serialVersionUID = -1L;
+
     private static final char[] CHARS = {
             '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
             'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u', 'v'
-    };
+            'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
     private static final int LONG_BYTES = 8;
+    private static final DateTimeFormatter DA_PARSER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(YEAR, 4)
+                    .optionalStart()
+                    .appendLiteral('.')
+                    .optionalEnd()
+                    .appendValue(MONTH_OF_YEAR, 2)
+                    .optionalStart()
+                    .appendLiteral('.')
+                    .optionalEnd()
+                    .appendValue(DAY_OF_MONTH, 2)
+                    .toFormatter();
+    private static final DateTimeFormatter DA_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(YEAR, 4)
+                    .appendValue(MONTH_OF_YEAR, 2)
+                    .appendValue(DAY_OF_MONTH, 2)
+                    .toFormatter();
+    private static final DateTimeFormatter TM_PARSER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(HOUR_OF_DAY, 2)
+                    .optionalStart()
+                    .optionalStart()
+                    .appendLiteral(':')
+                    .optionalEnd()
+                    .appendValue(MINUTE_OF_HOUR, 2)
+                    .optionalStart()
+                    .optionalStart()
+                    .appendLiteral(':')
+                    .optionalEnd()
+                    .appendValue(SECOND_OF_MINUTE, 2)
+                    .optionalStart()
+                    .appendFraction(NANO_OF_SECOND, 0, 6, true)
+                    .toFormatter();
+    private static final DateTimeFormatter TM_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(HOUR_OF_DAY, 2)
+                    .appendValue(MINUTE_OF_HOUR, 2)
+                    .appendValue(SECOND_OF_MINUTE, 2)
+                    .appendFraction(NANO_OF_SECOND, 6, 6, true)
+                    .toFormatter();
+    private static final DateTimeFormatter DT_PARSER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(YEAR, 4)
+                    .optionalStart()
+                    .appendValue(MONTH_OF_YEAR, 2)
+                    .optionalStart()
+                    .appendValue(DAY_OF_MONTH, 2)
+                    .optionalStart()
+                    .appendValue(HOUR_OF_DAY, 2)
+                    .optionalStart()
+                    .appendValue(MINUTE_OF_HOUR, 2)
+                    .optionalStart()
+                    .appendValue(SECOND_OF_MINUTE, 2)
+                    .optionalStart()
+                    .appendFraction(NANO_OF_SECOND, 0, 6, true)
+                    .optionalEnd()
+                    .optionalEnd()
+                    .optionalEnd()
+                    .optionalEnd()
+                    .optionalEnd()
+                    .optionalEnd()
+                    .optionalStart()
+                    .appendOffset("+HHMM", "+0000")
+                    .toFormatter();
+    private static final DateTimeFormatter DT_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .appendValue(YEAR, 4)
+                    .appendValue(MONTH_OF_YEAR, 2)
+                    .appendValue(DAY_OF_MONTH, 2)
+                    .appendValue(HOUR_OF_DAY, 2)
+                    .appendValue(MINUTE_OF_HOUR, 2)
+                    .appendValue(SECOND_OF_MINUTE, 2)
+                    .appendFraction(NANO_OF_SECOND, 6, 6, true)
+                    .optionalStart()
+                    .appendOffset("+HHMM", "+0000")
+                    .toFormatter();
+    /**
+     * Conversion from old to new Time API
+     */
+    private static final DateTimeFormatter defaultDateFormatter =
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+    private static final DateTimeFormatter defaultTimeFormatter =
+            DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+    private static final DateTimeFormatter defaultDateTimeFormatter =
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
     private static TimeZone cachedTimeZone;
+
     private final String pattern;
     private final int[][] tagPaths;
     private final int[] index;
+    private final int[] offsets;
+    private final Object[] dateTimeOffsets;
+    private final UnaryOperator<String>[] slices;
     private final Type[] types;
     private final MessageFormat format;
 
@@ -74,15 +170,18 @@ public class Format extends java.text.Format {
         this.tagPaths = new int[n][];
         this.index = new int[n];
         this.types = new Type[n];
+        this.offsets = new int[n];
+        this.dateTimeOffsets = new Object[n];
+        this.slices = new UnaryOperator[n];
         this.format = buildMessageFormat(tokens);
     }
 
     public static Format valueOf(String s) {
-        return null != s ? new Format(s) : null;
+        return s != null ? new Format(s) : null;
     }
 
     private static Calendar cal(TimeZone tz) {
-        Calendar cal = (null != tz)
+        Calendar cal = (tz != null)
                 ? new GregorianCalendar(tz)
                 : new GregorianCalendar();
         cal.clear();
@@ -90,7 +189,7 @@ public class Format extends java.text.Format {
     }
 
     private static Calendar cal(TimeZone tz, Date date) {
-        Calendar cal = (null != tz)
+        Calendar cal = (tz != null)
                 ? new GregorianCalendar(tz)
                 : new GregorianCalendar();
         cal.setTime(date);
@@ -187,7 +286,7 @@ public class Format extends java.text.Format {
      * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
-        return appendZZZZZ(tz.getOffset(null == date
+        return appendZZZZZ(tz.getOffset(date == null
                         ? System.currentTimeMillis() : date.getTime()),
                 new StringBuilder(5)).toString();
     }
@@ -232,27 +331,24 @@ public class Format extends java.text.Format {
     public static Date parseDA(TimeZone tz, String s, boolean ceil) {
         Calendar cal = cal(tz);
         int length = s.length();
-        if (!(length == 8 || length == 10 && !Character.isDigit(s.charAt(4))))
+        if (!(length == 8 || length == 10 && !Character.isDigit(s.charAt(4)) && s.charAt(7) == s.charAt(4)))
             throw new IllegalArgumentException(s);
-        try {
-            int pos = 0;
-            cal.set(Calendar.YEAR,
-                    Integer.parseInt(s.substring(pos, pos + 4)));
-            pos += 4;
-            if (!Character.isDigit(s.charAt(pos)))
-                pos++;
-            cal.set(Calendar.MONTH,
-                    Integer.parseInt(s.substring(pos, pos + 2)) - 1);
-            pos += 2;
-            if (!Character.isDigit(s.charAt(pos)))
-                pos++;
-            cal.set(Calendar.DAY_OF_MONTH,
-                    Integer.parseInt(s.substring(pos)));
-            if (ceil)
-                ceil(cal, Calendar.DAY_OF_MONTH);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(s);
-        }
+        int pos = 0;
+        cal.set(Calendar.YEAR,
+                parseDigit(s, pos++) * 1000 +
+                        parseDigit(s, pos++) * 100 +
+                        parseDigit(s, pos++) * 10 +
+                        parseDigit(s, pos++));
+        if (length == 10)
+            pos++;
+        cal.set(Calendar.MONTH,
+                parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
+        if (length == 10)
+            pos++;
+        cal.set(Calendar.DAY_OF_MONTH,
+                parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+        if (ceil)
+            ceil(cal, Calendar.DAY_OF_MONTH);
         return cal.getTime();
     }
 
@@ -262,7 +358,18 @@ public class Format extends java.text.Format {
 
     public static Date parseTM(TimeZone tz, String s, boolean ceil,
                                DatePrecision precision) {
-        return parseTM(cal(tz), s, ceil, precision);
+        return parseTM(cal(tz), truncateTimeZone(s), ceil, precision);
+    }
+
+    private static String truncateTimeZone(String s) {
+        int length = s.length();
+        if (length > 4) {
+            char sign = s.charAt(length - 5);
+            if (sign == '+' || sign == '-') {
+                return s.substring(0, length - 5);
+            }
+        }
+        return s;
     }
 
     private static Date parseTM(Calendar cal, String s, boolean ceil,
@@ -272,43 +379,52 @@ public class Format extends java.text.Format {
         if (pos + 2 > length)
             throw new IllegalArgumentException(s);
 
-        try {
-            cal.set(precision.lastField = Calendar.HOUR_OF_DAY,
-                    Integer.parseInt(s.substring(pos, pos + 2)));
-            pos += 2;
+        cal.set(precision.lastField = Calendar.HOUR_OF_DAY,
+                parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+        if (pos < length) {
+            if (!Character.isDigit(s.charAt(pos)))
+                pos++;
+            if (pos + 2 > length)
+                throw new IllegalArgumentException(s);
+
+            cal.set(precision.lastField = Calendar.MINUTE,
+                    parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
             if (pos < length) {
                 if (!Character.isDigit(s.charAt(pos)))
                     pos++;
                 if (pos + 2 > length)
                     throw new IllegalArgumentException(s);
-
-                cal.set(precision.lastField = Calendar.MINUTE,
-                        Integer.parseInt(s.substring(pos, pos + 2)));
-                pos += 2;
-                if (pos < length) {
-                    if (!Character.isDigit(s.charAt(pos)))
-                        pos++;
-                    if (pos + 2 > length)
+                cal.set(precision.lastField = Calendar.SECOND,
+                        parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+                int n = length - pos;
+                if (n > 0) {
+                    if (s.charAt(pos++) != '.')
                         throw new IllegalArgumentException(s);
-                    cal.set(precision.lastField = Calendar.SECOND,
-                            Integer.parseInt(s.substring(pos, pos + 2)));
-                    pos += 2;
-                    if (pos < length) {
-                        float f = Float.parseFloat(s.substring(pos));
-                        if (f >= 1 || f < 0)
-                            throw new IllegalArgumentException(s);
-                        cal.set(precision.lastField = Calendar.MILLISECOND,
-                                (int) (f * 1000));
-                        return cal.getTime();
+
+                    int d, millis = 0;
+                    for (int i = 1; i < n; ++i) {
+                        d = parseDigit(s, pos++);
+                        if (i < 4)
+                            millis += d;
+                        else if (i == 4 & d > 4) // round up
+                            millis++;
+                        if (i < 3) millis *= 10;
                     }
+                    for (int i = n; i < 3; ++i) millis *= 10;
+                    cal.set(precision.lastField = Calendar.MILLISECOND, millis);
+                    return cal.getTime();
                 }
             }
-            if (ceil)
-                ceil(cal, precision.lastField);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(s);
         }
+        if (ceil)
+            ceil(cal, precision.lastField);
         return cal.getTime();
+    }
+
+    private static int parseDigit(String s, int index) {
+        int d = s.charAt(index) - '0';
+        if (d < 0 || d > 9) throw new IllegalArgumentException(s);
+        return d;
     }
 
     public static Date parseDT(TimeZone tz, String s, DatePrecision precision) {
@@ -317,18 +433,18 @@ public class Format extends java.text.Format {
 
     public static TimeZone timeZone(String s) {
         TimeZone tz;
-        if (s.length() != 5 || null == (tz = safeTimeZone(s)))
+        if (s.length() != 5 || (tz = safeTimeZone(s)) == null)
             throw new IllegalArgumentException("Illegal Timezone Offset: " + s);
         return tz;
     }
 
     private static TimeZone safeTimeZone(String s) {
         String tzid = tzid(s);
-        if (null == tzid)
+        if (tzid == null)
             return null;
 
         TimeZone tz = cachedTimeZone;
-        if (null == tz || !tz.getID().equals(tzid))
+        if (tz == null || !tz.getID().equals(tzid))
             cachedTimeZone = tz = TimeZone.getTimeZone(tzid);
 
         return tz;
@@ -340,7 +456,7 @@ public class Format extends java.text.Format {
             char[] tzid = {'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0};
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_MINUS)
+            if ((tzid[3] == '+' || tzid[3] == '-')
                     && Character.isDigit(tzid[4])
                     && Character.isDigit(tzid[5])
                     && Character.isDigit(tzid[7])
@@ -355,45 +471,238 @@ public class Format extends java.text.Format {
                                DatePrecision precision) {
         int length = s.length();
         TimeZone tz1 = safeTimeZone(s);
-        if (precision.includeTimezone = null != tz1) {
+        if (precision.includeTimezone = tz1 != null) {
             length -= 5;
             tz = tz1;
         }
         Calendar cal = cal(tz);
-        try {
-            int pos = 0;
-            if (pos + 4 > length)
+        int pos = 0;
+        if (pos + 4 > length)
+            throw new IllegalArgumentException(s);
+        cal.set(precision.lastField = Calendar.YEAR,
+                parseDigit(s, pos++) * 1000 +
+                        parseDigit(s, pos++) * 100 +
+                        parseDigit(s, pos++) * 10 +
+                        parseDigit(s, pos++));
+        if (pos < length) {
+            if (!Character.isDigit(s.charAt(pos)))
+                pos++;
+            if (pos + 2 > length)
                 throw new IllegalArgumentException(s);
-            cal.set(precision.lastField = Calendar.YEAR,
-                    Integer.parseInt(s.substring(pos, pos + 4)));
-            pos += 4;
+            cal.set(precision.lastField = Calendar.MONTH,
+                    parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
             if (pos < length) {
                 if (!Character.isDigit(s.charAt(pos)))
                     pos++;
                 if (pos + 2 > length)
                     throw new IllegalArgumentException(s);
-                cal.set(precision.lastField = Calendar.MONTH,
-                        Integer.parseInt(s.substring(pos, pos + 2)) - 1);
-                pos += 2;
-                if (pos < length) {
-                    if (!Character.isDigit(s.charAt(pos)))
-                        pos++;
-                    if (pos + 2 > length)
-                        throw new IllegalArgumentException(s);
-                    cal.set(precision.lastField = Calendar.DAY_OF_MONTH,
-                            Integer.parseInt(s.substring(pos, pos + 2)));
-                    pos += 2;
-                    if (pos < length)
-                        return parseTM(cal, s.substring(pos, length), ceil,
-                                precision);
-                }
+                cal.set(precision.lastField = Calendar.DAY_OF_MONTH,
+                        parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+                if (pos < length)
+                    return parseTM(cal, s.substring(pos, length), ceil,
+                            precision);
             }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(s);
         }
         if (ceil)
             ceil(cal, precision.lastField);
         return cal.getTime();
+    }
+
+    public static LocalDate parseDA(String value) {
+        return LocalDate.from(DA_PARSER.parse(value.trim()));
+    }
+
+    public static String formatDA(Temporal value) {
+        return DA_FORMATTER.format(value);
+    }
+
+    public static LocalTime parseTM(String value) {
+        return LocalTime.from(TM_PARSER.parse(value.trim()));
+    }
+
+    public static LocalTime parseTMMax(String value) {
+        return parseTM(value).plusNanos(nanosToAdd(value));
+    }
+
+    public static String formatTM(Temporal value) {
+        return TM_FORMATTER.format(value);
+    }
+
+    public static Temporal parseDT(String value) {
+        TemporalAccessor temporal = DT_PARSER.parse(value.trim());
+        LocalDate date =
+                temporal.isSupported(DAY_OF_MONTH)
+                        ? LocalDate.from(temporal)
+                        : LocalDate.of(temporal.get(YEAR), getMonth(temporal), 1);
+        LocalTime time = temporal.isSupported(HOUR_OF_DAY) ? LocalTime.from(temporal) : LocalTime.MIN;
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        return temporal.isSupported(OFFSET_SECONDS)
+                ? ZonedDateTime.of(dateTime, ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS)))
+                : dateTime;
+    }
+
+    public static LocalDateTime dateTime(LocalDate date, LocalTime time) {
+        if (date == null) {
+            return null;
+        }
+        if (time == null) {
+            return date.atStartOfDay();
+        }
+        return LocalDateTime.of(date, time);
+    }
+
+    private static int getMonth(TemporalAccessor temporal) {
+        return temporal.isSupported(MONTH_OF_YEAR) ? temporal.get(MONTH_OF_YEAR) : 1;
+    }
+
+    public static Temporal parseDTMax(String value) {
+        int length = lengthWithoutZone(value);
+        return length > 8
+                ? parseDT(value).plus(nanosToAdd(length - 8), ChronoUnit.NANOS)
+                : parseDT(value).plus(1, yearsMonthsDays(length)).minus(1, ChronoUnit.NANOS);
+    }
+
+    public static String formatDT(Temporal value) {
+        return DT_FORMATTER.format(value);
+    }
+
+    public static String truncateTM(String value, int maxLength) {
+        if (maxLength < 2) throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+
+        return truncate(value, value.length(), maxLength, 8);
+    }
+
+    public static String truncateDT(String value, int maxLength) {
+        if (maxLength < 4) throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+
+        int index = indexOfZone(value);
+        return index < 0
+                ? truncate(value, value.length(), maxLength, 16)
+                : truncate(value, index, maxLength, 16) + value.substring(index);
+    }
+
+    private static long nanosToAdd(String tm) {
+        int length = tm.length();
+        int index = tm.lastIndexOf(':');
+        if (index > 0) {
+            length--;
+            if (index > 4) length--;
+        }
+        return nanosToAdd(length);
+    }
+
+    private static long nanosToAdd(int length) {
+        return switch (length) {
+            case 2 -> 3599999999999L;
+            case 4 -> 59999999999L;
+            case 6, 7 -> 999999999L;
+            case 8 -> 99999999L;
+            case 9 -> 9999999L;
+            case 10 -> 999999L;
+            case 11 -> 99999L;
+            case 12 -> 9999L;
+            case 13 -> 999L;
+            default -> throw new IllegalArgumentException("length: " + length);
+        };
+    }
+
+    private static ChronoUnit yearsMonthsDays(int length) {
+        return switch (length) {
+            case 4 -> ChronoUnit.YEARS;
+            case 6 -> ChronoUnit.MONTHS;
+            case 8 -> ChronoUnit.DAYS;
+            default -> throw new IllegalArgumentException("length: " + length);
+        };
+    }
+
+    private static int lengthWithoutZone(String value) {
+        int index = indexOfZone(value);
+        return index < 0 ? value.length() : index;
+    }
+
+    private static int indexOfZone(String value) {
+        int index = value.length() - 5;
+        return index >= 4 && isSign(value.charAt(index)) ? index : -1;
+    }
+
+    private static boolean isSign(char ch) {
+        return ch == '+' || ch == '-';
+    }
+
+    private static String truncate(String value, int length, int maxLength, int fractionPos) {
+        return value.substring(0, adjustMaxLength(Math.min(length, maxLength), fractionPos));
+    }
+
+    private static int adjustMaxLength(int maxLength, int fractionPos) {
+        return maxLength < fractionPos ? maxLength & ~1 : maxLength;
+    }
+
+    /**
+     * Convert date or time object to display date in String with FormatStyle.MEDIUM
+     *
+     * @param date the date or time object
+     * @return the time to display with FormatStyle.MEDIUM
+     */
+    public static String formatDateTime(TemporalAccessor date) {
+        return formatDateTime(date, Locale.getDefault());
+    }
+
+    public static String formatDateTime(TemporalAccessor date, Locale locale) {
+        if (date instanceof LocalDate) {
+            return defaultDateFormatter.withLocale(locale).format(date);
+        } else if (date instanceof LocalTime) {
+            return defaultTimeFormatter.withLocale(locale).format(date);
+        } else if (date instanceof LocalDateTime || date instanceof ZonedDateTime) {
+            return defaultDateTimeFormatter.withLocale(locale).format(date);
+        } else if (date instanceof Instant) {
+            return defaultDateTimeFormatter
+                    .withLocale(locale)
+                    .format(((Instant) date).atZone(ZoneId.systemDefault()));
+        }
+        return "";
+    }
+
+    public static LocalDate toLocalDate(Date date) {
+        if (date != null) {
+            LocalDateTime datetime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            return datetime.toLocalDate();
+        }
+        return null;
+    }
+
+    public static LocalTime toLocalTime(Date date) {
+        if (date != null) {
+            LocalDateTime datetime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            return datetime.toLocalTime();
+        }
+        return null;
+    }
+
+    public static LocalDateTime toLocalDateTime(Date date) {
+        if (date != null) {
+            return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        }
+        return null;
+    }
+
+    public static Date dateTime(Date date, Date time) {
+        if (time == null) {
+            return date;
+        } else if (date == null) {
+            return time;
+        }
+        Calendar calendarA = Calendar.getInstance();
+        calendarA.setTime(date);
+
+        Calendar calendarB = Calendar.getInstance();
+        calendarB.setTime(time);
+
+        calendarA.set(Calendar.HOUR_OF_DAY, calendarB.get(Calendar.HOUR_OF_DAY));
+        calendarA.set(Calendar.MINUTE, calendarB.get(Calendar.MINUTE));
+        calendarA.set(Calendar.SECOND, calendarB.get(Calendar.SECOND));
+        calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
+
+        return calendarA.getTime();
     }
 
     private List<String> tokenize(String s) {
@@ -410,7 +719,7 @@ public class Format extends java.text.Format {
             if (delim == '{') {
                 if (level++ == 0) {
                     if (prevDelim == '}')
-                        result.add(Normal.EMPTY);
+                        result.add("");
                 } else {
                     sb.append(delim);
                 }
@@ -459,10 +768,22 @@ public class Format extends java.text.Format {
             }
             if (typeStart != 0) {
                 int typeEnd = tagStr.indexOf(Symbol.C_COMMA, typeStart);
+                if (typeEnd < 0) typeEnd = tagStr.length();
                 try {
-                    types[i] = Type.valueOf(tagStr.substring(typeStart,
-                            typeEnd < 0 ? tagStr.length() : typeEnd));
-                } catch (IllegalArgumentException e) {
+                    if (tagStr.startsWith("date", typeStart)) {
+                        types[i] = Type.date;
+                        if (typeStart + 4 < typeEnd) {
+                            dateTimeOffsets[i] = Period.parse(tagStr.substring(typeStart + 4, typeEnd));
+                        }
+                    } else if (tagStr.startsWith("time", typeStart)) {
+                        types[i] = Type.time;
+                        if (typeStart + 4 < typeEnd) {
+                            dateTimeOffsets[i] = Duration.parse(tagStr.substring(typeStart + 4, typeEnd));
+                        }
+                    } else {
+                        types[i] = Type.valueOf(tagStr.substring(typeStart, typeEnd));
+                    }
+                } catch (IllegalArgumentException | DateTimeParseException e) {
                     throw new IllegalArgumentException(pattern);
                 }
                 switch (types[i]) {
@@ -470,8 +791,20 @@ public class Format extends java.text.Format {
                     case date:
                     case time:
                     case choice:
-                        formatBuilder.append(
-                                typeStart > 0 ? tagStr.substring(typeStart - 1) : tagStr);
+                        formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
+                        break;
+                    case offset:
+                        try {
+                            offsets[i] = Integer.parseInt(tagStr.substring(typeEnd + 1));
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException(pattern);
+                        }
+                    case slice:
+                        try {
+                            slices[i] = new Slice(tagStr.substring(typeEnd + 1));
+                        } catch (RuntimeException e) {
+                            throw new IllegalArgumentException(pattern);
+                        }
                 }
             } else {
                 types[i] = Type.none;
@@ -499,24 +832,26 @@ public class Format extends java.text.Format {
     }
 
     @Override
-    public StringBuffer format(Object object, StringBuffer result, FieldPosition pos) {
-        return format.format(toArgs((Attributes) object), result, pos);
+    public StringBuffer format(Object obj, StringBuffer result, FieldPosition pos) {
+        return format.format(toArgs((Attributes) obj), result, pos);
     }
 
     private Object[] toArgs(Attributes attrs) {
         Object[] args = new Object[tagPaths.length];
+        outer:
         for (int i = 0; i < args.length; i++) {
+            Attributes item = attrs;
+            int tag = 0;
             int[] tagPath = tagPaths[i];
-            if (null == tagPath) { // now
-                args[i] = types[i].toArg(attrs, 0, index[i]);
-            } else {
+            if (tagPath != null) { // !now
                 int last = tagPath.length - 1;
-                Attributes item = attrs;
-                for (int j = 0; j < last && null != item; j++) {
+                tag = tagPath[last];
+                for (int j = 0; j < last; j++) {
                     item = item.getNestedDataset(tagPath[j]);
+                    if (item == null) continue outer;
                 }
-                args[i] = null != item ? types[i].toArg(item, tagPath[last], index[i]) : null;
             }
+            args[i] = types[i].toArg(item, tag, index[i], offsets[i], dateTimeOffsets[i], slices[i]);
         }
         return args;
     }
@@ -534,74 +869,114 @@ public class Format extends java.text.Format {
     private enum Type {
         none {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
-                return attrs.getString(tag, index);
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
+                return attrs.getString(tag, index, "");
+            }
+        },
+        upper {
+            @Override
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
+                return attrs.getString(tag, index, "").toUpperCase();
+            }
+        },
+        slice {
+            @Override
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> slice) {
+                return slice.apply(attrs.getString(tag, index));
             }
         },
         number {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
+            }
+        },
+        offset {
+            @Override
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
+                return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
         },
         date {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
-                return tag != 0 ? attrs.getDate(tag, index) : new Date();
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
+                Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
+                if (!(dateTimeOffset instanceof Period dateOffset)) return date;
+                Calendar cal = Calendar.getInstance(attrs.getTimeZone());
+                cal.setTime(date);
+                cal.add(Calendar.YEAR, dateOffset.getYears());
+                cal.add(Calendar.MONTH, dateOffset.getMonths());
+                cal.add(Calendar.DAY_OF_MONTH, dateOffset.getDays());
+                return cal.getTime();
             }
         },
         time {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
-                return tag != 0 ? attrs.getDate(tag, index) : new Date();
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
+                Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
+                if (!(dateTimeOffset instanceof Duration timeOffset)) return date;
+                Calendar cal = Calendar.getInstance(attrs.getTimeZone());
+                cal.setTime(date);
+                cal.add(Calendar.SECOND, (int) timeOffset.getSeconds());
+                return cal.getTime();
             }
         },
         choice {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
         hash {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
-                return null != s ? Tag.toHexString(s.hashCode()) : null;
+                return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
         },
         md5 {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
-                return null != s ? getMD5String(s) : null;
+                return s != null ? getMD5String(s) : null;
             }
         },
         urlencoded {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
-                try {
-                    return null != s ? URLEncoder.encode(s, Charset.DEFAULT_UTF_8) : null;
-                } catch (UnsupportedEncodingException e) {
-                    throw new AssertionError(e);
-                }
+                return s != null ? URLEncoder.encode(s, StandardCharsets.UTF_8) : null;
             }
         },
         rnd {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
         },
         uuid {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 return UUID.randomUUID();
             }
         },
         uid {
             @Override
-            Object toArg(Attributes attrs, int tag, int index) {
+            Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                         UnaryOperator<String> splice) {
                 return UID.createUID();
             }
         };
@@ -634,15 +1009,48 @@ public class Format extends java.text.Format {
             return l;
         }
 
-        abstract Object toArg(Attributes attrs, int tag, int index);
+        abstract Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
+                              UnaryOperator<String> splice);
 
         String getMD5String(String s) {
             try {
-                MessageDigest digest = MessageDigest.getInstance(Algorithm.MD5.getValue());
-                digest.update(null == s ? new byte[0] : s.getBytes(Charset.UTF_8));
+                MessageDigest digest = MessageDigest.getInstance("MD5");
+                digest.update(s == null ? new byte[0] : s.getBytes(StandardCharsets.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {
                 return s;
+            }
+        }
+    }
+
+    private class Slice implements UnaryOperator<String> {
+        final int beginIndex;
+        final int endIndex;
+
+        public Slice(String s) {
+            String[] ss = Builder.split(s, ',');
+            if (ss.length == 1) {
+                beginIndex = Integer.parseInt(ss[0]);
+                endIndex = 0;
+            } else if (ss.length == 2) {
+                endIndex = Integer.parseInt(ss[1]);
+                beginIndex = endIndex != 0 ? Integer.parseInt(ss[0]) : 0;
+            } else {
+                throw new IllegalArgumentException(s);
+            }
+        }
+
+        @Override
+        public String apply(String s) {
+            try {
+                int l = s.length();
+                return endIndex == 0
+                        ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)
+                        : s.substring(
+                        beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
+                        endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
+            } catch (RuntimeException e) {
+                return "";
             }
         }
     }

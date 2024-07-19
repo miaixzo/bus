@@ -28,11 +28,11 @@
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.logger.Logger;
 
 import java.util.Arrays;
 import java.util.StringTokenizer;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -49,12 +49,12 @@ public class PersonName {
     }
 
     public PersonName(String s, boolean lenient) {
-        if (null != s)
+        if (s != null)
             parse(s, lenient);
     }
 
     private static String trim(String s) {
-        return null == s || (s = s.trim()).isEmpty() ? null : s;
+        return s == null || (s = s.trim()).isEmpty() ? null : s;
     }
 
     private void parse(String s, boolean lenient) {
@@ -67,24 +67,47 @@ public class PersonName {
                 case Symbol.C_EQUAL:
                     if (++gindex > 2)
                         if (lenient) {
-                            Logger.info("illegal PN: {} - truncate illegal component group(s)", s);
+                            Logger.info(
+                                    "illegal PN: {} - truncate illegal component group(s)", s);
                             return;
                         } else
                             throw new IllegalArgumentException(s);
                     cindex = 0;
                     break;
-                case Symbol.C_CARET:
-                    if (++cindex > 4)
-                        if (lenient) {
-                            Logger.info("illegal PN: {} - ignore illegal component(s)", s);
-                            break;
-                        } else
-                            throw new IllegalArgumentException(s);
+                case '^':
+                    ++cindex;
                     break;
                 default:
                     if (cindex <= 4)
                         set(gindex, cindex, tk);
+                    else if (lenient) {
+                        if ((tk = trim(tk)) != null) {
+                            Logger.info("illegal PN: {} - subsumes {}th component in suffix", s, cindex + 1);
+                            set(gindex, 4, Builder.maskNull(get(gindex, 4), "") + ' ' + tk);
+                        }
+                    } else
+                        throw new IllegalArgumentException(s);
             }
+        }
+    }
+
+    /**
+     * Set all components of a component group from encoded component group value.
+     *
+     * @param g component group
+     * @param s encoded component group value
+     */
+    public void set(Group g, String s) {
+        int gindex = g.ordinal();
+        if (s.indexOf('=') >= 0)
+            throw new IllegalArgumentException(s);
+
+        String[] ss = Builder.split(s, '^');
+        if (ss.length > 5)
+            throw new IllegalArgumentException(s);
+
+        for (int cindex = 0; cindex < 5; cindex++) {
+            fields[gindex * 5 + cindex] = cindex < ss.length ? trim(ss[cindex]) : null;
         }
     }
 
@@ -95,7 +118,7 @@ public class PersonName {
             Component lastCompOfGroup = Component.FamilyName;
             for (Component c : Component.values()) {
                 String s = get(g, c);
-                if (null != s) {
+                if (s != null) {
                     totLen += s.length();
                     lastGroup = g;
                     lastCompOfGroup = c;
@@ -110,7 +133,7 @@ public class PersonName {
             Component lastCompOfGroup = Component.FamilyName;
             for (Component c : Component.values()) {
                 String s = get(g, c);
-                if (null != s) {
+                if (s != null) {
                     int d = c.ordinal() - lastCompOfGroup.ordinal();
                     while (d-- > 0)
                         ch[wpos++] = Symbol.C_CARET;
@@ -132,7 +155,7 @@ public class PersonName {
         Component lastCompOfGroup = Component.FamilyName;
         for (Component c : Component.values()) {
             String s = get(g, c);
-            if (null != s) {
+            if (s != null) {
                 totLen += s.length();
                 lastCompOfGroup = c;
             }
@@ -142,7 +165,7 @@ public class PersonName {
         int wpos = 0;
         for (Component c : Component.values()) {
             String s = get(g, c);
-            if (null != s) {
+            if (s != null) {
                 int d = s.length();
                 s.getChars(0, d, ch, wpos);
                 wpos += d;
@@ -150,7 +173,7 @@ public class PersonName {
             if (trim && c == lastCompOfGroup)
                 break;
             if (wpos < ch.length)
-                ch[wpos++] = Symbol.C_CARET;
+                ch[wpos++] = '^';
         }
         return new String(ch);
     }
@@ -160,7 +183,7 @@ public class PersonName {
     }
 
     public String get(Group g, Component c) {
-        return fields[g.ordinal() * 5 + c.ordinal()];
+        return get(g.ordinal(), c.ordinal());
     }
 
     public void set(Component c, String s) {
@@ -169,6 +192,10 @@ public class PersonName {
 
     public void set(Group g, Component c, String s) {
         set(g.ordinal(), c.ordinal(), s);
+    }
+
+    private String get(int gindex, int cindex) {
+        return fields[gindex * 5 + cindex];
     }
 
     private void set(int gindex, int cindex, String s) {
@@ -190,7 +217,7 @@ public class PersonName {
     }
 
     public boolean contains(Group g, Component c) {
-        return null != get(g, c);
+        return get(g, c) != null;
     }
 
     public boolean contains(Component c) {
@@ -203,14 +230,13 @@ public class PersonName {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
 
-        if (!(object instanceof PersonName))
+        if (!(obj instanceof PersonName other))
             return false;
 
-        PersonName other = (PersonName) object;
         return Arrays.equals(fields, other.fields);
     }
 

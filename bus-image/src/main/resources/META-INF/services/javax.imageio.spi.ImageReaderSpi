@@ -23,8 +23,8 @@
 # THE SOFTWARE.                                                                 #
 #                                                                               #
 #################################################################################
-org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi
+org.miaixz.bus.image.nimble.ImageReaderSpi
+org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi
 org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi
+org.miaixz.bus.image.nimble.opencv.NativeJPEGImageReaderSpi
 org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi
-org.miaixz.bus.image.nimble.reader.NativeDCMImageReaderSpi
-org.miaixz.bus.image.nimble.reader.NativeRLEImageReaderSpi

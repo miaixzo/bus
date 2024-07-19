@@ -153,7 +153,7 @@ public class XmlKit {
      */
     public static Document parseXml(final String xmlStr) {
         if (StringKit.isBlank(xmlStr)) {
-            throw new IllegalArgumentException("XML content string is empty !");
+            throw new IllegalArgumentException("XML content string is blank !");
         }
         return readXml(StringKit.getReader(cleanInvalid(xmlStr)));
     }
@@ -929,7 +929,7 @@ public class XmlKit {
      * @return 增加的子节点，即Text节点
      */
     private static Node appendText(final Document doc, final Node node, final CharSequence text) {
-        return node.appendChild(doc.createTextNode(StringKit.toString(text)));
+        return node.appendChild(doc.createTextNode(StringKit.toStringOrEmpty(text)));
     }
 
 }

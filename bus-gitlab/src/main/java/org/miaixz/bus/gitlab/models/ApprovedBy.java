@@ -37,7 +37,7 @@ import java.io.Serializable;
  * which can contain a User or Group instance.
  */
 public class ApprovedBy implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private User user;
     private Group group;

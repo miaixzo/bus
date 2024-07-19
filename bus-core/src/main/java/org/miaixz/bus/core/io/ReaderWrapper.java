@@ -42,6 +42,9 @@ import java.nio.CharBuffer;
  */
 public class ReaderWrapper extends Reader implements Wrapper<Reader> {
 
+    /**
+     * 字节流读取 {@link Reader}
+     */
     protected final Reader raw;
 
     /**

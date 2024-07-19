@@ -43,7 +43,7 @@ import java.util.List;
 @Setter
 public class DatabaseSchema implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
     /**
      * 数据库名称
      */

@@ -27,19 +27,23 @@
  */
 package org.miaixz.bus.image;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.image.galaxy.data.ElementDictionary;
-import org.miaixz.bus.image.metric.ApplicationEntity;
+import lombok.Builder;
+import lombok.*;
+import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.SSLManagerFactory;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.miaixz.bus.image.metric.internal.pdu.IdentityRQ;
+import org.miaixz.bus.image.metric.QueryOption;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.net.Priority;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.pdu.IdentityAC;
+import org.miaixz.bus.image.metric.pdu.IdentityRQ;
 
 import java.io.IOException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * 请求参数信息
@@ -49,31 +53,34 @@ import java.util.EnumSet;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Args {
 
-    public static String[] IVR_LE_FIRST = {
-            UID.ImplicitVRLittleEndian,
-            UID.ExplicitVRLittleEndian,
-            UID.ExplicitVRBigEndianRetired
+    public static final String[] IVR_LE_FIRST = {
+            UID.ImplicitVRLittleEndian.uid,
+            UID.ExplicitVRLittleEndian.uid,
+            UID.ExplicitVRBigEndian.uid
     };
-    public static String[] EVR_LE_FIRST = {
-            UID.ExplicitVRLittleEndian,
-            UID.ExplicitVRBigEndianRetired,
-            UID.ImplicitVRLittleEndian
+    public static final String[] EVR_LE_FIRST = {
+            UID.ExplicitVRLittleEndian.uid,
+            UID.ExplicitVRBigEndian.uid,
+            UID.ImplicitVRLittleEndian.uid
     };
-    public static String[] EVR_BE_FIRST = {
-            UID.ExplicitVRBigEndianRetired,
-            UID.ExplicitVRLittleEndian,
-            UID.ImplicitVRLittleEndian
+    public static final String[] EVR_BE_FIRST = {
+            UID.ExplicitVRBigEndian.uid,
+            UID.ExplicitVRLittleEndian.uid,
+            UID.ImplicitVRLittleEndian.uid
     };
-    public static String[] IVR_LE_ONLY = {
-            UID.ImplicitVRLittleEndian
+    public static final String[] IVR_LE_ONLY = {
+            UID.ImplicitVRLittleEndian.uid
     };
+
     /**
      * 绑定调用AET
      */
     private boolean bindCallingAet;
-
     /**
      * 接受的呼叫AET
      */
@@ -82,82 +89,81 @@ public class Args {
      * 信息模型
      */
     private Object informationModel;
-    private EnumSet<Option.Type> types = EnumSet.noneOf(Option.Type.class);
-    private String[] tsuidOrder = IVR_LE_FIRST;
+
+    @Builder.Default
+    private EnumSet<QueryOption> queryOptions = EnumSet.noneOf(QueryOption.class);
+    @Builder.Default
+    private String[] tsuidOrder = Arrays.copyOf(IVR_LE_FIRST, IVR_LE_FIRST.length);
+
+    /**
+     * 配置proxy <[user:password@]host:port>，指定HTTP代理隧道连接DICOM的主机和端口。
+     */
     private String proxy;
-    private IdentityRQ identity;
-    private int priority = 0;
+
+    private IdentityRQ identityRQ;
+    private IdentityAC identityAC;
+
+    /**
+     * 优先级
+     */
+    @Builder.Default
+    private int priority = Priority.NORMAL;
+
     private Option option;
 
-    private boolean extendNegociation;
+    private List<Editors> editors;
+
     /**
-     * 扩展Sop类URL
+     * 是否启用通过UID或名称指定传输
      */
-    private URL extendSopClassesURL;
-
-    private URL extendStorageSOPClass;
+    private boolean negociation;
     /**
-     * 传输功能文件
+     * SOP类和传输语法可以通过其UID或名称指定
+     * sop-classes.properties
      */
-    private URL transferCapabilityFile;
-
-    private int tag;
-    private String[] values;
-    private int[] parentSeqTags;
+    private URL sopClasses;
     /**
-     * 存储模式
+     * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类
+     * sop-classes-uid.properties
      */
-    private String storagePattern;
+    private URL sopClassesUID;
+    /**
+     * 扩展Sop类和传输语法的存储传输能力
+     * sop-classes-tcs.properties
+     */
+    private URL sopClassesTCS;
 
-    private Editors editors;
-
-    public Args() {
-
-    }
 
     public Args(boolean bindCallingAet) {
         this(null, bindCallingAet, null, null);
     }
 
-    public Args(int tag, String... values) {
-        this(null, tag, values);
-    }
-
     /**
      * @param editors             修改DICOM属性的编辑器
-     * @param extendNegociation   扩展SOP类
-     * @param extendSopClassesURL SOP类扩展的配置文件
+     * @param negociation   扩展SOP类
+     * @param sopClasses SOP类扩展的配置文件
      */
-    public Args(Editors editors,
-                boolean extendNegociation,
-                URL extendSopClassesURL) {
+    public Args(List<Editors> editors,
+                boolean negociation,
+                URL sopClasses) {
         this.editors = editors;
-        this.extendNegociation = extendNegociation;
-        this.extendSopClassesURL = extendSopClassesURL;
-    }
-
-    public Args(int[] parentSeqTags, int tag, String... values) {
-        this.tag = tag;
-        this.values = values;
-        this.parentSeqTags = parentSeqTags;
+        this.negociation = negociation;
+        this.sopClasses = sopClasses;
     }
 
     /**
      * @param option                  可选的高级参数(代理、身份验证、连接和TLS)
      * @param bindCallingAet          当为true时，它将设置侦听器DICOM节点的AET。只有匹配称为AETitle的请求将被接受。
      *                                如果为假，所有被调用的AETs将被接受
-     * @param storagePattern          存储模式
-     * @param transferCapabilityFile  获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
+     * @param sopClassesTCS  获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
      * @param acceptedCallingAETitles 可接受的呼叫aetitle的列表。空将接受所有aetitle
      */
     public Args(Option option,
                 boolean bindCallingAet,
-                String storagePattern,
-                URL transferCapabilityFile,
+                URL sopClassesTCS,
                 String... acceptedCallingAETitles) {
         this.bindCallingAet = bindCallingAet;
-        this.storagePattern = storagePattern;
-        this.transferCapabilityFile = transferCapabilityFile;
+        this.sopClassesTCS = sopClassesTCS;
         this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
         if (null == option && null != this.option) {
             this.option.setMaxOpsInvoked(15);
@@ -165,8 +171,13 @@ public class Args {
         }
     }
 
-    public String getTagName() {
-        return ElementDictionary.keywordOf(tag, null);
+    public void configureConnect(AAssociateRQ aAssociateRQ, Connection remote, Node calledNode) {
+        aAssociateRQ.setCalledAET(calledNode.getAet());
+        if (identityRQ != null) {
+            aAssociateRQ.setIdentityRQ(identityRQ);
+        }
+        remote.setHostname(calledNode.getHostname());
+        remote.setPort(calledNode.getPort());
     }
 
     /**
@@ -175,12 +186,11 @@ public class Args {
      * @param connection  连接信息
      * @param callingNode 节点信息
      */
-    public void configureBind(Connection connection,
-                              Node callingNode) {
-        if (null != callingNode.getHostname()) {
+    public void configureBind(Connection connection, Node callingNode) {
+        if (callingNode.getHostname() != null) {
             connection.setHostname(callingNode.getHostname());
         }
-        if (null != callingNode.getPort()) {
+        if (callingNode.getPort() != null) {
             connection.setPort(callingNode.getPort());
         }
     }
@@ -189,8 +199,11 @@ public class Args {
                               Connection remote,
                               Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
-        if (null != identity) {
-            aAssociateRQ.setIdentityRQ(identity);
+        if (null != identityRQ) {
+            aAssociateRQ.setIdentityRQ(identityRQ);
+        }
+        if (null != identityAC) {
+            aAssociateRQ.setIdentityAC(identityAC);
         }
         remote.setHostname(calledNode.getHostname());
         remote.setPort(calledNode.getPort());
@@ -203,9 +216,7 @@ public class Args {
      * @param connection        连接信息
      * @param callingNode       节点信息
      */
-    public void configureBind(ApplicationEntity applicationEntity,
-                              Connection connection,
-                              Node callingNode) {
+    public void configureBind(ApplicationEntity applicationEntity, Connection connection, Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());
         if (null != callingNode.getHostname()) {
             connection.setHostname(callingNode.getHostname());
@@ -221,7 +232,7 @@ public class Args {
      * @param conn 链接信息
      */
     public void configure(Connection conn) {
-        if (null != option) {
+        if (option != null) {
             conn.setBacklog(option.getBacklog());
             conn.setConnectTimeout(option.getConnectTimeout());
             conn.setRequestTimeout(option.getRequestTimeout());
@@ -250,18 +261,20 @@ public class Args {
      * @throws IOException 异常
      */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
-        if (null != option) {
-            conn.setTlsCipherSuites(option.getCipherSuites());
-            conn.setTlsProtocols(option.getTlsProtocols());
+        if (option != null) {
+            if (option.getCipherSuites() != null) {
+                conn.setTlsCipherSuites(option.getCipherSuites().toArray(new String[0]));
+            }
+            if (option.getTlsProtocols() != null) {
+                conn.setTlsProtocols(option.getTlsProtocols().toArray(new String[0]));
+            }
             conn.setTlsNeedClientAuth(option.isTlsNeedClientAuth());
 
             Device device = conn.getDevice();
             try {
-                device.setKeyManager(SSLManagerFactory.createKeyManager(option.getKeystoreType(),
-                        option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
-                device.setTrustManager(SSLManagerFactory.createTrustManager(option.getTruststoreType(),
-                        option.getTruststoreURL(), option.getTruststorePass()));
-                if (null != remote) {
+                device.setKeyManager(TrustAnyTrustManager.createKeyManager(option.getKeystoreType(), option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
+                device.setTrustManager(TrustAnyTrustManager.createTrustManager(option.getTruststoreType(), option.getTruststoreURL(), option.getTruststorePass()));
+                if (remote != null) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
                     remote.setTlsCipherSuites(conn.getTlsCipherSuites());
                 }
@@ -269,6 +282,10 @@ public class Args {
                 throw new IOException(e);
             }
         }
+    }
+
+    public boolean hasEditors() {
+        return editors != null && !editors.isEmpty();
     }
 
 }

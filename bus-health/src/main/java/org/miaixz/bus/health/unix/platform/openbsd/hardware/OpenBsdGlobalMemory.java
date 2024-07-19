@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import com.sun.jna.Memory;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;

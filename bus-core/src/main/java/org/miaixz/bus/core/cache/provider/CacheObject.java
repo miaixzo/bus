@@ -45,7 +45,13 @@ public class CacheObject<K, V> implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 键
+     */
     protected final K key;
+    /**
+     * 值对象
+     */
     protected final V obj;
     /**
      * 对象存活时长，0表示永久存活

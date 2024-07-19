@@ -30,6 +30,7 @@ package org.miaixz.bus.pay.metric.paypal;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
@@ -78,7 +79,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
             throw new RuntimeException("accessToken is null");
         }
         Map<String, String> headers = new HashMap<>(3);
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         headers.put("Authorization", accessToken.getTokenType().concat(" ").concat(accessToken.getAccessToken()));
         if (StringKit.isNotEmpty(payPalRequestId)) {
             headers.put("PayPal-Request-Id", payPalRequestId);
@@ -119,7 +120,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     public Message getToken() {
         Map<String, String> headers = new HashMap<>(3);
         headers.put("Accept", MediaType.APPLICATION_JSON);
-        headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         headers.put("Authorization", "Basic ".concat(Base64.encode((this.context.getAppKey().concat(":").concat(this.context.getAppSecret())).getBytes(StandardCharsets.UTF_8))));
         Map<String, String> params = new HashMap<>(1);
         params.put("grant_type", "client_credentials");

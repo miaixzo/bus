@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import java.io.Serializable;
 
 public class CommitRef implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private RefType type;
     private String name;

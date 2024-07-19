@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -48,6 +47,7 @@ import java.util.List;
 public class Xml2Dcm {
 
     private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
+    private boolean lenient = false;
     private ImageInputStream.IncludeBulkData includeBulkData = ImageInputStream.IncludeBulkData.URI;
     private boolean catBlkFiles = false;
     private String blkFilePrefix = "blk";
@@ -72,11 +72,15 @@ public class Xml2Dcm {
             throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
-        if (fname.equals(Symbol.MINUS)) {
+        if (fname.equals("-")) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);
         }
+    }
+
+    public void setLenient(boolean lenient) {
+        this.lenient = lenient;
     }
 
     public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
@@ -126,19 +130,19 @@ public class Xml2Dcm {
     public void writeTo(OutputStream out) throws IOException {
         if (nofmi)
             fmi = null;
-        else if (null == fmi
+        else if (fmi == null
                 ? withfmi
-                : null != tsuid && !tsuid.equals(
+                : tsuid != null && !tsuid.equals(
                 fmi.getString(Tag.TransferSyntaxUID, null))) {
             fmi = dataset.createFileMetaInformation(tsuid);
         }
         ImageOutputStream dos = new ImageOutputStream(
                 new BufferedOutputStream(out),
-                null != fmi
-                        ? UID.ExplicitVRLittleEndian
-                        : null != tsuid
+                fmi != null
+                        ? UID.ExplicitVRLittleEndian.uid
+                        : tsuid != null
                         ? tsuid
-                        : UID.ImplicitVRLittleEndian);
+                        : UID.ImplicitVRLittleEndian.uid);
         dos.setEncodingOptions(encOpts);
         dos.writeDataset(fmi, dataset);
         dos.finish();
@@ -146,7 +150,7 @@ public class Xml2Dcm {
     }
 
     public void delBulkDataFiles() {
-        if (null != bulkDataFiles)
+        if (bulkDataFiles != null)
             for (File f : bulkDataFiles)
                 f.delete();
     }
@@ -158,18 +162,17 @@ public class Xml2Dcm {
         dis.setBulkDataFilePrefix(blkFilePrefix);
         dis.setBulkDataFileSuffix(blkFileSuffix);
         dis.setConcatenateBulkDataFiles(catBlkFiles);
-        dataset = dis.readDataset(-1, -1);
+        dataset = dis.readDataset();
         fmi = dis.getFileMetaInformation();
         bulkDataFiles = dis.getBulkDataFiles();
     }
 
     public void mergeXML(String fname) throws Exception {
-        if (null == dataset)
-            dataset = new Attributes();
-        ContentHandlerAdapter ch = new ContentHandlerAdapter(dataset);
+        ContentHandlerAdapter ch = new ContentHandlerAdapter(dataset, lenient);
         parseXML(fname, ch);
+        dataset = ch.getDataset();
         Attributes fmi2 = ch.getFileMetaInformation();
-        if (null != fmi2)
+        if (fmi2 != null)
             fmi = fmi2;
     }
 

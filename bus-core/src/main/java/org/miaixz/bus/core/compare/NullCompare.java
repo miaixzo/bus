@@ -46,7 +46,13 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 是否{@code null}最大，排在最后
+     */
     protected final boolean nullGreater;
+    /**
+     * 实际比较器
+     */
     protected final Comparator<T> comparator;
 
     /**

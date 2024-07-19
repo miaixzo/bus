@@ -127,7 +127,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      */
     public String encode(final CharSequence path, final Charset charset, final char... customSafeChar) {
         if (null == charset || StringKit.isEmpty(path)) {
-            return StringKit.toString(path);
+            return StringKit.toStringOrNull(path);
         }
 
         final StringBuilder rewrittenPath = new StringBuilder(path.length() * 3);

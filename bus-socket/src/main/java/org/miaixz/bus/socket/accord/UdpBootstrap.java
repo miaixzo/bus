@@ -31,7 +31,6 @@ import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Worker;
-import org.miaixz.bus.socket.buffer.BufferFactory;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 
 import java.io.IOException;
@@ -51,14 +50,6 @@ public class UdpBootstrap {
      */
     private final Context context = new Context();
     /**
-     * 内存池
-     */
-    private BufferPagePool bufferPool;
-    /**
-     * 缓冲页池
-     */
-    private BufferPagePool innerBufferPool = null;
-    /**
      * 工作者
      */
     private Worker worker;
@@ -66,6 +57,14 @@ public class UdpBootstrap {
      * 内部工作者
      */
     private boolean innerWorker = false;
+    /**
+     * write 内存池
+     */
+    private BufferPagePool writeBufferPool = null;
+    /**
+     * read 内存池
+     */
+    private BufferPagePool readBufferPool = null;
 
     /**
      * 构造
@@ -118,14 +117,18 @@ public class UdpBootstrap {
      */
     public UdpChannel open(String host, int port) throws IOException {
         // 初始化内存池
-        if (bufferPool == null) {
-            this.bufferPool = context.getBufferFactory().create();
-            this.innerBufferPool = bufferPool;
+        //初始化内存池
+        if (writeBufferPool == null) {
+            this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
         }
+        if (readBufferPool == null) {
+            this.readBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
+        }
+
         // 初始化工作线程
         if (worker == null) {
             innerWorker = true;
-            worker = new Worker(bufferPool, context.getThreadNum());
+            worker = new Worker(readBufferPool.allocateBufferPage(), writeBufferPool, this.context.getThreadNum());
         }
 
 
@@ -135,7 +138,7 @@ public class UdpBootstrap {
             InetSocketAddress inetSocketAddress = host == null ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
             channel.socket().bind(inetSocketAddress);
         }
-        return new UdpChannel(channel, worker, context, bufferPool.allocateBufferPage());
+        return new UdpChannel(channel, worker, this.context, writeBufferPool.allocateBufferPage());
     }
 
     private synchronized void initWorker() {
@@ -147,9 +150,6 @@ public class UdpBootstrap {
     public void shutdown() {
         if (innerWorker) {
             worker.shutdown();
-        }
-        if (innerBufferPool != null) {
-            innerBufferPool.release();
         }
     }
 
@@ -183,23 +183,8 @@ public class UdpBootstrap {
      * @return 当前AioServer对象
      */
     public final UdpBootstrap setBufferPagePool(BufferPagePool bufferPool) {
-        this.bufferPool = bufferPool;
-        this.context.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
-        return this;
-    }
-
-    /**
-     * 设置内存池的构造工厂
-     * 通过工厂形式生成的内存池会强绑定到当前UdpBootstrap对象，
-     * 在UdpBootstrap执行shutdown时会释放内存池。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
-     *
-     * @param bufferFactory 内存池工厂
-     * @return 当前AioServer对象
-     */
-    public final UdpBootstrap setBufferFactory(BufferFactory bufferFactory) {
-        this.context.setBufferFactory(bufferFactory);
-        this.bufferPool = null;
+        this.readBufferPool = bufferPool;
+        this.writeBufferPool = bufferPool;
         return this;
     }
 

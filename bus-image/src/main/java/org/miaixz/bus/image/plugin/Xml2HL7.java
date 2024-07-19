@@ -28,7 +28,7 @@
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.metric.internal.hl7.HL7ContentHandler;
+import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -51,6 +51,30 @@ public class Xml2HL7 {
         } else {
             p.parse(new File(fname), ch);
         }
+    }
+
+    private static String fname(String[] args) {
+        if (args.length == 0) {
+            System.exit(2);
+        }
+        if (args.length > 1) {
+            System.exit(2);
+        }
+        String arg0 = args[0];
+        if (arg0.equals("-h") || arg0.equals("--help")) {
+            System.exit(0);
+        }
+        if (arg0.equals("-V") || arg0.equals("--version")) {
+            Package p = Xml2HL7.class.getPackage();
+            String s = p.getName();
+            System.out.println(s.substring(s.lastIndexOf('.') + 1) + ": " +
+                    p.getImplementationVersion());
+            System.exit(0);
+        }
+        if (arg0.startsWith("-") && arg0.length() > 1) {
+            System.exit(2);
+        }
+        return arg0;
     }
 
 }

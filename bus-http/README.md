@@ -942,9 +942,9 @@ executeAsync(new StringCallback() {
 
 url("http://www.baidu.com/s").
 
-addParams("wd","微信机器人").
+addParam("wd","微信机器人").
 
-addParams("tn","baidu").
+addParam("tn","baidu").
 
 build().
 

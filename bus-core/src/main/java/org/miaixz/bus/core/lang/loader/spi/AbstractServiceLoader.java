@@ -54,7 +54,7 @@ public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
      */
     protected final ClassLoader classLoader;
     /**
-     * 字符集
+     * 编码
      */
     protected final Charset charset;
 
@@ -62,7 +62,7 @@ public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
      * 构造
      *
      * @param pathPrefix   路径前缀
-     * @param serviceClass 服务名称
+     * @param serviceClass 服务类
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @param charset      编码，默认UTF-8
      */

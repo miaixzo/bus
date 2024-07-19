@@ -33,7 +33,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-mapper</artifactId>
-    <version>8.0.5</version>
+    <version>8.0.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -71,10 +71,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <mybatis.version>3.5.16</mybatis.version>
         <mybatis.spring.version>3.0.3</mybatis.spring.version>
-        <persistence.version>3.2.0</persistence.version>
+        <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>
 
     <dependencies>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
-            <version>${persistence.version}</version>
+            <version>${jakarta.persistence.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

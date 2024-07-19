@@ -781,11 +781,13 @@ public class Calendar extends Calculate {
      * @return 解析后的 {@link java.util.Calendar}，解析失败返回{@code null}
      */
     public static java.util.Calendar parse(final CharSequence text, final boolean lenient, final PositionDateParser parser) {
+        Assert.notBlank(text, "Date text must be not blank!");
+        Assert.notNull(parser, "Parser must be not null!");
         final java.util.Calendar calendar = java.util.Calendar.getInstance(parser.getTimeZone(), parser.getLocale());
         calendar.clear();
         calendar.setLenient(lenient);
 
-        return parser.parse(StringKit.toString(text), new ParsePosition(0), calendar) ? calendar : null;
+        return parser.parse(text.toString(), new ParsePosition(0), calendar) ? calendar : null;
     }
 
     /**

@@ -43,8 +43,13 @@ import java.io.IOException;
  *
  * @author Kimi Liu
  * @since Java 17+
+ *
  */
 public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
+
+    public static void loader() {
+        new OpenCVNativeLoader().init();
+    }
 
     public void init() {
         try {

@@ -27,12 +27,11 @@
  */
 package org.miaixz.bus.core.center.date.culture.en;
 
-import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.xyz.EnumKit;
 
 import java.time.LocalDate;
 import java.time.MonthDay;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -174,7 +173,7 @@ public enum Constellation {
      * @return 星座名
      */
     public static String getName(final Date date) {
-        return getName(DateKit.calendar(date));
+        return getName(Calendar.calendar(date));
     }
 
     /**
@@ -183,11 +182,11 @@ public enum Constellation {
      * @param calendar 出生日期
      * @return 星座名
      */
-    public static String getName(final Calendar calendar) {
+    public static String getName(final java.util.Calendar calendar) {
         if (null == calendar) {
             return null;
         }
-        return getName(calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        return getName(calendar.get(java.util.Calendar.MONTH), calendar.get(java.util.Calendar.DAY_OF_MONTH));
     }
 
     /**
@@ -226,7 +225,7 @@ public enum Constellation {
      * @return 对应的名称
      */
     public String getName(final int code) {
-        return this.name;
+        return ENUMS[code].name;
     }
 
     /**

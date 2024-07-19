@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.socket.accord.UdpChannel;
 import org.miaixz.bus.socket.accord.UdpSession;
+import org.miaixz.bus.socket.buffer.BufferPage;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.buffer.VirtualBuffer;
 
@@ -61,9 +62,13 @@ public final class Worker implements Runnable {
      */
     private final Selector selector;
     /**
-     * 内存池
+     * write 内存池
      */
-    private final BufferPagePool bufferPool;
+    private BufferPagePool writeBufferPool = null;
+    /**
+     * read 内存池
+     */
+    private BufferPage readBufferPage = null;
     /**
      * 请求队列
      */
@@ -76,23 +81,26 @@ public final class Worker implements Runnable {
     private final ExecutorService executorService;
     private VirtualBuffer standbyBuffer;
 
-    public Worker(BufferPagePool bufferPool, int threadNum) throws IOException {
-        this.bufferPool = bufferPool;
+    public Worker(BufferPagePool writeBufferPool, int threadNum) throws IOException {
+        this(writeBufferPool.allocateBufferPage(), writeBufferPool, threadNum);
+    }
+
+    public Worker(BufferPage readBufferPage, BufferPagePool writeBufferPool, int threadNum) throws IOException {
+        this.readBufferPage = readBufferPage;
+        this.writeBufferPool = writeBufferPool;
         this.selector = Selector.open();
         try {
             this.requestQueue.put(SELECTOR_CHANNEL);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // 启动worker线程组
-        executorService = new ThreadPoolExecutor(threadNum, threadNum,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(), new ThreadFactory() {
+        //启动worker线程组
+        executorService = new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
             int i = 0;
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "Socket:udp-" + Worker.this.hashCode() + "-" + (++i));
+                return new Thread(r, "smart-socket:udp-" + Worker.this.hashCode() + "-" + (++i));
             }
         });
         for (int i = 0; i < threadNum; i++) {
@@ -167,7 +175,7 @@ public final class Worker implements Runnable {
         Context context = channel.context;
         while (count-- > 0) {
             if (standbyBuffer == null) {
-                standbyBuffer = channel.getBufferPage().allocate(context.getReadBufferSize());
+                standbyBuffer = readBufferPage.allocate(context.getReadBufferSize());
             }
             ByteBuffer buffer = standbyBuffer.buffer();
             SocketAddress remote = channel.getChannel().receive(buffer);
@@ -176,11 +184,11 @@ public final class Worker implements Runnable {
                 return true;
             }
             VirtualBuffer readyBuffer = standbyBuffer;
-            standbyBuffer = channel.getBufferPage().allocate(context.getReadBufferSize());
+            standbyBuffer = readBufferPage.allocate(context.getReadBufferSize());
             buffer.flip();
             Runnable runnable = () -> {
-                // 解码
-                UdpSession session = new UdpSession(channel, remote, bufferPool.allocateBufferPage());
+                //解码
+                UdpSession session = new UdpSession(channel, remote, writeBufferPool.allocateBufferPage());
                 try {
                     Monitor monitor = context.getMonitor();
                     if (monitor != null) {

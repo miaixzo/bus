@@ -35,20 +35,23 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class Implementation {
 
+    private static final String IMPL_CLASS_UID = "1.2.40.0.13.1.3";
+    private static final String IMPL_VERS_NAME = versionName();
+
     private static String versionName() {
         StringBuilder sb = new StringBuilder(Normal._16);
         sb.append("miaixz-");
         sb.append(Implementation.class.getPackage()
                 .getImplementationVersion());
-        return sb.substring(0, Math.min(Normal._16, sb.length()));
+        return sb.substring(0, Math.min(16, sb.length()));
     }
 
     public static String getClassUID() {
-        return "1.2.40.0.13.1.3";
+        return IMPL_CLASS_UID;
     }
 
     public static String getVersionName() {
-        return versionName();
+        return IMPL_VERS_NAME;
     }
 
 }

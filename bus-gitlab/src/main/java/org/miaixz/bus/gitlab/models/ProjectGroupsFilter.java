@@ -36,7 +36,7 @@ import java.util.List;
  *  This class is used to filter Groups when getting lists of groups for a specified project.
  */
 public class ProjectGroupsFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String search;
     private AccessLevel sharedMinAccessLevel;

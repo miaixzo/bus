@@ -37,10 +37,10 @@ import java.util.List;
  * This class is part of the Release class model.
  */
 public class Assets implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static class Source implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private ArchiveFormat format;
         private String url;
@@ -68,7 +68,7 @@ public class Assets implements Serializable {
     }
 
     public static class Link implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private Long id;
         private String name;

@@ -37,13 +37,13 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum TemporalType {
+enum TemporalType {
     DA {
         @Override
         public Date parse(TimeZone tz, String s, boolean ceil,
                           DatePrecision precision) {
             precision.lastField = Calendar.DAY_OF_MONTH;
-            return Format.parseDA(tz, s, ceil);
+            return Format.parseDA(null, s, ceil);
         }
 
         @Override
@@ -67,7 +67,7 @@ public enum TemporalType {
         @Override
         public Date parse(TimeZone tz, String s, boolean ceil,
                           DatePrecision precision) {
-            return Format.parseTM(tz, s, ceil, precision);
+            return Format.parseTM(null, s, ceil, precision);
         }
 
         @Override
@@ -82,4 +82,5 @@ public enum TemporalType {
 
     public abstract String format(TimeZone tz, Date date,
                                   DatePrecision precision);
+
 }

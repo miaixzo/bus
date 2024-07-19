@@ -27,28 +27,25 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Fragments;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
+import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.codec.Compressor;
 import org.miaixz.bus.image.nimble.codec.Decompressor;
 import org.miaixz.bus.image.nimble.codec.Transcoder;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
-import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -56,14 +53,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * DCM解压缩/转换
- *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Dcm2Dcm {
 
-    private final List<Material> params = new ArrayList<>();
+    private final List<Property> params = new ArrayList<>();
     private String tsuid;
     private TransferSyntaxType tstype;
     private boolean retainfmi;
@@ -85,7 +80,7 @@ public class Dcm2Dcm {
     public final void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
-        if (null == tstype) {
+        if (tstype == null) {
             throw new IllegalArgumentException(
                     "Unsupported Transfer Syntax: " + tsuid);
         }
@@ -108,7 +103,7 @@ public class Dcm2Dcm {
     }
 
     public void addCompressionParam(String name, Object value) {
-        params.add(new Material(name, value));
+        params.add(new Property(name, value));
     }
 
     public void setMaxThreads(int maxThreads) {
@@ -122,7 +117,7 @@ public class Dcm2Dcm {
         for (String src : srcList) {
             mtranscode(new File(src), dest, executorService);
         }
-        if (null != executorService) {
+        if (executorService != null) {
             executorService.shutdown();
         }
     }
@@ -135,7 +130,7 @@ public class Dcm2Dcm {
             return;
         }
         final File finalDest = dest.isDirectory() ? new File(dest, src.getName()) : dest;
-        if (null != executer) {
+        if (executer != null) {
             executer.execute(() -> transcode(src, finalDest));
         } else {
             transcode(src, finalDest);
@@ -148,15 +143,8 @@ public class Dcm2Dcm {
                 transcodeLegacy(src, dest);
             else
                 transcodeWithTranscoder(src, dest);
-
-            Logger.error(
-                    MessageFormat.format("transcoded {0} {1}",
-                            src, dest));
         } catch (Exception e) {
-            Logger.error(
-                    MessageFormat.format("failed {0} {1}",
-                            src, e.getMessage()));
-            throw new InternalException(e);
+            e.printStackTrace(System.out);
         }
     }
 
@@ -167,7 +155,7 @@ public class Dcm2Dcm {
         try {
             dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             fmi = dis.readFileMetaInformation();
-            dataset = dis.readDataset(-1, -1);
+            dataset = dis.readDataset();
         } finally {
             dis.close();
         }
@@ -176,18 +164,18 @@ public class Dcm2Dcm {
         ImageOutputStream dos = null;
         try {
             String tsuid = this.tsuid;
-            if (null != pixeldata) {
+            if (pixeldata != null) {
                 if (tstype.isPixeldataEncapsulated()) {
                     tsuid = adjustTransferSyntax(tsuid,
                             dataset.getInt(Tag.BitsStored, 8));
                     compressor = new Compressor(dataset, dis.getTransferSyntax());
-                    compressor.compress(tsuid, params.toArray(new Material[params.size()]));
+                    compressor.compress(tsuid, params.toArray(new Property[params.size()]));
                 } else if (pixeldata instanceof Fragments)
                     Decompressor.decompress(dataset, dis.getTransferSyntax());
             }
             if (nofmi)
                 fmi = null;
-            else if (retainfmi && null != fmi)
+            else if (retainfmi && fmi != null)
                 fmi.setString(Tag.TransferSyntaxUID, VR.UI, tsuid);
             else
                 fmi = dataset.createFileMetaInformation(tsuid);
@@ -206,11 +194,10 @@ public class Dcm2Dcm {
             transcoder.setRetainFileMetaInformation(retainfmi);
             transcoder.setEncodingOptions(encOpts);
             transcoder.setDestinationTransferSyntax(tsuid);
-            if (tstype.isPixeldataEncapsulated())
-                transcoder.setCompressParams(params.toArray(new Material[params.size()]));
+            transcoder.setCompressParams(params.toArray(new Property[params.size()]));
             transcoder.transcode((transcoder1, dataset) -> new FileOutputStream(dest));
         } catch (Exception e) {
-            Files.delete(dest.toPath());
+            Files.deleteIfExists(dest.toPath());
             throw e;
         }
     }
@@ -219,11 +206,11 @@ public class Dcm2Dcm {
         switch (tstype) {
             case JPEG_BASELINE:
                 if (bitsStored > 8)
-                    return UID.JPEGExtended24;
+                    return UID.JPEGExtended12Bit.uid;
                 break;
             case JPEG_EXTENDED:
                 if (bitsStored <= 8)
-                    return UID.JPEGBaseline1;
+                    return UID.JPEGBaseline8Bit.uid;
                 break;
             default:
         }

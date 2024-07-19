@@ -37,10 +37,20 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
  */
 public class Html4Unescape extends XmlUnescape {
 
-    protected static final String[][] ISO8859_1_UNESCAPE = invert(Html4Escape.ISO8859_1_ESCAPE);
-    protected static final String[][] HTML40_EXTENDED_UNESCAPE = invert(Html4Escape.HTML40_EXTENDED_ESCAPE);
     private static final long serialVersionUID = -1L;
 
+    /**
+     * ISO8859_1的UNESCAPE
+     */
+    protected static final String[][] ISO8859_1_UNESCAPE = invert(Html4Escape.ISO8859_1_ESCAPE);
+    /**
+     * HTML40_EXTENDED的UNESCAPE
+     */
+    protected static final String[][] HTML40_EXTENDED_UNESCAPE = invert(Html4Escape.HTML40_EXTENDED_ESCAPE);
+
+    /**
+     * 构造
+     */
     public Html4Unescape() {
         super();
         addChain(new LookupReplacer(ISO8859_1_UNESCAPE));

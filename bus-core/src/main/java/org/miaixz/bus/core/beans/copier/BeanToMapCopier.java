@@ -27,10 +27,10 @@
  */
 package org.miaixz.bus.core.beans.copier;
 
-import org.miaixz.bus.core.beans.PropDesc;
+import org.miaixz.bus.core.beans.desc.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 import java.lang.reflect.Type;
@@ -72,7 +72,7 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             actualEditable = copyOptions.editable;
         }
 
-        final Map<String, PropDesc> sourcePropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> sourcePropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
@@ -86,11 +86,11 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             }
 
             // 编辑键值对
-            final MutableEntry<String, Object> entry = copyOptions.editField(sFieldName, sValue);
+            final MutableEntry<Object, Object> entry = copyOptions.editField(sFieldName, sValue);
             if (null == entry) {
                 return;
             }
-            sFieldName = entry.getKey();
+            sFieldName = StringKit.toStringOrNull(entry.getKey());
             // 对key做转换，转换后为null的跳过
             if (null == sFieldName) {
                 return;

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
 
 import java.math.BigInteger;

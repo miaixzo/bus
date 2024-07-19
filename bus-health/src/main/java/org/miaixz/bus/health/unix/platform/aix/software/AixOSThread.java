@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.unix.platform.aix.software;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 import org.miaixz.bus.health.unix.jna.AixLibc;

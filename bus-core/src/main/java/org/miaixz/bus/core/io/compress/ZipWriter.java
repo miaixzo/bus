@@ -50,7 +50,7 @@ public class ZipWriter implements Closeable {
     /**
      * 自定义缓存大小
      */
-    private int bufferSize = Normal.DEFAULT_BUFFER_SIZE;
+    private int bufferSize = Normal._8192;
 
     /**
      * 构造
@@ -221,7 +221,7 @@ public class ZipWriter implements Closeable {
      * @throws InternalException IO异常
      */
     public ZipWriter add(String path, final InputStream in) throws InternalException {
-        path = StringKit.emptyIfNull(path);
+        path = StringKit.toStringOrEmpty(path);
         if (null == in) {
             // 空目录需要检查路径规范性，目录以"/"结尾
             path = StringKit.addSuffixIfNot(path, Symbol.SLASH);

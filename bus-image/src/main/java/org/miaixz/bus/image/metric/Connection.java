@@ -27,33 +27,35 @@
  */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Device;
-import org.miaixz.bus.image.galaxy.Material;
-import org.miaixz.bus.image.metric.internal.net.TCPHandler;
-import org.miaixz.bus.image.metric.internal.net.TCPListener;
-import org.miaixz.bus.image.metric.internal.net.UDPHandler;
-import org.miaixz.bus.image.metric.internal.net.UDPListener;
+import org.miaixz.bus.image.metric.net.*;
 import org.miaixz.bus.logger.Logger;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.*;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 /**
+ * A DICOM Part 15, Annex H compliant class, <code>NetworkConnection</code>
+ * encapsulates the properties associated with a connection to a TCP/IP network.
+ * The <i>network connection</i> describes one TCP port on one network device.
+ * This can be used for a TCP connection over which a DICOM association can be
+ * negotiated with one or more Network AEs. It specifies 8 the hostname and TCP
+ * port number. A network connection may support multiple Network AEs. The
+ * Network AE selection takes place during association negotiation based on the
+ * called and calling AE-titles.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -64,164 +66,62 @@ public class Connection implements Serializable {
     public static final int NOT_LISTENING = -1;
     public static final int DEF_BACKLOG = 50;
     public static final int DEF_SOCKETDELAY = 50;
+    public static final int DEF_ABORT_TIMEOUT = 1000;
     public static final int DEF_BUFFERSIZE = 0;
     public static final int DEF_MAX_PDU_LENGTH = 16378;
     public static final String TLS_RSA_WITH_NULL_SHA = "SSL_RSA_WITH_NULL_SHA";
     public static final String TLS_RSA_WITH_3DES_EDE_CBC_SHA = "SSL_RSA_WITH_3DES_EDE_CBC_SHA";
-    // 适应SunJSSE TLS应用程序数据长度16408
+    // to fit into SunJSSE TLS Application Data Length 16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
-    public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2", "TLSv1.1", "TLSv1"};
-    private static final EnumMap<Protocol, TCPHandler> tcpHandlers = new EnumMap<>(Protocol.class);
-    private static final EnumMap<Protocol, UDPHandler> udpHandlers = new EnumMap<>(Protocol.class);
+    public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2"};
+    private static final long serialVersionUID = -7814748788035232055L;
+    private static final EnumMap<Protocol, TCPProtocolHandler> tcpHandlers = new EnumMap<>(Protocol.class);
+    private static final EnumMap<Protocol, UDPProtocolHandler> udpHandlers = new EnumMap<>(Protocol.class);
 
     static {
-        registerTCPProtocolHandler(Protocol.DICOM, AdvancedHandler.INSTANCE);
+        registerTCPProtocolHandler(Protocol.DICOM, ImageProtocolHandler.INSTANCE);
     }
 
-    /**
-     * 设备信息
-     */
     private Device device;
-    /**
-     * 网络连接对象的任意名称
-     */
     private String commonName;
-    /**
-     * 主机名的字符串
-     */
     private String hostname;
-    /**
-     * 套接字绑定地址
-     */
     private String bindAddress;
-    /**
-     * 客户端套接字绑定地址
-     */
     private String clientBindAddress;
-    /**
-     * HTTP代理
-     */
     private String httpProxy;
-    /**
-     * TCP端口
-     */
     private int port = NOT_LISTENING;
-    /**
-     * 积压日志
-     */
     private int backlog = DEF_BACKLOG;
-    /**
-     * 链接超时时间
-     */
     private int connectTimeout;
-    /**
-     * 请求超时时间
-     */
     private int requestTimeout;
-    /**
-     * 接受超时时间
-     */
     private int acceptTimeout;
-    /**
-     * 释放超时时间
-     */
     private int releaseTimeout;
-    /**
-     * 响应超时时间
-     */
+    private int sendTimeout;
+    private int storeTimeout;
     private int responseTimeout;
-    /**
-     * 回收超时时间
-     */
     private int retrieveTimeout;
-    /**
-     * 检索超时总计
-     */
     private boolean retrieveTimeoutTotal;
-    /**
-     * 空闲超时
-     */
     private int idleTimeout;
-    /**
-     * 套接字关闭的延迟时间
-     */
+    private int abortTimeout = DEF_ABORT_TIMEOUT;
     private int socketCloseDelay = DEF_SOCKETDELAY;
-    /**
-     * 发送缓冲区大小
-     */
     private int sendBufferSize;
-    /**
-     * 收到缓冲区大小
-     */
     private int receiveBufferSize;
-    /**
-     * 发送PDU长度
-     */
     private int sendPDULength = DEF_MAX_PDU_LENGTH;
-    /**
-     * 接收PDU长度
-     */
     private int receivePDULength = DEF_MAX_PDU_LENGTH;
-    /**
-     * 执行的最大操作数
-     */
     private int maxOpsPerformed = SYNCHRONOUS_MODE;
-    /**
-     * 调用的最大操作数
-     */
     private int maxOpsInvoked = SYNCHRONOUS_MODE;
     private boolean packPDV = true;
-    /**
-     * TCP无延迟
-     */
     private boolean tcpNoDelay = true;
-    /**
-     * TLS是否需要客户端验证
-     */
     private boolean tlsNeedClientAuth = true;
-    /**
-     * TLS 密码套件
-     */
     private String[] tlsCipherSuites = {};
-    /**
-     * TLS 协议信息
-     */
     private String[] tlsProtocols = DEFAULT_TLS_PROTOCOLS;
-    /**
-     * 忽略的IP地址列表
-     */
     private String[] blacklist = {};
-    /**
-     * 是否安装网络连接
-     */
     private Boolean installed;
-    /**
-     * 协议信息
-     */
     private Protocol protocol = Protocol.DICOM;
-    /**
-     * 黑名单地址
-     */
+    private EndpointIdentificationAlgorithm tlsEndpointIdentificationAlgorithm;
     private transient List<InetAddress> blacklistAddrs;
-    /**
-     * 主机地址
-     */
     private transient InetAddress hostAddr;
-    /**
-     * 绑定地址
-     */
     private transient InetAddress bindAddr;
-    /**
-     * 客户端绑定地址
-     */
     private transient InetAddress clientBindAddr;
-    /**
-     * 监听器
-     */
-    private transient volatile SocketListener listener;
-    /**
-     * 重新绑定需要
-     */
+    private transient volatile Listener listener;
     private transient boolean rebindNeeded;
 
     public Connection() {
@@ -237,22 +137,26 @@ public class Connection implements Serializable {
         this.port = port;
     }
 
-    public static TCPHandler registerTCPProtocolHandler(
-            Protocol protocol, TCPHandler handler) {
+    public Connection(Connection from) {
+        reconfigure(from);
+    }
+
+    public static TCPProtocolHandler registerTCPProtocolHandler(
+            Protocol protocol, TCPProtocolHandler handler) {
         return tcpHandlers.put(protocol, handler);
     }
 
-    public static TCPHandler unregisterTCPProtocolHandler(
+    public static TCPProtocolHandler unregisterTCPProtocolHandler(
             Protocol protocol) {
         return tcpHandlers.remove(protocol);
     }
 
-    public static UDPHandler registerUDPProtocolHandler(
-            Protocol protocol, UDPHandler handler) {
+    public static UDPProtocolHandler registerUDPProtocolHandler(
+            Protocol protocol, UDPProtocolHandler handler) {
         return udpHandlers.put(protocol, handler);
     }
 
-    public static UDPHandler unregisterUDPProtocolHandler(
+    public static UDPProtocolHandler unregisterUDPProtocolHandler(
             Protocol protocol) {
         return udpHandlers.remove(protocol);
     }
@@ -289,7 +193,7 @@ public class Connection implements Serializable {
      * @param device 所属设备对象
      */
     public final void setDevice(Device device) {
-        if (null != device && null != this.device)
+        if (device != null && this.device != null)
             throw new IllegalStateException("already owned by " + device);
         this.device = device;
     }
@@ -313,9 +217,7 @@ public class Connection implements Serializable {
      * @param hostname 包含主机名的字符串
      */
     public final void setHostname(String hostname) {
-        if (null != hostname
-                ? hostname.equals(this.hostname)
-                : null == this.hostname)
+        if (Objects.equals(hostname, this.hostname))
             return;
 
         this.hostname = hostname;
@@ -339,9 +241,7 @@ public class Connection implements Serializable {
      * @param bindAddress 监听套接字的绑定地址或{@code null}
      */
     public final void setBindAddress(String bindAddress) {
-        if (null != bindAddress
-                ? bindAddress.equals(this.bindAddress)
-                : null == this.bindAddress)
+        if (Objects.equals(bindAddress, this.bindAddress))
             return;
 
         this.bindAddress = bindAddress;
@@ -368,9 +268,7 @@ public class Connection implements Serializable {
      * @param bindAddress 传出连接的绑定地址或{@code null}
      */
     public void setClientBindAddress(String bindAddress) {
-        if (null != bindAddress
-                ? bindAddress.equals(this.clientBindAddress)
-                : null == this.clientBindAddress)
+        if (Objects.equals(bindAddress, this.clientBindAddress))
             return;
 
         this.clientBindAddress = bindAddress;
@@ -382,7 +280,7 @@ public class Connection implements Serializable {
     }
 
     public void setProtocol(Protocol protocol) {
-        if (null == protocol)
+        if (protocol == null)
             throw new NullPointerException();
 
         if (this.protocol == protocol)
@@ -390,6 +288,14 @@ public class Connection implements Serializable {
 
         this.protocol = protocol;
         needRebind();
+    }
+
+    public EndpointIdentificationAlgorithm getTlsEndpointIdentificationAlgorithm() {
+        return tlsEndpointIdentificationAlgorithm;
+    }
+
+    public void setTlsEndpointIdentificationAlgorithm(EndpointIdentificationAlgorithm tlsEndpointIdentificationAlgorithm) {
+        this.tlsEndpointIdentificationAlgorithm = tlsEndpointIdentificationAlgorithm;
     }
 
     public boolean isRebindNeeded() {
@@ -453,7 +359,7 @@ public class Connection implements Serializable {
     }
 
     public final boolean useHttpProxy() {
-        return null != httpProxy;
+        return httpProxy != null;
     }
 
     public final boolean isServer() {
@@ -515,7 +421,6 @@ public class Connection implements Serializable {
         this.acceptTimeout = timeout;
     }
 
-
     /**
      * 接收A-RELEASE-RP的超时时间，默认为5000
      *
@@ -534,6 +439,16 @@ public class Connection implements Serializable {
         if (timeout < 0)
             throw new IllegalArgumentException("timeout: " + timeout);
         this.releaseTimeout = timeout;
+    }
+
+    public int getAbortTimeout() {
+        return abortTimeout;
+    }
+
+    public void setAbortTimeout(int delay) {
+        if (delay < 0)
+            throw new IllegalArgumentException("delay: " + delay);
+        this.abortTimeout = delay;
     }
 
     /**
@@ -556,36 +471,116 @@ public class Connection implements Serializable {
         this.socketCloseDelay = delay;
     }
 
+    /**
+     * Timeout in ms for sending other DIMSE RQs than C STORE-RQs.
+     *
+     * @return Timeout in ms or {@code 0} (= no timeout).
+     */
+    public int getSendTimeout() {
+        return sendTimeout;
+    }
+
+    /**
+     * Timeout in ms for sending other DIMSE RQs than C-STORE RQs.
+     *
+     * @param timeout Timeout in ms or {@code 0} (= no timeout).
+     */
+    public void setSendTimeout(int timeout) {
+        this.sendTimeout = timeout;
+    }
+
+    /**
+     * Timeout in ms for sending C-STORE RQs.
+     *
+     * @return Timeout in ms or {@code 0} (= no timeout).
+     */
+    public int getStoreTimeout() {
+        return storeTimeout;
+    }
+
+    /**
+     * Timeout in ms for sending C-STORE RQs.
+     *
+     * @param timeout Timeout in ms or {@code 0} (= no timeout).
+     */
+    public void setStoreTimeout(int timeout) {
+        this.storeTimeout = timeout;
+    }
+
+    /**
+     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE  or C-GET RSPs.
+     *
+     * @return Timeout in ms or {@code 0} (= no timeout).
+     */
     public final int getResponseTimeout() {
         return responseTimeout;
     }
 
+    /**
+     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE  or C-GET RSPs.
+     *
+     * @param timeout Timeout in ms or {@code 0} (= no timeout).
+     */
     public final void setResponseTimeout(int timeout) {
         this.responseTimeout = timeout;
     }
 
+    /**
+     * Timeout in ms for receiving outstanding C-MOVE or C-GET RSPs.
+     *
+     * @return Timeout in ms or {@code 0} (= no timeout).
+     */
     public final int getRetrieveTimeout() {
         return retrieveTimeout;
     }
 
+    /**
+     * Timeout in ms for receiving outstanding C-MOVE or C-GET RSPs.
+     *
+     * @param timeout Timeout in ms or {@code 0} (= no timeout).
+     */
     public final void setRetrieveTimeout(int timeout) {
         this.retrieveTimeout = timeout;
     }
 
+    /**
+     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted
+     * on receive of pending RSPs.
+     *
+     * @return if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs
+     * on receive of pending RSPs, otherwise not.
+     */
     public final boolean isRetrieveTimeoutTotal() {
         return retrieveTimeoutTotal;
     }
 
-    public final void setRetrieveTimeoutTotal(boolean retrieveTimeoutTotal) {
-        this.retrieveTimeoutTotal = retrieveTimeoutTotal;
+    /**
+     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted
+     * on receive of pending RSPs.
+     *
+     * @param total if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE
+     *              RSPs on receive of pending RSPs, otherwise not.
+     */
+    public final void setRetrieveTimeoutTotal(boolean total) {
+        this.retrieveTimeoutTotal = total;
     }
 
+    /**
+     * Timeout in ms for aborting of idle Associations.
+     *
+     * @return Timeout in ms or {@code 0} (= no timeout).
+     */
     public final int getIdleTimeout() {
         return idleTimeout;
     }
 
-    public final void setIdleTimeout(int idleTimeout) {
-        this.idleTimeout = idleTimeout;
+    /**
+     * Timeout in ms for aborting of idle Associations.
+     *
+     * @param timeout Timeout in ms or {@code 0} (= no timeout).
+     */
+    public final void setIdleTimeout(int timeout) {
+        this.idleTimeout = timeout;
     }
 
     /**
@@ -777,8 +772,8 @@ public class Connection implements Serializable {
      * @return boolean如果NetworkConnection安装在网络上，则为True
      */
     public boolean isInstalled() {
-        return null != device && device.isInstalled()
-                && (null == installed || installed.booleanValue());
+        return device != null && device.isInstalled()
+                && (installed == null || installed.booleanValue());
     }
 
     public Boolean getInstalled() {
@@ -836,11 +831,11 @@ public class Connection implements Serializable {
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Material.appendLine(sb, indent, "Connection[cn: ", commonName);
-        Material.appendLine(sb, indent2, "host: ", hostname);
-        Material.appendLine(sb, indent2, "port: ", port);
-        Material.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
-        Material.appendLine(sb, indent2, "installed: ", getInstalled());
+        Builder.appendLine(sb, indent, "Connection[cn: ", commonName);
+        Builder.appendLine(sb, indent2, "host: ", hostname);
+        Builder.appendLine(sb, indent2, "port: ", port);
+        Builder.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
+        Builder.appendLine(sb, indent2, "installed: ", getInstalled());
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
@@ -858,35 +853,35 @@ public class Connection implements Serializable {
     }
 
     private InetAddress hostAddr() throws UnknownHostException {
-        if (null == hostAddr && null != hostname)
+        if (hostAddr == null && hostname != null)
             hostAddr = InetAddress.getByName(hostname);
 
         return hostAddr;
     }
 
     private InetAddress bindAddr() throws UnknownHostException {
-        if (null == bindAddress)
+        if (bindAddress == null)
             return hostAddr();
 
-        if (null == bindAddr)
+        if (bindAddr == null)
             bindAddr = InetAddress.getByName(bindAddress);
 
         return bindAddr;
     }
 
     private InetAddress clientBindAddr() throws UnknownHostException {
-        if (null == clientBindAddress)
+        if (clientBindAddress == null)
             return hostAddr();
 
-        if (null == clientBindAddr)
+        if (clientBindAddr == null)
             clientBindAddr = InetAddress.getByName(clientBindAddress);
 
         return clientBindAddr;
     }
 
     private List<InetAddress> blacklistAddrs() {
-        if (null == blacklistAddrs) {
-            blacklistAddrs = new ArrayList<InetAddress>(blacklist.length);
+        if (blacklistAddrs == null) {
+            blacklistAddrs = new ArrayList<>(blacklist.length);
             for (String hostname : blacklist)
                 try {
                     blacklistAddrs.add(InetAddress.getByName(hostname));
@@ -896,7 +891,6 @@ public class Connection implements Serializable {
         }
         return blacklistAddrs;
     }
-
 
     public InetSocketAddress getEndPoint() throws UnknownHostException {
         return new InetSocketAddress(hostAddr(), port);
@@ -932,20 +926,20 @@ public class Connection implements Serializable {
             rebindNeeded = false;
             return false;
         }
-        if (null == device)
+        if (device == null)
             throw new IllegalStateException("Not attached to Device");
         if (isListening())
             throw new IllegalStateException("Already listening - " + listener);
-        if (protocol.isTcp()) {
-            TCPHandler handler = tcpHandlers.get(protocol);
-            if (null == handler) {
+        if (protocol.isTCP()) {
+            TCPProtocolHandler handler = tcpHandlers.get(protocol);
+            if (handler == null) {
                 Logger.info("No TCP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new TCPListener(this, handler);
         } else {
-            UDPHandler handler = udpHandlers.get(protocol);
-            if (null == handler) {
+            UDPProtocolHandler handler = udpHandlers.get(protocol);
+            if (handler == null) {
                 Logger.info("No UDP Protocol Handler for protocol {}", protocol);
                 return false;
             }
@@ -956,7 +950,7 @@ public class Connection implements Serializable {
     }
 
     public final boolean isListening() {
-        return null != listener;
+        return listener != null;
     }
 
     public boolean isBlackListed(InetAddress ia) {
@@ -965,7 +959,7 @@ public class Connection implements Serializable {
 
     public synchronized void unbind() {
         Closeable tmp = listener;
-        if (null == tmp)
+        if (tmp == null)
             return;
         listener = null;
         try {
@@ -979,7 +973,7 @@ public class Connection implements Serializable {
     public Socket connect(Connection remoteConn)
             throws IOException, InternalException, GeneralSecurityException {
         checkInstalled();
-        if (!protocol.isTcp())
+        if (!protocol.isTCP())
             throw new IllegalStateException("Not a TCP Connection");
         checkCompatible(remoteConn);
         SocketAddress bindPoint = getClientBindPoint();
@@ -988,22 +982,22 @@ public class Connection implements Serializable {
         Logger.info("Initiate connection from {} to {}:{}",
                 bindPoint, remoteHostname, remotePort);
         Socket s = new Socket();
-        Monitoring monitor = null != device
-                ? device.getMonitoring()
+        ConnectionMonitor monitor = device != null
+                ? device.getConnectionMonitor()
                 : null;
         try {
             s.bind(bindPoint);
             setReceiveBufferSize(s);
             setSocketSendOptions(s);
             String remoteProxy = remoteConn.getHttpProxy();
-            if (null != remoteProxy) {
+            if (remoteProxy != null) {
                 String userauth = null;
-                String[] ss = Material.split(remoteProxy, Symbol.C_AT);
+                String[] ss = Builder.split(remoteProxy, Symbol.C_AT);
                 if (ss.length > 1) {
                     userauth = ss[0];
                     remoteProxy = ss[1];
                 }
-                ss = Material.split(remoteProxy, Symbol.C_COLON);
+                ss = Builder.split(remoteProxy, Symbol.C_COLON);
                 int proxyPort = ss.length > 1 ? Integer.parseInt(ss[1]) : 8080;
                 s.connect(new InetSocketAddress(ss[0], proxyPort), connectTimeout);
                 try {
@@ -1018,17 +1012,17 @@ public class Connection implements Serializable {
             }
             if (isTls())
                 s = createTLSSocket(s, remoteConn);
-            if (null != monitor)
+            if (monitor != null)
                 monitor.onConnectionEstablished(this, remoteConn, s);
             Logger.info("Established connection {}", s);
             return s;
         } catch (GeneralSecurityException e) {
-            if (null != monitor)
+            if (monitor != null)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
             IoKit.close(s);
             throw e;
         } catch (IOException e) {
-            if (null != monitor)
+            if (monitor != null)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
             IoKit.close(s);
             throw e;
@@ -1037,7 +1031,7 @@ public class Connection implements Serializable {
 
     public DatagramSocket createDatagramSocket() throws IOException {
         checkInstalled();
-        if (protocol.isTcp())
+        if (protocol.isTCP())
             throw new IllegalStateException("Not a UDP Connection");
 
         DatagramSocket ds = new DatagramSocket(getClientBindPoint());
@@ -1051,7 +1045,7 @@ public class Connection implements Serializable {
         return ds;
     }
 
-    public SocketListener getListener() {
+    public Listener getListener() {
         return listener;
     }
 
@@ -1062,10 +1056,10 @@ public class Connection implements Serializable {
                 .append(hostname).append(Symbol.C_COLON).append(port)
                 .append(" HTTP/1.1\r\nHost: ")
                 .append(hostname).append(Symbol.C_COLON).append(port);
-        if (null != userauth) {
+        if (userauth != null) {
             byte[] b = userauth.getBytes(Charset.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];
-            Base64.encode(b, 0, b.length, base64, 0);
+            Builder.encode(b, 0, b.length, base64, 0);
             request.append("\r\nProxy-Authorization: basic ")
                     .append(base64);
         }
@@ -1091,7 +1085,13 @@ public class Connection implements Serializable {
         ssl.setEnabledProtocols(
                 intersect(remoteConn.getTlsProtocols(), getTlsProtocols()));
         ssl.setEnabledCipherSuites(
-                intersect(remoteConn.tlsCipherSuites, tlsCipherSuites));
+                intersect(remoteConn.getTlsCipherSuites(), getTlsCipherSuites()));
+
+        if (tlsEndpointIdentificationAlgorithm != null) {
+            SSLParameters parameters = ssl.getSSLParameters();
+            parameters.setEndpointIdentificationAlgorithm(tlsEndpointIdentificationAlgorithm.name());
+            ssl.setSSLParameters(parameters);
+        }
         ssl.startHandshake();
         return ssl;
     }
@@ -1105,7 +1105,7 @@ public class Connection implements Serializable {
         if (remoteConn.protocol != protocol)
             return false;
 
-        if (!protocol.isTcp())
+        if (!protocol.isTCP())
             return true;
 
         if (!isTls())
@@ -1124,9 +1124,9 @@ public class Connection implements Serializable {
     }
 
     public boolean equalsRDN(Connection other) {
-        return null != commonName
+        return commonName != null
                 ? commonName.equals(other.commonName)
-                : null == other.commonName
+                : other.commonName == null
                 && hostname.equals(other.hostname)
                 && port == other.port
                 && protocol == other.protocol;
@@ -1145,9 +1145,12 @@ public class Connection implements Serializable {
         setRequestTimeout(from.requestTimeout);
         setAcceptTimeout(from.acceptTimeout);
         setReleaseTimeout(from.releaseTimeout);
+        setSendTimeout(from.sendTimeout);
+        setStoreTimeout(from.storeTimeout);
         setResponseTimeout(from.responseTimeout);
         setRetrieveTimeout(from.retrieveTimeout);
         setIdleTimeout(from.idleTimeout);
+        setAbortTimeout(from.abortTimeout);
         setSocketCloseDelay(from.socketCloseDelay);
         setSendBufferSize(from.sendBufferSize);
         setReceiveBufferSize(from.receiveBufferSize);
@@ -1160,8 +1163,30 @@ public class Connection implements Serializable {
         setTlsNeedClientAuth(from.tlsNeedClientAuth);
         setTlsCipherSuites(from.tlsCipherSuites);
         setTlsProtocols(from.tlsProtocols);
+        setTlsEndpointIdentificationAlgorithm(from.tlsEndpointIdentificationAlgorithm);
         setBlacklist(from.blacklist);
         setInstalled(from.installed);
+    }
+
+    public enum Protocol {
+        DICOM, HL7, HL7_MLLP2, SYSLOG_TLS, SYSLOG_UDP, HTTP;
+
+        public boolean isTCP() {
+            return this != SYSLOG_UDP;
+        }
+
+        public boolean isHL7() {
+            return this == HL7 || this == HL7_MLLP2;
+        }
+
+        public boolean isSyslog() {
+            return this == SYSLOG_TLS || this == SYSLOG_UDP;
+        }
+    }
+
+    public enum EndpointIdentificationAlgorithm {
+        HTTPS,
+        LDAPS
     }
 
     private static class HTTPResponse extends ByteArrayOutputStream {

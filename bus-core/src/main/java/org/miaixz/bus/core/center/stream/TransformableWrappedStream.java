@@ -268,10 +268,8 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     /**
      * 返回与指定函数将元素作为参数执行后组成的流。操作带下标
      *
-     * @param action 指定的函数
-     * @return 返回叠加操作后的FastStream
-     * 当你需要查看经过操作管道某处的元素和下标，可以执行以下操作:
-     * <pre>{@code
+     * <pre>
+     *     {@code
      *     Stream.of("one", "two", "three", "four")
      * 				.filter(e -> e.length() > 3)
      * 				.peekIdx((e,i) -> System.out.println("Filtered value: " + e + " Filtered idx:" + i))
@@ -279,6 +277,9 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * 				.peekIdx((e,i) -> System.out.println("Mapped value: " + e + " Mapped idx:" + i))
      * 				.collect(Collectors.toList());
      * }</pre>
+     *
+     * @param action 指定的函数
+     * @return 返回叠加操作后的FastStream当你需要查看经过操作管道某处的元素和下标，可以执行以下操作:
      */
     default S peekIdx(final BiConsumer<? super T, Integer> action) {
         Objects.requireNonNull(action);

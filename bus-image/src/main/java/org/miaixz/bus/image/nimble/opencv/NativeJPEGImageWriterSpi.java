@@ -49,7 +49,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
     }
 
     public NativeJPEGImageWriterSpi(Class<? extends NativeJPEGImageWriter> writer) {
-        super("Bus Team", "1.5", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
+        super("Miaixz Team", "1.0", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
                 NativeJPEGImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
                 new String[]{NativeJPEGImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
                 null, null);
@@ -67,7 +67,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
 
         // Ensure all channels have the same bit depth
         int bitDepth;
-        if (null != colorModel) {
+        if (colorModel != null) {
             int[] componentSize = colorModel.getComponentSize();
             bitDepth = componentSize[0];
             for (int i = 1; i < componentSize.length; i++) {

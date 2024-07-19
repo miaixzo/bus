@@ -27,13 +27,13 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.internal.hl7.HL7Message;
-import org.miaixz.bus.image.metric.internal.hl7.HL7Segment;
-import org.miaixz.bus.image.metric.internal.hl7.MLLPConnection;
+import org.miaixz.bus.image.metric.hl7.HL7Message;
+import org.miaixz.bus.image.metric.hl7.HL7Segment;
+import org.miaixz.bus.image.metric.hl7.MLLPConnection;
+import org.miaixz.bus.image.metric.hl7.MLLPRelease;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -47,16 +47,21 @@ public class HL7Pix extends Device {
 
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
+    private MLLPRelease mllpRelease;
     private String sendingApplication = "hl7pix^miaixz";
-    private String receivingApplication = Normal.EMPTY;
+    private String receivingApplication = "";
     private String charset;
 
     private Socket sock;
     private MLLPConnection mllp;
 
-    public HL7Pix() {
+    public HL7Pix() throws IOException {
         super("hl7pix");
         addConnection(conn);
+    }
+
+    public void setMLLPRelease(MLLPRelease mllpRelease) {
+        this.mllpRelease = mllpRelease;
     }
 
     public String getSendingApplication() {
@@ -82,7 +87,7 @@ public class HL7Pix extends Device {
     public void open() throws IOException, InternalException, GeneralSecurityException {
         sock = conn.connect(remote);
         sock.setSoTimeout(conn.getResponseTimeout());
-        mllp = new MLLPConnection(sock);
+        mllp = new MLLPConnection(sock, mllpRelease);
     }
 
     public void close() {
@@ -96,7 +101,7 @@ public class HL7Pix extends Device {
         msh.setReceivingApplicationWithFacility(receivingApplication);
         msh.setField(17, charset);
         mllp.writeMessage(qbp.getBytes(charset));
-        if (null == mllp.readMessage())
+        if (mllp.readMessage() == null)
             throw new IOException("Connection closed by receiver");
     }
 

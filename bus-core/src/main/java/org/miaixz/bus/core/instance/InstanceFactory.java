@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.core.instance;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 

@@ -41,7 +41,7 @@ import java.util.List;
  *  This class is used to filter issues when getting issue statistics. of them.
  */
 public class IssuesStatisticsFilter implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private List<String> labels;
     private String milestone;

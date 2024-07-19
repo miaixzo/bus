@@ -29,8 +29,6 @@ package org.miaixz.bus.image;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.logger.Logger;
@@ -52,7 +50,8 @@ public class Node {
     private final String aet;
     private final String hostname;
     private final Integer port;
-    private final boolean validate;
+    private final boolean validateHostname;
+    private final Long id;
 
     public Node(String aet) {
         this(aet, null, null);
@@ -63,23 +62,28 @@ public class Node {
     }
 
     public Node(String aet, String hostname, Integer port) {
-        this(aet, hostname, port, false);
+        this(null, aet, hostname, port, false);
     }
 
-    public Node(String aet, String hostname, Integer port, boolean validate) {
+    public Node(Long id, String aet, String hostname, Integer port) {
+        this(id, aet, hostname, port, false);
+    }
+
+    public Node(Long id, String aet, String hostname, Integer port, boolean validateHostname) {
         if (!StringKit.hasText(aet)) {
             throw new IllegalArgumentException("Missing AETitle");
         }
-        if (aet.length() > Normal._16) {
+        if (aet.length() > 16) {
             throw new IllegalArgumentException("AETitle has more than 16 characters");
         }
-        if (null != port && (port < 1 || port > 65535)) {
+        if (port != null && (port < 1 || port > 65535)) {
             throw new IllegalArgumentException("Port is out of bound");
         }
-        this.aet = aet;
+        this.id = id;
+        this.aet = aet.trim();
         this.hostname = hostname;
         this.port = port;
-        this.validate = validate;
+        this.validateHostname = validateHostname;
     }
 
     public static String convertToIP(String hostname) {
@@ -88,13 +92,13 @@ public class Node {
         } catch (UnknownHostException e) {
             Logger.error("Cannot resolve hostname", e);
         }
-        return StringKit.hasText(hostname) ? hostname : Protocol.HOST_IPV4;
+        return StringKit.hasText(hostname) ? hostname : "127.0.0.1";
     }
 
     public static Node buildLocalDicomNode(Association as) {
         String ip = null;
         InetAddress address = as.getSocket().getLocalAddress();
-        if (null != address) {
+        if (address != null) {
             ip = address.getHostAddress();
         }
         return new Node(as.getLocalAET(), ip, as.getSocket().getLocalPort());
@@ -103,10 +107,30 @@ public class Node {
     public static Node buildRemoteDicomNode(Association as) {
         String ip = null;
         InetAddress address = as.getSocket().getInetAddress();
-        if (null != address) {
+        if (address != null) {
             ip = address.getHostAddress();
         }
         return new Node(as.getRemoteAET(), ip, as.getSocket().getPort());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getAet() {
+        return aet;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public boolean isValidateHostname() {
+        return validateHostname;
     }
 
     public boolean equalsHostname(String anotherHostname) {
@@ -119,11 +143,11 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return aet.equals(node.aet) &&
-                Objects.equals(hostname, node.hostname) &&
-                Objects.equals(port, node.port);
+        return aet.equals(node.aet)
+                && Objects.equals(hostname, node.hostname)
+                && Objects.equals(port, node.port);
     }
 
     @Override
@@ -133,13 +157,7 @@ public class Node {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("Host=");
-        buf.append(hostname);
-        buf.append(" AET=");
-        buf.append(aet);
-        buf.append(" Port=");
-        buf.append(port);
-        return buf.toString();
+        return "Host=" + hostname + " AET=" + aet + " Port=" + port;
     }
 
 }

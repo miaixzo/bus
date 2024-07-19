@@ -122,7 +122,7 @@ public class SyncInputStream extends FilterInputStream {
     public long copyTo(final OutputStream out, final StreamProgress streamProgress) {
         long copyLength = -1;
         try {
-            copyLength = IoKit.copy(this.in, out, Normal.DEFAULT_BUFFER_SIZE, this.length, streamProgress);
+            copyLength = IoKit.copy(this.in, out, Normal._8192, this.length, streamProgress);
         } catch (final InternalException e) {
             if (!(isIgnoreEOFError && isEOFException(e.getCause()))) {
                 throw e;

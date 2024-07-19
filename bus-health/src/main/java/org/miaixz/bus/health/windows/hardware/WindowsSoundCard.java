@@ -31,7 +31,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinReg;
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;

@@ -32,12 +32,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-import org.miaixz.bus.image.metric.*;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
-import org.miaixz.bus.image.metric.service.AbstractService;
-import org.miaixz.bus.image.metric.service.BasicCEchoSCP;
-import org.miaixz.bus.image.metric.service.ImageService;
-import org.miaixz.bus.image.metric.service.ServiceHandler;
+import org.miaixz.bus.image.metric.Association;
+import org.miaixz.bus.image.metric.Commands;
+import org.miaixz.bus.image.metric.Connection;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
+import org.miaixz.bus.image.metric.service.*;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
@@ -54,20 +54,20 @@ public class IanSCP extends Device {
     private File storageDir;
     private int status;
 
-    private final ImageService ianSCP =
-            new AbstractService(UID.InstanceAvailabilityNotificationSOPClass) {
+    private final ImageService ianSCP = new AbstractImageService(UID.InstanceAvailabilityNotification.uid) {
 
                 @Override
-                public void onDimse(Association as, Presentation pc,
-                                    Dimse dimse, Attributes cmd, Attributes data)
+                public void onDimseRQ(Association as, PresentationContext pc,
+                                      Dimse dimse, Attributes cmd, Attributes data)
                         throws IOException {
                     if (dimse != Dimse.N_CREATE_RQ)
-                        throw new ImageException(Status.UnrecognizedOperation);
+                        throw new ImageServiceException(Status.UnrecognizedOperation);
                     Attributes rsp = Commands.mkNCreateRSP(cmd, status);
                     Attributes rspAttrs = IanSCP.this.create(as, cmd, data);
                     as.tryWriteDimseRSP(pc, rsp, rspAttrs);
                 }
             };
+
 
     public IanSCP() {
         super("ianscp");
@@ -75,10 +75,10 @@ public class IanSCP extends Device {
         addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
-        ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addService(new BasicCEchoSCP());
-        serviceHandler.addService(ianSCP);
-        ae.setDimseRQHandler(serviceHandler);
+        ImageServiceRegistry serviceRegistry = new ImageServiceRegistry();
+        serviceRegistry.addDicomService(new BasicCEchoSCP());
+        serviceRegistry.addDicomService(ianSCP);
+        ae.setDimseRQHandler(serviceRegistry);
     }
 
     public File getStorageDirectory() {
@@ -86,7 +86,7 @@ public class IanSCP extends Device {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (null != storageDir)
+        if (storageDir != null)
             storageDir.mkdirs();
         this.storageDir = storageDir;
     }
@@ -96,14 +96,14 @@ public class IanSCP extends Device {
     }
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws ImageException {
-        if (null == storageDir)
+            throws ImageServiceException {
+        if (storageDir == null)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new ImageException(Status.DuplicateSOPinstance).
+            throw new ImageServiceException(Status.DuplicateSOPinstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
         ImageOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
@@ -111,11 +111,11 @@ public class IanSCP extends Device {
             out = new ImageOutputStream(file);
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid,
-                            UID.ExplicitVRLittleEndian),
+                            UID.ExplicitVRLittleEndian.uid),
                     rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Instance Available Notification:", e);
-            throw new ImageException(Status.ProcessingFailure, e);
+            throw new ImageServiceException(Status.ProcessingFailure, e);
         } finally {
             IoKit.close(out);
         }

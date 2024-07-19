@@ -57,6 +57,11 @@ import java.util.TimeZone;
  * 包装{@link Date}
  * 此类继承了{@link Date}，并提供扩展方法，如时区等。
  * 此类重写了父类的{@code toString()}方法，返回值为"yyyy-MM-dd HH:mm:ss"格式
+ * 相对于{@link Date}，此类定义了时区，用于标识日期所在时区，默认为当前时区
+ * <ul>
+ *     <li>当使用默认时区时，与LocalDateTime类似，标识本地时间</li>
+ *     <li>当使用指定时区时，与ZonedDateTime类似，标识某个地区的时间</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -106,7 +111,7 @@ public class DateTime extends Date {
      */
     public DateTime(final Date date) {
         this(
-                date,//
+                date,
                 (date instanceof DateTime) ? ((DateTime) date).timeZone : TimeZone.getDefault()
         );
     }
@@ -277,19 +282,16 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置全局的，是否使用{@link Date}默认的toString()格式
-     * 如果为{@code true}，则调用toString()时返回"EEE MMM dd HH:mm:ss zzz yyyy"格式，
-     * 如果为{@code false}，则返回"yyyy-MM-dd HH:mm:ss"，
-     * 默认为{@code false}
+     * 现在的时间
      *
-     * @param customUseJdkToStringStyle 是否使用{@link Date}默认的toString()格式
+     * @return 现在的时间
      */
-    public static void setUseJdkToStringStyle(final boolean customUseJdkToStringStyle) {
-        useJdkToStringStyle = customUseJdkToStringStyle;
+    public static DateTime now() {
+        return new DateTime();
     }
 
     /**
-     * 转换时间戳为 DateTime
+     * 转换时间戳为 DateTime，默认时区
      *
      * @param timeMillis 时间戳，毫秒数
      * @return DateTime
@@ -312,7 +314,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转换 {@link java.util.Calendar} 为 DateTime
+     * 转换 {@link java.util.Calendar} 为 DateTime，使用{@link java.util.Calendar}中指定的时区
      *
      * @param calendar {@link java.util.Calendar}
      * @return DateTime
@@ -334,12 +336,15 @@ public class DateTime extends Date {
     }
 
     /**
-     * 现在的时间
+     * 设置全局的，是否使用{@link Date}默认的toString()格式
+     * 如果为{@code true}，则调用toString()时返回"EEE MMM dd HH:mm:ss zzz yyyy"格式，
+     * 如果为{@code false}，则返回"yyyy-MM-dd HH:mm:ss"，
+     * 默认为{@code false}
      *
-     * @return 现在的时间
+     * @param customUseJdkToStringStyle 是否使用{@link Date}默认的toString()格式
      */
-    public static DateTime now() {
-        return new DateTime();
+    public static void setUseJdkToStringStyle(final boolean customUseJdkToStringStyle) {
+        useJdkToStringStyle = customUseJdkToStringStyle;
     }
 
     /**

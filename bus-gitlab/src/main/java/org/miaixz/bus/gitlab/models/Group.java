@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Group extends AbstractGroup<Group> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public class Statistics {
         private Long storageSize;

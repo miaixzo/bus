@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.template.Template;
@@ -51,6 +52,8 @@ public class ThymeleafProvider implements TemplateProvider {
      * 默认构造
      */
     public ThymeleafProvider() {
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(org.thymeleaf.TemplateEngine.class);
     }
 
     /**

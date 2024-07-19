@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.mac.hardware;
 
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;

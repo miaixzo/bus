@@ -28,8 +28,8 @@
 package org.miaixz.bus.health.mac.driver;
 
 import com.sun.jna.Native;
-import org.miaixz.bus.core.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.mac.jna.SystemB;

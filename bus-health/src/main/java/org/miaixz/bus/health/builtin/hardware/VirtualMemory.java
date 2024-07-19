@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * The VirtuallMemory class tracks information about the use of a computer's virtual memory (swap file) which

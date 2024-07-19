@@ -49,7 +49,8 @@ import java.util.concurrent.ConcurrentMap;
 public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter {
 
     private static final long serialVersionUID = -1L;
-    private static final int MAX_DIGITS = 10; // log10(Integer.MAX_VALUE) ~= 9.3
+
+    private static final int MAX_DIGITS = 10;
     private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new SafeConcurrentHashMap<>(7);
 
     /**
@@ -455,7 +456,6 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         return applyRules(c, buf);
     }
 
-    // Serializing
     @Override
     public <B extends Appendable> B format(final Date date, final B buf) {
         final Calendar c = Calendar.getInstance(timeZone, locale);
@@ -548,9 +548,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class defining a numeric rule.
-     * </p>
      */
     public interface NumberRule extends Rule {
         /**
@@ -564,9 +562,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a constant single character.
-     * </p>
      */
     private static class CharacterLiteral implements Rule {
         private final char mValue;
@@ -592,9 +588,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a constant string.
-     * </p>
      */
     private static class StringLiteral implements Rule {
         private final String mValue;
@@ -620,9 +614,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output one of a set of values.
-     * </p>
      */
     private static class TextField implements Rule {
         private final int mField;
@@ -658,9 +650,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output an unpadded number.
-     * </p>
      */
     private static class UnpaddedNumberField implements NumberRule {
         private final int mField;
@@ -697,9 +687,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output an unpadded month.
-     * </p>
      */
     private static class UnpaddedMonthField implements NumberRule {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
@@ -731,9 +719,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a padded number.
-     * </p>
      */
     private static class PaddedNumberField implements NumberRule {
         private final int mField;
@@ -771,9 +757,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a two digit number.
-     * </p>
      */
     private static class TwoDigitNumberField implements NumberRule {
         private final int mField;
@@ -808,9 +792,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a two digit year.
-     * </p>
      */
     private static class TwoDigitYearField implements NumberRule {
         static final TwoDigitYearField INSTANCE = new TwoDigitYearField();
@@ -838,9 +820,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a two digit month.
-     * </p>
      */
     private static class TwoDigitMonthField implements NumberRule {
         static final TwoDigitMonthField INSTANCE = new TwoDigitMonthField();
@@ -868,9 +848,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output the twelve hour field.
-     * </p>
      */
     private static class TwelveHourField implements NumberRule {
         private final NumberRule mRule;
@@ -905,9 +883,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output the twenty four hour field.
-     * </p>
      */
     private static class TwentyFourHourField implements NumberRule {
         private final NumberRule mRule;
@@ -969,9 +945,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output the numeric day in week.
-     * </p>
      */
     private static class WeekYear implements NumberRule {
         private final NumberRule mRule;
@@ -987,7 +961,11 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
-            mRule.appendTo(buffer, calendar.getWeekYear());
+            int weekYear = calendar.getWeekYear();
+            if (mRule instanceof TwoDigitYearField) {
+                weekYear %= 100;
+            }
+            mRule.appendTo(buffer, weekYear);
         }
 
         @Override
@@ -997,9 +975,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a time zone name.
-     * </p>
      */
     private static class TimeZoneNameRule implements Rule {
         private final Locale mLocale;
@@ -1042,9 +1018,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a time zone as a number {@code +/-HHMM} or {@code +/-HH:MM}.
-     * </p>
      */
     private static class TimeZoneNumberRule implements Rule {
         static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
@@ -1091,9 +1065,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Inner class to output a time zone as a number {@code +/-HHMM} or {@code +/-HH:MM}.
-     * </p>
      */
     private static class Iso8601_Rule implements Rule {
 

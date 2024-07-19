@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 
 import java.util.Arrays;

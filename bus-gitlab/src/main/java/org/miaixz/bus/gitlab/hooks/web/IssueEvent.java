@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.util.List;
 
 public class IssueEvent extends AbstractEvent {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Issue Hook";
     public static final String OBJECT_KIND = "issue";

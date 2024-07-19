@@ -31,9 +31,11 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Builder;
 import org.miaixz.bus.pay.magic.Message;
 
@@ -88,7 +90,7 @@ public class WechatPayBuilder {
 
     public static Map<String, String> getHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put("Content-Type", MediaType.APPLICATION_JSON);
+        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }
@@ -97,7 +99,7 @@ public class WechatPayBuilder {
 
     public static Map<String, String> getUploadHeaders(String authorization, String serialNumber) {
         Map<String, String> headers = getBaseHeaders(authorization);
-        headers.put("Content-Type", "multipart/form-data;boundary=\"boundary\"");
+        headers.put(HTTP.CONTENT_TYPE, "multipart/form-data;boundary=\"boundary\"");
         if (StringKit.isNotEmpty(serialNumber)) {
             headers.put("Wechatpay-Serial", serialNumber);
         }
@@ -361,16 +363,16 @@ public class WechatPayBuilder {
     /**
      * 替换url中的参数
      *
-     * @param str   原始字符串
+     * @param text   原始字符串
      * @param regex 表达式
      * @param args  替换字符串
      * @return {String}
      */
-    public static String replace(String str, String regex, String... args) {
+    public static String replace(String text, String regex, String... args) {
         for (String arg : args) {
-            str = str.replaceFirst(regex, arg);
+            text = text.replaceFirst(regex, arg);
         }
-        return str;
+        return text;
     }
 
     /**
@@ -651,11 +653,11 @@ public class WechatPayBuilder {
         String signature = response.getHeader("Wechatpay-Signature");
         String signatureType = response.getHeader("Wechatpay-Signature-Type");
         String body = response.getBody();
-        System.out.println("timestamp:" + timestamp);
-        System.out.println("nonceStr:" + nonceStr);
-        System.out.println("signature:" + signature);
-        System.out.println("signatureType:" + signatureType);
-        System.out.println("body:" + body);
+        Logger.info("timestamp:" + timestamp);
+        Logger.info("nonceStr:" + nonceStr);
+        Logger.info("signature:" + signature);
+        Logger.info("signatureType:" + signatureType);
+        Logger.info("body:" + body);
         return verifySignature(signatureType, signature, body, nonceStr, timestamp, Builder.getCertFileInputStream(certPath));
     }
 
@@ -810,8 +812,8 @@ public class WechatPayBuilder {
         map.put("publicKey", publicKey);
         map.put("privateKey", privateKey);
 
-        System.out.println("公钥\r\n" + publicKey);
-        System.out.println("私钥\r\n" + privateKey);
+        Logger.info("公钥\r\n" + publicKey);
+        Logger.info("私钥\r\n" + privateKey);
         return map;
     }
 

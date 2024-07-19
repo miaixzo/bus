@@ -394,7 +394,7 @@ public class Crockford {
      */
     private void resizeBuffer() {
         if (buffer == null) {
-            buffer = new byte[Normal.DEFAULT_BUFFER_SIZE];
+            buffer = new byte[Normal._8192];
             pos = 0;
         } else {
             final byte[] b = new byte[buffer.length * DEFAULT_BUFFER_RESIZE_FACTOR];

@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class UrlPath {
 
-    private List<String> segments;
+    private List<CharSequence> segments;
     private boolean withEngTag;
 
     /**
@@ -106,7 +106,7 @@ public class UrlPath {
      *
      * @return 节点列表
      */
-    public List<String> getSegments() {
+    public List<CharSequence> getSegments() {
         return ObjectKit.defaultIfNull(this.segments, ListKit.empty());
     }
 
@@ -116,7 +116,7 @@ public class UrlPath {
      * @param index 节点位置
      * @return 节点，无节点或者越界返回null
      */
-    public String getSegment(final int index) {
+    public CharSequence getSegment(final int index) {
         if (null == this.segments || index >= this.segments.size()) {
             return null;
         }
@@ -177,40 +177,20 @@ public class UrlPath {
      *     path = path-abempty / path-absolute / path-noscheme / path-rootless / path-empty
      * </pre>
      *
-     * @param charset encode编码，null表示不做encode
+     * @param charset       encode编码，null表示不做encode
      * @return 如果没有任何内容，则返回空字符串""
      */
     public String build(final Charset charset) {
-        return build(charset, true);
-    }
-
-    /**
-     * 构建path，前面带'/'
-     * <pre>
-     *     path = path-abempty / path-absolute / path-noscheme / path-rootless / path-empty
-     * </pre>
-     *
-     * @param charset       encode编码，null表示不做encode
-     * @param encodePercent 是否编码`%`
-     * @return 如果没有任何内容，则返回空字符串""
-     */
-    public String build(final Charset charset, final boolean encodePercent) {
         if (CollKit.isEmpty(this.segments)) {
             // 没有节点的path取决于是否末尾追加/，如果不追加返回空串，否则返回/
             return withEngTag ? Symbol.SLASH : Normal.EMPTY;
         }
 
-        final char[] safeChars = encodePercent ? null : new char[]{Symbol.C_PERCENT};
         final StringBuilder builder = new StringBuilder();
-        for (final String segment : segments) {
-            if (builder.length() == 0) {
-                // 根据https://www.ietf.org/rfc/rfc3986.html#section-3.3定义
-                // path的第一部分不允许有":"，其余部分允许
-                // 在此处的Path部分特指host之后的部分，即不包含第一部分
-                builder.append(Symbol.C_SLASH).append(RFC3986.SEGMENT_NZ_NC.encode(segment, charset, safeChars));
-            } else {
-                builder.append(Symbol.C_SLASH).append(RFC3986.SEGMENT.encode(segment, charset, safeChars));
-            }
+        for (final CharSequence segment : segments) {
+            // https://www.ietf.org/rfc/rfc3986.html#section-3.3
+            // 此处Path中是允许有`:`的，之前理解有误，应该是相对URI的第一个segment中不允许有`:`
+            builder.append(Symbol.C_SLASH).append(RFC3986.SEGMENT.encode(segment, charset));
         }
 
         if (withEngTag) {
@@ -242,11 +222,10 @@ public class UrlPath {
             this.segments = new LinkedList<>();
         }
 
-        final String seg = StringKit.toString(segment);
         if (before) {
-            this.segments.add(0, seg);
+            this.segments.add(0, segment);
         } else {
-            this.segments.add(seg);
+            this.segments.add(segment);
         }
     }
 

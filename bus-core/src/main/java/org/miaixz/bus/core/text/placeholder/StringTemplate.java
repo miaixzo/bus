@@ -116,6 +116,15 @@ public abstract class StringTemplate {
      */
     protected int fixedTextTotalLength;
 
+    /**
+     * 构造
+     *
+     * @param template            字符串模板
+     * @param escape              转义符
+     * @param defaultValue        默认值
+     * @param defaultValueHandler 默认值处理器
+     * @param features            策略值
+     */
     protected StringTemplate(final String template, final char escape, final String defaultValue,
                              final UnaryOperator<String> defaultValueHandler, final int features) {
         Assert.notNull(template, "String template cannot be null");
@@ -880,6 +889,11 @@ public abstract class StringTemplate {
          */
         protected int features;
 
+        /**
+         * 构造
+         *
+         * @param template 字符串模板
+         */
         protected AbstractBuilder(final String template) {
             this.template = Objects.requireNonNull(template);
             // 策略值 初始为 全局默认策略

@@ -882,7 +882,7 @@ public class Validator {
             return false;
         }
         try {
-            new java.net.URL(StringKit.toString(value));
+            new java.net.URL(value.toString());
         } catch (final MalformedURLException e) {
             return false;
         }

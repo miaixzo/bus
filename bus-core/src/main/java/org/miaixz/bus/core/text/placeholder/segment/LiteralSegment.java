@@ -40,6 +40,11 @@ public class LiteralSegment implements StringSegment {
      */
     private final String text;
 
+    /**
+     * 构造
+     *
+     * @param text 文本
+     */
     public LiteralSegment(final String text) {
         this.text = text;
     }

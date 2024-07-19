@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
+import org.miaixz.bus.core.Version;
+
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
@@ -39,12 +41,12 @@ import java.util.Locale;
  */
 public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
 
-    public static final String[] SUFFIXES = {"jp2", "jp2k", "j2k", "j2c"};
-    public static final String[] NAMES = {"jpeg2000-cv", "jpeg2000", "JP2KSimpleBox", "jpeg 2000", "JPEG 2000", "JPEG2000"};
-    public static final String[] MIMES = {"image/jp2", "image/jp2k", "image/j2k", "image/j2c"};
+    static final String[] SUFFIXES = {"jp2", "jp2k", "j2k", "j2c"};
+    static final String[] NAMES = {"jpeg2000-cv", "jpeg2000", "JP2KSimpleBox", "jpeg 2000", "JPEG 2000", "JPEG2000"};
+    static final String[] MIMES = {"image/jp2", "image/jp2k", "image/j2k", "image/j2c"};
 
     public NativeJ2kImageReaderSpi() {
-        super("Bus Team", "1.5", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
+        super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[]{ImageInputStream.class}, new String[]{}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
@@ -61,7 +63,9 @@ public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
 
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
-        if (!(source instanceof ImageInputStream)) {
+        // NativeImageReader.read() eventually instantiates a StreamSegment,
+        // which does not support all ImageInputStreams
+        if (!StreamSegment.supportsInputStream(source)) {
             return false;
         }
         ImageInputStream iis = (ImageInputStream) source;

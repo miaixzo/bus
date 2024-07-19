@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.image;
 
+import org.miaixz.bus.image.galaxy.EditorContext;
 import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.metric.AttributeContext;
 
 /**
  * @author Kimi Liu
@@ -37,6 +37,6 @@ import org.miaixz.bus.image.metric.AttributeContext;
 @FunctionalInterface
 public interface Editors {
 
-    boolean apply(Attributes attributes, AttributeContext context);
+    void apply(Attributes attributes, EditorContext context);
 
 }

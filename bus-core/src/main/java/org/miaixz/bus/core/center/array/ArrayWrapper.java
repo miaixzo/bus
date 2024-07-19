@@ -384,7 +384,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @return 新数组
      */
     public ArrayWrapper<A, E> insert(final int index, final E element) {
-        return insertArray(index, ArrayKit.ofArray(element, this.componentType));
+        return insertArray(index, ArrayKit.wrapSingle(element, this.componentType));
     }
 
     /**

@@ -268,6 +268,10 @@ public class Pattern {
      * 放宽汉字范围：如生僻字
      */
     public static final java.util.regex.Pattern CHINESE_NAME_PATTERN = java.util.regex.Pattern.compile(Regex.CHINESE_NAME);
+    /**
+     * Windows下文件名中的无效字符
+     */
+    public static final java.util.regex.Pattern FILE_NAME_INVALID_PATTERN_WIN = java.util.regex.Pattern.compile("[\\\\/:*?\"<>|\r\n]");
 
     /**
      * Pattern池

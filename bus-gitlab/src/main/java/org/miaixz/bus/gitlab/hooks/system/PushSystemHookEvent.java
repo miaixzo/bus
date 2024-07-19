@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.hooks.web.AbstractPushEvent;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static final String PUSH_EVENT = "push";
 

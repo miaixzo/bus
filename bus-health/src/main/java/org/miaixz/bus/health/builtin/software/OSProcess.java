@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;

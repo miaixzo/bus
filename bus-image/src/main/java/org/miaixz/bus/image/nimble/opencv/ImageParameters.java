@@ -27,19 +27,13 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
 public class ImageParameters {
 
-    public static final int DEFAULT_TILE_SIZE = Normal._512;
+    public static final int DEFAULT_TILE_SIZE = 512;
 
     // List of supported color model format
     public static final int CM_S_RGB = 1;
@@ -96,21 +90,140 @@ public class ImageParameters {
         this.initSignedData = false;
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getBitsPerSample() {
+        return bitsPerSample;
+    }
+
+    public void setBitsPerSample(int bitsPerSample) {
+        this.bitsPerSample = bitsPerSample;
+    }
+
+    public int getSamplesPerPixel() {
+        return samplesPerPixel;
+    }
+
+    public void setSamplesPerPixel(int samplesPerPixel) {
+        this.samplesPerPixel = samplesPerPixel;
+    }
+
+    public int getBytesPerLine() {
+        return bytesPerLine;
+    }
+
+    public void setBytesPerLine(int bytesPerLine) {
+        this.bytesPerLine = bytesPerLine;
+    }
+
+    public boolean isBigEndian() {
+        return bigEndian;
+    }
+
+    public void setBigEndian(boolean bigEndian) {
+        this.bigEndian = bigEndian;
+    }
+
+    public int getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(int dataType) {
+        this.dataType = dataType;
+    }
+
+    public int getFormat() {
+        return format;
+    }
+
+    public void setFormat(int format) {
+        this.format = format;
+    }
+
+    public int getBitOffset() {
+        return bitOffset;
+    }
+
+    public void setBitOffset(int bitOffset) {
+        this.bitOffset = bitOffset;
+    }
+
+    public int getDataOffset() {
+        return dataOffset;
+    }
+
+    public void setDataOffset(int dataOffset) {
+        this.dataOffset = dataOffset;
+    }
+
+    public boolean isSignedData() {
+        return signedData;
+    }
+
+    public void setSignedData(boolean signedData) {
+        this.signedData = signedData;
+    }
+
+    public boolean isInitSignedData() {
+        return initSignedData;
+    }
+
+    public void setInitSignedData(boolean initSignedData) {
+        this.initSignedData = initSignedData;
+    }
+
+    public int getBands() {
+        return bands;
+    }
+
+    public void setBands(int bands) {
+        this.bands = bands;
+    }
+
+    public boolean isJFIF() {
+        return jfif;
+    }
+
+    public void setJFIF(boolean jfif) {
+        this.jfif = jfif;
+    }
+
+    public int getJpegMarker() {
+        return jpegMarker;
+    }
+
+    public void setJpegMarker(int jpegMarker) {
+        this.jpegMarker = jpegMarker;
+    }
+
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("Size:");
-        buf.append(width);
-        buf.append("x");
-        buf.append(height);
-        buf.append(" Bits/Sample:");
-        buf.append(bitsPerSample);
-        buf.append(" Samples/Pixel:");
-        buf.append(samplesPerPixel);
-        buf.append(" Bytes/Line:");
-        buf.append(bytesPerLine);
-        buf.append(" Signed:");
-        buf.append(signedData);
-        return buf.toString();
+        String buf = "Size:" + width +
+                "x" +
+                height +
+                " Bits/Sample:" +
+                bitsPerSample +
+                " Samples/Pixel:" +
+                samplesPerPixel +
+                " Bytes/Line:" +
+                bytesPerLine +
+                " Signed:" +
+                signedData;
+        return buf;
     }
 
 }

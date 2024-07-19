@@ -32,7 +32,7 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Wtsapi32.WTSINFO;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_CLIENT_ADDRESS;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSSession;

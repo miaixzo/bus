@@ -61,7 +61,7 @@ public class WriterOutputStream extends OutputStream {
      * @param charset 字符集，用于编码字节数据
      */
     public WriterOutputStream(final Writer writer, final java.nio.charset.Charset charset) {
-        this(writer, charset, Normal.DEFAULT_BUFFER_SIZE, false);
+        this(writer, charset, Normal._8192, false);
     }
 
     /**
@@ -83,7 +83,7 @@ public class WriterOutputStream extends OutputStream {
      * @param decoder 字符集解码器，用于将字节数据解码为字符数据
      */
     public WriterOutputStream(final Writer writer, final CharsetDecoder decoder) {
-        this(writer, decoder, Normal.DEFAULT_BUFFER_SIZE, false);
+        this(writer, decoder, Normal._8192, false);
     }
 
     /**

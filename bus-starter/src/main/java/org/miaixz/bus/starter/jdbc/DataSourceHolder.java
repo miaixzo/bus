@@ -32,7 +32,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -100,7 +100,7 @@ public class DataSourceHolder {
             Method method = ((MethodSignature) point.getSignature()).getMethod();
             // 获取方法的@DataSource注解
             DataSource dataSource = method.getAnnotation(DataSource.class);
-            if (!StringKit.isEmptyIfString(dataSource.value())) {
+            if (!ObjectKit.isEmptyIfString(dataSource.value())) {
                 // 获取类级别的@DataSource注解
                 dataSource = method.getDeclaringClass().getAnnotation(DataSource.class);
             }

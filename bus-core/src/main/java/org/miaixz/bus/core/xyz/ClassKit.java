@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.NullWrapperBean;
+import org.miaixz.bus.core.beans.NullWrapper;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.convert.BasicType;
 import org.miaixz.bus.core.lang.Assert;
@@ -195,9 +195,9 @@ public class ClassKit {
         Object obj;
         for (int i = 0; i < objects.length; i++) {
             obj = objects[i];
-            if (obj instanceof NullWrapperBean) {
+            if (obj instanceof NullWrapper) {
                 // 自定义null值的参数类型
-                classes[i] = ((NullWrapperBean<?>) obj).getWrappedClass();
+                classes[i] = ((NullWrapper<?>) obj).getWrappedClass();
             } else if (null == obj) {
                 classes[i] = Object.class;
             } else {

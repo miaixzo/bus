@@ -184,7 +184,7 @@ public class CoverTasks {
                     return MediaType.APPLICATION_XML;
                 }
                 if (lower.contains(HTTP.PROTOBUF)) {
-                    return MediaType.APPLICATION_PROTOBUF;
+                    return MediaType.APPLICATION_X_PROTOBUF;
                 }
             }
             return MediaType.APPLICATION_FORM_URLENCODED;

@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.util.Date;
 
 public class Member extends AbstractUser<Member> {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private AccessLevel accessLevel;
     private Date expiresAt;

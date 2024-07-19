@@ -29,9 +29,9 @@ package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.CountingOutputStream;
 import org.miaixz.bus.image.galaxy.data.*;
 
 import java.io.*;
@@ -49,17 +49,19 @@ public class ImageOutputStream extends FilterOutputStream {
     private byte[] preamble = new byte[Normal._128];
     private boolean explicitVR;
     private boolean bigEndian;
-    private boolean deflated;
+    private CountingOutputStream countingOutputStream;
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+    private Deflater deflater;
 
-    public ImageOutputStream(OutputStream out, String tsuid) {
+    public ImageOutputStream(OutputStream out, String tsuid)
+            throws IOException {
         super(out);
         switchTransferSyntax(tsuid);
     }
 
     public ImageOutputStream(File file) throws IOException {
         this(new BufferedOutputStream(new FileOutputStream(file)),
-                UID.ExplicitVRLittleEndian);
+                UID.ExplicitVRLittleEndian.uid);
     }
 
     public final void setPreamble(byte[] preamble) {
@@ -82,7 +84,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public final void setEncodingOptions(ImageEncodingOptions encOpts) {
-        if (null == encOpts)
+        if (encOpts == null)
             throw new NullPointerException();
         this.encOpts = encOpts;
     }
@@ -100,10 +102,10 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public void writeFileMetaInformation(Attributes fmi) throws IOException {
-        if (!explicitVR || bigEndian || deflated)
+        if (!explicitVR || bigEndian || countingOutputStream != null)
             throw new IllegalStateException("explicitVR=" + explicitVR
                     + ", bigEndian=" + bigEndian
-                    + ", deflated=" + deflated);
+                    + ", deflated=" + (countingOutputStream != null));
         write(preamble);
         write(DICM);
         fmi.writeGroupTo(this, Tag.FileMetaInformationGroupLength);
@@ -111,7 +113,7 @@ public class ImageOutputStream extends FilterOutputStream {
 
     public void writeDataset(Attributes fmi, Attributes dataset)
             throws IOException {
-        if (null != fmi) {
+        if (fmi != null) {
             writeFileMetaInformation(fmi);
             switchTransferSyntax(fmi.getString(Tag.TransferSyntaxUID, null));
         }
@@ -125,14 +127,15 @@ public class ImageOutputStream extends FilterOutputStream {
         dataset.writeTo(this);
     }
 
-    private void switchTransferSyntax(String tsuid) {
-        bigEndian = tsuid.equals(UID.ExplicitVRBigEndianRetired);
-        explicitVR = !tsuid.equals(UID.ImplicitVRLittleEndian);
-        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian)
-                || tsuid.equals(UID.JPIPReferencedDeflate)) {
-            super.out = new DeflaterOutputStream(super.out,
-                    new Deflater(Deflater.DEFAULT_COMPRESSION, true));
-            this.deflated = true;
+    public void switchTransferSyntax(String tsuid) {
+        bigEndian = tsuid.equals(UID.ExplicitVRBigEndian.uid);
+        explicitVR = !tsuid.equals(UID.ImplicitVRLittleEndian.uid);
+        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid)
+                || tsuid.equals(UID.JPIPReferencedDeflate.uid)
+                || tsuid.equals(UID.JPIPHTJ2KReferencedDeflate.uid)) {
+            this.countingOutputStream = new CountingOutputStream(super.out);
+            super.out = new DeflaterOutputStream(countingOutputStream,
+                    deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true));
         }
     }
 
@@ -180,8 +183,8 @@ public class ImageOutputStream extends FilterOutputStream {
     public void writeAttribute(int tag, VR vr, Value val) throws IOException {
         if (val instanceof BulkData
                 && super.out instanceof ObjectOutputStream) {
-            writeHeader(tag, vr, Builder.MAGIC_LEN);
-            ((BulkData) val).serializeTo((ObjectOutputStream) super.out);
+            writeHeader(tag, vr, BulkData.MAGIC_LEN);
+            ((ObjectOutputStream) super.out).writeObject(val);
         } else {
             int length = val.getEncodedLength(encOpts, explicitVR, vr);
             writeHeader(tag, vr, length);
@@ -205,8 +208,10 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public void finish() throws IOException {
-        if (out instanceof DeflaterOutputStream) {
+        if (countingOutputStream != null) {
             ((DeflaterOutputStream) out).finish();
+            if ((countingOutputStream.getCount() & 1) != 0)
+                countingOutputStream.write(0);
         }
     }
 
@@ -214,6 +219,9 @@ public class ImageOutputStream extends FilterOutputStream {
         try {
             finish();
         } catch (IOException ignored) {
+        }
+        if (deflater != null) {
+            deflater.end();
         }
         super.close();
     }

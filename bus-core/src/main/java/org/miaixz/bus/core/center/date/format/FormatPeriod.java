@@ -247,7 +247,7 @@ public class FormatPeriod implements Serializable {
      * @return this
      */
     public FormatPeriod setSeparator(final String separator) {
-        this.separator = StringKit.emptyIfNull(separator);
+        this.separator = StringKit.toStringOrEmpty(separator);
         return this;
     }
 

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Soundex implements FuzzyStr {
+public class Soundex implements FuzzyString {
 
     protected static final String MAP_6 =
             // A BCD  E FG  H   I JKLMN  O PQRST  U V  W X  Y Z
@@ -60,7 +60,7 @@ public class Soundex implements FuzzyStr {
 
     @Override
     public String toFuzzy(String s) {
-        if (null == s || s.length() == 0)
+        if (s == null || s.length() == 0)
             return Normal.EMPTY;
 
         char[] in = s.toCharArray();

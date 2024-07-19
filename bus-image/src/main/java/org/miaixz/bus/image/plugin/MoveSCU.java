@@ -27,23 +27,29 @@
  */
 package org.miaixz.bus.image.plugin;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.metric.*;
-import org.miaixz.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.miaixz.bus.image.metric.internal.pdu.ExtendedNegotiate;
-import org.miaixz.bus.image.metric.internal.pdu.Presentation;
+import org.miaixz.bus.image.metric.Association;
+import org.miaixz.bus.image.metric.Connection;
+import org.miaixz.bus.image.metric.DimseRSPHandler;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
+import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
+import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
@@ -60,19 +66,21 @@ public class MoveSCU extends Device implements AutoCloseable {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private final transient AAssociateRQ rq = new AAssociateRQ();
+    private final Attributes keys = new Attributes();
     private final transient Status state;
     private int priority;
     private String destination;
     private InformationModel model;
-    private Attributes keys = new Attributes();
     private int[] inFilter = DEF_IN_FILTER;
     private transient Association as;
+    private int cancelAfter;
+    private boolean releaseEager;
 
     public MoveSCU() {
         this(null);
     }
 
-    public MoveSCU(Progress progress) {
+    public MoveSCU(ImageProgress progress) {
         super("movescu");
         addConnection(conn);
         addApplicationEntity(ae);
@@ -84,13 +92,21 @@ public class MoveSCU extends Device implements AutoCloseable {
         this.priority = priority;
     }
 
+    public void setCancelAfter(int cancelAfter) {
+        this.cancelAfter = cancelAfter;
+    }
+
+    public void setReleaseEager(boolean releaseEager) {
+        this.releaseEager = releaseEager;
+    }
+
     public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
-        rq.addPresentationContext(new Presentation(1, model.cuid, tss));
+        rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
-            rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
         }
-        if (null != model.level) {
+        if (model.level != null) {
             addLevel(model.level);
         }
     }
@@ -133,13 +149,16 @@ public class MoveSCU extends Device implements AutoCloseable {
     }
 
     public void open()
-            throws IOException, InterruptedException, GeneralSecurityException {
+            throws IOException,
+            InterruptedException,
+            InternalException,
+            GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (null != as && as.isReadyForDataTransfer()) {
+        if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
         }
@@ -159,25 +178,41 @@ public class MoveSCU extends Device implements AutoCloseable {
     }
 
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
+        DimseRSPHandler rspHandler =
+                new DimseRSPHandler(as.nextMessageID()) {
 
-            @Override
-            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                super.onDimseRSP(as, cmd, data);
-                Progress p = state.getProgress();
-                if (null != p) {
-                    p.setAttributes(cmd);
-                    if (p.isCancel()) {
-                        try {
-                            this.cancel(as);
-                        } catch (IOException e) {
-                            Logger.error("Cancel C-MOVE", e);
+                    @Override
+                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                        super.onDimseRSP(as, cmd, data);
+                        ImageProgress p = state.getProgress();
+                        if (p != null) {
+                            p.setAttributes(cmd);
+                            if (p.isCancel()) {
+                                try {
+                                    this.cancel(as);
+                                } catch (IOException e) {
+                                    Logger.error("Cancel C-MOVE", e);
+                                }
+                            }
                         }
                     }
-                }
-            }
-        };
+                };
         as.cmove(model.cuid, priority, keys, null, destination, rspHandler);
+        if (cancelAfter > 0) {
+            schedule(
+                    () -> {
+                        try {
+                            rspHandler.cancel(as);
+                            if (releaseEager) {
+                                as.release();
+                            }
+                        } catch (IOException e) {
+                            Logger.error("Cancel after C-MOVE", e);
+                        }
+                    },
+                    cancelAfter,
+                    TimeUnit.MILLISECONDS);
+        }
     }
 
     public Connection getConnection() {
@@ -189,12 +224,12 @@ public class MoveSCU extends Device implements AutoCloseable {
     }
 
     public enum InformationModel {
-        PatientRoot(UID.PatientRootQueryRetrieveInformationModelMOVE, "STUDY"),
-        StudyRoot(UID.StudyRootQueryRetrieveInformationModelMOVE, "STUDY"),
-        PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelMOVERetired, "STUDY"),
-        CompositeInstanceRoot(UID.CompositeInstanceRootRetrieveMOVE, "IMAGE"),
-        HangingProtocol(UID.HangingProtocolInformationModelMOVE, null),
-        ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelMOVE, null);
+        PatientRoot(UID.PatientRootQueryRetrieveInformationModelMove.uid, "STUDY"),
+        StudyRoot(UID.StudyRootQueryRetrieveInformationModelMove.uid, "STUDY"),
+        PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelMove.uid, "STUDY"),
+        CompositeInstanceRoot(UID.CompositeInstanceRootRetrieveMove.uid, "IMAGE"),
+        HangingProtocol(UID.HangingProtocolInformationModelMove.uid, null),
+        ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelMove.uid, null);
 
         final String cuid;
         final String level;
@@ -207,7 +242,6 @@ public class MoveSCU extends Device implements AutoCloseable {
         public String getCuid() {
             return cuid;
         }
-
     }
 
 }

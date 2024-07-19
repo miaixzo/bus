@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFile(Path srcFile, BasicFileAttributes attrs) throws IOException {
         Path dstFile = dest.dstFile(srcFile, srcPath, destPath);
         Path dstDir = dstFile.getParent();
-        if (null != dstDir) Files.createDirectories(dstDir);
+        if (dstDir != null) Files.createDirectories(dstDir);
         try (FileChannel ifc = (FileChannel) Files.newByteChannel(srcFile, EnumSet.of(StandardOpenOption.READ));
              FileChannel ofc = (FileChannel) Files.newByteChannel(dstFile,
                      EnumSet.of(StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW))) {
@@ -95,7 +94,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
 
     private int correctLength(MappedByteBuffer mbb) {
         int length;
-        while (mbb.remaining() > Normal._8) {
+        while (mbb.remaining() > 8) {
             if (mbb.getShort() == 0x4f4c
                     && mbb.get(mbb.position() - 3) == 0
                     && mbb.get(mbb.position() - 6) % 2 != 0

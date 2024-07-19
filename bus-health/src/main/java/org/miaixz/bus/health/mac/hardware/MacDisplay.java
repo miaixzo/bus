@@ -34,7 +34,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.logger.Logger;

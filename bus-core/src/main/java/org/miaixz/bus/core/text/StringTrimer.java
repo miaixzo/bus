@@ -73,7 +73,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
-            return StringKit.toString(text);
+            return StringKit.toStringOrNull(text);
         }
 
         final int length = text.length();

@@ -35,7 +35,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 
 import java.io.File;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 文件包装器，扩展文件对象
@@ -45,23 +44,26 @@ import java.nio.charset.StandardCharsets;
  */
 public class FileWrapper implements Wrapper<File>, Serializable {
 
-    /**
-     * 默认编码：UTF-8
-     */
-    public static final java.nio.charset.Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final long serialVersionUID = -1L;
+
+    /**
+     * 被包装的文件
+     */
     protected File file;
+    /**
+     * 编码
+     */
     protected java.nio.charset.Charset charset;
 
     /**
      * 构造
      *
      * @param file    文件（非{@code null}）
-     * @param charset 编码，使用 {@link Charset}，传入{@code null}则使用默认编码{@link #DEFAULT_CHARSET}
+     * @param charset 编码，使用 {@link Charset}，传入{@code null}则使用默认编码{@link Charset#UTF_8}
      */
     public FileWrapper(final File file, final java.nio.charset.Charset charset) {
         this.file = Assert.notNull(file);
-        this.charset = ObjectKit.defaultIfNull(charset, DEFAULT_CHARSET);
+        this.charset = ObjectKit.defaultIfNull(charset, Charset.UTF_8);
     }
 
     /**

@@ -120,7 +120,7 @@ public class Commands {
     public static Attributes mkNEventReportRQ(int msgId, String cuid,
                                               String iuid, int eventTypeID, Attributes data) {
         Attributes rq = mkRQ(msgId, 0x0100,
-                null == data ? NO_DATASET : withDatasetType);
+                data == null ? NO_DATASET : withDatasetType);
         rq.setString(Tag.AffectedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.AffectedSOPInstanceUID, VR.UI, iuid);
         rq.setInt(Tag.EventTypeID, VR.US, eventTypeID);
@@ -136,7 +136,7 @@ public class Commands {
         Attributes rq = mkRQ(msgId, 0x0110, NO_DATASET);
         rq.setString(Tag.RequestedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.RequestedSOPInstanceUID, VR.UI, iuid);
-        if (null != tags)
+        if (tags != null)
             rq.setInt(Tag.AttributeIdentifierList, VR.AT, tags);
         return rq;
     }
@@ -159,7 +159,7 @@ public class Commands {
     public static Attributes mkNActionRQ(int msgId, String cuid,
                                          String iuid, int actionTypeID, Attributes data) {
         Attributes rq = mkRQ(msgId, 0x0130,
-                null == data ? NO_DATASET : withDatasetType);
+                data == null ? NO_DATASET : withDatasetType);
         rq.setString(Tag.RequestedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.RequestedSOPInstanceUID, VR.UI, iuid);
         rq.setInt(Tag.ActionTypeID, VR.US, actionTypeID);
@@ -173,14 +173,14 @@ public class Commands {
     public static Attributes mkNCreateRQ(int msgId, String cuid, String iuid) {
         Attributes rq = mkRQ(msgId, 0x0140, withDatasetType);
         rq.setString(Tag.AffectedSOPClassUID, VR.UI, cuid);
-        if (null != iuid)
+        if (iuid != null)
             rq.setString(Tag.AffectedSOPInstanceUID, VR.UI, iuid);
         return rq;
     }
 
     public static Attributes mkNCreateRSP(Attributes cmd, int status) {
         String iuid = cmd.getString(Tag.AffectedSOPInstanceUID);
-        if (null == iuid)
+        if (iuid == null)
             cmd.setString(Tag.AffectedSOPInstanceUID, VR.UI, UID.createUID());
         return mkRSP(cmd, status, Dimse.N_CREATE_RQ);
     }

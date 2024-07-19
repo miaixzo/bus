@@ -61,8 +61,7 @@ public class DefaultChildLimitProvider implements ChildLimitProvider {
         // 1秒 = 2分，1秒/2=0.5秒 = 1分
         int minute = seconds * 2;
 
-        SolarDay birthday = birthTime.getDay();
-        SolarMonth birthMonth = birthday.getMonth();
+        SolarDay birthday = birthTime.getSolarDay();
 
         int d = birthday.getDay() + day;
         int h = birthTime.getHour() + hour;
@@ -72,7 +71,7 @@ public class DefaultChildLimitProvider implements ChildLimitProvider {
         d += h / 24;
         h %= 24;
 
-        SolarMonth sm = SolarMonth.fromYm(birthMonth.getYear().getYear() + year, birthMonth.getMonth()).next(month);
+        SolarMonth sm = SolarMonth.fromYm(birthday.getYear() + year, birthday.getMonth()).next(month);
 
         int dc = sm.getDayCount();
         if (d > dc) {
@@ -80,7 +79,7 @@ public class DefaultChildLimitProvider implements ChildLimitProvider {
             sm = sm.next(1);
         }
 
-        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear().getYear(), sm.getMonth(), d, h, mi, birthTime.getSecond()), year, month, day, hour, minute);
+        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, h, mi, birthTime.getSecond()), year, month, day, hour, minute);
     }
 
 }

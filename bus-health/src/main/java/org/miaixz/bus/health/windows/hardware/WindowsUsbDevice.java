@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Guid.GUID;
-import org.miaixz.bus.core.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Triplet;

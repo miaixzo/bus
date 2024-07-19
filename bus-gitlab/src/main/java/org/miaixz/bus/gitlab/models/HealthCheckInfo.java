@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class HealthCheckInfo implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
     private HealthCheckItem dbCheck;

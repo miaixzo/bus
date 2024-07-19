@@ -33,10 +33,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public class ProtectedTag implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static class CreateAccessLevel implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private AccessLevel access_level;
         private String accessLevelDescription;

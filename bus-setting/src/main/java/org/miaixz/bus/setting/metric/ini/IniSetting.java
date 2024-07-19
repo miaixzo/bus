@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.setting.metric.ini;
 
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.setting.Builder;
@@ -83,7 +84,7 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     private String getNewLineSplit() {
-        return System.getProperty("line.separator", Symbol.LF);
+        return System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF);
     }
 
     /**

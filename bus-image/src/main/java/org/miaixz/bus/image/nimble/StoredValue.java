@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
@@ -83,7 +82,7 @@ public abstract class StoredValue {
 
         public Signed(int bitsStored) {
             this.bitsStored = bitsStored;
-            this.shift = Normal._32 - bitsStored;
+            this.shift = 32 - bitsStored;
         }
 
         @Override

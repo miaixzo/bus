@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
@@ -69,10 +68,70 @@ public class NativeImageReader extends ImageReader implements Closeable {
         this.canEncodeSigned = canEncodeSigned;
     }
 
+    /**
+     * Creates a <code>ImageTypeSpecifier</code> from the <code>ImageParameters</code>. The default sample model is
+     * pixel interleaved and the default color model is CS_GRAY or CS_sRGB and IndexColorModel with palettes.
+     */
     protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorSpace colorSpace,
                                                               byte[] redPalette, byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) throws IOException {
         return createImageType(params,
                 createColorModel(params, colorSpace, redPalette, greenPalette, bluePalette, alphaPalette));
+    }
+
+    private static ColorModel createColorModel(ImageParameters params, ColorSpace colorSpace, byte[] redPalette,
+                                               byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) {
+        int nType = params.getDataType();
+        int nBands = params.getSamplesPerPixel();
+        int nBitDepth = params.getBitsPerSample();
+
+        ColorModel colorModel;
+        if (nBands == 1 && redPalette != null && greenPalette != null && bluePalette != null
+                && redPalette.length == greenPalette.length && redPalette.length == bluePalette.length) {
+
+            // Build IndexColorModel
+            int paletteLength = redPalette.length;
+            if (alphaPalette != null) {
+                byte[] alphaTmp = alphaPalette;
+                if (alphaPalette.length != paletteLength) {
+                    alphaTmp = new byte[paletteLength];
+                    if (alphaPalette.length > paletteLength) {
+                        System.arraycopy(alphaPalette, 0, alphaTmp, 0, paletteLength);
+                    } else {
+                        System.arraycopy(alphaPalette, 0, alphaTmp, 0, alphaPalette.length);
+                        for (int i = alphaPalette.length; i < paletteLength; i++) {
+                            alphaTmp[i] = (byte) 255; // Opaque.
+                        }
+                    }
+                }
+                colorModel =
+                        new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette, alphaTmp);
+            } else {
+                colorModel = new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette);
+            }
+        } else if (nType == ImageParameters.TYPE_BIT) {
+            // 0 -> 0x00 (black), 1 -> 0xff (white)
+            byte[] comp = new byte[]{(byte) 0x00, (byte) 0xFF};
+            colorModel = new IndexColorModel(1, 2, comp, comp, comp);
+        } else {
+            ColorSpace cs;
+            boolean hasAlpha;
+            if (colorSpace != null
+                    && (colorSpace.getNumComponents() == nBands || colorSpace.getNumComponents() == nBands - 1)) {
+                cs = colorSpace;
+                hasAlpha = colorSpace.getNumComponents() + 1 == nBands;
+            } else {
+                cs = ColorSpace.getInstance(nBands < 3 ? ColorSpace.CS_GRAY : ColorSpace.CS_sRGB);
+                hasAlpha = nBands % 2 == 0;
+            }
+
+            int[] bits = new int[nBands];
+            for (int i = 0; i < nBands; i++) {
+                bits[i] = nBitDepth;
+            }
+            colorModel = new ComponentColorModel(cs, bits, hasAlpha, false,
+                    hasAlpha ? Transparency.TRANSLUCENT : Transparency.OPAQUE, nType);
+        }
+        return colorModel;
     }
 
     protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
@@ -85,7 +144,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         int nScanlineStride = params.getBytesPerLine() / ((nBitDepth + 7) / 8);
 
         if (nType < 0 || (nType > ImageParameters.TYPE_BIT)) {
-            throw new UnsupportedOperationException("Unsupported data type" + Symbol.SPACE + nType);
+            throw new UnsupportedOperationException("Unsupported data type" + " " + nType);
         }
 
         int[] bandOffsets = new int[nBands];
@@ -99,7 +158,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     public static void closeMat(Mat mat) {
-        if (null != mat) {
+        if (mat != null) {
             mat.release();
         }
     }
@@ -179,63 +238,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return new SOFSegment(jfif, marker, samplePrecision, lines, samplesPerLine, componentsInFrame);
     }
 
-    private static ColorModel createColorModel(ImageParameters params, ColorSpace colorSpace, byte[] redPalette,
-                                               byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) {
-        int nType = params.getDataType();
-        int nBands = params.getSamplesPerPixel();
-        int nBitDepth = params.getBitsPerSample();
-
-        ColorModel colorModel;
-        if (nBands == 1 && null != redPalette && null != greenPalette && null != bluePalette
-                && redPalette.length == greenPalette.length && redPalette.length == bluePalette.length) {
-
-            // Build IndexColorModel
-            int paletteLength = redPalette.length;
-            if (null != alphaPalette) {
-                byte[] alphaTmp = alphaPalette;
-                if (alphaPalette.length != paletteLength) {
-                    alphaTmp = new byte[paletteLength];
-                    if (alphaPalette.length > paletteLength) {
-                        System.arraycopy(alphaPalette, 0, alphaTmp, 0, paletteLength);
-                    } else {
-                        System.arraycopy(alphaPalette, 0, alphaTmp, 0, alphaPalette.length);
-                        for (int i = alphaPalette.length; i < paletteLength; i++) {
-                            alphaTmp[i] = (byte) 255; // Opaque.
-                        }
-                    }
-                }
-                colorModel =
-                        new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette, alphaTmp);
-            } else {
-                colorModel = new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette);
-            }
-        } else if (nType == ImageParameters.TYPE_BIT) {
-            // 0 -> 0x00 (black), 1 -> 0xff (white)
-            byte[] comp = new byte[]{(byte) 0x00, (byte) 0xFF};
-            colorModel = new IndexColorModel(1, 2, comp, comp, comp);
-        } else {
-            ColorSpace cs;
-            boolean hasAlpha;
-            if (null != colorSpace
-                    && (colorSpace.getNumComponents() == nBands || colorSpace.getNumComponents() == nBands - 1)) {
-                cs = colorSpace;
-                hasAlpha = colorSpace.getNumComponents() + 1 == nBands;
-            } else {
-                cs = ColorSpace.getInstance(nBands < 3 ? ColorSpace.CS_GRAY : ColorSpace.CS_sRGB);
-                hasAlpha = nBands % 2 == 0;
-            }
-
-            int[] bits = new int[nBands];
-            for (int i = 0; i < nBands; i++) {
-                bits[i] = nBitDepth;
-            }
-            colorModel = new ComponentColorModel(cs, bits, hasAlpha, false,
-                    hasAlpha ? Transparency.TRANSLUCENT : Transparency.OPAQUE, nType);
-        }
-        return colorModel;
-    }
-
-    private static final int readUnsignedByte(ImageInputStream iis) throws IOException {
+    private static int readUnsignedByte(ImageInputStream iis) throws IOException {
         int ch = iis.read();
         if (ch < 0) {
             throw new EOFException();
@@ -243,7 +246,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return ch;
     }
 
-    private static final int readUnsignedShort(ImageInputStream iis) throws IOException {
+    private static int readUnsignedShort(ImageInputStream iis) throws IOException {
         int ch1 = iis.read();
         int ch2 = iis.read();
         if ((ch1 | ch2) < 0) {
@@ -265,7 +268,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
-        if (null != input && !(input instanceof ImageInputStream)) {
+        if (input != null && !(input instanceof ImageInputStream)) {
             throw new IllegalArgumentException("input is not an ImageInputStream!");
         }
         resetInternalState();
@@ -287,18 +290,21 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public int getWidth(int frameIndex) {
+    public int getWidth(int frameIndex) throws IOException {
         return params.getWidth();
     }
 
     @Override
-    public int getHeight(int frameIndex) {
+    public int getHeight(int frameIndex) throws IOException {
         return params.getHeight();
     }
 
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) throws IOException {
-        return Collections.singletonList(createImageType(params, null, null, null, null, null)).iterator();
+
+        ImageTypeSpecifier imageType = createImageType(params, null, null, null, null, null);
+
+        return Collections.singletonList(imageType).iterator();
     }
 
     @Override
@@ -315,37 +321,19 @@ public class NativeImageReader extends ImageReader implements Closeable {
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         PlanarImage img = getNativeImage(param);
         BufferedImage bufferedImage = ImageConversion.toBufferedImage(img);
-        if (null != img) {
+        if (img != null) {
             img.release();
         }
         return bufferedImage;
     }
 
-    public ImageParameters buildImage(ImageInputStream iis) throws IOException {
-        if (null != iis && params.getBytesPerLine() < 1) {
-            SOFSegment sof = getSOFSegment(iis);
-            if (null != sof) {
-                params.setJfif(sof.isJfif());
-                params.setJpegMarker(sof.getMarker());
-                params.setWidth(sof.getSamplesPerLine());
-                params.setHeight(sof.getLines());
-                params.setBitsPerSample(sof.getSamplePrecision());
-                params.setSamplesPerPixel(sof.getComponents());
-                params.setBytesPerLine(
-                        params.getWidth() * params.getSamplesPerPixel() * ((params.getBitsPerSample() + 7) / 8));
-                return params;
-            }
-        }
-        return null;
-    }
-
-    public PlanarImage getNativeImage(ImageReadParam param) throws IOException {
+    private PlanarImage getNativeImage(ImageReadParam param) throws IOException {
         StreamSegment seg = StreamSegment.getStreamSegment(iis, param);
         ImageDescriptor desc = seg.getImageDescriptor();
 
         int dcmFlags =
                 (canEncodeSigned && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
-        if (ybr2rgb(desc.getPhotometric())) {
+        if (ybr2rgb(desc.getPhotometricInterpretation())) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_YBR;
         }
 
@@ -353,8 +341,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
             MatOfDouble positions = null;
             MatOfDouble lengths = null;
             try {
-                positions = new MatOfDouble(ExtendInputImageStream.getDoubleArray(seg.getSegPosition()));
-                lengths = new MatOfDouble(ExtendInputImageStream.getDoubleArray(seg.getSegLength()));
+                positions = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegPosition()));
+                lengths = new MatOfDouble(SegmentedImageStream.getDoubleArray(seg.getSegLength()));
                 return ImageCV.toImageCV(Imgcodecs.dicomJpgFileRead(((FileStreamSegment) seg).getFilePath(), positions,
                         lengths, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             } finally {
@@ -376,7 +364,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     private boolean ybr2rgb(Photometric pmi) {
-        //  保留YBR以实现JPEG无损 (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
+        // Preserve YBR for JPEG Lossless (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
         if (params.getJpegMarker() == 0xffc3) {
             return false;
         }
@@ -384,13 +372,33 @@ public class NativeImageReader extends ImageReader implements Closeable {
             case MONOCHROME1:
             case MONOCHROME2:
             case PALETTE_COLOR:
+            case YBR_ICT:
+            case YBR_RCT:
                 return false;
             case RGB:
-                // 当使用JFIF报头为RGB时，强制JPEG转换(1.2.840.10008.1.2.4.50)到YBR_FULL_422颜色模型
-                // 对于带有JFIF报头的有损jpeg，RGB颜色模型没有意义
-                return params.isJfif() && params.getJpegMarker() == 0xffc0;
+                // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with JFIF header
+                // (error made by some constructors). RGB color model doesn't make sense for lossy jpeg with JFIF header.
+                return params.isJFIF() && params.getJpegMarker() == 0xffc0;
         }
         return true;
+    }
+
+    public ImageParameters buildImage(ImageInputStream iis) throws IOException {
+        if (iis != null && params.getBytesPerLine() < 1) {
+            SOFSegment sof = getSOFSegment(iis);
+            if (sof != null) {
+                params.setJFIF(sof.isJFIF());
+                params.setJpegMarker(sof.getMarker());
+                params.setWidth(sof.getSamplesPerLine());
+                params.setHeight(sof.getLines());
+                params.setBitsPerSample(sof.getSamplePrecision());
+                params.setSamplesPerPixel(sof.getComponents());
+                params.setBytesPerLine(
+                        params.getWidth() * params.getSamplesPerPixel() * ((params.getBitsPerSample() + 7) / 8));
+                return params;
+            }
+        }
+        return null;
     }
 
 }

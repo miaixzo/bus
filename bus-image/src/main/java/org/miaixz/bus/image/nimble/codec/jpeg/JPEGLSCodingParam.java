@@ -27,8 +27,6 @@
  */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
-import org.miaixz.bus.core.lang.Normal;
-
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -53,7 +51,7 @@ public class JPEGLSCodingParam {
 
     private static JPEGLSCodingParam getDefaultJPEGLSEncodingParam(
             int maxVal, int clampedMaxVal, int near) {
-        int factor = (clampedMaxVal + Normal._128) >> 8;
+        int factor = (clampedMaxVal + 128) >> 8;
         int t1 = factor + 2 + 3 * near;
         if (t1 > maxVal || t1 < near + 1)
             t1 = near + 1;
@@ -63,7 +61,7 @@ public class JPEGLSCodingParam {
         int t3 = factor * 17 + 4 + 7 * near;
         if (t3 > maxVal || t3 < t2)
             t3 = t2;
-        return new JPEGLSCodingParam(maxVal, t1, t2, t3, Normal._64);
+        return new JPEGLSCodingParam(maxVal, t1, t2, t3, 64);
     }
 
     public static JPEGLSCodingParam getDefaultJPEGLSCodingParam(int p, int near) {

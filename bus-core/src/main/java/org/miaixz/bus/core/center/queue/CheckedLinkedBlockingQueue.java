@@ -44,6 +44,9 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 检查函数
+     */
     protected final Predicate<E> checker;
 
     /**

@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serializable;
 
 public class IssuesStatistics implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Statistics statistics;
 
@@ -51,7 +51,7 @@ public class IssuesStatistics implements Serializable {
     }
 
     public static class Statistics implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private Counts counts;
 
@@ -66,7 +66,7 @@ public class IssuesStatistics implements Serializable {
 
     public static class Counts implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -1L;
 
         private Integer all;
         private Integer closed;

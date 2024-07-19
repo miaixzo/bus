@@ -30,7 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 public class OauthTokenResponse implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private String accessToken;
     private String tokenType;

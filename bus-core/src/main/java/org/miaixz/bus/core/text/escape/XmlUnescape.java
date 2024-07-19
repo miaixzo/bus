@@ -38,7 +38,13 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
  */
 public class XmlUnescape extends ReplacerChain {
 
+    /**
+     * 基础反转义符
+     */
     protected static final String[][] BASIC_UNESCAPE = invert(XmlEscape.BASIC_ESCAPE);
+    /**
+     * 特定字符反转义
+     */
     protected static final String[][] OTHER_UNESCAPE = new String[][]{new String[]{"&apos;", "'"}};
     private static final long serialVersionUID = -1L;
 

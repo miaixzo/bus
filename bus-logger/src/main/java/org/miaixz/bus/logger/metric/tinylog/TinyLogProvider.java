@@ -46,7 +46,7 @@ import org.tinylog.provider.ProviderRegistry;
  */
 public class TinyLogProvider extends Provider {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 日志框架实现提供者

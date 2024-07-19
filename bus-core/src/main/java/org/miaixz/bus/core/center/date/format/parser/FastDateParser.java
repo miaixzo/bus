@@ -118,10 +118,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     private transient List<StrategyAndWidth> list;
 
     /**
-     * <p>
      * Constructs a new FastDateParser.
-     * </p>
-     * <p>
      * Use {@link FormatBuilder#getInstance(String, TimeZone, Locale)} or another variation of the factory methods of {@link FormatBuilder} to get a cached FastDateParser instance.
      *
      * @param pattern  non-null {@link java.text.SimpleDateFormat} compatible pattern
@@ -133,9 +130,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * <p>
      * Constructs a new FastDateParser.
-     * </p>
      *
      * @param pattern      non-null {@link java.text.SimpleDateFormat} compatible pattern
      * @param timeZone     non-null time zone to use

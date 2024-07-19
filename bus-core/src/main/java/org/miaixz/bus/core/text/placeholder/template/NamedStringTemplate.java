@@ -27,8 +27,7 @@
  */
 package org.miaixz.bus.core.text.placeholder.template;
 
-import org.miaixz.bus.core.beans.StrictBeanDesc;
-import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.beans.desc.BeanDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,7 +35,6 @@ import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.text.placeholder.segment.*;
 import org.miaixz.bus.core.xyz.*;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.*;
@@ -70,6 +68,7 @@ public class NamedStringTemplate extends StringTemplate {
      * 在下标占位符中，最大的下标值
      */
     protected int indexedSegmentMaxIdx = 0;
+
 
     protected NamedStringTemplate(final String template, final int features, final String prefix,
                                   final String suffix, final char escape, final String defaultValue,
@@ -349,7 +348,7 @@ public class NamedStringTemplate extends StringTemplate {
         if (beanOrMap instanceof Map) {
             return format((Map<String, ?>) beanOrMap);
         } else if (BeanKit.isReadableBean(beanOrMap.getClass())) {
-            final StrictBeanDesc beanDesc = BeanKit.getBeanDesc(beanOrMap.getClass());
+            final BeanDesc beanDesc = BeanKit.getBeanDesc(beanOrMap.getClass());
             return format(fieldName -> {
                 final Method getterMethod = beanDesc.getGetter(fieldName);
                 if (getterMethod == null) {
@@ -358,7 +357,7 @@ public class NamedStringTemplate extends StringTemplate {
                 return LambdaKit.buildGetter(getterMethod).apply(beanOrMap);
             });
         }
-        return format(fieldName -> BeanKit.getFieldValue(beanOrMap, fieldName));
+        return format(fieldName -> BeanKit.getProperty(beanOrMap, fieldName));
     }
 
     /**
@@ -545,17 +544,8 @@ public class NamedStringTemplate extends StringTemplate {
         if (obj instanceof Map) {
             final Map<String, String> map = (Map<String, String>) obj;
             matchesByKey(text, map::put);
-        } else if (BeanKit.isReadableBean(obj.getClass())) {
-            final StrictBeanDesc beanDesc = BeanKit.getBeanDesc(obj.getClass());
-            matchesByKey(text, (key, value) -> {
-                final Field field = beanDesc.getField(key);
-                final Method setterMethod = beanDesc.getSetter(key);
-                if (field == null || setterMethod == null) {
-                    return;
-                }
-                final Object convert = Convert.convert(field.getType(), value);
-                LambdaKit.buildSetter(setterMethod).accept(obj, convert);
-            });
+        } else if (BeanKit.isWritableBean(obj.getClass())) {
+            matchesByKey(text, (key, value) -> BeanKit.setProperty(obj, key, value));
         }
         return obj;
     }
@@ -564,17 +554,23 @@ public class NamedStringTemplate extends StringTemplate {
      * 构造器
      */
     public static class Builder extends AbstractBuilder<Builder, NamedStringTemplate> {
+
         /**
          * 占位符前缀，默认为 {@link NamedStringTemplate#DEFAULT_PREFIX}
-         * <p>不能为空字符串</p>
+         * 不能为空字符串
          */
         protected String prefix;
         /**
          * 占位符后缀，默认为 {@link NamedStringTemplate#DEFAULT_SUFFIX}
-         * <p>不能为空字符串</p>
+         * 不能为空字符串
          */
         protected String suffix;
 
+        /**
+         * 构造
+         *
+         * @param template 模板
+         */
         protected Builder(final String template) {
             super(template);
         }

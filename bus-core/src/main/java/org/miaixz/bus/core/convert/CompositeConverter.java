@@ -256,6 +256,11 @@ public class CompositeConverter extends RegisterConverter {
             return (T) ClassConverter.INSTANCE.convert(type, value);
         }
 
+        // 空值转空对象，则直接实例化
+        if (ObjectKit.isEmpty(value)) {
+            return ReflectKit.newInstanceIfPossible(rowType);
+        }
+
         // 表示非需要特殊转换的对象
         return null;
     }

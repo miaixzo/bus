@@ -28,7 +28,7 @@
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;

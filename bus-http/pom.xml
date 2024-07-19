@@ -33,7 +33,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-http</artifactId>
-    <version>8.0.5</version>
+    <version>8.0.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -71,8 +71,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <lombok.version>1.18.32</lombok.version>
-        <servlet.version>6.1.0-M2</servlet.version>
+        <lombok.version>1.18.34</lombok.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.xml.soap.version>2.0.1</jakarta.xml.soap.version>
     </properties>
 
     <dependencies>
@@ -90,7 +91,13 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>${servlet.version}</version>
+            <version>${jakarta.servlet.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.soap</groupId>
+            <artifactId>jakarta.xml.soap-api</artifactId>
+            <version>${jakarta.xml.soap.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

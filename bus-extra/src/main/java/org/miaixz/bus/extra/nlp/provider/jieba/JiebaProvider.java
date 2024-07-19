@@ -65,7 +65,7 @@ public class JiebaProvider implements NLPProvider {
 
     @Override
     public NLPResult parse(final CharSequence text) {
-        return new JiebaResult(jiebaSegmenter.process(StringKit.toString(text), mode));
+        return new JiebaResult(jiebaSegmenter.process(StringKit.toStringOrEmpty(text), mode));
     }
 
 }

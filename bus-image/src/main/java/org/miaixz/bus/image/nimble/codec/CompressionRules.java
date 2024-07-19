@@ -33,17 +33,18 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     private final List<CompressionRule> list = new ArrayList<>();
 
     public void add(CompressionRule rule) {
-        if (null != findByCommonName(rule.getCommonName()))
+        if (findByCommonName(rule.getCommonName()) != null)
             throw new IllegalStateException("CompressionRule with cn: '"
                     + rule.getCommonName() + "' already exists");
         int index = Collections.binarySearch(list, rule);
@@ -83,4 +84,5 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
     public Iterator<CompressionRule> iterator() {
         return list.iterator();
     }
+
 }

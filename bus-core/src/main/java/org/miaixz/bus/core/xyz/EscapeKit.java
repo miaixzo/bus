@@ -140,7 +140,7 @@ public class EscapeKit {
      */
     public static String escape(final CharSequence content, final Predicate<Character> filter) {
         if (StringKit.isEmpty(content)) {
-            return StringKit.toString(content);
+            return StringKit.toStringOrNull(content);
         }
 
         final StringBuilder tmp = new StringBuilder(content.length() * 6);

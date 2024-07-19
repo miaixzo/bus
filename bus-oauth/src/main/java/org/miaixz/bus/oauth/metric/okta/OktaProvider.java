@@ -32,8 +32,10 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -72,8 +74,8 @@ public class OktaProvider extends AbstractProvider {
 
     private AccToken getAuthToken(String tokenUrl) {
         Map header = new HashMap();
-        header.put("accept", "application/json");
-        header.put("content-type", "application/x-www-form-urlencoded");
+        header.put("accept", MediaType.APPLICATION_JSON);
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
         String response = Httpx.post(tokenUrl, null, header);

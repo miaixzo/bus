@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Sensors include hardware sensors to monitor temperature, fan speed, and other information.

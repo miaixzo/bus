@@ -68,7 +68,7 @@ import java.io.Serializable;
  */
 public class Java implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private final String JAVA_VERSION = Platform.get(Keys.JAVA_VERSION, false);
     private final float JAVA_VERSION_FLOAT = getJavaVersionAsFloat();

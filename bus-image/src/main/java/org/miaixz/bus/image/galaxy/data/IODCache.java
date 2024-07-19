@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.image.galaxy.data;
 
+import org.miaixz.bus.image.IOD;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -45,7 +47,7 @@ public class IODCache {
 
     public IOD get(String uri) throws IOException {
         IOD iod = map.get(uri);
-        if (null == iod)
+        if (iod == null)
             map.put(uri, iod = IOD.load(uri));
         return iod;
     }

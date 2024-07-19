@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.crypto.metric;
 
+import org.miaixz.bus.core.lang.Assert;
+
 import java.security.Security;
 
 /**
@@ -36,6 +38,14 @@ import java.security.Security;
  * @since Java 17+
  */
 public class BouncyCastleServiceProvider implements BouncyCastleProvider {
+
+    /**
+     * 构造
+     */
+    public BouncyCastleServiceProvider() {
+        // SPI方式加载时检查BC库是否引入
+        Assert.notNull(BouncyCastleProvider.class);
+    }
 
     @Override
     public java.security.Provider create() {

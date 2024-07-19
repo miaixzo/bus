@@ -28,7 +28,6 @@
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.Material;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
@@ -163,7 +162,7 @@ public enum Dimse {
     private static void promptStringTo(Attributes cmd, String name, int tag,
                                        StringBuilder sb) {
         String s = cmd.getString(tag, null);
-        if (null != s)
+        if (s != null)
             sb.append(name).append(s);
     }
 
@@ -171,21 +170,25 @@ public enum Dimse {
                                     StringBuilder sb) {
         if (tag != 0) {
             String uid = cmd.getString(tag, null);
-            if (null != uid)
+            if (uid != null)
                 promptUIDTo(name, uid, sb);
         }
     }
 
+    private static void promptMoveDestination(Attributes cmd, StringBuilder sb) {
+        sb.append(", dest=").append(cmd.getString(Tag.MoveDestination));
+    }
+
     private static void promptUIDTo(String name, String uid, StringBuilder sb) {
-        sb.append(Material.LINE_SEPARATOR).append(name);
+        sb.append(Builder.LINE_SEPARATOR).append(name);
         UID.promptTo(uid, sb);
     }
 
     private static void promptMoveOriginatorTo(Attributes cmd, StringBuilder sb) {
         String aet = cmd.getString(Tag.MoveOriginatorApplicationEntityTitle,
                 null);
-        if (null != aet)
-            sb.append(Material.LINE_SEPARATOR)
+        if (aet != null)
+            sb.append(Builder.LINE_SEPARATOR)
                     .append("  orig=")
                     .append(aet)
                     .append(" >> ")
@@ -196,10 +199,10 @@ public enum Dimse {
     private static void promptAttributeIdentifierListTo(Attributes cmd,
                                                         StringBuilder sb) {
         int[] tags = cmd.getInts(Tag.AttributeIdentifierList);
-        if (null == tags)
+        if (tags == null)
             return;
 
-        sb.append(Material.LINE_SEPARATOR).append("  tags=[");
+        sb.append(Builder.LINE_SEPARATOR).append("  tags=[");
         if (tags.length > 0) {
             for (int tag : tags)
                 sb.append(Tag.toString(tag)).append(", ");
@@ -259,13 +262,13 @@ public enum Dimse {
                 promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
                 promptMoveOriginatorTo(cmdAttrs, sb);
                 break;
+            case C_FIND_RQ:
             case C_GET_RQ:
                 promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-                promptAttributeIdentifierListTo(cmdAttrs, sb);
                 break;
-            case C_FIND_RQ:
             case C_MOVE_RQ:
                 promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+                promptMoveDestination(cmdAttrs, sb);
                 break;
             case C_GET_RSP:
             case C_MOVE_RSP:
@@ -274,6 +277,9 @@ public enum Dimse {
             case N_EVENT_REPORT_RQ:
             case N_EVENT_REPORT_RSP:
                 promptIntTo(cmdAttrs, ", eventID=", Tag.EventTypeID, sb);
+                break;
+            case N_GET_RQ:
+                promptAttributeIdentifierListTo(cmdAttrs, sb);
                 break;
             case N_ACTION_RQ:
             case N_ACTION_RSP:

@@ -129,7 +129,7 @@ public class StreamReader {
             out = new FastByteArrayOutputStream();
         }
         try {
-            IoKit.copy(in, out, Normal.DEFAULT_BUFFER_SIZE, limit, (StreamProgress) null);
+            IoKit.copy(in, out, Normal._8192, limit, (StreamProgress) null);
         } finally {
             if (closeAfterRead) {
                 IoKit.close(in);

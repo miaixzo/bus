@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 import java.io.Serializable;
 
 public class Environment implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public enum EnvironmentState {
         AVAILABLE, STOPPED;

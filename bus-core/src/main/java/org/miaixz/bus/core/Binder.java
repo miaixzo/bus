@@ -28,14 +28,16 @@
 package org.miaixz.bus.core;
 
 import lombok.RequiredArgsConstructor;
-import org.miaixz.bus.core.annotation.Ignore;
-import org.miaixz.bus.core.annotation.Values;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.PropertySource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Ignore;
+import org.miaixz.bus.core.lang.annotation.Values;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.reflect.JdkProxy;
 import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -163,7 +165,7 @@ public class Binder {
             throw new InternalException(e);
         }
 
-        Class<?> actualClass = null;// ClassKit.getCglibActualClass(clazz);
+        Class<?> actualClass = JdkProxy.getCglibActualClass(clazz);
         boolean b = (null == prefix || Symbol.DOT.equals(prefix)) && actualClass.isAnnotationPresent(Values.class);
         if (b) {
             prefix = actualClass.getAnnotation(Values.class).value();
@@ -180,12 +182,12 @@ public class Binder {
      * @return the object
      */
     public <T> T bind(T object, String prefix) {
-        /* if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
+        if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
             prefix = null;
         }
-       for (Field field : ClassKit.getDeclaredFields(object.getClass())) {
+        for (Field field : FieldKit.getFields(object.getClass())) {
             bindField(object, field, prefix);
-        }*/
+        }
         return object;
     }
 

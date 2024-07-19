@@ -30,7 +30,8 @@ package org.miaixz.bus.image.nimble.codec;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
-import org.miaixz.bus.image.galaxy.Material;
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
 
@@ -38,7 +39,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
@@ -50,6 +50,8 @@ import java.util.Map.Entry;
  */
 public class ImageReaderFactory implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     private static volatile ImageReaderFactory defaultFactory;
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
@@ -58,14 +60,14 @@ public class ImageReaderFactory implements Serializable {
     }
 
     public static ImageReaderFactory getDefault() {
-        if (null == defaultFactory)
-            defaultFactory = initDefault();
+        if (defaultFactory == null)
+            defaultFactory = init();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageReaderFactory factory) {
-        if (null == factory)
+        if (factory == null)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -73,19 +75,6 @@ public class ImageReaderFactory implements Serializable {
 
     public static void resetDefault() {
         defaultFactory = null;
-    }
-
-    private static ImageReaderFactory initDefault() {
-        ImageReaderFactory factory = new ImageReaderFactory();
-        URL url = ResourceKit.getResourceUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
-        try {
-            factory.load(url.openStream());
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Failed to load Image Reader Factory configuration from: "
-                            + url.toString(), e);
-        }
-        return factory;
     }
 
     public static ImageReaderParam getImageReaderParam(String tsuid) {
@@ -108,7 +97,7 @@ public class ImageReaderFactory implements Serializable {
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReader reader = iter.next();
-        if (null != param.className) {
+        if (param.className != null) {
             while (!param.className.equals(reader.getClass().getName())) {
                 if (iter.hasNext())
                     reader = iter.next();
@@ -137,7 +126,7 @@ public class ImageReaderFactory implements Serializable {
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReaderSpi spi = iter.next();
-        if (null != param.className) {
+        if (param.className != null) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -151,14 +140,21 @@ public class ImageReaderFactory implements Serializable {
         return spi;
     }
 
-    public void load(InputStream in) throws IOException {
-        Properties props = new Properties();
-        props.load(in);
-        for (Map.Entry<Object, Object> entry : props.entrySet()) {
-            String[] ss = Material.split((String) entry.getValue(), Symbol.C_COLON);
-            map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
-                    ss.length > 3 ? Material.split(ss[3], Symbol.C_SEMICOLON) : Normal.EMPTY_STRING_ARRAY));
+    public static ImageReaderFactory init() {
+        ImageReaderFactory factory = new ImageReaderFactory();
+        URL url = ResourceKit.getResourceUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
+        try {
+            Properties props = new Properties();
+            props.load(url.openStream());
+            for (Entry<Object, Object> entry : props.entrySet()) {
+                String[] ss = Builder.split((String) entry.getValue(), ':');
+                factory.map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
+                        ss.length > 3 ? Builder.split(ss[3], ';') : Normal.EMPTY_STRING_ARRAY));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load Image Reader Factory configuration from: " + url.toString(), e);
         }
+        return factory;
     }
 
     public ImageReaderParam get(String tsuid) {
@@ -187,13 +183,15 @@ public class ImageReaderFactory implements Serializable {
 
     public static class ImageReaderParam implements Serializable {
 
+        private static final long serialVersionUID = -1L;
+
         public final String formatName;
         public final String className;
         public final PatchJPEGLS patchJPEGLS;
-        public final Material[] imageReadParams;
+        public final Property[] imageReadParams;
 
         public ImageReaderParam(String formatName, String className,
-                                PatchJPEGLS patchJPEGLS, Material[] imageReadParams) {
+                                PatchJPEGLS patchJPEGLS, Property[] imageReadParams) {
             this.formatName = formatName;
             this.className = nullify(className);
             this.patchJPEGLS = patchJPEGLS;
@@ -203,25 +201,25 @@ public class ImageReaderFactory implements Serializable {
         public ImageReaderParam(String formatName, String className,
                                 String patchJPEGLS, String... imageWriteParams) {
             this(formatName, className,
-                    null != patchJPEGLS && !patchJPEGLS.isEmpty()
+                    patchJPEGLS != null && !patchJPEGLS.isEmpty()
                             ? PatchJPEGLS.valueOf(patchJPEGLS)
                             : null,
-                    Material.valueOf(imageWriteParams));
+                    Property.valueOf(imageWriteParams));
         }
 
-        public Material[] getImageReadParams() {
+        public Property[] getImageReadParams() {
             return imageReadParams;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
 
             ImageReaderParam that = (ImageReaderParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (null != className ? !className.equals(that.className) : null != that.className) return false;
+            if (!Objects.equals(className, that.className)) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageReadParams, that.imageReadParams);
 
@@ -230,8 +228,8 @@ public class ImageReaderFactory implements Serializable {
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
-            result = 31 * result + (null != className ? className.hashCode() : 0);
-            result = 31 * result + (null != patchJPEGLS ? patchJPEGLS.hashCode() : 0);
+            result = 31 * result + (className != null ? className.hashCode() : 0);
+            result = 31 * result + (patchJPEGLS != null ? patchJPEGLS.hashCode() : 0);
             result = 31 * result + Arrays.hashCode(imageReadParams);
             return result;
         }
@@ -242,7 +240,7 @@ public class ImageReaderFactory implements Serializable {
                     "formatName='" + formatName + Symbol.C_SINGLE_QUOTE +
                     ", className='" + className + Symbol.C_SINGLE_QUOTE +
                     ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageReaderParam=" + Arrays.toString(imageReadParams) +
+                    ", imageReadParams=" + Arrays.toString(imageReadParams) +
                     '}';
         }
     }

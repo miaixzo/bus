@@ -388,7 +388,7 @@ public class Loader {
         Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();
         // new line split
-        String newLineSplit = System.getProperty("line.separator", Symbol.LF);
+        String newLineSplit = System.getProperty(Keys.LINE_SEPARATOR, Symbol.LF);
         StringBuilder line = new StringBuilder(builderCapacity);
 
         int ch;

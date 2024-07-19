@@ -27,7 +27,6 @@
  */
 package org.miaixz.bus.socket.plugin;
 
-import org.miaixz.bus.socket.buffer.BufferFactory;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.secure.ssl.ClientAuth;
 import org.miaixz.bus.socket.secure.ssl.SslAsynchronousSocketChannel;
@@ -52,11 +51,11 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
     private final BufferPagePool bufferPagePool;
 
     public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer) throws Exception {
-        this(factory, consumer, BufferFactory.DISABLED_BUFFER_FACTORY.create());
+        this(factory, consumer, BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
     public SslPlugin(SSLContextFactory factory) throws Exception {
-        this(factory, sslEngine -> sslEngine.setUseClientMode(false), BufferFactory.DISABLED_BUFFER_FACTORY.create());
+        this(factory, sslEngine -> sslEngine.setUseClientMode(false), BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
     public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer, BufferPagePool bufferPagePool) throws Exception {
@@ -65,7 +64,7 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
     }
 
     public SslPlugin(ClientSSLContextFactory factory) throws Exception {
-        this(factory, BufferFactory.DISABLED_BUFFER_FACTORY.create());
+        this(factory, BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
     public SslPlugin(ClientSSLContextFactory factory, BufferPagePool bufferPagePool) throws Exception {
@@ -73,7 +72,7 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
     }
 
     public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth) throws Exception {
-        this(factory, clientAuth, BufferFactory.DISABLED_BUFFER_FACTORY.create());
+        this(factory, clientAuth, BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
     public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth, BufferPagePool bufferPagePool) throws Exception {

@@ -32,8 +32,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basics.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
@@ -67,7 +69,7 @@ public class SlackProvider extends AbstractProvider {
     @Override
     protected AccToken getAccessToken(Callback callback) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
@@ -82,7 +84,7 @@ public class SlackProvider extends AbstractProvider {
     @Override
     protected Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
@@ -105,7 +107,7 @@ public class SlackProvider extends AbstractProvider {
     @Override
     public Message revoke(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
         String userInfo = Httpx.get(complex.revoke(), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);

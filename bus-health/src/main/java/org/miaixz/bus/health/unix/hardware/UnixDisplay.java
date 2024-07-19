@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.health.unix.hardware;
 
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.unix.driver.Xrandr;

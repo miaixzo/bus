@@ -30,7 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ReleaseEvent extends AbstractEvent {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Release Hook";
     public static final String OBJECT_KIND = "release";

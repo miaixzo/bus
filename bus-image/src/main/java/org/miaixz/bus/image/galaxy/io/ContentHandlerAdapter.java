@@ -27,16 +27,21 @@
  */
 package org.miaixz.bus.image.galaxy.io;
 
-import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.*;
+import org.miaixz.bus.logger.Logger;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kimi Liu
@@ -44,14 +49,16 @@ import java.util.List;
  */
 public class ContentHandlerAdapter extends DefaultHandler {
 
-    private final boolean bigEndian;
+    private final boolean lenient;
     private final LinkedList<Attributes> items = new LinkedList<>();
     private final LinkedList<Sequence> seqs = new LinkedList<>();
-    private final ByteArrayOutputStream bout = new ByteArrayOutputStream(Normal._64);
+    private final ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
     private final char[] carry = new char[4];
-    private final StringBuilder sb = new StringBuilder(Normal._64);
-    private final List<String> values = new ArrayList<>();
+    private final StringBuilder sb = new StringBuilder(64);
+    private final ArrayList<String> values = new ArrayList<>();
+    private BulkData.Creator bulkDataCreator = BulkData::new;
     private Attributes fmi;
+    private boolean bigEndian;
     private int carryLen;
     private PersonName pn;
     private PersonName.Group pnGroup;
@@ -64,94 +71,101 @@ public class ContentHandlerAdapter extends DefaultHandler {
     private boolean inlineBinary;
 
     public ContentHandlerAdapter(Attributes attrs) {
-        if (null == attrs)
-            throw new NullPointerException();
-        items.add(attrs);
-        bigEndian = attrs.bigEndian();
+        this(attrs, false);
+    }
+
+    public ContentHandlerAdapter(Attributes attrs, boolean lenient) {
+        if (attrs != null) {
+            items.add(attrs);
+            bigEndian = attrs.bigEndian();
+        }
+        this.lenient = lenient;
+    }
+
+    private static boolean bigEndian(Attributes fmi) {
+        return fmi != null && UID.ExplicitVRBigEndian.equals(fmi.getString(Tag.TransferSyntaxUID));
+    }
+
+    private static String prefix(String privateCreator, int level) {
+        if (privateCreator == null && level == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        if (privateCreator != null) {
+            sb.append(privateCreator).append(':');
+        }
+        for (int i = 0; i < level; i++) {
+            sb.append('>');
+        }
+        return sb.toString();
+    }
+
+    public void setBulkDataCreator(BulkData.Creator bulkDataCreator) {
+        this.bulkDataCreator = Objects.requireNonNull(bulkDataCreator);
     }
 
     public Attributes getFileMetaInformation() {
         return fmi;
     }
 
+    public Attributes getDataset() {
+        return items.getFirst();
+    }
+
     @Override
     public void startElement(String uri, String localName, String qName,
                              org.xml.sax.Attributes atts) {
-        switch (qName.charAt(0)) {
-            case 'A':
-                if (qName.equals("Alphabetic"))
-                    startPNGroup(PersonName.Group.Alphabetic);
+        switch (qName) {
+            case "DicomAttribute":
+                startDicomAttribute(
+                        (int) Long.parseLong(atts.getValue("tag"), 16),
+                        atts.getValue("privateCreator"),
+                        atts.getValue("vr"));
                 break;
-            case 'B':
-                if (qName.equals("BulkData"))
-                    bulkData(atts.getValue("uuid"), atts.getValue("uri"));
+            case "Item":
+                startItem(Integer.parseInt(atts.getValue("number")));
                 break;
-            case 'D':
-                if (qName.equals("DicomAttribute"))
-                    startDicomAttribute(
-                            (int) Long.parseLong(atts.getValue("tag"), Normal._16),
-                            atts.getValue("privateCreator"),
-                            atts.getValue("vr"));
-                else if (qName.equals("DataFragment"))
-                    startDataFragment(Integer.parseInt(atts.getValue("number")));
+            case "DataFragment":
+                startDataFragment(Integer.parseInt(atts.getValue("number")));
                 break;
-            case 'F':
-                if (qName.equals("FamilyName"))
-                    startText();
+            case "InlineBinary":
+                startInlineBinary();
                 break;
-            case 'G':
-                if (qName.equals("GivenName"))
-                    startText();
+            case "PersonName":
+                startPersonName(Integer.parseInt(atts.getValue("number")));
                 break;
-            case 'I':
-                if (qName.equals("Item"))
-                    startItem(Integer.parseInt(atts.getValue("number")));
-                else if (qName.equals("InlineBinary"))
-                    startInlineBinary();
-                else if (qName.equals("Ideographic"))
-                    startPNGroup(PersonName.Group.Ideographic);
+            case "Alphabetic":
+                startPNGroup(PersonName.Group.Alphabetic);
                 break;
-            case 'L':
-                if (qName.equals("Length"))
-                    startText();
+            case "Ideographic":
+                startPNGroup(PersonName.Group.Ideographic);
                 break;
-            case 'M':
-                if (qName.equals("MiddleName"))
-                    startText();
+            case "Phonetic":
+                startPNGroup(PersonName.Group.Phonetic);
                 break;
-            case 'N':
-                if (qName.equals("NamePrefix") || qName.equals("NameSuffix"))
-                    startText();
+            case "Value":
+                startValue(Integer.parseInt(atts.getValue("number")));
+                startText();
                 break;
-            case 'O':
-                if (qName.equals("Offset"))
-                    startText();
+            case "FamilyName":
+            case "GivenName":
+            case "Length":
+            case "MiddleName":
+            case "NamePrefix":
+            case "NameSuffix":
+            case "Offset":
+            case "TransferSyntax":
+            case "URI":
+                startText();
                 break;
-            case 'P':
-                if (qName.equals("PersonName")) {
-                    startPersonName(Integer.parseInt(atts.getValue("number")));
-                } else if (qName.equals("Phonetic"))
-                    startPNGroup(PersonName.Group.Phonetic);
-                break;
-            case 'T':
-                if (qName.equals("TransferSyntax"))
-                    startText();
-                break;
-            case 'U':
-                if (qName.equals("URI"))
-                    startText();
-                break;
-            case 'V':
-                if (qName.equals("Value")) {
-                    startValue(Integer.parseInt(atts.getValue("number")));
-                    startText();
-                }
+            case "BulkData":
+                bulkData(atts.getValue("uuid"), atts.getValue("uri"));
                 break;
         }
     }
 
     private void bulkData(String uuid, String uri) {
-        bulkData = new BulkData(uuid, uri, items.getLast().bigEndian());
+        bulkData = bulkDataCreator.create(uuid, uri, items.getLast().bigEndian());
     }
 
     private void startInlineBinary() {
@@ -171,14 +185,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
                                      String vr) {
         this.tag = tag;
         this.privateCreator = privateCreator;
-        this.vr = null != vr ? VR.valueOf(vr)
+        this.vr = vr != null ? VR.valueOf(vr)
                 : ElementDictionary.vrOf(tag, privateCreator);
         if (this.vr == VR.SQ)
             seqs.add(items.getLast().newSequence(privateCreator, tag, 10));
     }
 
     private void startDataFragment(int number) {
-        if (null == dataFragments)
+        if (dataFragments == null)
             dataFragments = items.getLast()
                     .newFragments(privateCreator, tag, vr, 10);
         while (dataFragments.size() < number - 1)
@@ -188,8 +202,8 @@ public class ContentHandlerAdapter extends DefaultHandler {
     private void startItem(int number) {
         Sequence seq = seqs.getLast();
         while (seq.size() < number - 1)
-            seq.add(new Attributes(0));
-        Attributes item = new Attributes();
+            seq.add(new Attributes(bigEndian, 0));
+        Attributes item = new Attributes(bigEndian);
         seq.add(item);
         items.add(item);
     }
@@ -209,67 +223,66 @@ public class ContentHandlerAdapter extends DefaultHandler {
     }
 
     @Override
-    public void characters(char[] ch, int offset, int len) {
+    public void characters(char[] ch, int offset, int len)
+            throws SAXException {
         if (processCharacters)
-            if (inlineBinary) {
-                if (carryLen != 0) {
-                    int copy = Math.min(4 - carryLen, len);
-                    System.arraycopy(ch, offset, carry, carryLen, copy);
-                    carryLen += copy;
-                    offset += copy;
-                    len -= copy;
-                    if (carryLen == 4)
-                        Base64.decode(carry, 0, 4, bout);
-                    else return;
+            if (inlineBinary)
+                try {
+                    if (carryLen != 0) {
+                        int copy = Math.min(4 - carryLen, len);
+                        System.arraycopy(ch, offset, carry, carryLen, copy);
+                        carryLen += copy;
+                        offset += copy;
+                        len -= copy;
+                        if (carryLen == 4)
+                            Builder.decode(carry, 0, 4, bout);
+                        else return;
+                    }
+                    if ((carryLen = len & 3) != 0) {
+                        len -= carryLen;
+                        System.arraycopy(ch, offset + len, carry, 0, carryLen);
+                    }
+                    Builder.decode(ch, offset, len, bout);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-                if ((carryLen = len & 3) != 0) {
-                    len -= carryLen;
-                    System.arraycopy(ch, offset + len, carry, 0, carryLen);
-                }
-                Base64.decode(ch, offset, len, bout);
-            } else
+            else
                 sb.append(ch, offset, len);
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        switch (qName.charAt(0)) {
-            case 'D':
-                if (qName.equals("DicomAttribute"))
-                    endDicomAttribute();
-                else if (qName.equals("DataFragment"))
-                    endDataFragment();
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
+        switch (qName) {
+            case "DicomAttribute":
+                endDicomAttribute();
                 break;
-            case 'F':
-                if (qName.equals("FamilyName"))
-                    endPNComponent(PersonName.Component.FamilyName);
+            case "Item":
+                endItem();
                 break;
-            case 'G':
-                if (qName.equals("GivenName"))
-                    endPNComponent(PersonName.Component.GivenName);
+            case "DataFragment":
+                endDataFragment();
                 break;
-            case 'I':
-                if (qName.equals("Item"))
-                    endItem();
+            case "PersonName":
+                endPersonName();
                 break;
-            case 'M':
-                if (qName.equals("MiddleName"))
-                    endPNComponent(PersonName.Component.MiddleName);
+            case "Value":
+                endValue();
                 break;
-            case 'N':
-                if (qName.equals("NamePrefix"))
-                    endPNComponent(PersonName.Component.NamePrefix);
-                else if (qName.equals("NameSuffix"))
-                    endPNComponent(PersonName.Component.NameSuffix);
+            case "FamilyName":
+                endPNComponent(PersonName.Component.FamilyName);
                 break;
-            case 'P':
-                if (qName.equals("PersonName"))
-                    endPersonName();
+            case "GivenName":
+                endPNComponent(PersonName.Component.GivenName);
                 break;
-            case 'V':
-                if (qName.equals("Value")) {
-                    endValue();
-                }
+            case "MiddleName":
+                endPNComponent(PersonName.Component.MiddleName);
+                break;
+            case "NamePrefix":
+                endPNComponent(PersonName.Component.NamePrefix);
+                break;
+            case "NameSuffix":
+                endPNComponent(PersonName.Component.NameSuffix);
                 break;
         }
         processCharacters = false;
@@ -277,13 +290,13 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     @Override
     public void endDocument() {
-        if (null != fmi)
+        if (fmi != null)
             fmi.trimToSize();
         items.getFirst().trimToSize();
     }
 
     private void endDataFragment() {
-        if (null != bulkData) {
+        if (bulkData != null) {
             dataFragments.add(bulkData);
             bulkData = null;
         } else {
@@ -291,31 +304,54 @@ public class ContentHandlerAdapter extends DefaultHandler {
         }
     }
 
-    private void endDicomAttribute() {
+    private void endDicomAttribute() throws SAXException {
         if (vr == VR.SQ) {
             seqs.removeLast().trimToSize();
             return;
         }
-        if (null != dataFragments) {
+        if (dataFragments != null) {
             dataFragments.trimToSize();
             dataFragments = null;
             return;
         }
-        Attributes attrs = items.getLast();
-        if (Tag.isFileMetaInformation(tag)) {
-            if (null == fmi)
-                fmi = new Attributes();
-            attrs = fmi;
-        }
-        if (null != bulkData) {
+        Attributes attrs = attrs();
+        if (bulkData != null) {
             attrs.setValue(privateCreator, tag, vr, bulkData);
             bulkData = null;
         } else if (inlineBinary) {
             attrs.setBytes(privateCreator, tag, vr, getBytes());
             inlineBinary = false;
         } else {
-            attrs.setString(privateCreator, tag, vr, getStrings());
+            String[] value = getStrings();
+            try {
+                attrs.setString(privateCreator, tag, vr, value);
+            } catch (RuntimeException e) {
+                String message = String.format("Invalid %s(%04X,%04X) %s %s",
+                        prefix(privateCreator, items.size() - 1),
+                        Tag.groupNumber(tag),
+                        Tag.elementNumber(tag),
+                        vr,
+                        Arrays.toString(value));
+                if (lenient) {
+                    Logger.info("{} - ignored", message);
+                } else {
+                    throw new SAXException(message, e);
+                }
+            }
         }
+    }
+
+    private Attributes attrs() {
+        if (Tag.isFileMetaInformation(tag)) {
+            if (fmi == null) {
+                fmi = new Attributes();
+            }
+            return fmi;
+        }
+        if (items.isEmpty()) {
+            items.add(new Attributes(bigEndian = bigEndian(fmi)));
+        }
+        return items.getLast();
     }
 
     private void endItem() {
@@ -347,7 +383,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     private String[] getStrings() {
         try {
-            return values.toArray(new String[values.size()]);
+            return values.toArray(Normal.EMPTY_STRING_ARRAY);
         } finally {
             values.clear();
         }

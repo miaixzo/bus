@@ -27,18 +27,25 @@
  */
 package org.miaixz.bus.image.builtin;
 
-import org.miaixz.bus.core.lang.Normal;
-
 /**
+ * Implementation
+ *
+ * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
+
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Phonem implements FuzzyStr {
+public class Phonem implements FuzzyString {
+
+    public static void main(String[] args) {
+        Phonem inst = new Phonem();
+        for (String arg : args)
+            System.out.println(inst.toFuzzy(arg));
+    }
 
     @Override
     public String toFuzzy(String s) {
-        if (null == s || s.length() == 0)
-            return Normal.EMPTY;
+        if (s == null || s.length() == 0) return "";
 
         char[] in = s.toUpperCase().toCharArray();
         char next = in[0];

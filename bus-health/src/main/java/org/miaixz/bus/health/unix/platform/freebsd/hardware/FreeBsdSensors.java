@@ -29,7 +29,7 @@ package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import com.sun.jna.Memory;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
-import org.miaixz.bus.core.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.unix.jna.FreeBsdLibc;

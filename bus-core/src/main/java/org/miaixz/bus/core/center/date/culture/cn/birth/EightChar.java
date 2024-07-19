@@ -33,7 +33,6 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
@@ -213,11 +212,11 @@ public class EightChar extends Tradition {
                     term = term.next(m);
                 }
                 SolarTime solarTime = term.getJulianDay().getSolarTime();
-                if (solarTime.getDay().getMonth().getYear().getYear() >= startYear) {
+                if (solarTime.getYear() >= startYear) {
                     int mi = 0;
                     int s = 0;
                     // 日干支和节令干支的偏移值
-                    SolarDay solarDay = solarTime.getDay();
+                    SolarDay solarDay = solarTime.getSolarDay();
                     int d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex();
                     if (d > 0) {
                         // 从节令推移天数
@@ -227,8 +226,7 @@ public class EightChar extends Tradition {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
                     }
-                    SolarMonth solarMonth = solarDay.getMonth();
-                    SolarTime time = SolarTime.fromYmdHms(solarMonth.getYear().getYear(), solarMonth.getMonth(), solarDay.getDay(), h, mi, s);
+                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(), h, mi, s);
                     // 验证一下
                     if (time.getLunarHour().getEightChar().equals(this)) {
                         l.add(time);

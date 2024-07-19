@@ -50,62 +50,6 @@ import java.util.Map;
 public class StringKit extends CharsBacker {
 
     /**
-     * 如果对象是字符串是否为空白，空白的定义如下：
-     * <ol>
-     *     <li>{@code null}</li>
-     *     <li>空字符串：{@code ""}</li>
-     *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
-     * </ol>
-     * <ul>
-     *     <li>{@code StringKit.isBlankIfString(null)     // true}</li>
-     *     <li>{@code StringKit.isBlankIfString("")       // true}</li>
-     *     <li>{@code StringKit.isBlankIfString(" \t\n")  // true}</li>
-     *     <li>{@code StringKit.isBlankIfString("abc")    // false}</li>
-     * </ul>
-     * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是：
-     * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
-     *
-     * @param obj 对象
-     * @return 如果为字符串是否为空串
-     * @see StringKit#isBlank(CharSequence)
-     */
-    public static boolean isBlankIfString(final Object obj) {
-        if (null == obj) {
-            return true;
-        } else if (obj instanceof CharSequence) {
-            return isBlank((CharSequence) obj);
-        }
-        return false;
-    }
-
-    /**
-     * 如果对象是字符串是否为空串，空的定义如下：
-     * <ol>
-     *     <li>{@code null}</li>
-     *     <li>空字符串：{@code ""}</li>
-     * </ol>
-     * <ul>
-     *     <li>{@code StringKit.isEmptyIfString(null)     // true}</li>
-     *     <li>{@code StringKit.isEmptyIfString("")       // true}</li>
-     *     <li>{@code StringKit.isEmptyIfString(" \t\n")  // false}</li>
-     *     <li>{@code StringKit.isEmptyIfString("abc")    // false}</li>
-     * </ul>
-     *
-     * <p>注意：该方法与 {@link #isBlankIfString(Object)} 的区别是：该方法不校验空白字符。</p>
-     *
-     * @param obj 对象
-     * @return 如果为字符串是否为空串
-     */
-    public static boolean isEmptyIfString(final Object obj) {
-        if (null == obj) {
-            return true;
-        } else if (obj instanceof CharSequence) {
-            return 0 == ((CharSequence) obj).length();
-        }
-        return false;
-    }
-
-    /**
      * 给定字符串数组全部做去首尾空格
      *
      * @param args 字符串数组
@@ -224,27 +168,6 @@ public class StringKit extends CharsBacker {
             charset = java.nio.charset.Charset.defaultCharset();
         }
         return charset.decode(data).toString();
-    }
-
-    /**
-     * 调用对象的toString方法，{@code null}会返回{@code null}
-     *
-     * @param obj 对象
-     * @return 字符串 or {@code null}
-     */
-    public static String toStringOrNull(final Object obj) {
-        return null == obj ? null : obj.toString();
-    }
-
-    /**
-     * 调用对象的toString方法，{@code null}会返回空字符串 ""
-     *
-     * @param obj 对象
-     * @return {@link String }
-     */
-    public static String toStringOrEmpty(final Object obj) {
-        // obj为空时, 返回 null 或 "null" 都不适用部分场景, 此处返回 "" 空字符串
-        return null == obj ? Normal.EMPTY : obj.toString();
     }
 
     /**

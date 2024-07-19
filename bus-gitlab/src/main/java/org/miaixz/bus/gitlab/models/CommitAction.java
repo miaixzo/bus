@@ -43,7 +43,7 @@ import java.nio.file.Files;
 import java.util.Base64;
 
 public class CommitAction implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private Action action;
     private String filePath;

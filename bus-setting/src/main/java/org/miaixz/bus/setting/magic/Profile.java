@@ -171,7 +171,7 @@ public class Profile implements Serializable {
      */
     private String fixNameForProfile(final String name) {
         Assert.notBlank(name, "Setting name must be not blank !");
-        final String actralProfile = StringKit.emptyIfNull(this.profile);
+        final String actralProfile = StringKit.toStringOrEmpty(this.profile);
         if (!name.contains(Symbol.DOT)) {
             return StringKit.format("{}/{}.setting", actralProfile, name);
         }

@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ImpersonationToken implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * Enum to specify the scope of an ImpersonationToken.
