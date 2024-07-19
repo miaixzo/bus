@@ -107,7 +107,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
     private static class Condition
             implements Comparable<Condition>, Serializable {
 
-        private static final long serialVersionUID = -4069284624944470710L;
+        private static final long serialVersionUID = -1L;
 
         final EnumSet<Photometric> pmis;
         final int bitsStoredMask;
