@@ -27,8 +27,6 @@
  */
 package org.miaixz.bus;
 
-import org.miaixz.bus.core.Version;
-
 /**
  * <p>
  * Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有
