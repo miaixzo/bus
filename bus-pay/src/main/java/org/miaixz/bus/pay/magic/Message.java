@@ -50,7 +50,7 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message extends org.miaixz.bus.core.basics.entity.Message {
+public class Message extends org.miaixz.bus.core.basic.entity.Message {
 
     private static final long serialVersionUID = -1L;
     

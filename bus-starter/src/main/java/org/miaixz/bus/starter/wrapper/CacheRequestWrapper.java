@@ -45,12 +45,13 @@ import org.miaixz.bus.logger.Logger;
 import java.io.*;
 
 /**
+ * 跨站攻击/请求包装器
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
-    private static final byte[] DEFAULT_BYTE = Normal.EMPTY_BYTE_ARRAY;
     private byte[] body;
     private ServletInputStreamWrapper inputStreamWrapper;
 
@@ -60,7 +61,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         Logger.info(Symbol.DELIM, JsonKit.toJsonString(request.getParameterMap()));
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoKit.readBytes(request.getInputStream());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(null != this.body ? this.body : DEFAULT_BYTE);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(null != this.body ? this.body : Normal.EMPTY_BYTE_ARRAY);
         // 初始 ServletInputStreamWrapper
         this.inputStreamWrapper = new ServletInputStreamWrapper(byteArrayInputStream);
         // 设置 InputStream 到我们自己的包装类中

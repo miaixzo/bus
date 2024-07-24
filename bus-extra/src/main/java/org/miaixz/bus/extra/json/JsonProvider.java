@@ -27,6 +27,9 @@
  */
 package org.miaixz.bus.extra.json;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
+
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +40,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface JsonProvider {
+public interface JsonProvider extends Provider {
 
     /**
      * 解析对象为Json字符串
@@ -142,5 +145,10 @@ public interface JsonProvider {
      * @return the true/false
      */
     boolean isJson(String json);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.JSON;
+    }
 
 }

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.goalie.filter;
 
-import org.miaixz.bus.core.basics.normal.ErrorCode;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.StringKit;

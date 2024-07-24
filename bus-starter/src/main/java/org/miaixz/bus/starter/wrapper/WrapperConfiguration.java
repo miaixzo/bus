@@ -62,7 +62,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties({WrapperProperties.class})
+@EnableConfigurationProperties(value = {WrapperProperties.class})
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     @Resource

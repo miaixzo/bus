@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.image;
 import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -43,7 +43,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @Getter
 @Setter
 @EnableConfigurationProperties(value = {ImageProperties.Node.class})
-@ConfigurationProperties(prefix = BusXConfig.IMAGE)
+@ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
 public class ImageProperties {
 
     @Resource
@@ -71,7 +71,7 @@ public class ImageProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = BusXConfig.IMAGE + ".node")
+    @ConfigurationProperties(prefix = GeniusBuilder.IMAGE + ".node")
     public class Node {
 
         /**

@@ -48,8 +48,8 @@ public abstract class Registry {
      * @param name 日志对象名
      * @return 日志对象
      */
-    public static Supplier get(final String name) {
-        return Holder.getFactory().get(name);
+    public static Provider get(final String name) {
+        return Holder.getFactory().getProvider(name);
     }
 
     /**
@@ -58,8 +58,8 @@ public abstract class Registry {
      * @param clazz 日志对应类
      * @return 日志对象
      */
-    public static Supplier get(final Class<?> clazz) {
-        return Holder.getFactory().get(clazz);
+    public static Provider get(final Class<?> clazz) {
+        return Holder.getFactory().getProvider(clazz);
     }
 
 }

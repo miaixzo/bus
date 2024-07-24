@@ -32,7 +32,7 @@ package org.miaixz.bus.goalie.metric;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ErrorCode extends org.miaixz.bus.core.basics.normal.ErrorCode {
+public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
      * 没有API权限

@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.goalie.filter;
 
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Context;
 import org.miaixz.bus.logger.Logger;
@@ -75,7 +75,7 @@ public class FormatFilter implements WebFilter {
                     DataBufferUtils.release(dataBuffer);
                     Message message = JsonKit.toPojo(bodyString, Message.class);
                     String formatBody = context.getFormat().getProvider().serialize(message);
-                    if (Logger.isTrace()) {
+                    if (Logger.isTraceEnabled()) {
                         Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
                     }
                     return bufferFactory().wrap(formatBody.getBytes());

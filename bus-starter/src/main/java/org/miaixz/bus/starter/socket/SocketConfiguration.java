@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(SocketProperties.class)
+@EnableConfigurationProperties(value = {SocketProperties.class})
 public class SocketConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")

@@ -23,6 +23,4 @@
 # THE SOFTWARE.                                                                 #
 #                                                                               #
 #################################################################################
-org.miaixz.bus.spring.Configurable
-org.miaixz.bus.spring.GenieBuilder
-org.miaixz.bus.spring.BusXHolder
+org.miaixz.bus.spring.SpringHolder

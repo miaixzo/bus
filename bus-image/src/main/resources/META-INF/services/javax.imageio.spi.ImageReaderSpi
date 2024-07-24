@@ -23,6 +23,7 @@
 # THE SOFTWARE.                                                                 #
 #                                                                               #
 #################################################################################
+
 org.miaixz.bus.image.nimble.ImageReaderSpi
 org.miaixz.bus.image.nimble.reader.RLEImageioReaderSpi
 org.miaixz.bus.image.nimble.opencv.NativeJLSImageReaderSpi

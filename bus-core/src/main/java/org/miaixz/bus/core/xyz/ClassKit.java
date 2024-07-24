@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.NullWrapper;
+import org.miaixz.bus.core.bean.NullWrapper;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.convert.BasicType;
 import org.miaixz.bus.core.lang.Assert;
@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
@@ -721,6 +722,21 @@ public class ClassKit {
      *     <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
      * </ul>
      *
+     * @param name   类名
+     * @param loader {@link ClassLoader}，{@code null}表示默认
+     * @return 指定名称对应的类，如果不存在类，返回{@code null}
+     * @see Class#forName(String, boolean, ClassLoader)
+     */
+    public static Class<?> forName(String name, ClassLoader loader) {
+        return forName(name, false, loader);
+    }
+    /**
+     * 加载指定名称的类，支持：
+     * <ul>
+     *     <li>替换"/"为"."</li>
+     *     <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
+     * </ul>
+     *
      * @param name          类名
      * @param isInitialized 是否初始化
      * @param loader        {@link ClassLoader}，{@code null}表示默认
@@ -728,11 +744,34 @@ public class ClassKit {
      * @see Class#forName(String, boolean, ClassLoader)
      */
     public static Class<?> forName(String name, final boolean isInitialized, ClassLoader loader) {
+        Assert.notNull(name, "Name must not be null");
+
+        name = name.replace(Symbol.C_SLASH, Symbol.C_DOT);
+
+        // "java.lang.String[]" style arrays
+        if (name.endsWith(Symbol.BRACKET)) {
+            String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
+            Class<?> elementClass = forName(elementClassName, loader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
+        // "[Ljava.lang.String;" style arrays
+        if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
+            String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
+            Class<?> elementClass = forName(elementName, loader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
+        // "[[I" or "[[Ljava.lang.String;" style arrays
+        if (name.startsWith(Symbol.BRACKET_LEFT)) {
+            String elementName = name.substring(Symbol.BRACKET_LEFT.length());
+            Class<?> elementClass = forName(elementName, loader);
+            return Array.newInstance(elementClass, 0).getClass();
+        }
+
         if (null == loader) {
             loader = getClassLoader();
         }
-        name = name.replace(Symbol.C_SLASH, Symbol.C_DOT);
-
         // 加载普通类
         try {
             return Class.forName(name, isInitialized, loader);

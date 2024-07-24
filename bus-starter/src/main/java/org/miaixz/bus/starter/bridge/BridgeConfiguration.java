@@ -39,8 +39,8 @@ import org.springframework.context.annotation.Import;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(BridgeProperties.class)
 @Import({BridgePropertyLoader.class})
+@EnableConfigurationProperties(value = {BridgeProperties.class})
 public class BridgeConfiguration {
 
     @Resource

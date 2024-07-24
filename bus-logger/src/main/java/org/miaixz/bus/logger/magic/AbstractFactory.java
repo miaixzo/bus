@@ -67,7 +67,7 @@ public abstract class AbstractFactory implements Factory {
      *
      * @param clazz 日志实现相关类
      */
-    protected void check(final Class<?> clazz) {
+    protected void exists(final Class<?> clazz) {
         // 不做任何操作
     }
 

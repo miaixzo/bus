@@ -64,8 +64,8 @@ import java.util.Map;
  * @since Java 17+
  */
 @ConditionalOnClass(value = {HikariDataSource.class})
-@EnableConfigurationProperties(JdbcProperties.class)
-@AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@EnableConfigurationProperties(value = {JdbcProperties.class})
+@AutoConfigureBefore(value = {DataSourceAutoConfiguration.class})
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
 

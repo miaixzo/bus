@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -42,7 +42,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(BusXConfig.CORS)
+@ConfigurationProperties(GeniusBuilder.CORS)
 public class CorsProperties {
 
     /**

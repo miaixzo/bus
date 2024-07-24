@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.notify.metric.ctyun;
 
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;

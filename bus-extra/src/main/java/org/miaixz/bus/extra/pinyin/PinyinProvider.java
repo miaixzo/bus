@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.extra.pinyin;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -41,7 +43,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface PinyinProvider {
+public interface PinyinProvider extends Provider {
 
     /**
      * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
@@ -81,6 +83,11 @@ public interface PinyinProvider {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
         final List<String> split = CharsBacker.split(getPinyin(text, splitSeparator), splitSeparator);
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
+    }
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.PINYIN;
     }
 
 }

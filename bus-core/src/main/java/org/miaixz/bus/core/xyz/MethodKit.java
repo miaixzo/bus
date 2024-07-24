@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.NullWrapper;
+import org.miaixz.bus.core.bean.NullWrapper;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.instance.Instances;
@@ -370,10 +370,35 @@ public class MethodKit {
     }
 
     /**
+     * 是否为Object方法
+     *
+     * @param method 方法
+     * @return the true/false
+     */
+    public static boolean isObjectMethod(Method method) {
+        return method != null && (method.getDeclaringClass() == Object.class
+                || isEqualsMethod(method)
+                || isHashCodeMethod(method)
+                || isToStringMethod(method)
+        );
+    }
+
+    /**
+     * 是否为Attribute方法
+     *
+     * @param method 方法
+     * @return the true/false
+     */
+    public static boolean isAttributeMethod(Method method) {
+        return method != null && method.getParameterTypes().length == 0
+                && method.getReturnType() != void.class;
+    }
+
+    /**
      * 是否为equals方法
      *
      * @param method 方法
-     * @return 是否为equals方法
+     * @return the true/false
      */
     public static boolean isEqualsMethod(final Method method) {
         if (method == null ||
@@ -388,7 +413,7 @@ public class MethodKit {
      * 是否为hashCode方法
      *
      * @param method 方法
-     * @return 是否为hashCode方法
+     * @return the true/false
      */
     public static boolean isHashCodeMethod(final Method method) {
         return method != null
@@ -400,7 +425,7 @@ public class MethodKit {
      * 是否为toString方法
      *
      * @param method 方法
-     * @return 是否为toString方法
+     * @return the true/false
      */
     public static boolean isToStringMethod(final Method method) {
         return method != null
@@ -412,7 +437,7 @@ public class MethodKit {
      * 是否为无参数方法
      *
      * @param method 方法
-     * @return 是否为无参数方法
+     * @return the true/false
      */
     public static boolean isEmptyParam(final Method method) {
         return method.getParameterCount() == 0;
@@ -427,7 +452,7 @@ public class MethodKit {
      * </ul>
      *
      * @param method 方法
-     * @return 是否为Getter或者Setter方法
+     * @return the true/false
      */
     public static boolean isGetterOrSetterIgnoreCase(final Method method) {
         return isGetterOrSetter(method, true);
@@ -444,7 +469,7 @@ public class MethodKit {
      *
      * @param method     方法
      * @param ignoreCase 是否忽略方法名的大小写
-     * @return 是否为Getter或者Setter方法
+     * @return the true/false
      */
     public static boolean isGetterOrSetter(final Method method, final boolean ignoreCase) {
         // 参数个数必须为1
@@ -468,7 +493,7 @@ public class MethodKit {
      *
      * @param method     方法
      * @param ignoreCase 是否忽略方法名的大小写
-     * @return 是否为Setter方法
+     * @return the true/false
      */
     public static boolean isSetter(final Method method, final boolean ignoreCase) {
         if (null == method) {
@@ -504,7 +529,7 @@ public class MethodKit {
      *
      * @param method     方法
      * @param ignoreCase 是否忽略方法名的大小写
-     * @return 是否为Getter方法
+     * @return the true/false
      */
     public static boolean isGetter(final Method method, final boolean ignoreCase) {
         if (null == method) {

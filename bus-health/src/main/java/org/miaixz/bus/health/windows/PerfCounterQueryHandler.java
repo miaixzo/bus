@@ -144,7 +144,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public long queryCounter(PerfCounter counter) {
         if (!counterHandleMap.containsKey(counter)) {
-            if (Logger.isWarn()) {
+            if (Logger.isWarnEnabled()) {
                 Logger.warn("Counter {} does not exist to query.", counter.getCounterPath());
             }
             return 0;
@@ -152,7 +152,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         long value = counter.isBaseCounter() ? PerfDataKit.querySecondCounter(counterHandleMap.get(counter))
                 : PerfDataKit.queryCounter(counterHandleMap.get(counter));
         if (value < 0) {
-            if (Logger.isWarn()) {
+            if (Logger.isWarnEnabled()) {
                 Logger.warn("Error querying counter {}: {}", counter.getCounterPath(),
                         String.format(Locale.ROOT, Formats.formatError((int) value)));
             }

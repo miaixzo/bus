@@ -40,7 +40,7 @@ public interface Trace {
      *
      * @return the true/false
      */
-    boolean isTrace();
+    boolean isTraceEnabled();
 
     /**
      * 打印 TRACE 等级的日志

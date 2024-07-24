@@ -426,9 +426,9 @@ public class PDUEncoder extends PDVOutputStream {
             Dimse dimse = Dimse.valueOf(cmd.getInt(Tag.CommandField, -1));
             if (!dimse.isRSP() || !Status.isPending(cmd.getInt(Tag.Status, -1)))
                 as.incSentCount(dimse);
-            if (Logger.isInfo()) {
+            if (Logger.isInfoEnabled()) {
                 Logger.info("{} << {}", as, dimse.toString(cmd, pcid, tsuid));
-                if (Logger.isDebug()) {
+                if (Logger.isDebugEnabled()) {
                     Logger.debug("{} << {} Command:\n{}", as, dimse.toString(cmd), cmd);
                 }
             }
@@ -451,7 +451,7 @@ public class PDUEncoder extends PDVOutputStream {
                     pos += 6;
                 }
                 pdvcmd = PDVType.DATA;
-                if (Logger.isDebug()) {
+                if (Logger.isDebugEnabled()) {
                     if (dataWriter instanceof DataWriterAdapter)
                         Logger.debug("{} << {} Dataset:\n{}", as, dimse.toString(cmd),
                                 ((DataWriterAdapter) dataWriter).getDataset());
@@ -459,7 +459,7 @@ public class PDUEncoder extends PDVOutputStream {
                         Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
                 }
                 dataWriter.writeTo(this, tsuid);
-                if (Logger.isDebug() && !(dataWriter instanceof DataWriterAdapter))
+                if (Logger.isDebugEnabled() && !(dataWriter instanceof DataWriterAdapter))
                     Logger.debug("{} << {} Dataset sent", as, dimse.toString(cmd));
                 close();
             }

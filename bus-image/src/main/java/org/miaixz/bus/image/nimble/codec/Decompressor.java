@@ -317,7 +317,7 @@ public class Decompressor {
         long start = System.currentTimeMillis();
         bi = decompressor.read(0, readParam);
         long end = System.currentTimeMillis();
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug("Decompressed frame #{} 1:{} in {} ms",
                     index + 1,
                     (float) sizeOf(bi) / siis.getStreamPosition(),

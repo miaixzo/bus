@@ -102,7 +102,7 @@ public abstract class SqlParserHandler extends AbstractSqlHandler {
         } else if (statement instanceof Delete) {
             this.processDelete((Delete) statement);
         }
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug("Parser SQL: " + statement.toString());
         }
         return statement.toString();

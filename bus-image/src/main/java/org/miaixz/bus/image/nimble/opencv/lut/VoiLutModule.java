@@ -116,7 +116,7 @@ public class VoiLutModule {
             this.lut = voiSeq.stream().map(i -> RGBImageVoiLut.createLut(i).orElse(null)).toList();
         }
 
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             logLutConsistency();
         }
     }

@@ -27,157 +27,88 @@
  */
 package org.miaixz.bus.logger;
 
-import org.miaixz.bus.core.xyz.ExceptionKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
+import org.miaixz.bus.core.xyz.CallerKit;
+import org.miaixz.bus.logger.magic.level.Error;
+import org.miaixz.bus.logger.magic.level.*;
 
 /**
- * 抽象日志类
- * 实现了一些通用的接口
+ * 日志统一接口
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class Provider implements Supplier, Serializable {
-
-    private static final long serialVersionUID = -1L;
-
-    private static final String FQCN = Provider.class.getName();
+public interface Provider extends Trace, Debug, Info, Warn, Error {
 
     /**
-     * 日志框架名
+     * 获取日志发出者 {@link Provider}
+     *
+     * @param clazz 日志发出者类
+     * @return {@link Provider}
      */
-    protected String name;
+    static Provider get(final Class<?> clazz) {
+        return Registry.get(clazz);
+    }
 
     /**
-     * 默认构造
+     * 获取日志发出者 {@link Provider}
+     *
+     * @param name 自定义的日志发出者名称
+     * @return {@link Provider}
      */
-    public Provider() {
-
+    static Provider get(final String name) {
+        return Registry.get(name);
     }
 
-    @Override
-    public boolean isEnabled(final Level level) {
-        switch (level) {
-            case TRACE:
-                return isTrace();
-            case DEBUG:
-                return isDebug();
-            case INFO:
-                return isInfo();
-            case WARN:
-                return isWarn();
-            case ERROR:
-                return isError();
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
-        }
+    /**
+     * 获取日志发出者 {@link Provider}
+     *
+     * @return {@link Provider}
+     */
+    static Provider get() {
+        return Registry.get(CallerKit.getCallers());
     }
 
-    @Override
-    public void trace(final Throwable t) {
-        trace(t, ExceptionKit.getSimpleMessage(t));
-    }
+    /**
+     * @return 日志对象的Name
+     */
+    String getName();
 
-    @Override
-    public void trace(final String format, final Object... args) {
-        trace(null, format, args);
-    }
+    /**
+     * 是否开启指定日志
+     *
+     * @param level 日志级别
+     * @return 是否开启指定级别
+     */
+    boolean isEnabled(Level level);
 
-    @Override
-    public void trace(final Throwable t, final String format, final Object... args) {
-        trace(FQCN, t, format, args);
-    }
+    /**
+     * 打印指定级别的日志
+     *
+     * @param level  级别
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void log(Level level, String format, Object... args);
 
-    @Override
-    public void debug(final Throwable t) {
-        debug(t, ExceptionKit.getSimpleMessage(t));
-    }
+    /**
+     * 打印 指定级别的日志
+     *
+     * @param level  级别
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void log(Level level, Throwable t, String format, Object... args);
 
-    @Override
-    public void debug(final String format, final Object... args) {
-        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            debug((Throwable) args[0], format);
-        } else {
-            debug(null, format, args);
-        }
-    }
-
-    @Override
-    public void debug(final Throwable t, final String format, final Object... args) {
-        debug(FQCN, t, format, args);
-    }
-
-    @Override
-    public void info(final Throwable t) {
-        info(t, ExceptionKit.getSimpleMessage(t));
-    }
-
-    @Override
-    public void info(final String format, final Object... args) {
-        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            info((Throwable) args[0], format);
-        } else {
-            info(null, format, args);
-        }
-    }
-
-    @Override
-    public void info(final Throwable t, final String format, final Object... args) {
-        info(FQCN, t, format, args);
-    }
-
-    @Override
-    public void warn(final Throwable t) {
-        warn(t, ExceptionKit.getSimpleMessage(t));
-    }
-
-    @Override
-    public void warn(final String format, final Object... args) {
-        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            warn((Throwable) args[0], format);
-        } else {
-            warn(null, format, args);
-        }
-    }
-
-    @Override
-    public void warn(final Throwable t, final String format, final Object... args) {
-        warn(FQCN, t, format, args);
-    }
-
-    @Override
-    public void error(final Throwable t) {
-        this.error(t, ExceptionKit.getSimpleMessage(t));
-    }
-
-    @Override
-    public void error(final String format, final Object... args) {
-        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            error((Throwable) args[0], format);
-        } else {
-            error(null, format, args);
-        }
-    }
-
-    @Override
-    public void error(final Throwable t, final String format, final Object... args) {
-        error(FQCN, t, format, args);
-    }
-
-    @Override
-    public void log(final Level level, final String format, final Object... args) {
-        if (null != args && 1 == args.length && args[0] instanceof Throwable) {
-            log(level, (Throwable) args[0], format);
-        } else {
-            log(level, null, format, args);
-        }
-    }
-
-    @Override
-    public void log(final Level level, final Throwable t, final String format, final Object... args) {
-        this.log(FQCN, level, t, format, args);
-    }
+    /**
+     * 打印 ERROR 等级的日志
+     *
+     * @param fqcn   完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param level  级别
+     * @param t      错误对象
+     * @param format 消息模板
+     * @param args   参数
+     */
+    void log(String fqcn, Level level, Throwable t, String format, Object... args);
 
 }

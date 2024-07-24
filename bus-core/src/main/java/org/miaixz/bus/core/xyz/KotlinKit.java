@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.copier.ValueProvider;
-import org.miaixz.bus.core.beans.copier.provider.MapValueProvider;
+import org.miaixz.bus.core.bean.copier.ValueProvider;
+import org.miaixz.bus.core.bean.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.reflect.kotlin.KCallable;
 import org.miaixz.bus.core.lang.reflect.kotlin.KClassImpl;

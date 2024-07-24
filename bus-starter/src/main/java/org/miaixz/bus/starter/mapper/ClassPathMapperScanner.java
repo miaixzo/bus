@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.entity.Property;
-import org.miaixz.bus.spring.BusXConfig;
-import org.miaixz.bus.spring.PlaceBinder;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -149,7 +149,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         GenericBeanDefinition definition;
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug("Creating MapperFactoryBean with name '" + holder.getBeanName()
                         + "' and '" + definition.getBeanClassName() + "' mapperInterface");
             }
@@ -191,7 +191,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 explicitFactoryUsed = true;
             }
             if (!explicitFactoryUsed) {
-                if (Logger.isDebug()) {
+                if (Logger.isDebugEnabled()) {
                     Logger.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
                 }
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
@@ -259,7 +259,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      */
     public void setMapperProperties(Environment environment) {
         try {
-            Property property = PlaceBinder.bind(environment, Property.class, BusXConfig.MYBATIS);
+            Property property = PlaceHolderBinder.bind(environment, Property.class, GeniusBuilder.MYBATIS);
             if (mapperBuilder == null) {
                 mapperBuilder = new MapperBuilder();
             }

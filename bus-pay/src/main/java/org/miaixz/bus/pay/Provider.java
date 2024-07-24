@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.pay;
 
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
@@ -37,6 +38,11 @@ import org.miaixz.bus.pay.magic.Material;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider<T extends Material> {
+public interface Provider<T extends Material> extends org.miaixz.bus.core.Provider {
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.PAY;
+    }
 
 }

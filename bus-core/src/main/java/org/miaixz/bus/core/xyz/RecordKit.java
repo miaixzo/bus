@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.copier.ValueProvider;
+import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.lang.Keys;
 
 import java.lang.reflect.Method;

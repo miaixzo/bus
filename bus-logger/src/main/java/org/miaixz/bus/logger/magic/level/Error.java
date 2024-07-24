@@ -40,7 +40,7 @@ public interface Error {
      *
      * @return the true/false
      */
-    boolean isError();
+    boolean isErrorEnabled();
 
     /**
      * 打印 ERROR 等级的日志

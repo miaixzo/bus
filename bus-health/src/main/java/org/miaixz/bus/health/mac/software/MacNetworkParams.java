@@ -72,7 +72,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             hint.ai_flags = CLibrary.AI_CANONNAME;
             int res = SYS.getaddrinfo(hostname, null, hint, ptr);
             if (res > 0) {
-                if (Logger.isError()) {
+                if (Logger.isErrorEnabled()) {
                     Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
                 }
                 return Normal.EMPTY;

@@ -40,7 +40,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @since Java 17+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
-@EnableConfigurationProperties(OfficeProperties.class)
+@EnableConfigurationProperties(value = {OfficeProperties.class})
 public class OfficeConfiguration {
 
     @Resource

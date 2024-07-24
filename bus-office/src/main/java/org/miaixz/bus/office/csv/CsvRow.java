@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.beans.copier.CopyOptions;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.center.list.ListWrapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.BeanKit;

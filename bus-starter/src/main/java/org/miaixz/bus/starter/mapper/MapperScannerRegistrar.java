@@ -29,8 +29,8 @@ package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.spring.BusXConfig;
-import org.miaixz.bus.spring.PlaceBinder;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
@@ -111,7 +111,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
 
         if (CollKit.isEmpty(basePackages)) {
-            MybatisProperties properties = PlaceBinder.bind(environment, MybatisProperties.class, BusXConfig.MYBATIS);
+            MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class, GeniusBuilder.MYBATIS);
             if (properties != null && properties.getBasePackages() != null && properties.getBasePackages().length > 0) {
                 basePackages.addAll(Arrays.asList(properties.getBasePackages()));
             } else {

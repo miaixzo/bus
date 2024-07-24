@@ -86,7 +86,7 @@ public class Http2Reader implements Closeable {
             }
         } else {
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug(String.format("<< CONNECTION %s" + connectionPreface.hex()));
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
@@ -123,7 +123,7 @@ public class Http2Reader implements Closeable {
         }
         byte flags = (byte) (source.readByte() & 0xff);
         int streamId = (source.readInt() & 0x7fffffff);
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
         }
 
@@ -487,7 +487,7 @@ public class Http2Reader implements Closeable {
             length = left = readMedium(source);
             byte type = (byte) (source.readByte() & 0xff);
             flags = (byte) (source.readByte() & 0xff);
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
             }
             streamId = (source.readInt() & 0x7fffffff);

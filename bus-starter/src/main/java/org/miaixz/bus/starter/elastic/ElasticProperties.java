@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.ELASTIC)
+@ConfigurationProperties(prefix = GeniusBuilder.ELASTIC)
 public class ElasticProperties {
     /**
      * 集群主机地址, 多个用英文逗号,隔开

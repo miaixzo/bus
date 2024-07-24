@@ -679,7 +679,7 @@ public class Transcoder implements Closeable {
         long start = System.currentTimeMillis();
         originalBi = adjustColorModel(decompressor.read(0, decompressParam));
         long end = System.currentTimeMillis();
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug("Decompressed frame #{} in {} ms, ratio 1:{}", frameIndex + 1, end - start,
                     (float) imageDescriptor.getFrameLength() / encapsulatedPixelData.getStreamPosition());
         encapsulatedPixelData.seekNextFrame();
@@ -712,7 +712,7 @@ public class Transcoder implements Closeable {
         compressor.write(null, new IIOImage(bi, null, null), compressParam);
         long end = System.currentTimeMillis();
         int length = (int) ios.getStreamPosition();
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug("Compressed frame #{} in {} ms, ratio {}:1", frameIndex + 1, end - start,
                     (float) imageDescriptor.getFrameLength() / length);
         verify(ios, frameIndex);
@@ -918,7 +918,7 @@ public class Transcoder implements Closeable {
         bi2 = verifier.read(0, verifyParam);
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
                     index + 1, end - start, maxDiff);
         if (maxDiff > maxPixelValueError)

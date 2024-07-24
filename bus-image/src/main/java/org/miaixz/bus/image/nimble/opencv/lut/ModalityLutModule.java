@@ -129,7 +129,7 @@ public class ModalityLutModule {
                     "Either a Modality LUT Sequence or Rescale Slope and Intercept values shall be present but not both!");
         }
 
-        if (Logger.isTrace()) {
+        if (Logger.isTraceEnabled()) {
             if (lut.isPresent()) {
                 if (rescaleIntercept.isPresent()) {
                     Logger.trace(

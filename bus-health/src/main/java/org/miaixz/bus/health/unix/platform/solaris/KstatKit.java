@@ -38,11 +38,11 @@ import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
-import org.miaixz.bus.core.lang.annotation.GuardedBy;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.GuardedBy;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
@@ -139,7 +139,7 @@ public final class KstatKit {
         }
         Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
                         Native.toString(ksp.ks_name, Charset.US_ASCII), name);
@@ -272,7 +272,7 @@ public final class KstatKit {
             int retry = 0;
             while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
-                    if (Logger.isDebug()) {
+                    if (Logger.isDebugEnabled()) {
                         Logger.debug("Failed to read kstat {}:{}:{}",
                                 Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
                                 Native.toString(ksp.ks_name, Charset.US_ASCII));

@@ -29,8 +29,8 @@ package org.miaixz.bus.starter.sensitive;
 
 import jakarta.annotation.Resource;
 import org.miaixz.bus.base.advice.BaseAdvice;
-import org.miaixz.bus.core.basics.entity.Message;
-import org.miaixz.bus.core.basics.entity.Result;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;

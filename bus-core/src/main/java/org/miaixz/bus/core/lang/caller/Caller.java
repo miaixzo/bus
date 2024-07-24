@@ -50,7 +50,7 @@ public interface Caller {
      *
      * @return 调用者的调用者
      */
-    Class<?> getCallerCaller();
+    Class<?> getCallers();
 
     /**
      * 获得调用者，指定第几级调用者 调用者层级关系：

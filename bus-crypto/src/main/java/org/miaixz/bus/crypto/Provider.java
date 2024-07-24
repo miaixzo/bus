@@ -27,11 +27,13 @@
  */
 package org.miaixz.bus.crypto;
 
+import org.miaixz.bus.core.lang.EnumMap;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider {
+public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
      * 数据加密
@@ -59,5 +61,10 @@ public interface Provider {
      * @return 解密结果
      */
     byte[] decrypt(String key, byte[] content);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.CRYPTO;
+    }
 
 }

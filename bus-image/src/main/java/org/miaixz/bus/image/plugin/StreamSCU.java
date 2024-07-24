@@ -113,7 +113,7 @@ public class StreamSCU {
                                     if (lastStatusCode != status && nbStatusLog < 3) {
                                         nbStatusLog++;
                                         lastStatusCode = status;
-                                        if (Logger.isDebug()) {
+                                        if (Logger.isDebugEnabled()) {
                                             Logger.warn(
                                                     "Received C-STORE-RSP with Status {}H{}",
                                                     Tag.shortToHexString(status),
@@ -131,7 +131,7 @@ public class StreamSCU {
                                     if (lastStatusCode != status && nbStatusLog < 3) {
                                         nbStatusLog++;
                                         lastStatusCode = status;
-                                        if (Logger.isDebug()) {
+                                        if (Logger.isDebugEnabled()) {
                                             Logger.error(
                                                     "Received C-STORE-RSP with Status {}H{}",
                                                     Tag.shortToHexString(status),

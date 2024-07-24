@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.sensitive.metric;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.sensitive.Context;
 
 /**
@@ -35,7 +37,7 @@ import org.miaixz.bus.sensitive.Context;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface StrategyProvider {
+public interface StrategyProvider extends Provider {
 
     /**
      * 脱敏
@@ -45,5 +47,10 @@ public interface StrategyProvider {
      * @return 脱敏后的字符串
      */
     Object build(final Object object, final Context context);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.SENSITIVE;
+    }
 
 }

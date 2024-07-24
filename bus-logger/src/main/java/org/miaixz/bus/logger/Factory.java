@@ -50,7 +50,7 @@ public interface Factory {
      * @param name 日志对象名
      * @return 日志对象
      */
-    Supplier create(String name);
+    Provider create(String name);
 
     /**
      * 创建日志对象
@@ -58,7 +58,7 @@ public interface Factory {
      * @param clazz 日志对应类
      * @return 日志对象
      */
-    Supplier create(Class<?> clazz);
+    Provider create(Class<?> clazz);
 
     /**
      * 获得日志对象（单例）
@@ -66,7 +66,7 @@ public interface Factory {
      * @param name 日志对象名
      * @return 日志对象
      */
-    default Supplier get(final String name) {
+    default Provider getProvider(final String name) {
         return Instances.get(getName() + name, () -> create(name));
     }
 
@@ -76,7 +76,7 @@ public interface Factory {
      * @param clazz 日志对应类
      * @return 日志对象
      */
-    default Supplier get(final Class<?> clazz) {
+    default Provider getProvider(final Class<?> clazz) {
         return Instances.get(getName() + clazz.getName(), () -> create(clazz));
     }
 

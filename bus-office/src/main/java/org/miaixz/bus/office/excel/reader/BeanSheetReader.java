@@ -28,7 +28,7 @@
 package org.miaixz.bus.office.excel.reader;
 
 import org.apache.poi.ss.usermodel.Sheet;
-import org.miaixz.bus.core.beans.copier.CopyOptions;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 

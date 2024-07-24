@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(LimiterProperties.class)
+@EnableConfigurationProperties(value = {LimiterProperties.class})
 public class LimiterConfiguration {
 
     @Bean

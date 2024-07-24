@@ -28,7 +28,7 @@
 package org.miaixz.bus.goalie.handler;
 
 import io.netty.handler.timeout.ReadTimeoutException;
-import org.miaixz.bus.core.basics.spring.Controller;
+import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.lang.exception.BusinessException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.Config;
