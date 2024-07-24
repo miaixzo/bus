@@ -70,8 +70,8 @@ public abstract class AbstractHitting implements Hitting {
     private Properties sqls;
 
     protected AbstractHitting(Map<String, Object> context) {
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_INF + "/caches/bus-cache.yaml");
-        this.sqls = Builder.loadYaml(resource, Properties.class);
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(Normal.META_INF + "/cache/bus.cache.yaml");
+        this.sqls = Builder.loadYaml(in, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();
         executor.submit(() -> {
