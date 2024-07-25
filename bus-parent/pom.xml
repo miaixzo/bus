@@ -1437,9 +1437,9 @@
                                 <parent>keep</parent>
                                 <dependencies>keep</dependencies>
                                 <dependencyManagement>keep</dependencyManagement>
-                                <distributionManagement>keep</distributionManagement>
-                                <repositories>keep</repositories>
-                                <pluginRepositories>keep</pluginRepositories>
+                                <distributionManagement>remove</distributionManagement>
+                                <repositories>remove</repositories>
+                                <pluginRepositories>remove</pluginRepositories>
                                 <build>remove</build>
                                 <profiles>remove</profiles>
                             </pomElements>
