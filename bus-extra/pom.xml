@@ -69,8 +69,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.34</lombok.version>
         <fastjson.version>2.0.51</fastjson.version>
         <gson.version>2.11.0</gson.version>
@@ -387,8 +385,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -446,6 +444,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.6.0</version>
+                <inherited>true</inherited>
                 <executions>
                     <execution>
                         <id>flatten</id>
@@ -459,7 +458,7 @@
                             <flattenedPomFilename>${project.artifactId}-${project.version}.pom</flattenedPomFilename>
                             <flattenMode>resolveCiFriendliesOnly</flattenMode>
                             <pomElements>
-                                <parent>remove</parent>
+                                <parent>keep</parent>
                                 <dependencies>keep</dependencies>
                                 <dependencyManagement>keep</dependencyManagement>
                                 <distributionManagement>remove</distributionManagement>
@@ -470,19 +469,7 @@
                             </pomElements>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
                 </executions>
-                <inherited>true</inherited>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
             </plugin>
         </plugins>
     </build>

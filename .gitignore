@@ -382,3 +382,6 @@ typings/
 
 # next.js build output
 .next
+
+# flatten-maven-plugin
+.flattened-pom.xml
