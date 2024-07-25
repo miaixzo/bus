@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.sensitive;
 import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
@@ -41,7 +41,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @Getter
 @Setter
 @EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
-@ConfigurationProperties(prefix = BusXConfig.SENSITIVE)
+@ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE)
 public class SensitiveProperties {
 
     @Resource
@@ -59,7 +59,7 @@ public class SensitiveProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = BusXConfig.SENSITIVE + ".encrypt")
+    @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE + ".encrypt")
     public class Encrypt {
         private String key;
         private String type;
@@ -70,7 +70,7 @@ public class SensitiveProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = BusXConfig.SENSITIVE + ".decrypt")
+    @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE + ".decrypt")
     public class Decrypt {
         private String key;
         private String type;

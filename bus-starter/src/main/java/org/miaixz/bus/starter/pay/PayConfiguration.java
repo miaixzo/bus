@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.pay;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.pay.Complex;
 import org.miaixz.bus.pay.cache.PayCache;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -52,7 +52,7 @@ public class PayConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ExtendCache.class)
-    @ConditionalOnProperty(name = BusXConfig.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(name = GeniusBuilder.PAY + ".cache.type", havingValue = "default", matchIfMissing = true)
     public ExtendCache cache() {
         return PayCache.INSTANCE;
     }

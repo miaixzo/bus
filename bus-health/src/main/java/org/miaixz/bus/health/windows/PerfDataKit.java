@@ -35,9 +35,9 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
@@ -82,7 +82,7 @@ public final class PerfDataKit {
                         : PDH.PdhCollectQueryData(query.getValue());
             }
             if (ret != WinError.ERROR_SUCCESS) {
-                if (Logger.isWarn()) {
+                if (Logger.isWarnEnabled()) {
                     Logger.warn("Failed to update counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
@@ -115,7 +115,7 @@ public final class PerfDataKit {
     public static boolean openQuery(HANDLEByReference q) {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
-            if (Logger.isError()) {
+            if (Logger.isErrorEnabled()) {
                 Logger.error("Failed to open PDH Query. Error code: {}",
                         String.format(Locale.ROOT, Formats.formatError(ret)));
             }
@@ -134,7 +134,7 @@ public final class PerfDataKit {
         try (CloseablePdhRawCounter counterValue = new CloseablePdhRawCounter()) {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
-                if (Logger.isWarn()) {
+                if (Logger.isWarnEnabled()) {
                     Logger.warn("Failed to get counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
@@ -164,7 +164,7 @@ public final class PerfDataKit {
         try (CloseablePdhRawCounter counterValue = new CloseablePdhRawCounter()) {
             int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
             if (ret != WinError.ERROR_SUCCESS) {
-                if (Logger.isWarn()) {
+                if (Logger.isWarnEnabled()) {
                     Logger.warn("Failed to get counter. Error code: {}",
                             String.format(Locale.ROOT, Formats.formatError(ret)));
                 }
@@ -187,7 +187,7 @@ public final class PerfDataKit {
         int ret = IS_VISTA_OR_GREATER ? PDH.PdhAddEnglishCounter(query.getValue(), path, PZERO, p)
                 : PDH.PdhAddCounter(query.getValue(), path, PZERO, p);
         if (ret != WinError.ERROR_SUCCESS) {
-            if (Logger.isWarn()) {
+            if (Logger.isWarnEnabled()) {
                 Logger.warn("Failed to add PDH Counter: {}, Error code: {}", path,
                         String.format(Locale.ROOT, Formats.formatError(ret)));
             }

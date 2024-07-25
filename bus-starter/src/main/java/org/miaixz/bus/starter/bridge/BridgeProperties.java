@@ -29,7 +29,7 @@ package org.miaixz.bus.starter.bridge;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -40,7 +40,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.BRIDGE)
+@ConfigurationProperties(prefix = GeniusBuilder.BRIDGE)
 public class BridgeProperties {
 
     /**

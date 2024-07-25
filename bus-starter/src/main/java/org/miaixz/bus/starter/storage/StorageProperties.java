@@ -29,7 +29,7 @@ package org.miaixz.bus.starter.storage;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Registry;
@@ -48,7 +48,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.STORAGE)
+@ConfigurationProperties(prefix = GeniusBuilder.STORAGE)
 public class StorageProperties {
 
     /**

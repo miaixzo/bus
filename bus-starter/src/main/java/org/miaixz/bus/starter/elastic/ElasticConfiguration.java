@@ -32,7 +32,7 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.miaixz.bus.core.basics.normal.Consts;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -45,12 +45,12 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 
 /**
- * <p>@description ElasticSearch 规则配置 </p>
+ * ElasticSearch 规则配置
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
  */
-@EnableConfigurationProperties(ElasticProperties.class)
+@EnableConfigurationProperties(value = {ElasticProperties.class})
 public class ElasticConfiguration {
 
     @Resource

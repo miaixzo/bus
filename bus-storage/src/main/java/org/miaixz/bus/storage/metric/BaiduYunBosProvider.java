@@ -33,7 +33,7 @@ import com.baidubce.services.bos.BosClientConfiguration;
 import com.baidubce.services.bos.model.GetObjectRequest;
 import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Context;

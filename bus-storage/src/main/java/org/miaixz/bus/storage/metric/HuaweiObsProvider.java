@@ -31,7 +31,7 @@ import com.obs.services.ObsClient;
 import com.obs.services.model.DownloadFileRequest;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.storage.Context;

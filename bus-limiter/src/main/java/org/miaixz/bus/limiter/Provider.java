@@ -27,6 +27,7 @@
  */
 package org.miaixz.bus.limiter;
 
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 import java.lang.reflect.Method;
@@ -37,7 +38,7 @@ import java.lang.reflect.Method;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider {
+public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
      * 获取规则
@@ -53,5 +54,10 @@ public interface Provider {
      * @return the object
      */
     Object process(Object bean, Method method, Object[] args);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.LIMITER;
+    }
 
 }

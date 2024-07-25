@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.notify.metric.upyun;
 
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.CollKit;

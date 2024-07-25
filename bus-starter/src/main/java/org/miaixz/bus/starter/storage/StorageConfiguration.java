@@ -28,7 +28,7 @@
 package org.miaixz.bus.starter.storage;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.storage.cache.StorageCache;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -51,7 +51,7 @@ public class StorageConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ExtendCache.class)
-    @ConditionalOnProperty(name = BusXConfig.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(name = GeniusBuilder.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
     public ExtendCache storageCache() {
         return StorageCache.INSTANCE;
     }

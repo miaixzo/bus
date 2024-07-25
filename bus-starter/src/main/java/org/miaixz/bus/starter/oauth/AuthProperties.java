@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -48,7 +48,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.OAUTH)
+@ConfigurationProperties(prefix = GeniusBuilder.OAUTH)
 public class AuthProperties {
 
     /**

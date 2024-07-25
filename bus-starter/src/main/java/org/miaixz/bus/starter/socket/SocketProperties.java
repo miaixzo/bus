@@ -29,7 +29,7 @@ package org.miaixz.bus.starter.socket;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -42,7 +42,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.SOCKET)
+@ConfigurationProperties(prefix = GeniusBuilder.SOCKET)
 public class SocketProperties {
 
     private int port = 7890;

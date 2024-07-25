@@ -33,8 +33,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.pager.plugin.ExplainSqlHandler;
 import org.miaixz.bus.pager.plugin.NatureSqlHandler;
 import org.miaixz.bus.pager.plugin.PageSqlHandler;
-import org.miaixz.bus.spring.BusXConfig;
-import org.miaixz.bus.spring.PlaceBinder;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.sensitive.SensitiveProperties;
 import org.miaixz.bus.starter.sensitive.SensitiveResultSetHandler;
 import org.miaixz.bus.starter.sensitive.SensitiveStatementHandler;
@@ -61,7 +61,7 @@ public class MybatisPluginBuilder {
         );
 
         if (ObjectKit.isNotEmpty(environment)) {
-            MybatisProperties mybatisProperties = PlaceBinder.bind(environment, MybatisProperties.class, BusXConfig.MYBATIS);
+            MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class, GeniusBuilder.MYBATIS);
             if (ObjectKit.isNotEmpty(mybatisProperties)) {
                 Properties p = new Properties();
                 p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
@@ -74,7 +74,7 @@ public class MybatisPluginBuilder {
                 list.add(pageSqlHandler);
             }
 
-            SensitiveProperties sensitiveProperties = PlaceBinder.bind(environment, SensitiveProperties.class, BusXConfig.MYBATIS);
+            SensitiveProperties sensitiveProperties = PlaceHolderBinder.bind(environment, SensitiveProperties.class, GeniusBuilder.MYBATIS);
             if (ObjectKit.isNotEmpty(sensitiveProperties)) {
                 Properties p = new Properties();
                 p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));

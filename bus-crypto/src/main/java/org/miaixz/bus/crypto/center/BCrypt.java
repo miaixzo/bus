@@ -163,12 +163,14 @@ public class BCrypt {
     private int[] S;
 
     /**
-     * Encode a byte array using bcrypt's slightly-modified base64 encoding scheme. Note that this is *not* compatible with the standard MIME-base64 encoding.
+     * Encode a byte array using bcrypt's slightly-modified base64
+     * encoding scheme. Note that this is *not* compatible with
+     * the standard MIME-base64 encoding.
      *
-     * @param d   the byte array to encode
-     * @param len the number of bytes to encode
+     * @param d    the byte array to encode
+     * @param len    the number of bytes to encode
      * @return base64-encoded string
-     * @throws IllegalArgumentException if the length is invalid
+     * @exception IllegalArgumentException if the length is invalid
      */
     private static String encode_base64(final byte[] d, final int len) throws IllegalArgumentException {
         int off = 0;
@@ -203,9 +205,9 @@ public class BCrypt {
     }
 
     /**
-     * Look up the 3 bits base64-encoded by the specified character, range-checking againt conversion table
-     *
-     * @param x the base64-encoded value
+     * Look up the 3 bits base64-encoded by the specified character,
+     * range-checking againt conversion table
+     * @param x    the base64-encoded value
      * @return the decoded value of x
      */
     private static byte char64(final char x) {
@@ -215,11 +217,11 @@ public class BCrypt {
     }
 
     /**
-     * Decode a string encoded using bcrypt's base64 scheme to a byte array.
-     * Note that this is *not* compatible with the standard MIME-base64 encoding.
-     *
-     * @param s       the string to decode
-     * @param maxolen the maximum number of bytes to decode
+     * Decode a string encoded using bcrypt's base64 scheme to a
+     * byte array. Note that this is *not* compatible with
+     * the standard MIME-base64 encoding.
+     * @param s    the string to decode
+     * @param maxolen    the maximum number of bytes to decode
      * @return an array containing the decoded bytes
      * @throws IllegalArgumentException if maxolen is invalid
      */

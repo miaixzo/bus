@@ -63,7 +63,7 @@ import java.util.ListIterator;
  */
 public class Fragments extends ArrayList<Object> implements Value {
 
-    private static final long serialVersionUID = -6667210062541083610L;
+    private static final long serialVersionUID = -1L;
 
     private final VR vr;
     private final boolean bigEndian;

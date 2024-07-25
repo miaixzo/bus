@@ -27,6 +27,9 @@
  */
 package org.miaixz.bus.extra.nlp;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
+
 /**
  * 分词引擎接口定义，用户通过实现此接口完成特定分词引擎的适配
  * 由于引擎使用单例模式，因此要求实现类保证线程安全
@@ -34,7 +37,7 @@ package org.miaixz.bus.extra.nlp;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface NLPProvider {
+public interface NLPProvider extends Provider {
 
     /**
      * 文本分词处理接口，通过实现此接口完成分词，产生分词结果
@@ -43,5 +46,10 @@ public interface NLPProvider {
      * @return {@link NLPResult}分词结果实现
      */
     NLPResult parse(CharSequence text);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.NLP;
+    }
 
 }

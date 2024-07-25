@@ -52,7 +52,7 @@ public class ReverseDNS {
         if (DISABLED)
             return inetAddress.getHostAddress();
 
-        if (!Logger.isDebug())
+        if (!Logger.isDebugEnabled())
             return inetAddress.getHostName();
 
         String hostAddress = inetAddress.getHostAddress();

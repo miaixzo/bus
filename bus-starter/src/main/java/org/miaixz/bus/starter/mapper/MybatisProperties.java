@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.core.io.Resource;
@@ -52,7 +52,7 @@ import java.util.Properties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.MYBATIS)
+@ConfigurationProperties(prefix = GeniusBuilder.MYBATIS)
 public class MybatisProperties {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();

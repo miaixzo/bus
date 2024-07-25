@@ -27,8 +27,10 @@
  */
 package org.miaixz.bus.extra.captcha;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
+
 import java.io.OutputStream;
-import java.io.Serializable;
 
 /**
  * 验证码接口，提供验证码对象接口定义
@@ -36,7 +38,7 @@ import java.io.Serializable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface CaptchaProvider extends Serializable {
+public interface CaptchaProvider extends Provider {
 
     /**
      * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
@@ -64,5 +66,10 @@ public interface CaptchaProvider extends Serializable {
      * @param out 目标流
      */
     void write(OutputStream out);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.CAPTCHA;
+    }
 
 }

@@ -119,13 +119,13 @@ public class MLLPConnection implements Closeable {
     }
 
     private void log(String format, byte[] b, int off, int len) {
-        if (!Logger.isInfo())
+        if (!Logger.isInfoEnabled())
             return;
         int mshlen = 0;
         while (mshlen < len && b[off + mshlen] != '\r')
             mshlen++;
         Logger.info(format, sock, new String(b, off, mshlen));
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug(format, sock, new String(b, off, len).replace('\r', '\n'));
     }
 

@@ -24,8 +24,8 @@
 #                                                                               #
 #################################################################################
 
-org.miaixz.bus.logger.metric.commons.CommonsFactory
-org.miaixz.bus.logger.metric.jboss.JbossFactory
-org.miaixz.bus.logger.metric.log4j.Log4jFactory
-org.miaixz.bus.logger.metric.slf4j.Slf4jFactory
-org.miaixz.bus.logger.metric.tinylog.TinyLogFactory
+org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory
+org.miaixz.bus.logger.metric.jboss.JbossLoggingFactory
+org.miaixz.bus.logger.metric.tinylog.TinyLoggingFactory
+org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory
+org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory

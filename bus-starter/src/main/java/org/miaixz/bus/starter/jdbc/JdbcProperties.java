@@ -29,7 +29,7 @@ package org.miaixz.bus.starter.jdbc;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.DATASOURCE)
+@ConfigurationProperties(prefix = GeniusBuilder.DATASOURCE)
 public class JdbcProperties {
 
     /**

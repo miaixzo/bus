@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.limiter;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.limiter.Context;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -41,7 +41,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Getter
 @Setter
-@ConfigurationProperties(BusXConfig.LIMITER)
+@ConfigurationProperties(GeniusBuilder.LIMITER)
 public class LimiterProperties extends Context {
 
 }

@@ -24,8 +24,6 @@
 #                                                                               #
 #################################################################################
 
-# 实现： org.miaixz.bus.extra.nlp.NLPProvider
-
 org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider
 org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider
 org.miaixz.bus.extra.nlp.provider.ikanalyzer.IKAnalyzerProvider

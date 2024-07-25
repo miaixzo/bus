@@ -429,9 +429,9 @@ public class PDUDecoder extends PDVInputStream {
         Attributes cmd = readCommand();
         Dimse dimse = dimseOf(cmd);
         String tsuid = pc.getTransferSyntax();
-        if (Logger.isInfo()) {
+        if (Logger.isInfoEnabled()) {
             Logger.info("{} >> {}", as, dimse.toString(cmd, pcid, tsuid));
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug("{} >> {} Command:\n{}", as, dimse.toString(cmd), cmd);
             }
         }
@@ -441,12 +441,12 @@ public class PDUDecoder extends PDVInputStream {
             nextPDV(PDVType.DATA, pcid);
             if (dimse.isRSP()) {
                 Attributes data = readDataset(tsuid);
-                if (Logger.isDebug()) {
+                if (Logger.isDebugEnabled()) {
                     Logger.debug("{} >> {} Dataset:\n{}", as, dimse.toString(cmd), data);
                 }
                 as.onDimseRSP(dimse, cmd, data);
             } else {
-                if (Logger.isDebug()) {
+                if (Logger.isDebugEnabled()) {
                     Logger.debug("{} >> {} Dataset receiving...", as, dimse.toString(cmd));
                 }
                 as.onDimseRQ(pc, dimse, cmd, this);

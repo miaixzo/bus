@@ -29,8 +29,8 @@ package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
@@ -58,7 +58,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
             try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
                 int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
                 if (res > 0) {
-                    if (Logger.isError()) {
+                    if (Logger.isErrorEnabled()) {
                         Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
                     }
                     return Normal.EMPTY;

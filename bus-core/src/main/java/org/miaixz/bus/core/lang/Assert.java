@@ -1093,4 +1093,39 @@ public class Assert {
         }
     }
 
+    /**
+     * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
+     * <pre class="code">
+     *     Assert.hasText(name, "'name' must not be empty");
+     * </pre>
+     *
+     * @param text    要检查的字符串
+     * @param message 断言失败时要使用的异常消息
+     * @throws IllegalArgumentException 如果文本不包含有效的文本内容
+     * @see StringKit#hasText
+     */
+    public static void hasText(String text, String message) {
+        if (!StringKit.hasText(text)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
+     * <pre class="code">
+     *  Assert.hasText(account.getName(),
+     *     () -&gt; "Name for account '" + account.getId() + "' must not be empty");
+     * </pre>
+     *
+     * @param text            要检查的字符串
+     * @param messageSupplier 断言失败时要使用的异常消息的提供者
+     * @throws IllegalArgumentException 如果文本不包含有效的文本内容
+     * @see StringKit#hasText
+     */
+    public static void hasText(String text, Supplier<String> messageSupplier) {
+        if (!StringKit.hasText(text)) {
+            throw new IllegalArgumentException((messageSupplier != null ? messageSupplier.get() : null));
+        }
+    }
+
 }

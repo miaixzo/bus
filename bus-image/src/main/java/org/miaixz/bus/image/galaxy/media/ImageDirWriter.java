@@ -333,7 +333,7 @@ public class ImageDirWriter extends ImageDirReader {
     }
 
     private void writeRecord(int offset, Attributes rec) throws IOException {
-        if (Logger.isInfo())
+        if (Logger.isInfoEnabled())
             Logger.info("M-UPDATE {}: add {} Record", file,
                     rec.getString(Tag.DirectoryRecordType, null));
         Logger.debug("Directory Record:\n{}", rec);

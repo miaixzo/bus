@@ -27,7 +27,7 @@
  */
 package org.miaixz.bus.core.text.placeholder.template;
 
-import org.miaixz.bus.core.beans.desc.BeanDesc;
+import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;

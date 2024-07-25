@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.validate.magic;
 
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.validate.Context;
 
 /**
@@ -36,7 +38,7 @@ import org.miaixz.bus.validate.Context;
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Matcher<T, K> {
+public interface Matcher<T, K> extends Provider {
 
     /**
      * 将Validator转为Matcher
@@ -70,5 +72,10 @@ public interface Matcher<T, K> {
      * @return 校验结果, true：校验通过
      */
     boolean on(T object, K annotation, Context context);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.VALIDATE;
+    }
 
 }

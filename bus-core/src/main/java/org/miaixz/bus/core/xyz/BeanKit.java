@@ -27,15 +27,15 @@
  */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.beans.BeanCache;
-import org.miaixz.bus.core.beans.DynaBean;
-import org.miaixz.bus.core.beans.copier.BeanCopier;
-import org.miaixz.bus.core.beans.copier.CopyOptions;
-import org.miaixz.bus.core.beans.copier.ValueProvider;
-import org.miaixz.bus.core.beans.desc.BeanDesc;
-import org.miaixz.bus.core.beans.desc.BeanDescFactory;
-import org.miaixz.bus.core.beans.desc.PropDesc;
-import org.miaixz.bus.core.beans.path.BeanPath;
+import org.miaixz.bus.core.bean.BeanCache;
+import org.miaixz.bus.core.bean.DynaBean;
+import org.miaixz.bus.core.bean.copier.BeanCopier;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.bean.copier.ValueProvider;
+import org.miaixz.bus.core.bean.desc.BeanDesc;
+import org.miaixz.bus.core.bean.desc.BeanDescFactory;
+import org.miaixz.bus.core.bean.desc.PropDesc;
+import org.miaixz.bus.core.bean.path.BeanPath;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.convert.Convert;

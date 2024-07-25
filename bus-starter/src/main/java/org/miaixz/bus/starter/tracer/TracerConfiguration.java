@@ -36,7 +36,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(TracerProperties.class)
+@EnableConfigurationProperties(value = {TracerProperties.class})
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 public class TracerConfiguration {
 

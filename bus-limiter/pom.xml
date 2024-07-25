@@ -69,8 +69,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
         <lombok.version>1.18.34</lombok.version>
         <sentinel.version>1.8.7</sentinel.version>
         <bytebuddy.version>1.12.23</bytebuddy.version>
@@ -114,8 +112,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -168,6 +166,37 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <flattenedPomFilename>${project.artifactId}-${project.version}.pom</flattenedPomFilename>
+                            <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                            <pomElements>
+                                <parent>keep</parent>
+                                <dependencies>keep</dependencies>
+                                <dependencyManagement>keep</dependencyManagement>
+                                <distributionManagement>remove</distributionManagement>
+                                <repositories>remove</repositories>
+                                <pluginRepositories>remove</pluginRepositories>
+                                <build>remove</build>
+                                <profiles>remove</profiles>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

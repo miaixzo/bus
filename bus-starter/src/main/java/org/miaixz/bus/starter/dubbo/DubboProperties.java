@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.dubbo;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.dubbo.config.*;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.DUBBO)
+@ConfigurationProperties(prefix = GeniusBuilder.DUBBO)
 public class DubboProperties {
 
     /**
@@ -59,37 +59,37 @@ public class DubboProperties {
     protected boolean multiple;
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".application")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".application")
     public ApplicationConfig applicationConfig() {
         return new ApplicationConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".provider")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".provider")
     public ProviderConfig ProviderConfig() {
         return new ProviderConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".monitor")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".monitor")
     public MonitorConfig monitorConfig() {
         return new MonitorConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".consumer")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".consumer")
     public ConsumerConfig consumerConfig() {
         return new ConsumerConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".registry")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".registry")
     public RegistryConfig registryConfig() {
         return new RegistryConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".protocol")
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".protocol")
     public ProtocolConfig protocolConfig() {
         return new ProtocolConfig();
     }

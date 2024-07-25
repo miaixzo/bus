@@ -214,7 +214,7 @@ public class Platform {
      * @return 返回一个对象
      */
     public Object getStackTraceForCloseable(String closer) {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             return new Throwable(closer);
         }
         return null;

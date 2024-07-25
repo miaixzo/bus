@@ -27,6 +27,8 @@
  */
 package org.miaixz.bus.core.lang;
 
+import org.miaixz.bus.core.Provider;
+
 /**
  * 包装接口
  *
@@ -34,7 +36,7 @@ package org.miaixz.bus.core.lang;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Wrapper<T> {
+public interface Wrapper<T> extends Provider {
 
     /**
      * 获取原始对象
@@ -42,5 +44,10 @@ public interface Wrapper<T> {
      * @return 原始对象
      */
     T getRaw();
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.TEMPLATE;
+    }
 
 }

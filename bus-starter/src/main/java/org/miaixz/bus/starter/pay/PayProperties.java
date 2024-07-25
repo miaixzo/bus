@@ -31,7 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.PAY)
+@ConfigurationProperties(prefix = GeniusBuilder.PAY)
 public class PayProperties {
 
     /**

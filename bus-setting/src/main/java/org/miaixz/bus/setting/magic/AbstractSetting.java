@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.setting.magic;
 
-import org.miaixz.bus.core.beans.copier.CopyOptions;
-import org.miaixz.bus.core.beans.copier.ValueProvider;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.lang.Normal;

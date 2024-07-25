@@ -29,7 +29,7 @@ package org.miaixz.bus.storage.metric;
 
 import com.UpYun;
 import com.upyun.UpException;
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;

@@ -57,7 +57,7 @@ public class StackTraceCaller implements Caller, Serializable {
     }
 
     @Override
-    public Class<?> getCallerCaller() {
+    public Class<?> getCallers() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (OFFSET + 2 >= stackTrace.length) {
             return null;

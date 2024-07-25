@@ -31,11 +31,11 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.SPIKit;
-import org.miaixz.bus.logger.metric.commons.CommonsFactory;
-import org.miaixz.bus.logger.metric.console.ConsoleFactory;
-import org.miaixz.bus.logger.metric.jdk.JdkFactory;
-import org.miaixz.bus.logger.metric.log4j.Log4jFactory;
-import org.miaixz.bus.logger.metric.slf4j.Slf4jFactory;
+import org.miaixz.bus.logger.metric.apache.commons.CommonsLoggingFactory;
+import org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory;
+import org.miaixz.bus.logger.metric.console.NormalLoggingFactory;
+import org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory;
+import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
 
 import java.net.URL;
 
@@ -56,8 +56,9 @@ public class Holder {
 
     /**
      * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
+     * 获得的是单例的 {@link Factory}
      *
-     * @return the factory
+     * @return {@link Factory}
      */
     public static Factory getFactory() {
         return InstanceHolder.INSTANCE;
@@ -67,15 +68,15 @@ public class Holder {
      * 自定义默认日志实现
      *
      * @param clazz 日志工厂类
-     * @see Slf4jFactory
-     * @see Log4jFactory
-     * @see CommonsFactory
-     * @see JdkFactory
-     * @see ConsoleFactory
+     * @see Slf4jLoggingFactory
+     * @see Log4jLoggingFactory
+     * @see CommonsLoggingFactory
+     * @see JdkLoggingFactory
+     * @see NormalLoggingFactory
      */
-    public static void setFactory(final Class<? extends Factory> clazz) {
+    public static void setDefaultFactory(final Class<? extends Factory> clazz) {
         try {
-            setFactory(ReflectKit.newInstance(clazz));
+            setDefaultFactory(ReflectKit.newInstance(clazz));
         } catch (final Exception e) {
             throw new IllegalArgumentException("Can not instance LogFactory class!", e);
         }
@@ -84,14 +85,14 @@ public class Holder {
     /**
      * 自定义日志实现
      *
-     * @param factory 日志工厂对象
-     * @see Slf4jFactory
-     * @see Log4jFactory
-     * @see CommonsFactory
-     * @see JdkFactory
-     * @see ConsoleFactory
+     * @param factory 日志引擎对象
+     * @see Slf4jLoggingFactory
+     * @see Log4jLoggingFactory
+     * @see CommonsLoggingFactory
+     * @see JdkLoggingFactory
+     * @see NormalLoggingFactory
      */
-    public static void setFactory(final Factory factory) {
+    public static void setDefaultFactory(final Factory factory) {
         Instances.put(Holder.class.getName(), factory);
         factory.create(Holder.class).debug("Custom Use [{}] Logger.", factory.getName());
     }
@@ -114,9 +115,9 @@ public class Holder {
      * @return 日志实现类
      */
     public static Factory create() {
-        final Factory engine = doCreate();
-        engine.create(Registry.class).debug("Use [{}] Logger As Default.", engine.getName());
-        return engine;
+        final Factory factory = doFactory();
+        factory.create(Registry.class).debug("Use [{}] Logger As Default.", factory.getName());
+        return factory;
     }
 
     /**
@@ -125,15 +126,15 @@ public class Holder {
      *
      * @return 日志实现类
      */
-    private static Factory doCreate() {
-        final Factory engine = SPIKit.loadFirstAvailable(Factory.class);
-        if (null != engine) {
-            return engine;
+    private static Factory doFactory() {
+        final Factory factory = SPIKit.loadFirstAvailable(Factory.class);
+        if (null != factory) {
+            return factory;
         }
 
         // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
         final URL url = ResourceKit.getResourceUrl("logging.properties");
-        return (null != url) ? new JdkFactory() : new ConsoleFactory();
+        return (null != url) ? new JdkLoggingFactory() : new NormalLoggingFactory();
     }
 
     /**

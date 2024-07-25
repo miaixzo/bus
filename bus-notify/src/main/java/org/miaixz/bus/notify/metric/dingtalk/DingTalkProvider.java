@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify.metric.dingtalk;
 
 import lombok.Setter;
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;

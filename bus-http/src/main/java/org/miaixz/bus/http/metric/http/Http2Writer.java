@@ -71,7 +71,7 @@ public class Http2Writer implements Closeable {
     public synchronized void connectionPreface() throws IOException {
         if (closed) throw new IOException("closed");
         if (!client) return; // Nothing to write; servers don't send connection headers!
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.warn(String.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
         }
         sink.write(Http2.CONNECTION_PREFACE.toByteArray());
@@ -255,7 +255,7 @@ public class Http2Writer implements Closeable {
     }
 
     public void frameHeader(int streamId, int length, byte type, byte flags) throws IOException {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.warn(Http2.frameLog(false, streamId, length, type, flags));
         }
         if (length > maxFrameSize) {

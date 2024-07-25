@@ -24,8 +24,6 @@
 #                                                                               #
 #################################################################################
 
-# 实现： org.miaixz.bus.extra.json.JsonProvider
-
 org.miaixz.bus.extra.json.provider.FastJsonProvider
 org.miaixz.bus.extra.json.provider.GsonProvider
 org.miaixz.bus.extra.json.provider.JacksonProvider

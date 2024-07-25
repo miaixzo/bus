@@ -27,9 +27,9 @@
  */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.beans.copier.BeanCopier;
-import org.miaixz.bus.core.beans.copier.CopyOptions;
-import org.miaixz.bus.core.beans.copier.ValueProvider;
+import org.miaixz.bus.core.bean.copier.BeanCopier;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.center.map.MapProxy;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;

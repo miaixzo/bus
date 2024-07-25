@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify.metric;
 
 import lombok.AllArgsConstructor;
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;

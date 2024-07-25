@@ -247,7 +247,7 @@ public class Compressor extends Decompressor implements Closeable {
         bi2 = verifier.read(0, verifyParam);
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
-        if (Logger.isDebug())
+        if (Logger.isDebugEnabled())
             Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
                     index + 1, end - start, maxDiff);
         if (maxDiff > maxPixelValueError)
@@ -525,7 +525,7 @@ public class Compressor extends Decompressor implements Closeable {
                 compressor.write(null, new IIOImage(bi, null, null), compressParam);
                 long end = System.currentTimeMillis();
                 streamLength = (int) cache.getStreamPosition();
-                if (Logger.isDebug())
+                if (Logger.isDebugEnabled())
                     Logger.debug("Compressed frame #{} {}:1 in {} ms",
                             frameIndex + 1,
                             (float) sizeOf(bi) / streamLength,

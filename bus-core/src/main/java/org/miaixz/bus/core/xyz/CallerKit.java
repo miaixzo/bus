@@ -59,7 +59,7 @@ public class CallerKit {
      * @return 调用者的调用者
      */
     public static Class<?> getCallers() {
-        return INSTANCE.getCallerCaller();
+        return INSTANCE.getCallers();
     }
 
     /**

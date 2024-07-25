@@ -24,8 +24,6 @@
 #                                                                               #
 #################################################################################
 
-# 实现： org.miaixz.bus.extra.template.TemplateProvider
-
 org.miaixz.bus.extra.template.provider.beetl.BeetlProvider
 org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider
 org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider

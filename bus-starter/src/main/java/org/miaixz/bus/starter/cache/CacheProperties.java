@@ -30,7 +30,7 @@ package org.miaixz.bus.starter.cache;
 import lombok.Getter;
 import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.spring.BusXConfig;
+import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = BusXConfig.CACHE)
+@ConfigurationProperties(prefix = GeniusBuilder.CACHE)
 public class CacheProperties {
 
     /**

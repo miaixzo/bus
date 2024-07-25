@@ -27,7 +27,8 @@
  */
 package org.miaixz.bus.storage;
 
-import org.miaixz.bus.core.basics.entity.Message;
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
 import java.io.File;
@@ -40,7 +41,7 @@ import java.nio.file.Path;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider {
+public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
      * 文件下载(流式下载)
@@ -163,5 +164,10 @@ public interface Provider {
      * @return 处理结果 {@link Message}
      */
     Message remove(String bucket, Path path);
+
+    @Override
+    default Object type() {
+        return EnumMap.Povider.STORAGE;
+    }
 
 }

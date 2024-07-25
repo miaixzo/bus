@@ -32,11 +32,11 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
@@ -238,7 +238,7 @@ public final class Builder {
      */
     public static String getSerialNo(byte[] edid) {
         // Bytes 12-15 are Serial number (last 4 characters)
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
         }
         return String.format(Locale.ROOT, "%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
@@ -451,7 +451,7 @@ public final class Builder {
      */
     public static List<String> readFile(String filename, boolean reportError) {
         if (new File(filename).canRead()) {
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
@@ -495,7 +495,7 @@ public final class Builder {
     public static List<String> readLines(String filename, int count, boolean reportError) {
         Path file = Paths.get(filename);
         if (Files.isReadable(file)) {
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
             CharsetDecoder decoder = Charset.UTF_8.newDecoder();
@@ -544,7 +544,7 @@ public final class Builder {
      */
     public static byte[] readAllBytes(String filename, boolean reportError) {
         if (new File(filename).canRead()) {
-            if (Logger.isDebug()) {
+            if (Logger.isDebugEnabled()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
@@ -684,12 +684,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static long getLongFromFile(String filename) {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
-            if (Logger.isTrace()) {
+            if (Logger.isTraceEnabled()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return Parsing.parseLongOrDefault(read.get(0), 0L);
@@ -705,12 +705,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static long getUnsignedLongFromFile(String filename) {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
-            if (Logger.isTrace()) {
+            if (Logger.isTraceEnabled()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return Parsing.parseUnsignedLongOrDefault(read.get(0), 0L);
@@ -725,13 +725,13 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static int getIntFromFile(String filename) {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug(READING_LOG, filename);
         }
         try {
             List<String> read = readLines(filename, 1, false);
             if (!read.isEmpty()) {
-                if (Logger.isTrace()) {
+                if (Logger.isTraceEnabled()) {
                     Logger.trace(READ_LOG, read.get(0));
                 }
                 return Parsing.parseIntOrDefault(read.get(0), 0);
@@ -749,12 +749,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise empty string
      */
     public static String getStringFromFile(String filename) {
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = readLines(filename, 1, false);
         if (!read.isEmpty()) {
-            if (Logger.isTrace()) {
+            if (Logger.isTraceEnabled()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return read.get(0);
@@ -773,7 +773,7 @@ public final class Builder {
      */
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
-        if (Logger.isDebug()) {
+        if (Logger.isDebugEnabled()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> lines = readFile(filename, false);

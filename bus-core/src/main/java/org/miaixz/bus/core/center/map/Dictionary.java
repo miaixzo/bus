@@ -27,8 +27,8 @@
  */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.beans.copier.CopyOptions;
-import org.miaixz.bus.core.beans.path.BeanPath;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.bean.path.BeanPath;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.function.SupplierX;

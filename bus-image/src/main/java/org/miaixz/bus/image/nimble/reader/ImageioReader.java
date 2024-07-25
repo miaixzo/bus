@@ -371,12 +371,12 @@ public class ImageioReader extends ImageReader implements Closeable {
             if (decompressor != null) {
                 decompressor.setInput(iisOfFrame(frameIndex));
 
-                if (Logger.isDebug())
+                if (Logger.isDebugEnabled())
                     Logger.debug("Start decompressing frame #" + (frameIndex + 1));
                 Raster wr = pmiAfterDecompression == pmi && decompressor.canReadRaster()
                         ? decompressor.readRaster(0, decompressParam(param))
                         : decompressor.read(0, decompressParam(param)).getRaster();
-                if (Logger.isDebug())
+                if (Logger.isDebugEnabled())
                     Logger.debug("Finished decompressing frame #" + (frameIndex + 1));
                 return wr;
             }

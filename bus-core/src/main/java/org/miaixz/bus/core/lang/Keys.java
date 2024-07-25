@@ -52,21 +52,21 @@ import java.util.Properties;
 public class Keys {
 
     /**
-     * 操作系统的名称
+     * 操作系统名称
      */
     public static final String OS_NAME = "os.name";
 
     /**
-     * 操作系统的架构
+     * 操作系统架构
      */
     public static final String OS_ARCH = "os.arch";
 
     /**
-     * 操作系统的版本
+     * 操作系统版本
      */
     public static final String OS_VERSION = "os.version";
     /**
-     * 用户的账户名称
+     * 用户账户名称
      */
     public static final String USER_NAME = "user.name";
 
@@ -76,19 +76,23 @@ public class Keys {
     public static final String USER_HOME = "user.home";
 
     /**
-     * 用户的当前工作目录
+     * 当前工作目录
      */
     public static final String USER_DIR = "user.dir";
     /**
-     * 用户的当前语言
+     * 文件编码
+     */
+    public static final String FILE_ENCODING = "file.encoding";
+    /**
+     * 当前语言
      */
     public static final String USER_LANGUAGE = "user.language";
     /**
-     * 用户的当前地区国家
+     * 当前地区
      */
     public static final String USER_COUNTRY = "user.country";
     /**
-     * 用户的当前区域
+     * 当前区域
      */
     public static final String USER_REGION = "user.region";
     /**

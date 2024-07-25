@@ -61,6 +61,8 @@ import java.util.*;
  */
 public class Connection implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     public static final int NO_TIMEOUT = 0;
     public static final int SYNCHRONOUS_MODE = 1;
     public static final int NOT_LISTENING = -1;
@@ -74,7 +76,7 @@ public class Connection implements Serializable {
     // to fit into SunJSSE TLS Application Data Length 16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
     public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2"};
-    private static final long serialVersionUID = -7814748788035232055L;
+
     private static final EnumMap<Protocol, TCPProtocolHandler> tcpHandlers = new EnumMap<>(Protocol.class);
     private static final EnumMap<Protocol, UDPProtocolHandler> udpHandlers = new EnumMap<>(Protocol.class);
 
