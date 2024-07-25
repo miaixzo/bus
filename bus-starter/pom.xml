@@ -71,10 +71,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <spring.boot.version>3.3.1</spring.boot.version>
+        <spring.boot.version>3.3.2</spring.boot.version>
         <lombok.version>1.18.34</lombok.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
-       <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <aspectj.version>1.9.22</aspectj.version>
         <vertx.version>4.5.8</vertx.version>
         <guice.version>7.0.0</guice.version>
@@ -82,6 +82,8 @@
         <mybatis.spring.version>3.0.3</mybatis.spring.version>
         <dubbo.version>3.2.11</dubbo.version>
         <elasticsearch.version>7.17.21</elasticsearch.version>
+        <mongo.version>5.1.2</mongo.version>
+        <curator.version>5.7.0</curator.version>
     </properties>
 
     <dependencies>
@@ -342,6 +344,18 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>${curator.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongo.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
@@ -360,6 +374,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
             <version>${spring.boot.version}</version>
@@ -370,24 +390,6 @@
                     <artifactId>tomcat-embed-el</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
-            <version>${spring.boot.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>5.7.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.1.2</version>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -451,6 +453,48 @@
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <flattenedPomFilename>${project.artifactId}-${project.version}.pom</flattenedPomFilename>
+                            <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                            <pomElements>
+                                <parent>keep</parent>
+                                <dependencies>keep</dependencies>
+                                <dependencyManagement>keep</dependencyManagement>
+                                <distributionManagement>keep</distributionManagement>
+                                <repositories>keep</repositories>
+                                <pluginRepositories>keep</pluginRepositories>
+                                <build>remove</build>
+                                <profiles>remove</profiles>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <inherited>true</inherited>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
                 </configuration>
             </plugin>
         </plugins>

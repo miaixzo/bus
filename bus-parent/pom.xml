@@ -81,6 +81,7 @@
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.xml.version>4.0.2</jakarta.xml.version>
         <commons.logging.version>1.3.2</commons.logging.version>
         <jboss.version>3.6.0.Final</jboss.version>
         <logback.version>1.5.6</logback.version>
@@ -130,6 +131,8 @@
         <vertx.version>4.5.8</vertx.version>
         <dubbo.version>3.2.11</dubbo.version>
         <elasticsearch.version>7.17.21</elasticsearch.version>
+        <mongo.version>5.1.2</mongo.version>
+        <curator.version>5.7.0</curator.version>
         <alipay.version>4.39.42.ALL</alipay.version>
         <aliyun.oss.version>3.17.4</aliyun.oss.version>
         <baidu.bos.version>0.10.314</baidu.bos.version>
@@ -140,7 +143,7 @@
         <qcloud.oss.version>5.6.213</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
         <miaixz.bus.version>8.0.6</miaixz.bus.version>
-        <spring.boot.version>3.3.1</spring.boot.version>
+        <spring.boot.version>3.3.2</spring.boot.version>
     </properties>
 
     <dependencyManagement>
@@ -304,6 +307,11 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>${jakarta.servlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta.xml.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -896,6 +904,18 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongo.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
@@ -1277,6 +1297,17 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-mongodb</artifactId>
+                <version>${spring.boot.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.boot.version}</version>
                 <exclusions>
@@ -1307,6 +1338,17 @@
                     <exclusion>
                         <groupId>com.fasterxml.jackson.datatype</groupId>
                         <artifactId>jackson-datatype-jsr310</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+                <version>${spring.boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>tomcat-embed-el</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1373,6 +1415,48 @@
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <flattenedPomFilename>${project.artifactId}-${project.version}.pom</flattenedPomFilename>
+                            <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                            <pomElements>
+                                <parent>keep</parent>
+                                <dependencies>keep</dependencies>
+                                <dependencyManagement>keep</dependencyManagement>
+                                <distributionManagement>keep</distributionManagement>
+                                <repositories>keep</repositories>
+                                <pluginRepositories>keep</pluginRepositories>
+                                <build>remove</build>
+                                <profiles>remove</profiles>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <inherited>true</inherited>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
                 </configuration>
             </plugin>
         </plugins>

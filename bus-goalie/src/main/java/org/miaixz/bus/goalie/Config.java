@@ -75,6 +75,8 @@ public class Config {
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();
     private final Limit limit = new Limit();
+    private final Security security = new Security();
+
     private String path;
     private int port;
 
@@ -100,6 +102,13 @@ public class Config {
     @Setter
     public static class Limit {
         private boolean enabled;
+    }
+
+    @Getter
+    @Setter
+    public static class Security {
+        private boolean enabled;
+        private boolean mock;
     }
 
 }
